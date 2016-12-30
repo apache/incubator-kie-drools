@@ -79,4 +79,17 @@ parameter, and can be invoked in the same way as functions are. E.g.:
 
 ## a. Fixes to bugs
 
+1. __Support for types with spaces on names__: the DMN XML schema defines type refs as QNames, 
+but QNames do not allow spaces. It is then not possible to use types like FEEL `date and time`,
+`days and time duration` or `years and months duration`. This implementation does parse such
+typerefs as strings and allows type names with spaces, but in order to comply with the XML schema,
+it also added the following aliases to such types that can be used instead:
+```
+"date and time" = "dateTime"
+"days and time duration" = "duration" or "dayTimeDuration" 
+"years and months duration" = "duration" or "yearMonthDuration" 
+```
+Please note that for the "duration" types, the user can simply use `duration` and the engine will
+infer the proper duration, either `days and time duration` or `years and months duration`.
+
 ## b. Extensions
