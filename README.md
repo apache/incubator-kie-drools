@@ -96,3 +96,8 @@ according to the FEEL grammar, these are not valid function names, as "and" and 
   infer the proper duration, either `days and time duration` or `years and months duration`.
 
 ## b. Extensions
+
+1. __Lists support heterogeneous element types__: at the moment, this implementation supports
+  lists with heterogeneous element types. This is an experimental extension and does limit the 
+  functionality of some functions and filters. We will re-evaluate this decision in the future.
+  
