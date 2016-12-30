@@ -36,44 +36,45 @@ according to the FEEL grammar, these are not valid function names, as "and" and 
 ## b. Extensions
 
 1. __Support for scientific and hexadecimal notations__: this implementation supports scientific and hexadecimal
- notation for numbers. E.g.: 1.2e5 (scientific notation), 0xD5 (hexadecimal notation).
+  notation for numbers. E.g.: 1.2e5 (scientific notation), 0xD5 (hexadecimal notation).
  
 2. __Support for expressions as end points in ranges__: this implementation supports expressions as endpoints 
-for ranges. E.g: `[date("2016-11-24")..date("2016-11-27")]`
+  for ranges. E.g: `[date("2016-11-24")..date("2016-11-27")]`
 
 3. __Support for additional types__: the specification only defines the following as basic types of the language:
 
-* number
-* string
-* boolean
-* days and time duration
-* years and month duration
-* time
-* date and time
+  * number
+  * string
+  * boolean
+  * days and time duration
+  * years and month duration
+  * time
+  * date and time
 
-For completeness and orthogonality, this implementation also supports the following types:
+  For completeness and orthogonality, this implementation also supports the following types:
  
-* context
-* list
-* range
-* function
-* unary test
+  * context 
+  * list
+  * range
+  * function
+  * unary test
 
 4. __Support for unary tests__: for completeness and orthogonality, unary tests are supported
-as first class citizens in the language. They are effectively functions with an implicit single 
-parameter, and can be invoked in the same way as functions are. E.g.:
+  as first class citizens in the language. They are effectively functions with an implicit single 
+  parameter, and can be invoked in the same way as functions are. E.g.:
 
-```
-{
-    is minor : < 18,
-    Bob is minor : is minor( bob.age )
-}
-```
+  ```
+  {
+      is minor : < 18,
+      Bob is minor : is minor( bob.age )
+  }
+  ```
 
 5. __Support for additional built-in functions__: additional functions are supported out of the box: 
 
-* `now()` : returns the current date and time
-* `decision table()` : returns a decision table function. Although the spec mentions a decision table function on page 114, it is not implementable as defined. 
+  * `now()` : returns the current date and time
+  * `decision table()` : returns a decision table function. Although the spec mentions a decision table 
+  function on page 114, it is not implementable as defined. 
 
 # DMN engine implementation notes
 
