@@ -511,6 +511,14 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
 
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (input != null) {
+                	input.close();
+                }
+            } catch (IOException e) {
+                // do nothing
+            }
         }
         return new String(baos.toByteArray(), IoUtils.UTF8_CHARSET);
     }
