@@ -27,6 +27,8 @@ public class Person {
 
     private String       status;
 
+    private Boolean canBuyAlcohol;
+
     public Person() {
 
     }
@@ -89,6 +91,14 @@ public class Person {
 
     public void setSex(final char sex) {
         this.sex = sex;
+    }
+
+    public Boolean getCanBuyAlcohol() {
+        return canBuyAlcohol;
+    }
+
+    public void setCanBuyAlcohol(Boolean canBuyAlcohol) {
+        this.canBuyAlcohol = canBuyAlcohol;
     }
 
     public String toString() {
