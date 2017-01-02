@@ -68,7 +68,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private ArtifactResolver artifactResolver;
 
-    private Status status = Status.STARTING;
+    private volatile Status status = Status.STARTING;
 
     private KieScannerMBean mbean;
 
@@ -267,8 +267,14 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private class ScanTask extends TimerTask {
         public void run() {
-            scanNow();
-            status = Status.RUNNING;
+            synchronized (KieRepositoryScannerImpl.this) {
+                // don't scan if the scanner was already stopped! This would lead to inconsistent scanner behavior.
+                if (status == Status.STOPPED) {
+                    return;
+                }
+                scanNow();
+                status = Status.RUNNING;
+            }
         }
     }
 
