@@ -21,7 +21,6 @@ import org.drools.core.common.InternalFactHandle;
 /**
  * A specialisation of RightTuples that also belong to a window
  * 
- * @author etirelli
  *
  */
 public class WindowTuple extends RightTupleImpl {

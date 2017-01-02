@@ -30,8 +30,8 @@ import static org.junit.Assert.*;
 
 /**
  * A class to test decimal separated value in action column with different locales.
- * @author Maxime Falaize
  */
+
 public class DecimalSeparatorTest {
 
     private KieSession ksession;

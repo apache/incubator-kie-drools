@@ -22,7 +22,6 @@ import org.drools.core.common.EventFactHandle;
  * A class to hold a list of the right tuples that belong to a 
  * window (sliding, tumbling, etc)
  * 
- * @author etirelli
  */
 public class WindowTupleList {
     protected EventFactHandle    handle;

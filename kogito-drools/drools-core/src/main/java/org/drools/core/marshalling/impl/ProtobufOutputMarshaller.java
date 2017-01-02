@@ -101,7 +101,6 @@ import java.util.Map;
  * An output marshaller that uses ProtoBuf as the marshalling framework
  * in order to provide backward compatibility with marshalled sessions
  * 
- * @author etirelli
  */
 public class ProtobufOutputMarshaller {
 
