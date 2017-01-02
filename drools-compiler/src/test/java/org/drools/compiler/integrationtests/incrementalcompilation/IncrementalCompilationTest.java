@@ -30,6 +30,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -55,8 +56,11 @@ import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.TimedRuleExectionOption;
+import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
@@ -79,7 +83,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
+import static org.drools.compiler.integrationtests.incrementalcompilation.IncrementalCompilationTest.createAndDeployJarInStreamMode;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
+import static org.junit.Assert.assertEquals;
 
 public class IncrementalCompilationTest extends CommonTestMethodBase {
 
@@ -3112,6 +3118,97 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 2, list.size() );
         assertTrue( list.containsAll( asList("R1", "R2") ) );
     }
+    
+    @Test
+    public void testAlphaNodeSharingIsOK() throws Exception {
+       // inspired by drools-usage Fmt9wZUFi8g
+       // check timer -scheduled activations are preserved if rule untouched by incremental compilation even with alpha node sharing.
+       StringBuffer drl = new StringBuffer();
+       drl.append("package org.drools.compiler\n");
+       drl.append("global java.util.List list;\n");
+       drl.append("global java.util.List list2;\n");
+       drl.append("rule R1\n");
+       drl.append(" timer (int: 3s)\n");
+       drl.append(" when\n");
+       drl.append("   $m : String()\n");
+       drl.append(" then\n");
+       drl.append("   list.add( $m );\n");
+       drl.append("   retract( $m );\n");
+       drl.append("end\n");
+       drl.append("rule RS\n");
+       drl.append(" timer (int: 3s)\n");
+       drl.append(" salience 1\n");
+       drl.append(" when\n");
+       drl.append("   $i : Integer()\n");
+       drl.append("   $m : String()\n");
+       drl.append(" then\n");
+       drl.append("   System.out.println($i + \" \"+ $m);");
+       drl.append("   list2.add($i + \" \"+ $m);\n");
+       drl.append("end\n");
+
+       StringBuffer drl2 = new StringBuffer();
+       drl2.append("package org.drools.compiler\n");
+       drl2.append("global java.util.List list;\n");
+       drl2.append("global java.util.List list2;\n");
+       drl2.append("rule R1\n");
+       drl2.append(" timer (int: 3s)\n");
+       drl2.append(" when\n");
+       drl2.append("   $m : String()\n");
+       drl2.append(" then\n");
+       drl2.append("   list.add( $m );\n");
+       drl2.append("   list.add( $m );\n");
+       drl2.append("   retract( $m );\n");
+       drl2.append("end\n");
+       drl2.append("rule RS\n");
+       drl2.append(" timer (int: 3s)\n");
+       drl2.append(" salience 1\n");
+       drl2.append(" when\n");
+       drl2.append("   $i : Integer()\n");
+       drl2.append("   $m : String()\n");
+       drl2.append(" then\n");
+       drl2.append("   System.out.println($i + \" \"+ $m);");
+       drl2.append("   list2.add($i + \" \"+ $m);\n");
+       drl2.append("end\n");
+
+       KieServices ks = KieServices.Factory.get();
+
+       ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+       KieModule km = createAndDeployJarInStreamMode(ks, releaseId1, drl.toString());
+
+       KieContainer kc = ks.newKieContainer(km.getReleaseId());
+
+       KieSessionConfiguration ksconf = ks.newKieSessionConfiguration();
+       ksconf.setOption(TimedRuleExectionOption.YES);
+       ksconf.setOption(TimerJobFactoryOption.get("trackable"));
+       ksconf.setOption(ClockTypeOption.get("pseudo"));
+
+       KieSession ksession = kc.newKieSession(ksconf);
+
+       SessionPseudoClock timeService = ksession.getSessionClock();
+       timeService.advanceTime(new Date().getTime(), TimeUnit.MILLISECONDS);
+
+       List list = new ArrayList();
+       ksession.setGlobal("list", list);
+       
+       List list2 = new ArrayList();
+       ksession.setGlobal("list2", list2);
+       
+       ksession.insert(new String("A"));
+       ksession.insert(1);
+       ksession.fireAllRules();
+
+       assertEquals("1. Initial run: no message expected after rule fired immediately after fireAllRules due to duration of 5 sec", 0, list.size());
+       assertEquals("1. Initial run: no message expected after rule fired immediately after fireAllRules due to duration of 5 sec", 0, list2.size());
+       
+       ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.1");
+       km = createAndDeployJarInStreamMode(ks, releaseId2, drl2.toString());
+       kc.updateToVersion(releaseId2);
+       timeService.advanceTime(3200, TimeUnit.MILLISECONDS);
+
+       assertEquals("1. R1 is NOT preserved", 0, list.size());
+       assertEquals("1. RS is preserved", 1, list2.size());
+    }
+
 
     private void createKJarWIthPackages( KieServices ks, ReleaseId releaseId1, String... pkgs ) {
         String drl1 = "global java.util.List list;\n" +
