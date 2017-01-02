@@ -128,4 +128,16 @@ public class SpreadsheetIntegrationExampleTest {
                       launcher.executeExample() );
     }
 
+    @Test
+    public void testBooleanField() throws Exception {
+        Resource dt = ResourceFactory.newClassPathResource("/data/ShopRules.xls", getClass());
+        KieSession ksession = getKieSession( dt );
+
+        Person p = new Person( "michael", "stilton", 42 );
+        ksession.insert( p );
+
+        ksession.fireAllRules();
+
+        assertTrue( p.getCanBuyAlcohol() );
+    }
 }
