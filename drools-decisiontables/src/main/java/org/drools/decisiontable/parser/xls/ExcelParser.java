@@ -168,6 +168,13 @@ public class ExcelParser
                 }
 
                 switch ( cell.getCellType() ) {
+                    case Cell.CELL_TYPE_BOOLEAN:
+                        newCell(listeners,
+                                i,
+                                cellNum,
+                                cell.getBooleanCellValue() ? "true" : "false",
+                                mergedColStart);
+                        break;
                     case Cell.CELL_TYPE_FORMULA:
                         String cellValue = null;
                         try {
