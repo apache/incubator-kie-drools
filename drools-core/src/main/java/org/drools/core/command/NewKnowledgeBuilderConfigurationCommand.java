@@ -20,10 +20,6 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.runtime.Context;
 
-/**
- *
- * @author salaboy
- */
 public class NewKnowledgeBuilderConfigurationCommand implements ExecutableCommand<Void> {
     private String kbuilderConfId;
 

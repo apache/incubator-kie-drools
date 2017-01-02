@@ -81,7 +81,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * An input marshaller that uses protobuf. 
  * 
- * @author etirelli
  */
 public class ProtobufInputMarshaller {
     // NOTE: all variables prefixed with _ (underscore) are protobuf structs
