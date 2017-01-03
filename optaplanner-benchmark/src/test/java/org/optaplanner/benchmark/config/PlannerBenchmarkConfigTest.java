@@ -147,22 +147,11 @@ public class PlannerBenchmarkConfigTest {
     @Test
     public void calculateWarmUpTimeMillisSpentLimit() {
         PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
-        long h = 3;
-        long m = 17;
-        long s = 51;
-        long ms = 753;
-        config.setWarmUpHoursSpentLimit(h);
-        config.setWarmUpMinutesSpentLimit(m);
-        config.setWarmUpSecondsSpentLimit(s);
-        config.setWarmUpMillisecondsSpentLimit(ms);
-        long totalMillis = 0;
-        totalMillis += h;
-        totalMillis *= 60;
-        totalMillis += m;
-        totalMillis *= 60;
-        totalMillis += s;
-        totalMillis *= 1000;
-        totalMillis += ms;
-        assertEquals(totalMillis, config.calculateWarmUpTimeMillisSpentLimit());
+        config.setWarmUpHoursSpentLimit(1L);
+        config.setWarmUpMinutesSpentLimit(2L);
+        config.setWarmUpSecondsSpentLimit(5L);
+        config.setWarmUpMillisecondsSpentLimit(753L);
+        assertEquals(3_725_753L, config.calculateWarmUpTimeMillisSpentLimit());
     }
+
 }
