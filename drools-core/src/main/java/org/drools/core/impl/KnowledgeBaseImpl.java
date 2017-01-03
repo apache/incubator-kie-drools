@@ -1000,6 +1000,14 @@ public class KnowledgeBaseImpl
         }
     }
 
+    public void registerTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) {
+        try {
+            processTypeDeclaration( newDecl, newPkg );
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( "unable to resolve Type Declaration class '" + newDecl.getTypeClassName() + "'", e );
+        }
+    }
+
     protected void processTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg ) throws ClassNotFoundException {
         JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
 
