@@ -34,7 +34,7 @@
       <entityTabuSize>5</entityTabuSize>
     </acceptor>
     <forager>
-      <!-- Real world problems require to use of <acceptedCountLimit> -->
+      <!-- Real world problems require use of <acceptedCountLimit> -->
     </forager>
   </localSearch>
 
