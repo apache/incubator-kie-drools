@@ -44,6 +44,8 @@ import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+
 @XStreamAlias("plannerBenchmark")
 public class PlannerBenchmarkConfig {
 
@@ -61,6 +63,7 @@ public class PlannerBenchmarkConfig {
     private Long warmUpSecondsSpentLimit = null;
     private Long warmUpMinutesSpentLimit = null;
     private Long warmUpHoursSpentLimit = null;
+    private Long warmUpDaysSpentLimit = null;
 
     @XStreamAlias("benchmarkReport")
     private BenchmarkReportConfig benchmarkReportConfig = null;
@@ -148,6 +151,14 @@ public class PlannerBenchmarkConfig {
         this.warmUpHoursSpentLimit = warmUpHoursSpentLimit;
     }
 
+    public Long getWarmUpDaysSpentLimit() {
+        return warmUpDaysSpentLimit;
+    }
+
+    public void setWarmUpDaysSpentLimit(Long warmUpDaysSpentLimit) {
+        this.warmUpDaysSpentLimit = warmUpDaysSpentLimit;
+    }
+
     public BenchmarkReportConfig getBenchmarkReportConfig() {
         return benchmarkReportConfig;
     }
@@ -198,7 +209,7 @@ public class PlannerBenchmarkConfig {
         plannerBenchmarkResult.setAggregation(false);
         int parallelBenchmarkCount = resolveParallelBenchmarkCount();
         plannerBenchmarkResult.setParallelBenchmarkCount(parallelBenchmarkCount);
-        plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(calculateWarmUpTimeMillisSpentLimit());
+        plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(defaultIfNull(calculateWarmUpTimeMillisSpentLimit(), 30L));
         plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(new ArrayList<>());
         plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(
                 effectiveSolverBenchmarkConfigList.size()));
@@ -331,19 +342,46 @@ public class PlannerBenchmarkConfig {
         }
     }
 
-    protected long calculateWarmUpTimeMillisSpentLimit() {
+    protected Long calculateWarmUpTimeMillisSpentLimit() {
+        if (warmUpMillisecondsSpentLimit == null && warmUpSecondsSpentLimit == null
+                && warmUpMinutesSpentLimit == null && warmUpHoursSpentLimit == null && warmUpDaysSpentLimit == null) {
+            return null;
+        }
         long warmUpTimeMillisSpentLimit = 0L;
         if (warmUpMillisecondsSpentLimit != null) {
+            if (warmUpMillisecondsSpentLimit < 0L) {
+                throw new IllegalArgumentException("The warmUpMillisecondsSpentLimit (" + warmUpMillisecondsSpentLimit
+                        + ") cannot be negative.");
+            }
             warmUpTimeMillisSpentLimit += warmUpMillisecondsSpentLimit;
         }
         if (warmUpSecondsSpentLimit != null) {
-            warmUpTimeMillisSpentLimit += warmUpSecondsSpentLimit * 1000L;
+            if (warmUpSecondsSpentLimit < 0L) {
+                throw new IllegalArgumentException("The warmUpSecondsSpentLimit (" + warmUpSecondsSpentLimit
+                        + ") cannot be negative.");
+            }
+            warmUpTimeMillisSpentLimit += warmUpSecondsSpentLimit * 1_000L;
         }
         if (warmUpMinutesSpentLimit != null) {
-            warmUpTimeMillisSpentLimit += warmUpMinutesSpentLimit * 60000L;
+            if (warmUpMinutesSpentLimit < 0L) {
+                throw new IllegalArgumentException("The warmUpMinutesSpentLimit (" + warmUpMinutesSpentLimit
+                        + ") cannot be negative.");
+            }
+            warmUpTimeMillisSpentLimit += warmUpMinutesSpentLimit * 60_000L;
         }
         if (warmUpHoursSpentLimit != null) {
-            warmUpTimeMillisSpentLimit += warmUpHoursSpentLimit * 3600000L;
+            if (warmUpHoursSpentLimit < 0L) {
+                throw new IllegalArgumentException("The warmUpHoursSpentLimit (" + warmUpHoursSpentLimit
+                        + ") cannot be negative.");
+            }
+            warmUpTimeMillisSpentLimit += warmUpHoursSpentLimit * 3_600_000L;
+        }
+        if (warmUpDaysSpentLimit != null) {
+            if (warmUpDaysSpentLimit < 0L) {
+                throw new IllegalArgumentException("The warmUpDaysSpentLimit (" + warmUpDaysSpentLimit
+                        + ") cannot be negative.");
+            }
+            warmUpTimeMillisSpentLimit += warmUpDaysSpentLimit * 86_400_000L;
         }
         return warmUpTimeMillisSpentLimit;
     }

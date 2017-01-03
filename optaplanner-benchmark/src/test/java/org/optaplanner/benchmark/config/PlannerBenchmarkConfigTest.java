@@ -151,7 +151,7 @@ public class PlannerBenchmarkConfigTest {
         config.setWarmUpMinutesSpentLimit(2L);
         config.setWarmUpSecondsSpentLimit(5L);
         config.setWarmUpMillisecondsSpentLimit(753L);
-        assertEquals(3_725_753L, config.calculateWarmUpTimeMillisSpentLimit());
+        assertEquals(3_725_753L, (long) config.calculateWarmUpTimeMillisSpentLimit());
     }
 
 }

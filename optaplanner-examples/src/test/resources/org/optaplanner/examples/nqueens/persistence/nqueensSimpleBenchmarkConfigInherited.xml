@@ -1,5 +1,6 @@
 <plannerBenchmark>
   <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
+  <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
   <inheritedSolverBenchmark>
     <solver>
       <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>

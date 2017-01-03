@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>target/benchmarkTest/output</benchmarkDirectory>
+  <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
 <#list ['FIRST_FIT', 'CHEAPEST_INSERTION'] as constructionHeuristicType>
   <solverBenchmark>
     <problemBenchmarks>

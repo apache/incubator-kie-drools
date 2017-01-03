@@ -358,28 +358,28 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 throw new IllegalArgumentException("The termination secondsSpentLimit (" + secondsSpentLimit
                         + ") cannot be negative.");
             }
-            timeMillisSpentLimit += secondsSpentLimit * 1000L;
+            timeMillisSpentLimit += secondsSpentLimit * 1_000L;
         }
         if (minutesSpentLimit != null) {
             if (minutesSpentLimit < 0L) {
                 throw new IllegalArgumentException("The termination minutesSpentLimit (" + minutesSpentLimit
                         + ") cannot be negative.");
             }
-            timeMillisSpentLimit += minutesSpentLimit * 60000L;
+            timeMillisSpentLimit += minutesSpentLimit * 60_000L;
         }
         if (hoursSpentLimit != null) {
             if (hoursSpentLimit < 0L) {
                 throw new IllegalArgumentException("The termination hoursSpentLimit (" + hoursSpentLimit
                         + ") cannot be negative.");
             }
-            timeMillisSpentLimit += hoursSpentLimit * 3600000L;
+            timeMillisSpentLimit += hoursSpentLimit * 3_600_000L;
         }
         if (daysSpentLimit != null) {
             if (daysSpentLimit < 0L) {
                 throw new IllegalArgumentException("The termination daysSpentLimit (" + daysSpentLimit
                         + ") cannot be negative.");
             }
-            timeMillisSpentLimit += daysSpentLimit * 86400000L;
+            timeMillisSpentLimit += daysSpentLimit * 86_400_000L;
         }
         return timeMillisSpentLimit;
     }

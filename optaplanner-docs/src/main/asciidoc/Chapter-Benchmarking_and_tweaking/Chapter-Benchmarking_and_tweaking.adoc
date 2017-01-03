@@ -235,17 +235,29 @@ Otherwise, an unstable network connection can ruin a long running benchmark.
 [[warmingUpTheHotSpotCompiler]]
 === Warming Up The HotSpot Compiler
 
-**Without a warm up, the results of the first (or first few) benchmarks are not reliable**,
-because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation too).
+Without a warm up, the results of the first (or first few) benchmarks are not reliable,
+because they will lose CPU time on HotSpot JIT compilation (and possibly DRL compilation too).
 
-To avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time, before running the real benchmarks.
-Generally, a warm up of 30 seconds suffices:
+To avoid that distortion, the benchmarker runs some of the benchmarks for 30 seconds,
+before running the real benchmarks.
+That default warm up of 30 seconds usually suffices. Change it, for example to give it 60 seconds:
 
 [source,xml,options="nowrap"]
 ----
 <plannerBenchmark>
   ...
-  <warmUpSecondsSpentLimit>30</warmUpSecondsSpentLimit>
+  <warmUpSecondsSpentLimit>60</warmUpSecondsSpentLimit>
+  ...
+</plannerBenchmark>
+----
+
+Turn off the warm up phase altogether by setting it to zero:
+
+[source,xml,options="nowrap"]
+----
+<plannerBenchmark>
+  ...
+  <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
   ...
 </plannerBenchmark>
 ----
@@ -267,7 +279,6 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
-  <warmUpSecondsSpentLimit>30</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>

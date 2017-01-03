@@ -1,5 +1,6 @@
 <plannerBenchmark>
   <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
+  <warmUpSecondsSpentLimit>0</warmUpSecondsSpentLimit>
   <solverBenchmark>
     <name>Entity Tabu Search</name>
     <solver>
