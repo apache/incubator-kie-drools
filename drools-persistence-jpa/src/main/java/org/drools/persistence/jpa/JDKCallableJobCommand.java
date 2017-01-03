@@ -34,9 +34,8 @@ public class JDKCallableJobCommand
         try {
             return job.internalCall();
         } catch ( Exception e ) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
 }
