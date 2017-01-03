@@ -56,10 +56,6 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.task.UserGroupCallback;
 
-/**
- * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
 public class ChecklistUI extends JFrame {
 
     private static final long serialVersionUID = 510l;

@@ -30,10 +30,6 @@ import com.sun.syndication.io.XmlReader;
 
 
 
-/**
- *
- * @author salaboy
- */
 public class RSSWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     List<SyndFeed> feeds = new ArrayList<SyndFeed>();

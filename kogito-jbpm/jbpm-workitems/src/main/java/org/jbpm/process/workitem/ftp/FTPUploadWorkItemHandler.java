@@ -31,10 +31,6 @@ import org.slf4j.LoggerFactory;
 
 
 
-/**
- *
- * @author salaboy
- */
 public class FTPUploadWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     
     private static final Logger logger = LoggerFactory.getLogger(FTPUploadWorkItemHandler.class);

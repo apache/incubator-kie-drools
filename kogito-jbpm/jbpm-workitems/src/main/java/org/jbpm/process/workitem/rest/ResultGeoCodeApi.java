@@ -16,10 +16,6 @@
 
 package org.jbpm.process.workitem.rest;
 
-/**
- *
- * @author salaboy
- */
 public class ResultGeoCodeApi {
     //http://developer.yahoo.com/maps/rest/V1/geocode.html
 

@@ -19,10 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- *
- * @author salaboy
- */
 public class FormManagerServiceImpl implements FormManagerService {
     private Map<String, Map<String, String>> formsRegistry = new HashMap<String, Map<String, String>>();
 

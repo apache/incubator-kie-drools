@@ -35,7 +35,6 @@ import org.kie.api.runtime.process.WorkItemManager;
  * 
  * Sending an email cannot be aborted.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */	
 public class EmailWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 

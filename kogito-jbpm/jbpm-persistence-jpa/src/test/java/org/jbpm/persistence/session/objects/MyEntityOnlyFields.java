@@ -22,10 +22,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-/**
- *
- * @author salaboy
- */
 @Entity
 public class MyEntityOnlyFields implements Serializable {
 

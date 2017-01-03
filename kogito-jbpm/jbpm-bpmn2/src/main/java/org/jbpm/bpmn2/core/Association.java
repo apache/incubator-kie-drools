@@ -17,9 +17,6 @@ package org.jbpm.bpmn2.core;
 
 import java.io.Serializable;
 
-/**
- * @author <a href="mailto:atoulme@intalio.com">Antoine Toulme</a>
- */
 public class Association implements Serializable {
 
 	private static final long serialVersionUID = 4L;

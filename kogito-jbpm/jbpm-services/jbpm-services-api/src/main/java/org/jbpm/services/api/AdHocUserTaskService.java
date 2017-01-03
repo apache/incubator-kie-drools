@@ -20,10 +20,6 @@ import java.util.List;
 import java.util.Map;
 import org.kie.api.task.model.Task;
 
-/**
- *
- * @author salaboy
- */
 public interface AdHocUserTaskService {
 
     long addTask(Task task, Map<String, Object> params);

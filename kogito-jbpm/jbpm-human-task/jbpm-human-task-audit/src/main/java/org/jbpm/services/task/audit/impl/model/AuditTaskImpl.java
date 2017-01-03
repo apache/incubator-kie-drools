@@ -27,10 +27,6 @@ import javax.persistence.Temporal;
 
 import org.kie.internal.task.api.AuditTask;
 
-/**
- *
- * @author salaboy
- */
 @Entity
 @SequenceGenerator(name = "auditIdSeq", sequenceName = "AUDIT_ID_SEQ", allocationSize = 1)
 public class AuditTaskImpl implements Serializable, AuditTask {

@@ -18,10 +18,6 @@ package org.jbpm.kie.services.impl;
 import java.util.Map;
 import java.util.Set;
 
-/**
- *
- * @author salaboy
- */
 public interface FormManagerService {
 
     void registerForm(String deploymentId, String key, String formContent);

@@ -44,10 +44,6 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
-/**
- * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
 public class UIWorkItemHandler extends JFrame implements WorkItemHandler {
 
     private static final long serialVersionUID = 510l;

@@ -33,10 +33,6 @@ import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.workflow.core.DroolsAction;
 
-/**
- * @author etirelli
- *
- */
 public class JavaActionBuilder extends AbstractJavaProcessBuilder
     implements
     ActionBuilder {

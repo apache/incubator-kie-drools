@@ -37,10 +37,6 @@ import org.kie.api.definition.process.Process;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-/**
- * @author <a href="mailto:atoulme@intalio.com">Antoine Toulme</a>
- *
- */
 public class AssociationHandler extends BaseAbstractHandler implements Handler {
 
 	public AssociationHandler() {

@@ -33,10 +33,6 @@ import org.slf4j.LoggerFactory;
 
 
 
-/**
- *
- * @author salaboy
- */
 public class JabberWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     
     private static final Logger logger = LoggerFactory.getLogger(JabberWorkItemHandler.class);

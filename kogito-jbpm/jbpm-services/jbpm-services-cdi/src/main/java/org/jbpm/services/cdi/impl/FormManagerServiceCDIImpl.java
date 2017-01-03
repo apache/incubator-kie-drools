@@ -18,10 +18,6 @@ package org.jbpm.services.cdi.impl;
 import javax.enterprise.context.ApplicationScoped;
 import org.jbpm.kie.services.impl.FormManagerServiceImpl;
 
-/**
- *
- * @author salaboy
- */
 @ApplicationScoped
 public class FormManagerServiceCDIImpl extends FormManagerServiceImpl{
     

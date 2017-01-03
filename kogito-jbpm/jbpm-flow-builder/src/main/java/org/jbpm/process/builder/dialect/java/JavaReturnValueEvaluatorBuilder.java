@@ -30,10 +30,6 @@ import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 
-/**
- * @author etirelli
- *
- */
 public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
     implements
     ReturnValueEvaluatorBuilder {

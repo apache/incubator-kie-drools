@@ -17,10 +17,6 @@ package org.jbpm.persistence.session.objects;
 
 import java.io.Serializable;
 
-/**
- *
- * @author salaboy
- */
 public class MyVariableSerializable implements Serializable {
 
 	private static final long serialVersionUID = 510l;

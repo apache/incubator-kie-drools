@@ -32,9 +32,6 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-/**
- * @author <a href="mailto:atoulme@intalio.com">Antoine Toulme</a>
- */
 public class DataStoreHandler extends BaseAbstractHandler implements Handler {
 
 	@SuppressWarnings("rawtypes")

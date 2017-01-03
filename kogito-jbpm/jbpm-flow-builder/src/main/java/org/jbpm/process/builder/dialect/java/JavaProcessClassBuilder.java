@@ -26,10 +26,6 @@ import org.drools.core.util.StringUtils;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ProcessClassBuilder;
 
-/**
- * @author etirelli
- *
- */
 public class JavaProcessClassBuilder
     implements
     ProcessClassBuilder {

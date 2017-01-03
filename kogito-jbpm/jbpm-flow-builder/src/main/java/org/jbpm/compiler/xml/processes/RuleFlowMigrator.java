@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
  * Class the migrates drools version 4 .rfm and .rf ruleflow files to version
  * 5 .rf and .rfm ruleflows.
  * 
- * @author <a href="mailto:author@acme.com">A.N Author</a>
  ******************************************************************************/
 public class RuleFlowMigrator 
 {
@@ -229,7 +228,6 @@ public class RuleFlowMigrator
      * This class transform a string using an XSL transform - moved verbatim
      * from the ProcessBuilder class.
      * 
-     * @author 
      ******************************************************************************/
     private static class XSLTransformation {
         public static String transform(String stylesheet,

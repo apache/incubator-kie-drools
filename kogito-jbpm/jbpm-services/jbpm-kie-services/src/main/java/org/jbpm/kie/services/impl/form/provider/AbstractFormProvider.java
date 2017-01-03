@@ -20,10 +20,6 @@ import org.jbpm.kie.services.impl.form.FormProvider;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.InternalTask;
 
-/**
- *
- * @author salaboy
- */
 public abstract class AbstractFormProvider implements FormProvider {
 
     protected FormManagerService formManagerService;

@@ -57,8 +57,6 @@ import org.slf4j.LoggerFactory;
  * classloader where your mapped entities are and the name of the persistence
  * unit you configured in <em>persistence.xml</em>.
  * 
- * @author wsiqueir
- *
  */
 public class JPAWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
         implements Cacheable {

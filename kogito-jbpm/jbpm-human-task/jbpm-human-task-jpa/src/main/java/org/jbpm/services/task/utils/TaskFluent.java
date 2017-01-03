@@ -28,10 +28,6 @@ import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 
-/**
- *
- * @author salaboy
-*/
 public class TaskFluent {
 
     private TaskImpl task;
