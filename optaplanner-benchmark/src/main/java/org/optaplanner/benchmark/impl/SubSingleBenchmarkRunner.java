@@ -39,23 +39,25 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
 
     private final SubSingleBenchmarkResult subSingleBenchmarkResult;
     private final SolverConfigContext solverConfigContext;
+    private final boolean warmUp;
 
     private Throwable failureThrowable = null;
 
     /**
      * @param subSingleBenchmarkResult never null
      */
-    public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult) {
-        this(subSingleBenchmarkResult, new SolverConfigContext());
+    public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult, boolean warmUp) {
+        this(subSingleBenchmarkResult, warmUp, new SolverConfigContext());
     }
 
     /**
      * @param subSingleBenchmarkResult never null
      * @param solverConfigContext never null
      */
-    public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult,
+    public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult, boolean warmUp,
             SolverConfigContext solverConfigContext) {
         this.subSingleBenchmarkResult = subSingleBenchmarkResult;
+        this.warmUp = warmUp;
         this.solverConfigContext = solverConfigContext;
     }
 
@@ -118,7 +120,9 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
             subSingleStatistic.close(solver);
             subSingleStatistic.hibernatePointList();
         }
-        problemBenchmarkResult.writeOutputSolution(subSingleBenchmarkResult, outputSolution);
+        if (!warmUp) {
+            problemBenchmarkResult.writeOutputSolution(subSingleBenchmarkResult, outputSolution);
+        }
         MDC.remove(NAME_MDC);
         return this;
     }
