@@ -2783,6 +2783,49 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         private long eventTimestamp;
         private long systemTimestamp;
 
+        public DummyEvent() {}
+
+        public DummyEvent(String id) {
+            this.id = id;
+        }
+
+        public long getEventTimestamp() {
+            return eventTimestamp;
+        }
+
+        public void setEventTimestamp(long eventTimestamp) {
+            this.eventTimestamp = eventTimestamp;
+        }
+
+        public long getSystemTimestamp() {
+            return systemTimestamp;
+        }
+
+        public void setSystemTimestamp(long systemTimestamp) {
+            this.systemTimestamp = systemTimestamp;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
+
+    public static class OtherDummyEvent {
+
+        private String id;
+        private long eventTimestamp;
+        private long systemTimestamp;
+
+        public OtherDummyEvent() {}
+
+        public OtherDummyEvent(String id) {
+            this.id = id;
+        }
+
         public long getEventTimestamp() {
             return eventTimestamp;
         }
@@ -2889,5 +2932,81 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         Results results = container.updateToVersion(releaseId2);
         assertEquals( 0, results.getMessages().size() );
+    }
+
+    @Test
+    public void testIncrementalCompilationWithNewEvent() throws Exception {
+        // DROOLS-1395
+        String drl1 =  "package fr.edf.distribution.brms.common.test\n" +
+                       "import " + DummyEvent.class.getCanonicalName() + "\n" +
+                       "declare DummyEvent\n" +
+                       "    @role( event )\n" +
+                       "    @timestamp( eventTimestamp )\n" +
+                       "end\n" +
+                       "rule \"RG_TEST_1\"\n" +
+                       "    when\n" +
+                       "       $event: DummyEvent ()\n" +
+                       "    then\n" +
+                       "        System.out.println(\"RG_TEST_1 fired\");\n" +
+                       "        retract($event);\n" +
+                       "end";
+
+        String drl2 =  "package fr.edf.distribution.brms.common.test\n" +
+                       "import " + DummyEvent.class.getCanonicalName() + "\n" +
+                       "import " + OtherDummyEvent.class.getCanonicalName() + "\n" +
+                       "declare DummyEvent\n" +
+                       "    @role( event )\n" +
+                       "    @timestamp( eventTimestamp )\n" +
+                       "end\n" +
+                       "declare OtherDummyEvent\n" +
+                       "    @role( event )\n" +
+                       "    @timestamp( eventTimestamp )\n" +
+                       "end\n" +
+                       "rule \"RG_TEST_2\"\n" +
+                       "    when\n" +
+                       "       $event: DummyEvent ()\n" +
+                       "       $other : OtherDummyEvent(id == $event.id, this after $event)\n" +
+                       "    then\n" +
+                       "        System.out.println(\"RG_TEST_2 fired\");\n" +
+                       "        retract($other);\n" +
+                       "end\n" +
+                       "\n" +
+                       "rule \"RG_TEST_1\"\n" +
+                       "    when\n" +
+                       "       $event: DummyEvent ()\n" +
+                       "    then\n" +
+                       "        System.out.println(\"RG_TEST_1 fired\");\n" +
+                       "        retract($event);\n" +
+                       "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
+                                          .setEventProcessingMode(EventProcessingOption.STREAM);
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1").setDefault(true)
+                                                 .setType(KieSessionModel.KieSessionType.STATEFUL)
+                                                 .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId1, null, drl1 ) );
+
+        KieContainer kc = ks.newKieContainer(releaseId1);
+        KieSession kieSession = kc.newKieSession();
+
+        DummyEvent evt = new DummyEvent("evt");
+        kieSession.insert(evt);
+        assertEquals(1, kieSession.fireAllRules());
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "2.0.0");
+        deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl2 ) );
+
+        kc.updateToVersion(releaseId2);
+
+        evt = new DummyEvent("evt");
+        kieSession.insert(evt);
+        OtherDummyEvent other = new OtherDummyEvent("evt");
+        kieSession.insert(other);
+        assertEquals(1, kieSession.fireAllRules());
     }
 }

@@ -16,13 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.junit.Assert;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.api.DescrFactory;
@@ -35,20 +28,26 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.definition.type.FactType;
-import org.kie.internal.builder.KnowledgeBuilderResults;
-import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.ClassObjectFilter;
-import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.utils.KieHelper;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Test for declared bean Extension
@@ -466,35 +465,12 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "  System.out.println( $c );\n" +
                 "end";
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-
-
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
-
-        if ( kBuilder.hasErrors() ) {
-            System.err.println( kBuilder.getErrors().toString() );
-            fail();
-        }
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
-
-
-        KnowledgeBuilder kBuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase );
-        kBuilder2.add( new ByteArrayResource( s2.getBytes() ), ResourceType.DRL );
-
-        if ( kBuilder2.hasErrors() ) {
-            System.err.println( kBuilder2.getErrors().toString() );
-            fail();
-        }
-        kBase.addKnowledgePackages( kBuilder2.getKnowledgePackages() );
-
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+        KieSession kSession = new KieHelper().addContent( s1, ResourceType.DRL )
+                                             .addContent( s2, ResourceType.DRL )
+                                             .build().newKieSession();
 
         assertEquals( 3, kSession.fireAllRules() );
     }
-
-
-
 
     @Test
     public void testInheritAnnotationsInOtherPackage() throws Exception {
@@ -553,28 +529,10 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "end";
 
 
+        KieSession kSession = new KieHelper().addContent( s1, ResourceType.DRL )
+                                             .addContent( s2, ResourceType.DRL )
+                                             .build().newKieSession();
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-
-
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
-        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
-
-        if ( kBuilder.hasErrors() ) {
-            fail( kBuilder.getErrors().toString() );
-        }
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
-
-
-        KnowledgeBuilder kBuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase );
-        kBuilder2.add( new ByteArrayResource( s2.getBytes() ), ResourceType.DRL );
-
-        if ( kBuilder2.hasErrors() ) {
-            fail( kBuilder2.getErrors().toString() );
-        }
-        kBase.addKnowledgePackages( kBuilder2.getKnowledgePackages() );
-
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
 
@@ -594,9 +552,6 @@ public class ExtendsTest extends CommonTestMethodBase {
         assertTrue( list.contains( 4 ) );
 
     }
-
-
-
 
     @Test
     public void testInheritFromClassWithDefaults() throws Exception {
@@ -626,18 +581,11 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "  list.add( $miles );\n" +
                 "end";
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieSession kSession = new KieHelper().addContent( s1, ResourceType.DRL )
+                                             .build().newKieSession();
 
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
-        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
-        if ( kBuilder.hasErrors() ) {
-            fail( kBuilder.getErrors().toString() );
-        }
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
-            List list = new ArrayList();
-            kSession.setGlobal( "list", list );
+        List list = new ArrayList();
+        kSession.setGlobal( "list", list );
 
         kSession.fireAllRules();
         assertEquals( 1, list.size() );
