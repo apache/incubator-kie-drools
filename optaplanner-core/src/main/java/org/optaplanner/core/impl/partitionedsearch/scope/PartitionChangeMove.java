@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -121,8 +122,13 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove {
                 Object originValue = pair.getValue();
                 Object destinationValue = destinationScoreDirector.locateWorkingObject(originValue);
                 if (destinationValue == null && originValue != null) {
-                    throw new IllegalStateException("The destinationValue (" + destinationValue
-                            + ") cannot be null if the originValue (" + originValue + ") is not null.");
+                    throw new IllegalStateException("The destinationEntity (" + destinationEntity
+                            + ")'s destinationValue (" + destinationValue
+                            + ") cannot be null if the originEntity (" + originEntity
+                            + ")'s originValue (" + originValue + ") is not null.\n"
+                            + "Maybe add the originValue (" + originValue + ") of class (" + originValue.getClass()
+                            + ") as problem fact in the planning solution with a "
+                            + ProblemFactCollectionProperty.class.getSimpleName() + " annotation.");
                 }
                 destinationPairList.add(Pair.of(destinationEntity, destinationValue));
             }
