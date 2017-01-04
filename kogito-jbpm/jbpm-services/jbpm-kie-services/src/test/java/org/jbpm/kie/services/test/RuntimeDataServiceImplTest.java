@@ -1076,6 +1076,35 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     		processService.abortProcessInstance(pi.getId());
     	}
     }
+    
+    @Test
+    public void testGetTaskAssignedAsBusinessAdminByStatus() {
+
+        for (int i = 0; i < 10; i++) {
+
+            processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        }
+        
+        List<Status> statuses = new ArrayList<Status>();
+        statuses.add(Status.Ready);
+        statuses.add(Status.Reserved);
+
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsBusinessAdministratorByStatus("Administrator", statuses, new QueryFilter(0, 5));
+        assertNotNull(tasks);
+        assertEquals(5, tasks.size());
+        
+        statuses = new ArrayList<Status>();
+        statuses.add(Status.InProgress);
+
+        tasks = runtimeDataService.getTasksAssignedAsBusinessAdministratorByStatus("Administrator", statuses, new QueryFilter(0, 5));
+        assertNotNull(tasks);
+        assertEquals(0, tasks.size());
+
+        Collection<ProcessInstanceDesc> activeProcesses = runtimeDataService.getProcessInstances(new QueryContext(0,  20));
+        for (ProcessInstanceDesc pi : activeProcesses) {
+            processService.abortProcessInstance(pi.getId());
+        }
+    }
 
     @Test
     public void testGetTaskAssignedAsBusinessAdminPagingAndFiltering() {
@@ -1138,6 +1167,34 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	for (ProcessInstanceDesc pi : activeProcesses) {
     		processService.abortProcessInstance(pi.getId());
     	}
+    }
+    
+    @Test
+    public void testGetTasksAssignedAsPotentialOwnerSortedByAlias() {
+        List<Long> processInstanceIds = new ArrayList<Long>();
+        for (int i = 0; i < 10; i++) {
+
+            processInstanceIds.add(processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument"));
+        }
+
+        List<Status> statuses = new ArrayList<Status>();
+        statuses.add(Status.Ready);
+        statuses.add(Status.Reserved);
+
+        QueryFilter ctx = new QueryFilter(0, 5, "Status", true);
+        
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwnerByStatus("salaboy", statuses, ctx);
+        assertNotNull(tasks);
+        assertEquals(5, tasks.size());
+
+        TaskSummary userTask = tasks.get(0);
+        assertNotNull(userTask);
+        assertEquals("Write a Document", userTask.getName());
+
+        Collection<ProcessInstanceDesc> activeProcesses = runtimeDataService.getProcessInstances(new QueryContext(0,  20));
+        for (ProcessInstanceDesc pi : activeProcesses) {
+            processService.abortProcessInstance(pi.getId());
+        }
     }
 
     @Test

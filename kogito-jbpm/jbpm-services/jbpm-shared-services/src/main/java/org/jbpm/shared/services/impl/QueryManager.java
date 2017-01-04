@@ -138,11 +138,27 @@ public class QueryManager {
 				return "log.identity";
 			} else if (orderBy.equals("ProcessVersion")) {
 				return "log.processVersion";
-			} else if (orderBy.equals("Status")) {
+			} else if (orderBy.equals("State")) {
 				return "log.status";
 			} else if (orderBy.equals("StartDate")) {
 				return "log.start";
-			} 
+			} else if (orderBy.equalsIgnoreCase("Task")) {
+                return "t.name";
+            } else if (orderBy.equalsIgnoreCase("Description")) {
+                return "t.description";
+            } else if (orderBy.equalsIgnoreCase("TaskId")) {
+                return "t.id";
+            } else if (orderBy.equalsIgnoreCase("Priority")) {
+                return "t.priority";
+            } else if (orderBy.equalsIgnoreCase("Status")) {
+                return "t.taskData.status";
+            } else if (orderBy.equalsIgnoreCase("CreatedOn")) {
+                return "t.taskData.createdOn";
+            } else if (orderBy.equalsIgnoreCase("CreatedBy")) {
+                return "t.taskData.createdBy.id";
+            } else if (orderBy.equalsIgnoreCase("DueOn")) {
+                return "t.taskData.expirationTime";
+            }
 		}
 		return orderBy;
 	}
