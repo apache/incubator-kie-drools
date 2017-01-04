@@ -1686,7 +1686,7 @@ It can be partially or fully initialized, which is often the case in <<repeatedP
 === Environment Mode: Are There Bugs in my Code?
 
 The environment mode allows you to detect common bugs in your implementation.
-It does not affect the logging level.
+It does not affect the <<logging,logging level>>.
 
 You can set the environment mode in the solver configuration XML file:
 
@@ -1790,13 +1790,19 @@ Meanwhile, the code is disrupted from doing further harm or obfuscating the erro
 * **info**: Log every phase and the solver itself. See <<scopeOverview,scope overview>>.
 * **debug**: Log every step of every phase. See <<scopeOverview,scope overview>>.
 * **trace**: Log every move of every step of every phase. See <<scopeOverview,scope overview>>.
-+
+
 [NOTE]
 ====
 Turning on `trace` logging, will slow down performance considerably: it is often four times slower.
 However, it is invaluable during development to discover a bottleneck.
 
-Even debug logging can slow down performance considerably for fast stepping algorithms (such as Late Acceptance and Simulated Annealing), but not for slow stepping algorithms (such as Tabu Search).
+Even `debug` logging can slow down performance considerably for fast stepping algorithms (such as Late Acceptance and Simulated Annealing),
+but not for slow stepping algorithms (such as Tabu Search).
+
+Both cause congestion in <<multiThreadedSolving, multi-threaded solving>> with most appenders, see below.
+
+In Eclipse, `debug` logging to the console tends to cause congestion with a score calculation speeds above 10 000 per second.
+Nor IntelliJ, nor the Maven command line suffer from this problem.
 ====
 
 For example, set it to `debug` logging, to see when the phases end and how fast steps are taken:
@@ -1846,6 +1852,13 @@ Configure the logging level on the `org.optaplanner` package in your `logback.xm
 ----
 
 If it isn't picked up, temporarily add the system property `-Dlogback.debug=true` to figure out why.
+
+[NOTE]
+====
+When running multiple solvers or one <<multiThreadedSolving, multi-threaded solver>>,
+most appenders (including the console) cause congestion with `debug` and `trace` logging.
+Switch to an async appender to avoid this problem or turn off `debug` logging.
+====
 
 If instead, you are still using Log4J 1.x (and you do not want to switch to its faster successor, Logback), add the bridge dependency:
 

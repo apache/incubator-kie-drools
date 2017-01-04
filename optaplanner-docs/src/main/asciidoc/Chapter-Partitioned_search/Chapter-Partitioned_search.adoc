@@ -13,7 +13,7 @@
 
 It is often more efficient to partition large data sets (usually above 5000 planning entities)
 into smaller pieces and solve them separately.
-Partition Search is multi-threaded, so it provides a performance boost on multi-core machines
+Partition Search is <<multiThreadedSolving,multi-threaded>>, so it provides a performance boost on multi-core machines
 due to higher CPU utilization.
 Additionally, even when only using one CPU, it finds an initial solution faster,
 because the search space sum of a partitioned Construction Heuristic is far less than its non-partitioned variant.
@@ -68,7 +68,13 @@ Advanced configuration:
 The `threadFactoryClass` allows to plug in a custom `ThreadFactory` for environments
 where arbitrary thread creation should be avoided, such as most application servers, Android, or Google App Engine.
 
-The `runnablePartThreadLimit` allows limiting CPU usage, see below.
+The `runnablePartThreadLimit` allows limiting CPU usage to avoid hanging your machine, see below.
+
+[IMPORTANT]
+====
+A <<logging,logging level>> of `debug` or `trace` causes congestion in multi-threaded Partitioned Search
+and slows down the <<scoreCalculationSpeed,score calculation speed>>.
+====
 
 Just like a `<solver>` element, the `<partitionedSearch>` element can contain one or more <<solverPhase,phases>>.
 Each of those phases will be run on each partition.

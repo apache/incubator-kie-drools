@@ -765,3 +765,19 @@ To avoid those, configure a `NoChangePhase`:
   <noChangePhase/>
 </solver>
 ----
+
+
+[[multiThreadedSolving]]
+== Multi-threaded Solving
+
+There are several ways of doing multi-threaded solving:
+
+image::Chapter-Optimization_algorithms/multiThreadingStrategies.png[align="center"]
+
+For now, only Partitioned Search is supported out of the box.
+
+[NOTE]
+====
+A <<logging,logging level>> of `debug` or `trace` might cause congestion multi-threaded solving
+and slow down the <<scoreCalculationSpeed,score calculation speed>>.
+====
