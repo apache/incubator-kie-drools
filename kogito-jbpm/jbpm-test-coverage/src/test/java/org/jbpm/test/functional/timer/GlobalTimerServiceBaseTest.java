@@ -30,6 +30,8 @@ import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobInstance;
@@ -38,10 +40,13 @@ import org.jbpm.persistence.JpaProcessPersistenceContextManager;
 import org.jbpm.persistence.jta.ContainerManagedTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
+import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
+import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.persistence.JPATaskPersistenceContextManager;
+import org.jbpm.test.functional.timer.TimerBaseTest.TestRegisterableItemsFactory;
 import org.jbpm.test.listener.CountDownProcessEventListener;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
@@ -50,11 +55,13 @@ import org.junit.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
@@ -829,6 +836,76 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         countDownListener.waitTillCompleted(3000);
         
         assertEquals(3, timerExporations.size());
+    }
+    
+    @Test(timeout=20000)
+    public void testTimerFailureAndRetrigger() throws Exception {        
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Timer_1m", 3);        
+        final List<Long> timerExporations = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener(){
+
+            @Override
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Timer_1m")) {
+                    timerExporations.add(event.getNodeInstance().getId());
+                }
+            }
+        };
+        
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("org/jbpm/test/functional/timer/helloretrigger.bpmn2"), ResourceType.BPMN2)
+                .schedulerService(globalScheduler)
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener, countDownListener))
+                .get();
+        
+        manager = getManager(environment, false);
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+        
+        Map<String, Object> params = new HashMap<>();
+        ProcessInstance pi = ksession.startProcess("rescheduletimer.helloretrigger", params);
+        assertEquals("Process instance should be active", ProcessInstance.STATE_ACTIVE, pi.getState());
+        manager.disposeRuntimeEngine(runtime);
+        
+        final long processInstanceId = pi.getId();
+        // let the timer (every 2 sec) fire three times as third will fail on gateway
+        countDownListener.waitTillCompleted(8000);
+        assertEquals("There should be only 3 nodes as there third is failing", 3, timerExporations.size());
+        
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+        ksession = runtime.getKieSession();
+        
+        ksession.execute(new ExecutableCommand<Void>() {
+
+            @Override
+            public Void execute(Context context) {
+                KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+                ProcessInstance pi = (ProcessInstance) ksession.getProcessInstance(processInstanceId);
+                
+                ((WorkflowProcessInstance) pi).setVariable("fixed", true);
+                return null;
+            }
+        });
+        manager.disposeRuntimeEngine(runtime);
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted(5000);
+        
+        assertEquals("There should be 3 expirations as the failing one should finally proceed", 3, timerExporations.size());
+        try {
+            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+            ksession = runtime.getKieSession();
+                
+            pi = ksession.getProcessInstance(processInstanceId);        
+            assertNull(pi);
+        } catch (SessionNotFoundException e) {
+            // expected for PerProcessInstanceManagers since process instance is completed
+        }
+        
+        ((AbstractRuntimeManager)manager).close(true);
+                      
     }
     
     
