@@ -309,22 +309,21 @@ public class RuleNetworkEvaluator {
                 }
             }
 
-            if (NodeTypeEnums.isTerminalNode(node)) {
-                TerminalNode rtn = ( TerminalNode ) node;
-                if (node.getType() == NodeTypeEnums.QueryTerminalNode) {
-                    pQtNode.doNode((QueryTerminalNode) rtn,
-                                   agenda,
-                                   srcTuples,
-                                   stack);
-                } else {
-                    pRtNode.doNode(rtn,
-                                   agenda,
-                                   srcTuples,
-                                   executor);
-                }
-                break;
-            } else if (NodeTypeEnums.RightInputAdaterNode == node.getType()) {
-                doRiaNode2(agenda.getWorkingMemory(), srcTuples, (RightInputAdapterNode) node);
+            boolean terminalNode = true;
+            switch (node.getType()) {
+                case NodeTypeEnums.RuleTerminalNode:
+                    pRtNode.doNode(( TerminalNode ) node, agenda, srcTuples, executor);
+                    break;
+                case NodeTypeEnums.QueryTerminalNode:
+                    pQtNode.doNode((QueryTerminalNode) node, agenda, srcTuples, stack);
+                    break;
+                case NodeTypeEnums.RightInputAdaterNode:
+                    doRiaNode2(agenda.getWorkingMemory(), srcTuples, (RightInputAdapterNode) node);
+                    break;
+                default:
+                    terminalNode = false;
+            }
+            if (terminalNode) {
                 break;
             }
 

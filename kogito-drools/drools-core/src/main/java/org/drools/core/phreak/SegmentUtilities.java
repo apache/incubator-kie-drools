@@ -208,7 +208,7 @@ public class SegmentUtilities {
     }
 
     private static void processFromNode(MemoryFactory tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {
-        ((FromNode.FromMemory) smem.createNodeMemory(tupleSource, wm)).setSegmentMemory(smem);
+        smem.createNodeMemory(tupleSource, wm).setSegmentMemory(smem);
     }
 
     private static void processReactiveFromNode(MemoryFactory tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask) {
@@ -309,28 +309,21 @@ public class SegmentUtilities {
 
     public static SegmentMemory createChildSegment(InternalWorkingMemory wm, LeftTupleNode node) {
         Memory memory = wm.getNodeMemory((MemoryFactory) node);
-        if (!NodeTypeEnums.isEndNode(node)) {
-            if (memory.getSegmentMemory() == null) {
-                SegmentUtilities.createSegmentMemory((LeftTupleSource) node, wm);
-            }
-        } else {
-            // RTNS and RiaNode's have their own segment, if they are the child of a split.
-            if (memory.getSegmentMemory() == null) {
+        if (memory.getSegmentMemory() == null) {
+            if (NodeTypeEnums.isEndNode(node)) {
+                // RTNS and RiaNode's have their own segment, if they are the child of a split.
                 createChildSegmentForTerminalNode( node, memory );
+            } else {
+                createSegmentMemory((LeftTupleSource) node, wm);
             }
         }
         return memory.getSegmentMemory();
     }
 
     public static SegmentMemory createChildSegmentForTerminalNode( LeftTupleNode node, Memory memory ) {
-        SegmentMemory childSmem = new SegmentMemory( node); // rtns or riatns don't need a queue
+        SegmentMemory childSmem = new SegmentMemory( node ); // rtns or riatns don't need a queue
+        PathMemory pmem = NodeTypeEnums.isTerminalNode( node ) ? (PathMemory) memory : ((RiaNodeMemory) memory).getRiaPathMemory();
 
-        PathMemory pmem;
-        if ( NodeTypeEnums.isTerminalNode( node )) {
-            pmem = (PathMemory) memory;
-        } else {
-            pmem = ((RiaNodeMemory) memory).getRiaPathMemory();
-        }
         childSmem.setPos( pmem.getSegmentMemories().length - 1 );
         pmem.setSegmentMemory(childSmem.getPos(), childSmem);
         pmem.setSegmentMemory(childSmem);
@@ -455,12 +448,7 @@ public class SegmentUtilities {
      * if the rule had already been removed from the network.
      */
     public static boolean isRootNode(LeftTupleNode node, TerminalNode removingTN) {
-        if (node.getType() == NodeTypeEnums.LeftInputAdapterNode) {
-            return true;
-        }
-
-        LeftTupleNode parent = node.getLeftTupleSource();
-        return isTipNode( parent, removingTN );
+        return node.getType() == NodeTypeEnums.LeftInputAdapterNode || isNonTerminalTipNode( node.getLeftTupleSource(), removingTN );
     }
 
     /**
@@ -473,11 +461,11 @@ public class SegmentUtilities {
      * if the rule had already been removed from the network.
      */
     public static boolean isTipNode( LeftTupleNode node, TerminalNode removingTN ) {
-        if (NodeTypeEnums.isEndNode(node)) {
-            return true;
-        }
-        LeftTupleSinkPropagator sinkPropagator = node.getSinkPropagator();
+        return NodeTypeEnums.isEndNode(node) || isNonTerminalTipNode( node, removingTN );
+    }
 
+    private static boolean isNonTerminalTipNode( LeftTupleNode node, TerminalNode removingTN ) {
+        LeftTupleSinkPropagator sinkPropagator = node.getSinkPropagator();
 
         if (removingTN == null) {
             return sinkPropagator.size() > 1;
@@ -521,7 +509,7 @@ public class SegmentUtilities {
         return false;
     }
 
-    public static ObjectTypeNode getQueryOtn(LeftTupleSource lts) {
+    private static ObjectTypeNode getQueryOtn(LeftTupleSource lts) {
         while (!(lts instanceof LeftInputAdapterNode)) {
             lts = lts.getLeftTupleSource();
         }
@@ -535,7 +523,7 @@ public class SegmentUtilities {
         return ((EntryPointNode) os).getQueryNode();
     }
 
-    public static LeftInputAdapterNode getQueryLiaNode(String queryName, ObjectTypeNode queryOtn) {
+    private static LeftInputAdapterNode getQueryLiaNode(String queryName, ObjectTypeNode queryOtn) {
         for (ObjectSink sink : queryOtn.getObjectSinkPropagator().getSinks()) {
             AlphaNode alphaNode = (AlphaNode) sink;
             QueryNameConstraint nameConstraint = (QueryNameConstraint) alphaNode.getConstraint();

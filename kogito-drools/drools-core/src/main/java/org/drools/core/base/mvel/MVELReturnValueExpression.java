@@ -21,7 +21,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.FieldValue;
@@ -88,10 +87,8 @@ public class MVELReturnValueExpression
                                final Object ctx) throws Exception {
         VariableResolverFactory factory = ( VariableResolverFactory )ctx;
         
-        unit.updateFactory( null,
-                            null,
-                            handle,
-                            (LeftTuple) tuple,
+        unit.updateFactory( handle,
+                            tuple,
                             null,
                             (InternalWorkingMemory) workingMemory,
                             workingMemory.getGlobalResolver(),

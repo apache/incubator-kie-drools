@@ -124,7 +124,7 @@ public class MVELAccumulator
         
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getInitFactory();
-        initUnit.updateFactory( null, null, null, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
+        initUnit.updateFactory( null, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory );
 
         InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( "MAIN" );
         if ( pkg != null ) {
@@ -160,7 +160,7 @@ public class MVELAccumulator
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getActionFactory();
-        actionUnit.updateFactory( null, null, handle, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
+        actionUnit.updateFactory( handle, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory );
 
         DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
         
@@ -242,12 +242,9 @@ public class MVELAccumulator
         
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getResultFactory();
-        resultUnit.updateFactory( null, null, null, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
+        resultUnit.updateFactory( null, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory );
 
-        final Object result = MVELSafeHelper.getEvaluator().executeExpression( this.result,
-                                                      null,
-                                                      factory );
-        return result;
+        return MVELSafeHelper.getEvaluator().executeExpression( this.result, null, factory );
     }
 
     public boolean supportsReverse() {

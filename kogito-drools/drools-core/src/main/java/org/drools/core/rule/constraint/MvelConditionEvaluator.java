@@ -106,8 +106,7 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
         }
 
         VariableResolverFactory factory = compilationUnit.createFactory();
-        compilationUnit.updateFactory( null, null, handle,
-                                       tuple, null, workingMemory,
+        compilationUnit.updateFactory( handle, tuple, null, workingMemory,
                                        workingMemory.getGlobalResolver(),
                                        factory );
 
@@ -118,10 +117,6 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
         return vars == null ?
                (Boolean)MVELSafeHelper.getEvaluator().executeExpression(statement, object) :
                (Boolean)MVELSafeHelper.getEvaluator().executeExpression(statement, object, vars);
-    }
-
-    ConditionAnalyzer.Condition getAnalyzedCondition() {
-        return new ConditionAnalyzer(executableStatement, declarations, operators, conditionClass).analyzeCondition();
     }
 
     ConditionAnalyzer.Condition getAnalyzedCondition(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple leftTuple) {

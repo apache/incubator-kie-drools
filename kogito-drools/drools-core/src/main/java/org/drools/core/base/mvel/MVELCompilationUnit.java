@@ -292,8 +292,7 @@ public class MVELCompilationUnit
         Object[] vals = new Object[inputIdentifiers.length];
 
         VariableResolverFactory factory = varModel.createFactory( vals );
-        DroolsVarFactory df = new  DroolsVarFactory();
-        factory.setNextFactory( df );       
+        factory.setNextFactory( new DroolsVarFactory() );
         return factory;
     }
     
@@ -322,27 +321,25 @@ public class MVELCompilationUnit
         return factory;
     }
     
-    public void updateFactory(Object knowledgeHelper,
-                              Rule rule,
-                              InternalFactHandle rightHandle,
-                              Tuple tuple,
-                              Object[] localVars,
-                              InternalWorkingMemory workingMemory,
-                              GlobalResolver globalResolver,
-                              VariableResolverFactory factory) {
-        updateFactory(knowledgeHelper, null, rule, rightHandle, rightHandle != null ? rightHandle.getObject() : null, tuple, localVars, workingMemory, globalResolver, factory);
+    public void updateFactory( InternalFactHandle rightHandle,
+                               Tuple tuple,
+                               Object[] localVars,
+                               InternalWorkingMemory workingMemory,
+                               GlobalResolver globalResolver,
+                               VariableResolverFactory factory ) {
+        updateFactory( null, null, null, rightHandle, rightHandle != null ? rightHandle.getObject() : null, tuple, localVars, workingMemory, globalResolver, factory );
     }    
     
-    public void updateFactory(Object knowledgeHelper,
-                              Declaration[] prevDecl,
-                              Rule rule,
-                              InternalFactHandle rightHandle,
-                              Object rightObject,
-                              Tuple tuple,
-                              Object[] otherVars,
-                              InternalWorkingMemory workingMemory,
-                              GlobalResolver globals,
-                              VariableResolverFactory factory) {
+    private void updateFactory( Object knowledgeHelper,
+                                Declaration[] prevDecl,
+                                Rule rule,
+                                InternalFactHandle rightHandle,
+                                Object rightObject,
+                                Tuple tuple,
+                                Object[] otherVars,
+                                InternalWorkingMemory workingMemory,
+                                GlobalResolver globals,
+                                VariableResolverFactory factory ) {
         int varLength = inputIdentifiers.length;
 
         int i = 0;

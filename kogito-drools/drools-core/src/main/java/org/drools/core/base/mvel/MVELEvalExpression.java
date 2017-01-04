@@ -86,8 +86,6 @@ public class MVELEvalExpression
         VariableResolverFactory factory = ( VariableResolverFactory ) context;
         
         unit.updateFactory( null,
-                            null,
-                            null,
                             (LeftTuple) tuple,
                             null,
                             (InternalWorkingMemory) workingMemory,
