@@ -72,7 +72,7 @@ public class VehicleRoutingEasyScoreCalculator implements EasyScoreCalculator<Ve
                 hardScore -= (demand - capacity);
             }
         }
-        // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
+        // Score constraint arrivalAfterDueTimeAtDepot is a built-in hard constraint in VehicleRoutingImporter
         return HardSoftLongScore.valueOf(initScore, hardScore, softScore);
     }
 

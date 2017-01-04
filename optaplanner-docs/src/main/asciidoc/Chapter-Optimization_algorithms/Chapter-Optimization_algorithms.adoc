@@ -704,7 +704,7 @@ If the changes of a `CustomPhaseCommand` do not result in a better score, the be
 [NOTE]
 ====
 If the `Solver` or a `Phase` wants to terminate while a `CustomPhaseCommand` is still running, it will wait to terminate until the `CustomPhaseCommand` is complete. This may take a significant amount of time.
-The build-in solver phases do not have this issue.
+The built-in solver phases do not have this issue.
 ====
 
 To configure values of your `CustomPhaseCommand` dynamically in the solver configuration (so you can tweak those parameters with the <<benchmarker,Benchmarker>>), use the `customProperties` element:

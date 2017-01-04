@@ -216,7 +216,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
                 hardScore -= (arrivalTime - dueTime);
             }
         }
-        // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
+        // Score constraint arrivalAfterDueTimeAtDepot is a built-in hard constraint in VehicleRoutingImporter
     }
 
     private void retractArrivalTime(TimeWindowedCustomer customer) {

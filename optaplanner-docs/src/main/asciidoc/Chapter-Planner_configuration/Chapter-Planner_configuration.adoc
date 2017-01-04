@@ -975,7 +975,7 @@ An genuine planning entity class has at least one genuine planning variable, but
 A shadow planning entity class has no genuine planning variables and at least one shadow planning variable.
 ====
 
-There are several build-in shadow variables:
+There are several built-in shadow variables:
 
 
 [[bidirectionalVariable]]
@@ -1184,7 +1184,7 @@ If one `VariableListener` changes two shadow variables (because having two separ
 [[variableListenerTriggeringOrder]]
 ==== VariableListener triggering order
 
-All shadow variables are triggered by a ``VariableListener``, regardless if it's a build-in or a custom shadow variable.
+All shadow variables are triggered by a ``VariableListener``, regardless if it's a built-in or a custom shadow variable.
 The genuine and shadow variables form a graph, that determines the order in which the ``afterEntityAdded()``, `afterVariableChanged()` and `afterEntityRemoved()` methods are called:
 
 image::Chapter-Planner_configuration/shadowVariableOrder.png[align="center"]

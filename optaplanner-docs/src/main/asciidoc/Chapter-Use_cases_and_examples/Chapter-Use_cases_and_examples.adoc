@@ -1095,7 +1095,7 @@ image::Chapter-Use_cases_and_examples/employeeShiftRosteringUseCase.png[align="c
 
 Hard constraints:
 
-* *No unassigned shifts* (build-in): Every shift need to be assigned to an employee.
+* *No unassigned shifts* (built-in): Every shift need to be assigned to an employee.
 * **Shift conflict**: An employee can have only 1 shift per day.
 
 Soft constraints:

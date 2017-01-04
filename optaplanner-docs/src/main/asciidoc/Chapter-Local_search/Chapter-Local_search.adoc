@@ -140,7 +140,7 @@ An `Acceptor` is used (together with a ``Forager``) to active Tabu Search, Simul
 
 By changing a few lines of configuration, you can easily switch from Tabu Search to Simulated Annealing or Late Acceptance and back.
 
-You can implement your own ``Acceptor``, but the build-in acceptors should suffice for most needs.
+You can implement your own ``Acceptor``, but the built-in acceptors should suffice for most needs.
 You can also combine multiple acceptors.
 
 

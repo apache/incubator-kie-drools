@@ -195,4 +195,4 @@ rule "preferredPatientEquipment"
         scoreHolder.addSoftConstraintMatch(kcontext, -20 * $bedDesignation.getAdmissionPartNightCount());
 end
 
-// Do not change bed in an AdmissionPart on different Nights constraint is build-in
+// Do not change bed in an AdmissionPart on different Nights constraint is built-in

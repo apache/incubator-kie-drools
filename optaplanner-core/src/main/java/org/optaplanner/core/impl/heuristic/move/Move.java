@@ -52,7 +52,7 @@ public interface Move {
      * A Move is not doable if:
      * <ul>
      * <li>Either doing it would change nothing in the {@link PlanningSolution}.</li>
-     * <li>Either it's simply not possible to do (for example due to build-in hard constraints).</li>
+     * <li>Either it's simply not possible to do (for example due to built-in hard constraints).</li>
      * </ul>
      * <p>
      * It is recommended to keep this method implementation simple: do not use it in an attempt to satisfy normal

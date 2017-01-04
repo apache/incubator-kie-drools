@@ -101,7 +101,7 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
     }
 
     private void insert(Allocation allocation) {
-        // Job precedence is build-in
+        // Job precedence is built-in
         // Resource capacity
         ExecutionMode executionMode = allocation.getExecutionMode();
         if (executionMode != null && allocation.getJob().getJobType() == JobType.STANDARD) {
@@ -131,7 +131,7 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
     }
 
     private void retract(Allocation allocation) {
-        // Job precedence is build-in
+        // Job precedence is built-in
         // Resource capacity
         ExecutionMode executionMode = allocation.getExecutionMode();
         if (executionMode != null && allocation.getJob().getJobType() == JobType.STANDARD) {

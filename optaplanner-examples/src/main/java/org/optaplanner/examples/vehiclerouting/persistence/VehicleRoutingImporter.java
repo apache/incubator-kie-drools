@@ -510,7 +510,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                     customer.setLocation(location);
                     customer.setDemand(demand);
                     customer.setReadyTime(readyTime);
-                    // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
+                    // Score constraint arrivalAfterDueTimeAtDepot is a built-in hard constraint in VehicleRoutingImporter
                     long maximumDueTime = depot.getDueTime()
                             - serviceDuration - location.getDistanceTo(depot.getLocation());
                     if (dueTime > maximumDueTime) {

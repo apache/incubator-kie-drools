@@ -35,7 +35,7 @@ rule "multipleQueensHorizontal"
         scoreHolder.addConstraintMatch(kcontext, -1);
 end
 
-// multipleQueensVertical is build-in
+// multipleQueensVertical is built-in
 
 rule "multipleQueensAscendingDiagonal"
     when
