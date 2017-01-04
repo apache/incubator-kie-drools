@@ -54,7 +54,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-    private Class<SolutionPartitioner> solutionPartitionerClass = null;
+    protected Class<SolutionPartitioner> solutionPartitionerClass = null;
 
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
     protected String runnablePartThreadLimit = null;
@@ -87,7 +87,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
      * it limits the number of {@link java.lang.Thread.State#RUNNABLE runnable} {@link Thread}s to avoid consuming all
      * CPU resources (which would starve UI, Servlets and REST threads).
      * <p/>
-     * The number of {@link Thread}s is always equal to the number of partitions returned by {@link SolutionPartitioner#splitWorkingSolution(ScoreDirector)},
+     * The number of {@link Thread}s is always equal to the number of partitions returned by
+     * {@link SolutionPartitioner#splitWorkingSolution(ScoreDirector, Integer)},
      * because otherwise some partitions would never run (especially with {@link Solver#terminateEarly() asynchronous termination}).
      * If this limit (or {@link Runtime#availableProcessors()}) is lower than the number of partitions,
      * this results in a slower score calculation speed per partition {@link Solver}.

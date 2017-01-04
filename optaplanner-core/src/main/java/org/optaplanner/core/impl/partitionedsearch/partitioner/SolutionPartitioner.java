@@ -18,7 +18,9 @@ package org.optaplanner.core.impl.partitionedsearch.partitioner;
 
 import java.util.List;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
@@ -26,6 +28,19 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public interface SolutionPartitioner<Solution_> {
 
-    List<Solution_> splitWorkingSolution(ScoreDirector<Solution_> scoreDirector);
+    /**
+     * Returns a list of partition cloned {@link PlanningSolution solutions}
+     * for which each {@link PlanningEntity planning entity}
+     * is partition cloned into exactly 1 of those partitions.
+     * Problem facts can be multiple partitions (with our without cloning).
+     * <p>
+     * Any class that is {@link SolutionCloner solution cloned} must also be partitioned cloned.
+     * A class can be partitioned cloned without being solution cloned.
+     * @param scoreDirector never null, the {@link ScoreDirector}
+     * which has the {@link ScoreDirector#getWorkingSolution()} that needs to be split up
+     * @param runnablePartThreadLimit null if unlimited, never negative
+     * @return never null, {@link List#size()} of at least 1.
+     */
+    List<Solution_> splitWorkingSolution(ScoreDirector<Solution_> scoreDirector, Integer runnablePartThreadLimit);
 
 }

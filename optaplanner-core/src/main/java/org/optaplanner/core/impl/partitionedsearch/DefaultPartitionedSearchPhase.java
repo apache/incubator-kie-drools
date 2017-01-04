@@ -95,7 +95,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     public void solve(DefaultSolverScope<Solution_> solverScope) {
         PartitionedSearchPhaseScope<Solution_> phaseScope = new PartitionedSearchPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
-        List<Solution_> partList = solutionPartitioner.splitWorkingSolution(solverScope.getScoreDirector());
+        List<Solution_> partList = solutionPartitioner.splitWorkingSolution(
+                solverScope.getScoreDirector(), runnablePartThreadLimit);
         int partCount = partList.size();
         if (threadPoolExecutor.getMaximumPoolSize() < partCount) {
             throw new IllegalStateException(
