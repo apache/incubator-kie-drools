@@ -131,6 +131,7 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
 
     TypeDeclaration getTypeDeclaration( Class<?> clazz );
     Collection<TypeDeclaration> getTypeDeclarations();
+    void registerTypeDeclaration( TypeDeclaration newDecl, InternalKnowledgePackage newPkg );
 
 	ReleaseId getResolvedReleaseId();
 	void setResolvedReleaseId(ReleaseId currentReleaseId);
