@@ -43,6 +43,8 @@ import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccess
 import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MethodMemberAccessor;
+import org.optaplanner.core.impl.heuristic.common.PropertiesConfigurable;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 
 public class ConfigUtils {
 
@@ -52,6 +54,21 @@ public class ConfigUtils {
         } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
                     + clazz.getName() + ") does not have a public no-arg constructor.", e);
+        }
+    }
+
+    public static void applyCustomProperties(Object bean, String propertyName, Map<String, String> customProperties) {
+        if (bean instanceof PropertiesConfigurable) {
+            Map<String, String> customProperties_ = customProperties != null
+                    ? customProperties : Collections.emptyMap();
+            // Always call it to allow for initialization, even if no custom properties are configured
+            ((PropertiesConfigurable) bean).applyCustomProperties(customProperties_);
+        } else {
+            if (customProperties != null) {
+                throw new IllegalStateException("There are customProperties (" + customProperties
+                        + ") but the " + propertyName + " (" + bean.getClass()
+                        + ") does not implement " + PropertiesConfigurable.class.getSimpleName() + ".");
+            }
         }
     }
 

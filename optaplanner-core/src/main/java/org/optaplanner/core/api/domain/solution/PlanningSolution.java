@@ -66,6 +66,9 @@ public @interface PlanningSolution {
     /** Workaround for annotation limitation in {@link #solutionCloner()}. */
     interface NullSolutionCloner extends SolutionCloner {}
 
+    /**
+     * @return never null
+     */
     LocationStrategyType locationStrategyType() default LocationStrategyType.PLANNING_ID_OR_NONE;
 
 }

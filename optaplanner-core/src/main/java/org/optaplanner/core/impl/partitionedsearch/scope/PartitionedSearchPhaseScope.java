@@ -25,11 +25,21 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  */
 public class PartitionedSearchPhaseScope<Solution_> extends AbstractPhaseScope<Solution_> {
 
+    private Integer partCount;
+
     private PartitionedSearchStepScope<Solution_> lastCompletedStepScope;
 
     public PartitionedSearchPhaseScope(DefaultSolverScope<Solution_> solverScope) {
         super(solverScope);
         lastCompletedStepScope = new PartitionedSearchStepScope<>(this, -1);
+    }
+
+    public Integer getPartCount() {
+        return partCount;
+    }
+
+    public void setPartCount(Integer partCount) {
+        this.partCount = partCount;
     }
 
     @Override

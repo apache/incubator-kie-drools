@@ -128,11 +128,17 @@ For example:
 ----
 public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance> {
 
+    private int partCount = 4;
+    private int minimumProcessListSize = 75;
+
     @Override
-    public List<CloudBalance> splitWorkingSolution(
-            ScoreDirector<CloudBalance> scoreDirector, Integer runnablePartThreadLimit) {
+    public List<CloudBalance> splitWorkingSolution(ScoreDirector<CloudBalance> scoreDirector, Integer runnablePartThreadLimit) {
         CloudBalance originalSolution = scoreDirector.getWorkingSolution();
-        int partCount = Math.max(4, originalSolution.getComputerList().size() / 100);
+        int partCount = this.partCount;
+        if (originalSolution.getProcessList().size() / partCount < minimumProcessListSize) {
+            partCount = originalSolution.getProcessList().size() / minimumProcessListSize;
+        }
+
         List<CloudBalance> partList = new ArrayList<>(partCount);
         for (int i = 0; i < partCount; i++) {
             CloudBalance partSolution = new CloudBalance(originalSolution.getId(),
@@ -168,6 +174,54 @@ public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance
         return partList;
     }
 
+}
+----
+
+To configure values of a `SolutionPartitioner` dynamically in the solver configuration
+(so the <<benchmarker,Benchmarker>> can tweak those parameters), use the `solutionPartitionerCustomProperties` element:
+
+[source,xml,options="nowrap"]
+----
+  <partitionedSearch>
+    <solutionPartitionerClass>...CloudBalancePartitioner</solutionPartitionerClass>
+    <solutionPartitionerCustomProperties>
+      <partCount>8</partCount>
+      <minimumProcessListSize>100</minimumProcessListSize>
+    </solutionPartitionerCustomProperties>
+  </partitionedSearch>
+----
+
+Then implement the `PropertiesConfigurable` interface to override the `applyCustomProperties()` method
+to parse each custom property when a `Solver` is build.
+
+[source,java,options="nowrap"]
+----
+public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance>, PropertiesConfigurable {
+
+    private int partCount;
+    private int minimumProcessListSize;
+
+    @Override
+    public void applyCustomProperties(Map<String, String> customPropertyMap) {
+        String partCountString = customPropertyMap.remove("partCount");
+        try {
+            partCount = partCountString == null ? 4 : Integer.parseInt(partCountString);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("The partCount (" + partCountString + ") cannot be parsed.", e);
+        }
+        String minimumProcessListSizeString = customPropertyMap.remove("minimumProcessListSize");
+        try {
+            minimumProcessListSize = minimumProcessListSizeString == null ? 75 : Integer.parseInt(minimumProcessListSizeString);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("The minimumProcessListSize (" + minimumProcessListSizeString + ") cannot be parsed.", e);
+        }
+        if (!customPropertyMap.isEmpty()) {
+            throw new IllegalStateException("The customProperties (" + customPropertyMap.keySet()
+                    + ") are not supported.");
+        }
+    }
+
+    ...
 }
 ----
 

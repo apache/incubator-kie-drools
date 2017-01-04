@@ -26,12 +26,4 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
  */
 public abstract class AbstractCustomPhaseCommand<Solution_> implements CustomPhaseCommand<Solution_> {
 
-    @Override
-    public void applyCustomProperties(Map<String, String> customPropertyMap) {
-        if (customPropertyMap.size() != 0) {
-            throw new IllegalArgumentException("The customPropertyMap's size (" + customPropertyMap.size()
-                    + ") is not 0.");
-        }
-    }
-
 }

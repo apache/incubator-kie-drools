@@ -690,12 +690,14 @@ Configure multiple `customPhaseCommandClass` instances to run them in sequence.
 
 [IMPORTANT]
 ====
-If the changes of a `CustomPhaseCommand` do not result in a better score, the best solution will not be changed (so effectively nothing will have changed for the next `Phase` or `CustomPhaseCommand`). To force such changes anyway, use `forceUpdateBestSolution`:
+If the changes of a `CustomPhaseCommand` do not result in a better score, the best solution will not be changed
+(so effectively nothing will have changed for the next `Phase` or `CustomPhaseCommand`).
+To force such changes anyway, use `forceUpdateBestSolution`:
 
 [source,xml,options="nowrap"]
 ----
   <customPhase>
-    <customPhaseCommandClass>...MyUninitializer</customPhaseCommandClass>
+    <customPhaseCommandClass>...MyCustomPhase</customPhaseCommandClass>
     <forceUpdateBestSolution>true</forceUpdateBestSolution>
   </customPhase>
 ----
@@ -703,11 +705,14 @@ If the changes of a `CustomPhaseCommand` do not result in a better score, the be
 
 [NOTE]
 ====
-If the `Solver` or a `Phase` wants to terminate while a `CustomPhaseCommand` is still running, it will wait to terminate until the `CustomPhaseCommand` is complete. This may take a significant amount of time.
+If the `Solver` or a `Phase` wants to terminate while a `CustomPhaseCommand` is still running,
+it will wait to terminate until the `CustomPhaseCommand` is complete.
+This may take a significant amount of time.
 The built-in solver phases do not have this issue.
 ====
 
-To configure values of your `CustomPhaseCommand` dynamically in the solver configuration (so you can tweak those parameters with the <<benchmarker,Benchmarker>>), use the `customProperties` element:
+To configure values of a `CustomPhaseCommand` dynamically in the solver configuration
+(so the <<benchmarker,Benchmarker>> can tweak those parameters), use the `customProperties` element:
 
 [source,xml,options="nowrap"]
 ----
@@ -718,24 +723,27 @@ To configure values of your `CustomPhaseCommand` dynamically in the solver confi
   </customPhase>
 ----
 
-Then override the `applyCustomProperties()` method to parse and apply them when a `Solver` is build.
+Then implement the `PropertiesConfigurable` interface to override the `applyCustomProperties()` method
+to parse each custom property when a `Solver` is build.
 
 [source,java,options="nowrap"]
 ----
-public class MySolutionInitializer extends AbstractCustomPhaseCommand<MySolution> {
+public class MyCustomPhase extends AbstractCustomPhaseCommand<MySolution>, PropertiesConfigurable {
 
     private int mySelectionSize;
 
+    @Override
     public void applyCustomProperties(Map<String, String> customPropertyMap) {
-        String mySelectionSizeString = customPropertyMap.get("mySelectionSize");
-        if (mySelectionSizeString == null) {
-            throw new IllegalArgumentException("A customProperty (mySelectionSize) is missing from the solver configuration.");
+        String mySelectionSizeString = customPropertyMap.remove("mySelectionSize");
+        try {
+            mySelectionSize = mySelectionSizeString == null ? 10 : Integer.parseInt(mySelectionSizeString);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("The mySelectionSize (" + mySelectionSizeString + ") cannot be parsed.", e);
         }
-        solverFactory = SolverFactory.createFromXmlResource(partitionSolverConfigResource);
-        if (customPropertyMap.size() != 1) {
-            throw new IllegalArgumentException("The customPropertyMap's size (" + customPropertyMap.size() + ") is not 1.");
+        if (!customPropertyMap.isEmpty()) {
+            throw new IllegalStateException("The customProperties (" + customPropertyMap.keySet()
+                    + ") are not supported.");
         }
-        mySelectionSize = Integer.parseInt(mySelectionSizeString);
     }
 
     ...

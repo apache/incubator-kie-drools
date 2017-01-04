@@ -23,6 +23,7 @@
   <termination>
     <secondsSpentLimit>120</secondsSpentLimit>
   </termination>
+
   <!-- Power tweaked optimization algorithms configuration -->
   <!--<constructionHeuristic>-->
     <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
@@ -41,4 +42,13 @@
       <!--<acceptedCountLimit>1000</acceptedCountLimit>-->
     <!--</forager>-->
   <!--</localSearch>-->
+
+  <!-- Alternative power tweaked optimization algorithms configuration -->
+  <!--<partitionedSearch>-->
+    <!--<solutionPartitionerClass>org.optaplanner.examples.cloudbalancing.optional.partitioner.CloudBalancePartitioner</solutionPartitionerClass>-->
+    <!--<solutionPartitionerCustomProperties>-->
+      <!--<partCount>4</partCount>-->
+      <!--<minimumProcessListSize>300</minimumProcessListSize>-->
+    <!--</solutionPartitionerCustomProperties>-->
+  <!--</partitionedSearch>-->
 </solver>

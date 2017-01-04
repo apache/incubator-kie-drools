@@ -98,6 +98,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         List<Solution_> partList = solutionPartitioner.splitWorkingSolution(
                 solverScope.getScoreDirector(), runnablePartThreadLimit);
         int partCount = partList.size();
+        phaseScope.setPartCount(partCount);
         if (threadPoolExecutor.getMaximumPoolSize() < partCount) {
             throw new IllegalStateException(
                     "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
@@ -207,13 +208,14 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         super.phaseEnded(phaseScope);
         phaseScope.endingNow();
         logger.info("{}Partitioned Search phase ({}) ended: time spent ({}), best score ({}),"
-                        + " score calculation speed ({}/sec), step total ({}), runnablePartThreadLimit({}).",
+                        + " score calculation speed ({}/sec), step total ({}), partCount ({}), runnablePartThreadLimit ({}).",
                 logIndentation,
                 phaseIndex,
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                 phaseScope.getBestScore(),
                 phaseScope.getPhaseScoreCalculationSpeed(),
                 phaseScope.getNextStepIndex(),
+                phaseScope.getPartCount(),
                 runnablePartThreadLimit);
     }
 

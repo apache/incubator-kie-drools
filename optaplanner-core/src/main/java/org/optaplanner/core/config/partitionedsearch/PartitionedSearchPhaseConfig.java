@@ -18,12 +18,14 @@ package org.optaplanner.core.config.partitionedsearch;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -32,6 +34,7 @@ import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhase;
 import org.optaplanner.core.impl.partitionedsearch.PartitionedSearchPhase;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
@@ -55,6 +58,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     // and also because the input config file should match the output config file
 
     protected Class<SolutionPartitioner> solutionPartitionerClass = null;
+    @XStreamConverter(KeyAsElementMapConverter.class)
+    protected Map<String, String> solutionPartitionerCustomProperties = null;
 
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
     protected String runnablePartThreadLimit = null;
@@ -72,6 +77,14 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
 
     public void setSolutionPartitionerClass(Class<SolutionPartitioner> solutionPartitionerClass) {
         this.solutionPartitionerClass = solutionPartitionerClass;
+    }
+
+    public Map<String, String> getSolutionPartitionerCustomProperties() {
+        return solutionPartitionerCustomProperties;
+    }
+
+    public void setSolutionPartitionerCustomProperties(Map<String, String> solutionPartitionerCustomProperties) {
+        this.solutionPartitionerCustomProperties = solutionPartitionerCustomProperties;
     }
 
     public Class<? extends ThreadFactory> getThreadFactoryClass() {
@@ -153,8 +166,16 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
 
     private SolutionPartitioner buildSolutionPartitioner() {
         if (solutionPartitionerClass != null) {
-            return ConfigUtils.newInstance(this, "solutionPartitionerClass", solutionPartitionerClass);
+            SolutionPartitioner solutionPartitioner = ConfigUtils.newInstance(this,
+                    "solutionPartitionerClass", solutionPartitionerClass);
+            ConfigUtils.applyCustomProperties(solutionPartitioner, "solutionPartitionerClass",
+                    solutionPartitionerCustomProperties);
+            return solutionPartitioner;
         } else {
+            if (solutionPartitionerCustomProperties != null) {
+                // TODO
+                throw new IllegalStateException();
+            }
             // TODO
             throw new UnsupportedOperationException();
         }
@@ -204,6 +225,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         super.inherit(inheritedConfig);
         solutionPartitionerClass = ConfigUtils.inheritOverwritableProperty(solutionPartitionerClass,
                 inheritedConfig.getSolutionPartitionerClass());
+        solutionPartitionerCustomProperties = ConfigUtils.inheritMergeableMapProperty(
+                solutionPartitionerCustomProperties, inheritedConfig.getSolutionPartitionerCustomProperties());
         threadFactoryClass = ConfigUtils.inheritOverwritableProperty(threadFactoryClass,
                 inheritedConfig.getThreadFactoryClass());
         runnablePartThreadLimit = ConfigUtils.inheritOverwritableProperty(runnablePartThreadLimit,

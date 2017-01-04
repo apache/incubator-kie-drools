@@ -18,19 +18,48 @@ package org.optaplanner.examples.cloudbalancing.optional.partitioner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.optaplanner.core.impl.heuristic.common.PropertiesConfigurable;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
-public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance> {
+public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance>, PropertiesConfigurable {
+
+    private int partCount;
+    private int minimumProcessListSize;
+
+    @Override
+    public void applyCustomProperties(Map<String, String> customPropertyMap) {
+        String partCountString = customPropertyMap.remove("partCount");
+        try {
+            partCount = partCountString == null ? 4 : Integer.parseInt(partCountString);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("The partCount (" + partCountString + ") cannot be parsed.", e);
+        }
+        String minimumProcessListSizeString = customPropertyMap.remove("minimumProcessListSize");
+        try {
+            minimumProcessListSize = minimumProcessListSizeString == null ? 75 : Integer.parseInt(minimumProcessListSizeString);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("The minimumProcessListSize (" + minimumProcessListSizeString + ") cannot be parsed.", e);
+        }
+        if (!customPropertyMap.isEmpty()) {
+            throw new IllegalStateException("The customProperties (" + customPropertyMap.keySet()
+                    + ") are not supported.");
+        }
+    }
 
     @Override
     public List<CloudBalance> splitWorkingSolution(ScoreDirector<CloudBalance> scoreDirector, Integer runnablePartThreadLimit) {
         CloudBalance originalSolution = scoreDirector.getWorkingSolution();
-        int partCount = Math.max(4, originalSolution.getComputerList().size() / 100);
+        int partCount = this.partCount;
+        if (originalSolution.getProcessList().size() / partCount < minimumProcessListSize) {
+            partCount = originalSolution.getProcessList().size() / minimumProcessListSize;
+        }
+
         List<CloudBalance> partList = new ArrayList<>(partCount);
         for (int i = 0; i < partCount; i++) {
             CloudBalance partSolution = new CloudBalance(originalSolution.getId(),

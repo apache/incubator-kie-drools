@@ -29,6 +29,7 @@ import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
+import org.optaplanner.core.impl.heuristic.common.PropertiesConfigurable;
 import org.optaplanner.core.impl.phase.custom.CustomPhase;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomPhase;
@@ -92,12 +93,10 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
                     "Configure at least 1 <customPhaseCommandClass> in the <customPhase> configuration.");
         }
         List<CustomPhaseCommand> customPhaseCommandList = new ArrayList<>(customPhaseCommandClassList.size());
-        Map<String, String> customProperties_ = customProperties != null ? customProperties
-                : Collections.<String, String>emptyMap();
         for (Class<? extends CustomPhaseCommand> customPhaseCommandClass : customPhaseCommandClassList) {
             CustomPhaseCommand customPhaseCommand = ConfigUtils.newInstance(this,
                     "customPhaseCommandClass", customPhaseCommandClass);
-            customPhaseCommand.applyCustomProperties(customProperties_);
+            ConfigUtils.applyCustomProperties(customPhaseCommand, "customPhaseCommandClass", customProperties);
             customPhaseCommandList.add(customPhaseCommand);
         }
         phase.setCustomPhaseCommandList(customPhaseCommandList);
