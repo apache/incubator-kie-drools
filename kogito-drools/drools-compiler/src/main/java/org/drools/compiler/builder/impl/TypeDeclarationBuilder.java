@@ -24,6 +24,7 @@ import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.Thing;
@@ -131,11 +132,17 @@ public class TypeDeclarationBuilder {
         for ( AbstractClassTypeDeclarationDescr typeDescr : classHierarchyManager.getSortedDescriptors() ) {
             if ( ! unprocesseableDescrs.containsKey( typeDescr.getType().getFullName() ) ) {
                 PackageRegistry pkgRegistry = kbuilder.getPackageRegistry( typeDescr.getNamespace() );
-                typeDeclarationConfigurator.wireFieldAccessors( pkgRegistry,
-                                                                typeDescr,
-                                                                pkgRegistry.getPackage().getTypeDeclaration( typeDescr.getType().getName() ) );
+                InternalKnowledgePackage pkg = pkgRegistry.getPackage();
+                TypeDeclaration type = pkg.getTypeDeclaration( typeDescr.getType().getName() );
+                typeDeclarationConfigurator.wireFieldAccessors( pkgRegistry, typeDescr, type );
+
+                if (kbuilder.getKnowledgeBase() != null) {
+                    // in case of incremental compilatoin (re)register the new type declaration on the existing kbase
+                    kbuilder.getKnowledgeBase().registerTypeDeclaration( type, pkg );
+                }
             }
         }
+
     }
 
     private Collection<AbstractClassTypeDeclarationDescr> compactDefinitionsAndDeclarations( Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, Map<String, AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
