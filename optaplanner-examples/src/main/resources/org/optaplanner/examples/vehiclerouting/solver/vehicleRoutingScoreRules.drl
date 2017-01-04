@@ -71,7 +71,7 @@ end
 
 
 // ############################################################################
-// TimeWindowed: extra hard constraints
+// TimeWindowed: additional hard constraints
 // ############################################################################
 
 rule "arrivalAfterDueTime"
@@ -81,4 +81,4 @@ rule "arrivalAfterDueTime"
         scoreHolder.addHardConstraintMatch(kcontext, $dueTime - $arrivalTime.longValue());
 end
 
-// Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
+// Score constraint arrivalAfterDueTimeAtDepot is a built-in hard constraint in VehicleRoutingImporter
