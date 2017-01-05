@@ -179,9 +179,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
             return false;
         }
         for (int hardScore : hardScores) {
-            if (hardScore > 0) {
-                return true;
-            } else if (hardScore < 0) {
+            if (hardScore < 0) {
                 return false;
             }
         }

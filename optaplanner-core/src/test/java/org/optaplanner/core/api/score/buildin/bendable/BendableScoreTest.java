@@ -74,13 +74,14 @@ public class BendableScoreTest extends AbstractScoreTest {
     @Test
     public void feasibleHSS() {
         assertScoreNotFeasible(
-                scoreDefinitionHSS.createScoreInitialized(-5, -300, -4000),
-                scoreDefinitionHSS.createScore(-7, -5, -300, -4000),
-                scoreDefinitionHSS.createScore(-7, -5, -300, -4000)
+                scoreDefinitionHSS.createScoreInitialized(-20, -300, -4000),
+                scoreDefinitionHSS.createScore(-1, 20, -300, -4000),
+                scoreDefinitionHSS.createScore(-1, 0, -300, -4000),
+                scoreDefinitionHSS.createScore(-1, -20, -300, -4000)
         );
         assertScoreFeasible(
                 scoreDefinitionHSS.createScoreInitialized(0, -300, -4000),
-                scoreDefinitionHSS.createScoreInitialized(2, -300, -4000),
+                scoreDefinitionHSS.createScoreInitialized(20, -300, -4000),
                 scoreDefinitionHSS.createScore(0, 0, -300, -4000)
                 );
     }
@@ -199,14 +200,17 @@ public class BendableScoreTest extends AbstractScoreTest {
     @Test
     public void feasibleHHSSS() {
         assertScoreNotFeasible(
-                scoreDefinitionHHSSS.createScoreInitialized(-5, 0, -300, -4000, -5000),
-                scoreDefinitionHHSSS.createScoreInitialized(0, -5, -300, -4000, -5000)
+                scoreDefinitionHHSSS.createScoreInitialized(-1, -20, -300, -4000, -5000),
+                scoreDefinitionHHSSS.createScoreInitialized(-1, 0, -300, -4000, -5000),
+                scoreDefinitionHHSSS.createScoreInitialized(-1, 20, -300, -4000, -5000),
+                scoreDefinitionHHSSS.createScoreInitialized(0, -20, -300, -4000, -5000),
+                scoreDefinitionHHSSS.createScoreInitialized(1, -20, -300, -4000, -5000)
         );
         assertScoreFeasible(
                 scoreDefinitionHHSSS.createScoreInitialized(0, 0, -300, -4000, -5000),
-                scoreDefinitionHHSSS.createScoreInitialized(0, 2, -300, -4000, -5000),
-                scoreDefinitionHHSSS.createScoreInitialized(2, 0, -300, -4000, -5000),
-                scoreDefinitionHHSSS.createScoreInitialized(1, -20, -300, -4000, -5000)
+                scoreDefinitionHHSSS.createScoreInitialized(0, 20, -300, -4000, -5000),
+                scoreDefinitionHHSSS.createScoreInitialized(1, 0, -300, -4000, -5000),
+                scoreDefinitionHHSSS.createScoreInitialized(1, 20, -300, -4000, -5000)
         );
     }
 

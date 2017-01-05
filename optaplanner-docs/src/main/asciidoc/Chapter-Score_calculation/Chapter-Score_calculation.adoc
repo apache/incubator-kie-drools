@@ -322,9 +322,11 @@ Variants of this `Score` type:
 === HardMediumSoftScore
 
 A `HardMediumSoftScore` which has a hard `int` value, a medium `int` value and a soft `int` value, for example ``-123hard/-456medium/-789soft``.
-It has 3 score levels (hard, medium and soft). The hard level determines if the solution is feasible, and the medium level and soft level
-score values determine how well the solution meets business goals. More positive (better) medium values take precedence over soft values
-irrespective of the soft value.
+It has 3 score levels (hard, medium and soft).
+The hard level determines if the solution is feasible,
+and the medium level and soft level score values determine
+how well the solution meets business goals.
+Higher medium values take precedence over soft values irrespective of the soft value.
 
 [source,java,options="nowrap"]
 ----
@@ -341,10 +343,10 @@ Variants of this `Score` type:
 === BendableScore
 
 A `BendableScore` has a configurable number of score levels.
-It has an array of hard `int` values and an array of soft `int` values, for example with 2 hard levels and 3 soft levels, the score can be ``[-123/-456]hard/[-789/-012/-345]soft``.
-In that case, it has 5 score levels. The hard levels determine if the solution is considered feasible, and the soft levels weight how
-well the solution meets business requirements. Note that if a hard score is positive, then lower level hard scores are ignored. That is,
-if the score is ``[2,-20]hard/[-3/-12/-345]``, that is considered feasible.
+It has an array of hard `int` values and an array of soft `int` values,
+for example with 2 hard levels and 3 soft levels, the score can be ``[-123/-456]hard/[-789/-012/-345]soft``.
+In that case, it has 5 score levels.
+A solution is feasible if all hard levels are at least zero.
 
 A BendableScore with one hard level and one soft level is equivalent to a HardSoftScore,
 while a BendableScore with one hard level and two soft levels is equivalent to a HardMediumSoftScore.
