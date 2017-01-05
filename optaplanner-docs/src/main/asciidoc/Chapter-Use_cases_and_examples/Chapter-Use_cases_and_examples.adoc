@@ -851,7 +851,7 @@ image::Chapter-Use_cases_and_examples/projectJobSchedulingUseCase.png[align="cen
 Hard constraints:
 
 * Job precedence: a job can only start when all its predecessor jobs are finished.
-* Resource capacity: do not use more resources then available.
+* Resource capacity: do not use more resources than available.
 ** Resources are local (shared between jobs of the same project) or global (shared between all jobs)
 ** Resource are renewable (capacity available per day) or nonrenewable (capacity available for all days)
 
