@@ -183,10 +183,9 @@ public class StringDataGenerator {
     }
 
     /**
-     * Unique identifier generator source.
-     *
-     * Do  not scroll per digit (0000, 1111, 2222, 0001, 1112, 2220, 0002, 1110, 2221, ...)
-     * Instead, scroll per half (0000, 1111, 2222, 0011, 1122, 2200, 0022, 1100, 2211, ...)
+     * Determines how to go through the unique combinations to maximize uniqueness, even on small subsets.
+     * It does not scroll per digit (0000, 1111, 2222, 0001, 1112, 2220, 0002, 1110, 2221, ...).
+     * Instead, it scrolls per half (0000, 1111, 2222, 0011, 1122, 2200, 0022, 1100, 2211, ...).
      */
     private int[][] halfSequenceMap = new int[][]{{}, {0}, {0, 1}, {0, 2, 1}, {0, 2, 1, 3}};
 
