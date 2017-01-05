@@ -220,7 +220,8 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
                     throw new IllegalStateException(getPhaseTypeString() + " phase (" + phaseIndex
                             + ") needs to start from an initialized solution, but the planning variable (" + variableRef
                             + ") is uninitialized for the entity (" +  entity + ").\n"
-                            + "  Initialize the solution by configuring a Construction Heuristic phase before this phase.");
+                            + "Maybe there is no Construction Heuristic configured before this phase to initialize the solution.\n"
+                            + "Or maybe the getter/setters of your planning variables in your domain classes aren't implemented correctly.");
                 }
             }
         }
