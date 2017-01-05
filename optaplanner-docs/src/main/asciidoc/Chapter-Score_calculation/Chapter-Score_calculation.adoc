@@ -97,7 +97,7 @@ image::Chapter-Score_calculation/scoreTradeoffInPerspective.png[align="center"]
 [NOTE]
 ====
 When deciding the weights of some constraints is debatable, it's recommended to make them configurable at runtime, as demonstrated in the exam timetabling example with the `InstitutionParametrization` class.
-This allow the end-user to recalibrate constraint weights in the user interface and immediatly discover the impact of the new weights by running the solver again.
+This allow the end-user to recalibrate constraint weights in the user interface and immediately discover the impact of the new weights by running the solver again.
 ====
 
 Most use cases use a `Score` with `int` weights, such as <<hardSoftScore,HardSoftScore>>.
@@ -123,7 +123,7 @@ If there are two (or more) score levels, for example a hard and soft level, then
 [NOTE]
 ====
 By default, Planner will always assign all planning variables a planning value.
-If there is no feasible solution, this means the best solution will be unfeasible.
+If there is no feasible solution, this means the best solution will be infeasible.
 To instead leave some of the planning entities unassigned, apply <<overconstrainedPlanning,overconstrained planning>>.
 ====
 
@@ -145,7 +145,7 @@ For example in cloud balance if a `Computer` has seven CPU too little for its ``
 ====
 
 Three or more score levels are supported.
-For example: a company might decide that profit outranks employee satisfaction (or visa versa), while both are outranked by the constraints of physical reality.
+For example: a company might decide that profit outranks employee satisfaction (or vice versa), while both are outranked by the constraints of physical reality.
 
 [NOTE]
 ====
@@ -261,7 +261,7 @@ Decimal numbers (``BigDecimal``) have none of these problems.
 [NOTE]
 ====
 BigDecimal arithmetic is considerably slower than ``int``, `long` or `double` arithmetic.
-In experiments we have seen the score calculation speed get divided by 5.
+In experiments we have seen the score calculation take five times longer.
 
 Therefore, in many cases, it can be worthwhile to multiply _all_ numbers for a single score weight by a plural of ten, so the score weight fits in a scaled `int` or ``long``.
 For example, if we multiple all weights by ``1000``, a fuelCost of `0.07` becomes a fuelCostMillis of `70` and no longer uses a decimal score weight.
@@ -276,7 +276,7 @@ Most use cases use a ``HardSoftScore``.
 
 [NOTE]
 ====
-To properly write a `Score` to database (with JPA/Hibernate) or to XML/JSON (with XStream/JAXB/Jackson), see <<integration,the integration chapter>>.
+To properly write a `Score` to a database (with JPA/Hibernate) or to XML/JSON (with XStream/JAXB/Jackson), see <<integration,the integration chapter>>.
 ====
 
 
@@ -322,7 +322,9 @@ Variants of this `Score` type:
 === HardMediumSoftScore
 
 A `HardMediumSoftScore` which has a hard `int` value, a medium `int` value and a soft `int` value, for example ``-123hard/-456medium/-789soft``.
-It has 3 score levels (hard, medium and soft).
+It has 3 score levels (hard, medium and soft). The hard level determines if the solution is feasible, and the medium level and soft level
+score values determine how well the solution meets business goals. More positive (better) medium values take precedence over soft values
+irrespective of the soft value.
 
 [source,java,options="nowrap"]
 ----
@@ -339,8 +341,13 @@ Variants of this `Score` type:
 === BendableScore
 
 A `BendableScore` has a configurable number of score levels.
-It has an array of hard `int` values and an array of soft `int` value, for example with 2 hard levels and 3 soft levels, the score can be ``[-123/-456]hard/[-789/-012/-345]soft``.
-In that case, it has 5 score levels.
+It has an array of hard `int` values and an array of soft `int` values, for example with 2 hard levels and 3 soft levels, the score can be ``[-123/-456]hard/[-789/-012/-345]soft``.
+In that case, it has 5 score levels. The hard levels determine if the solution is considered feasible, and the soft levels weight how
+well the solution meets business requirements. Note that if a hard score is positive, then lower level hard scores are ignored. That is,
+if the score is ``[2,-20]hard/[-3/-12/-345]``, that is considered feasible.
+
+A BendableScore with one hard level and one soft level is equivalent to a HardSoftScore,
+while a BendableScore with one hard level and two soft levels is equivalent to a HardMediumSoftScore.
 
 [source,java,options="nowrap"]
 ----
@@ -383,7 +390,7 @@ Then hook your custom `ScoreDefinition` in the domain:
     private MyCustomScore score;
 ----
 
-To have it integrate seamlessly with <<jpaAndHibernatePersistingAScore,JPA/Hibernate>>, <<integrationWithXStream,XStream>>, ..., you 'll need to write some glue code.
+To have it integrate seamlessly with <<jpaAndHibernatePersistingAScore,JPA/Hibernate>>, <<integrationWithXStream,XStream>>, ..., you'll need to write some glue code.
 
 
 [[calculateTheScore]]
@@ -1040,7 +1047,7 @@ There is no need to dynamically change your score calculation based on the datas
 Instead of implementing a hard constraint, it can sometimes be built in.
 For example, If `Lecture` A should never be assigned to `Room` X, but it uses `ValueRangeProvider` on Solution, so the `Solver` will often try to assign it to `Room` X too (only to find out that it breaks a hard constraint). Use <<valueRangeProviderOnPlanningEntity,a ValueRangeProvider on the planning entity>> or <<filteredSelection,filtered selection>> to define that Course A should only be assigned a `Room` different than X.
 
-This can give a good performance gain in some use cases, not just because the score calculation is faster, but mainly because most optimization algorithms will spend less time evaluating unfeasible solutions.
+This can give a good performance gain in some use cases, not just because the score calculation is faster, but mainly because most optimization algorithms will spend less time evaluating infeasible solutions.
 However, usually this not a good idea because there is a real risk of trading short term benefits for long term harm:
 
 * Many optimization algorithms rely on the freedom to break hard constraints when changing planning entities, to get out of local optima.

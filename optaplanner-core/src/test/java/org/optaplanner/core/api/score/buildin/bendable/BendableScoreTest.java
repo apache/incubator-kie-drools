@@ -205,7 +205,8 @@ public class BendableScoreTest extends AbstractScoreTest {
         assertScoreFeasible(
                 scoreDefinitionHHSSS.createScoreInitialized(0, 0, -300, -4000, -5000),
                 scoreDefinitionHHSSS.createScoreInitialized(0, 2, -300, -4000, -5000),
-                scoreDefinitionHHSSS.createScoreInitialized(2, 0, -300, -4000, -5000)
+                scoreDefinitionHHSSS.createScoreInitialized(2, 0, -300, -4000, -5000),
+                scoreDefinitionHHSSS.createScoreInitialized(1, -20, -300, -4000, -5000)
         );
     }
 
