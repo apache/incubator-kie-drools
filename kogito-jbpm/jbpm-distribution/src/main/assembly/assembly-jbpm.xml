@@ -71,6 +71,7 @@
       </excludes>
       <outputDirectory>binaries</outputDirectory>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -81,6 +82,7 @@
       </excludes>
       <outputDirectory>examples/binaries</outputDirectory>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -92,6 +94,7 @@
       <outputDirectory>sources</outputDirectory>
       <unpack>false</unpack>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>
   </dependencySets>
 

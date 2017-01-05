@@ -8,7 +8,7 @@
   <fileSets>
     <fileSet>
       <directory>target/jbpm-${project.version}-pre-bin</directory>
-      <outputDirectory></outputDirectory>
+      <outputDirectory/>
     </fileSet>
   </fileSets>  
 </assembly>

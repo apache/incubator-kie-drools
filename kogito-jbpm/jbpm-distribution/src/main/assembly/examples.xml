@@ -8,7 +8,7 @@
   <fileSets>
     <fileSet>
       <directory>..</directory>
-      <outputDirectory></outputDirectory>
+      <outputDirectory/>
       <includes>
         <include>jbpm-examples/**</include>	  
       </includes>

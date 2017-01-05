@@ -42,6 +42,7 @@
           <include>org/jbpm/kie/services/helper/*</include>
         </includes>
       </unpackOptions>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>
   </dependencySets>
 </assembly>
