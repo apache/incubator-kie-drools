@@ -355,12 +355,15 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 validateNodes(forEachNode.getNodes(), errors, process);
             } else if (node instanceof DynamicNode) {
                 final DynamicNode dynamicNode = (DynamicNode) node;
-                if (dynamicNode.getDefaultIncomingConnections().size() == 0) {
+
+                if (dynamicNode.getDefaultIncomingConnections().size() == 0 && !acceptsNoIncomingConnections(dynamicNode)) {
                     addErrorMessage(process, node, errors, "Dynamic has no incoming connection");
                 }
-                if (dynamicNode.getDefaultOutgoingConnections().size() == 0) {
+
+                if (dynamicNode.getDefaultOutgoingConnections().size() == 0 && !acceptsNoOutgoingConnections(dynamicNode)) {
                     addErrorMessage(process, node, errors, "Dynamic has no outgoing connection");
                 }
+
                 if ("".equals(dynamicNode.getCompletionExpression()) && !dynamicNode.isAutoComplete()) {
                     addErrorMessage(process, node, errors, "Dynamic has no completion condition set");
                 }

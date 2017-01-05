@@ -19,6 +19,7 @@ package org.jbpm.ruleflow.core.validation;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.node.DynamicNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,5 +58,71 @@ public class RuleFlowProcessValidatorTest {
         validator.addErrorMessage(process, node, errors, "any message");
         assertEquals(1, errors.size());
         assertEquals("Node 'nodeName' [" + Long.MAX_VALUE + "] any message", errors.get(0).getMessage());
+    }
+
+    @Test
+    public void testDynamicNodeValidationInNotDynamicProcess() throws Exception {
+        RuleFlowProcess process = new RuleFlowProcess();
+        process.setId("org.drools.core.process");
+        process.setName("Dynamic Node Process");
+        process.setPackageName("org.mycomp.myprocess");
+        process.setDynamic(false);
+
+        DynamicNode dynamicNode = new DynamicNode();
+        dynamicNode.setName("MyDynamicNode");
+        dynamicNode.setId(1);
+        dynamicNode.setAutoComplete(false);
+        // empty completion expression to trigger validation error
+        dynamicNode.setCompletionExpression("");
+        process.addNode(dynamicNode);
+
+        ProcessValidationError[] errors = validator.validateProcess(process);
+        assertNotNull(errors);
+        // in non-dynamic processes all check should be triggered
+        // they should also include process level checks (start node, end node etc)
+        assertEquals(6, errors.length);
+        assertEquals("Process has no start node.", errors[0].getMessage());
+        assertEquals("Process has no end node.", errors[1].getMessage());
+        assertEquals("Node 'MyDynamicNode' [1] Dynamic has no incoming connection", errors[2].getMessage());
+        assertEquals("Node 'MyDynamicNode' [1] Dynamic has no outgoing connection", errors[3].getMessage());
+        assertEquals("Node 'MyDynamicNode' [1] Dynamic has no completion condition set", errors[4].getMessage());
+        assertEquals("Node 'MyDynamicNode' [1] Has no connection to the start node.", errors[5].getMessage());
+    }
+
+    @Test
+    public void testDynamicNodeValidationInDynamicProcess() throws Exception {
+        RuleFlowProcess process = new RuleFlowProcess();
+        process.setId("org.drools.core.process");
+        process.setName("Dynamic Node Process");
+        process.setPackageName("org.mycomp.myprocess");
+        process.setDynamic(true);
+
+        DynamicNode dynamicNode = new DynamicNode();
+        dynamicNode.setName("MyDynamicNode");
+        dynamicNode.setId(1);
+        dynamicNode.setAutoComplete(false);
+        dynamicNode.setCompletionExpression("completion-expression");
+        process.addNode(dynamicNode);
+
+        ProcessValidationError[] errors = validator.validateProcess(process);
+        assertNotNull(errors);
+        // if dynamic process no longer triggering incoming / outgoing connection errors for dynamic nodes
+        assertEquals(0, errors.length);
+
+        // empty completion expression to trigger validation error
+        process.removeNode(dynamicNode);
+        DynamicNode dynamicNode2 = new DynamicNode();
+        dynamicNode2.setName("MyDynamicNode");
+        dynamicNode2.setId(1);
+        dynamicNode2.setAutoComplete(false);
+        dynamicNode2.setCompletionExpression("");
+        process.addNode(dynamicNode2);
+
+        ProcessValidationError[] errors2 = validator.validateProcess(process);
+        assertNotNull(errors2);
+        // autocomplete set to false and empty completion condition triggers error
+        assertEquals(1, errors2.length);
+        assertEquals("Node 'MyDynamicNode' [1] Dynamic has no completion condition set", errors2[0].getMessage());
+
     }
 }
