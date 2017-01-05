@@ -24,6 +24,7 @@ import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.EntryPointNode;
@@ -51,6 +52,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Globals;
@@ -3390,5 +3392,93 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         // rule Rx is UNchanged and should NOT fire again
         assertEquals( 0, ksession.fireAllRules() );
+    }
+    
+    @Test
+    public void testKJarUpgradeDRLWithSpace2() throws Exception {
+        // DROOLS-1399 bis
+        String drl_1 = "package org.drools.compiler\n" +
+                "rule Rx when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl_2 = "package org.drools.compiler\n" + 
+                "rule Rx when\n" +
+                "   $m : Message( message == \"Hello World\"  )\n" + // <<- notice the EXTRA SPACE is the only change in this other version.
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl_1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl_2 );
+
+        kc.updateToVersion( releaseId2 );
+
+        // rule Rx is UNchanged and should NOT fire again
+        assertEquals( 0, ksession.fireAllRules() );
+    }
+    
+    @Test
+    public void testKJarUpgradeDRLWithSpace3() throws Exception {
+        // DROOLS-1399 ter
+        String drl_1 = "package org.drools.compiler\n" +
+                "rule Rs when $s : String() then System.out.println($s); end\n" +
+                "rule Rx when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "  System.out.println($m); \n"+
+                "end\n";
+
+        String drl_2 = "package org.drools.compiler\n" + 
+                "rule Rs when $s : String( this == \"x\") then System.out.println($s); end\n" + // <<- notice rule changed
+                "rule Rx when\n" +
+                "   $m : Message( message == \"Hello World\"  )\n" + // <<- notice the EXTRA SPACE is the an ADDITIONAL change in this other version.
+                "then\n" +
+                "  System.out.println($m); \n"+
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl_1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        final List<String> fired = new ArrayList<>();
+        ksession.addEventListener(new DefaultAgendaEventListener() {
+            @Override
+            public void afterMatchFired(AfterMatchFiredEvent event) {
+                fired.add(event.getMatch().getRule().getName());
+            }
+        });
+        
+        ksession.insert( new Message( "Hello World" ) );
+        ksession.insert( "x" );
+        assertEquals( 2, ksession.fireAllRules() );
+        assertTrue( fired.contains("Rs") );
+        assertTrue( fired.contains("Rx") );
+        
+        fired.clear();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl_2 );
+
+        kc.updateToVersion( releaseId2 );
+
+        // rule Rx is UNchanged and should NOT fire again
+        // rule Rs is changed and should match again, and fire again.
+        assertEquals( 1, ksession.fireAllRules() );
+        assertTrue( fired.contains("Rs") );
+        assertFalse( fired.contains("Rx") );
     }
 }
