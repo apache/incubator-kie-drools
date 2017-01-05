@@ -231,12 +231,14 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
     public void feasibleHHSSS() {
         assertScoreNotFeasible(
                 scoreDefinitionHHSSS.createScoreInitialized(MINUS_FIVE, ZERO, MINUS_300, MINUS_4000, MINUS_5000),
-                scoreDefinitionHHSSS.createScoreInitialized(ZERO, MINUS_FIVE, MINUS_300, MINUS_4000, MINUS_5000)
+                scoreDefinitionHHSSS.createScoreInitialized(ZERO, MINUS_FIVE, MINUS_300, MINUS_4000, MINUS_5000),
+                scoreDefinitionHHSSS.createScoreInitialized(ONE, MINUS_FIVE, MINUS_300, MINUS_4000, MINUS_5000)
         );
         assertScoreFeasible(
                 scoreDefinitionHHSSS.createScoreInitialized(ZERO, ZERO, MINUS_300, MINUS_4000, MINUS_5000),
                 scoreDefinitionHHSSS.createScoreInitialized(ZERO, TWO, MINUS_300, MINUS_4000, MINUS_5000),
-                scoreDefinitionHHSSS.createScoreInitialized(TWO, ZERO, MINUS_300, MINUS_4000, MINUS_5000)
+                scoreDefinitionHHSSS.createScoreInitialized(TWO, ZERO, MINUS_300, MINUS_4000, MINUS_5000),
+                scoreDefinitionHHSSS.createScoreInitialized(ONE, TWO, MINUS_300, MINUS_4000, MINUS_5000)
         );
     }
 

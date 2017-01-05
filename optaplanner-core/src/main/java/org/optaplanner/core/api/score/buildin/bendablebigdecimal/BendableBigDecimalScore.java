@@ -179,10 +179,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
             return false;
         }
         for (BigDecimal hardScore : hardScores) {
-            int comparison = hardScore.compareTo(BigDecimal.ZERO);
-            if (comparison > 0) {
-                return true;
-            } else if (comparison < 0) {
+            if (hardScore.compareTo(BigDecimal.ZERO) < 0) {
                 return false;
             }
         }

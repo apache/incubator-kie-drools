@@ -194,12 +194,14 @@ public class BendableLongScoreTest extends AbstractScoreTest {
     public void feasibleHHSSS() {
         assertScoreNotFeasible(
                 scoreDefinitionHHSSS.createScoreInitialized(-5L, 0L, -300L, -4000000000L, -5000L),
-                scoreDefinitionHHSSS.createScoreInitialized(0L, -5000000000L, -300L, -4000L, -5000L)
+                scoreDefinitionHHSSS.createScoreInitialized(0L, -5000000000L, -300L, -4000L, -5000L),
+                scoreDefinitionHHSSS.createScoreInitialized(1L, -2L, -300L, -4000L, -5000L)
         );
         assertScoreFeasible(
                 scoreDefinitionHHSSS.createScoreInitialized(0L, 0L, -300000000000L, -4000L, -5000L),
                 scoreDefinitionHHSSS.createScoreInitialized(0L, 2L, -300L, -4000L, -50000000000L),
-                scoreDefinitionHHSSS.createScoreInitialized(2000000000L, 0L, -300L, -4000L, -5000L)
+                scoreDefinitionHHSSS.createScoreInitialized(2000000000L, 0L, -300L, -4000L, -5000L),
+                scoreDefinitionHHSSS.createScoreInitialized(1L, 2L, -300L, -4000L, -5000L)
         );
     }
 

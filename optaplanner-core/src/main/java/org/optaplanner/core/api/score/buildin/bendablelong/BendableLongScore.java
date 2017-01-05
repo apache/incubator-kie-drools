@@ -177,9 +177,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
             return false;
         }
         for (long hardScore : hardScores) {
-            if (hardScore > 0) {
-                return true;
-            } else if (hardScore < 0) {
+            if (hardScore < 0) {
                 return false;
             }
         }
