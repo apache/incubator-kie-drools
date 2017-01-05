@@ -3357,4 +3357,38 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kieSession.insert(other);
         assertEquals(1, kieSession.fireAllRules());
     }
+    
+    @Test
+    public void testKJarUpgradeWithSpace() throws Exception {
+        // DROOLS-1399
+        String drl_1 = "package org.drools.compiler\n" +
+                "rule Rx when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl_2 = "package org.drools.compiler\n " + // <<- notice the EXTRA SPACE is the only change in this other version.
+                "rule Rx when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl_1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl_2 );
+
+        kc.updateToVersion( releaseId2 );
+
+        // rule Rx is UNchanged and should NOT fire again
+        assertEquals( 0, ksession.fireAllRules() );
+    }
 }

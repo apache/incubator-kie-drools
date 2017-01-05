@@ -24,6 +24,7 @@ import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.util.StringUtils;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChange;
@@ -70,8 +71,11 @@ public class ChangeSetBuilder {
                 byte[] ob = original.getBytes( file );
                 byte[] cb = currentJar.getBytes( file );
                 if( ! Arrays.equals( ob, cb ) ) {
-                    // parse the file to figure out the difference
-                    result.getChanges().put( file, diffResource( file, ob, cb ) );
+                    // check that: (NOT drl file) OR (NOT equalsIgnoringSpaces)
+                    if ( ! ( file.endsWith(".drl") && StringUtils.equalsIgnoreSpaces(new String(ob), new String(cb)) ) ) {
+                        // parse the file to figure out the difference
+                        result.getChanges().put( file, diffResource( file, ob, cb ) );
+                    }
                 }
             } else {
                 // file was added
