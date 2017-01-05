@@ -80,9 +80,9 @@ public class ReaderResource  extends BaseResource implements InternalResource {
             // nothing to do... intentionally left empty
         }
         if ( this.encoding != null ) {
-            return new ReaderInputStream( this.reader, this.encoding);
+            return new ReaderInputStream.NonCloseable( this.reader, this.encoding);
         } else {
-            return new ReaderInputStream( this.reader);
+            return new ReaderInputStream.NonCloseable( this.reader);
         }
     }
     
