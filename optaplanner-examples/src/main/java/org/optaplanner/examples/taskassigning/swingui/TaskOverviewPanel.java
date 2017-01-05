@@ -43,9 +43,6 @@ import javax.swing.SwingConstants;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
-import org.optaplanner.examples.pas.domain.Bed;
-import org.optaplanner.examples.pas.domain.BedDesignation;
-import org.optaplanner.examples.pas.domain.Patient;
 import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Skill;
 import org.optaplanner.examples.taskassigning.domain.Task;
@@ -65,7 +62,6 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     private final ImageIcon[] affinityIcons;
     private final ImageIcon[] priorityIcons;
 
-    private TangoColorFactory customerColorFactory;
     private TangoColorFactory skillColorFactory;
 
     private int consumedDuration = 0;
@@ -89,7 +85,6 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
 
     public void resetPanel(TaskAssigningSolution taskAssigningSolution) {
         removeAll();
-        customerColorFactory = new TangoColorFactory();
         skillColorFactory = new TangoColorFactory();
         List<Employee> employeeList = taskAssigningSolution.getEmployeeList();
         Map<Employee, Integer> employeeIndexMap = new HashMap<>(employeeList.size());

@@ -18,7 +18,6 @@ package org.optaplanner.examples.taskassigning.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.examples.taskassigning.persistence.TaskAssigningDao;
 import org.optaplanner.examples.taskassigning.swingui.TaskAssigningPanel;

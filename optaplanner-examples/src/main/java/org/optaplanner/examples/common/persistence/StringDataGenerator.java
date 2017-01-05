@@ -183,6 +183,8 @@ public class StringDataGenerator {
     }
 
     /**
+     * Unique identifier generator source.
+     *
      * Do  not scroll per digit (0000, 1111, 2222, 0001, 1112, 2220, 0002, 1110, 2221, ...)
      * Instead, scroll per half (0000, 1111, 2222, 0011, 1122, 2200, 0022, 1100, 2211, ...)
      */

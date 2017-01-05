@@ -22,7 +22,7 @@ public enum Affinity {
     MEDIUM(2),
     HIGH(1);
 
-    private int durationMultiplier;
+    private final int durationMultiplier;
 
     Affinity(int durationMultiplier) {
         this.durationMultiplier = durationMultiplier;

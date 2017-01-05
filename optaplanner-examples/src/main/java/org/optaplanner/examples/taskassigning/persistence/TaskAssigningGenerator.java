@@ -20,8 +20,6 @@ import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -180,7 +178,7 @@ public class TaskAssigningGenerator extends LoggingMain {
             skill.setId((long) i);
             String skillName = skillNameGenerator.generateNextValue();
             skill.setName(skillName);
-            logger.trace("Created skill with skillName ({}).",skillName);
+            logger.trace("Created skill with skillName ({}).", skillName);
             skillList.add(skill);
         }
         solution.setSkillList(skillList);
@@ -193,7 +191,7 @@ public class TaskAssigningGenerator extends LoggingMain {
             customer.setId((long) i);
             String customerName = customerNameGenerator.generateNextValue();
             customer.setName(customerName);
-            logger.trace("Created skill with customerName ({}).",customerName);
+            logger.trace("Created skill with customerName ({}).", customerName);
             customerList.add(customer);
         }
         solution.setCustomerList(customerList);

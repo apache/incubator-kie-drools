@@ -185,6 +185,7 @@ public class Task extends TaskOrEmployee implements Labeled {
         return taskType.getTitle();
     }
 
+    @Override
     public String getLabel() {
         return getCode() + ": " + taskType.getTitle();
     }

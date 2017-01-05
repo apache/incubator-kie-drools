@@ -45,7 +45,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/taskassigning/swingui/taskAssigningLogo.png";
 
-    private TaskOverviewPanel taskOverviewPanel;
+    private final TaskOverviewPanel taskOverviewPanel;
 
     private JSpinner consumeRateField;
     private AbstractAction consumeAction;

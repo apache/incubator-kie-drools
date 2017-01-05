@@ -24,7 +24,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
-import org.optaplanner.examples.cloudbalancing.optional.move.CloudComputerChangeMove;
 
 public class CloudComputerChangeMoveFactory implements MoveListFactory<CloudBalance> {
 
