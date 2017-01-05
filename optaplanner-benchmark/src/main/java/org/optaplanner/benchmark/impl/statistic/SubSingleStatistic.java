@@ -34,9 +34,10 @@ import java.util.Map;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
+import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,24 +80,22 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
     }
 
     /**
-     * Used in report.
-     * @return the path to the csv file from report root
+     * @return never null, the relative path from {@link PlannerBenchmarkResult#getBenchmarkReportDirectory()}.
      */
     public String getRelativeCsvFilePath() {
-        return new StringBuilder().append(subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult().getProblemReportDirectoryPath())
-                .append(File.separator)
-                .append(subSingleBenchmarkResult.getResultDirectoryName())
-                .append(File.separator)
-                .append(getCsvFilePath())
-                .toString();
+        SingleBenchmarkResult singleBenchmarkResult = subSingleBenchmarkResult.getSingleBenchmarkResult();
+        return singleBenchmarkResult.getProblemBenchmarkResult().getProblemReportDirectoryName() + "/"
+                + singleBenchmarkResult.getResultDirectoryName() + "/"
+                + subSingleBenchmarkResult.getResultDirectoryName() + "/"
+                + getCsvFileName();
     }
 
-    public String getCsvFilePath() {
+    public String getCsvFileName() {
         return getStatisticType().name() + ".csv";
     }
 
     public File getCsvFile() {
-        return new File(subSingleBenchmarkResult.getResultDirectory(), getCsvFilePath());
+        return new File(subSingleBenchmarkResult.getResultDirectory(), getCsvFileName());
     }
 
     // ************************************************************************

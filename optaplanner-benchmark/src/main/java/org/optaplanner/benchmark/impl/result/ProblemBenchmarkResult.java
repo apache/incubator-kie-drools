@@ -268,7 +268,7 @@ public class ProblemBenchmarkResult<Solution_> {
     // Work methods
     // ************************************************************************
 
-    public String getProblemReportDirectoryPath() {
+    public String getProblemReportDirectoryName() {
         return name;
     }
 
