@@ -16,12 +16,12 @@
 
 package org.drools.core.io.impl;
 
+import org.drools.core.util.StringUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import org.drools.core.util.StringUtils;
 
 public class ReaderInputStream extends InputStream {
 
@@ -204,6 +204,21 @@ public class ReaderInputStream extends InputStream {
             in.close();
             slack = null;
             in = null;
+        }
+    }
+
+    public static class NonCloseable extends ReaderInputStream {
+        public NonCloseable( Reader reader ) {
+            super( reader );
+        }
+
+        public NonCloseable( Reader reader, String encoding ) {
+            super( reader, encoding );
+        }
+
+        @Override
+        public synchronized void close() throws IOException {
+            // do nothing
         }
     }
 }

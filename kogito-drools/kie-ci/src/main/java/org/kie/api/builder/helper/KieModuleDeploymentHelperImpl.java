@@ -35,8 +35,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +42,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 /**
@@ -409,7 +408,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
                         if (folderFile.isDirectory()) {
                             continue;
                         }
-                        String content = convertFileToString(new FileInputStream(folderFile));
+                        String content = convertFileToString(new FileInputStream(folderFile), true);
                         output.add(new KJarResource(folderFile.getName(), content));
                     }
                 } else {
@@ -423,7 +422,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
                                 || folderFile.isDirectory() ) {
                             continue;
                         }
-                        String content = convertFileToString(new FileInputStream(folderFile));
+                        String content = convertFileToString(new FileInputStream(folderFile), true);
                         output.add(new KJarResource(folderFile.getName(), content));
                     }
                 } else {
@@ -441,17 +440,24 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
                 String jarUrlString = urlString.substring("jar:".length(), jarPathIndex);
                 url = new URL(jarUrlString);
                 ZipInputStream zip = new ZipInputStream(url.openStream());
-
-                ZipEntry ze = zip.getNextEntry();
-                while (ze != null) {
-                    String name = ze.getName();
-                    if (name.startsWith(resourcePath) && !name.endsWith("/")
-                            && (name.split("/").length == depth)) {
-                        String shortName = name.substring(name.lastIndexOf("/") + 1);
-                        String content = convertFileToString(zip);
-                        output.add(new KJarResource(shortName, content));
+                try {
+                    ZipEntry ze = zip.getNextEntry();
+                    while ( ze != null ) {
+                        String name = ze.getName();
+                        if ( name.startsWith( resourcePath ) && !name.endsWith( "/" )
+                             && ( name.split( "/" ).length == depth ) ) {
+                            String shortName = name.substring( name.lastIndexOf( "/" ) + 1 );
+                            String content = convertFileToString( zip, false );
+                            output.add( new KJarResource( shortName, content ) );
+                        }
+                        ze = zip.getNextEntry();
                     }
-                    ze = zip.getNextEntry();
+                } finally {
+                    try {
+                        zip.close();
+                    } catch (Exception e) {
+                        // ignore
+                    }
                 }
             } else {
                 throw new IllegalArgumentException("Unable to find resource directory '" + path + "'");
@@ -461,7 +467,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
             if (is == null) {
                 is = new FileInputStream(new File(path));
             }
-            String content = convertFileToString(is);
+            String content = convertFileToString(is, true);
             String name = path.substring(path.lastIndexOf("/") + 1);
             output.add(new KJarResource(name, content));
         }
@@ -497,22 +503,12 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
         return kjarResources;
     }
     
-    private static String convertFileToString(InputStream in) {
-        InputStreamReader input = new InputStreamReader(in, IoUtils.UTF8_CHARSET);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        OutputStreamWriter output = new OutputStreamWriter(baos, IoUtils.UTF8_CHARSET);
-        char[] buffer = new char[4096];
-        int n = 0;
+    private static String convertFileToString(InputStream in, boolean closeInput) {
         try {
-            while (-1 != (n = input.read(buffer))) {
-                output.write(buffer, 0, n);
-            }
-            output.flush();
-
+            return new String(readBytesFromInputStream(in, closeInput), IoUtils.UTF8_CHARSET);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException( e );
         }
-        return new String(baos.toByteArray(), IoUtils.UTF8_CHARSET);
     }
 
     /**

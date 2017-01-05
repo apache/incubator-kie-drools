@@ -28,7 +28,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
-public class InputStreamResource  extends BaseResource implements InternalResource {
+public class InputStreamResource extends BaseResource implements InternalResource {
 
     private transient InputStream stream;
     private String encoding;

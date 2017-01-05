@@ -193,14 +193,28 @@ public class IoUtils {
     }
 
     public static byte[] readBytesFromInputStream(InputStream input) throws IOException {
-        byte[] buffer = createBytesBuffer( input );
-        ByteArrayOutputStream output = new ByteArrayOutputStream(buffer.length);
+        return readBytesFromInputStream( input, true );
+    }
 
-        int n = 0;
-        while (-1 != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
+    public static byte[] readBytesFromInputStream(InputStream input, boolean closeInput) throws IOException {
+        try {
+            byte[] buffer = createBytesBuffer( input );
+            ByteArrayOutputStream output = new ByteArrayOutputStream( buffer.length );
+
+            int n = 0;
+            while ( -1 != ( n = input.read( buffer ) ) ) {
+                output.write( buffer, 0, n );
+            }
+            return output.toByteArray();
+        } finally {
+            try {
+                if ( closeInput ) {
+                    input.close();
+                }
+            } catch (Exception e) {
+                // ignore
+            }
         }
-        return output.toByteArray();
     }
 
     private static byte[] createBytesBuffer( InputStream input ) throws IOException {
@@ -216,7 +230,7 @@ public class IoUtils {
         byte[] bytes = null;
         try {
             zipFile = new ZipFile( file );
-            bytes = IoUtils.readBytesFromInputStream(  zipFile.getInputStream( entry ) );
+            bytes = IoUtils.readBytesFromInputStream(  zipFile.getInputStream( entry ), true );
         } finally {
             if ( zipFile != null ) {
                 zipFile.close();
