@@ -998,6 +998,33 @@ public class StringUtils {
         }
         return args;
     }
+    
+    private static String codeAwareRemoveWhitespaceChars(String input) {
+        StringBuilder sb = new StringBuilder(input.length());
+        boolean isQuoted = false;
+        for (int i = 0; i < input.length(); i++) {
+            char charAt = input.charAt(i);
+            if ( charAt == '"' ) {
+                if (i == 0 || input.charAt(i-1) != '\\') {
+                    isQuoted = !isQuoted;
+                }
+            }
+            
+            if ( isQuoted ) {
+                sb.append(charAt);
+            } else if (!isWhitespace(charAt)) {
+                sb.append(charAt);
+            }
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * Compares two string being equals ignoring whitespaces, but preserving whitespace between double-quotes
+     */
+    public static boolean codeAwareEqualsIgnoreSpaces(String s1, String s2) {
+        return codeAwareRemoveWhitespaceChars(s1).equals(codeAwareRemoveWhitespaceChars(s2));
+    }
 
     public static int findEndOfMethodArgsIndex(CharSequence string, int startOfMethodArgsIndex) {
         boolean isDoubleQuoted = false;

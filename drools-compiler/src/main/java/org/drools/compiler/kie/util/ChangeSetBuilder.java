@@ -72,7 +72,7 @@ public class ChangeSetBuilder {
                 byte[] cb = currentJar.getBytes( file );
                 if( ! Arrays.equals( ob, cb ) ) {
                     // check that: (NOT drl file) OR (NOT equalsIgnoringSpaces)
-                    if ( ! ( file.endsWith(".drl") && StringUtils.equalsIgnoreSpaces(new String(ob), new String(cb)) ) ) {
+                    if ( ! ( file.endsWith(".drl") && StringUtils.codeAwareEqualsIgnoreSpaces(new String(ob), new String(cb)) ) ) {
                         // parse the file to figure out the difference
                         result.getChanges().put( file, diffResource( file, ob, cb ) );
                     }
@@ -205,7 +205,7 @@ public class ChangeSetBuilder {
      * Enforce the check 'type' is RULE.
      */
     private boolean isRuleChanged(byte[] ob, byte[] cb, ResourceChange.Type type, Set<String> updatedRules, BaseDescr ord, BaseDescr crd) {
-        if (type == ResourceChange.Type.RULE && !StringUtils.equalsIgnoreSpaces(new String(Arrays.copyOfRange(ob, ord.getStartCharacter(), ord.getEndCharacter())),new String(Arrays.copyOfRange(cb, crd.getStartCharacter(), crd.getEndCharacter())) ) ) {
+        if (type == ResourceChange.Type.RULE && !StringUtils.codeAwareEqualsIgnoreSpaces(new String(Arrays.copyOfRange(ob, ord.getStartCharacter(), ord.getEndCharacter())),new String(Arrays.copyOfRange(cb, crd.getStartCharacter(), crd.getEndCharacter())) ) ) {
             return true;
         } else if (type == ResourceChange.Type.RULE && updatedRules.contains( ( (RuleDescr) crd ).getParentName() )) {
             return true;
