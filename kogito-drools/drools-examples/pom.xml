@@ -34,15 +34,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <additionalBuildcommands>
-            <buildcommand>org.drools.eclipse.droolsbuilder</buildcommand>
-          </additionalBuildcommands>
-        </configuration>
-      </plugin>
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

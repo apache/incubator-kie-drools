@@ -275,38 +275,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <additionalBuildcommands>
-            <buildCommand>
-              <name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
-              <triggers>auto,full,incremental,</triggers>
-              <arguments>
-                <LaunchConfigHandle>&lt;project&gt;/.externalToolBuilders/mvn-resources.launch</LaunchConfigHandle>
-              </arguments>
-            </buildCommand>
-          </additionalBuildcommands>
-          <additionalConfig>
-            <file>
-              <name>.externalToolBuilders/mvn-resources.launch</name>
-              <content>
-                <![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<launchConfiguration type="org.eclipse.ui.externaltools.ProgramBuilderLaunchConfigurationType">
-<booleanAttribute key="org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND" value="true"/>
-<booleanAttribute key="org.eclipse.ui.externaltools.ATTR_BUILDER_ENABLED" value="true"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_BUILD_SCOPE" value="&#36;{working_set:&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#13;&#10;&lt;launchConfigurationWorkingSet editPageId=&quot;org.eclipse.ui.resourceWorkingSetPage&quot; factoryID=&quot;org.eclipse.ui.internal.WorkingSetFactory&quot; label=&quot;workingSet&quot; name=&quot;workingSet&quot;&gt;&#13;&#10;&lt;item factoryID=&quot;org.eclipse.ui.internal.model.ResourceFactory&quot; path=&quot;/${project.artifactId}/src/main/resources&quot; type=&quot;2&quot;/&gt;&#13;&#10;&lt;/launchConfigurationWorkingSet&gt;}"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${env.M2_HOME}/bin/mvn"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_RUN_BUILD_KINDS" value="full,incremental,auto,"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="resources:resources"/>
-<booleanAttribute key="org.eclipse.ui.externaltools.ATTR_TRIGGERS_CONFIGURED" value="true"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="&#36;{workspace_loc:/${project.artifactId}}"/>
-</launchConfiguration>]]>
-              </content>
-            </file>
-          </additionalConfig>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>
