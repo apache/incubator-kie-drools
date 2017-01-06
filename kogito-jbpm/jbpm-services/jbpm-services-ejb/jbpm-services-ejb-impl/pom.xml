@@ -155,8 +155,8 @@
       <scope>test</scope>
     </dependency>    
     <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-arquillian-container-managed</artifactId>
+      <groupId>org.wildfly.arquillian</groupId>
+      <artifactId>wildfly-arquillian-container-managed</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
