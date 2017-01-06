@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.testcoverage.regression;
 
 import org.assertj.core.api.Assertions;
@@ -29,21 +45,21 @@ public class EventDeserializationInPastTest {
     @Test
     public void testSerializationWithEventInPastBZ1205666() {
         // DROOLS-749
-        String drl =
+        final String drl =
                 "import " + Event1.class.getCanonicalName() + "\n" +
-                        "declare Event1\n" +
-                        " @role( event )\n" +
-                        " @timestamp( timestamp )\n" +
-                        " @expires( 3h )\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule R\n" +
-                        " when\n" +
-                        " $evt: Event1()\n" +
-                        " not Event1(this != $evt, this after[0, 1h] $evt)\n" +
-                        " then\n" +
-                        " System.out.println($evt.getCode());\n" +
-                        "end";
+                "declare Event1\n" +
+                " @role( event )\n" +
+                " @timestamp( timestamp )\n" +
+                " @expires( 3h )\n" +
+                "end\n" +
+                "\n" +
+                "rule R\n" +
+                " when\n" +
+                " $evt: Event1()\n" +
+                " not Event1(this != $evt, this after[0, 1h] $evt)\n" +
+                " then\n" +
+                " System.out.println($evt.getCode());\n" +
+                "end\n";
 
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
@@ -66,15 +82,14 @@ public class EventDeserializationInPastTest {
 
     private KieSession marshallAndUnmarshall(KieServices ks, KieBase kbase, KieSession ksession, KieSessionConfiguration sessionConfig) {
         // Serialize and Deserialize
-        try {
-            Marshaller marshaller = ks.getMarshallers().newMarshaller(kbase);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Marshaller marshaller = ks.getMarshallers().newMarshaller(kbase);
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             marshaller.marshall(baos, ksession);
-            marshaller = MarshallerFactory.newMarshaller(kbase);
-            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-            baos.close();
-            ksession = marshaller.unmarshall(bais, sessionConfig, null);
-            bais.close();
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
+                marshaller = MarshallerFactory.newMarshaller(kbase);
+                ksession = marshaller.unmarshall(bais, sessionConfig, null);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Assertions.fail("unexpected exception :" + e.getMessage());

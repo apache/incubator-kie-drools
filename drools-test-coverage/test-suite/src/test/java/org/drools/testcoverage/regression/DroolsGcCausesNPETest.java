@@ -1,10 +1,28 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.testcoverage.regression;
 
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.TurtleTestCategory;
 import org.drools.core.time.SessionPseudoClock;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -36,10 +54,10 @@ public class DroolsGcCausesNPETest {
     private static final String KIE_BASE_NAME = "defaultBase";
     private static final String DRL_FILE_NAME = "DroolsGcCausesNPE.drl";
 
-    private static final KieServices services = KieServices.Factory.get();
+    private static final KieServices SERVICES = KieServices.Factory.get();
 
-    private static final ReleaseId releaseId = services.newReleaseId(
-            "org.jboss.qa.brms.bre", "drools-gc-causes-npe-example", "1.0");
+    private static final ReleaseId RELEASE_ID = SERVICES.newReleaseId(
+            "org.drools.testcoverage", "drools-gc-causes-npe-example", "1.0");
 
     private KieSession session;
     private SessionPseudoClock clock;
@@ -48,51 +66,49 @@ public class DroolsGcCausesNPETest {
     @BeforeClass
     public static void beforeClass() throws Exception {
 
-        KieModuleModel module = services.newKieModuleModel();
+        KieModuleModel module = SERVICES.newKieModuleModel();
         KieBaseModel base = module.newKieBaseModel(KIE_BASE_NAME);
         base.setEventProcessingMode(EventProcessingOption.STREAM);
 
-        KieFileSystem fs = services.newKieFileSystem();
-        fs.generateAndWritePomXML(releaseId);
-        fs.write(services.getResources()
+        KieFileSystem fs = SERVICES.newKieFileSystem();
+        fs.generateAndWritePomXML(RELEASE_ID);
+        fs.write(SERVICES.getResources()
                 .newClassPathResource(DRL_FILE_NAME, DroolsGcCausesNPETest.class));
         fs.writeKModuleXML(module.toXML());
 
-        KieBuilder builder = services.newKieBuilder(fs);
+        KieBuilder builder = SERVICES.newKieBuilder(fs);
         List<Message> errors = builder.buildAll().getResults()
                 .getMessages(Message.Level.ERROR);
-        if (errors.size() > 0) {
-            Assertions.fail("unexpected errors building drl: " + errors);
-        }
 
-        services.getRepository().addKieModule(builder.getKieModule());
+        Assertions.assertThat(errors).as("Unexpected errors building drl: " + errors).isEmpty();
+
+        SERVICES.getRepository().addKieModule(builder.getKieModule());
     }
 
     @Before
     public void setUp() throws Exception {
-        KieSessionConfiguration conf = services.newKieSessionConfiguration();
+        KieSessionConfiguration conf = SERVICES.newKieSessionConfiguration();
         conf.setOption(ClockTypeOption.get("pseudo"));
         conf.setProperty("type", "stateful");
-        KieContainer container = services.newKieContainer(releaseId);
+        KieContainer container = SERVICES.newKieContainer(RELEASE_ID);
         session = container.getKieBase(KIE_BASE_NAME).newKieSession(conf,
-                services.newEnvironment());
+                SERVICES.newEnvironment());
         clock = session.getSessionClock();
         eventFactType = session.getKieBase().getFactType(this.getClass().getPackage().getName(), "Event");
     }
 
     /**
      * The original test method reproducing NPE during event GC.
+     * BZ 1181584
      */
     @Test
-    public void testBZ1181584() throws Exception {
+    @Category(TurtleTestCategory.class)
+    public void testMoreTimesRepeated() throws Exception {
         Random r = new Random(1);
-
         int i = 0;
-
         try {
-            for (; i < 1000000; i++) {
-                insert(createEvent(1));
-                advanceTime(r.nextInt(4000));
+            for (; i < 100000; i++) {
+                insertAndAdvanceTime(i, r.nextInt(4000));
             }
         } catch (NullPointerException e) {
             LOGGER.warn("failed at i = " + i);
@@ -106,17 +122,19 @@ public class DroolsGcCausesNPETest {
      * Deterministic variant of the previous test method that reliably illustrates BZ 1274696.
      */
     @Test
-    public void testBZ1274696() throws Exception {
-        insert(createEvent(1));
-        advanceTime(4000);
+    public void test() throws Exception {
+        insertAndAdvanceTime(1, 4000);
     }
 
-    private Object createEvent(long id) throws InstantiationException,
-            IllegalAccessException {
+    private void insertAndAdvanceTime(long id, long millis) throws IllegalAccessException, InstantiationException {
+        insert(createEvent(id));
+        advanceTime(millis);
+    }
+
+    private Object createEvent(long id) throws IllegalAccessException, InstantiationException {
         Object event = eventFactType.newInstance();
         eventFactType.set(event, "id", id);
         return event;
-
     }
 
     private void advanceTime(long millis) {
@@ -131,8 +149,6 @@ public class DroolsGcCausesNPETest {
 
     private void logActiveFacts() {
         LOGGER.warn("facts: ");
-        for (FactHandle handle : session.getFactHandles()) {
-            LOGGER.warn(handle.toString());
-        }
+        session.getFactHandles().stream().map(Object::toString).forEach(LOGGER::warn);
     }
 }

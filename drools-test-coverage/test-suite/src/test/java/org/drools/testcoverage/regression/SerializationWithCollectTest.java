@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.testcoverage.regression;
 
 import org.junit.After;
@@ -20,12 +36,12 @@ public class SerializationWithCollectTest {
 
     private static final String DRL =
             "import java.util.Collection\n"
-                    + "rule R1 when\n"
-                    + " Collection(empty==false) from collect( Integer() )\n"
-                    + " Collection() from collect( String() )\n"
-                    + "then\n"
-                    + "end\n"
-                    + "rule R2 when then end\n";
+            + "rule R1 when\n"
+            + " Collection(empty==false) from collect( Integer() )\n"
+            + " Collection() from collect( String() )\n"
+            + "then\n"
+            + "end\n"
+            + "rule R2 when then end\n";
 
     private KieBase kbase;
     private KieSession ksession;
@@ -43,29 +59,20 @@ public class SerializationWithCollectTest {
         }
     }
 
+    /**
+     * BZ 1193600
+     */
     @Test
-    public void testBZ1193600() throws Exception {
+    public void test() throws Exception {
         Marshaller marshaller = MarshallerFactory.newMarshaller(kbase);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ByteArrayInputStream bais = null;
-        try {
-            try {
-                marshaller.marshall(baos, ksession);
-            } catch (NullPointerException e) {
-                throw new RuntimeException("Consider reopening BZ 1193600!", e);
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            marshaller.marshall(baos, ksession);
+            try(ByteArrayInputStream bais =  new ByteArrayInputStream(baos.toByteArray())) {
+                marshaller = MarshallerFactory.newMarshaller(kbase);
+                ksession = marshaller.unmarshall(bais);
             }
-            marshaller = MarshallerFactory.newMarshaller(kbase);
-            bais =  new ByteArrayInputStream(baos.toByteArray());
-        } finally {
-            baos.close();
-        }
-
-        try {
-            ksession = marshaller.unmarshall(bais);
-        } finally {
-            if (bais != null) {
-                bais.close();
-            }
+        } catch (NullPointerException e) {
+            throw new RuntimeException("Consider reopening BZ 1193600!", e);
         }
     }
 }
