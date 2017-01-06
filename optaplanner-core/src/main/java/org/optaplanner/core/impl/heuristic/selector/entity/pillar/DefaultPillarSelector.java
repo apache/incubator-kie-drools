@@ -143,11 +143,7 @@ public class DefaultPillarSelector extends AbstractSelector
                 Object value = variableDescriptor.getValue(entity);
                 valueState.add(value);
             }
-            List<Object> pillar = valueStateToPillarMap.get(valueState);
-            if (pillar == null) {
-                pillar = new ArrayList<>();
-                valueStateToPillarMap.put(valueState, pillar);
-            }
+            List<Object> pillar = valueStateToPillarMap.computeIfAbsent(valueState, key -> new ArrayList<>());
             pillar.add(entity);
         }
         cachedBasePillarList = new ArrayList<>(valueStateToPillarMap.values());
