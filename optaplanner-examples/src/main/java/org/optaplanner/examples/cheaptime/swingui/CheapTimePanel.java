@@ -76,11 +76,6 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(CheapTimeSolution solution) {
         removeAll();
         add(groupByMachineCheckBox, BorderLayout.NORTH);

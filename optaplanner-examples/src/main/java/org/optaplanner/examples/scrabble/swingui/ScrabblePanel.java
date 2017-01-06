@@ -70,11 +70,6 @@ public class ScrabblePanel extends SolutionPanel<ScrabbleSolution> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(ScrabbleSolution solution) {
         gridPanel.reset();
         defineGrid(solution);

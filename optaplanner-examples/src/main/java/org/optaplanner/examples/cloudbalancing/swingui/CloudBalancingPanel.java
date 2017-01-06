@@ -168,11 +168,6 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(CloudBalance cloudBalance) {
         maximumComputerCpuPower = 0;
         maximumComputerMemory = 0;

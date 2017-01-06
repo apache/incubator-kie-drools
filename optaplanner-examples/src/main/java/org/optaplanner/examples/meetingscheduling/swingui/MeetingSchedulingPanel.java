@@ -75,11 +75,6 @@ public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return false;
-    }
-
-    @Override
     public void resetPanel(MeetingSchedule meetingSchedule) {
         roomsPanel.reset();
         personsPanel.reset();

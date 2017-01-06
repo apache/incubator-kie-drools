@@ -108,11 +108,6 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(Examination examination) {
         roomsPanel.reset();
         refreshMaximums(examination);

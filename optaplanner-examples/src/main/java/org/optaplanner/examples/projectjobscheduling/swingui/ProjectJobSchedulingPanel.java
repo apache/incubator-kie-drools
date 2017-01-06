@@ -44,11 +44,6 @@ public class ProjectJobSchedulingPanel extends SolutionPanel<Schedule> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(Schedule schedule) {
         removeAll();
         ChartPanel chartPanel = new ChartPanel(createChart(schedule));

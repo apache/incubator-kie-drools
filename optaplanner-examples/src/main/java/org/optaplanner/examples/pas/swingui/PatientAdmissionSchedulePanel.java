@@ -79,11 +79,6 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissio
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(PatientAdmissionSchedule patientAdmissionSchedule) {
         timeTablePanel.reset();
         equipmentTangoColorFactory = new TangoColorFactory();

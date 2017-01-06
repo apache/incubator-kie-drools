@@ -56,11 +56,6 @@ public class TspPanel extends SolutionPanel<TspSolution> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(TspSolution tspSolution) {
         tspWorldPanel.resetPanel(tspSolution);
         tspListPanel.resetPanel(tspSolution);

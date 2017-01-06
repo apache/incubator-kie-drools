@@ -98,11 +98,6 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(InvestmentSolution solution) {
         ignoreChangeEvents = true;
         assetClassPanel.reset();

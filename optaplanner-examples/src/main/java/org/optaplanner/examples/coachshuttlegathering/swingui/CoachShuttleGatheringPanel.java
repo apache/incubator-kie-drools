@@ -45,11 +45,6 @@ public class CoachShuttleGatheringPanel extends SolutionPanel<CoachShuttleGather
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(CoachShuttleGatheringSolution solution) {
         coachShuttleGatheringWorldPanel.resetPanel(solution);
     }

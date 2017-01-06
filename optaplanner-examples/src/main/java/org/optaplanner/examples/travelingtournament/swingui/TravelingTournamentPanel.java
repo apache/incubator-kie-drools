@@ -66,11 +66,6 @@ public class TravelingTournamentPanel extends SolutionPanel<TravelingTournament>
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(TravelingTournament travelingTournament) {
         teamsPanel.reset();
         tangoColorFactory = new TangoColorFactory();

@@ -77,11 +77,6 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return false;
-    }
-
-    @Override
     public void resetPanel(CourseSchedule courseSchedule) {
         roomsPanel.reset();
         teachersPanel.reset();

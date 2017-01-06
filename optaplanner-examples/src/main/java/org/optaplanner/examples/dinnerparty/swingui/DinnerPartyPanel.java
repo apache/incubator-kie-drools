@@ -95,11 +95,6 @@ public class DinnerPartyPanel extends SolutionPanel<DinnerParty> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(DinnerParty dinnerParty) {
         removeAll();
         TangoColorFactory tangoColorFactory = new TangoColorFactory();

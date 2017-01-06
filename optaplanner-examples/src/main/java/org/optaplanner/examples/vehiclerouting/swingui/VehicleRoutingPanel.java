@@ -55,11 +55,6 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(VehicleRoutingSolution solution) {
         vehicleRoutingWorldPanel.resetPanel(solution);
         resetNextLocationId();

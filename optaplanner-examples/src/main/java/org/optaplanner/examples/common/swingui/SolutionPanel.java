@@ -69,7 +69,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
     }
 
     public boolean isRefreshScreenDuringSolving() {
-        return false;
+        return true;
     }
 
     public abstract void resetPanel(Solution_ solution);

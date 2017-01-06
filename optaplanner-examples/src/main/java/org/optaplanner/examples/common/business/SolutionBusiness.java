@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
@@ -41,7 +42,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.Chained
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
@@ -75,6 +75,8 @@ public class SolutionBusiness<Solution_> {
     private volatile Solver<Solution_> solver;
     private String solutionFileName = null;
     private ScoreDirector<Solution_> guiScoreDirector;
+
+    private final AtomicReference<Solution_> skipToBestSolutionRef = new AtomicReference<>();
 
     public SolutionBusiness(CommonApp app) {
         this.app = app;
@@ -218,11 +220,16 @@ public class SolutionBusiness<Solution_> {
              */
             if (solver.isEveryProblemFactChangeProcessed()) {
                 // The final is also needed for thread visibility
-                final Solution_ latestBestSolution = event.getNewBestSolution();
+                final Solution_ newBestSolution = event.getNewBestSolution();
+                skipToBestSolutionRef.set(newBestSolution);
                 SwingUtilities.invokeLater(() -> {
                     // Called on the Swing Event thread
-                    // TODO by the time we process this event, a newer bestSolution might already be queued
-                    guiScoreDirector.setWorkingSolution(latestBestSolution);
+                    Solution_ skipToBestSolution = skipToBestSolutionRef.get();
+                    // Skip this event if a newer one arrived meanwhile to avoid flooding the Swing Event thread
+                    if (newBestSolution != skipToBestSolution) {
+                        return;
+                    }
+                    guiScoreDirector.setWorkingSolution(newBestSolution);
                     solverAndPersistenceFrame.bestSolutionChanged();
                 });
             }

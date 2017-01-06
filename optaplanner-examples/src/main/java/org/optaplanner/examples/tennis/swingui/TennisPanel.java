@@ -76,11 +76,6 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(TennisSolution tennisSolution) {
         datesPanel.reset();
         confrontationsPanel.reset();

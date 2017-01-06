@@ -117,11 +117,6 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(NurseRoster nurseRoster) {
         for (EmployeePanel employeePanel : employeeToPanelMap.values()) {
             if (employeePanel.getEmployee() != null) {

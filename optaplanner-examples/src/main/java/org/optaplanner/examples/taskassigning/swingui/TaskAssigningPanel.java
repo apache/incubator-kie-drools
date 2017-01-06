@@ -211,11 +211,6 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
     }
 
     @Override
-    public boolean isRefreshScreenDuringSolving() {
-        return true;
-    }
-
-    @Override
     public void resetPanel(TaskAssigningSolution taskAssigningSolution) {
         consumedDurationInSeconds = 0;
         previousConsumedDuration = 0;
