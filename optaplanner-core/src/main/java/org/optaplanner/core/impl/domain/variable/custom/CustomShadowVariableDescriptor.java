@@ -143,7 +143,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + CustomShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
-                        + ") with refVariable (" + refVariableDescriptor + ") that must not be a reference too.");
+                        + ") with refVariable (" + refVariableDescriptor + ") that is a reference itself too.");
             }
             refVariableDescriptor.registerSinkVariableDescriptor(this);
         } else {
@@ -193,6 +193,9 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
 
     @Override
     public Class<? extends VariableListener> getVariableListenerClass() {
+        if (isRef()) {
+            return refVariableDescriptor.getVariableListenerClass();
+        }
         return variableListenerClass;
     }
 
