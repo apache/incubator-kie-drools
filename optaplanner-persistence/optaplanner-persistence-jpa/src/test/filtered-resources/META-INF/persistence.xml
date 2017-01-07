@@ -16,6 +16,7 @@
     <class>org.optaplanner.persistence.jpa.impl.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHibernateTypeTest$TestJpaEntity</class>
     <class>org.optaplanner.persistence.jpa.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreHibernateTypeTest$TestJpaEntity</class>
     <class>org.optaplanner.persistence.jpa.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHibernateTypeTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.impl.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScoreHibernateTypeTest$TestJpaEntity</class>
     <class>org.optaplanner.persistence.jpa.impl.score.buildin.bendable.BendableScoreHibernateTypeTest$TestJpaEntity</class>
     <class>org.optaplanner.persistence.jpa.impl.score.buildin.bendablelong.BendableLongScoreHibernateTypeTest$TestJpaEntity</class>
     <class>org.optaplanner.persistence.jpa.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHibernateTypeTest$TestJpaEntity</class>
