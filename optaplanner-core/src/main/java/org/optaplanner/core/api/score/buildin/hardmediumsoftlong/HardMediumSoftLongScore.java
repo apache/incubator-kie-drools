@@ -99,7 +99,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
      * The medium score is usually a negative number because most use cases only have negative constraints.
      * <p>
      * In a normal score comparison, the medium score is irrelevant if the 2 scores don't have the same hard score.
-     * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
+     * @return higher is better, usually negative, 0 if no medium constraints are broken/fulfilled
      */
     public long getMediumScore() {
         return mediumScore;
