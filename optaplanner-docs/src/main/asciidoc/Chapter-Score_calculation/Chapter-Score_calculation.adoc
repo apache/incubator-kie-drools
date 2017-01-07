@@ -337,6 +337,7 @@ Higher medium values take precedence over soft values irrespective of the soft v
 Variants of this `Score` type:
 
 * `HardMediumSoftLongScore` uses `long` values instead of `int` values.
+* `HardMediumSoftBigDecimalScore` uses `BigDecimal` values instead of `int` values.
 
 
 [[bendableScore]]
