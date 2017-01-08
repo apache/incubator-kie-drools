@@ -73,7 +73,7 @@ public class DBUserInfoImpl extends AbstractUserGroupInfo implements UserInfo {
 				!this.config.containsKey(NAME_QUERY) || !this.config.containsKey(EMAIL_QUERY) 
 				|| !this.config.containsKey(MEMBERS_QUERY) || !this.config.containsKey(LANG_QUERY)) {
 			throw new IllegalArgumentException("All properties must be given ("+ DS_JNDI_NAME + ","
-					+ NAME_QUERY +"," + EMAIL_QUERY +"," + LANG_QUERY + "," + EMAIL_QUERY +"," +MEMBERS_QUERY +")");
+					+ NAME_QUERY +"," + EMAIL_QUERY +"," + LANG_QUERY + "," + MEMBERS_QUERY +")");
 		}
 		String jndiName = this.config.getProperty(DS_JNDI_NAME, "java:/DefaultDS");
 		try {
