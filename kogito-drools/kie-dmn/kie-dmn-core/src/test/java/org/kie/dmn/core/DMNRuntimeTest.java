@@ -507,6 +507,27 @@ public class DMNRuntimeTest {
         assertThat( ctx.get("seconds"), is( BigDecimal.valueOf( 14 ) ) );
 
     }
+
+    @Test
+    public void testFiltering() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Person_filtering_by_age.dmn", getClass() );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_e215ed7a-701b-4c53-b8df-4b4d23d5fe32", "Person filtering by age" );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Min Age", 50 );
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        System.out.println(formatMessages( dmnResult.getMessages() ));
+        System.out.println( dmnResult.getContext());
+        assertThat( formatMessages( dmnResult.getMessages() ), ((List)dmnResult.getContext().get("Filtering")).size(), is( 2 ) );
+    }
+
+
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
