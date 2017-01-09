@@ -827,4 +827,84 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
         }
 
     }
+    
+    @Test
+    public void testStartProcessAndAbortThenChangeVariables() {
+        assertNotNull(deploymentService);
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "test");
+        params.put("approval_reviewComment", "need review");
+
+        long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        
+        processService.abortProcessInstance(processInstanceId);
+
+        ProcessInstance pi = processService.getProcessInstance(processInstanceId);
+        assertNull(pi);
+        
+        try {
+            processService.getProcessInstanceVariable(processInstanceId, "approval_reviewComment");
+            fail("Process instance was aborted so variables do not exist");
+        } catch (ProcessInstanceNotFoundException e) {
+            // expected
+        }
+        
+        try {
+            processService.getProcessInstanceVariable(processInstanceId, "approval_reviewComment");
+            fail("Process instance was aborted so variables do not exist");
+        } catch (ProcessInstanceNotFoundException e) {
+            // expected
+        }
+          
+        params = new HashMap<String, Object>();
+        params.put("approval_document", "updated document");
+        params.put("approval_reviewComment", "final review");
+        try {
+            processService.setProcessVariables(processInstanceId, params);
+            fail("Process instance was aborted so cannot be changed");
+        } catch (ProcessInstanceNotFoundException e) {
+            // expected
+        }
+
+        try {
+            processService.setProcessVariable(processInstanceId, "approval_reviewComment", "updated review comment");
+            fail("Process instance was aborted so cannot be changed");
+        } catch (ProcessInstanceNotFoundException e) {
+            // expected
+        }
+    }
+    
+    @Test
+    public void testStartProcessAndAbortAlreadyAborted() {
+        assertNotNull(deploymentService);
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "test");
+        params.put("approval_reviewComment", "need review");
+
+        long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        
+        processService.abortProcessInstance(processInstanceId);
+
+        ProcessInstance pi = processService.getProcessInstance(processInstanceId);
+        assertNull(pi);
+        
+        try {
+            processService.abortProcessInstance(processInstanceId);
+            fail("Process instance was aborted so process instance does not exist any more");
+        } catch (ProcessInstanceNotFoundException e) {
+            // expected
+        }
+    }
 }

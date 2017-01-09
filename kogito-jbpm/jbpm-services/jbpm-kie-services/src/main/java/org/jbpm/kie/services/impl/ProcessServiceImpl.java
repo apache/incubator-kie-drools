@@ -150,7 +150,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public void abortProcessInstance(Long processInstanceId) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null) {
+		if (piDesc == null || piDesc.getState().intValue() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -179,7 +179,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public void signalProcessInstance(Long processInstanceId, String signalName, Object event) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null) {
+		if (piDesc == null || piDesc.getState().intValue() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -264,7 +264,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public void setProcessVariable(Long processInstanceId, String variableId, Object value) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null) {
+		if (piDesc == null || piDesc.getState().intValue() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -287,7 +287,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public void setProcessVariables(Long processInstanceId, Map<String, Object> variables) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null) {
+		if (piDesc == null || piDesc.getState().intValue() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -310,7 +310,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public Object getProcessInstanceVariable(Long processInstanceId, String variableName) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null) {
+		if (piDesc == null || piDesc.getState().intValue() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -347,7 +347,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public Map<String, Object> getProcessInstanceVariables(Long processInstanceId) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null) {
+		if (piDesc == null || piDesc.getState().intValue() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -475,7 +475,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public List<WorkItem> getWorkItemByProcessInstance(Long processInstanceId) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null) {
+		if (piDesc == null || piDesc.getState().intValue() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
