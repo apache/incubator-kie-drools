@@ -96,7 +96,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			return new FalbackRuntimeManager(internalTaskService);
 		}
 		
-		return null;
+		throw new RuntimeException("No runtime manager found for task " + task.toString());
 	}
 	
 	protected RuntimeManager getRuntimeManager(String deploymentId, Command<?> command) {		
@@ -115,7 +115,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 				manager = new FalbackRuntimeManager(internalTaskService);
 			} else {
 				logger.warn("Cannot find runtime manager for deployment {}", deploymentId);
-				return null;
+				throw new RuntimeException("No runtime manager found for deployment " + deploymentId);
 			}
 		}
 		
