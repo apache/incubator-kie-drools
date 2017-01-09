@@ -481,6 +481,27 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         assertEquals(recipientId, organizationalEntity1.getId());
 
     }
+    
+    @Test
+    public void testAssignBusinessAdministratorsChangedDefaults() {
+        peopleAssignmentHelper = new PeopleAssignmentHelper("myadmin", "mygroup");
+        
+        
+        Task task = TaskModelProvider.getFactory().newTask();
+        PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
+        
+        WorkItem workItem = new WorkItemImpl();             
+
+        peopleAssignmentHelper.assignBusinessAdministrators(workItem, peopleAssignments);
+        assertEquals(2, peopleAssignments.getBusinessAdministrators().size());
+        OrganizationalEntity organizationalEntity1 = peopleAssignments.getBusinessAdministrators().get(0);
+        assertTrue(organizationalEntity1 instanceof User);
+        assertEquals("myadmin", organizationalEntity1.getId());
+
+        OrganizationalEntity organizationalEntity2 = peopleAssignments.getBusinessAdministrators().get(1);        
+        assertTrue(organizationalEntity2 instanceof Group);              
+        assertEquals("mygroup", organizationalEntity2.getId());
+    }
 
     private User createUser(String id) {
         return TaskModelProvider.getFactory().newUser(id);

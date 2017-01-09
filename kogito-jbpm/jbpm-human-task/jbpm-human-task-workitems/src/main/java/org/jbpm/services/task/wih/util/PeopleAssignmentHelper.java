@@ -49,8 +49,14 @@ public class PeopleAssignmentHelper {
     public static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
     public static final String RECIPIENT_ID = "RecipientId";
     
+    public static final String DEFAULT_ADMIN_USER = System.getProperty("org.jbpm.ht.admin.user", "Administrator");
+    public static final String DEFAULT_ADMIN_GROUP = System.getProperty("org.jbpm.ht.admin.group", "Administrators");
+    
     private String separator;
     private CaseData caseFile;
+    
+    private String administratorUser = DEFAULT_ADMIN_USER;
+    private String administratorGroup = DEFAULT_ADMIN_GROUP;
     
     public PeopleAssignmentHelper() {
         this.separator = System.getProperty("org.jbpm.ht.user.separator", ",");
@@ -58,6 +64,11 @@ public class PeopleAssignmentHelper {
 	
     public PeopleAssignmentHelper(String separator) {
         this.separator = separator;
+    }
+    
+    public PeopleAssignmentHelper(String adminUser, String adminGroup) {
+        this.administratorUser = adminUser;
+        this.administratorGroup = adminGroup;
     }
     
     public PeopleAssignmentHelper(CaseData caseFile) {
@@ -123,10 +134,10 @@ public class PeopleAssignmentHelper {
         
         if (!hasAdminAssigned(businessAdministrators)) {
             User administrator = TaskModelProvider.getFactory().newUser();
-        	((InternalOrganizationalEntity) administrator).setId("Administrator");        
+        	((InternalOrganizationalEntity) administrator).setId(administratorUser);        
             businessAdministrators.add(administrator);
             Group adminGroup = TaskModelProvider.getFactory().newGroup();
-        	((InternalOrganizationalEntity) adminGroup).setId("Administrators");        
+        	((InternalOrganizationalEntity) adminGroup).setId(administratorGroup);        
             businessAdministrators.add(adminGroup);
         }
         
@@ -246,7 +257,7 @@ public class PeopleAssignmentHelper {
 	
 	protected boolean hasAdminAssigned(Collection<OrganizationalEntity> businessAdmins) {
 	    for (OrganizationalEntity entity : businessAdmins) {
-	        if ("Administrator".equals(entity.getId()) || "Administrators".equals(entity.getId())) {
+	        if (administratorUser.equals(entity.getId()) || administratorGroup.equals(entity.getId())) {
 	            return true;
 	        }
 	    }
