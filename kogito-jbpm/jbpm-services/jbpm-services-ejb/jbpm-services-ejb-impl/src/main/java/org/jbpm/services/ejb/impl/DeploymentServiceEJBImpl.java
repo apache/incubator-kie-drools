@@ -59,7 +59,9 @@ import org.kie.internal.runtime.conf.DeploymentDescriptor;
 @Lock(LockType.WRITE)
 public class DeploymentServiceEJBImpl extends KModuleDeploymentService implements ListenerSupport, DeploymentService, DeploymentServiceEJBLocal, DeploymentServiceEJBRemote {
 
-	@Inject
+	private static final String EXECUTOR_EJB_JNDI_NAME = System.getProperty("org.jbpm.executor.service.ejb-jndi", "jndi:java:module/ExecutorServiceEJBImpl");
+
+    @Inject
 	private Instance<IdentityProvider> identityProvider;
 	
 	private EJBContext context;
@@ -180,7 +182,7 @@ public class DeploymentServiceEJBImpl extends KModuleDeploymentService implement
 			}
 			descriptor.getBuilder()
 			.addWorkItemHandler(new TransientNamedObjectModel("ejb", "async", "org.jbpm.executor.impl.wih.AsyncWorkItemHandler", 
-						new Object[]{"jndi:java:module/ExecutorServiceEJBImpl", "org.jbpm.executor.commands.PrintOutCommand"}));
+						new Object[]{EXECUTOR_EJB_JNDI_NAME, "org.jbpm.executor.commands.PrintOutCommand"}));
 			
 			unit.setDeploymentDescriptor(descriptor);
 		}
