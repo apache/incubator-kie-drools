@@ -45,7 +45,7 @@ public class VacationDaysTest {
 
     @Test
     public void testSolutionCase3() {
-        executeTest( 25, 20, 24 );
+        executeTest( 44, 20, 24 );
     }
 
     @Test
