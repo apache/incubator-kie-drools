@@ -1023,10 +1023,18 @@ public class StringUtils {
         int idx1 = 0; boolean quoted1 = false;
         int idx2 = 0; boolean quoted2 = false;
         boolean equals = true;
-        while ( idx1 < in1.length() && idx2 < in2.length() ) {
+        while ( equals  ) {
+
+            while ( idx1 < (in1.length()) && !quoted1 && isWhitespace(in1.charAt(idx1)) ) {
+                idx1++;
+            }
+            while ( idx2 < (in2.length()) && !quoted2 && isWhitespace(in2.charAt(idx2)) ) {
+                idx2++;
+            }
             
-            equals &= in1.charAt(idx1) == in2.charAt(idx2);
-            if (!equals) {
+            if ( idx1 >= in1.length() || idx2 >= in2.length() ) {
+                // considered equals if equals check succeeded and both indexes reached end of respective string.
+                equals = equals && idx1 == in1.length() && idx2 == in2.length();
                 break;
             }
             
@@ -1040,21 +1048,12 @@ public class StringUtils {
                     quoted2 = !quoted2;
                 }
             }
-            
+
+            equals &= in1.charAt(idx1) == in2.charAt(idx2);
             idx1++;
             idx2++;
-            
-            while ( idx1 < in1.length() && !quoted1 && isWhitespace(in1.charAt(idx1)) ) {
-                idx1++;
-            }
-            while ( idx2 < in2.length() && !quoted2 && isWhitespace(in2.charAt(idx2)) ) {
-                idx2++;
-            }
-
-
         }
-        // considered equals if equals check succeeded and both indexes reached end of respective string.
-        return equals && idx1 == in1.length() && idx2 == in2.length();
+        return equals;
     }
 
     public static int findEndOfMethodArgsIndex(CharSequence string, int startOfMethodArgsIndex) {

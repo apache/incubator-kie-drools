@@ -73,6 +73,19 @@ public class StringUtilsTest {
         
         Assert.assertTrue( StringUtils.codeAwareEqualsIgnoreSpaces( " ", "  " ) );
         
+        Assert.assertTrue(
+                StringUtils.codeAwareEqualsIgnoreSpaces(
+                        "rule Rx when then end",
+                        " rule Rx  when then end " // <<- DIFF 3x 
+                )
+            );
+        Assert.assertTrue(
+                StringUtils.codeAwareEqualsIgnoreSpaces(
+                        "rule Rx when then end\n",
+                        " rule Rx  when then end\n " // <<- DIFF, both terminate with whitespace but different types
+                )
+            );
+        
         Assert.assertFalse(
                 StringUtils.codeAwareEqualsIgnoreSpaces(
                         "package org.drools.compiler\n",
@@ -98,6 +111,36 @@ public class StringUtilsTest {
                         "   $m : Message( message == \"Hello World\" )\n" +
                         "then\n" +
                         "end\n"
+                )
+            );
+        Assert.assertTrue(
+                StringUtils.codeAwareEqualsIgnoreSpaces(
+                        "package org.drools.compiler\n" +
+                        "rule Rx when\n" +
+                        "   $m : Message( message == \"Hello World\" )\n" +
+                        "then\n" +
+                        "end\n",
+                        
+                        " package org.drools.compiler\n" +  // <<- DIFF (at beginning of this line)
+                        "rule Rx when\n" +
+                        "   $m : Message( message == \"Hello World\" )\n" +
+                        "then\n" +
+                        "end\n"
+                )
+            );
+        Assert.assertTrue(
+                StringUtils.codeAwareEqualsIgnoreSpaces(
+                        "package org.drools.compiler\n" +
+                        "rule Rx when\n" +
+                        "   $m : Message( message == \"Hello World\" )\n" +
+                        "then\n" +
+                        "end\n",
+                        
+                        " package org.drools.compiler\n " +  // <<- DIFF 2x
+                        "rule Rx when\n" +
+                        "   $m : Message( message == \"Hello World\" )\n" +
+                        "then\n" +
+                        "end\n " // <<- DIFF 
                 )
             );
         Assert.assertTrue(
