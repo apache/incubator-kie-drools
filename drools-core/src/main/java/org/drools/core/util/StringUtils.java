@@ -999,31 +999,62 @@ public class StringUtils {
         return args;
     }
     
-    private static String codeAwareRemoveWhitespaceChars(String input) {
-        StringBuilder sb = new StringBuilder(input.length());
-        boolean isQuoted = false;
-        for (int i = 0; i < input.length(); i++) {
-            char charAt = input.charAt(i);
-            if ( charAt == '"' ) {
-                if (i == 0 || input.charAt(i-1) != '\\') {
-                    isQuoted = !isQuoted;
+    /**
+     * Compares two string being equals ignoring whitespaces, but preserving whitespace between double-quotes
+     * The two inputs MUST BE valid DRL/Java syntax (this validation is NOT performed by this method, this method assumes they are).
+     * Null check: if either of the input is null, this method will return true IFF both are null.
+     * Empty check: if either of the input is an empty string, it will be considered as a whitespace during code-aware comparison.
+     */
+    public static boolean codeAwareEqualsIgnoreSpaces(String in1, String in2) {
+        if ( in1 == null || in2 == null ) {
+            return in1 == null && in2 == null;
+        }
+        if ( in1.isEmpty() && in2.isEmpty() ) {
+            return true;
+        }
+        
+        if ( in1.length() == 0 ) {
+            in1 = " ";
+        }
+        if ( in2.length() == 0 ) {
+            in2 = " ";
+        }
+        
+        int idx1 = 0; boolean quoted1 = false;
+        int idx2 = 0; boolean quoted2 = false;
+        boolean equals = true;
+        while ( idx1 < in1.length() && idx2 < in2.length() ) {
+            
+            equals &= in1.charAt(idx1) == in2.charAt(idx2);
+            if (!equals) {
+                break;
+            }
+            
+            if ( in1.charAt(idx1) == '"' ) {
+                if (idx1 == 0 || in1.charAt(idx1-1) != '\\') {
+                    quoted1 = !quoted1;
+                }
+            }
+            if ( in2.charAt(idx2) == '"' ) {
+                if (idx2 == 0 || in2.charAt(idx2-1) != '\\') {
+                    quoted2 = !quoted2;
                 }
             }
             
-            if ( isQuoted ) {
-                sb.append(charAt);
-            } else if (!isWhitespace(charAt)) {
-                sb.append(charAt);
+            idx1++;
+            idx2++;
+            
+            while ( idx1 < in1.length() && !quoted1 && isWhitespace(in1.charAt(idx1)) ) {
+                idx1++;
             }
+            while ( idx2 < in2.length() && !quoted2 && isWhitespace(in2.charAt(idx2)) ) {
+                idx2++;
+            }
+
+
         }
-        return sb.toString();
-    }
-    
-    /**
-     * Compares two string being equals ignoring whitespaces, but preserving whitespace between double-quotes
-     */
-    public static boolean codeAwareEqualsIgnoreSpaces(String s1, String s2) {
-        return codeAwareRemoveWhitespaceChars(s1).equals(codeAwareRemoveWhitespaceChars(s2));
+        // considered equals if equals check succeeded and both indexes reached end of respective string.
+        return equals && idx1 == in1.length() && idx2 == in2.length();
     }
 
     public static int findEndOfMethodArgsIndex(CharSequence string, int startOfMethodArgsIndex) {
