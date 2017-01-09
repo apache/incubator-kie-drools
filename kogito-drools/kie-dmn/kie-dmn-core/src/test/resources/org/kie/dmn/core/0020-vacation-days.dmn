@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="_0020_vacation_days" 
+	name="0020-vacation-days"
+	namespace="https://www.drools.org/kie-dmn"
+	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+	xmlns:kie="https://www.drools.org/kie-dmn"
+	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+		
+	<inputData id="i_Age" name="Age">
+		<variable name="Age" typeRef="feel:number"/>
+	</inputData>
+	
+	<inputData id="i_Years_of_Service" name="Years of Service">
+		<variable name="Years of Service" typeRef="feel:number"/>
+	</inputData>
+	
+	<decision name="Total Vacation Days" id="d_Total_Vacation_Days">
+	    <variable name="Total Vacation Days" typeRef="feel:number"/>
+	    <informationRequirement>
+	        <requiredDecision href="#d_Base_Vacation_Days"/>
+	    </informationRequirement>
+	    <informationRequirement>
+			<requiredDecision href="#d_Extra_days_case_1"/>
+		</informationRequirement>
+	    <informationRequirement>
+	        <requiredDecision href="#d_Extra_days_case_2"/>
+	    </informationRequirement>
+	    <informationRequirement>
+	        <requiredDecision href="#d_Extra_days_case_3"/>
+	    </informationRequirement>
+	    <literalExpression>
+	        <text>Base Vacation Days +
+	              max( Extra days case 1, Extra days case 3 ) +
+	              Extra days case 2</text>
+	    </literalExpression>
+	</decision>
+	
+	<decision name="Extra days case 1" id="d_Extra_days_case_1">
+		<variable name="Extra days case 1" typeRef="feel:number"/>
+		<informationRequirement>
+			<requiredInput href="#i_Age"/>
+		</informationRequirement>
+	    <informationRequirement>
+	        <requiredInput href="#i_Years_of_Service"/>
+	    </informationRequirement>
+	    <decisionTable hitPolicy="COLLECT" aggregation="MAX">
+	        <input id="d_Extra_days_case_1_dt_i_age" label="Age">
+	            <inputExpression typeRef="feel:number">
+	                <text>Age</text>
+	            </inputExpression>
+	        </input>
+	        <input id="d_Extra_days_case_1_dt_i_years" label="Years of Service">
+	            <inputExpression typeRef="feel:number">
+	                <text>Years of Service</text>
+	            </inputExpression>
+	        </input>
+	        <output id="d_Extra_days_case_1_dt_o" label="Extra days">
+	            <defaultOutputEntry>
+	                <text>0</text>
+	            </defaultOutputEntry>
+	        </output>
+	        <rule id="d_Extra_days_case_1_dt_r1">
+	            <inputEntry id="d_Extra_days_case_1_dt_r1_i1">
+	                <text>&lt;18,&gt;=60</text>
+	            </inputEntry>
+	            <inputEntry id="d_Extra_days_case_1_dt_r1_i2">
+	                <text>-</text>
+	            </inputEntry>
+	            <outputEntry id="d_Extra_days_case_1_dt_r1_o1">
+	                <text>5</text>
+	            </outputEntry>
+	        </rule>
+	        <rule id="d_Extra_days_case_1_dt_r2">
+	            <inputEntry id="d_Extra_days_case_1_dt_r2_i1">
+	                <text>-</text>
+	            </inputEntry>
+	            <inputEntry id="d_Extra_days_case_1_dt_r2_i2">
+	                <text>&gt;=30</text>
+	            </inputEntry>
+	            <outputEntry id="d_Extra_days_case_1_dt_r2_o1">
+	                <text>5</text>
+	            </outputEntry>
+	        </rule>
+	    </decisionTable>
+	</decision>
+	
+    <decision name="Extra days case 2" id="d_Extra_days_case_2">
+        <variable name="Extra days case 2" typeRef="feel:number"/>
+        <informationRequirement>
+            <requiredInput href="#i_Age"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#i_Years_of_Service"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="COLLECT" aggregation="MAX">
+            <input id="d_Extra_days_case_2_dt_i_age" label="Age">
+                <inputExpression typeRef="feel:number">
+                    <text>Age</text>
+                </inputExpression>
+            </input>
+            <input id="d_Extra_days_case_2_dt_i_years" label="Years of Service">
+                <inputExpression typeRef="feel:number">
+                    <text>Years of Service</text>
+                </inputExpression>
+            </input>
+            <output id="d_Extra_days_case_2_dt_o" label="Extra days">
+                <defaultOutputEntry>
+                    <text>0</text>
+                </defaultOutputEntry>
+            </output>
+            <rule id="d_Extra_days_case_2_dt_r1">
+                <inputEntry id="d_Extra_days_case_2_dt_r1_i1">
+                    <text>-</text>
+                </inputEntry>
+                <inputEntry id="d_Extra_days_case_2_dt_r1_i2">
+                    <text>&gt;=30</text>
+                </inputEntry>
+                <outputEntry id="d_Extra_days_case_2_dt_r1_o1">
+                    <text>3</text>
+                </outputEntry>
+            </rule>
+            <rule id="d_Extra_days_case_2_dt_r2">
+                <inputEntry id="d_Extra_days_case_2_dt_r2_i1">
+                    <text>&gt;=60</text>
+                </inputEntry>
+                <inputEntry id="d_Extra_days_case_2_dt_r2_i2">
+                    <text>-</text>
+                </inputEntry>
+                <outputEntry id="d_Extra_days_case_2_dt_r2_o1">
+                    <text>3</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    
+    <decision name="Extra days case 3" id="d_Extra_days_case_3">
+        <variable name="Extra days case 3" typeRef="feel:number"/>
+        <informationRequirement>
+            <requiredInput href="#i_Age"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#i_Years_of_Service"/>
+        </informationRequirement>
+        <decisionTable hitPolicy="COLLECT" aggregation="MAX">
+            <input id="d_Extra_days_case_3_dt_i_age" label="Age">
+                <inputExpression typeRef="feel:number">
+                    <text>Age</text>
+                </inputExpression>
+            </input>
+            <input id="d_Extra_days_case_3_dt_i_years" label="Years of Service">
+                <inputExpression typeRef="feel:number">
+                    <text>Years of Service</text>
+                </inputExpression>
+            </input>
+            <output id="d_Extra_days_case_3_dt_o" label="Extra days">
+                <defaultOutputEntry>
+                    <text>0</text>
+                </defaultOutputEntry>
+            </output>
+            <rule id="d_Extra_days_case_3_dt_r1">
+                <inputEntry id="d_Extra_days_case_3_dt_r1_i1">
+                    <text>-</text>
+                </inputEntry>
+                <inputEntry id="d_Extra_days_case_3_dt_r1_i2">
+                    <text>[15..30)</text>
+                </inputEntry>
+                <outputEntry id="d_Extra_days_case_3_dt_r1_o1">
+                    <text>2</text>
+                </outputEntry>
+            </rule>
+            <rule id="d_Extra_days_case_3_dt_r2">
+                <inputEntry id="d_Extra_days_case_3_dt_r2_i1">
+                    <text>&gt;=45</text>
+                </inputEntry>
+                <inputEntry id="d_Extra_days_case_3_dt_r2_i2">
+                    <text>-</text>
+                </inputEntry>
+                <outputEntry id="d_Extra_days_case_3_dt_r2_o1">
+                    <text>2</text>
+                </outputEntry>
+            </rule>
+        </decisionTable>
+    </decision>
+    
+    <decision id="d_Base_Vacation_Days" name="Base Vacation Days">
+        <variable name="Base Vacation Days" typeRef="feel:number"/>
+        <literalExpression>
+            <text>22</text>
+        </literalExpression>
+	</decision>
+	
+</definitions>
