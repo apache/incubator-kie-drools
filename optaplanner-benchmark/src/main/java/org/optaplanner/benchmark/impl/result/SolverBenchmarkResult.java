@@ -255,7 +255,7 @@ public class SolverBenchmarkResult {
         XStream xStream = XStreamXmlSolverFactory.buildXStream();
         xStream.setMode(XStream.NO_REFERENCES);
         String xml = xStream.toXML(solverConfig);
-        return StringEscapeUtils.ESCAPE_HTML4.translate(xml);
+        return StringEscapeUtils.escapeHtml4(xml);
     }
 
     public EnvironmentMode getEnvironmentMode() {
