@@ -72,7 +72,7 @@ public class ChangeSetBuilder {
                 byte[] cb = currentJar.getBytes( file );
                 if( ! Arrays.equals( ob, cb ) ) {
                     // check that: (NOT drl file) OR (NOT equalsIgnoringSpaces)
-                    if ( ! ( file.endsWith(".drl") && StringUtils.codeAwareEqualsIgnoreSpaces(new String(ob), new String(cb)) ) ) {
+                    if ( !ResourceType.DRL.matchesExtension(file) || !StringUtils.codeAwareEqualsIgnoreSpaces(new String(ob), new String(cb)) ) {
                         // parse the file to figure out the difference
                         result.getChanges().put( file, diffResource( file, ob, cb ) );
                     }
@@ -173,11 +173,10 @@ public class ChangeSetBuilder {
                     found = true;
                     it.remove();
 
-                    // using byte[] comparison because using the descriptor equals() method
+                    // using codeAwareEqualsIgnoreSpaces comparison because using the descriptor equals() method
                     // is brittle and heavier than iterating an array
-                    // if comparing a RULE, first elision of spaces is required (a rule is considered unchanged if changes only in spaces).
-                    if ( ( type != ResourceChange.Type.RULE && !segmentEquals(ob, ord.getStartCharacter(), ord.getEndCharacter(), cb, crd.getStartCharacter(), crd.getEndCharacter() ) )
-                         || isRuleChanged(ob, cb, type, updatedRules, ord, crd) ) {
+                    if ( !StringUtils.codeAwareEqualsIgnoreSpaces(new String(Arrays.copyOfRange(ob, ord.getStartCharacter(), ord.getEndCharacter())),new String(Arrays.copyOfRange(cb, crd.getStartCharacter(), crd.getEndCharacter())) )
+                         || (type == ResourceChange.Type.RULE && updatedRules.contains( ( (RuleDescr) crd ).getParentName() )) ) {
                         pkgcs.getChanges().add( new ResourceChange( ChangeType.UPDATED, type, cName ) );
                         if (type == ResourceChange.Type.RULE) {
                             updatedRules.add(cName);
@@ -196,21 +195,6 @@ public class ChangeSetBuilder {
                                                         type,
                                                         descrNameConverter.getName(ord) ) );
         }
-    }
-
-    /**
-     * Check if the current rule represented by 'crd' is changed accordingly to the following definition.
-     * If the parent rule of the current rule is already in the detected set of changes, the current rule is considered changed as well.
-     * If the current rule has changed only in blankspaces if compared to the previous version, is not considered changed.
-     * Enforce the check 'type' is RULE.
-     */
-    private boolean isRuleChanged(byte[] ob, byte[] cb, ResourceChange.Type type, Set<String> updatedRules, BaseDescr ord, BaseDescr crd) {
-        if (type == ResourceChange.Type.RULE && !StringUtils.codeAwareEqualsIgnoreSpaces(new String(Arrays.copyOfRange(ob, ord.getStartCharacter(), ord.getEndCharacter())),new String(Arrays.copyOfRange(cb, crd.getStartCharacter(), crd.getEndCharacter())) ) ) {
-            return true;
-        } else if (type == ResourceChange.Type.RULE && updatedRules.contains( ( (RuleDescr) crd ).getParentName() )) {
-            return true;
-        }
-        return false;
     }
 
     private static final RuleHierarchyComparator RULE_HIERARCHY_COMPARATOR = new RuleHierarchyComparator();
