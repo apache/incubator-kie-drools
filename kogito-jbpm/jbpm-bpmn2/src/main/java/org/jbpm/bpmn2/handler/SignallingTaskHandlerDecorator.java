@@ -63,6 +63,18 @@ public class SignallingTaskHandlerDecorator extends AbstractExceptionHandlingTas
         this.eventType = eventType;
     }
     
+    public SignallingTaskHandlerDecorator(Class<? extends WorkItemHandler> originalTaskHandlerClass, String eventType, int exceptionCountLimit) {
+        super(originalTaskHandlerClass);
+        this.eventType = eventType;
+        this.exceptionCountLimit = exceptionCountLimit;
+    }
+    
+    public SignallingTaskHandlerDecorator(WorkItemHandler originalTaskHandler, String eventType, int exceptionCountLimit) {
+        super(originalTaskHandler);
+        this.eventType = eventType;
+        this.exceptionCountLimit = exceptionCountLimit;
+    }
+    
     public void setWorkItemExceptionParameterName(String parameterName) { 
         this.workItemExceptionParameterName = parameterName;
     }
