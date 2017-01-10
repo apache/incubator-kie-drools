@@ -35,8 +35,8 @@ public class TestGenKieSessionDelete implements TestGenKieSessionOperation {
 
     @Override
     public void print(StringBuilder sb) {
-        sb.append(String.format("        //%s%n", this));
-        sb.append(String.format("        kieSession.delete(kieSession.getFactHandle(%s), %s);", entity, entity));
+        sb.append(String.format("        //%s\n", this));
+        sb.append(String.format("        kieSession.delete(kieSession.getFactHandle(%s));\n", entity));
     }
 
     @Override

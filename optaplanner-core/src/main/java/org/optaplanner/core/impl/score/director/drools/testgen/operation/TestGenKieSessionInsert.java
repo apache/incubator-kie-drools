@@ -39,8 +39,8 @@ public class TestGenKieSessionInsert implements TestGenKieSessionOperation {
 
     @Override
     public void print(StringBuilder sb) {
-        sb.append(String.format("        //%s%n", this));
-        sb.append(String.format("        kieSession.insert(%s);%n", fact));
+        sb.append(String.format("        //%s\n", this));
+        sb.append(String.format("        kieSession.insert(%s);\n", fact));
     }
 
     @Override

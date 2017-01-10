@@ -59,10 +59,10 @@ class TestGenSetValueProvider extends TestGenAbstractValueProvider<Set<?>> {
     @Override
     public void printSetup(StringBuilder sb) {
         String e = ((Class<?>) typeArgument).getSimpleName();
-        sb.append(String.format("        HashSet<%s> %s = new HashSet<%s>();%n", e, identifier, e));
+        sb.append(String.format("        HashSet<%s> %s = new HashSet<%s>();\n", e, identifier, e));
         for (Object item : value) {
-            sb.append(String.format("        //%s%n", item));
-            sb.append(String.format("        %s.add(%s);%n", identifier, existingInstances.get(item)));
+            sb.append(String.format("        //%s\n", item));
+            sb.append(String.format("        %s.add(%s);\n", identifier, existingInstances.get(item)));
         }
     }
 

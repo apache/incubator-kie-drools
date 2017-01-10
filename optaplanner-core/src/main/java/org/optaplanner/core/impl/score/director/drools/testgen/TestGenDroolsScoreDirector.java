@@ -34,8 +34,9 @@ import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGe
 
 public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<Solution_> {
 
+    private static final String TEST_CLASS_NAME = "DroolsReproducerTest";
     private final TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
-    private final File testFile = new File("DroolsReproducerTest.java");
+    private final File testFile = new File(TEST_CLASS_NAME + ".java");
     private final TestGenTestWriter writer = new TestGenTestWriter();
 
     public TestGenDroolsScoreDirector(
@@ -45,6 +46,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
             List<String> scoreDrlList,
             List<File> scoreDrlFileList) {
         super(scoreDirectorFactory, locatorEnabled, constraintMatchEnabledPreference);
+        writer.setClassName(TEST_CLASS_NAME);
         writer.setScoreDefinition(scoreDirectorFactory.getScoreDefinition());
         writer.setConstraintMatchEnabled(constraintMatchEnabledPreference);
         writer.setScoreDrlList(scoreDrlList);

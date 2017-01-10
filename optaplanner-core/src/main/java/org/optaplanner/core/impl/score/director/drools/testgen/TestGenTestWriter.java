@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
@@ -40,24 +42,33 @@ class TestGenTestWriter {
     private static final Logger logger = LoggerFactory.getLogger(TestGenTestWriter.class);
     private StringBuilder sb;
     private TestGenKieSessionJournal journal;
-    private List<String> scoreDrlList;
-    private List<File> scoreDrlFileList;
+    private String className;
+    private List<String> scoreDrlList = Collections.emptyList();
+    private List<File> scoreDrlFileList = Collections.emptyList();
     private ScoreDefinition<?> scoreDefinition;
     private boolean constraintMatchEnabled;
     private TestGenCorruptedScoreException scoreEx;
 
+    public void print(TestGenKieSessionJournal journal, Writer w) {
+        print(journal);
+        writeTest(w);
+    }
+
     public void print(TestGenKieSessionJournal journal, File testFile) {
+        print(journal);
+        writeTestFile(testFile);
+    }
+
+    private void print(TestGenKieSessionJournal journal) {
         this.journal = journal;
         this.sb = new StringBuilder(1 << 15); // 2^15 initial capacity
         printInit();
         printSetup();
         printTest();
-        writeTestFile(testFile);
     }
 
     private void printInit() {
-        sb.append("package org.optaplanner.testgen;").append(System.lineSeparator())
-                .append(System.lineSeparator());
+        sb.append("package org.optaplanner.testgen;\n\n");
         SortedSet<String> imports = new TreeSet<>();
         imports.add("org.junit.Before");
         imports.add("org.junit.Test");
@@ -83,104 +94,91 @@ class TestGenTestWriter {
         }
 
         for (String cls : imports) {
-            sb.append(String.format("import %s;%n", cls));
+            sb.append(String.format("import %s;\n", cls));
         }
-        sb.append(System.lineSeparator())
-                .append("public class DroolsReproducerTest {").append(System.lineSeparator())
-                .append(System.lineSeparator())
-                .append("    KieContainer kieContainer;").append(System.lineSeparator())
-                .append("    KieSession kieSession;").append(System.lineSeparator());
+        sb.append("\n")
+                .append("public class ").append(className).append(" {\n\n")
+                .append("    KieContainer kieContainer;\n")
+                .append("    KieSession kieSession;\n");
         if (scoreDefinition != null) {
-            sb
-                    .append("    ScoreHolder scoreHolder = new ")
-                    .append(scoreDefinition.getClass().getSimpleName())
-                    .append("().buildScoreHolder(")
-                    .append(constraintMatchEnabled)
-                    .append(");").append(System.lineSeparator());
+            sb.append(String.format("    ScoreHolder scoreHolder = new %s().buildScoreHolder(%s);\n",
+                    scoreDefinition.getClass().getSimpleName(), constraintMatchEnabled));
         }
 
         for (TestGenFact fact : journal.getFacts()) {
             fact.printInitialization(sb);
         }
-        sb.append(System.lineSeparator());
+        sb.append("\n");
     }
 
     private void printSetup() {
         sb
-                .append("    @Before").append(System.lineSeparator())
-                .append("    public void setUp() {").append(System.lineSeparator())
-                .append("        KieServices kieServices = KieServices.Factory.get();").append(System.lineSeparator())
-                .append("        KieFileSystem kfs = kieServices.newKieFileSystem();").append(System.lineSeparator());
+                .append("    @Before\n")
+                .append("    public void setUp() {\n")
+                .append("        KieServices kieServices = KieServices.Factory.get();\n")
+                .append("        KieFileSystem kfs = kieServices.newKieFileSystem();\n");
         scoreDrlFileList.forEach(file -> {
             sb
-                    .append("        kfs.write(kieServices.getResources()").append(System.lineSeparator())
+                    .append("        kfs.write(kieServices.getResources()\n")
                     .append("                .newFileSystemResource(new File(\"").append(file.getAbsoluteFile())
-                    .append("\"), \"UTF-8\"));").append(System.lineSeparator());
+                    .append("\"), \"UTF-8\"));\n");
         });
         scoreDrlList.forEach(drl -> {
             sb
-                    .append("        kfs.write(kieServices.getResources()").append(System.lineSeparator())
-                    .append("                .newClassPathResource(\"").append(drl).append("\"));")
-                    .append(System.lineSeparator());
+                    .append("        kfs.write(kieServices.getResources()\n")
+                    .append("                .newClassPathResource(\"").append(drl).append("\"));\n");
         });
         sb
-                .append("        kieServices.newKieBuilder(kfs).buildAll();").append(System.lineSeparator())
-                .append("        kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());").append(System.lineSeparator())
-                .append("        kieSession = kieContainer.newKieSession();").append(System.lineSeparator())
-                .append(System.lineSeparator());
+                .append("        kieServices.newKieBuilder(kfs).buildAll();\n")
+                .append("        kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());\n")
+                .append("        kieSession = kieContainer.newKieSession();\n\n");
         if (scoreDefinition != null) {
             sb.append("        kieSession.setGlobal(\"").append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY)
-                    .append("\", scoreHolder);")
-                    .append(System.lineSeparator())
-                    .append(System.lineSeparator());
+                    .append("\", scoreHolder);\n\n");
         }
         for (TestGenFact fact : journal.getFacts()) {
             fact.printSetup(sb);
         }
-        sb.append(System.lineSeparator());
+        sb.append("\n");
         for (TestGenKieSessionOperation insert : journal.getInitialInserts()) {
             insert.print(sb);
         }
-        sb.append("    }")
-                .append(System.lineSeparator())
-                .append(System.lineSeparator());
+        sb.append("    }\n\n");
     }
 
     private void printTest() {
         sb
-                .append("    @Test").append(System.lineSeparator())
-                .append("    public void test() {").append(System.lineSeparator());
+                .append("    @Test\n")
+                .append("    public void test() {\n");
         for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
             op.print(sb);
         }
         if (scoreEx != null) {
             sb
-                    .append("        // This is the corrupted score, just to make sure the bug is reproducible")
-                    .append(System.lineSeparator())
+                    .append("        // This is the corrupted score, just to make sure the bug is reproducible\n")
                     .append("        Assert.assertEquals(\"").append(scoreEx.getWorkingScore())
-                    .append("\", scoreHolder.extractScore(0).toString());").append(System.lineSeparator());
+                    .append("\", scoreHolder.extractScore(0).toString());\n");
             // demonstrate the uncorrupted score
             sb
-                    .append("        kieSession = kieContainer.newKieSession();").append(System.lineSeparator())
+                    .append("        kieSession = kieContainer.newKieSession();\n")
                     .append("        scoreHolder = new ").append(scoreDefinition.getClass().getSimpleName())
-                    .append("().buildScoreHolder(").append(constraintMatchEnabled).append(");").append(System.lineSeparator())
+                    .append("().buildScoreHolder(").append(constraintMatchEnabled).append(");\n")
                     .append("        kieSession.setGlobal(\"").append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY)
-                    .append("\", scoreHolder);").append(System.lineSeparator());
+                    .append("\", scoreHolder);\n");
 
-            sb.append(System.lineSeparator()).append(System.lineSeparator())
-                    .append("        // Insert everything into a fresh session to see the uncorrupted score")
-                    .append(System.lineSeparator());
+            sb
+                    .append("\n\n        // Insert everything into a fresh session to see the uncorrupted score\n");
             for (TestGenKieSessionOperation insert : journal.getInitialInserts()) {
                 insert.print(sb);
             }
             sb
-                    .append("        kieSession.fireAllRules();").append(System.lineSeparator())
+                    .append("        kieSession.fireAllRules();\n")
                     .append("        Assert.assertEquals(\"").append(scoreEx.getUncorruptedScore())
-                    .append("\", scoreHolder.extractScore(0).toString());").append(System.lineSeparator());
+                    .append("\", scoreHolder.extractScore(0).toString());\n");
         }
         sb
-                .append("    }").append(System.lineSeparator())
-                .append("}").append(System.lineSeparator());
+                .append("    }\n")
+                .append("}\n");
     }
 
     private void writeTestFile(File file) {
@@ -197,24 +195,32 @@ class TestGenTestWriter {
             logger.error("Cannot open test file: " + file.toString(), ex);
             return;
         }
-        OutputStreamWriter out;
+        OutputStreamWriter osw;
         try {
-            out = new OutputStreamWriter(fos, "UTF-8");
+            osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8.name());
         } catch (UnsupportedEncodingException ex) {
             logger.error("Can't open", ex);
             return;
         }
+        writeTest(osw);
+    }
+
+    private void writeTest(Writer w) {
         try {
-            out.append(sb);
+            w.append(sb);
         } catch (IOException ex) {
             logger.error("Can't write", ex);
         } finally {
             try {
-                out.close();
+                w.close();
             } catch (IOException ex) {
                 logger.error("Can't close", ex);
             }
         }
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     public void setScoreDrlList(List<String> scoreDrlList) {

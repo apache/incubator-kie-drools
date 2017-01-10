@@ -161,18 +161,18 @@ public class TestGenValueFact implements TestGenFact {
     @Override
     public void printInitialization(StringBuilder sb) {
         if (instance.getClass().isEnum()) {
-            sb.append(String.format("    private final %s %s = %s.%s;%n",
+            sb.append(String.format("    private final %s %s = %s.%s;\n",
                     instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName(),
                     ((Enum) instance).name()));
         } else {
-            sb.append(String.format("    private final %s %s = new %s();%n",
+            sb.append(String.format("    private final %s %s = new %s();\n",
                     instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName()));
         }
     }
 
     @Override
     public void printSetup(StringBuilder sb) {
-        sb.append(String.format("        //%s%n", instanceToString));
+        sb.append(String.format("        //%s\n", instanceToString));
         fields.forEach(f -> f.print(sb));
     }
 

@@ -62,7 +62,7 @@ public class TestGenFactField implements Comparable<TestGenFactField> {
             valueProvider.printSetup(sb);
             // null original value means the field is uninitialized so there's no need to .set(null);
             if (valueProvider.get() != null) {
-                sb.append(String.format("        %s.%s(%s);%n",
+                sb.append(String.format("        %s.%s(%s);\n",
                         fact.getVariableName(), setter.getName(), valueProvider.toString()));
             }
         }

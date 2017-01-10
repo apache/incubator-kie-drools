@@ -74,9 +74,9 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
 
     @Override
     public void print(StringBuilder sb) {
-        sb.append(String.format("        //%s%n", this));
-        sb.append(String.format("        %s.%s(%s);%n", entity, setterName, value));
-        sb.append(String.format("        kieSession.update(kieSession.getFactHandle(%s), %s);%n", entity, entity));
+        sb.append(String.format("        //%s\n", this));
+        sb.append(String.format("        %s.%s(%s);\n", entity, setterName, value));
+        sb.append(String.format("        kieSession.update(kieSession.getFactHandle(%s), %s);\n", entity, entity));
     }
 
     @Override

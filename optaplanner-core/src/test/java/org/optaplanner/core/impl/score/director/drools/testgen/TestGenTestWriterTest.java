@@ -1,0 +1,107 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.optaplanner.core.impl.score.director.drools.testgen;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.junit.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
+import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedScoreException;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+
+import static org.junit.Assert.*;
+
+public class TestGenTestWriterTest {
+
+    @Test
+    public void fullJournalOutput() throws IOException, URISyntaxException {
+        TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
+        TestdataEntity entity = new TestdataEntity("E");
+        TestdataValue value = new TestdataValue("V");
+        journal.addFacts(Arrays.asList("abc", entity, value));
+        journal.insertInitial(value);
+        entity.setValue(value);
+        VariableDescriptor<TestdataSolution> variableDescriptor = TestdataSolution.buildSolutionDescriptor()
+                .getEntityDescriptorStrict(TestdataEntity.class)
+                .getVariableDescriptor("value");
+        journal.update(entity, variableDescriptor);
+        journal.delete(value);
+        journal.fireAllRules();
+
+        TestGenTestWriter writer = new TestGenTestWriter();
+        writer.setClassName("TestGenWriterOutput");
+        writer.setScoreDefinition(new SimpleScoreDefinition());
+        writer.setScoreDrlFileList(Arrays.asList(new File("/x")));
+        writer.setScoreDrlList(Arrays.asList("x", "y"));
+        writer.setConstraintMatchEnabled(true);
+        writer.setCorruptedScoreException(new TestGenCorruptedScoreException(
+                SimpleScore.valueOfInitialized(1), SimpleScore.valueOfInitialized(0)));
+
+        StringWriter sw = new StringWriter();
+        writer.print(journal, sw);
+        URL url = TestGenTestWriterTest.class.getResource("TestGenWriterOutput.java");
+        checkOutput(Paths.get(url.toURI()), sw.toString());
+    }
+
+    @Test
+    public void emptyJournalOutput() throws IOException, URISyntaxException {
+        TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
+        TestGenTestWriter writer = new TestGenTestWriter();
+
+        StringWriter sw = new StringWriter();
+        writer.print(journal, sw);
+        assertFalse(sw.toString().contains("import java.io.File;"));
+
+        // shouldn't throw exception even if lists are null
+        writer.setScoreDrlFileList(null);
+        writer.setScoreDrlList(null);
+        writer.print(journal, new StringWriter());
+    }
+
+    private static void checkOutput(Path expected, String actual) throws IOException {
+        // first detect different lines
+        List<String> expectedLines = Files.readAllLines(expected, StandardCharsets.UTF_8);
+        List<String> actualLines = new BufferedReader(new StringReader(actual)).lines().collect(Collectors.toList());
+        for (int i = 0; i < Math.min(expectedLines.size(), actualLines.size()); i++) {
+            assertEquals("At line " + (i + 1), expectedLines.get(i), actualLines.get(i));
+        }
+
+        // then check line counts are the same
+        assertEquals(expectedLines.size(), actualLines.size());
+
+        // finally check all bytes
+        byte[] expectedBytes = Files.readAllBytes(expected);
+        assertArrayEquals(expectedBytes, actual.getBytes());
+    }
+
+}
