@@ -188,5 +188,50 @@ public class StringUtilsTest {
                         "end\n"
                 )
             );
+        Assert.assertFalse(
+                StringUtils.codeAwareEqualsIgnoreSpaces(
+                        "package org.drools.compiler\n" +
+                        "rule Rx when\n" +
+                        "   $m : Message( message == 'Hello World' )\n" +
+                        "then\n" +
+                        "end\n",
+                        
+                        "package org.drools.compiler\n" +  
+                        "rule Rx when\n" +
+                        "   $m : Message( message == 'Hello    World' )\n" + // <<- DIFF
+                        "then\n" +
+                        "end\n"
+                )
+            );
+        Assert.assertFalse(
+                StringUtils.codeAwareEqualsIgnoreSpaces(
+                        "package org.drools.compiler\n" +
+                        "rule Rx when\n" +
+                        "   $m : Message( message == 'Hello\" World' )\n" +
+                        "then\n" +
+                        "end\n",
+                        
+                        "package org.drools.compiler\n" +  
+                        "rule Rx when\n" +
+                        "   $m : Message( message == 'Hello\"    World' )\n" + // <<- DIFF
+                        "then\n" +
+                        "end\n"
+                )
+            );
+        Assert.assertFalse(
+                StringUtils.codeAwareEqualsIgnoreSpaces(
+                        "package org.drools.compiler\n" +
+                        "rule Rx when\n" +
+                        "   $m : Message( message == 'Hello\\' World' )\n" +
+                        "then\n" +
+                        "end\n",
+                        
+                        "package org.drools.compiler\n" +  
+                        "rule Rx when\n" +
+                        "   $m : Message( message == 'Hello\\'    World' )\n" + // <<- DIFF
+                        "then\n" +
+                        "end\n"
+                )
+            );
     }
 }

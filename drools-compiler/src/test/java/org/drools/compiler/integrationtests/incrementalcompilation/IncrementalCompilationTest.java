@@ -3549,4 +3549,194 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // rule Rx is UNchanged and should NOT fire again
         assertEquals( 1, ksession.fireAllRules() );
     }
+    
+    @Test
+    public void testKJarUpgradeWithSpace_usingSingleQuote() throws Exception {
+        // DROOLS-1399 (using single quote)
+        String drl_1 = "package org.drools.compiler\n" +
+                "rule Rx when\n" +
+                "   $m : Message( message == 'Hello World' )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl_2 = "package org.drools.compiler\n " + // <<- notice the EXTRA SPACE is the only change in this other version.
+                "rule Rx when\n" +
+                "   $m : Message( message == 'Hello World' )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl_1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl_2 );
+
+        kc.updateToVersion( releaseId2 );
+
+        // rule Rx is UNchanged and should NOT fire again
+        assertEquals( 0, ksession.fireAllRules() );
+    }
+    
+    @Test
+    public void testKJarUpgradeDRLWithSpace2_usingSingleQuote() throws Exception {
+        // DROOLS-1399 bis (using single quote)
+        String drl_1 = "package org.drools.compiler\n" +
+                "rule Rx when\n" +
+                "   $m : Message( message == 'Hello World' )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl_2 = "package org.drools.compiler\n" + 
+                "rule Rx when\n" +
+                "   $m : Message( message == 'Hello World'  )\n" + // <<- notice the EXTRA SPACE is the only change in this other version.
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl_1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl_2 );
+
+        kc.updateToVersion( releaseId2 );
+
+        // rule Rx is UNchanged and should NOT fire again
+        assertEquals( 0, ksession.fireAllRules() );
+    }
+    
+    @Test
+    public void testKJarUpgradeDRLWithSpace3_usingSingleQuote() throws Exception {
+        // DROOLS-1399 ter (using single quote)
+        String drl_1 = "package org.drools.compiler\n" +
+                "rule Rs when $s : String() then System.out.println($s); end\n" +
+                "rule Rx when\n" +
+                "   $m : Message( message == 'Hello World' )\n" +
+                "then\n" +
+                "  System.out.println($m); \n"+
+                "end\n";
+
+        String drl_2 = "package org.drools.compiler\n" + 
+                "rule Rs when $s : String( this == 'x') then System.out.println($s); end\n" + // <<- notice rule changed
+                "rule Rx when\n" +
+                "   $m : Message( message == 'Hello World'  )\n" + // <<- notice the EXTRA SPACE is the an ADDITIONAL change in this other version.
+                "then\n" +
+                "  System.out.println($m); \n"+
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl_1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        final List<String> fired = new ArrayList<>();
+        ksession.addEventListener(new DefaultAgendaEventListener() {
+            @Override
+            public void afterMatchFired(AfterMatchFiredEvent event) {
+                fired.add(event.getMatch().getRule().getName());
+            }
+        });
+        
+        ksession.insert( new Message( "Hello World" ) );
+        ksession.insert( "x" );
+        assertEquals( 2, ksession.fireAllRules() );
+        assertTrue( fired.contains("Rs") );
+        assertTrue( fired.contains("Rx") );
+        
+        fired.clear();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl_2 );
+
+        kc.updateToVersion( releaseId2 );
+
+        // rule Rx is UNchanged and should NOT fire again
+        // rule Rs is changed and should match again, and fire again.
+        assertEquals( 1, ksession.fireAllRules() );
+        assertTrue( fired.contains("Rs") );
+        assertFalse( fired.contains("Rx") );
+    }
+    
+    @Test
+    public void testKJarUpgradeDRLWithSpace4_usingSingleQuote() throws Exception {
+        // DROOLS-1399 quater (using single quote)
+        String drl_1 = "package org.drools.compiler\n" +
+                "rule Rx when\n" +
+                "   $m : Message( message == 'Hello  World' )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl_2 = "package org.drools.compiler\n" + 
+                "rule Rx when\n" +
+                "   $m : Message( message == 'Hello World' )\n" + // <<- notice the EXTRA SPACE typo was removed
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl_1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello World" ) );
+        assertEquals( 0, ksession.fireAllRules() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl_2 );
+
+        kc.updateToVersion( releaseId2 );
+
+        // rule Rx is UNchanged and should NOT fire again
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+    
+    @Test
+    public void testKJarUpgradeDRLWithSpace5_usingSingleQuote() throws Exception {
+        // DROOLS-1399 quinquies (using single quote)
+        String drl_1 = "package org.drools.compiler\n" +
+                "rule Rx when\n" +
+                "   $m : Message( message == 'Hello\\'  World' )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl_2 = "package org.drools.compiler\n" + 
+                "rule Rx when\n" +
+                "   $m : Message( message == 'Hello\\' World' )\n" + // <<- notice the EXTRA SPACE typo was removed
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl_1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+        ksession.insert( new Message( "Hello' World" ) ); // <<- notice the ' character on this one
+        assertEquals( 0, ksession.fireAllRules() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, drl_2 );
+
+        kc.updateToVersion( releaseId2 );
+
+        // rule Rx is UNchanged and should NOT fire again
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }
