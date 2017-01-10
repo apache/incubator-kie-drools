@@ -24,6 +24,7 @@ import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.util.StringUtils;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.ResourceChange;
@@ -70,8 +71,11 @@ public class ChangeSetBuilder {
                 byte[] ob = original.getBytes( file );
                 byte[] cb = currentJar.getBytes( file );
                 if( ! Arrays.equals( ob, cb ) ) {
-                    // parse the file to figure out the difference
-                    result.getChanges().put( file, diffResource( file, ob, cb ) );
+                    // check that: (NOT drl file) OR (NOT equalsIgnoringSpaces)
+                    if ( !ResourceType.DRL.matchesExtension(file) || !StringUtils.codeAwareEqualsIgnoreSpaces(new String(ob), new String(cb)) ) {
+                        // parse the file to figure out the difference
+                        result.getChanges().put( file, diffResource( file, ob, cb ) );
+                    }
                 }
             } else {
                 // file was added
@@ -169,10 +173,10 @@ public class ChangeSetBuilder {
                     found = true;
                     it.remove();
 
-                    // using byte[] comparison because using the descriptor equals() method
+                    // using codeAwareEqualsIgnoreSpaces comparison because using the descriptor equals() method
                     // is brittle and heavier than iterating an array
-                    if ( !segmentEquals(ob, ord.getStartCharacter(), ord.getEndCharacter(), cb, crd.getStartCharacter(), crd.getEndCharacter() ) ||
-                         (type == ResourceChange.Type.RULE && updatedRules.contains( ( (RuleDescr) crd ).getParentName() )) ) {
+                    if ( !StringUtils.codeAwareEqualsIgnoreSpaces(new String(Arrays.copyOfRange(ob, ord.getStartCharacter(), ord.getEndCharacter())),new String(Arrays.copyOfRange(cb, crd.getStartCharacter(), crd.getEndCharacter())) )
+                         || (type == ResourceChange.Type.RULE && updatedRules.contains( ( (RuleDescr) crd ).getParentName() )) ) {
                         pkgcs.getChanges().add( new ResourceChange( ChangeType.UPDATED, type, cName ) );
                         if (type == ResourceChange.Type.RULE) {
                             updatedRules.add(cName);
