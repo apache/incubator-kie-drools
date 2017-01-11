@@ -53,6 +53,7 @@ import org.drools.workbench.models.guided.dtable.backend.util.GuidedDTDRLOtherwi
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDTDRLUtilities;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDTTemplateDataProvider;
 import org.drools.workbench.models.guided.dtable.backend.util.TemplateDataProvider;
+import org.drools.workbench.models.guided.dtable.shared.hitpolicy.DecisionTableHitPolicyEnhancer;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
@@ -86,7 +87,9 @@ public class GuidedDTDRLPersistence {
         return new GuidedDTDRLPersistence();
     }
 
-    public String marshal( GuidedDecisionTable52 dt ) {
+    public String marshal( final GuidedDecisionTable52 originalDTable ) {
+
+        final GuidedDecisionTable52 dt = DecisionTableHitPolicyEnhancer.enhance( originalDTable );
 
         StringBuilder sb = new StringBuilder();
 
@@ -490,7 +493,7 @@ public class GuidedDTDRLPersistence {
         }
     }
 
-    //Labelled Actions are used to group actions on the same bound Fact. Only 
+    //Labelled Actions are used to group actions on the same bound Fact. Only
     //ActionSetField and ActionUpdateField need to be grouped in this manner.
     private LabelledAction findByLabelledAction( List<LabelledAction> actions,
                                                  String boundName ) {

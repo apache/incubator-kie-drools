@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
+import static org.drools.workbench.models.guided.dtable.backend.TestUtil.loadResource;
 import static org.junit.Assert.*;
 
 public class GuidedDTXMLPersistenceTest {
@@ -153,19 +154,4 @@ public class GuidedDTXMLPersistenceTest {
         Assertions.assertThat(cellValueList.get(0).getDataType()).isEqualTo(DataType.DataTypes.NUMERIC_INTEGER);
         Assertions.assertThat(cellValueList.get(0).getNumericValue().intValue()).isEqualTo(1);
     }
-
-    public static String loadResource( final String name ) throws Exception {
-        final InputStream in = GuidedDTXMLPersistenceTest.class.getResourceAsStream( name );
-        final Reader reader = new InputStreamReader( in );
-        final StringBuilder text = new StringBuilder();
-        final char[] buf = new char[ 1024 ];
-        int len = 0;
-        while ( ( len = reader.read( buf ) ) >= 0 ) {
-            text.append( buf,
-                         0,
-                         len );
-        }
-        return text.toString();
-    }
-
 }

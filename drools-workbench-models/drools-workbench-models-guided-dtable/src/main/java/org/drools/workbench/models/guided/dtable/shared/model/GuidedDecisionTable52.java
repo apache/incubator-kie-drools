@@ -91,7 +91,28 @@ public class GuidedDecisionTable52 implements HasImports,
         LIMITED_ENTRY
     }
 
+    /**
+     * Lists available dtable hit policies.
+     * <br>
+     * <br>
+     * Source code is genarated based on the selection.
+     * NONE is the default, setting no limitations for the table setup
+     * and generating nothing that the user does not add himself.
+     */
+    public enum HitPolicy {
+        NONE,
+        UNIQUE_HIT,
+        FIRST_HIT,
+        RULE_ORDER;
+
+        public static HitPolicy getDefault() {
+            return NONE;
+        }
+    }
+
     private TableFormat tableFormat = TableFormat.EXTENDED_ENTRY;
+
+    private HitPolicy hitPolicy = HitPolicy.getDefault();
 
     /**
      * First column is always row number. Second column is description.
@@ -331,6 +352,14 @@ public class GuidedDecisionTable52 implements HasImports,
 
     public void setTableFormat( final TableFormat tableFormat ) {
         this.tableFormat = tableFormat;
+    }
+
+    public HitPolicy getHitPolicy() {
+        return hitPolicy == null ? HitPolicy.getDefault(): hitPolicy;
+    }
+
+    public void setHitPolicy( final HitPolicy hitPolicy ) {
+        this.hitPolicy = hitPolicy;
     }
 
     /**
