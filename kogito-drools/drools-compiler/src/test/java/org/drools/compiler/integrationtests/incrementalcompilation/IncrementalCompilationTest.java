@@ -3739,4 +3739,109 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // rule Rx is UNchanged and should NOT fire again
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testJavaClassRedefinition() {
+        String JAVA1 = "package org.test;" +
+                       "    public class MyBean {\n" +
+                       "        private String firstName;\n" +
+                       "        public MyBean() { /* empty constructor */ }\n" +
+                       "        public MyBean(String firstName) { this.firstName = firstName; }\n" +
+                       "        public String getFirstName() { return firstName; }\n" +
+                       "        public void setFirstName(String firstName) { this.firstName = firstName; }\n" +
+                       "    }";
+
+        String DRL1 = "package org.test;\n" +
+                      "\n" +
+                      "//from row number: 1\n" +
+                      "rule \"Row 1 HelloRules\"\n" +
+                      "    when\n" +
+                      "        helloProfile : MyBean( firstName == null )\n" +
+                      "    then\n" +
+                      "        System.out.println(helloProfile);" +
+                      "end";
+
+        String INIT_DRL = "package org.test; rule RINIT when eval(true) then insert(new MyBean()); end";
+        String INIT_DRL_2 = "package org.test; rule RINIT when eval(1==1) then insert(new MyBean()); end";
+
+        String JAVA2 = "package org.test;" +
+                       "    public class MyBean {\n" +
+                       "        private String firstName;\n" +
+                       "        private String lastName;\n" +
+                       "        public MyBean() { /* empty constructor */ }\n" +
+                       "        public MyBean(String firstName) { this.firstName = firstName; }\n" +
+                       "        public MyBean(String firstName, String lastName) { this.firstName = firstName; this.lastName = lastName; }\n" +
+                       "        public String getFirstName() { return firstName; }\n" +
+                       "        public void setFirstName(String firstName) { this.firstName = firstName; }\n" +
+                       "        public String getLastName() { return lastName; }\n" +
+                       "        public void setLastName(String lastName) { this.lastName = lastName; }\n" +
+                       "    }";
+
+        String DRL2 = "package org.test;\n" +
+                      "\n" +
+                      "//from row number: 1\n" +
+                      "rule \"Row 1 HelloRules\"\n" +
+                      "    when\n" +
+                      "        helloProfile : MyBean( firstName == null , lastName == null )\n" +
+                      "    then\n" +
+                      "        System.out.println(helloProfile);" +
+                      "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem();
+        ReleaseId id = ks.newReleaseId( "org.test", "myTest", "1.0.0" );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+
+        kfs.generateAndWritePomXML( id );
+
+        kfs.write("src/main/java/org/test/MyBean.java",
+                  ks.getResources().newReaderResource(new StringReader(JAVA1)));
+
+        kfs.write( ks.getResources()
+                     .newReaderResource( new StringReader( DRL1 ) )
+                     .setResourceType( ResourceType.DRL )
+                     .setSourcePath( "rules.drl" ) );
+
+        kfs.write( ks.getResources()
+                     .newReaderResource( new StringReader( INIT_DRL ) )
+                     .setResourceType( ResourceType.DRL )
+                     .setSourcePath( "INIT_DRL.drl" ) );
+
+        kieBuilder.buildAll();
+
+        KieContainer kc = ks.newKieContainer( id );
+        KieSession ksession = kc.newKieSession();
+
+        int fired = ksession.fireAllRules();
+        assertEquals( 2, fired );
+
+        ReleaseId id2 = ks.newReleaseId( "org.test", "myTest", "2.0.0" );
+        KieFileSystem kfs2 = ks.newKieFileSystem();
+
+        KieBuilder kieBuilder2 = ks.newKieBuilder( kfs2 );
+
+        kfs2.generateAndWritePomXML( id2 );
+
+        kfs2.write("src/main/java/org/test/MyBean.java",
+                   ks.getResources().newReaderResource(new StringReader(JAVA2)));
+
+        kfs2.write( ks.getResources()
+                      .newReaderResource( new StringReader( DRL2 ) )
+                      .setResourceType( ResourceType.DRL )
+                      .setSourcePath( "rules.drl" ) );
+
+        kfs2.write( ks.getResources()
+                      .newReaderResource( new StringReader( INIT_DRL_2 ) )
+                      .setResourceType( ResourceType.DRL )
+                      .setSourcePath( "INIT_DRL.drl" ) );
+
+        kieBuilder2.buildAll();
+
+        kc.updateToVersion(id2);
+
+        fired = ksession.fireAllRules();
+        assertEquals( 2, fired );
+    }
 }

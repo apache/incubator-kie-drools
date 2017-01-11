@@ -378,6 +378,10 @@ public class EntryPointNode extends ObjectSource
         this.objectTypeNodes.remove( node.getObjectType() );
     }
 
+    public void removeObjectType(ObjectType objectType) {
+        this.objectTypeNodes.remove( objectType );
+    }
+
     public void attach() {
         attach(null);
     }
