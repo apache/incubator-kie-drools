@@ -23,6 +23,7 @@ import org.optaplanner.core.api.score.Score;
 /**
  * This {@link Score} is based on 2 levels of int constraints: hard and soft.
  * Hard constraints have priority over soft constraints.
+ * Hard constraints determine feasibility.
  * <p>
  * This class is immutable.
  * @see Score

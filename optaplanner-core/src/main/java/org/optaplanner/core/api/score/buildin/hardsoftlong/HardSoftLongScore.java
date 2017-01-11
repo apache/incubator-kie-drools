@@ -24,6 +24,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 /**
  * This {@link Score} is based on 2 levels of long constraints: hard and soft.
  * Hard constraints have priority over soft constraints.
+ * Hard constraints determine feasibility.
  * <p>
  * This class is immutable.
  * @see Score

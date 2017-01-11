@@ -24,6 +24,7 @@ import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDeci
 /**
  * This {@link Score} is based on 2 levels of double constraints: hard and soft.
  * Hard constraints have priority over soft constraints.
+ * Hard constraints determine feasibility.
  * <p>
  * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
  * For example, this prints false: <code>System.out.println((0.01 + 0.05) == (0.01 + 0.02 + 0.03));</code>

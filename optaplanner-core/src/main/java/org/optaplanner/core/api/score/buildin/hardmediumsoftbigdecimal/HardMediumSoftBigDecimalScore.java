@@ -25,10 +25,10 @@ import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 
 /**
- * This {@link Score} is based on 3 levels of BigInteger constraints: hard, medium and soft.
- *
- * Hard constraints have priority over medium constraints, and determine feasibility.
+ * This {@link Score} is based on 3 levels of {@link BigDecimal} constraints: hard, medium and soft.
+ * Hard constraints have priority over medium constraints.
  * Medium constraints have priority over soft constraints.
+ * Hard constraints determine feasibility.
  * <p>
  * This class is immutable.
  * @see Score
@@ -222,7 +222,8 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
     @Override
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((((17 * 37) + initScore) * 37)
+        return (((((17 * 37)
+                + initScore) * 37)
                 + hardScore.hashCode()) * 37
                 + mediumScore.hashCode()) * 37
                 + softScore.hashCode();
