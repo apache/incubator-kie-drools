@@ -208,8 +208,8 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
 
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((((17 * 37)
-                + initScore)) * 37
+        return ((((17 * 37)
+                + initScore) * 37
                 + Long.valueOf(hardScore).hashCode()) * 37
                 + Long.valueOf(mediumScore).hashCode()) * 37
                 + Long.valueOf(softScore).hashCode();

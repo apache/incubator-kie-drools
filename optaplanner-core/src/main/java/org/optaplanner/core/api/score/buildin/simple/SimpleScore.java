@@ -143,8 +143,8 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
 
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((17 * 37)
-                + initScore)) * 37
+        return ((17 * 37)
+                + initScore) * 37
                 + score;
     }
 

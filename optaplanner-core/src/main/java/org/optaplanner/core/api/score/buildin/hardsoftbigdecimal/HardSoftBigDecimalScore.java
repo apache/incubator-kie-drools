@@ -194,8 +194,8 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
 
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return ((((17 * 37)
-                + initScore)) * 37
+        return (((17 * 37)
+                + initScore) * 37
                 + hardScore.hashCode()) * 37
                 + softScore.hashCode();
     }
