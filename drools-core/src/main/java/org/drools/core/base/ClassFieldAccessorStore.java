@@ -33,6 +33,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -229,6 +230,13 @@ public class ClassFieldAccessorStore
         lookup.remove(new AccessorKey( type.getTypeClassName(), null, AccessorKey.AccessorType.ClassObjectType ));
         for (FactField field : type.getTypeClassDef().getFields()) {
             lookup.remove(new AccessorKey( type.getTypeClassName(), field.getName(), AccessorKey.AccessorType.FieldAccessor ));
+        }
+    }
+
+    public void removeClass(Class<?> clazz) {
+        lookup.remove(new AccessorKey( clazz.getName(), null, AccessorKey.AccessorType.ClassObjectType ));
+        for (Field field : clazz.getDeclaredFields()) {
+            lookup.remove(new AccessorKey( clazz.getName(), field.getName(), AccessorKey.AccessorType.FieldAccessor ));
         }
     }
 
