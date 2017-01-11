@@ -94,7 +94,6 @@ public class HardMediumSoftBigDecimalScoreTest extends AbstractScoreTest {
                         HardMediumSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-10"), new BigDecimal("-300"))));
     }
 
-
     @Test
     public void multiply() {
         assertEquals(HardMediumSoftBigDecimalScore.valueOfInitialized(new BigDecimal("6.0"), new BigDecimal("-4.8"), new BigDecimal("-6.0")),

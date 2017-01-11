@@ -76,7 +76,8 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
 
     @Override
     public Score extractScore(int initScore) {
-        return HardSoftBigDecimalScore.valueOf(initScore, hardScore == null ? BigDecimal.ZERO : hardScore,
+        return HardSoftBigDecimalScore.valueOf(initScore,
+                hardScore == null ? BigDecimal.ZERO : hardScore,
                 softScore == null ? BigDecimal.ZERO : softScore);
     }
 
