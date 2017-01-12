@@ -16,8 +16,6 @@
 
 package org.drools.core.base.accumulators;
 
-import org.kie.api.runtime.rule.AccumulateFunction;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,7 +26,7 @@ import java.math.BigDecimal;
 /**
  * An implementation of an accumulator capable of calculating sum of values
  */
-public class BigDecimalSumAccumulateFunction implements AccumulateFunction {
+public class BigDecimalSumAccumulateFunction extends AbstractAccumulateFunction {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { }
 

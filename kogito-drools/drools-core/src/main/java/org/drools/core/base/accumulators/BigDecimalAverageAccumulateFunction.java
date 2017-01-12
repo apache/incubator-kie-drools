@@ -16,8 +16,6 @@
 
 package org.drools.core.base.accumulators;
 
-import org.kie.api.runtime.rule.AccumulateFunction;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,7 +26,7 @@ import java.math.BigDecimal;
 /**
  * An implementation of an accumulator capable of calculating average values
  */
-public class BigDecimalAverageAccumulateFunction implements AccumulateFunction {
+public class BigDecimalAverageAccumulateFunction extends AbstractAccumulateFunction {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
@@ -117,5 +115,4 @@ public class BigDecimalAverageAccumulateFunction implements AccumulateFunction {
     public Class< ? > getResultType() {
         return BigDecimal.class;
     }
-
 }

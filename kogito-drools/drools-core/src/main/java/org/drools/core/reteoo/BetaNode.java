@@ -230,7 +230,6 @@ public abstract class BetaNode extends LeftTupleSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         constraints = (BetaConstraints) in.readObject();
-        rightInput = (ObjectSource) in.readObject();
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
         rightDeclaredMask = (BitMask) in.readObject();
@@ -241,7 +240,6 @@ public abstract class BetaNode extends LeftTupleSource
         rightInputIsPassive = in.readBoolean();
         setUnificationJoin();
         super.readExternal( in );
-        rightInputIsRiaNode = NodeTypeEnums.RightInputAdaterNode == rightInput.getType();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -254,7 +252,6 @@ public abstract class BetaNode extends LeftTupleSource
         }
 
         out.writeObject( constraints );
-        out.writeObject(rightInput);
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeObject(rightDeclaredMask);
@@ -404,7 +401,12 @@ public abstract class BetaNode extends LeftTupleSource
         return this.rightInput;
     }
 
-    public FastIterator getRightIterator(TupleMemory memory) {
+    public void setRightInput( ObjectSource rightInput ) {
+        this.rightInput = rightInput;
+        rightInputIsRiaNode = NodeTypeEnums.RightInputAdaterNode == rightInput.getType();
+    }
+
+    public FastIterator getRightIterator( TupleMemory memory ) {
         if ( !this.indexedUnificationJoin ) {
             return memory.fastIterator();
         } else {

@@ -38,7 +38,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
 
-import static org.drools.core.reteoo.ReteDumper.getSinks;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -72,9 +71,9 @@ public class NodesPartitioningTest {
         }
     }
 
-    private void traverse(NetworkNode node ) {
+    private void traverse(BaseNode node ) {
         checkNode(node);
-        Sink[] sinks = getSinks( node );
+        Sink[] sinks = node.getSinks();
         if (sinks != null) {
             for (Sink sink : sinks) {
                 if (sink instanceof BaseNode) {

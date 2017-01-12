@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.kie.api.runtime.rule.AccumulateFunction;
-
 /**
  * <p>An implementation of an accumulator capable of collecting lists of values.
  * This is similar to the "collect" CE, but allows us to collect any value, not
@@ -47,9 +45,7 @@ import org.kie.api.runtime.rule.AccumulateFunction;
  * <p>The list accepts duplications and the order of the elements in the list is not
  * guaranteed.</p>
  */
-public class CollectListAccumulateFunction
-    implements
-    AccumulateFunction {
+public class CollectListAccumulateFunction extends AbstractAccumulateFunction {
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {

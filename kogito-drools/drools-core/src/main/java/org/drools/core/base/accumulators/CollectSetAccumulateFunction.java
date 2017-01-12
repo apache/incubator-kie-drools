@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.api.runtime.rule.AccumulateFunction;
-
 /**
  * <p>An implementation of an accumulator capable of collecting sets of values.
  * This is similar to the "collect" CE, but allows us to collect any value, not
@@ -48,9 +46,7 @@ import org.kie.api.runtime.rule.AccumulateFunction;
  * <p>The set obviously does not computes duplications and the order of the elements in the set is not
  * guaranteed.</p>
  */
-public class CollectSetAccumulateFunction
-    implements
-    AccumulateFunction {
+public class CollectSetAccumulateFunction extends AbstractAccumulateFunction {
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {

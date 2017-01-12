@@ -16,15 +16,13 @@
 
 package org.drools.core.base.accumulators;
 
-import org.kie.api.runtime.rule.AccumulateFunction;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-public class LongSumAccumulateFunction implements AccumulateFunction {
+public class LongSumAccumulateFunction extends AbstractAccumulateFunction {
 
     public void readExternal(ObjectInput in ) throws IOException, ClassNotFoundException { }
 
