@@ -129,6 +129,12 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         return initScore == 0 ? this : new HardMediumSoftBigDecimalScore(0, hardScore, mediumScore, softScore);
     }
 
+    @Override
+    public HardMediumSoftBigDecimalScore withInitScore(int newInitScore) {
+        assertNoInitScore();
+        return new HardMediumSoftBigDecimalScore(newInitScore, hardScore, mediumScore, softScore);
+    }
+
     /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints.
      * @return true if the {@link #getHardScore()} is 0 or higher

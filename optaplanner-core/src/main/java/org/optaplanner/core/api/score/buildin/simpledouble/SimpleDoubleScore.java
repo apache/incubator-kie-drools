@@ -90,6 +90,12 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
     }
 
     @Override
+    public SimpleDoubleScore withInitScore(int newInitScore) {
+        assertNoInitScore();
+        return new SimpleDoubleScore(newInitScore, score);
+    }
+
+    @Override
     public SimpleDoubleScore add(SimpleDoubleScore augment) {
         return new SimpleDoubleScore(
                 initScore + augment.getInitScore(),

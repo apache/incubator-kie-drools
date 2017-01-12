@@ -51,6 +51,12 @@ public class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void withInitScore() {
+        assertEquals(SimpleScore.valueOf(-7, -147),
+                SimpleScore.valueOfInitialized(-147).withInitScore(-7));
+    }
+
+    @Test
     public void add() {
         assertEquals(SimpleScore.valueOfInitialized(19),
                 SimpleScore.valueOfInitialized(20).add(

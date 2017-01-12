@@ -53,6 +53,12 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void withInitScore() {
+        assertEquals(SimpleDoubleScore.valueOf(-7, -147.2),
+                SimpleDoubleScore.valueOfInitialized(-147.2).withInitScore(-7));
+    }
+
+    @Test
     public void add() {
         assertEquals(SimpleDoubleScore.valueOfInitialized(19.0),
                 SimpleDoubleScore.valueOfInitialized(20.0).add(

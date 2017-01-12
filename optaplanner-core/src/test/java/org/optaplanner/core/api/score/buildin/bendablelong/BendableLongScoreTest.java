@@ -66,6 +66,12 @@ public class BendableLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void withInitScore() {
+        assertEquals(scoreDefinitionHSS.createScore(-7, -5432109876L, -9876543210L, -3456789012L),
+                scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L).withInitScore(-7));
+    }
+
+    @Test
     public void feasibleHSS() {
         assertScoreNotFeasible(
                 scoreDefinitionHSS.createScoreInitialized(-5L, -300L, -9876543210L),

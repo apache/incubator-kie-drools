@@ -157,6 +157,12 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
     }
 
     @Override
+    public BendableScore withInitScore(int newInitScore) {
+        assertNoInitScore();
+        return new BendableScore(newInitScore, hardScores, softScores);
+    }
+
+    @Override
     public int getLevelsSize() {
         return hardScores.length + softScores.length;
     }

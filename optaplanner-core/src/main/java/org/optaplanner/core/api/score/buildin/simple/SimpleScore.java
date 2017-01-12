@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.simple;
 
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * This {@link Score} is based on 1 level of int constraints.
@@ -81,6 +82,12 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     @Override
     public SimpleScore toInitializedScore() {
         return initScore == 0 ? this : new SimpleScore(0, score);
+    }
+
+    @Override
+    public SimpleScore withInitScore(int newInitScore) {
+        assertNoInitScore();
+        return new SimpleScore(newInitScore, score);
     }
 
     @Override

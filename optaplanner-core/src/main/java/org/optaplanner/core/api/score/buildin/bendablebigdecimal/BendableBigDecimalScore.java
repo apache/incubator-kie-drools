@@ -157,6 +157,12 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     }
 
     @Override
+    public BendableBigDecimalScore withInitScore(int newInitScore) {
+        assertNoInitScore();
+        return new BendableBigDecimalScore(newInitScore, hardScores, softScores);
+    }
+
+    @Override
     public int getLevelsSize() {
         return hardScores.length + softScores.length;
     }

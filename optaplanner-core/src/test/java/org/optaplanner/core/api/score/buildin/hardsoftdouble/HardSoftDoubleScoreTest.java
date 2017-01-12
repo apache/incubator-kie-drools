@@ -53,6 +53,12 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void withInitScore() {
+        assertEquals(HardSoftDoubleScore.valueOf(-7, -147.2, -258.3),
+                HardSoftDoubleScore.valueOfInitialized(-147.2, -258.3).withInitScore(-7));
+    }
+
+    @Test
     public void feasible() {
         assertScoreNotFeasible(
                 HardSoftDoubleScore.valueOfInitialized(-5.0, -300.0),

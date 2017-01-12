@@ -72,6 +72,12 @@ public class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void withInitScore() {
+        assertEquals(scoreDefinitionHSS.createScore(-7, -147, -258, -369),
+                scoreDefinitionHSS.createScoreInitialized(-147, -258, -369).withInitScore(-7));
+    }
+
+    @Test
     public void feasibleHSS() {
         assertScoreNotFeasible(
                 scoreDefinitionHSS.createScoreInitialized(-20, -300, -4000),

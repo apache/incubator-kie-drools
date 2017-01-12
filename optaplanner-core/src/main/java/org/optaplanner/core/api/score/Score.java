@@ -59,6 +59,14 @@ public interface Score<S extends Score> extends Comparable<S> {
     S toInitializedScore();
 
     /**
+     * For example {@code 0hard/-8soft} with {@code -7} returns {@code -7init/0hard/-8soft}.
+     * @param newInitScore always negative (except in statistical calculations), 0 if all planning variables are initialized
+     * @return equals score except that {@link #getInitScore()} is set to {@code newInitScore}
+     * @throws IllegalStateException if the original {@link #getInitScore()} is not 0
+     */
+    S withInitScore(int newInitScore);
+
+    /**
      * Returns a Score whose value is (this + augment).
      * @param augment value to be added to this Score
      * @return this + augment

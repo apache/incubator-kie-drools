@@ -53,6 +53,12 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void withInitScore() {
+        assertEquals(SimpleLongScore.valueOf(-7, -147L),
+                SimpleLongScore.valueOfInitialized(-147L).withInitScore(-7));
+    }
+
+    @Test
     public void add() {
         assertEquals(SimpleLongScore.valueOfInitialized(19L),
                 SimpleLongScore.valueOfInitialized(20L).add(

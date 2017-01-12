@@ -110,6 +110,12 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     @Override
+    public HardSoftBigDecimalScore withInitScore(int newInitScore) {
+        assertNoInitScore();
+        return new HardSoftBigDecimalScore(newInitScore, hardScore, softScore);
+    }
+
+    @Override
     public boolean isFeasible() {
         return initScore >= 0 && hardScore.compareTo(BigDecimal.ZERO) >= 0;
     }

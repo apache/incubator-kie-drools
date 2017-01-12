@@ -55,6 +55,12 @@ public class HardMediumSoftScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void withInitScore() {
+        assertEquals(HardMediumSoftScore.valueOf(-7, -147, -258, -369),
+                HardMediumSoftScore.valueOfInitialized(-147, -258, -369).withInitScore(-7));
+    }
+
+    @Test
     public void feasible() {
         assertScoreNotFeasible(
                 HardMediumSoftScore.valueOfInitialized(-5, -300, -4000),

@@ -112,6 +112,12 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
     }
 
     @Override
+    public HardSoftDoubleScore withInitScore(int newInitScore) {
+        assertNoInitScore();
+        return new HardSoftDoubleScore(newInitScore, hardScore, softScore);
+    }
+
+    @Override
     public boolean isFeasible() {
         return initScore >= 0 && hardScore >= 0.0;
     }

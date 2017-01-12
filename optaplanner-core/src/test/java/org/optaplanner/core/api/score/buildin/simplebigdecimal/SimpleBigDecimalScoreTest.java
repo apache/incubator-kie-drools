@@ -55,6 +55,12 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void withInitScore() {
+        assertEquals(SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-147.2")),
+                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-147.2")).withInitScore(-7));
+    }
+
+    @Test
     public void add() {
         assertEquals(SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("19")),
                 SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("20")).add(
