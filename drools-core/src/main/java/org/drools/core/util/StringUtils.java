@@ -998,6 +998,73 @@ public class StringUtils {
         }
         return args;
     }
+    
+    /**
+     * Compares two string being equals ignoring whitespaces, but preserving whitespace between double-quotes
+     * The two inputs MUST BE valid DRL/Java syntax (this validation is NOT performed by this method, this method assumes they are).
+     * Null check: if either of the input is null, this method will return true IFF both are null.
+     * Empty check: if either of the input is an empty string, it will be considered as a whitespace during code-aware comparison.
+     */
+    public static boolean codeAwareEqualsIgnoreSpaces(String in1, String in2) {
+        if ( in1 == null || in2 == null ) {
+            return in1 == null && in2 == null;
+        }
+        if ( in1.isEmpty() && in2.isEmpty() ) {
+            return true;
+        }
+        
+        if ( in1.length() == 0 ) {
+            in1 = " ";
+        }
+        if ( in2.length() == 0 ) {
+            in2 = " ";
+        }
+        
+        int idx1 = 0; Character quoted1 = null;
+        int idx2 = 0; Character quoted2 = null;
+        boolean equals = true;
+        while ( equals  ) {
+
+            while ( idx1 < (in1.length()) && (quoted1==null) && isWhitespace(in1.charAt(idx1)) ) {
+                idx1++;
+            }
+            while ( idx2 < (in2.length()) && (quoted2==null) && isWhitespace(in2.charAt(idx2)) ) {
+                idx2++;
+            }
+            
+            if ( idx1 >= in1.length() || idx2 >= in2.length() ) {
+                // considered equals if equals check succeeded and both indexes reached end of respective string.
+                equals = equals && idx1 == in1.length() && idx2 == in2.length();
+                break;
+            }
+            
+            if ( in1.charAt(idx1) == '"' || in1.charAt(idx1) == '\'' ) {
+                if ( quoted1 == null ) {
+                    quoted1 = in1.charAt(idx1);
+                } else if ( quoted1 != null && quoted1.equals( in1.charAt(idx1) ) ) {
+                    if ( in1.charAt(idx1-1) != '\\' ) {
+                        quoted1 = null;
+                    }
+                }
+                
+            }
+            if ( in2.charAt(idx2) == '"' || in2.charAt(idx2) == '\'' ) {
+                if ( quoted2 == null ) {
+                    quoted2 = in2.charAt(idx2);
+                } else if ( quoted2 != null && quoted2.equals( in2.charAt(idx2) ) ) {
+                    if ( in2.charAt(idx2-1) != '\\' ) {
+                        quoted2 = null;
+                    }
+                }
+                
+            }
+
+            equals &= in1.charAt(idx1) == in2.charAt(idx2);
+            idx1++;
+            idx2++;
+        }
+        return equals;
+    }
 
     public static int findEndOfMethodArgsIndex(CharSequence string, int startOfMethodArgsIndex) {
         boolean isDoubleQuoted = false;
