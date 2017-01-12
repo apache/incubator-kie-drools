@@ -17,8 +17,12 @@
 package org.drools.core.common;
 
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleRemovalContext;
+import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.util.Bag;
 import org.kie.api.definition.rule.Rule;
@@ -26,6 +30,7 @@ import org.kie.api.definition.rule.Rule;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 
 /**
  * The base class for all Rete nodes.
@@ -198,5 +203,21 @@ public abstract class BaseNode
     @Override
     public final int hashCode() {
         return hashcode;
+    }
+
+    public Sink[] getSinks() {
+        Sink[] sinks = null;
+        if (this instanceof EntryPointNode ) {
+            EntryPointNode source = (EntryPointNode) this;
+            Collection<ObjectTypeNode> otns = source.getObjectTypeNodes().values();
+            sinks = otns.toArray(new Sink[otns.size()]);
+        } else if (this instanceof ObjectSource ) {
+            ObjectSource source = (ObjectSource) this;
+            sinks = source.getObjectSinkPropagator().getSinks();
+        } else if (this instanceof LeftTupleSource ) {
+            LeftTupleSource source = (LeftTupleSource) this;
+            sinks = source.getSinkPropagator().getSinks();
+        }
+        return sinks;
     }
 }

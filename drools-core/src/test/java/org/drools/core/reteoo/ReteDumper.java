@@ -16,13 +16,11 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -57,7 +55,7 @@ public class ReteDumper {
         if (!visitedNodes.add( node )) {
             return;
         }
-        Sink[] sinks = getSinks( node );
+        Sink[] sinks = node.getSinks();
         if (sinks != null) {
             for (Sink sink : sinks) {
                 if (sink instanceof BaseNode) {
@@ -65,21 +63,5 @@ public class ReteDumper {
                 }
             }
         }
-    }
-
-    public static Sink[] getSinks( NetworkNode node ) {
-        Sink[] sinks = null;
-        if (node instanceof EntryPointNode ) {
-            EntryPointNode source = (EntryPointNode) node;
-            Collection<ObjectTypeNode> otns = source.getObjectTypeNodes().values();
-            sinks = otns.toArray(new Sink[otns.size()]);
-        } else if (node instanceof ObjectSource ) {
-            ObjectSource source = (ObjectSource) node;
-            sinks = source.getObjectSinkPropagator().getSinks();
-        } else if (node instanceof LeftTupleSource ) {
-            LeftTupleSource source = (LeftTupleSource) node;
-            sinks = source.getSinkPropagator().getSinks();
-        }
-        return sinks;
     }
 }

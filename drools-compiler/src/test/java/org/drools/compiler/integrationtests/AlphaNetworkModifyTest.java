@@ -197,8 +197,7 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         assertEquals(0, sinks[0].getLeftInputOtnId().getId() );
         assertEquals(1, sinks[1].getLeftInputOtnId().getId() );
         assertEquals(2, sinks[2].getLeftInputOtnId().getId() );
-        assertEquals(3, sinks[3].getLeftInputOtnId().getId() );
-        
+
         ObjectTypeNode otnPerson = getObjectTypeNode(kbase, "Person" );
         ObjectTypeNode otnCheese = getObjectTypeNode(kbase, "Cheese" );
 
@@ -208,8 +207,8 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         wm.insert( new Cheese() );
         wm.fireAllRules();
 
-        assertEquals( 5, otnPerson.getOtnIdCounter() );
-        assertEquals( 4, otnCheese.getOtnIdCounter() );
+        assertEquals( 3, otnPerson.getOtnIdCounter() );
+        assertEquals( 2, otnCheese.getOtnIdCounter() );
     }       
 
 }

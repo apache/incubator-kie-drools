@@ -539,7 +539,7 @@ public class Pattern
     public boolean isCompatibleWithAccumulateReturnType( Class<?> returnType ) {
         return returnType == null ||
                returnType == Object.class ||
-               ( returnType == Comparable.class && objectType instanceof ClassObjectType && ((ClassObjectType)objectType).getClassType() == Number.class ) ||
+               ( returnType == Comparable.class && objectType instanceof ClassObjectType && Number.class.isAssignableFrom( ((ClassObjectType)objectType).getClassType() ) ) ||
                objectType.isAssignableFrom( convertFromPrimitiveType(returnType) );
     }
 
