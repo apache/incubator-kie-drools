@@ -93,7 +93,6 @@ public class RightInputAdapterNode extends ObjectSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        tupleSource = (LeftTupleSource) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
@@ -103,7 +102,6 @@ public class RightInputAdapterNode extends ObjectSource
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject( tupleSource );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
@@ -306,6 +304,10 @@ public class RightInputAdapterNode extends ObjectSource
 
     public LeftTupleSource getLeftTupleSource() {
         return this.tupleSource;
+    }
+
+    public void setTupleSource( LeftTupleSource tupleSource ) {
+        this.tupleSource = tupleSource;
     }
 
     public ObjectTypeNode.Id getLeftInputOtnId() {

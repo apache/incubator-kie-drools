@@ -109,19 +109,21 @@ public abstract class ObjectSource extends BaseNode
                                             ClassNotFoundException {
         super.readExternal( in );
         sink = (ObjectSinkPropagator) in.readObject();
-        source = (ObjectSource) in.readObject();
         alphaNodeHashingThreshold = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( sink );
-        out.writeObject( source );
         out.writeInt( alphaNodeHashingThreshold );
     }
     
     public ObjectSource getParentObjectSource() {
         return this.source;
+    }
+
+    public void setParentObjectSource(ObjectSource source) {
+        this.source = source;
     }
 
     public InternalKnowledgeBase getKnowledgeBase() {

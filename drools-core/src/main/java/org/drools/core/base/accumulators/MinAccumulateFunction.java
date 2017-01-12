@@ -16,8 +16,6 @@
 
 package org.drools.core.base.accumulators;
 
-import org.kie.api.runtime.rule.AccumulateFunction;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -27,7 +25,7 @@ import java.io.Serializable;
 /**
  * An implementation of an accumulator capable of calculating minimun values
  */
-public class MinAccumulateFunction implements AccumulateFunction {
+public class MinAccumulateFunction extends AbstractAccumulateFunction {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
