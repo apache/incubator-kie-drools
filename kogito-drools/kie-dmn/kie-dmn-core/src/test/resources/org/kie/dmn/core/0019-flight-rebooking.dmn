@@ -237,9 +237,6 @@
 	</businessKnowledgeModel>
 	
 	<businessKnowledgeModel id="b_ReassignNextPassenger" name="reassign next passenger">
-	    <knowledgeRequirement>
-	        <requiredKnowledge href="#b_HasCapacity"/>
-	    </knowledgeRequirement>
 	    <encapsulatedLogic>
 			<formalParameter name="Waiting List" typeRef="kie:tPassengerTable"/>
 			<formalParameter name="Reassigned Passengers List" typeRef="kie:tPassengerTable"/>
@@ -314,7 +311,10 @@
 				</contextEntry>
 			</context>
 		</encapsulatedLogic>
-	    <variable name="reassign next passenger" typeRef="kie:tPassengerTable"/>
+		<variable name="reassign next passenger" typeRef="kie:tPassengerTable"/>
+		<knowledgeRequirement>
+			<requiredKnowledge href="#b_HasCapacity"/>
+		</knowledgeRequirement>
 	</businessKnowledgeModel>
     
     <businessKnowledgeModel id="b_HasCapacity" name="has capacity">
