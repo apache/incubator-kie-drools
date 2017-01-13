@@ -79,6 +79,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -87,7 +88,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
-import static org.junit.Assert.assertFalse;
 
 public class IncrementalCompilationTest extends CommonTestMethodBase {
 
@@ -3908,8 +3908,8 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         kfs.generateAndWritePomXML( id );
 
-        kfs.write("src/main/java/org/test/MyBean.java",
-                  ks.getResources().newReaderResource(new StringReader(JAVA1)));
+        kfs.write( "src/main/java/org/test/MyBean.java",
+                   ks.getResources().newReaderResource( new StringReader( JAVA1 ) ) );
 
         kfs.write( ks.getResources()
                      .newReaderResource( new StringReader( DRL1 ) )
@@ -3926,7 +3926,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         KieContainer kc = ks.newKieContainer( id );
         KieSession ksession = kc.newKieSession();
 
-        ksession.insert("This string joins with");
+        ksession.insert( "This string joins with" );
         int fired = ksession.fireAllRules();
         assertEquals( 2, fired );
 
@@ -3937,8 +3937,8 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         kfs2.generateAndWritePomXML( id2 );
 
-        kfs2.write("src/main/java/org/test/MyBean.java",
-                   ks.getResources().newReaderResource(new StringReader(JAVA2)));
+        kfs2.write( "src/main/java/org/test/MyBean.java",
+                    ks.getResources().newReaderResource( new StringReader( JAVA2 ) ) );
 
         kfs2.write( ks.getResources()
                       .newReaderResource( new StringReader( DRL2 ) )
@@ -3952,10 +3952,80 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         kieBuilder2.buildAll();
 
-        Results updateResults = kc.updateToVersion(id2);
-        assertFalse(updateResults.hasMessages(Level.ERROR));
+        Results updateResults = kc.updateToVersion( id2 );
+        assertFalse( updateResults.hasMessages( Level.ERROR ) );
 
         fired = ksession.fireAllRules();
         assertEquals( 2, fired );
+    }
+
+    @Test(timeout = 10000L)
+    public void testMultipleIncrementalCompilationsWithFireUntilHalt() throws Exception {
+        // DROOLS-1406
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-fireUntilHalt", "1.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, getTestRuleForFireUntilHalt(0) );
+
+        // Create a session and fire rules
+        final KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        final KieSession kieSession = kc.newKieSession();
+
+        DebugList<String> list = new DebugList<String>();
+        kieSession.setGlobal( "list", list );
+        kieSession.insert( new Message( "X" ) );
+
+        CountDownLatch done = new CountDownLatch( 1 );
+        list.done = done;
+
+        new Thread( new Runnable() {
+            public void run() {
+                kieSession.fireUntilHalt();
+            }
+        }).start();
+
+        done.await();
+        assertEquals( 1, list.size() );
+        assertEquals( "0 - X", list.get(0) );
+        list.clear();
+
+        for (int i = 1; i < 10; i++) {
+            done = new CountDownLatch( 1 );
+            list.done = done;
+
+            ReleaseId releaseIdI = ks.newReleaseId( "org.kie", "test-fireUntilHalt", "1."+i );
+            km = createAndDeployJar( ks, releaseIdI, getTestRuleForFireUntilHalt(i) );
+
+            kc.updateToVersion( releaseIdI );
+
+            done.await();
+            assertEquals( 1, list.size() );
+            assertEquals( i + " - X", list.get(0) );
+            list.clear();
+        }
+
+        kieSession.halt();
+    }
+
+    private String getTestRuleForFireUntilHalt(int i) {
+        return "package org.drools.compiler\n" +
+               "global java.util.List list;\n" +
+               "rule Rx when\n" +
+               "   Message( $m : message )\n" +
+               "then\n" +
+               "    list.add(\"" + i + " - \" + $m);\n" +
+               "end\n";
+    }
+
+    public static class DebugList<T> extends ArrayList<T> {
+        CountDownLatch done;
+
+        @Override
+        public synchronized boolean add( T t ) {
+            boolean result = super.add( t );
+            done.countDown();
+            return result;
+        }
     }
 }
