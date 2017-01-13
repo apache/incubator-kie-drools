@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Abstract superclass for {@link Score}.
@@ -182,8 +181,8 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
         if (initScore != 0) {
             throw new IllegalStateException("The score (" + this + ")'s initScore (" + initScore
                     + ") should be 0.\n"
-                    + "Maybe the score calculator is calculating the initScore too, although it's the "
-                    + ScoreDirector.class.getSimpleName() + "'s responsibility.");
+                    + "Maybe the score calculator is calculating the initScore too,"
+                    + " although it's the score director's responsibility.");
         }
     }
 
