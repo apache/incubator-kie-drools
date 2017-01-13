@@ -4028,4 +4028,29 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
             return result;
         }
     }
+
+    @Test
+    public void testIncrementalCompilationWithExtendsRule() throws Exception {
+        // DROOLS-1405
+        String drl1 =
+                "rule \"test1\" when then end\n";
+
+        String drl2 =
+                "rule \"test2\" extends \"test1\" when then end\n" +
+                "rule \"test3\" extends \"test1\" when then end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                              .write( "src/main/resources/r1.drl", drl1 );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+
+        //Add file with error - expect 1 "added" error message
+        kfs.write( "src/main/resources/r2.drl", drl2 );
+        IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+
+        assertEquals( 0, addResults.getAddedMessages().size() );
+    }
 }
