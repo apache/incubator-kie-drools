@@ -50,7 +50,7 @@ public class GenericsWithModifyTest {
 
     @Before
     public void initialize() throws IOException {
-        Resource resource = KieServices.Factory.get().getResources().newByteArrayResource(DRL.getBytes(Charset.forName("UTF-8")));
+        final Resource resource = KieServices.Factory.get().getResources().newByteArrayResource(DRL.getBytes(Charset.forName("UTF-8")));
         resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
         final KieBuilder kbuilder = KieBaseUtil.getKieBuilderFromResources(true, resource);
 

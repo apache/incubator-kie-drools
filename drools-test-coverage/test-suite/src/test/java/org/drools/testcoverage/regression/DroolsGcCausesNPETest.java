@@ -66,18 +66,18 @@ public class DroolsGcCausesNPETest {
     @BeforeClass
     public static void beforeClass() throws Exception {
 
-        KieModuleModel module = SERVICES.newKieModuleModel();
-        KieBaseModel base = module.newKieBaseModel(KIE_BASE_NAME);
+        final KieModuleModel module = SERVICES.newKieModuleModel();
+        final KieBaseModel base = module.newKieBaseModel(KIE_BASE_NAME);
         base.setEventProcessingMode(EventProcessingOption.STREAM);
 
-        KieFileSystem fs = SERVICES.newKieFileSystem();
+        final KieFileSystem fs = SERVICES.newKieFileSystem();
         fs.generateAndWritePomXML(RELEASE_ID);
         fs.write(SERVICES.getResources()
                 .newClassPathResource(DRL_FILE_NAME, DroolsGcCausesNPETest.class));
         fs.writeKModuleXML(module.toXML());
 
-        KieBuilder builder = SERVICES.newKieBuilder(fs);
-        List<Message> errors = builder.buildAll().getResults()
+        final KieBuilder builder = SERVICES.newKieBuilder(fs);
+        final List<Message> errors = builder.buildAll().getResults()
                 .getMessages(Message.Level.ERROR);
 
         Assertions.assertThat(errors).as("Unexpected errors building drl: " + errors).isEmpty();
@@ -87,10 +87,10 @@ public class DroolsGcCausesNPETest {
 
     @Before
     public void setUp() throws Exception {
-        KieSessionConfiguration conf = SERVICES.newKieSessionConfiguration();
+        final KieSessionConfiguration conf = SERVICES.newKieSessionConfiguration();
         conf.setOption(ClockTypeOption.get("pseudo"));
         conf.setProperty("type", "stateful");
-        KieContainer container = SERVICES.newKieContainer(RELEASE_ID);
+        final KieContainer container = SERVICES.newKieContainer(RELEASE_ID);
         session = container.getKieBase(KIE_BASE_NAME).newKieSession(conf,
                 SERVICES.newEnvironment());
         clock = session.getSessionClock();
@@ -104,7 +104,7 @@ public class DroolsGcCausesNPETest {
     @Test
     @Category(TurtleTestCategory.class)
     public void testMoreTimesRepeated() throws Exception {
-        Random r = new Random(1);
+        final Random r = new Random(1);
         int i = 0;
         try {
             for (; i < 100000; i++) {
@@ -126,23 +126,23 @@ public class DroolsGcCausesNPETest {
         insertAndAdvanceTime(1, 4000);
     }
 
-    private void insertAndAdvanceTime(long id, long millis) throws IllegalAccessException, InstantiationException {
+    private void insertAndAdvanceTime(final long id, final long millis) throws IllegalAccessException, InstantiationException {
         insert(createEvent(id));
         advanceTime(millis);
     }
 
-    private Object createEvent(long id) throws IllegalAccessException, InstantiationException {
-        Object event = eventFactType.newInstance();
+    private Object createEvent(final long id) throws IllegalAccessException, InstantiationException {
+        final Object event = eventFactType.newInstance();
         eventFactType.set(event, "id", id);
         return event;
     }
 
-    private void advanceTime(long millis) {
+    private void advanceTime(final long millis) {
         clock.advanceTime(millis, TimeUnit.MILLISECONDS);
         session.fireAllRules();
     }
 
-    private void insert(Object event) {
+    private void insert(final Object event) {
         session.insert(event);
         session.fireAllRules();
     }

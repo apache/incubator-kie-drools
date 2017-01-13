@@ -36,12 +36,12 @@ public class NullInListInFromTest {
 
     private static final String DRL =
             "global java.util.List list\n" +
-                    "\n" +
-                    "rule R\n" +
-                    "when\n" +
-                    "    $i : Integer( ) from list\n" +
-                    "then\n" +
-                    "end\n";
+            "\n" +
+            "rule R\n" +
+            "when\n" +
+            "    $i : Integer( ) from list\n" +
+            "then\n" +
+            "end\n";
 
     @Test
     public void testNullValueInFrom() throws Exception {

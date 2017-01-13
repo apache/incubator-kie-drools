@@ -65,9 +65,9 @@ public class SerializationWithCollectTest {
     @Test
     public void test() throws Exception {
         Marshaller marshaller = MarshallerFactory.newMarshaller(kbase);
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             marshaller.marshall(baos, ksession);
-            try(ByteArrayInputStream bais =  new ByteArrayInputStream(baos.toByteArray())) {
+            try (final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
                 marshaller = MarshallerFactory.newMarshaller(kbase);
                 ksession = marshaller.unmarshall(bais);
             }

@@ -61,14 +61,14 @@ public class EventDeserializationInPastTest {
                 " System.out.println($evt.getCode());\n" +
                 "end\n";
 
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
-        KieHelper helper = new KieHelper();
+        final KieHelper helper = new KieHelper();
         helper.addContent(drl, ResourceType.DRL);
-        KieBase kbase = helper.build(EventProcessingOption.STREAM);
+        final KieBase kbase = helper.build(EventProcessingOption.STREAM);
         KieSession ksession = kbase.newKieSession(sessionConfig, null);
         ksession.insert(new Event1("id1", 0));
-        PseudoClockScheduler clock = ksession.getSessionClock();
+        final PseudoClockScheduler clock = ksession.getSessionClock();
         clock.advanceTime(2, TimeUnit.HOURS);
         ksession.fireAllRules();
         ksession = marshallAndUnmarshall(KieServices.Factory.get(), kbase, ksession, sessionConfig);
@@ -76,17 +76,18 @@ public class EventDeserializationInPastTest {
         ksession.fireAllRules();
     }
 
-    private KieSession marshallAndUnmarshall(KieServices ks, KieBase kbase, KieSession ksession) {
+    private KieSession marshallAndUnmarshall(final KieServices ks, final KieBase kbase, final KieSession ksession) {
         return marshallAndUnmarshall(ks, kbase, ksession, null);
     }
 
-    private KieSession marshallAndUnmarshall(KieServices ks, KieBase kbase, KieSession ksession, KieSessionConfiguration sessionConfig) {
+    private KieSession marshallAndUnmarshall(final KieServices ks, final KieBase kbase, KieSession ksession,
+                                             final KieSessionConfiguration sessionConfig) {
         // Serialize and Deserialize
         Marshaller marshaller = ks.getMarshallers().newMarshaller(kbase);
 
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             marshaller.marshall(baos, ksession);
-            try (ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
+            try (final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray())) {
                 marshaller = MarshallerFactory.newMarshaller(kbase);
                 ksession = marshaller.unmarshall(bais, sessionConfig, null);
             }
@@ -101,7 +102,7 @@ public class EventDeserializationInPastTest {
         private final String code;
         private final long timestamp;
 
-        public Event1(String code, long timestamp) {
+        public Event1(final String code, final long timestamp) {
             this.code = code;
             this.timestamp = timestamp;
         }

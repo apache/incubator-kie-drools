@@ -40,14 +40,14 @@ public class EventFactHandleDeserializationTest {
                 "  @role(event)\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
                 .build()
                 .newKieSession();
 
-        DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert("hello");
-        DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert("goodbye");
+        final DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert("hello");
+        final DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert("goodbye");
 
-        SoftAssertions softly = new SoftAssertions();
+        final SoftAssertions softly = new SoftAssertions();
 
         FactHandle key = DefaultFactHandle.createFromExternalFormat(helloHandle.toExternalForm());
         softly.assertThat(key).isInstanceOf(EventFactHandle.class);

@@ -50,13 +50,13 @@ public class FixedPatternTest {
     @Test
     public void testFixedPattern() {
 
-        Resource resource = KieServices.Factory.get().getResources().newClassPathResource("fixedPattern.xls", getClass());
+        final Resource resource = KieServices.Factory.get().getResources().newClassPathResource("fixedPattern.xls", getClass());
         final KieBuilder kbuilder = KieBaseUtil.getKieBuilderFromResources(true, resource);
 
         final KieContainer kcontainer = KieServices.Factory.get().newKieContainer(kbuilder.getKieModule().getReleaseId());
         ksession = kcontainer.newKieSession();
 
-        List<Long> list = new ArrayList<Long>();
+        final List<Long> list = new ArrayList<Long>();
         ksession.setGlobal("list", list);
 
         ksession.insert(1L);

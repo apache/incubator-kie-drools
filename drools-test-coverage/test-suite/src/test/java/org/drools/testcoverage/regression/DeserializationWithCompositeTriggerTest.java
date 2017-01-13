@@ -63,15 +63,15 @@ public class DeserializationWithCompositeTriggerTest {
 
     @Before
     public void prepare() {
-        Resource resource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
+        final Resource resource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
         resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
         final KieBuilder kbuilder = KieBaseUtil.getKieBuilderFromResources(true, resource);
         final KieContainer kcontainer = KieServices.Factory.get().newKieContainer(kbuilder.getKieModule().getReleaseId());
 
-        KieBaseConfiguration kieBaseConfiguration = KieServices.Factory.get().newKieBaseConfiguration();
+        final KieBaseConfiguration kieBaseConfiguration = KieServices.Factory.get().newKieBaseConfiguration();
         kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
 
-        KieSessionConfiguration kieSessionConfiguration = KieServices.Factory.get().newKieSessionConfiguration();
+        final KieSessionConfiguration kieSessionConfiguration = KieServices.Factory.get().newKieSessionConfiguration();
         kieSessionConfiguration.setOption(TimerJobFactoryOption.get("trackable"));
 
         final KieBase kbase = kcontainer.newKieBase(kieBaseConfiguration);
@@ -95,6 +95,5 @@ public class DeserializationWithCompositeTriggerTest {
 
         this.ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true, false);
         Assertions.assertThat(this.ksession).isNotNull();
-
     }
 }

@@ -18,6 +18,8 @@ package org.drools.testcoverage.regression;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.common.DefaultAgenda;
+import org.drools.testcoverage.common.model.Cheese;
+import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
@@ -37,8 +39,8 @@ public class UseOfRuleFlowGroupPlusLockOnTest {
 
     private static final String DRL =
             "package org.drools.testcoverage.regression\n" +
-            "import org.drools.testcoverage.regression.UseOfRuleFlowGroupPlusLockOnTest.Person;\n" +
-            "import org.drools.testcoverage.regression.UseOfRuleFlowGroupPlusLockOnTest.Cheese;\n" +
+            "import org.drools.testcoverage.common.model.Person\n" +
+            "import org.drools.testcoverage.common.model.Cheese\n" +
             "rule R1\n" +
             "ruleflow-group \"group1\"\n" +
             "lock-on-active true\n" +
@@ -63,7 +65,7 @@ public class UseOfRuleFlowGroupPlusLockOnTest {
                        resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
         final KieBuilder kbuilder = KieBaseUtil.getKieBuilderFromResources(true, resource);
         final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
-        KieSession ksession = kbase.newKieSession();
+        final KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Person());
         ksession.insert(new Cheese("eidam"));
@@ -71,54 +73,5 @@ public class UseOfRuleFlowGroupPlusLockOnTest {
 
         Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
         ksession.dispose();
-    }
-
-    public class Cheese {
-        private String type;
-        private int price;
-
-        public Cheese() {
-        }
-
-        public Cheese(String type) {
-            this.type = type;
-        }
-
-        public int getPrice() {
-            return this.price;
-        }
-
-        public String getType() {
-            return this.type;
-        }
-
-        public void setPrice(final int price) {
-            this.price = price;
-        }
-
-    }
-
-    public class Person {
-        private String name;
-
-        public Person() {
-        }
-
-        public Person(final String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return "[Person name='" + this.name + "']";
-        }
     }
 }

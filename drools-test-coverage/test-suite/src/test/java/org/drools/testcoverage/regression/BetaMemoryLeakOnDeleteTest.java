@@ -48,23 +48,23 @@ public class BetaMemoryLeakOnDeleteTest {
                 "then \n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
                 .build()
                 .newKieSession();
 
-        FactHandle fh1 = ksession.insert(1);
-        FactHandle fh2 = ksession.insert("test");
+        final FactHandle fh1 = ksession.insert(1);
+        final FactHandle fh2 = ksession.insert("test");
         ksession.fireAllRules();
         ksession.delete(fh1);
         ksession.delete(fh2);
         ksession.fireAllRules();
 
-        NodeMemories nodeMemories = ((InternalWorkingMemory) ksession).getNodeMemories();
+        final NodeMemories nodeMemories = ((InternalWorkingMemory) ksession).getNodeMemories();
 
         for (int i = 0; i < nodeMemories.length(); i++) {
-            Memory memory = nodeMemories.peekNodeMemory(i);
+            final Memory memory = nodeMemories.peekNodeMemory(i);
             if (memory != null && memory.getSegmentMemory() != null) {
-                LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
+                final LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
                 assertThat(deleteFirst).isNull();
             }
         }
