@@ -47,9 +47,9 @@ public class TestdataScoreNotEqualSolution implements SolutionCloner<TestdataSco
         TestdataScoreNotEqualSolution clone = new TestdataScoreNotEqualSolution();
         clone.entity.setValue(original.entity.getValue());
         if (original.score != null) {
-            clone.score = SimpleScore.valueOf(original.score.getInitScore() - 1, original.score.getScore() - 1);
+            clone.score = SimpleScore.valueOfUninitialized(original.score.getInitScore() - 1, original.score.getScore() - 1);
         } else {
-            clone.score = SimpleScore.valueOfInitialized(0);
+            clone.score = SimpleScore.valueOf(0);
         }
         if (clone.score.equals(original.score)) {
             throw new IllegalStateException("The cloned score should be intentionally inequal to the original score");

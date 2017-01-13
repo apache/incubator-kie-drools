@@ -23,16 +23,14 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapterTest;
 
-import static org.junit.Assert.*;
-
 public class SimpleDoubleScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapterTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleDoubleScoreWrapper(null));
-        SimpleDoubleScore score = SimpleDoubleScore.valueOfInitialized(1234.4321);
+        SimpleDoubleScore score = SimpleDoubleScore.valueOf(1234.4321);
         assertSerializeAndDeserialize(score, new TestSimpleDoubleScoreWrapper(score));
-        score = SimpleDoubleScore.valueOf(-7, 1234.4321);
+        score = SimpleDoubleScore.valueOfUninitialized(-7, 1234.4321);
         assertSerializeAndDeserialize(score, new TestSimpleDoubleScoreWrapper(score));
     }
 

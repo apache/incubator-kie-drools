@@ -18,7 +18,6 @@ package org.optaplanner.core.api.score.buildin.simpledouble;
 
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 
 /**
@@ -37,14 +36,14 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
         String[] scoreTokens = parseScoreTokens(SimpleDoubleScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleDoubleScore.class, scoreString, scoreTokens[0]);
         double score = parseLevelAsDouble(SimpleDoubleScore.class, scoreString, scoreTokens[1]);
-        return valueOf(initScore, score);
+        return valueOfUninitialized(initScore, score);
     }
 
-    public static SimpleDoubleScore valueOf(int initScore, double score) {
+    public static SimpleDoubleScore valueOfUninitialized(int initScore, double score) {
         return new SimpleDoubleScore(initScore, score);
     }
 
-    public static SimpleDoubleScore valueOfInitialized(double score) {
+    public static SimpleDoubleScore valueOf(double score) {
         return new SimpleDoubleScore(0, score);
     }
 

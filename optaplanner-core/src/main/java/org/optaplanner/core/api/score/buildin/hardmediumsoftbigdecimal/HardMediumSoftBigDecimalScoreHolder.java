@@ -105,7 +105,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder {
 
     @Override
     public Score extractScore(int initScore) {
-        return HardMediumSoftBigDecimalScore.valueOf(initScore,
+        return HardMediumSoftBigDecimalScore.valueOfUninitialized(initScore,
                 hardScore == null ? BigDecimal.ZERO : hardScore,
                 mediumScore == null ? BigDecimal.ZERO : mediumScore,
                 softScore == null ? BigDecimal.ZERO : softScore);

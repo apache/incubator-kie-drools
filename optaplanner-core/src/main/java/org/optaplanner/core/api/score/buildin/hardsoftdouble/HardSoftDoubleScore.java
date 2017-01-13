@@ -44,14 +44,14 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
         int initScore = parseInitScore(HardSoftDoubleScore.class, scoreString, scoreTokens[0]);
         double hardScore = parseLevelAsDouble(HardSoftDoubleScore.class, scoreString, scoreTokens[1]);
         double softScore = parseLevelAsDouble(HardSoftDoubleScore.class, scoreString, scoreTokens[2]);
-        return valueOf(initScore, hardScore, softScore);
+        return valueOfUninitialized(initScore, hardScore, softScore);
     }
 
-    public static HardSoftDoubleScore valueOf(int initScore, double hardScore, double softScore) {
+    public static HardSoftDoubleScore valueOfUninitialized(int initScore, double hardScore, double softScore) {
         return new HardSoftDoubleScore(initScore, hardScore, softScore);
     }
 
-    public static HardSoftDoubleScore valueOfInitialized(double hardScore, double softScore) {
+    public static HardSoftDoubleScore valueOf(double hardScore, double softScore) {
         return new HardSoftDoubleScore(0, hardScore, softScore);
     }
 

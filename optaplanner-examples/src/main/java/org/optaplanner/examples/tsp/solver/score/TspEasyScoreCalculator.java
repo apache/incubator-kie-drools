@@ -30,7 +30,7 @@ import org.optaplanner.examples.tsp.domain.Visit;
 public class TspEasyScoreCalculator implements EasyScoreCalculator<TspSolution> {
 
     @Override
-    public SimpleLongScore calculateScore(TspSolution tspSolution, int initScore) {
+    public SimpleLongScore calculateScore(TspSolution tspSolution) {
         List<Visit> visitList = tspSolution.getVisitList();
         Set<Visit> tailVisitSet = new HashSet<>(visitList);
         long score = 0L;
@@ -49,7 +49,7 @@ public class TspEasyScoreCalculator implements EasyScoreCalculator<TspSolution> 
                 score -= tailVisit.getDistanceTo(domicile);
             }
         }
-        return SimpleLongScore.valueOf(initScore, score);
+        return SimpleLongScore.valueOf(score);
     }
 
 }

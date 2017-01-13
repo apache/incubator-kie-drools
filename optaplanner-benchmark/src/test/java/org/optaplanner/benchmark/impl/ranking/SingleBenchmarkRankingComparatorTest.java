@@ -22,7 +22,6 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
@@ -36,13 +35,13 @@ public class SingleBenchmarkRankingComparatorTest {
         a.setAverageScore(null);
         SingleBenchmarkResult b = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
         b.setFailureCount(0);
-        b.setAverageScore(SimpleScore.valueOf(-7, -1));
+        b.setAverageScore(SimpleScore.valueOfUninitialized(-7, -1));
         SingleBenchmarkResult c = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
         c.setFailureCount(0);
-        c.setAverageScore(SimpleScore.valueOfInitialized(-300));
+        c.setAverageScore(SimpleScore.valueOf(-300));
         SingleBenchmarkResult d = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
         d.setFailureCount(0);
-        d.setAverageScore(SimpleScore.valueOfInitialized(-20));
+        d.setAverageScore(SimpleScore.valueOf(-20));
         assertCompareToOrder(comparator, a, b, c, d);
     }
 

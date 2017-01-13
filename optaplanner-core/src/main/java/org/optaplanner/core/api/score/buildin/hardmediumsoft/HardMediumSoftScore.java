@@ -44,14 +44,14 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
         int hardScore = parseLevelAsInt(HardMediumSoftScore.class, scoreString, scoreTokens[1]);
         int mediumScore = parseLevelAsInt(HardMediumSoftScore.class, scoreString, scoreTokens[2]);
         int softScore = parseLevelAsInt(HardMediumSoftScore.class, scoreString, scoreTokens[3]);
-        return valueOf(initScore, hardScore, mediumScore, softScore);
+        return valueOfUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
-    public static HardMediumSoftScore valueOf(int initScore, int hardScore, int mediumScore, int softScore) {
+    public static HardMediumSoftScore valueOfUninitialized(int initScore, int hardScore, int mediumScore, int softScore) {
         return new HardMediumSoftScore(initScore, hardScore, mediumScore, softScore);
     }
 
-    public static HardMediumSoftScore valueOfInitialized(int hardScore, int mediumScore, int softScore) {
+    public static HardMediumSoftScore valueOf(int hardScore, int mediumScore, int softScore) {
         return new HardMediumSoftScore(0, hardScore, mediumScore, softScore);
     }
 

@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.tsp.domain.Domicile;
@@ -161,7 +160,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
         }
         vehicleRoutingSolution.setCustomerList(customerList);
         if (tspSolution.getScore() != null) {
-            vehicleRoutingSolution.setScore(HardSoftLongScore.valueOf(tspSolution.getScore().getInitScore(),
+            vehicleRoutingSolution.setScore(HardSoftLongScore.valueOfUninitialized(tspSolution.getScore().getInitScore(),
                     0, tspSolution.getScore().getScore()));
         }
         return vehicleRoutingSolution;

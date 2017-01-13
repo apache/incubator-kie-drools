@@ -50,7 +50,7 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return SimpleLongScore.valueOf(initScore, (Long) levelNumbers[0]);
+        return SimpleLongScore.valueOfUninitialized(initScore, (Long) levelNumbers[0]);
     }
 
     @Override
@@ -61,14 +61,14 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     @Override
     public SimpleLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return SimpleLongScore.valueOf(0,
+        return SimpleLongScore.valueOfUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getScore() : Long.MAX_VALUE);
     }
 
     @Override
     public SimpleLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return SimpleLongScore.valueOf(0,
+        return SimpleLongScore.valueOfUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Long.MIN_VALUE);
     }
 

@@ -17,11 +17,9 @@
 package org.optaplanner.benchmark.impl.ranking;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.junit.Assert.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
 public class ResilientScoreComparatorTest {
@@ -31,18 +29,18 @@ public class ResilientScoreComparatorTest {
         ResilientScoreComparator comparator = new ResilientScoreComparator();
 
         assertCompareToOrder(comparator,
-                SimpleScore.valueOfInitialized(-20),
-                SimpleScore.valueOfInitialized(-1));
+                SimpleScore.valueOf(-20),
+                SimpleScore.valueOf(-1));
         assertCompareToOrder(comparator,
-                HardSoftScore.valueOfInitialized(-20, -300),
-                HardSoftScore.valueOfInitialized(-1, -4000));
+                HardSoftScore.valueOf(-20, -300),
+                HardSoftScore.valueOf(-1, -4000));
         assertCompareToOrder(comparator,
-                SimpleScore.valueOfInitialized(-4000),
-                HardSoftScore.valueOfInitialized(-300, -300),
-                HardSoftScore.valueOfInitialized(-20, -4000),
-                SimpleScore.valueOfInitialized(-20),
-                HardSoftScore.valueOfInitialized(-20, 4000),
-                SimpleScore.valueOfInitialized(-1));
+                SimpleScore.valueOf(-4000),
+                HardSoftScore.valueOf(-300, -300),
+                HardSoftScore.valueOf(-20, -4000),
+                SimpleScore.valueOf(-20),
+                HardSoftScore.valueOf(-20, 4000),
+                SimpleScore.valueOf(-1));
     }
 
 }

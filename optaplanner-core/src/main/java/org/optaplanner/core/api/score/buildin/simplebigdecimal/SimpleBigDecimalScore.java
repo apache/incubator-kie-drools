@@ -34,14 +34,14 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         String[] scoreTokens = parseScoreTokens(SimpleBigDecimalScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleBigDecimalScore.class, scoreString, scoreTokens[0]);
         BigDecimal score = parseLevelAsBigDecimal(SimpleBigDecimalScore.class, scoreString, scoreTokens[1]);
-        return valueOf(initScore, score);
+        return valueOfUninitialized(initScore, score);
     }
 
-    public static SimpleBigDecimalScore valueOf(int initScore, BigDecimal score) {
+    public static SimpleBigDecimalScore valueOfUninitialized(int initScore, BigDecimal score) {
         return new SimpleBigDecimalScore(initScore, score);
     }
 
-    public static SimpleBigDecimalScore valueOfInitialized(BigDecimal score) {
+    public static SimpleBigDecimalScore valueOf(BigDecimal score) {
         return new SimpleBigDecimalScore(0, score);
     }
 

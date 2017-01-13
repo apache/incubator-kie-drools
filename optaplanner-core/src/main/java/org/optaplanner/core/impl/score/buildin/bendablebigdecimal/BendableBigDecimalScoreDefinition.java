@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
@@ -74,21 +73,21 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (BigDecimal) levelNumbers[hardLevelsSize + i];
         }
-        return BendableBigDecimalScore.valueOf(initScore, hardScores, softScores);
+        return BendableBigDecimalScore.valueOfUninitialized(initScore, hardScores, softScores);
     }
 
-    public BendableBigDecimalScore createScoreInitialized(BigDecimal... scores) {
-        return createScore(0, scores);
+    public BendableBigDecimalScore createScore(BigDecimal... scores) {
+        return createScoreUninitialized(0, scores);
     }
 
-    public BendableBigDecimalScore createScore(int initScore, BigDecimal... scores) {
+    public BendableBigDecimalScore createScoreUninitialized(int initScore, BigDecimal... scores) {
         int levelsSize = hardLevelsSize + softLevelsSize;
         if (scores.length != levelsSize) {
             throw new IllegalArgumentException("The scores (" + Arrays.toString(scores)
                     + ")'s length (" + scores.length
                     + ") is not levelsSize (" + levelsSize + ").");
         }
-        return BendableBigDecimalScore.valueOf(initScore,
+        return BendableBigDecimalScore.valueOfUninitialized(initScore,
                 Arrays.copyOfRange(scores, 0, hardLevelsSize),
                 Arrays.copyOfRange(scores, hardLevelsSize, levelsSize));
     }

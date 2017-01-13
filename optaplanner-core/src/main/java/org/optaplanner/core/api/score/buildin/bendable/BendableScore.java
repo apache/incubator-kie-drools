@@ -51,7 +51,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
         for (int i = 0; i < softScores.length; i++) {
             softScores[i] = parseLevelAsInt(BendableScore.class, scoreString, scoreTokens[2][i]);
         }
-        return valueOf(initScore, hardScores, softScores);
+        return valueOfUninitialized(initScore, hardScores, softScores);
     }
 
     /**
@@ -61,7 +61,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
      */
-    public static BendableScore valueOf(int initScore, int[] hardScores, int[] softScores) {
+    public static BendableScore valueOfUninitialized(int initScore, int[] hardScores, int[] softScores) {
         return new BendableScore(initScore, hardScores, softScores);
     }
 
@@ -71,7 +71,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
      */
-    public static BendableScore valueOfInitialized(int[] hardScores, int[] softScores) {
+    public static BendableScore valueOf(int[] hardScores, int[] softScores) {
         return new BendableScore(0, hardScores, softScores);
     }
 

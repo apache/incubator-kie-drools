@@ -58,29 +58,29 @@ public class BestSolutionRecallerTest {
 
     @Test
     public void unimprovedUninitializedProcessWorkingSolutionDuringStep() {
-        SimpleScore originalBestScore = SimpleScore.valueOf(-1, -300);
-        SimpleScore stepScore = SimpleScore.valueOf(-2, 0);
+        SimpleScore originalBestScore = SimpleScore.valueOfUninitialized(-1, -300);
+        SimpleScore stepScore = SimpleScore.valueOfUninitialized(-2, 0);
         doProcessWorkingSolutionDuringStep(originalBestScore, stepScore, false);
     }
 
     @Test
     public void unimprovedInitializedProcessWorkingSolutionDuringStep() {
-        Score originalBestScore = SimpleScore.valueOfInitialized(0);
-        Score stepScore = SimpleScore.valueOfInitialized(-1);
+        Score originalBestScore = SimpleScore.valueOf(0);
+        Score stepScore = SimpleScore.valueOf(-1);
         doProcessWorkingSolutionDuringStep(originalBestScore, stepScore, false);
     }
 
     @Test
     public void improvedUninitializedProcessWorkingSolutionDuringStep() {
-        Score originalBestScore = SimpleScore.valueOf(-2, 0);
-        Score stepScore = SimpleScore.valueOf(-1, 0);
+        Score originalBestScore = SimpleScore.valueOfUninitialized(-2, 0);
+        Score stepScore = SimpleScore.valueOfUninitialized(-1, 0);
         doProcessWorkingSolutionDuringStep(originalBestScore, stepScore, true);
     }
 
     @Test
     public void improvedInitializedProcessWorkingSolutionDuringStep() {
-        Score originalBestScore = SimpleScore.valueOfInitialized(-1);
-        Score stepScore = SimpleScore.valueOfInitialized(0);
+        Score originalBestScore = SimpleScore.valueOf(-1);
+        Score stepScore = SimpleScore.valueOf(0);
         doProcessWorkingSolutionDuringStep(originalBestScore, stepScore, true);
     }
 
@@ -111,30 +111,30 @@ public class BestSolutionRecallerTest {
 
     @Test
     public void unimprovedUninitializedProcessWorkingSolutionDuringMove() {
-        Score bestScore = SimpleScore.valueOfInitialized(-10);
-        Score moveScore = SimpleScore.valueOf(-1, -1);
+        Score bestScore = SimpleScore.valueOf(-10);
+        Score moveScore = SimpleScore.valueOfUninitialized(-1, -1);
         doProcessWorkingSolutionDuringMove(bestScore, moveScore, false);
     }
 
 
     @Test
     public void unimprovedInitializedProcessWorkingSolutionDuringMove() {
-        Score bestScore = SimpleScore.valueOfInitialized(0);
-        Score moveScore = SimpleScore.valueOfInitialized(-1);
+        Score bestScore = SimpleScore.valueOf(0);
+        Score moveScore = SimpleScore.valueOf(-1);
         doProcessWorkingSolutionDuringMove(bestScore, moveScore, false);
     }
 
     @Test
     public void improvedUninitializedProcessWorkingSolutionDuringMove() {
-        Score bestScore = SimpleScore.valueOf(-1, 0);
-        SimpleScore moveScore = SimpleScore.valueOfInitialized(-2);
+        Score bestScore = SimpleScore.valueOfUninitialized(-1, 0);
+        SimpleScore moveScore = SimpleScore.valueOf(-2);
         doProcessWorkingSolutionDuringMove(bestScore, moveScore, true);
     }
 
     @Test
     public void improvedInitializedProcessWorkingSolutionDuringMove() {
-        Score bestScore = SimpleScore.valueOfInitialized(-2);
-        Score moveScore = SimpleScore.valueOfInitialized(-1);
+        Score bestScore = SimpleScore.valueOf(-2);
+        Score moveScore = SimpleScore.valueOf(-1);
         doProcessWorkingSolutionDuringMove(bestScore, moveScore, true);
     }
 

@@ -37,7 +37,7 @@ public abstract class AbstractNodeComparatorTest {
             long parentBreadth, long breadth) {
         return buildNode(depth,
                 SimpleScore.parseScore(score),
-                SimpleScore.valueOfInitialized(optimisticBound),
+                SimpleScore.valueOf(optimisticBound),
                 parentBreadth, breadth);
     }
 

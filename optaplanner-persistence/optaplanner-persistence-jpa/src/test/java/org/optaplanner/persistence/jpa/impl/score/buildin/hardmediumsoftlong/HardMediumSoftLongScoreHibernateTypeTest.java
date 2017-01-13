@@ -30,8 +30,8 @@ public class HardMediumSoftLongScoreHibernateTypeTest extends AbstractScoreHiber
     @Test
     public void persistAndMerge() {
         persistAndMerge(new TestJpaEntity(null),
-                HardMediumSoftLongScore.valueOfInitialized(-100L, -20L, -3L),
-                HardMediumSoftLongScore.valueOf(-7, -100L, -20L, -3L));
+                HardMediumSoftLongScore.valueOf(-100L, -20L, -3L),
+                HardMediumSoftLongScore.valueOfUninitialized(-7, -100L, -20L, -3L));
     }
 
     @Entity

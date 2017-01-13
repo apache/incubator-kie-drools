@@ -55,7 +55,7 @@ public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return HardSoftScore.valueOf(initScore, (Integer) levelNumbers[0], (Integer) levelNumbers[1]);
+        return HardSoftScore.valueOfUninitialized(initScore, (Integer) levelNumbers[0], (Integer) levelNumbers[1]);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<
     @Override
     public HardSoftScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return HardSoftScore.valueOf(0,
+        return HardSoftScore.valueOfUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Integer.MAX_VALUE,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Integer.MAX_VALUE);
     }
@@ -74,7 +74,7 @@ public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<
     @Override
     public HardSoftScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return HardSoftScore.valueOf(0,
+        return HardSoftScore.valueOfUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Integer.MIN_VALUE,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Integer.MIN_VALUE);
     }

@@ -74,10 +74,8 @@ public interface IncrementalScoreCalculator<Solution_> {
     /**
      * This method is only called if the {@link Score} cannot be predicted.
      * The {@link Score} can be predicted for example after an undo {@link Move}.
-     * @param initScore {@code <= 0}, managed by OptaPlanner, needed as a parameter in the {@link Score}'s creation
-     * method, see {@link Score#getInitScore()}
      * @return never null
      */
-    Score calculateScore(int initScore);
+    Score calculateScore();
 
 }

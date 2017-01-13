@@ -23,16 +23,14 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapterTest;
 
-import static org.junit.Assert.*;
-
 public class HardSoftLongScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapterTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftLongScoreWrapper(null));
-        HardSoftLongScore score = HardSoftLongScore.valueOfInitialized(1200L, 34L);
+        HardSoftLongScore score = HardSoftLongScore.valueOf(1200L, 34L);
         assertSerializeAndDeserialize(score, new TestHardSoftLongScoreWrapper(score));
-        score = HardSoftLongScore.valueOf(-7, 1200L, 34L);
+        score = HardSoftLongScore.valueOfUninitialized(-7, 1200L, 34L);
         assertSerializeAndDeserialize(score, new TestHardSoftLongScoreWrapper(score));
     }
 

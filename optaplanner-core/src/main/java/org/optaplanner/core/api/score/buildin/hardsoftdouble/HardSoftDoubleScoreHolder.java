@@ -77,7 +77,7 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
 
     @Override
     public Score extractScore(int initScore) {
-        return HardSoftDoubleScore.valueOf(initScore, hardScore, softScore);
+        return HardSoftDoubleScore.valueOfUninitialized(initScore, hardScore, softScore);
     }
 
 }

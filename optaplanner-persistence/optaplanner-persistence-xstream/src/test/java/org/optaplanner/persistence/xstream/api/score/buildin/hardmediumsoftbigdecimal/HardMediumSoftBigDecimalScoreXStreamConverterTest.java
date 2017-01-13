@@ -27,9 +27,9 @@ public class HardMediumSoftBigDecimalScoreXStreamConverterTest extends AbstractS
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardMediumSoftBigDecimalScoreWrapper(null));
-        HardMediumSoftBigDecimalScore score = HardMediumSoftBigDecimalScore.valueOfInitialized(new BigDecimal("1200.0021"), new BigDecimal("-3.1415"), new BigDecimal("34.4300"));
+        HardMediumSoftBigDecimalScore score = HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("1200.0021"), new BigDecimal("-3.1415"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardMediumSoftBigDecimalScoreWrapper(score));
-        score = HardMediumSoftBigDecimalScore.valueOf(-7, new BigDecimal("1200.0021"), new BigDecimal("-3.1415"), new BigDecimal("34.4300"));
+        score = HardMediumSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("1200.0021"), new BigDecimal("-3.1415"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardMediumSoftBigDecimalScoreWrapper(score));
     }
 

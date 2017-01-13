@@ -50,7 +50,10 @@ public class EasyScoreDirector<Solution_>
     @Override
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
-        Score score = easyScoreCalculator.calculateScore(workingSolution, workingInitScore);
+        Score score = easyScoreCalculator.calculateScore(workingSolution);
+        if (workingInitScore != 0) {
+            score = score.withInitScore(workingInitScore);
+        }
         setCalculatedScore(score);
         return score;
     }

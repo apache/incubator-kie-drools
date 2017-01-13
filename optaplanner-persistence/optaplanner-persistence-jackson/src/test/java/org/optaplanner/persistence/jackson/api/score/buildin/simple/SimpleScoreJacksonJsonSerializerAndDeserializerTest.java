@@ -28,9 +28,9 @@ public class SimpleScoreJacksonJsonSerializerAndDeserializerTest extends Abstrac
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleScoreWrapper(null));
-        SimpleScore score = SimpleScore.valueOfInitialized(1234);
+        SimpleScore score = SimpleScore.valueOf(1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));
-        score = SimpleScore.valueOf(-7, 1234);
+        score = SimpleScore.valueOfUninitialized(-7, 1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));
     }
 

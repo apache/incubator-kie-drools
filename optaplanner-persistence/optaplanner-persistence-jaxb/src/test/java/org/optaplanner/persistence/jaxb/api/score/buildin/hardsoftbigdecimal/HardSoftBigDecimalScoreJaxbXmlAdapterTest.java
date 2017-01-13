@@ -24,16 +24,14 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapterTest;
 
-import static org.junit.Assert.*;
-
 public class HardSoftBigDecimalScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapterTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftBigDecimalScoreWrapper(null));
-        HardSoftBigDecimalScore score = HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
+        HardSoftBigDecimalScore score = HardSoftBigDecimalScore.valueOf(new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardSoftBigDecimalScoreWrapper(score));
-        score = HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
+        score = HardSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
         assertSerializeAndDeserialize(score, new TestHardSoftBigDecimalScoreWrapper(score));
     }
 

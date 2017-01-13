@@ -73,21 +73,21 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (Integer) levelNumbers[hardLevelsSize + i];
         }
-        return BendableScore.valueOf(initScore, hardScores, softScores);
+        return BendableScore.valueOfUninitialized(initScore, hardScores, softScores);
     }
 
-    public BendableScore createScoreInitialized(int... scores) {
-        return createScore(0, scores);
+    public BendableScore createScore(int... scores) {
+        return createScoreUninitialized(0, scores);
     }
 
-    public BendableScore createScore(int initScore, int... scores) {
+    public BendableScore createScoreUninitialized(int initScore, int... scores) {
         int levelsSize = hardLevelsSize + softLevelsSize;
         if (scores.length != levelsSize) {
             throw new IllegalArgumentException("The scores (" + Arrays.toString(scores)
                     + ")'s length (" + scores.length
                     + ") is not levelsSize (" + levelsSize + ").");
         }
-        return BendableScore.valueOf(initScore,
+        return BendableScore.valueOfUninitialized(initScore,
                 Arrays.copyOfRange(scores, 0, hardLevelsSize),
                 Arrays.copyOfRange(scores, hardLevelsSize, levelsSize));
     }
@@ -110,7 +110,7 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_DOWN)
                     ? score.getSoftScore(i) : Integer.MAX_VALUE;
         }
-        return BendableScore.valueOf(0, hardScores, softScores);
+        return BendableScore.valueOfUninitialized(0, hardScores, softScores);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
             softScores[i] = (trendLevels[hardLevelsSize + i] == InitializingScoreTrendLevel.ONLY_UP)
                     ? score.getSoftScore(i) : Integer.MIN_VALUE;
         }
-        return BendableScore.valueOf(0, hardScores, softScores);
+        return BendableScore.valueOfUninitialized(0, hardScores, softScores);
     }
 
 }

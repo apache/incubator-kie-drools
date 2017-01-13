@@ -28,9 +28,9 @@ public class BendableLongScoreJacksonJsonSerializerAndDeserializerTest extends A
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestBendableLongScoreWrapper(null));
-        BendableLongScore score = BendableLongScore.valueOfInitialized(new long[]{1000L, 200L}, new long[]{34L});
+        BendableLongScore score = BendableLongScore.valueOf(new long[]{1000L, 200L}, new long[]{34L});
         assertSerializeAndDeserialize(score, new TestBendableLongScoreWrapper(score));
-        score = BendableLongScore.valueOf(-7, new long[]{1000L, 200L}, new long[]{34L});
+        score = BendableLongScore.valueOfUninitialized(-7, new long[]{1000L, 200L}, new long[]{34L});
         assertSerializeAndDeserialize(score, new TestBendableLongScoreWrapper(score));
     }
 

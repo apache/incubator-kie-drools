@@ -42,14 +42,14 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         int initScore = parseInitScore(HardSoftBigDecimalScore.class, scoreString, scoreTokens[0]);
         BigDecimal hardScore = parseLevelAsBigDecimal(HardSoftBigDecimalScore.class, scoreString, scoreTokens[1]);
         BigDecimal softScore = parseLevelAsBigDecimal(HardSoftBigDecimalScore.class, scoreString, scoreTokens[2]);
-        return valueOf(initScore, hardScore, softScore);
+        return valueOfUninitialized(initScore, hardScore, softScore);
     }
 
-    public static HardSoftBigDecimalScore valueOf(int initScore, BigDecimal hardScore, BigDecimal softScore) {
+    public static HardSoftBigDecimalScore valueOfUninitialized(int initScore, BigDecimal hardScore, BigDecimal softScore) {
         return new HardSoftBigDecimalScore(initScore, hardScore, softScore);
     }
 
-    public static HardSoftBigDecimalScore valueOfInitialized(BigDecimal hardScore, BigDecimal softScore) {
+    public static HardSoftBigDecimalScore valueOf(BigDecimal hardScore, BigDecimal softScore) {
         return new HardSoftBigDecimalScore(0, hardScore, softScore);
     }
 

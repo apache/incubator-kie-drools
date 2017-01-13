@@ -19,7 +19,6 @@ package org.optaplanner.core.api.score.buildin.hardsoftlong;
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 /**
  * This {@link Score} is based on 2 levels of long constraints: hard and soft.
@@ -40,14 +39,14 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
         int initScore = parseInitScore(HardSoftLongScore.class, scoreString, scoreTokens[0]);
         long hardScore = parseLevelAsLong(HardSoftLongScore.class, scoreString, scoreTokens[1]);
         long softScore = parseLevelAsLong(HardSoftLongScore.class, scoreString, scoreTokens[2]);
-        return valueOf(initScore, hardScore, softScore);
+        return valueOfUninitialized(initScore, hardScore, softScore);
     }
 
-    public static HardSoftLongScore valueOf(int initScore, long hardScore, long softScore) {
+    public static HardSoftLongScore valueOfUninitialized(int initScore, long hardScore, long softScore) {
         return new HardSoftLongScore(initScore, hardScore, softScore);
     }
 
-    public static HardSoftLongScore valueOfInitialized(long hardScore, long softScore) {
+    public static HardSoftLongScore valueOf(long hardScore, long softScore) {
         return new HardSoftLongScore(0, hardScore, softScore);
     }
 

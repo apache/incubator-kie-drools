@@ -20,11 +20,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
@@ -89,7 +87,7 @@ public class DefaultExhaustiveSearchPhaseTest {
         ExhaustiveSearchNode node4B = new ExhaustiveSearchNode(layer4, node3B); // newNode
         node4B.setMove(mock(Move.class));
         node4B.setUndoMove(mock(Move.class));
-        node4B.setScore(SimpleScore.valueOf(-96, 7));
+        node4B.setScore(SimpleScore.valueOfUninitialized(-96, 7));
         when(lastCompletedStepScope.getExpandingNode()).thenReturn(node3A);
         when(stepScope.getExpandingNode()).thenReturn(node4B);
 

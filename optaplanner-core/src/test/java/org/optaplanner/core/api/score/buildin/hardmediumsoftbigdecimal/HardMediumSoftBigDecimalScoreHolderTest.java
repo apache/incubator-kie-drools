@@ -59,9 +59,9 @@ public class HardMediumSoftBigDecimalScoreHolderTest extends AbstractScoreHolder
         scoreHolder.addSoftConstraintMatch(ruleContext4, new BigDecimal("-1.00"));
         callUnMatch(ruleContext4);
 
-        assertEquals(HardMediumSoftBigDecimalScore.valueOf(0, new BigDecimal("-14.00"), new BigDecimal("7.20"), new BigDecimal("-0.03")),
+        assertEquals(HardMediumSoftBigDecimalScore.valueOfUninitialized(0, new BigDecimal("-14.00"), new BigDecimal("7.20"), new BigDecimal("-0.03")),
                 scoreHolder.extractScore(0));
-        assertEquals(HardMediumSoftBigDecimalScore.valueOf(-7, new BigDecimal("-14.00"), new BigDecimal("7.20"), new BigDecimal("-0.03")),
+        assertEquals(HardMediumSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-14.00"), new BigDecimal("7.20"), new BigDecimal("-0.03")),
                 scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
             assertEquals(8, scoreHolder.getConstraintMatchTotals().size());

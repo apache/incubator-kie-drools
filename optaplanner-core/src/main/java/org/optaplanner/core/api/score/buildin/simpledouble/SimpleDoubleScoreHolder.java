@@ -57,7 +57,7 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
 
     @Override
     public Score extractScore(int initScore) {
-        return SimpleDoubleScore.valueOf(initScore, score);
+        return SimpleDoubleScore.valueOfUninitialized(initScore, score);
     }
 
 }

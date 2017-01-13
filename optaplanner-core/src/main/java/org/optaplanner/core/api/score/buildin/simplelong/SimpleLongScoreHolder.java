@@ -55,7 +55,7 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder {
 
     @Override
     public Score extractScore(int initScore) {
-        return SimpleLongScore.valueOf(initScore, score);
+        return SimpleLongScore.valueOfUninitialized(initScore, score);
     }
 
 }

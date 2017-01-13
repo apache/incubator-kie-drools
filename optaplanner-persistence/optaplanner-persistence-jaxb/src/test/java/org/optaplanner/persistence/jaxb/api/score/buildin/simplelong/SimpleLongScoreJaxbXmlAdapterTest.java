@@ -23,16 +23,14 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapterTest;
 
-import static org.junit.Assert.*;
-
 public class SimpleLongScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapterTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleLongScoreWrapper(null));
-        SimpleLongScore score = SimpleLongScore.valueOfInitialized(1234L);
+        SimpleLongScore score = SimpleLongScore.valueOf(1234L);
         assertSerializeAndDeserialize(score, new TestSimpleLongScoreWrapper(score));
-        score = SimpleLongScore.valueOf(-7, 1234L);
+        score = SimpleLongScore.valueOfUninitialized(-7, 1234L);
         assertSerializeAndDeserialize(score, new TestSimpleLongScoreWrapper(score));
     }
 

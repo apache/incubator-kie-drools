@@ -31,14 +31,14 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
         String[] scoreTokens = parseScoreTokens(SimpleLongScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleLongScore.class, scoreString, scoreTokens[0]);
         long score = parseLevelAsLong(SimpleLongScore.class, scoreString, scoreTokens[1]);
-        return valueOf(initScore, score);
+        return valueOfUninitialized(initScore, score);
     }
 
-    public static SimpleLongScore valueOf(int initScore, long score) {
+    public static SimpleLongScore valueOfUninitialized(int initScore, long score) {
         return new SimpleLongScore(initScore, score);
     }
 
-    public static SimpleLongScore valueOfInitialized(long score) {
+    public static SimpleLongScore valueOf(long score) {
         return new SimpleLongScore(0, score);
     }
 

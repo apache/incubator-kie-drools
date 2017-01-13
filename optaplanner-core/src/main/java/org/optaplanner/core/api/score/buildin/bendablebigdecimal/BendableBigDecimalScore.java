@@ -53,7 +53,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
         for (int i = 0; i < softScores.length; i++) {
             softScores[i] = parseLevelAsBigDecimal(BendableBigDecimalScore.class, scoreString, scoreTokens[2][i]);
         }
-        return valueOf(initScore, hardScores, softScores);
+        return valueOfUninitialized(initScore, hardScores, softScores);
     }
 
     /**
@@ -63,7 +63,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
      */
-    public static BendableBigDecimalScore valueOf(int initScore, BigDecimal[] hardScores, BigDecimal[] softScores) {
+    public static BendableBigDecimalScore valueOfUninitialized(int initScore, BigDecimal[] hardScores, BigDecimal[] softScores) {
         return new BendableBigDecimalScore(initScore, hardScores, softScores);
     }
 
@@ -73,7 +73,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
      */
-    public static BendableBigDecimalScore valueOfInitialized(BigDecimal[] hardScores, BigDecimal[] softScores) {
+    public static BendableBigDecimalScore valueOf(BigDecimal[] hardScores, BigDecimal[] softScores) {
         return new BendableBigDecimalScore(0, hardScores, softScores);
     }
 

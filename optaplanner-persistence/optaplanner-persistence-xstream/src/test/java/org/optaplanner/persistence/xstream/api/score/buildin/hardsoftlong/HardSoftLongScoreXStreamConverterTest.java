@@ -26,9 +26,9 @@ public class HardSoftLongScoreXStreamConverterTest extends AbstractScoreXStreamC
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardSoftLongScoreWrapper(null));
-        HardSoftLongScore score = HardSoftLongScore.valueOfInitialized(1200L, 34L);
+        HardSoftLongScore score = HardSoftLongScore.valueOf(1200L, 34L);
         assertSerializeAndDeserialize(score, new TestHardSoftLongScoreWrapper(score));
-        score = HardSoftLongScore.valueOf(-7, 1200L, 34L);
+        score = HardSoftLongScore.valueOfUninitialized(-7, 1200L, 34L);
         assertSerializeAndDeserialize(score, new TestHardSoftLongScoreWrapper(score));
     }
 

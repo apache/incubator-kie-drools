@@ -67,7 +67,7 @@ public class IncrementalScoreDirectorTest {
                 scoreDirectorFactory, false, false, incrementalScoreCalculator) {
             @Override
             public Score calculateScore() {
-                return SimpleScore.valueOfInitialized(-100);
+                return SimpleScore.valueOf(-100);
             }
         };
         scoreDirector.setWorkingSolution(solution);

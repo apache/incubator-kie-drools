@@ -60,7 +60,7 @@ public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefin
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return HardSoftDoubleScore.valueOf(initScore, (Double) levelNumbers[0], (Double) levelNumbers[1]);
+        return HardSoftDoubleScore.valueOfUninitialized(initScore, (Double) levelNumbers[0], (Double) levelNumbers[1]);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefin
     @Override
     public HardSoftDoubleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftDoubleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return HardSoftDoubleScore.valueOf(0,
+        return HardSoftDoubleScore.valueOfUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Double.POSITIVE_INFINITY,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Double.POSITIVE_INFINITY);
     }
@@ -79,7 +79,7 @@ public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefin
     @Override
     public HardSoftDoubleScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftDoubleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return HardSoftDoubleScore.valueOf(0,
+        return HardSoftDoubleScore.valueOfUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Double.NEGATIVE_INFINITY,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Double.NEGATIVE_INFINITY);
     }

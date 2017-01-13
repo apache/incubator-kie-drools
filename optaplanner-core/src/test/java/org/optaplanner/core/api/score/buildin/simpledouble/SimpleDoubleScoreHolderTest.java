@@ -47,8 +47,8 @@ public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addConstraintMatch(ruleContext3, -0.30);
         scoreHolder.addConstraintMatch(ruleContext3, -0.03); // Overwrite existing
 
-        assertEquals(SimpleDoubleScore.valueOf(0, -10.03), scoreHolder.extractScore(0));
-        assertEquals(SimpleDoubleScore.valueOf(-7, -10.03), scoreHolder.extractScore(-7));
+        assertEquals(SimpleDoubleScore.valueOfUninitialized(0, -10.03), scoreHolder.extractScore(0));
+        assertEquals(SimpleDoubleScore.valueOfUninitialized(-7, -10.03), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
             assertEquals(3, scoreHolder.getConstraintMatchTotals().size());
         }

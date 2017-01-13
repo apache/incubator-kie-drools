@@ -23,16 +23,14 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapterTest;
 
-import static org.junit.Assert.*;
-
 public class HardMediumSoftScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapterTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestHardMediumSoftScoreWrapper(null));
-        HardMediumSoftScore score = HardMediumSoftScore.valueOfInitialized(1200, 30, 4);
+        HardMediumSoftScore score = HardMediumSoftScore.valueOf(1200, 30, 4);
         assertSerializeAndDeserialize(score, new TestHardMediumSoftScoreWrapper(score));
-        score = HardMediumSoftScore.valueOf(-7, 1200, 30, 4);
+        score = HardMediumSoftScore.valueOfUninitialized(-7, 1200, 30, 4);
         assertSerializeAndDeserialize(score, new TestHardMediumSoftScoreWrapper(score));
     }
 

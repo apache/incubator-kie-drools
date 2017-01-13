@@ -55,7 +55,7 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return SimpleDoubleScore.valueOf(initScore, (Double) levelNumbers[0]);
+        return SimpleDoubleScore.valueOfUninitialized(initScore, (Double) levelNumbers[0]);
     }
 
     @Override
@@ -66,14 +66,14 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     @Override
     public SimpleDoubleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleDoubleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return SimpleDoubleScore.valueOf(0,
+        return SimpleDoubleScore.valueOfUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getScore() : Double.POSITIVE_INFINITY);
     }
 
     @Override
     public SimpleDoubleScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleDoubleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return SimpleDoubleScore.valueOf(0,
+        return SimpleDoubleScore.valueOfUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Double.NEGATIVE_INFINITY);
     }
 

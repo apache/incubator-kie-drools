@@ -55,7 +55,7 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return SimpleScore.valueOf(initScore, (Integer) levelNumbers[0]);
+        return SimpleScore.valueOfUninitialized(initScore, (Integer) levelNumbers[0]);
     }
 
     @Override
@@ -66,14 +66,14 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     @Override
     public SimpleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return SimpleScore.valueOf(0,
+        return SimpleScore.valueOfUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getScore() : Integer.MAX_VALUE);
     }
 
     @Override
     public SimpleScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return SimpleScore.valueOf(0,
+        return SimpleScore.valueOfUninitialized(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Integer.MIN_VALUE);
     }
 

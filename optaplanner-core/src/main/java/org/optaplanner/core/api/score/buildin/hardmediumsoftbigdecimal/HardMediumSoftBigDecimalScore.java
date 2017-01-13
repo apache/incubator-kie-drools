@@ -47,14 +47,14 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         BigDecimal hardScore = parseLevelAsBigDecimal(HardMediumSoftBigDecimalScore.class, scoreString, scoreTokens[1]);
         BigDecimal mediumScore = parseLevelAsBigDecimal(HardMediumSoftBigDecimalScore.class, scoreString, scoreTokens[2]);
         BigDecimal softScore = parseLevelAsBigDecimal(HardMediumSoftBigDecimalScore.class, scoreString, scoreTokens[3]);
-        return valueOf(initScore, hardScore, mediumScore, softScore);
+        return valueOfUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
-    public static HardMediumSoftBigDecimalScore valueOf(int initScore, BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
+    public static HardMediumSoftBigDecimalScore valueOfUninitialized(int initScore, BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
         return new HardMediumSoftBigDecimalScore(initScore, hardScore, mediumScore, softScore);
     }
 
-    public static HardMediumSoftBigDecimalScore valueOfInitialized(BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
+    public static HardMediumSoftBigDecimalScore valueOf(BigDecimal hardScore, BigDecimal mediumScore, BigDecimal softScore) {
         return new HardMediumSoftBigDecimalScore(0, hardScore, mediumScore, softScore);
     }
 

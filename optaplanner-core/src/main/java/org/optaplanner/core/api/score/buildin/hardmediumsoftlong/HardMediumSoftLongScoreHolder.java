@@ -94,7 +94,7 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
 
     @Override
     public Score extractScore(int initScore) {
-        return HardMediumSoftLongScore.valueOf(initScore, hardScore, mediumScore, softScore);
+        return HardMediumSoftLongScore.valueOfUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
 }

@@ -20,7 +20,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 /**
  * This {@link Score} is based on 3 levels of long constraints: hard, medium and soft.
@@ -45,14 +44,14 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
         long hardScore = parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[1]);
         long mediumScore = parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[2]);
         long softScore = parseLevelAsLong(HardMediumSoftLongScore.class, scoreString, scoreTokens[3]);
-        return valueOf(initScore, hardScore, mediumScore, softScore);
+        return valueOfUninitialized(initScore, hardScore, mediumScore, softScore);
     }
 
-    public static HardMediumSoftLongScore valueOf(int initScore, long hardScore, long mediumScore, long softScore) {
+    public static HardMediumSoftLongScore valueOfUninitialized(int initScore, long hardScore, long mediumScore, long softScore) {
         return new HardMediumSoftLongScore(initScore, hardScore, mediumScore, softScore);
     }
 
-    public static HardMediumSoftLongScore valueOfInitialized(long hardScore, long mediumScore, long softScore) {
+    public static HardMediumSoftLongScore valueOf(long hardScore, long mediumScore, long softScore) {
         return new HardMediumSoftLongScore(0, hardScore, mediumScore, softScore);
     }
 

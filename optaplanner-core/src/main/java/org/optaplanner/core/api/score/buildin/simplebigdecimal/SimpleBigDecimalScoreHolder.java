@@ -57,7 +57,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
 
     @Override
     public Score extractScore(int initScore) {
-        return SimpleBigDecimalScore.valueOf(initScore,
+        return SimpleBigDecimalScore.valueOfUninitialized(initScore,
                 score == null ? BigDecimal.ZERO : score);
     }
 

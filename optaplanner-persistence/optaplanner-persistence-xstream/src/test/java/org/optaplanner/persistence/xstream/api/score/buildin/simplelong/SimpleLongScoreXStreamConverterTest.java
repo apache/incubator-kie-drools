@@ -26,9 +26,9 @@ public class SimpleLongScoreXStreamConverterTest extends AbstractScoreXStreamCon
     @Test
     public void simpleLongScore() {
         assertSerializeAndDeserialize(null, new TestSimpleLongScoreWrapper(null));
-        SimpleLongScore score = SimpleLongScore.valueOfInitialized(1234L);
+        SimpleLongScore score = SimpleLongScore.valueOf(1234L);
         assertSerializeAndDeserialize(score, new TestSimpleLongScoreWrapper(score));
-        score = SimpleLongScore.valueOf(-7, 1234L);
+        score = SimpleLongScore.valueOfUninitialized(-7, 1234L);
         assertSerializeAndDeserialize(score, new TestSimpleLongScoreWrapper(score));
     }
 

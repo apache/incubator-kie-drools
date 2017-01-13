@@ -16,25 +16,21 @@
 
 package org.optaplanner.persistence.jaxb.api.score.buildin.simple;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapterTest;
-import org.optaplanner.persistence.jaxb.api.score.buildin.hardsoft.HardSoftScoreJaxbXmlAdapter;
 
 public class SimpleScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapterTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleScoreWrapper(null));
-        SimpleScore score = SimpleScore.valueOfInitialized(1234);
+        SimpleScore score = SimpleScore.valueOf(1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));
-        score = SimpleScore.valueOf(-7, 1234);
+        score = SimpleScore.valueOfUninitialized(-7, 1234);
         assertSerializeAndDeserialize(score, new TestSimpleScoreWrapper(score));
     }
 

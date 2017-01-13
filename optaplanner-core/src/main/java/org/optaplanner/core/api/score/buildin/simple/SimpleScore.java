@@ -18,7 +18,6 @@ package org.optaplanner.core.api.score.buildin.simple;
 
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * This {@link Score} is based on 1 level of int constraints.
@@ -32,14 +31,14 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
         String[] scoreTokens = parseScoreTokens(SimpleScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleScore.class, scoreString, scoreTokens[0]);
         int score = parseLevelAsInt(SimpleScore.class, scoreString, scoreTokens[1]);
-        return valueOf(initScore, score);
+        return valueOfUninitialized(initScore, score);
     }
 
-    public static SimpleScore valueOf(int initScore, int score) {
+    public static SimpleScore valueOfUninitialized(int initScore, int score) {
         return new SimpleScore(initScore, score);
     }
 
-    public static SimpleScore valueOfInitialized(int score) {
+    public static SimpleScore valueOf(int score) {
         return new SimpleScore(0, score);
     }
 

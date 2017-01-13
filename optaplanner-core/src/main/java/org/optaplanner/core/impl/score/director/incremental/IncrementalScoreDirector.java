@@ -67,7 +67,10 @@ public class IncrementalScoreDirector<Solution_>
     @Override
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
-        Score score = incrementalScoreCalculator.calculateScore(workingInitScore);
+        Score score = incrementalScoreCalculator.calculateScore();
+        if (workingInitScore != 0) {
+            score = score.withInitScore(workingInitScore);
+        }
         setCalculatedScore(score);
         return score;
     }

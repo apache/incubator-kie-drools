@@ -26,7 +26,6 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -108,20 +107,20 @@ public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRanking
         b.accumulateResults(benchmarkReport);
         assertCompareToEquals(comparator, a, b);
 
-        a0.setAverageScore(SimpleScore.valueOf(-100, -1000));
-        b1.setAverageScore(SimpleScore.valueOf(-100, -400));
+        a0.setAverageScore(SimpleScore.valueOfUninitialized(-100, -1000));
+        b1.setAverageScore(SimpleScore.valueOfUninitialized(-100, -400));
         a.accumulateResults(benchmarkReport);
         b.accumulateResults(benchmarkReport);
         // uninitialized variable count and total score are equal, A is worse on worst score (tie-breaker)
         assertCompareToOrder(comparator, a, b);
 
-        b0.setAverageScore(SimpleScore.valueOf(-100, -1000));
+        b0.setAverageScore(SimpleScore.valueOfUninitialized(-100, -1000));
         b.accumulateResults(benchmarkReport);
         // uninitialized variable count is bigger in B
         assertCompareToOrder(comparator, b, a);
 
-        b0.setAverageScore(SimpleScore.valueOfInitialized(-1000));
-        b1.setAverageScore(SimpleScore.valueOf(-99, -400));
+        b0.setAverageScore(SimpleScore.valueOf(-1000));
+        b1.setAverageScore(SimpleScore.valueOfUninitialized(-99, -400));
         b.accumulateResults(benchmarkReport);
         // uninitialized variable count is bigger in A
         assertCompareToOrder(comparator, a, b);

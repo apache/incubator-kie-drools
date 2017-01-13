@@ -24,16 +24,14 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapterTest;
 
-import static org.junit.Assert.*;
-
 public class SimpleBigDecimalScoreJaxbXmlAdapterTest extends AbstractScoreJaxbXmlAdapterTest {
 
     @Test
     public void serializeAndDeserialize() {
         assertSerializeAndDeserialize(null, new TestSimpleBigDecimalScoreWrapper(null));
-        SimpleBigDecimalScore score = SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("1234.4321"));
+        SimpleBigDecimalScore score = SimpleBigDecimalScore.valueOf(new BigDecimal("1234.4321"));
         assertSerializeAndDeserialize(score, new TestSimpleBigDecimalScoreWrapper(score));
-        score = SimpleBigDecimalScore.valueOf(-7, new BigDecimal("1234.4321"));
+        score = SimpleBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("1234.4321"));
         assertSerializeAndDeserialize(score, new TestSimpleBigDecimalScoreWrapper(score));
     }
 

@@ -21,10 +21,8 @@ import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
@@ -39,13 +37,13 @@ public class SubSingleBenchmarkRankingComparatorTest {
         a.setScore(null);
         SubSingleBenchmarkResult b = new SubSingleBenchmarkResult(singleBenchmarkResult, 1);
         b.setSucceeded(true);
-        b.setScore(SimpleScore.valueOf(-7, -1));
+        b.setScore(SimpleScore.valueOfUninitialized(-7, -1));
         SubSingleBenchmarkResult c = new SubSingleBenchmarkResult(singleBenchmarkResult, 2);
         c.setSucceeded(true);
-        c.setScore(SimpleScore.valueOfInitialized(-300));
+        c.setScore(SimpleScore.valueOf(-300));
         SubSingleBenchmarkResult d = new SubSingleBenchmarkResult(singleBenchmarkResult, 3);
         d.setSucceeded(true);
-        d.setScore(SimpleScore.valueOfInitialized(-20));
+        d.setScore(SimpleScore.valueOf(-20));
         assertCompareToOrder(comparator, a, b, c, d);
     }
 
