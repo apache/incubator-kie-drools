@@ -561,13 +561,13 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public int hashCode() {
         if (isAlphaHashable()) {
-            return 29 * getLeftForEqualExpression().hashCode() + 31 * fieldValue.hashCode();
+            return 29 * getLeftInExpression(IndexUtil.ConstraintType.EQUAL).hashCode() + 31 * fieldValue.hashCode();
         }
         return expression.hashCode();
     }
 
-    private String getLeftForEqualExpression() {
-        return expression.substring(0, expression.indexOf("==")).trim();
+    private String getLeftInExpression(IndexUtil.ConstraintType constraint) {
+        return expression.substring(0, expression.indexOf(constraint.getOperator())).trim();
     }
 
     private boolean isAlphaHashable() {
@@ -584,7 +584,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         MvelConstraint other = (MvelConstraint) object;
         if (isAlphaHashable()) {
             if ( !other.isAlphaHashable() ||
-                    !getLeftForEqualExpression().equals(other.getLeftForEqualExpression()) ||
+                    !getLeftInExpression(IndexUtil.ConstraintType.EQUAL).equals(other.getLeftInExpression(IndexUtil.ConstraintType.EQUAL)) ||
                     !fieldValue.equals(other.fieldValue) ) {
                 return false;
             }
@@ -617,12 +617,19 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         Map<String, Object> thisImports = ((MVELDialectRuntimeData) kbase.getPackage( thisPkg ).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
         Map<String, Object> otherImports = ((MVELDialectRuntimeData) kbase.getPackage( otherPkg ).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
 
+        if (fieldValue != null) {
+            return equalsExpressionTokensInBothImports(getLeftInExpression(IndexUtil.ConstraintType.EQUAL), thisImports, otherImports);
+        } else {
+            return equalsExpressionTokensInBothImports(expression, thisImports, otherImports);
+        }
+    }
+    
+    private boolean equalsExpressionTokensInBothImports(String expression, Map<String, Object> thisImports, Map<String, Object> otherImports) {
         for (String token : splitExpression(expression)) {
             if ( !areNullSafeEquals(thisImports.get(token), otherImports.get(token)) ) {
                 return false;
             }
         }
-
         return true;
     }
 
