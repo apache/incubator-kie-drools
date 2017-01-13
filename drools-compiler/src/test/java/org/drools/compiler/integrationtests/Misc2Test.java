@@ -59,6 +59,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteComparator;
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
@@ -8937,6 +8938,8 @@ public class Misc2Test extends CommonTestMethodBase {
 
         kieSession.fireAllRules();
     }
+    
+   
 
     public class Shift1187 {
 
@@ -9067,4 +9070,46 @@ public class Misc2Test extends CommonTestMethodBase {
         assertFalse( list.contains( "GreaterThanCompare:5" ) );
         assertFalse( list.contains( "GreaterThanCompare:null" ) );
     }
+    
+    public static class TestStaticUtils {
+        public static int return1() { 
+            return 1;
+        }
+    }
+    
+    @Test
+    public void testShouldAlphaShareBecauseSameConstantDespiteDifferentSyntax() {
+        // DROOLS-1404
+        String drl1 = "package c;\n" + 
+                "import " + TestObject.class.getCanonicalName() + "\n" +
+                "rule fileArule1 when\n" + 
+                "  TestObject(value == 1)\n" + 
+                "then\n" + 
+                "end\n" + 
+                "";
+        String drl2 = "package iTzXzx;\n" + // <<- keep the different package
+                "import " + TestObject.class.getCanonicalName() + "\n" +
+                "import " + TestStaticUtils.class.getCanonicalName() + "\n" +
+                "rule fileBrule1 when\n" + 
+                "  TestObject(value == TestStaticUtils.return1() )\n" + 
+                "then\n" + 
+                "end\n" +
+                "rule fileBrule2 when\n" + // <<- keep this rule
+                "  TestObject(value == 0 )\n" + 
+                "then\n" + 
+                "end\n" + 
+                "";
+
+        KieSession kieSession = new KieHelper()
+                    .addContent(drl1, ResourceType.DRL)
+                    .addContent(drl2, ResourceType.DRL)
+                    .build().newKieSession();
+        
+        ReteDumper.dumpRete(kieSession);
+
+        kieSession.insert(new TestObject(1));
+
+        assertEquals(2, kieSession.fireAllRules() );
+    }
+    
 }
