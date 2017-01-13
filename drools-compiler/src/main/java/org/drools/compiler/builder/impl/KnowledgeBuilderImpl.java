@@ -1197,7 +1197,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         Map<String, List<RuleDescr>> children = new HashMap<String, List<RuleDescr>>();
         LinkedHashMap<String, RuleDescr> sorted = new LinkedHashMap<String, RuleDescr>();
         List<RuleDescr> queries = new ArrayList<RuleDescr>();
-        List<String> compiledRules = new ArrayList<String>();
+        Set<String> compiledRules = new HashSet<String>();
 
         for (RuleDescr ruleDescr : packageDescr.getRules()) {
             if (ruleDescr.isQuery()) {
