@@ -1130,7 +1130,13 @@ public class DefaultAgenda
                     // if halt() has called, the thread should not be put into a wait state
                     // instead this is just a safe way to make sure the queue is flushed before exiting the loop
                     if (head == null && agenda.executionStateMachine.currentState == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT) {
+                        if (isInternalFire) {
+                            agenda.executionStateMachine.inactiveOnFireUntilHalt( agenda.propagationList );
+                        }
                         agenda.propagationList.waitOnRest();
+                        if (isInternalFire) {
+                            agenda.executionStateMachine.toFireUntilHalt();
+                        }
                         head = agenda.propagationList.takeAll();
                     }
                     return head;
@@ -1281,6 +1287,7 @@ public class DefaultAgenda
             INACTIVE( false, true ),         // fire        | fire          | exec
             FIRING_ALL_RULES( true, true ),  // do nothing  | wait + fire   | enqueue
             FIRING_UNTIL_HALT( true, true ), // do nothing  | do nothing    | enqueue
+            INACTIVE_ON_FIRING_UNTIL_HALT( true, true ),
             HALTING( false, true ),          // wait + fire | wait + fire   | enqueue
             EXECUTING_TASK( false, true ),   // wait + fire | wait + fire   | wait + exec
             DEACTIVATED( false, true ),      // wait + fire | wait + fire   | wait + exec
@@ -1366,7 +1373,7 @@ public class DefaultAgenda
         }
 
         private void waitInactive() {
-            while ( currentState != ExecutionState.INACTIVE) {
+            while ( currentState != ExecutionState.INACTIVE && currentState != ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT ) {
                 try {
                     stateMachineLock.wait();
                 } catch (InterruptedException e) {
@@ -1402,7 +1409,7 @@ public class DefaultAgenda
         public boolean tryDeactivate() {
             synchronized (stateMachineLock) {
                 pauseFiringUntilHalt();
-                if ( currentState == ExecutionState.INACTIVE ) {
+                if ( currentState == ExecutionState.INACTIVE || currentState == ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT ) {
                     setCurrentState( ExecutionState.DEACTIVATED );
                     return true;
                 }
@@ -1428,6 +1435,16 @@ public class DefaultAgenda
             }
         }
 
+        public void inactiveOnFireUntilHalt(PropagationList propagationList) {
+            synchronized (stateMachineLock) {
+                if (currentState != ExecutionState.INACTIVE && currentState != ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT) {
+                    setCurrentState( ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT );
+                    stateMachineLock.notify();
+                    propagationList.onEngineInactive();
+                }
+            }
+        }
+
         public void internalHalt() {
             synchronized (stateMachineLock) {
                 if (isFiring()) {
@@ -1441,7 +1458,7 @@ public class DefaultAgenda
                 if (!currentState.isAlive()) {
                     return false;
                 }
-                if (currentState.isFiring()) {
+                if (currentState.isFiring() && currentState != ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT) {
                     setCurrentState( ExecutionState.DISPOSING );
                     workingMemory.notifyWaitOnRest();
                 }
