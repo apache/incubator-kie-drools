@@ -526,7 +526,23 @@ public class DMNRuntimeTest {
         assertThat( formatMessages( dmnResult.getMessages() ), ((List)dmnResult.getContext().get("Filtering")).size(), is( 2 ) );
     }
 
+    @Test
+    public void testNowFunction() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "today_function_test.dmn", getClass() );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
 
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_4ad80959-5fd8-46b7-8c9a-ab2fa58cb5b4", "When is it" );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "The date", LocalDate.of( 2017, 01, 12 ) );
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        System.out.println(formatMessages( dmnResult.getMessages() ));
+        System.out.println( dmnResult.getContext());
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getContext().get("When is it"), is( "It is in the past" ) );
+    }
 
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );

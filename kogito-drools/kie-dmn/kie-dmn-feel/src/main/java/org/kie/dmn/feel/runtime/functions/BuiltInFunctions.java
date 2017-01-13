@@ -67,7 +67,8 @@ public class BuiltInFunctions {
             new SortFunction(),
 
             // additional functions not part of the spec version 1.1
-            new NowFunction()
+            new NowFunction(),
+            new TodayFunction()
     };
 
     public static FEELFunction[] getFunctions() {

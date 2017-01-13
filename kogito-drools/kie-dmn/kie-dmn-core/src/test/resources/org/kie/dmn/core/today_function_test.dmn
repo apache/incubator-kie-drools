@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_4ad80959-5fd8-46b7-8c9a-ab2fa58cb5b4" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.2.201701121530" id="_41b69eb6-05d3-4eff-bf19-dd9de80320c3"
+                      name="When is it" namespace="http://www.trisotech.com/dmn/definitions/_4ad80959-5fd8-46b7-8c9a-ab2fa58cb5b4"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:decision id="_06600a1f-8207-4bee-a356-62b2c2114854" name="When is it">
+    <semantic:variable id="_bf86a212-8a4d-4881-8734-14c1e4c94ff5" name="When is it" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_7cc2ea90-7bf9-4b04-9a61-10e512d96717"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="When is it">
+      <semantic:input id="_bb9b508b-aec8-430b-995a-4bbb7d3039a2" label="Date">
+        <semantic:inputExpression typeRef="feel:date">
+          <semantic:text>The date</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_77d9ffa9-7759-412b-8323-5af21c320d21"/>
+      <semantic:rule id="_ae32a893-3766-46b9-8736-a31627d50be9">
+        <semantic:inputEntry id="_ae32a893-3766-46b9-8736-a31627d50be9-0">
+          <semantic:text>&lt;today()</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_ae32a893-3766-46b9-8736-a31627d50be9-1">
+          <semantic:text>"It is in the past"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_6630344e-ea2f-4f12-a85a-6fc6b8cab632">
+        <semantic:inputEntry id="_6630344e-ea2f-4f12-a85a-6fc6b8cab632-0">
+          <semantic:text>&gt;today()</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_6630344e-ea2f-4f12-a85a-6fc6b8cab632-1">
+          <semantic:text>"It is in the future"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_fd74205f-9ff4-4dc1-a3e2-e3c43bd5b5b3">
+        <semantic:inputEntry id="_fd74205f-9ff4-4dc1-a3e2-e3c43bd5b5b3-0">
+          <semantic:text>=today()</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_fd74205f-9ff4-4dc1-a3e2-e3c43bd5b5b3-1">
+          <semantic:text>"It is today"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_7cc2ea90-7bf9-4b04-9a61-10e512d96717" name="The date">
+    <semantic:variable id="_d930d257-a366-42ed-9f07-51fecc178fbc" name="The date"/>
+  </semantic:inputData>
+</semantic:definitions>

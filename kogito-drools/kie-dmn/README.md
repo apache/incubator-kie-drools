@@ -72,7 +72,8 @@ according to the FEEL grammar, these are not valid function names, as `and` and 
 
 5. __Support for additional built-in functions__: additional functions are supported out of the box: 
 
-  * `now()` : returns the current date and time
+  * `now()` : returns the current local date and time
+  * `today()` : returns the current local date
   * `decision table()` : returns a decision table function. Although the spec mentions a decision table 
   function on page 114, it is not implementable as defined. 
 
