@@ -438,8 +438,11 @@ public class DMNCompilerImpl implements DMNCompiler {
             // TODO: need to properly resolve types here
             ctx.addInputVariableType( name, BuiltInType.UNKNOWN );
         } );
-        CompiledExpression compiledExpression = feel.compile( expression.getText(), ctx );
-        DMNLiteralExpressionEvaluator evaluator = new DMNLiteralExpressionEvaluator( compiledExpression );
+        DMNLiteralExpressionEvaluator evaluator = null;
+        if( expression.getExpressionLanguage() == null || expression.getExpressionLanguage().equals( DMNModelInstrumentedBase.URI_FEEL ) ) {
+            CompiledExpression compiledExpression = feel.compile( expression.getText(), ctx );
+            evaluator = new DMNLiteralExpressionEvaluator( compiledExpression );
+        }
         return evaluator;
     }
 

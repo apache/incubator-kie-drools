@@ -100,6 +100,26 @@ public class FlightRebookingTest {
         assertThat( result.get( "Rebooked Passengers" ), is( loadExpectedResult() ) );
     }
 
+    @Test
+    public void testUninterpreted() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking-uninterpreted.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08", "0019-flight-rebooking" );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+
+        List passengerList = loadPassengerList();
+        List flightList = loadFlightList();
+
+        context.set( "Passenger List", passengerList );
+        context.set( "Flight List", flightList );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        assertThat( dmnResult.getDecisionResultByName( "Rebooked Passengers" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.SKIPPED ) );
+    }
+
     private List loadPassengerList() {
         Object[][] passengerData = new Object[][] {
                 {"Tom", "bronze", 10, "UA123"},
