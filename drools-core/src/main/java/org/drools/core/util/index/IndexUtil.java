@@ -188,19 +188,21 @@ public class IndexUtil {
     }
 
     public enum ConstraintType {
-        EQUAL(true),
-        NOT_EQUAL(false),
-        GREATER_THAN(true),
-        GREATER_OR_EQUAL(true),
-        LESS_THAN(true),
-        LESS_OR_EQUAL(true),
-        RANGE(true),
-        UNKNOWN(false);
+        EQUAL(true, "=="),
+        NOT_EQUAL(false, "!="),
+        GREATER_THAN(true, ">"),
+        GREATER_OR_EQUAL(true, ">="),
+        LESS_THAN(true, "<"),
+        LESS_OR_EQUAL(true, "<="),
+        RANGE(true, null),
+        UNKNOWN(false, null);
 
         private final boolean indexable;
+        private final String operator;
 
-        private ConstraintType(boolean indexable) {
+        private ConstraintType(boolean indexable, String operator) {
             this.indexable = indexable;
+            this.operator = operator;
         }
 
         public boolean isComparison() {
@@ -222,6 +224,14 @@ public class IndexUtil {
         public boolean isIndexable() {
             return indexable;
         }
+        
+        /**
+         * May be null.
+         * @return the operator string representation if does exists, null otherwise.
+         */
+        public String getOperator() {
+            return this.operator;
+        }
 
         public boolean isIndexableForNode(short nodeType) {
             switch (this) {
@@ -236,23 +246,10 @@ public class IndexUtil {
         }
 
         public static ConstraintType decode(String operator) {
-            if (operator.equals("==")) {
-                return EQUAL;
-            }
-            if (operator.equals("!=")) {
-                return NOT_EQUAL;
-            }
-            if (operator.equals(">")) {
-                return GREATER_THAN;
-            }
-            if (operator.equals(">=")) {
-                return GREATER_OR_EQUAL;
-            }
-            if (operator.equals("<")) {
-                return LESS_THAN;
-            }
-            if (operator.equals("<=")) {
-                return LESS_OR_EQUAL;
+            for ( ConstraintType c : ConstraintType.values() ) {
+                if ( c.getOperator() != null && c.getOperator().equals(operator) ) {
+                    return c;
+                }
             }
             return UNKNOWN;
         }
