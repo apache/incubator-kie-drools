@@ -19,7 +19,6 @@ package org.optaplanner.benchmark.impl.ranking;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -41,11 +40,12 @@ public class TotalScoreSolverRankingComparator implements Comparator<SolverBench
 
     @Override
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
-        return new CompareToBuilder()
-                .append(b.getFailureCount(), a.getFailureCount()) // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
-                .append(a.getTotalScore(), b.getTotalScore(), resilientScoreComparator)
-                .append(a, b, worstScoreSolverRankingComparator) // Tie breaker
-                .toComparison();
+        return Comparator
+                .comparing(SolverBenchmarkResult::getFailureCount, Comparator.reverseOrder())
+                .thenComparing(SolverBenchmarkResult::getTotalScore, resilientScoreComparator)
+                .thenComparing(worstScoreSolverRankingComparator)
+                .compare(a, b);
+
     }
 
 }

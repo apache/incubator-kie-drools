@@ -26,19 +26,17 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankingComparator;
+import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankingScoreComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.StatisticUtils;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -325,15 +323,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         }
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultListCopy = new ArrayList<>(subSingleBenchmarkResultList);
         // sort (according to ranking) so that the best subSingle is at index 0
-        Collections.sort(subSingleBenchmarkResultListCopy, new Comparator<SubSingleBenchmarkResult>() {
-            @Override
-            public int compare(SubSingleBenchmarkResult o1, SubSingleBenchmarkResult o2) {
-                return new CompareToBuilder()
-                        .append(o1.hasAnyFailure(), o2.hasAnyFailure())
-                        .append(o1.getRanking(), o2.getRanking())
-                        .toComparison();
-            }
-        });
+        Collections.sort(subSingleBenchmarkResultListCopy, new SubSingleBenchmarkRankingScoreComparator());
         best = subSingleBenchmarkResultListCopy.get(0);
         worst = subSingleBenchmarkResultListCopy.get(subSingleBenchmarkResultListCopy.size() - 1);
         median = subSingleBenchmarkResultListCopy.get(ConfigUtils.ceilDivide(subSingleBenchmarkResultListCopy.size() - 1, 2));

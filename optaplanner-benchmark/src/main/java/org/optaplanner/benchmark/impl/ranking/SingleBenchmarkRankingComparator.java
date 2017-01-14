@@ -19,7 +19,6 @@ package org.optaplanner.benchmark.impl.ranking;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.core.api.score.Score;
 

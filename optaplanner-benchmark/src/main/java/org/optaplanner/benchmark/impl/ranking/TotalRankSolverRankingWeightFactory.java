@@ -18,10 +18,8 @@ package org.optaplanner.benchmark.impl.ranking;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -86,12 +84,12 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
 
         @Override
         public int compareTo(TotalRankSolverRankingWeight other) {
-            return new CompareToBuilder()
-                    .append(betterCount, other.betterCount)
-                    .append(equalCount, other.equalCount)
-                    .append(lowerCount, other.lowerCount)
-                    .append(solverBenchmarkResult, other.solverBenchmarkResult, totalScoreSolverRankingComparator) // Tie-breaker
-                    .toComparison();
+            return Comparator
+                    .comparingInt(TotalRankSolverRankingWeight::getBetterCount)
+                    .thenComparingInt(TotalRankSolverRankingWeight::getEqualCount)
+                    .thenComparingInt(TotalRankSolverRankingWeight::getLowerCount)
+                    .thenComparing(TotalRankSolverRankingWeight::getSolverBenchmarkResult, totalScoreSolverRankingComparator) // Tie-breaker
+                    .compare(this, other);
         }
 
         @Override
@@ -100,13 +98,7 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
                 return true;
             } else if (o instanceof TotalRankSolverRankingWeight) {
                 TotalRankSolverRankingWeight other = (TotalRankSolverRankingWeight) o;
-                return new EqualsBuilder()
-                        .append(betterCount, other.betterCount)
-                        .append(equalCount, other.equalCount)
-                        .append(lowerCount, other.lowerCount)
-                        .appendSuper(totalScoreSolverRankingComparator
-                                .compare(solverBenchmarkResult, other.solverBenchmarkResult) == 0)
-                        .isEquals();
+                return this.compareTo(other) == 0;
             } else {
                 return false;
             }
@@ -114,11 +106,23 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
 
         @Override
         public int hashCode() {
-            return new HashCodeBuilder()
-                    .append(betterCount)
-                    .append(equalCount)
-                    .append(lowerCount)
-                    .toHashCode();
+            return Objects.hash(getBetterCount(), getEqualCount(), getLowerCount());
+        }
+
+        public int getBetterCount() {
+            return betterCount;
+        }
+
+        public int getEqualCount() {
+            return equalCount;
+        }
+
+        public int getLowerCount() {
+            return lowerCount;
+        }
+
+        public SolverBenchmarkResult getSolverBenchmarkResult() {
+            return solverBenchmarkResult;
         }
 
     }
