@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.nurserostering.domain;
 
+import java.time.DayOfWeek;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;

@@ -17,11 +17,11 @@
 package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.optaplanner.examples.nurserostering.domain.DayOfWeek;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
@@ -105,7 +105,12 @@ public class EmployeeConsecutiveAssignmentStart implements Comparable<EmployeeCo
     public int getDistanceToFirstDayOfWeekend() {
         WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
         DayOfWeek dayOfWeek = shiftDate.getDayOfWeek();
-        return weekendDefinition.getFirstDayOfWeekend().getDistanceToNext(dayOfWeek);
+        DayOfWeek firstDayOfWeekend = weekendDefinition.getFirstDayOfWeekend();
+        int distance = dayOfWeek.getValue() - firstDayOfWeekend.getValue();
+        if (distance < 0) {
+            distance += 7;
+        }
+        return distance;
     }
 
 }

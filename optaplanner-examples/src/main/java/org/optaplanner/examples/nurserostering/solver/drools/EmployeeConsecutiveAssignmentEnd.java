@@ -17,15 +17,18 @@
 package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
+import java.time.temporal.TemporalAdjusters;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.optaplanner.examples.nurserostering.domain.DayOfWeek;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class EmployeeConsecutiveAssignmentEnd implements Comparable<EmployeeConsecutiveAssignmentEnd>, Serializable {
 
@@ -104,7 +107,12 @@ public class EmployeeConsecutiveAssignmentEnd implements Comparable<EmployeeCons
     public int getDistanceToLastDayOfWeekend() {
         WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
         DayOfWeek dayOfWeek = shiftDate.getDayOfWeek();
-        return dayOfWeek.getDistanceToNext(weekendDefinition.getLastDayOfWeekend());
+        DayOfWeek lastDayOfWeekend = weekendDefinition.getLastDayOfWeekend();
+        int distance = lastDayOfWeekend.getValue() - dayOfWeek.getValue();
+        if (distance < 0) {
+            distance += 7;
+        }
+        return distance;
     }
 
 }

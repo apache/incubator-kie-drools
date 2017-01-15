@@ -19,7 +19,7 @@ package org.optaplanner.examples.nurserostering.solver;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 
-import org.optaplanner.examples.nurserostering.domain.DayOfWeek;
+import java.time.DayOfWeek;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;

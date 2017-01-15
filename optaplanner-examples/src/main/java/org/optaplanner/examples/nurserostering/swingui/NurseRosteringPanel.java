@@ -189,8 +189,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
             ShiftDate newShiftDate = new ShiftDate();
             newShiftDate.setId(oldLastShiftDate.getId() + 1L);
             newShiftDate.setDayIndex(oldLastShiftDate.getDayIndex() + 1);
-            newShiftDate.setDateString(oldLastShiftDate.determineNextDateString());
-            newShiftDate.setDayOfWeek(oldLastShiftDate.getDayOfWeek().determineNextDayOfWeek());
+            newShiftDate.setDate(oldLastShiftDate.getDate().plusDays(1));
             List<Shift> refShiftList = planningWindowStart.getShiftList();
             List<Shift> newShiftList = new ArrayList<>(refShiftList.size());
             newShiftDate.setShiftList(newShiftList);
