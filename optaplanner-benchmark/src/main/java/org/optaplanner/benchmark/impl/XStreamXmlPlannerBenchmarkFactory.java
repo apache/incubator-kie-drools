@@ -61,6 +61,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
         xStream.registerConverter(new FileConverter() {
             @Override
             public String toString(Object obj) {
+                // Write "/" path separators (even on Windows) for portability
                 return FilenameUtils.separatorsToUnix(((File) obj).getPath());
             }
         });
