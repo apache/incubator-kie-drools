@@ -777,6 +777,10 @@
                         <th>Report locale</th>
                         <td>${benchmarkReport.locale!"Unknown"}</td>
                     </tr>
+                    <tr>
+                        <th>Report timezone</th>
+                        <td>${benchmarkReport.timezoneId!"Unknown"}</td>
+                    </tr>
                 </table>
             </section>
         </div>

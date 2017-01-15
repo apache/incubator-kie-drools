@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.NumberFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -83,6 +84,7 @@ public class BenchmarkReport {
     private final PlannerBenchmarkResult plannerBenchmarkResult;
 
     private Locale locale = null;
+    private ZoneId timezoneId = null;
     private Comparator<SolverBenchmarkResult> solverRankingComparator = null;
     private SolverRankingWeightFactory solverRankingWeightFactory = null;
     private File summaryDirectory = null;
@@ -115,6 +117,14 @@ public class BenchmarkReport {
 
     public void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    public ZoneId getTimezoneId() {
+        return timezoneId;
+    }
+
+    public void setTimezoneId(ZoneId timezoneId) {
+        this.timezoneId = timezoneId;
     }
 
     public Comparator<SolverBenchmarkResult> getSolverRankingComparator() {

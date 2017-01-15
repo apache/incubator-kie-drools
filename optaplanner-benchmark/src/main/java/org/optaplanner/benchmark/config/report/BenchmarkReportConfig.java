@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.config.report;
 
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.Locale;
 
@@ -78,6 +79,7 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
     public BenchmarkReport buildBenchmarkReport(PlannerBenchmarkResult plannerBenchmark) {
         BenchmarkReport benchmarkReport = new BenchmarkReport(plannerBenchmark);
         benchmarkReport.setLocale(determineLocale());
+        benchmarkReport.setTimezoneId(ZoneId.systemDefault());
         supplySolverRanking(benchmarkReport);
         return benchmarkReport;
     }
