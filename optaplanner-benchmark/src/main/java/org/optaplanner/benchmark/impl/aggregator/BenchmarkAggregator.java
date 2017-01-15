@@ -19,7 +19,6 @@ package org.optaplanner.benchmark.impl.aggregator;
 import java.io.File;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
