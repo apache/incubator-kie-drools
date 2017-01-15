@@ -17,6 +17,8 @@
 package org.optaplanner.benchmark.impl;
 
 import java.io.File;
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -110,7 +112,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             throw new IllegalStateException("This benchmark has already ran before.");
         }
         startingSystemTimeMillis = System.currentTimeMillis();
-        plannerBenchmarkResult.setStartingTimestamp(new Date());
+        plannerBenchmarkResult.setStartingTimestamp(OffsetDateTime.now());
         List<SolverBenchmarkResult> solverBenchmarkResultList = plannerBenchmarkResult.getSolverBenchmarkResultList();
         if (ConfigUtils.isEmptyCollection(solverBenchmarkResultList)) {
             throw new IllegalArgumentException(

@@ -18,6 +18,13 @@ package org.optaplanner.benchmark.impl.result;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -75,7 +82,7 @@ public class PlannerBenchmarkResult {
     @XStreamImplicit(itemFieldName = "unifiedProblemBenchmarkResult")
     private List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = null;
 
-    private Date startingTimestamp = null;
+    private OffsetDateTime startingTimestamp = null;
     private Long benchmarkTimeMillisSpent = null;
 
     // ************************************************************************
@@ -183,11 +190,11 @@ public class PlannerBenchmarkResult {
         this.unifiedProblemBenchmarkResultList = unifiedProblemBenchmarkResultList;
     }
 
-    public Date getStartingTimestamp() {
+    public OffsetDateTime getStartingTimestamp() {
         return startingTimestamp;
     }
 
-    public void setStartingTimestamp(Date startingTimestamp) {
+    public void setStartingTimestamp(OffsetDateTime startingTimestamp) {
         this.startingTimestamp = startingTimestamp;
     }
 
@@ -243,14 +250,18 @@ public class PlannerBenchmarkResult {
         return levelLabels[scoreLevel];
     }
 
+    public String getStartingTimestampAsMediumString() {
+        return startingTimestamp == null ? null : startingTimestamp.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
+    }
+
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
 
     public void initBenchmarkReportDirectory(File benchmarkDirectory) {
-        String timestamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(startingTimestamp);
+        String timestampString = startingTimestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HHmmss"));
         if (StringUtils.isEmpty(name)) {
-            name = timestamp;
+            name = timestampString;
         }
         if (!benchmarkDirectory.mkdirs()) {
             if (!benchmarkDirectory.isDirectory()) {
@@ -264,7 +275,7 @@ public class PlannerBenchmarkResult {
         }
         int duplicationIndex = 0;
         do {
-            String directoryName = timestamp + (duplicationIndex == 0 ? "" : "_" + duplicationIndex);
+            String directoryName = timestampString + (duplicationIndex == 0 ? "" : "_" + duplicationIndex);
             duplicationIndex++;
             benchmarkReportDirectory = new File(benchmarkDirectory,
                     BooleanUtils.isFalse(aggregation) ? directoryName : directoryName + "_aggregation");

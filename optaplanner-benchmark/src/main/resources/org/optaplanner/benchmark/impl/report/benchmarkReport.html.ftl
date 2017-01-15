@@ -703,7 +703,7 @@
                     </tr>
                     <tr>
                         <th>Starting timestamp</th>
-                        <td>${(benchmarkReport.plannerBenchmarkResult.startingTimestamp?datetime?string.medium)!"Differs"}</td>
+                        <td>${(benchmarkReport.plannerBenchmarkResult.startingTimestampAsMediumString)!"Differs"}</td>
                     </tr>
                     <tr>
                         <th>Warm up time spent</th>
