@@ -96,7 +96,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
                 // For every pillar part duo
                 while (lowestIt.hasNext()) {
                     AssignmentSequence pillarPartAssignmentSequence = lowestIt.next();
-                    // Note: the initialCapacity is probably to high,
+                    // Note: the initialCapacity is probably too high,
                     // which is bad for memory, but the opposite is bad for performance (which is worse)
                     List<Move> moveListByPillarPartDuo = new ArrayList<>(
                             leftAssignmentSequenceList.size() + rightAssignmentSequenceList.size());
