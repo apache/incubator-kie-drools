@@ -27,8 +27,12 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
+public class ConstructionHeuristicDecider {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final String logIndentation;
     protected final Termination termination;
@@ -60,7 +64,6 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
     // Worker methods
     // ************************************************************************
 
-    @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         forager.solvingStarted(solverScope);
     }
@@ -81,7 +84,6 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
         forager.phaseEnded(phaseScope);
     }
 
-    @Override
     public void solvingEnded(DefaultSolverScope solverScope) {
         forager.solvingEnded(solverScope);
     }

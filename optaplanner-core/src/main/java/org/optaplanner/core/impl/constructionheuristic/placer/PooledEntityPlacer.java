@@ -38,7 +38,6 @@ public class PooledEntityPlacer extends AbstractEntityPlacer implements EntityPl
 
     private class PooledEntityPlacingIterator extends UpcomingSelectionIterator<Placement> {
 
-
         private PooledEntityPlacingIterator() {
         }
 
