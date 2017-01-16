@@ -59,19 +59,13 @@ public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFact
             Integer startPeriod = taskAssignment.getStartPeriod();
             if (startPeriod != null) {
                 if (startPeriod < task.getStartPeriodRangeTo() - 1) {
-                    List<TaskAssignment> pillar = positivePillarMap.get(machine);
-                    if (pillar == null) {
-                        pillar = new ArrayList<>(pillarCapacity);
-                        positivePillarMap.put(machine, pillar);
-                    }
+                    List<TaskAssignment> pillar = positivePillarMap.computeIfAbsent(machine,
+                            k -> new ArrayList<>(pillarCapacity));
                     pillar.add(taskAssignment);
                 }
                 if (startPeriod > task.getStartPeriodRangeFrom()) {
-                    List<TaskAssignment> pillar = negativePillarMap.get(machine);
-                    if (pillar == null) {
-                        pillar = new ArrayList<>(pillarCapacity);
-                        negativePillarMap.put(machine, pillar);
-                    }
+                    List<TaskAssignment> pillar = negativePillarMap.computeIfAbsent(machine,
+                            k -> new ArrayList<>(pillarCapacity));
                     pillar.add(taskAssignment);
                 }
             }

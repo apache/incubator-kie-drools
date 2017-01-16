@@ -42,14 +42,10 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
         Map<Bed, List<BedDesignation>> bedToBedDesignationList = new HashMap<>(
                 patientAdmissionSchedule.getBedList().size());
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
-            List<BedDesignation> bedDesignationListPerBed = bedToBedDesignationList.get(bedDesignation.getBed());
-            if (bedDesignationListPerBed == null) {
-                // Note: the initialCapacity is probably to high,
-                // which is bad for memory, but the opposite is bad for performance (which is worse)
-                bedDesignationListPerBed = new ArrayList<>(
-                        patientAdmissionSchedule.getNightList().size());
-                bedToBedDesignationList.put(bedDesignation.getBed(), bedDesignationListPerBed);
-            }
+            List<BedDesignation> bedDesignationListPerBed = bedToBedDesignationList.computeIfAbsent(bedDesignation.getBed(),
+                    // Note: the initialCapacity is probably to high,
+                    // which is bad for memory, but the opposite is bad for performance (which is worse)
+                    k -> new ArrayList<>(patientAdmissionSchedule.getNightList().size()));
             bedDesignationListPerBed.add(bedDesignation);
         }
         for (List<BedDesignation> bedDesignationListPerBed : bedToBedDesignationList.values()) {
