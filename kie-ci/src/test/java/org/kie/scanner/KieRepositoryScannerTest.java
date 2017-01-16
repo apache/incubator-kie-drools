@@ -783,6 +783,42 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         testKScannerWithKJarContainingClassLoadedFromClassLoader(true);
     }
 
+    @Test
+    public void testKScannerStartScanNow() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, "rule1", "rule2");
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+
+        MavenRepository repository = getMavenRepository();
+        repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
+
+        // create a ksesion and check it works as expected
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, "rule1", "rule2");
+
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        // Starting scanner with 200ms interval.
+        scanner.start(100);
+        // Manual scan, should continue interval scanning afterwards.
+        scanner.scanNow();
+
+        // create a new kjar
+        InternalKieModule kJar2 = createKieJar(ks, releaseId, "rule2", "rule3");
+        // deploy it on maven
+        repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
+
+        Thread.sleep(300);
+
+        // create a ksesion and check it works as expected
+        KieSession ksession2 = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession2, "rule2", "rule3");
+
+        ks.getRepository().removeKieModule(releaseId);
+    }
+
     private void testKScannerWithKJarContainingClassLoadedFromClassLoader(boolean differentKbases) throws Exception {
         // DROOLS-1231
         KieServices ks = KieServices.Factory.get();
