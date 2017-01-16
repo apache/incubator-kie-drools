@@ -783,7 +783,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         testKScannerWithKJarContainingClassLoadedFromClassLoader(true);
     }
 
-    @Test
+    @Test(timeout = 5000)
     public void testKScannerStartScanNow() throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
@@ -802,21 +802,32 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         // Starting scanner with 200ms interval.
         scanner.start(100);
-        // Manual scan, should continue interval scanning afterwards.
-        scanner.scanNow();
+        try {
+            // Manual scan, should continue interval scanning afterwards.
+            scanner.scanNow();
 
-        // create a new kjar
-        InternalKieModule kJar2 = createKieJar(ks, releaseId, "rule2", "rule3");
-        // deploy it on maven
-        repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
+            // create a new kjar
+            InternalKieModule kJar2 = createKieJar(ks, releaseId, "rule2", "rule3");
+            // deploy it on maven
+            repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
 
-        Thread.sleep(300);
-
-        // create a ksesion and check it works as expected
-        KieSession ksession2 = kieContainer.newKieSession("KSession1");
-        checkKSession(ksession2, "rule2", "rule3");
-
-        ks.getRepository().removeKieModule(releaseId);
+            // Check each 100ms until scanner finds the new kjar.
+            AssertionError assertionError = new AssertionError();
+            while (assertionError != null) {
+                try {
+                    assertionError = null;
+                    Thread.sleep(100);
+                    // create a ksesion and check it works as expected
+                    KieSession ksession2 = kieContainer.newKieSession("KSession1");
+                    checkKSession(ksession2, "rule2", "rule3");
+                } catch (AssertionError ex) {
+                    assertionError = ex;
+                }
+            }
+        } finally {
+            scanner.stop();
+            ks.getRepository().removeKieModule(releaseId);
+        }
     }
 
     private void testKScannerWithKJarContainingClassLoadedFromClassLoader(boolean differentKbases) throws Exception {
