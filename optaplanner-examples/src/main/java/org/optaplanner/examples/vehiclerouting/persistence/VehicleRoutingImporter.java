@@ -391,6 +391,8 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                 vehicle.setId(id);
                 id++;
                 vehicle.setCapacity(capacity);
+                //Multiple Depot VRP assign one vehicle for each depot
+                depotList.get(i % depotList.size());
                 vehicle.setDepot(depotList.get(0));
                 vehicleList.add(vehicle);
             }
