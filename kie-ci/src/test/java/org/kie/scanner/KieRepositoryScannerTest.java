@@ -804,7 +804,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         testKScannerWithKJarContainingClassLoadedFromClassLoader(true);
     }
 
-    @Test(timeout = 5000)
+    @Test
     public void testKScannerStartScanNow() throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
@@ -827,29 +827,28 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
             // Manual scan, should continue interval scanning afterwards.
             scanner.scanNow();
 
-            // create a new kjar
             InternalKieModule kJar2 = createKieJar(ks, releaseId, "rule2", "rule3");
-            // deploy it on maven
+
             repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
 
-            // Check each 100ms until scanner finds the new kjar.
-            AssertionError assertionError = new AssertionError();
-            while (assertionError != null) {
-                try {
-                    assertionError = null;
-                    Thread.sleep(100);
-                    // create a ksesion and check it works as expected
-                    KieSession ksession2 = kieContainer.newKieSession("KSession1");
-                    checkKSession(ksession2, "rule2", "rule3");
-                } catch (AssertionError ex) {
-                    assertionError = ex;
+            // Check each 100ms until scanner finds the new kjar (or timeout is reached)
+            long timeSpent = 0;
+            while (timeSpent <= 5000) {
+                // create a ksession and check the ksession produces the expected results
+                KieSession ksession2 = kieContainer.newKieSession("KSession1");
+                if (producesResults(ksession2, "rule2", "rule3")) {
+                    break;
                 }
+                Thread.sleep(100);
+                timeSpent += 100;
             }
         } finally {
             scanner.stop();
             ks.getRepository().removeKieModule(releaseId);
         }
     }
+
+
 
     private void testKScannerWithKJarContainingClassLoadedFromClassLoader(boolean differentKbases) throws Exception {
         // DROOLS-1231

@@ -334,4 +334,22 @@ public class AbstractKieCiTest {
                         list.contains( result ) );
         }
     }
+
+    protected boolean producesResults(KieSession ksession, Object... results) {
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        if (results.length != list.size()) {
+            return false;
+        }
+
+        for (Object result : results) {
+            if (!list.contains(result)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
