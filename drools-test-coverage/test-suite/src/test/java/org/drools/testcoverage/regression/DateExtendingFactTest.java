@@ -16,12 +16,14 @@
 
 package org.drools.testcoverage.regression;
 
+import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.ResourceUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.api.io.Resource;
 
 import java.io.StringReader;
@@ -51,6 +53,7 @@ public class DateExtendingFactTest {
         final Resource resource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
         resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
         final KieBuilder kbuilder = KieBaseUtil.getKieBuilderFromResources(true, resource);
+        Assertions.assertThat(kbuilder.getResults().getMessages(Message.Level.ERROR)).isEmpty();
     }
 
     /**

@@ -63,7 +63,7 @@ public class FixedPatternTest {
         ksession.insert(2);
         ksession.fireAllRules();
 
-        Assertions.assertThat(list.size()).isEqualTo(1);
-        Assertions.assertThat((long) list.get(0)).isEqualTo(1L);
+        Assertions.assertThat(list).hasSize(1);
+        Assertions.assertThat(list).first().isEqualTo(1L);
     }
 }

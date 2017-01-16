@@ -92,8 +92,7 @@ public class EventDeserializationInPastTest {
                 ksession = marshaller.unmarshall(bais, sessionConfig, null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            Assertions.fail("unexpected exception :" + e.getMessage());
+            Assertions.fail("Unexpected exception: ", e);
         }
         return ksession;
     }

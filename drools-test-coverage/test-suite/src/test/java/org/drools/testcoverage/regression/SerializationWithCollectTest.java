@@ -16,6 +16,7 @@
 
 package org.drools.testcoverage.regression;
 
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,7 +73,7 @@ public class SerializationWithCollectTest {
                 ksession = marshaller.unmarshall(bais);
             }
         } catch (NullPointerException e) {
-            throw new RuntimeException("Consider reopening BZ 1193600!", e);
+            Assertions.fail("Consider reopening BZ 1193600!", e);
         }
     }
 }
