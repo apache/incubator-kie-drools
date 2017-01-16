@@ -360,7 +360,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                     pattern.setCode(code);
                     pattern.setWeight(weight);
                     int patternEntryIndex = 0;
-                    DayOfWeek firstDayOfweek = null;
+                    DayOfWeek firstDayOfWeek = null;
                     for (Element patternEntryElement : patternEntryElementList) {
                         assertElementName(patternEntryElement, "PatternEntry");
                         Element shiftTypeElement = patternEntryElement.getChild("ShiftType");
@@ -398,10 +398,10 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                             }
                         }
                         if (patternEntryIndex == 0) {
-                            firstDayOfweek = dayOfWeek;
+                            firstDayOfWeek = dayOfWeek;
                         } else {
-                            if (firstDayOfweek != null) {
-                                int distance = dayOfWeek.getValue() - firstDayOfweek.getValue();
+                            if (firstDayOfWeek != null) {
+                                int distance = dayOfWeek.getValue() - firstDayOfWeek.getValue();
                                 if (distance < 0) {
                                     distance += 7;
                                 }
