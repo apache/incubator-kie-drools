@@ -91,7 +91,7 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
      * If the optional {@link ClassLoader}s are not specified, then both {@link #contextClassLoader()}
      * and {@link #staticClassLoader()} are used for {@link ClassLoader#getResources(String)}.
      * <p>
-     * The returned URLs retainsthe order of the given {@code classLoaders}.
+     * The returned URLs retains the order of the given {@code classLoaders}.
      *
      * @return the collection of URLs, not null
      */

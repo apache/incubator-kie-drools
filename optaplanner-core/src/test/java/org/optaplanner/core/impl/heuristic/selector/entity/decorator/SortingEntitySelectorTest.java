@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
 import java.util.Collections;
+import java.util.Comparator;
 
 import org.junit.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -27,6 +28,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.junit.Assert.assertEquals;
@@ -61,7 +63,7 @@ public class SortingEntitySelectorTest {
                 new TestdataEntity("apr"), new TestdataEntity("may"), new TestdataEntity("jun"));
 
         SelectionSorter<TestdataSolution, TestdataEntity> sorter = (scoreDirector, selectionList)
-                -> Collections.sort(selectionList, (a, b) -> a.getCode().compareTo(b.getCode()));
+                -> selectionList.sort(Comparator.comparing(TestdataObject::getCode));
         EntitySelector entitySelector = new SortingEntitySelector(childEntitySelector, cacheType, sorter);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

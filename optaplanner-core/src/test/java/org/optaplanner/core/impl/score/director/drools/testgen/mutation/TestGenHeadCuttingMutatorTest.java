@@ -35,7 +35,7 @@ public class TestGenHeadCuttingMutatorTest {
 
     @Test
     public void mutateUntilListIsEmpty() {
-        TestGenHeadCuttingMutator<Integer> m = new TestGenHeadCuttingMutator<Integer>(list);
+        TestGenHeadCuttingMutator<Integer> m = new TestGenHeadCuttingMutator<>(list);
         assertTrue(m.canMutate());
 
         // 0.8 * 25 = 20 cut
@@ -82,7 +82,7 @@ public class TestGenHeadCuttingMutatorTest {
 
     @Test
     public void testImpossibleMutation() {
-        TestGenHeadCuttingMutator<Integer> m = new TestGenHeadCuttingMutator<Integer>(list);
+        TestGenHeadCuttingMutator<Integer> m = new TestGenHeadCuttingMutator<>(list);
         assertTrue(m.canMutate());
 
         assertTrue(m.canMutate());

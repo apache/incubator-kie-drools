@@ -96,11 +96,8 @@ public class ExternalizedCollectionInverseVariableSupply implements StatefulVari
         if (value == null) {
             return;
         }
-        Set<Object> inverseEntitySet = inverseEntitySetMap.get(value);
-        if (inverseEntitySet == null) {
-            inverseEntitySet = Collections.newSetFromMap(new IdentityHashMap<>());
-            inverseEntitySetMap.put(value, inverseEntitySet);
-        }
+        Set<Object> inverseEntitySet = inverseEntitySetMap.computeIfAbsent(value,
+                k -> Collections.newSetFromMap(new IdentityHashMap<>()));
         boolean addSucceeded = inverseEntitySet.add(entity);
         if (!addSucceeded) {
             throw new IllegalStateException("The supply (" + this + ") is corrupted,"

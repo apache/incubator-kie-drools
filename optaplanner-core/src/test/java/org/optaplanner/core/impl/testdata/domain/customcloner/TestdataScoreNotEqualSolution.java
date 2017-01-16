@@ -52,7 +52,7 @@ public class TestdataScoreNotEqualSolution implements SolutionCloner<TestdataSco
             clone.score = SimpleScore.valueOf(0);
         }
         if (clone.score.equals(original.score)) {
-            throw new IllegalStateException("The cloned score should be intentionally inequal to the original score");
+            throw new IllegalStateException("The cloned score should be intentionally unequal to the original score");
         }
         return clone;
     }

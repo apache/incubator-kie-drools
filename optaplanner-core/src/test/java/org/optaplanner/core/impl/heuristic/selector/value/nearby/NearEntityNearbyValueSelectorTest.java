@@ -53,48 +53,45 @@ public class NearEntityNearbyValueSelectorTest {
         EntityIndependentValueSelector childValueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
                 variableDescriptor,
                 morocco, spain, australia, brazil);
-        NearbyDistanceMeter meter = new NearbyDistanceMeter<TestdataEntity, TestdataValue>() {
-            @Override
-            public double getNearbyDistance(TestdataEntity origin, TestdataValue destination) {
-                if (origin == africa) {
-                    if (destination == morocco) {
-                        return 0.0;
-                    } else if (destination == spain) {
-                        return 1.0;
-                    } else if (destination == australia) {
-                        return 100.0;
-                    } else if (destination == brazil) {
-                        return 50.0;
-                    } else {
-                        throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
-                    }
-                } else if (origin == europe) {
-                    if (destination == morocco) {
-                        return 1.0;
-                    } else if (destination == spain) {
-                        return 0.0;
-                    } else if (destination == australia) {
-                        return 101.0;
-                    } else if (destination == brazil) {
-                        return 51.0;
-                    } else {
-                        throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
-                    }
-                } else if (origin == oceania) {
-                    if (destination == morocco) {
-                        return 100.0;
-                    } else if (destination == spain) {
-                        return 101.0;
-                    } else if (destination == australia) {
-                        return 0.0;
-                    } else if (destination == brazil) {
-                        return 60.0;
-                    } else {
-                        throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
-                    }
+        NearbyDistanceMeter<TestdataEntity, TestdataValue> meter = (origin, destination) -> {
+            if (origin == africa) {
+                if (destination == morocco) {
+                    return 0.0;
+                } else if (destination == spain) {
+                    return 1.0;
+                } else if (destination == australia) {
+                    return 100.0;
+                } else if (destination == brazil) {
+                    return 50.0;
                 } else {
-                    throw new IllegalStateException("The origin (" + origin + ") is not implemented.");
+                    throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
                 }
+            } else if (origin == europe) {
+                if (destination == morocco) {
+                    return 1.0;
+                } else if (destination == spain) {
+                    return 0.0;
+                } else if (destination == australia) {
+                    return 101.0;
+                } else if (destination == brazil) {
+                    return 51.0;
+                } else {
+                    throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
+                }
+            } else if (origin == oceania) {
+                if (destination == morocco) {
+                    return 100.0;
+                } else if (destination == spain) {
+                    return 101.0;
+                } else if (destination == australia) {
+                    return 0.0;
+                } else if (destination == brazil) {
+                    return 60.0;
+                } else {
+                    throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
+                }
+            } else {
+                throw new IllegalStateException("The origin (" + origin + ") is not implemented.");
             }
         };
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(), africa, europe, oceania);
@@ -173,48 +170,45 @@ public class NearEntityNearbyValueSelectorTest {
         EntityIndependentValueSelector childValueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
                 variableDescriptor,
                 morocco, spain, australia, brazil);
-        NearbyDistanceMeter meter = new NearbyDistanceMeter<TestdataChainedEntity, TestdataChainedObject>() {
-            @Override
-            public double getNearbyDistance(TestdataChainedEntity origin, TestdataChainedObject destination) {
-                if (origin == morocco) {
-                    if (destination == morocco) {
-                        return 0.0;
-                    } else if (destination == spain) {
-                        return 1.0;
-                    } else if (destination == australia) {
-                        return 100.0;
-                    } else if (destination == brazil) {
-                        return 50.0;
-                    } else {
-                        throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
-                    }
-                } else if (origin == spain) {
-                    if (destination == morocco) {
-                        return 1.0;
-                    } else if (destination == spain) {
-                        return 0.0;
-                    } else if (destination == australia) {
-                        return 101.0;
-                    } else if (destination == brazil) {
-                        return 51.0;
-                    } else {
-                        throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
-                    }
-                } else if (origin == australia) {
-                    if (destination == morocco) {
-                        return 100.0;
-                    } else if (destination == spain) {
-                        return 101.0;
-                    } else if (destination == australia) {
-                        return 0.0;
-                    } else if (destination == brazil) {
-                        return 60.0;
-                    } else {
-                        throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
-                    }
+        NearbyDistanceMeter<TestdataChainedEntity, TestdataChainedObject> meter = (origin, destination) -> {
+            if (origin == morocco) {
+                if (destination == morocco) {
+                    return 0.0;
+                } else if (destination == spain) {
+                    return 1.0;
+                } else if (destination == australia) {
+                    return 100.0;
+                } else if (destination == brazil) {
+                    return 50.0;
                 } else {
-                    throw new IllegalStateException("The origin (" + origin + ") is not implemented.");
+                    throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
                 }
+            } else if (origin == spain) {
+                if (destination == morocco) {
+                    return 1.0;
+                } else if (destination == spain) {
+                    return 0.0;
+                } else if (destination == australia) {
+                    return 101.0;
+                } else if (destination == brazil) {
+                    return 51.0;
+                } else {
+                    throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
+                }
+            } else if (origin == australia) {
+                if (destination == morocco) {
+                    return 100.0;
+                } else if (destination == spain) {
+                    return 101.0;
+                } else if (destination == australia) {
+                    return 0.0;
+                } else if (destination == brazil) {
+                    return 60.0;
+                } else {
+                    throw new IllegalStateException("The destination (" + destination + ") is not implemented.");
+                }
+            } else {
+                throw new IllegalStateException("The origin (" + origin + ") is not implemented.");
             }
         };
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(variableDescriptor.getEntityDescriptor(), morocco, spain, australia);

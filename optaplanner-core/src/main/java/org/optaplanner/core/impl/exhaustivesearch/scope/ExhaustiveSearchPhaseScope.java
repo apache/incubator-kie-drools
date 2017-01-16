@@ -88,14 +88,9 @@ public class ExhaustiveSearchPhaseScope<Solution_> extends AbstractPhaseScope<So
     public void registerPessimisticBound(Score pessimisticBound) {
         if (pessimisticBound.compareTo(bestPessimisticBound) > 0) {
             bestPessimisticBound = pessimisticBound;
+            // Prune the queue
             // TODO optimize this because expandableNodeQueue is too long to iterate
-            for (Iterator<ExhaustiveSearchNode> iterator = expandableNodeQueue.iterator(); iterator.hasNext(); ) {
-                // Prune it
-                ExhaustiveSearchNode node = iterator.next();
-                if (node.getOptimisticBound().compareTo(bestPessimisticBound) <= 0) {
-                    iterator.remove();
-                }
-            }
+            expandableNodeQueue.removeIf(node -> node.getOptimisticBound().compareTo(bestPessimisticBound) <= 0);
         }
     }
 

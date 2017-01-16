@@ -61,9 +61,9 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         return Resources.toString(url, Charset.forName("UTF-8"));
     }
 
-    protected ReleaseId deployTestdataKjar(String artifactid, String kmodulePath, String solverConfigPath)
+    protected ReleaseId deployTestdataKjar(String artifactId, String kmodulePath, String solverConfigPath)
             throws IOException {
-        ReleaseId releaseId = kieServices.newReleaseId("org.optaplanner.core.test", artifactid, "1.0.0");
+        ReleaseId releaseId = kieServices.newReleaseId("org.optaplanner.core.test", artifactId, "1.0.0");
 
         String kmodule = readResourceToString(kmodulePath);
         Resource valueClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataValue.java",

@@ -42,7 +42,7 @@ public class TestGenRemoveRandomBlockMutator<T> {
         }
 
         if (removedIndex >= 0) {
-            // last mutation was succesful => clear the blacklist
+            // last mutation was successful => clear the blacklist
             indexBlacklist.clear();
         }
 

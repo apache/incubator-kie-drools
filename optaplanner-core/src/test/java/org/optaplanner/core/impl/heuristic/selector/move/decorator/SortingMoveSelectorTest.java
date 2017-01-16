@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
 import java.util.Collections;
+import java.util.Comparator;
 
 import org.junit.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -60,7 +61,7 @@ public class SortingMoveSelectorTest {
                 new DummyMove("apr"), new DummyMove("may"), new DummyMove("jun"));
 
         SelectionSorter<TestdataSolution, DummyMove> sorter = (scoreDirector, selectionList)
-                -> Collections.sort(selectionList, (a, b) -> a.getCode().compareTo(b.getCode()));
+                -> selectionList.sort(Comparator.comparing(DummyMove::getCode));
         MoveSelector moveSelector = new SortingMoveSelector(childMoveSelector, cacheType, sorter);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

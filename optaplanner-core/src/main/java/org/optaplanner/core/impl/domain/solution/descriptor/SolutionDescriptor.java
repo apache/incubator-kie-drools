@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -597,7 +598,7 @@ public class SolutionDescriptor<Solution_> {
         }
         int globalShadowOrder = 0;
         while (!pairList.isEmpty()) {
-            Collections.sort(pairList, (a, b) -> Integer.compare(a.getValue(), b.getValue()));
+            pairList.sort(Comparator.comparingInt(Pair::getValue));
             Pair<ShadowVariableDescriptor<Solution_>, Integer> pair = pairList.remove(0);
             ShadowVariableDescriptor<Solution_> shadow = pair.getKey();
             if (pair.getValue() != 0) {

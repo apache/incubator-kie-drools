@@ -37,7 +37,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
 
     @Test
     public void testRemoveAll() {
-        TestGenRemoveRandomBlockMutator<Integer> m = new TestGenRemoveRandomBlockMutator<Integer>(list);
+        TestGenRemoveRandomBlockMutator<Integer> m = new TestGenRemoveRandomBlockMutator<>(list);
         ArrayList<Integer> removed = new ArrayList<>();
         while (m.canMutate()) {
             assertTrue(m.canMutate());
@@ -53,7 +53,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
 
     @Test
     public void testRevert() {
-        TestGenRemoveRandomBlockMutator<Integer> m = new TestGenRemoveRandomBlockMutator<Integer>(list);
+        TestGenRemoveRandomBlockMutator<Integer> m = new TestGenRemoveRandomBlockMutator<>(list);
         m.mutate();
         List<Integer> removedBlock = m.getRemovedBlock();
         m.revert();
@@ -63,7 +63,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
 
     @Test
     public void testImpossibleMutation() {
-        TestGenRemoveRandomBlockMutator<Integer> m = new TestGenRemoveRandomBlockMutator<Integer>(list);
+        TestGenRemoveRandomBlockMutator<Integer> m = new TestGenRemoveRandomBlockMutator<>(list);
         ArrayList<Integer> removed = new ArrayList<>();
         while (m.canMutate()) {
             m.mutate();

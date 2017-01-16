@@ -37,7 +37,7 @@ public class TestGenKieSessionFireAllRules implements TestGenKieSessionOperation
     @Override
     public void print(StringBuilder sb) {
         sb.append(String.format("        //%s\n", this));
-        sb.append(String.format("        kieSession.fireAllRules();\n"));
+        sb.append("        kieSession.fireAllRules();\n");
     }
 
     @Override

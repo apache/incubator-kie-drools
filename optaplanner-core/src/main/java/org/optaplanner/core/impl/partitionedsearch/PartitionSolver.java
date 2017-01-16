@@ -116,11 +116,13 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
         }
     }
 
+    @Override
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         solverScope.setWorkingSolutionFromBestSolution();
         super.solvingStarted(solverScope);
     }
 
+    @Override
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         solverScope.endingNow();

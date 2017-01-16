@@ -238,11 +238,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         for (ConstraintMatchTotal constraintMatchTotal : getConstraintMatchTotals()) {
             for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                 for (Object justification : constraintMatch.getJustificationList()) {
-                    List<ConstraintMatch> indictment = indictmentMap.get(justification);
-                    if (indictment == null) {
-                        indictment = new ArrayList<>();
-                        indictmentMap.put(justification, indictment);
-                    }
+                    List<ConstraintMatch> indictment = indictmentMap.computeIfAbsent(justification,
+                            k -> new ArrayList<>());
                     indictment.add(constraintMatch);
                 }
             }

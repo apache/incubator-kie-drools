@@ -53,7 +53,7 @@ public class ComparatorSelectionSorter<Solution_, T> implements SelectionSorter<
 
     @Override
     public void sort(ScoreDirector<Solution_> scoreDirector, List<T> selectionList) {
-        Collections.sort(selectionList, appliedComparator);
+        selectionList.sort(appliedComparator);
     }
 
 }

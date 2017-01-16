@@ -172,6 +172,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         solverScope.setWorkingRandom(randomFactory.createRandom());
     }
 
+    @Override
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         solverScope.startingNow();
         solverScope.getScoreDirector().resetCalculationCount();
@@ -186,6 +187,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
                 (randomFactory != null ? randomFactory : "not fixed"));
     }
 
+    @Override
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         solverScope.endingNow();

@@ -130,12 +130,7 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
 
     // TODO We need unit test for this: annotation scanning with TestdataUnannotatedExtendedEntity
     private void retainOnlyClassesWithDeclaredAnnotation(Set<Class<?>> classSet, Class<? extends Annotation> annotation) {
-        for (Iterator<Class<?>> it = classSet.iterator(); it.hasNext(); ) {
-            Class<?> clazz = it.next();
-            if (!clazz.isAnnotationPresent(annotation)) {
-                it.remove();
-            }
-        }
+        classSet.removeIf(clazz -> !clazz.isAnnotationPresent(annotation));
     }
 
     @Override
