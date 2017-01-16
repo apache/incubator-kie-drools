@@ -55,7 +55,6 @@ public class EmployeePanel extends JPanel {
     private List<Shift> shiftList;
     private Employee employee;
 
-    private JLabel employeeLabel;
     private JButton deleteButton;
     private JPanel shiftDateListPanel = null;
     private Map<ShiftDate, JPanel> shiftDatePanelMap;
@@ -98,7 +97,7 @@ public class EmployeePanel extends JPanel {
         if (employee != null) {
             labelAndDeletePanel.add(new JLabel(nurseRosteringPanel.getEmployeeIcon()), BorderLayout.WEST);
         }
-        employeeLabel = new JLabel(getEmployeeLabel());
+        JLabel employeeLabel = new JLabel(getEmployeeLabel());
         employeeLabel.setEnabled(false);
         labelAndDeletePanel.add(employeeLabel, BorderLayout.CENTER);
         if (employee != null) {
