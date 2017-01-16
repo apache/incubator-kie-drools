@@ -32,13 +32,13 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.converters.ConversionException;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
+import org.optaplanner.persistence.xstream.api.score.AbstractScoreXStreamConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +53,7 @@ public class BenchmarkResultIO {
     public BenchmarkResultIO() {
         xStream = XStreamXmlSolverFactory.buildXStream();
         xStream.processAnnotations(PlannerBenchmarkResult.class);
+        AbstractScoreXStreamConverter.registerScoreConverters(xStream);
     }
 
     public void writePlannerBenchmarkResult(File benchmarkReportDirectory,
