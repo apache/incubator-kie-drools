@@ -69,4 +69,8 @@ public class FeelTypeImpl
         return feelType == BuiltInType.CONTEXT;
     }
 
+    public BaseDMNTypeImpl clone() {
+        return new FeelTypeImpl( getName(), getId(), feelType, isCollection(), getAllowedValues() );
+    }
+
 }

@@ -18,7 +18,8 @@ package org.kie.dmn.core.api;
 
 import java.util.Map;
 
-public interface DMNType {
+public interface DMNType
+        extends Cloneable {
 
     String getName();
 
@@ -35,4 +36,6 @@ public interface DMNType {
     Map<String, DMNType> getFields();
 
     DMNType getField( String fieldName );
+
+    DMNType clone();
 }

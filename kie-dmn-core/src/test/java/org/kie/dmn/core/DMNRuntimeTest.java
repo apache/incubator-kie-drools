@@ -532,16 +532,31 @@ public class DMNRuntimeTest {
         runtime.addListener( DMNRuntimeUtil.createListener() );
 
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_4ad80959-5fd8-46b7-8c9a-ab2fa58cb5b4", "When is it" );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( dmnModel, notNullValue() );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
         DMNContext context = DMNFactory.newContext();
         context.set( "The date", LocalDate.of( 2017, 01, 12 ) );
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getContext().get("When is it"), is( "It is in the past" ) );
+    }
+
+    @Test
+    public void testTimeFunction() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "TimeFromDate.dmn", getClass() );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_ecf4ea54-2abc-4e2f-a101-4fe14e356a46", "Dessin 1" );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "datetimestring", "2016-07-29T05:48:23.765-05:00" );
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         System.out.println(formatMessages( dmnResult.getMessages() ));
         System.out.println( dmnResult.getContext());
-        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getContext().get("When is it"), is( "It is in the past" ) );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getContext().get("time"), is( OffsetTime.of( 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 ) ) ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {
