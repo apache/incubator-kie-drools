@@ -4047,7 +4047,6 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
         assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
 
-        //Add file with error - expect 1 "added" error message
         kfs.write( "src/main/resources/r2.drl", drl2 );
         IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
