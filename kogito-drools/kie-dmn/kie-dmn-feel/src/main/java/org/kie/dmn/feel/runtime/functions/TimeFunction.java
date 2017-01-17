@@ -24,6 +24,8 @@ import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQueries;
 
 import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -90,7 +92,11 @@ public class TimeFunction
         }
         
         try {
-            return FEELFnResult.ofResult( OffsetTime.from( date ) );
+            if( date.query( TemporalQueries.offset() ) == null ) {
+                return FEELFnResult.ofResult( LocalTime.from( date ) );
+            } else {
+                return FEELFnResult.ofResult( OffsetTime.from( date ) );
+            }
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "time-parsing exception", e));
         }
