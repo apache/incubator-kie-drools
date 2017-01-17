@@ -783,6 +783,52 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         testKScannerWithKJarContainingClassLoadedFromClassLoader(true);
     }
 
+    @Test
+    public void testKScannerStartScanNow() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, "rule1", "rule2");
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+
+        MavenRepository repository = getMavenRepository();
+        repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
+
+        // create a ksesion and check it works as expected
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, "rule1", "rule2");
+
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        // Starting scanner with 200ms interval.
+        scanner.start(100);
+        try {
+            // Manual scan, should continue interval scanning afterwards.
+            scanner.scanNow();
+
+            InternalKieModule kJar2 = createKieJar(ks, releaseId, "rule2", "rule3");
+
+            repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
+
+            // Check each 100ms until scanner finds the new kjar (or timeout is reached)
+            long timeSpent = 0;
+            while (timeSpent <= 5000) {
+                // create a ksession and check the ksession produces the expected results
+                KieSession ksession2 = kieContainer.newKieSession("KSession1");
+                if (producesResults(ksession2, "rule2", "rule3")) {
+                    break;
+                }
+                Thread.sleep(100);
+                timeSpent += 100;
+            }
+        } finally {
+            scanner.stop();
+            ks.getRepository().removeKieModule(releaseId);
+        }
+    }
+
+
+
     private void testKScannerWithKJarContainingClassLoadedFromClassLoader(boolean differentKbases) throws Exception {
         // DROOLS-1231
         KieServices ks = KieServices.Factory.get();
