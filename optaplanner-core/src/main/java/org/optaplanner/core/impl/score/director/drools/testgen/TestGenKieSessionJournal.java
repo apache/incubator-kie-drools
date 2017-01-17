@@ -72,8 +72,6 @@ public class TestGenKieSessionJournal {
                     eventSupport.afterFireAllRules(replayKieSession, this);
                 }
             }
-        } catch (RuntimeException ex) {
-            throw ex;
         } finally {
             replayKieSession.dispose();
         }
