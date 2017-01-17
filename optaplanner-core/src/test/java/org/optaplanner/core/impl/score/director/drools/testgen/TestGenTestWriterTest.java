@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -42,6 +43,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import static org.junit.Assert.*;
 
 public class TestGenTestWriterTest {
+
+    private static final String DRL_FILE_PLACEHOLDER = "SCORE_DRL_ABSOLUTE_PATH";
+    private static final String DRL_FILE_PATH = "/x/y.drl";
 
     @Test
     public void fullJournalOutput() throws IOException, URISyntaxException {
@@ -61,7 +65,7 @@ public class TestGenTestWriterTest {
         TestGenTestWriter writer = new TestGenTestWriter();
         writer.setClassName("TestGenWriterOutput");
         writer.setScoreDefinition(new SimpleScoreDefinition());
-        writer.setScoreDrlFileList(Arrays.asList(new File("/x")));
+        writer.setScoreDrlFileList(Arrays.asList(new File(DRL_FILE_PATH)));
         writer.setScoreDrlList(Arrays.asList("x", "y"));
         writer.setConstraintMatchEnabled(true);
         writer.setCorruptedScoreException(new TestGenCorruptedScoreException(
@@ -93,15 +97,18 @@ public class TestGenTestWriterTest {
         List<String> expectedLines = Files.readAllLines(expected, StandardCharsets.UTF_8);
         List<String> actualLines = new BufferedReader(new StringReader(actual)).lines().collect(Collectors.toList());
         for (int i = 0; i < Math.min(expectedLines.size(), actualLines.size()); i++) {
-            assertEquals("At line " + (i + 1), expectedLines.get(i), actualLines.get(i));
+            String expectedLine = StringUtils.replace(expectedLines.get(i),
+                    DRL_FILE_PLACEHOLDER, new File(DRL_FILE_PATH).getAbsolutePath());
+            assertEquals("At line " + (i + 1), expectedLine, actualLines.get(i));
         }
 
         // then check line counts are the same
         assertEquals(expectedLines.size(), actualLines.size());
 
-        // finally check all bytes
-        byte[] expectedBytes = Files.readAllBytes(expected);
-        assertArrayEquals(expectedBytes, actual.getBytes());
+        // finally check the whole string
+        String expectedString = StringUtils.replace(new String(Files.readAllBytes(expected), StandardCharsets.UTF_8),
+                DRL_FILE_PLACEHOLDER, new File(DRL_FILE_PATH).getAbsolutePath());
+        assertEquals(expectedString, actual);
     }
 
 }

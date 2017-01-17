@@ -27,7 +27,7 @@ public class TestGenWriterOutput {
         KieServices kieServices = KieServices.Factory.get();
         KieFileSystem kfs = kieServices.newKieFileSystem();
         kfs.write(kieServices.getResources()
-                .newFileSystemResource(new File("/x"), "UTF-8"));
+                .newFileSystemResource(new File("SCORE_DRL_ABSOLUTE_PATH"), "UTF-8"));
         kfs.write(kieServices.getResources()
                 .newClassPathResource("x"));
         kfs.write(kieServices.getResources()
