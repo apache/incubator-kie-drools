@@ -212,8 +212,15 @@ public class DMNRuntimeImpl
             try {
                 DMNExpressionEvaluator.EvaluatorResult er = decision.getEvaluator().evaluate( eventManager, result );
                 if( er.getResultType() == DMNExpressionEvaluator.ResultType.SUCCESS ) {
-                    result.getContext().set( decision.getDecision().getVariable().getName(), er.getResult() );
-                    dr.setResult( er.getResult() );
+                    Object value = er.getResult();
+                    if( ! decision.getResultType().isCollection() && value instanceof Collection &&
+                        ((Collection)value).size()==1 ) {
+                        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
+                        // and vice-versa
+                        value = ((Collection)value).toArray()[0];
+                    }
+                    result.getContext().set( decision.getDecision().getVariable().getName(), value );
+                    dr.setResult( value );
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED );
                 } else {
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.FAILED );

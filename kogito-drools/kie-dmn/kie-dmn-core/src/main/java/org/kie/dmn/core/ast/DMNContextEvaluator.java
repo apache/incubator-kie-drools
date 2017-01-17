@@ -26,10 +26,7 @@ import org.kie.dmn.feel.model.v1_1.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DMNContextEvaluator
         implements DMNExpressionEvaluator {
@@ -68,8 +65,15 @@ public class DMNContextEvaluator
                 try {
                     EvaluatorResult er = ed.getEvaluator().evaluate( eventManager, result );
                     if ( er.getResultType() == ResultType.SUCCESS ) {
-                        results.put( ed.getName(), er.getResult() );
-                        dmnContext.set( ed.getName(), er.getResult() );
+                        Object value = er.getResult();
+                        if( ! ed.getType().isCollection() && value instanceof Collection &&
+                            ((Collection)value).size()==1 ) {
+                            // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
+                            // and vice-versa
+                            value = ((Collection)value).toArray()[0];
+                        }
+                        results.put( ed.getName(), value );
+                        dmnContext.set( ed.getName(), value );
                     } else {
                         String message = "Error evaluating context extry '" + ed.getName() + "' on context '" + name + "'";
                         logger.error( message );

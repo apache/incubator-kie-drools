@@ -80,6 +80,27 @@ public class FlightRebookingTest {
     }
 
     @Test
+    public void testSolutionSingletonLists() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking-singleton-lists.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+
+        List passengerList = loadPassengerList();
+        List flightList = loadFlightList();
+
+        context.set( "Passenger List", passengerList );
+        context.set( "Flight List", flightList );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( result.get( "Rebooked Passengers" ), is( loadExpectedResult() ) );
+    }
+
+    @Test
     public void testSolutionBadExample() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking-bad-example.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );

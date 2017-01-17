@@ -29,10 +29,7 @@ import java.time.*;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalUnit;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
@@ -345,7 +342,17 @@ public class InfixOpNode
             return operator == InfixOperator.EQ;
         } else if ( left == null || right == null ) {
             return operator == InfixOperator.NE;
-        } else if( left instanceof Range && right instanceof Range ) {
+        }
+
+        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
+        // and vice-versa
+        if( left instanceof Collection && !(right instanceof Collection) && ((Collection)left).size()==1 ) {
+            left = ((Collection)left).toArray()[0];
+        } else if( right instanceof Collection && !(left instanceof Collection) && ((Collection)right).size()==1 ) {
+            right = ((Collection) right).toArray()[0];
+        }
+
+        if( left instanceof Range && right instanceof Range ) {
             return operator == InfixOperator.NE ^ isEqual( (Range)left, (Range) right );
         } else if( left instanceof Iterable && right instanceof Iterable ) {
             return operator == InfixOperator.NE ^ isEqual( (Iterable)left, (Iterable) right );

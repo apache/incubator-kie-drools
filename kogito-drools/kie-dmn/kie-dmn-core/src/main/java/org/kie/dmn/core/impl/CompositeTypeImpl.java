@@ -70,4 +70,9 @@ public class CompositeTypeImpl
     public boolean isComposite() {
         return true;
     }
+
+    @Override
+    public CompositeTypeImpl clone() {
+        return new CompositeTypeImpl( getName(), getId(), isCollection(), fields );
+    }
 }

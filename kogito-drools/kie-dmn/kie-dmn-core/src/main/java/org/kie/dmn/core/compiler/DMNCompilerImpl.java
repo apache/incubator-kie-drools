@@ -205,6 +205,9 @@ public class DMNCompilerImpl implements DMNCompiler {
             // this is a reference to an existing type, so resolve the reference
             type = (BaseDMNTypeImpl) resolveTypeRef( dmnModel, node, itemDef, itemDef.getTypeRef() );
             if( type != null ) {
+                // we have to clone this type definition into a new one
+                type = type.clone();
+
                 UnaryTests allowedValuesStr = itemDef.getAllowedValues();
                 if( allowedValuesStr != null ) {
                     Object av = FEEL.newInstance().evaluate( "[" + allowedValuesStr.getText() + "]" );
