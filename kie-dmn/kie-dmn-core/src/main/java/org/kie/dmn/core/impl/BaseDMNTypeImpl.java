@@ -85,4 +85,7 @@ public abstract class BaseDMNTypeImpl
     public void setAllowedValues(List<?> allowedValues) {
         this.allowedValues = allowedValues;
     }
+
+    public abstract BaseDMNTypeImpl clone();
+
 }
