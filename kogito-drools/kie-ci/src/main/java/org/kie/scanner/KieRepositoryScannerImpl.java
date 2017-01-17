@@ -282,11 +282,13 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         if (getStatus() == Status.SHUTDOWN ) {
             throw new IllegalStateException("The scanner was already shut down and can no longer be used.");
         }
+        // Polling can be started so remember the original state.
+        final Status originalStatus = status;
         try {
             status = Status.SCANNING;
             Map<DependencyDescriptor, Artifact> updatedArtifacts = scanForUpdates();
             if (updatedArtifacts.isEmpty()) {
-                status = Status.STOPPED;
+                status = originalStatus;
                 return;
             }
             status = Status.UPDATING;
@@ -309,7 +311,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             // show we catch exceptions here and shutdown the scanner if one happens?
             
         } finally {
-            status = Status.STOPPED;
+            status = originalStatus;
         }
     }
 
