@@ -19,6 +19,7 @@
 
   <properties>
     <checkstyle.failOnValidation>true</checkstyle.failOnValidation>
+    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
   </properties>
 
   <repositories>
