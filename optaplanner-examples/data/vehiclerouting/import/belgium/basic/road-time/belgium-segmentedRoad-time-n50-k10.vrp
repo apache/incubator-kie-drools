@@ -1,5 +1,6 @@
 NAME: belgium-segmentedRoad-time-n50-k10
 COMMENT: Generated for OptaPlanner Examples with GraphHopper by Geoffrey De Smet.
+COMMENT: https://www.optaplanner.org/community/research.html
 TYPE: CVRP
 DIMENSION: 50
 EDGE_WEIGHT_TYPE: SEGMENTED_EXPLICIT

@@ -1,5 +1,6 @@
 NAME: belgium-d8-n1000-k20
 COMMENT: Generated for OptaPlanner Examples by Geoffrey De Smet.
+COMMENT: https://www.optaplanner.org/community/research.html
 TYPE: CVRP
 DIMENSION: 1000
 EDGE_WEIGHT_TYPE: EUC_2D
