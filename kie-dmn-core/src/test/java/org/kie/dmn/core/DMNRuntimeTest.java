@@ -552,11 +552,11 @@ public class DMNRuntimeTest {
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
         DMNContext context = DMNFactory.newContext();
-        context.set( "datetimestring", "2016-07-29T05:48:23.765-05:00" );
+        context.set( "datetimestring", "2016-07-29T05:48:23" );
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         System.out.println(formatMessages( dmnResult.getMessages() ));
         System.out.println( dmnResult.getContext());
-        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getContext().get("time"), is( OffsetTime.of( 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 ) ) ) );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getContext().get("time"), is( LocalTime.of( 5, 48, 23 ) ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {
