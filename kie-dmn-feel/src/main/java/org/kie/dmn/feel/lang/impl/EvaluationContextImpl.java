@@ -17,9 +17,7 @@
 package org.kie.dmn.feel.lang.impl;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
 import org.kie.dmn.feel.util.EvalHelper;
-import org.kie.dmn.feel.runtime.FEELFunction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,15 +32,10 @@ public class EvaluationContextImpl implements EvaluationContext {
         this.eventsManager = eventsManager;
         this.stack = new Stack<>();
         // we create a rootFrame to hold all the built in functions
-        // TODO: can we cache/reuse the rootFrame to avoid recreating it all the time?
-        ExecutionFrame rootFrame = new ExecutionFrame( null );
-        for( FEELFunction f : BuiltInFunctions.getFunctions() ) {
-            rootFrame.setValue( f.getName(), f );
-        }
-        push( rootFrame );
+        push( RootExecutionFrame.INSTANCE );
         // and then create a global frame to be the starting frame
         // for function evaluation
-        ExecutionFrame global = new ExecutionFrame( rootFrame );
+        ExecutionFrameImpl global = new ExecutionFrameImpl( RootExecutionFrame.INSTANCE );
         push( global );
     }
 
@@ -64,7 +57,7 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public void enterFrame() {
-        push( new ExecutionFrame( peek() /*, symbols, scope*/ ) );
+        push( new ExecutionFrameImpl( peek() /*, symbols, scope*/ ) );
     }
 
     @Override
@@ -84,7 +77,7 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public Object getValue(String[] name) {
-        return peek().getValue( name );
+        throw new UnsupportedOperationException( "needs implementation?" );
     }
 
     @Override
@@ -94,7 +87,7 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public boolean isDefined(String[] name) {
-        return peek().isDefined( name );
+        throw new UnsupportedOperationException( "needs implementation?" );
     }
 
     @Override
