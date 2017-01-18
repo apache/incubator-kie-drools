@@ -76,21 +76,6 @@ public class GuidedDTDRLPersistenceFirstHitPolicyTest {
     }
 
     @Test
-    public void salienceEqualsOrderOfLinesNumberRunsFromBottomToTop() {
-
-        final String drl = GuidedDTDRLPersistence.getInstance()
-                .marshal( dtable );
-
-        assertContainsLinesInOrder( drl,
-                                    "rule \"Row 1 First hit policy table\"",
-                                    "salience 2",
-                                    "rule \"Row 2 First hit policy table\"",
-                                    "salience 1",
-                                    "rule \"Row 3 First hit policy table\"",
-                                    "salience 0" );
-    }
-
-    @Test
     public void allRulesHaveTheSameActivationGroup() throws
                                                      Exception {
 

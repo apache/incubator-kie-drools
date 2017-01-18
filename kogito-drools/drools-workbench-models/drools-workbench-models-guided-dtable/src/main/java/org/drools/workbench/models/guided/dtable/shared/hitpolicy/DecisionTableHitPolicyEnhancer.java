@@ -48,12 +48,9 @@ public class DecisionTableHitPolicyEnhancer {
                 addActivationGroup( "unique-hit-policy-group" );
                 break;
             case FIRST_HIT:
-                addSalienceBasedOnRowOrder();
                 addActivationGroup( "first-hit-policy-group" );
                 break;
             case RULE_ORDER:
-                addSalienceBasedOnRowOrder();
-                break;
             case NONE:
             default:
                 // We do nothing.
@@ -62,30 +59,6 @@ public class DecisionTableHitPolicyEnhancer {
         }
 
         return dtable;
-    }
-
-    private void addSalienceBasedOnRowOrder() {
-        // Add Column
-        final AttributeCol52 attributeCol52 = new AttributeCol52();
-        attributeCol52.setAttribute( GuidedDecisionTable52.SALIENCE_ATTR );
-        dtable.getAttributeCols()
-                .add( attributeCol52 );
-
-        final int columnIndex = dtable.getExpandedColumns()
-                .indexOf( attributeCol52 );
-
-        int salience = 0;
-
-        final int size = dtable.getData()
-                .size();
-
-        // Add salience values
-        for ( int i = ( size - 1 ); i >= 0; i-- ) {
-            dtable.getData()
-                    .get( i )
-                    .add( columnIndex,
-                          new DTCellValue52( salience++ ) );
-        }
     }
 
     private void addActivationGroup( final String activationGroupType ) {

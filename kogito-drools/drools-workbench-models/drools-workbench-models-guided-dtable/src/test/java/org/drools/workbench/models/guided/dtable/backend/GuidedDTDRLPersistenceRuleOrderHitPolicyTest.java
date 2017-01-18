@@ -53,25 +53,4 @@ public class GuidedDTDRLPersistenceRuleOrderHitPolicyTest {
                 .marshal( dtable );
     }
 
-    @Test
-    public void salienceEqualsOrderOfLinesNumberRunsFromBottomToTop() {
-
-        dtable.setData( DataUtilities.makeDataLists(
-                new Object[][]{
-                        new Object[]{1, "desc-row1"},
-                        new Object[]{2, "desc-row2"},
-                        new Object[]{3, "desc-row3"}
-                } ) );
-
-        final String drl = GuidedDTDRLPersistence.getInstance()
-                .marshal( dtable );
-
-        assertContainsLinesInOrder( drl,
-                                    "rule \"Row 1 Rule order table\"",
-                                    "salience 2",
-                                    "rule \"Row 2 Rule order table\"",
-                                    "salience 1",
-                                    "rule \"Row 3 Rule order table\"",
-                                    "salience 0" );
-    }
 }
