@@ -70,7 +70,8 @@ public abstract class AbstractScoreHibernateTypeTest {
         return id;
     }
 
-    protected <S extends Score, E extends AbstractTestJpaEntity<S>> void persistAndMerge(
+    @SafeVarargs
+    protected final <S extends Score, E extends AbstractTestJpaEntity<S>> void persistAndMerge(
             E jpaEntity, S... newScores) {
         Long id = persistAndAssert(jpaEntity);
         Class<? extends AbstractTestJpaEntity> jpaEntityClass = jpaEntity.getClass();
