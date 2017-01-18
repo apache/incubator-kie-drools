@@ -100,7 +100,7 @@ public class PlannerBenchmarkConfigTest {
         config.setSolverBenchmarkConfigList(configs);
         config.generateSolverBenchmarkConfigNames();
         assertEquals("Config_1", sbc3.getName());
-        TreeSet<String> names = new TreeSet<String>();
+        TreeSet<String> names = new TreeSet<>();
         for (SolverBenchmarkConfig sc : configs) {
             names.add(sc.getName());
         }

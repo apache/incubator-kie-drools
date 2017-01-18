@@ -120,7 +120,8 @@ public class MixedCheckBox extends JCheckBox {
         }
     }
 
-    public static enum MixedCheckBoxStatus {
+    public enum MixedCheckBoxStatus {
         CHECKED, UNCHECKED, MIXED
     }
+
 }

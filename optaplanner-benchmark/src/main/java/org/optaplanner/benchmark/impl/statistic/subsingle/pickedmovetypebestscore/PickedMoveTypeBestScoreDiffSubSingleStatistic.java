@@ -159,11 +159,8 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
                     moveTypeToSeriesMapList.add(new LinkedHashMap<>());
                 }
                 Map<String, XYIntervalSeries> moveTypeToSeriesMap = moveTypeToSeriesMapList.get(i);
-                XYIntervalSeries series = moveTypeToSeriesMap.get(moveType);
-                if (series == null) {
-                    series = new XYIntervalSeries(moveType);
-                    moveTypeToSeriesMap.put(moveType, series);
-                }
+                XYIntervalSeries series = moveTypeToSeriesMap.computeIfAbsent(moveType,
+                        k -> new XYIntervalSeries(moveType));
                 double yValue = levelValues[i];
                 // In an XYInterval the yLow must be lower than yHigh
                 series.add(timeMillisSpent, timeMillisSpent, timeMillisSpent,

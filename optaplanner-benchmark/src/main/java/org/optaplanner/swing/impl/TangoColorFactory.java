@@ -88,13 +88,8 @@ public class TangoColorFactory {
         nextColorCount = 0;
     }
 
-    public Color pickColor(Object o) {
-        Color color = colorMap.get(o);
-        if (color == null) {
-            color = nextColor();
-            colorMap.put(o, color);
-        }
-        return color;
+    public Color pickColor(Object object) {
+        return colorMap.computeIfAbsent(object, k -> nextColor());
     }
 
     private Color nextColor() {

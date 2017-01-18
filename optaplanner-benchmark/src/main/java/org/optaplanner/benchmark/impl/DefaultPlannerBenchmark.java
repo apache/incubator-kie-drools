@@ -17,7 +17,6 @@
 package org.optaplanner.benchmark.impl;
 
 import java.io.File;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,7 +27,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.optaplanner.benchmark.api.PlannerBenchmark;
@@ -117,7 +115,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             throw new IllegalArgumentException(
                     "The solverBenchmarkResultList (" + solverBenchmarkResultList + ") cannot be empty.");
         }
-        initBenchmarkDirectoryAndSubdirs();
+        initBenchmarkDirectoryAndSubdirectories();
         plannerBenchmarkResult.initSystemProperties();
         logger.info("Benchmarking started: parallelBenchmarkCount ({})"
                 + " for problemCount ({}), solverCount ({}), totalSubSingleCount ({}).",
@@ -127,7 +125,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 plannerBenchmarkResult.getTotalSubSingleCount());
     }
 
-    private void initBenchmarkDirectoryAndSubdirs() {
+    private void initBenchmarkDirectoryAndSubdirectories() {
         if (benchmarkDirectory == null) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
         }
@@ -384,9 +382,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                     }
                     ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
                     originalProblemStatisticMap.putIfAbsent(problemBenchmarkResult, problemBenchmarkResult.getProblemStatisticList());
-                    singleBenchmarkResult.getProblemBenchmarkResult().setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
+                    singleBenchmarkResult.getProblemBenchmarkResult().setProblemStatisticList(Collections.emptyList());
                     for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) { // needs to happen after all problem stats
-                        subSingleBenchmarkResult.setPureSubSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
+                        subSingleBenchmarkResult.setPureSubSingleStatisticList(Collections.emptyList());
                         subSingleBenchmarkResult.initSubSingleStatisticMap();
                     }
                 }

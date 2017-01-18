@@ -350,8 +350,8 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     private void determineRanking(List<SingleBenchmarkResult> rankedSingleBenchmarkResultList) {
-        Comparator singleBenchmarkRankingComparator = new TotalScoreSingleBenchmarkRankingComparator();
-        Collections.sort(rankedSingleBenchmarkResultList, Collections.reverseOrder(singleBenchmarkRankingComparator));
+        Comparator<SingleBenchmarkResult> singleBenchmarkRankingComparator = new TotalScoreSingleBenchmarkRankingComparator();
+        rankedSingleBenchmarkResultList.sort(Collections.reverseOrder(singleBenchmarkRankingComparator));
         int ranking = 0;
         SingleBenchmarkResult previousSingleBenchmarkResult = null;
         int previousSameRankingCount = 0;
@@ -493,12 +493,8 @@ public class ProblemBenchmarkResult<Solution_> {
                                 + ") should have the same name, because they have the same inputSolutionFile ("
                                 + oldResult.inputSolutionFile + ").");
                     }
-                    for (Iterator<ProblemStatistic> it = newResult.problemStatisticList.iterator(); it.hasNext(); ) {
-                        ProblemStatistic newStatistic = it.next();
-                        if (!oldResult.hasProblemStatisticType(newStatistic.getProblemStatisticType())) {
-                            it.remove();
-                        }
-                    }
+                    newResult.problemStatisticList.removeIf(
+                            newStatistic -> !oldResult.hasProblemStatisticType(newStatistic.getProblemStatisticType()));
                     newResult.entityCount = ConfigUtils.meldProperty(oldResult.entityCount, newResult.entityCount);
                     newResult.variableCount = ConfigUtils.meldProperty(oldResult.variableCount, newResult.variableCount);
                     newResult.maximumValueCount = ConfigUtils.meldProperty(oldResult.maximumValueCount, newResult.maximumValueCount);

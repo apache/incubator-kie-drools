@@ -380,12 +380,7 @@ public class PlannerBenchmarkResult {
     private void determineSolverRanking(BenchmarkReport benchmarkReport) {
         List<SolverBenchmarkResult> rankableSolverBenchmarkResultList = new ArrayList<>(solverBenchmarkResultList);
         // Do not rank a SolverBenchmarkResult that has a failure
-        for (Iterator<SolverBenchmarkResult> it = rankableSolverBenchmarkResultList.iterator(); it.hasNext(); ) {
-            SolverBenchmarkResult solverBenchmarkResult = it.next();
-            if (solverBenchmarkResult.hasAnyFailure()) {
-                it.remove();
-            }
-        }
+        rankableSolverBenchmarkResultList.removeIf(SolverBenchmarkResult::hasAnyFailure);
         List<List<SolverBenchmarkResult>> sameRankingListList = createSameRankingListList(
                 benchmarkReport, rankableSolverBenchmarkResultList);
         int ranking = 0;
@@ -406,7 +401,7 @@ public class PlannerBenchmarkResult {
         if (benchmarkReport.getSolverRankingComparator() != null) {
             Comparator<SolverBenchmarkResult> comparator = Collections.reverseOrder(
                     benchmarkReport.getSolverRankingComparator());
-            Collections.sort(rankableSolverBenchmarkResultList, comparator);
+            rankableSolverBenchmarkResultList.sort(comparator);
             List<SolverBenchmarkResult> sameRankingList = null;
             SolverBenchmarkResult previousSolverBenchmarkResult = null;
             for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
@@ -425,11 +420,8 @@ public class PlannerBenchmarkResult {
             for (SolverBenchmarkResult solverBenchmarkResult : rankableSolverBenchmarkResultList) {
                 Comparable rankingWeight = benchmarkReport.getSolverRankingWeightFactory()
                         .createRankingWeight(rankableSolverBenchmarkResultList, solverBenchmarkResult);
-                List<SolverBenchmarkResult> sameRankingList = rankedMap.get(rankingWeight);
-                if (sameRankingList == null) {
-                    sameRankingList = new ArrayList<>();
-                    rankedMap.put(rankingWeight, sameRankingList);
-                }
+                List<SolverBenchmarkResult> sameRankingList = rankedMap.computeIfAbsent(rankingWeight,
+                        k -> new ArrayList<>());
                 sameRankingList.add(solverBenchmarkResult);
             }
             for (Map.Entry<Comparable, List<SolverBenchmarkResult>> entry : rankedMap.entrySet()) {
@@ -525,8 +517,8 @@ public class PlannerBenchmarkResult {
     public static PlannerBenchmarkResult createUnmarshallingFailedResult(String benchmarkReportDirectoryName) {
         PlannerBenchmarkResult result = new PlannerBenchmarkResult();
         result.setName("Failed unmarshalling " + benchmarkReportDirectoryName);
-        result.setSolverBenchmarkResultList(Collections.<SolverBenchmarkResult>emptyList());
-        result.setUnifiedProblemBenchmarkResultList(Collections.<ProblemBenchmarkResult>emptyList());
+        result.setSolverBenchmarkResultList(Collections.emptyList());
+        result.setUnifiedProblemBenchmarkResultList(Collections.emptyList());
         return result;
     }
 

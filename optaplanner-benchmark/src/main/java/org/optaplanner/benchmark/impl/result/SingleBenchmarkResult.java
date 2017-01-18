@@ -325,7 +325,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         }
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultListCopy = new ArrayList<>(subSingleBenchmarkResultList);
         // sort (according to ranking) so that the best subSingle is at index 0
-        Collections.sort(subSingleBenchmarkResultListCopy, new SubSingleBenchmarkRankBasedComparator());
+        subSingleBenchmarkResultListCopy.sort(new SubSingleBenchmarkRankBasedComparator());
         best = subSingleBenchmarkResultListCopy.get(0);
         worst = subSingleBenchmarkResultListCopy.get(subSingleBenchmarkResultListCopy.size() - 1);
         median = subSingleBenchmarkResultListCopy.get(ConfigUtils.ceilDivide(subSingleBenchmarkResultListCopy.size() - 1, 2));
@@ -370,8 +370,8 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     }
 
     private void determineRanking(List<SubSingleBenchmarkResult> rankedSubSingleBenchmarkResultList) {
-        Comparator subSingleBenchmarkRankingComparator = new ScoreSubSingleBenchmarkRankingComparator();
-        Collections.sort(rankedSubSingleBenchmarkResultList, Collections.reverseOrder(subSingleBenchmarkRankingComparator));
+        Comparator<SubSingleBenchmarkResult> subSingleBenchmarkRankingComparator = new ScoreSubSingleBenchmarkRankingComparator();
+        rankedSubSingleBenchmarkResultList.sort(Collections.reverseOrder(subSingleBenchmarkRankingComparator));
         int ranking = 0;
         SubSingleBenchmarkResult previousSubSingleBenchmarkResult = null;
         int previousSameRankingCount = 0;

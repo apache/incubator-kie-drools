@@ -21,11 +21,11 @@ public interface StatisticType {
     /**
      * @return never null
      */
-    public String name();
+    String name();
 
     /**
      * @return never null
      */
-    public String getLabel();
+    String getLabel();
 
 }

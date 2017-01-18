@@ -61,18 +61,18 @@ public class PlannerBenchmarkResultTest {
 
         ProblemBenchmarkResult p1ProblemA = new ProblemBenchmarkResult(p1);
         p1ProblemA.setInputSolutionFile(new File("problemA.xml"));
-        p1ProblemA.setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
-        p1ProblemA.setSingleBenchmarkResultList(Collections.<SingleBenchmarkResult>emptyList());
+        p1ProblemA.setProblemStatisticList(Collections.emptyList());
+        p1ProblemA.setSingleBenchmarkResultList(Collections.emptyList());
         p1ProblemA.setSingleBenchmarkResultList(new ArrayList<>());
         ProblemBenchmarkResult p1ProblemB = new ProblemBenchmarkResult(p1);
         p1ProblemB.setInputSolutionFile(new File("problemB.xml"));
-        p1ProblemB.setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
-        p1ProblemB.setSingleBenchmarkResultList(Collections.<SingleBenchmarkResult>emptyList());
+        p1ProblemB.setProblemStatisticList(Collections.emptyList());
+        p1ProblemB.setSingleBenchmarkResultList(Collections.emptyList());
         p1ProblemB.setSingleBenchmarkResultList(new ArrayList<>());
         ProblemBenchmarkResult p2ProblemA = new ProblemBenchmarkResult(p2);
         p2ProblemA.setInputSolutionFile(new File("problemA.xml"));
-        p2ProblemA.setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
-        p2ProblemA.setSingleBenchmarkResultList(Collections.<SingleBenchmarkResult>emptyList());
+        p2ProblemA.setProblemStatisticList(Collections.emptyList());
+        p2ProblemA.setSingleBenchmarkResultList(Collections.emptyList());
         p2ProblemA.setSingleBenchmarkResultList(new ArrayList<>());
 
         SingleBenchmarkResult p1SolverXProblemA = createSingleBenchmarkResult(p1SolverX, p1ProblemA, -1);
@@ -110,7 +110,7 @@ public class PlannerBenchmarkResultTest {
 
     protected SubSingleBenchmarkResult createSubSingleBenchmarkResult(SingleBenchmarkResult parent, int subSingleIndex) {
         SubSingleBenchmarkResult subSingleBenchmarkResult = new SubSingleBenchmarkResult(parent, subSingleIndex);
-        subSingleBenchmarkResult.setPureSubSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
+        subSingleBenchmarkResult.setPureSubSingleStatisticList(Collections.emptyList());
         parent.getSubSingleBenchmarkResultList().add(subSingleBenchmarkResult);
         return subSingleBenchmarkResult;
     }

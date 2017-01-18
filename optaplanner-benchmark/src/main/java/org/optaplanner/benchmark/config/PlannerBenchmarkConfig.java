@@ -220,11 +220,10 @@ public class PlannerBenchmarkConfig {
         BenchmarkReportConfig benchmarkReportConfig_ = benchmarkReportConfig == null ? new BenchmarkReportConfig()
                 : benchmarkReportConfig;
         BenchmarkReport benchmarkReport = benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult);
-        DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark(
+        return new DefaultPlannerBenchmark(
                 plannerBenchmarkResult, solverConfigContext, benchmarkDirectory,
                 buildExecutorService(parallelBenchmarkCount), buildExecutorService(parallelBenchmarkCount),
                 benchmarkReport);
-        return plannerBenchmark;
     }
 
     private ExecutorService buildExecutorService(int parallelBenchmarkCount) {

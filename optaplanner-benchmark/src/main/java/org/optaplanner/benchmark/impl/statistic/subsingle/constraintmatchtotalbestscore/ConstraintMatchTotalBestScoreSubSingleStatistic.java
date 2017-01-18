@@ -187,11 +187,8 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
                 constraintIdToWeightSeriesMapList.set(scoreLevel, constraintIdToWeightSeriesMap);
             }
             String constraintId = point.getConstraintPackage() + ":" + point.getConstraintName();
-            XYSeries weightSeries = constraintIdToWeightSeriesMap.get(constraintId);
-            if (weightSeries == null) {
-                weightSeries = new XYSeries(point.getConstraintName() + " weight");
-                constraintIdToWeightSeriesMap.put(constraintId, weightSeries);
-            }
+            XYSeries weightSeries = constraintIdToWeightSeriesMap.computeIfAbsent(constraintId,
+                    k -> new XYSeries(point.getConstraintName() + " weight"));
             long timeMillisSpent = point.getTimeMillisSpent();
             weightSeries.add(timeMillisSpent, point.getWeightTotal());
         }

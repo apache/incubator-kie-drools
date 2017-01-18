@@ -71,7 +71,7 @@ public class PlannerBenchmarkFactoryTest {
     }
 
     @Test
-    public void subsingleBenchmarkConfig() {
+    public void subSingleBenchmarkConfig() {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
         SolverBenchmarkConfig solverBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig().getSolverBenchmarkConfigList().get(0);
