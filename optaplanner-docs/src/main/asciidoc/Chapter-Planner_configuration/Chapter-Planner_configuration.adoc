@@ -1848,7 +1848,7 @@ Configure the logging level on the `org.optaplanner` package in your `logback.xm
 
   ...
 
-<configuration>
+</configuration>
 ----
 
 If it isn't picked up, temporarily add the system property `-Dlogback.debug=true` to figure out why.
