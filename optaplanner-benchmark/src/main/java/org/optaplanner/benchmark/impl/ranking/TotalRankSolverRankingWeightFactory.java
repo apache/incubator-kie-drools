@@ -37,7 +37,7 @@ import org.optaplanner.core.api.score.Score;
  */
 public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightFactory {
 
-    private final Comparator<SingleBenchmarkResult> singleBenchmarkRankingComparator = new SingleBenchmarkRankingComparator();
+    private final Comparator<SingleBenchmarkResult> singleBenchmarkRankingComparator = new TotalScoreSingleBenchmarkRankingComparator();
 
     @Override
     public Comparable createRankingWeight(List<SolverBenchmarkResult> solverBenchmarkResultList, SolverBenchmarkResult solverBenchmarkResult) {
@@ -74,6 +74,22 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
         private int equalCount;
         private int lowerCount;
 
+        public SolverBenchmarkResult getSolverBenchmarkResult() {
+            return solverBenchmarkResult;
+        }
+
+        public int getBetterCount() {
+            return betterCount;
+        }
+
+        public int getEqualCount() {
+            return equalCount;
+        }
+
+        public int getLowerCount() {
+            return lowerCount;
+        }
+
         public TotalRankSolverRankingWeight(SolverBenchmarkResult solverBenchmarkResult,
                 int betterCount, int equalCount, int lowerCount) {
             this.solverBenchmarkResult = solverBenchmarkResult;
@@ -107,22 +123,6 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
         @Override
         public int hashCode() {
             return Objects.hash(getBetterCount(), getEqualCount(), getLowerCount());
-        }
-
-        public int getBetterCount() {
-            return betterCount;
-        }
-
-        public int getEqualCount() {
-            return equalCount;
-        }
-
-        public int getLowerCount() {
-            return lowerCount;
-        }
-
-        public SolverBenchmarkResult getSolverBenchmarkResult() {
-            return solverBenchmarkResult;
         }
 
     }

@@ -22,26 +22,26 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
-public class SingleBenchmarkRankingComparatorTest {
+public class TotalScoreSingleBenchmarkRankingComparatorTest {
 
     @Test
     public void compareTo() {
-        SingleBenchmarkRankingComparator comparator = new SingleBenchmarkRankingComparator();
+        TotalScoreSingleBenchmarkRankingComparator comparator = new TotalScoreSingleBenchmarkRankingComparator();
         SingleBenchmarkResult a = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
         a.setFailureCount(1);
-        a.setAverageScore(null);
+        a.setAverageAndTotalScoreForTesting(null);
         SingleBenchmarkResult b = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
         b.setFailureCount(0);
-        b.setAverageScore(SimpleScore.valueOfUninitialized(-7, -1));
+        b.setAverageAndTotalScoreForTesting(SimpleScore.valueOfUninitialized(-7, -1));
         SingleBenchmarkResult c = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
         c.setFailureCount(0);
-        c.setAverageScore(SimpleScore.valueOf(-300));
+        c.setAverageAndTotalScoreForTesting(SimpleScore.valueOf(-300));
         SingleBenchmarkResult d = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
         d.setFailureCount(0);
-        d.setAverageScore(SimpleScore.valueOf(-20));
+        d.setAverageAndTotalScoreForTesting(SimpleScore.valueOf(-20));
         assertCompareToOrder(comparator, a, b, c, d);
     }
 

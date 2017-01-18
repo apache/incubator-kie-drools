@@ -33,12 +33,11 @@ import java.util.Set;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
-import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
+import org.optaplanner.benchmark.impl.ranking.TotalScoreSingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
@@ -351,7 +350,7 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     private void determineRanking(List<SingleBenchmarkResult> rankedSingleBenchmarkResultList) {
-        Comparator singleBenchmarkRankingComparator = new SingleBenchmarkRankingComparator();
+        Comparator singleBenchmarkRankingComparator = new TotalScoreSingleBenchmarkRankingComparator();
         Collections.sort(rankedSingleBenchmarkResultList, Collections.reverseOrder(singleBenchmarkRankingComparator));
         int ranking = 0;
         SingleBenchmarkResult previousSingleBenchmarkResult = null;

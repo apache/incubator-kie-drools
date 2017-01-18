@@ -20,18 +20,15 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
-import org.optaplanner.core.api.score.Score;
 
-public class SubSingleBenchmarkRankingComparator implements Comparator<SubSingleBenchmarkResult>, Serializable {
-
-    private final Comparator<Score> resilientScoreComparator = new ResilientScoreComparator();
+public class SubSingleBenchmarkRankBasedComparator implements Comparator<SubSingleBenchmarkResult>, Serializable {
 
     @Override
     public int compare(SubSingleBenchmarkResult a, SubSingleBenchmarkResult b) {
         return Comparator
                 // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
                 .comparing(SubSingleBenchmarkResult::hasAnyFailure, Comparator.reverseOrder())
-                .thenComparing(SubSingleBenchmarkResult::getAverageScore, resilientScoreComparator)
+                .thenComparing(SubSingleBenchmarkResult::getRanking, Comparator.naturalOrder())
                 .compare(a, b);
     }
 

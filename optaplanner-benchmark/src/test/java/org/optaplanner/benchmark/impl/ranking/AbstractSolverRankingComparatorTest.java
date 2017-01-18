@@ -21,8 +21,10 @@ import java.util.List;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+
 
 public abstract class AbstractSolverRankingComparatorTest {
 
@@ -37,30 +39,28 @@ public abstract class AbstractSolverRankingComparatorTest {
 
     protected SingleBenchmarkResult addSingleBenchmark(List<SingleBenchmarkResult> singleBenchmarkResultList,
             int score, int bestScore, int worstScore) {
-        SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(null, null);
-        SimpleScore scoreObject = SimpleScore.valueOf(score);
-        SimpleScore bestScoreObject = SimpleScore.valueOf(bestScore);
-        SimpleScore worstScoreObject = SimpleScore.valueOf(worstScore);
-        singleBenchmarkResult.setFailureCount(0);
-        singleBenchmarkResult.setAverageScore(scoreObject);
-        singleBenchmarkResult.setWinningScoreDifference(scoreObject.subtract(bestScoreObject));
-        singleBenchmarkResult.setWorstScoreDifferencePercentage(
-                ScoreDifferencePercentage.calculateScoreDifferencePercentage(worstScoreObject, scoreObject));
-        singleBenchmarkResultList.add(singleBenchmarkResult);
-        return singleBenchmarkResult;
+        return addSingleBenchmark(singleBenchmarkResultList,
+                SimpleScore.valueOf(score),
+                SimpleScore.valueOf(bestScore),
+                SimpleScore.valueOf(worstScore));
     }
 
     protected SingleBenchmarkResult addSingleBenchmarkWithHardSoftLongScore(List<SingleBenchmarkResult> singleBenchmarkResultList,
             long hardScore, long softScore, long hardBestScore, long softBestScore, long hardWorstScore, long softWorstScore) {
+        return addSingleBenchmark(singleBenchmarkResultList,
+                HardSoftLongScore.valueOf(hardScore, softScore),
+                HardSoftLongScore.valueOf(hardBestScore, softBestScore),
+                HardSoftLongScore.valueOf(hardWorstScore, softWorstScore));
+    }
+
+    protected <S extends Score<S>> SingleBenchmarkResult addSingleBenchmark(List<SingleBenchmarkResult> singleBenchmarkResultList,
+            S score, S bestScore, S worstScore) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(null, null);
-        HardSoftLongScore scoreObject = HardSoftLongScore.valueOf(hardScore, softScore);
-        HardSoftLongScore bestScoreObject = HardSoftLongScore.valueOf(hardBestScore, softBestScore);
-        HardSoftLongScore worstScoreObject = HardSoftLongScore.valueOf(hardWorstScore, softWorstScore);
         singleBenchmarkResult.setFailureCount(0);
-        singleBenchmarkResult.setAverageScore(scoreObject);
-        singleBenchmarkResult.setWinningScoreDifference(scoreObject.subtract(bestScoreObject));
+        singleBenchmarkResult.setAverageAndTotalScoreForTesting(score);
+        singleBenchmarkResult.setWinningScoreDifference(score.subtract(bestScore));
         singleBenchmarkResult.setWorstScoreDifferencePercentage(
-                ScoreDifferencePercentage.calculateScoreDifferencePercentage(worstScoreObject, scoreObject));
+                ScoreDifferencePercentage.calculateScoreDifferencePercentage(worstScore, score));
         singleBenchmarkResultList.add(singleBenchmarkResult);
         return singleBenchmarkResult;
     }

@@ -22,7 +22,7 @@ import java.util.Comparator;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.core.api.score.Score;
 
-public class SingleBenchmarkRankingComparator implements Comparator<SingleBenchmarkResult>, Serializable {
+public class TotalScoreSingleBenchmarkRankingComparator implements Comparator<SingleBenchmarkResult>, Serializable {
 
     private final Comparator<Score> resilientScoreComparator = new ResilientScoreComparator();
 
@@ -31,7 +31,7 @@ public class SingleBenchmarkRankingComparator implements Comparator<SingleBenchm
         return Comparator
                 // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
                 .comparing(SingleBenchmarkResult::hasAnyFailure, Comparator.reverseOrder())
-                .thenComparing(SingleBenchmarkResult::getAverageScore, resilientScoreComparator)
+                .thenComparing(SingleBenchmarkResult::getTotalScore, resilientScoreComparator)
                 .compare(a, b);
     }
 

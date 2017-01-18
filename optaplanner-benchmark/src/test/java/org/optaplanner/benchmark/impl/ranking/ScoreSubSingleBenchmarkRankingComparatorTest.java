@@ -26,11 +26,11 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
 
-public class SubSingleBenchmarkRankingComparatorTest {
+public class ScoreSubSingleBenchmarkRankingComparatorTest {
 
     @Test
     public void compareTo() {
-        SubSingleBenchmarkRankingComparator comparator = new SubSingleBenchmarkRankingComparator();
+        ScoreSubSingleBenchmarkRankingComparator comparator = new ScoreSubSingleBenchmarkRankingComparator();
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(mock(SolverBenchmarkResult.class), mock(ProblemBenchmarkResult.class));
         SubSingleBenchmarkResult a = new SubSingleBenchmarkResult(singleBenchmarkResult, 0);
         a.setSucceeded(false);

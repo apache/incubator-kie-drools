@@ -28,13 +28,14 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
-import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankingComparator;
-import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankingScoreComparator;
+import org.optaplanner.benchmark.impl.ranking.ScoreSubSingleBenchmarkRankingComparator;
+import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankBasedComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.StatisticUtils;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
@@ -187,8 +188,9 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         return averageScore;
     }
 
-    public void setAverageScore(Score averageScore) {
-        this.averageScore = averageScore;
+    public void setAverageAndTotalScoreForTesting(Score averageAndTotalScore) {
+        this.averageScore = averageAndTotalScore;
+        this.totalScore = averageAndTotalScore;
     }
 
     public SubSingleBenchmarkResult getMedian() {
@@ -323,7 +325,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         }
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultListCopy = new ArrayList<>(subSingleBenchmarkResultList);
         // sort (according to ranking) so that the best subSingle is at index 0
-        Collections.sort(subSingleBenchmarkResultListCopy, new SubSingleBenchmarkRankingScoreComparator());
+        Collections.sort(subSingleBenchmarkResultListCopy, new SubSingleBenchmarkRankBasedComparator());
         best = subSingleBenchmarkResultListCopy.get(0);
         worst = subSingleBenchmarkResultListCopy.get(subSingleBenchmarkResultListCopy.size() - 1);
         median = subSingleBenchmarkResultListCopy.get(ConfigUtils.ceilDivide(subSingleBenchmarkResultListCopy.size() - 1, 2));
@@ -368,7 +370,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     }
 
     private void determineRanking(List<SubSingleBenchmarkResult> rankedSubSingleBenchmarkResultList) {
-        Comparator subSingleBenchmarkRankingComparator = new SubSingleBenchmarkRankingComparator();
+        Comparator subSingleBenchmarkRankingComparator = new ScoreSubSingleBenchmarkRankingComparator();
         Collections.sort(rankedSubSingleBenchmarkResultList, Collections.reverseOrder(subSingleBenchmarkRankingComparator));
         int ranking = 0;
         SubSingleBenchmarkResult previousSubSingleBenchmarkResult = null;

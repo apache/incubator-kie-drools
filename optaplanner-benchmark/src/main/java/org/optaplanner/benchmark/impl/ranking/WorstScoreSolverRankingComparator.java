@@ -31,7 +31,7 @@ import org.optaplanner.core.api.score.Score;
  */
 public class WorstScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
 
-    private final Comparator<SingleBenchmarkResult> singleBenchmarkComparator = new SingleBenchmarkRankingComparator();
+    private final Comparator<SingleBenchmarkResult> singleBenchmarkComparator = new TotalScoreSingleBenchmarkRankingComparator();
 
     @Override
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
