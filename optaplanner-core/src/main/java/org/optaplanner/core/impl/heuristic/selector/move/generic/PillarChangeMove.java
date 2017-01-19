@@ -122,7 +122,7 @@ public class PillarChangeMove<Solution_> extends AbstractMove<Solution_> {
         if (this == o) {
             return true;
         } else if (o instanceof PillarChangeMove) {
-            PillarChangeMove other = (PillarChangeMove) o;
+            PillarChangeMove<?> other = (PillarChangeMove) o;
             return new EqualsBuilder()
                     .append(variableDescriptor, other.variableDescriptor)
                     .append(pillar, other.pillar)

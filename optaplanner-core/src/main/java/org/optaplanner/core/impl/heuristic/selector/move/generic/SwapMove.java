@@ -150,7 +150,7 @@ public class SwapMove<Solution_> extends AbstractMove<Solution_> {
         if (this == o) {
             return true;
         } else if (o instanceof SwapMove) {
-            SwapMove other = (SwapMove) o;
+            SwapMove<?> other = (SwapMove) o;
             return new EqualsBuilder()
                     .append(leftEntity, other.leftEntity)
                     .append(rightEntity, other.rightEntity)

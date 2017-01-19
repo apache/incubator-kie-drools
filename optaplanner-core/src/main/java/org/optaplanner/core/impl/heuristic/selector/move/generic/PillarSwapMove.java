@@ -163,7 +163,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
         if (this == o) {
             return true;
         } else if (o instanceof PillarSwapMove) {
-            PillarSwapMove other = (PillarSwapMove) o;
+            PillarSwapMove<?> other = (PillarSwapMove) o;
             return new EqualsBuilder()
                     .append(variableDescriptorList, other.variableDescriptorList)
                     .append(leftPillar, other.leftPillar)

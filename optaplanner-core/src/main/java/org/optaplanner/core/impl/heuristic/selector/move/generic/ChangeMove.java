@@ -102,7 +102,7 @@ public class ChangeMove<Solution_> extends AbstractMove<Solution_> {
         if (this == o) {
             return true;
         } else if (o instanceof ChangeMove) {
-            ChangeMove other = (ChangeMove) o;
+            ChangeMove<?> other = (ChangeMove) o;
             return new EqualsBuilder()
                     .append(entity, other.entity)
                     .append(variableDescriptor, other.variableDescriptor)

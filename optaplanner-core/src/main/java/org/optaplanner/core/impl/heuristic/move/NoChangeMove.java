@@ -35,7 +35,7 @@ public class NoChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public NoChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        return new NoChangeMove();
+        return new NoChangeMove<>();
     }
 
     @Override

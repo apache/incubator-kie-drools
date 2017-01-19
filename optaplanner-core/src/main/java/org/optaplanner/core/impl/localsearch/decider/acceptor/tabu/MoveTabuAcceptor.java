@@ -46,7 +46,7 @@ public class MoveTabuAcceptor extends AbstractTabuAcceptor {
 
     @Override
     protected Collection<? extends Object> findNewTabu(LocalSearchStepScope stepScope) {
-        Move tabuMove;
+        Move<?> tabuMove;
         if (useUndoMoveAsTabuMove) {
             tabuMove = stepScope.getUndoStep();
         } else {

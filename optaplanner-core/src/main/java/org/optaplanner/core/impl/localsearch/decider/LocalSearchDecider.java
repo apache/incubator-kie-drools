@@ -104,10 +104,10 @@ public class LocalSearchDecider<Solution_> {
     }
 
     public void decideNextStep(LocalSearchStepScope<Solution_> stepScope) {
-        InnerScoreDirector scoreDirector = stepScope.getScoreDirector();
+        InnerScoreDirector<Solution_> scoreDirector = stepScope.getScoreDirector();
         scoreDirector.setAllChangesWillBeUndoneBeforeStepEnds(true);
         int moveIndex = 0;
-        for (Move move : moveSelector) {
+        for (Move<Solution_> move : moveSelector) {
             LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope);
             moveScope.setMoveIndex(moveIndex);
             moveIndex++;
@@ -130,7 +130,7 @@ public class LocalSearchDecider<Solution_> {
         scoreDirector.setAllChangesWillBeUndoneBeforeStepEnds(false);
         LocalSearchMoveScope<Solution_> pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {
-            Move step = pickedMoveScope.getMove();
+            Move<?> step = pickedMoveScope.getMove();
             stepScope.setStep(step);
             if (logger.isDebugEnabled()) {
                 stepScope.setStepString(step.toString());
@@ -141,9 +141,9 @@ public class LocalSearchDecider<Solution_> {
     }
 
     private void doMove(LocalSearchMoveScope<Solution_> moveScope) {
-        ScoreDirector scoreDirector = moveScope.getScoreDirector();
-        Move move = moveScope.getMove();
-        Move undoMove = move.createUndoMove(scoreDirector);
+        ScoreDirector<Solution_> scoreDirector = moveScope.getScoreDirector();
+        Move<Solution_> move = moveScope.getMove();
+        Move<Solution_> undoMove = move.createUndoMove(scoreDirector);
         moveScope.setUndoMove(undoMove);
         move.doMove(scoreDirector);
         processMove(moveScope);

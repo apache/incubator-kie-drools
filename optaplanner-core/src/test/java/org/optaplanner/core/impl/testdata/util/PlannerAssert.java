@@ -218,7 +218,7 @@ public class PlannerAssert extends Assert {
         if (o instanceof CodeAssertable) {
             return (CodeAssertable) o;
         } else if (o instanceof ChangeMove) {
-            ChangeMove changeMove = (ChangeMove) o;
+            ChangeMove<?> changeMove = (ChangeMove) o;
             final String code = convertToCodeAssertable(changeMove.getEntity()).getCode()
                     + "->" + convertToCodeAssertable(changeMove.getToPlanningValue()).getCode();
             return () -> code;
@@ -228,9 +228,9 @@ public class PlannerAssert extends Assert {
                     + "<->" + convertToCodeAssertable(swapMove.getRightEntity()).getCode();
             return () -> code;
         } else if (o instanceof CompositeMove) {
-            CompositeMove compositeMove = (CompositeMove) o;
+            CompositeMove<?> compositeMove = (CompositeMove) o;
             StringBuilder codeBuilder = new StringBuilder(compositeMove.getMoves().length * 80);
-            for (Move move : compositeMove.getMoves()) {
+            for (Move<?> move : compositeMove.getMoves()) {
                 codeBuilder.append("+").append(convertToCodeAssertable(move).getCode());
             }
             final String code = codeBuilder.substring(1);

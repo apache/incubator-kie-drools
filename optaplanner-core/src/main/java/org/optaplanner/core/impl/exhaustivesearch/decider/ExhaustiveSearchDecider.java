@@ -27,7 +27,6 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -127,7 +126,7 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
 
         int moveIndex = 0;
         ExhaustiveSearchLayer moveLayer = stepScope.getPhaseScope().getLayerList().get(expandingNode.getDepth() + 1);
-        for (Move move : moveSelector) {
+        for (Move<?> move : moveSelector) {
             ExhaustiveSearchNode moveNode = new ExhaustiveSearchNode(moveLayer, expandingNode);
             moveIndex++;
             moveNode.setMove(move);
@@ -145,9 +144,9 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
     }
 
     private void doMove(ExhaustiveSearchStepScope<Solution_> stepScope, ExhaustiveSearchNode moveNode) {
-        ScoreDirector scoreDirector = stepScope.getScoreDirector();
-        Move move = moveNode.getMove();
-        Move undoMove = move.createUndoMove(scoreDirector);
+        InnerScoreDirector<Solution_> scoreDirector = stepScope.getScoreDirector();
+        Move<Solution_> move = moveNode.getMove();
+        Move<Solution_> undoMove = move.createUndoMove(scoreDirector);
         moveNode.setUndoMove(undoMove);
         move.doMove(scoreDirector);
         processMove(stepScope, moveNode);

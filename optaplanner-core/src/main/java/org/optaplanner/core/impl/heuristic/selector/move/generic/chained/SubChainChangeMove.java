@@ -122,7 +122,7 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
         if (this == o) {
             return true;
         } else if (o instanceof SubChainChangeMove) {
-            SubChainChangeMove other = (SubChainChangeMove) o;
+            SubChainChangeMove<?> other = (SubChainChangeMove) o;
             return new EqualsBuilder()
                     .append(subChain, other.subChain)
                     .append(variableDescriptor, other.variableDescriptor)

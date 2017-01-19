@@ -167,7 +167,7 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
         if (this == o) {
             return true;
         } else if (o instanceof KOptMove) {
-            KOptMove other = (KOptMove) o;
+            KOptMove<?> other = (KOptMove) o;
             return new EqualsBuilder()
                     .append(entity, other.entity)
                     .append(values, other.values)

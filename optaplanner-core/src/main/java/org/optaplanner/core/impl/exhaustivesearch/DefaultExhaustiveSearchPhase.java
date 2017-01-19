@@ -35,7 +35,6 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -147,7 +146,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         }
         List<ExhaustiveSearchLayer> layerList = new ArrayList<>((int) entitySize);
         int depth = 0;
-        InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
+        InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
         for (Object entity : entitySelector) {
             ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity);
             // Keep in sync with ExhaustiveSearchPhaseConfig.buildMoveSelectorConfig()
@@ -172,7 +171,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(startLayer, null);
 
         if (decider.isScoreBounderEnabled()) {
-            ScoreDirector scoreDirector = phaseScope.getScoreDirector();
+            InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
             Score score = scoreDirector.calculateScore();
             startNode.setScore(score);
             ScoreBounder scoreBounder = decider.getScoreBounder();
@@ -197,8 +196,8 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         ExhaustiveSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         ExhaustiveSearchNode oldNode = phaseScope.getLastCompletedStepScope().getExpandingNode();
         ExhaustiveSearchNode newNode = stepScope.getExpandingNode();
-        List<Move> oldMoveList = new ArrayList<>(oldNode.getDepth());
-        List<Move> newMoveList = new ArrayList<>(newNode.getDepth());
+        List<Move<Solution_>> oldMoveList = new ArrayList<>(oldNode.getDepth());
+        List<Move<Solution_>> newMoveList = new ArrayList<>(newNode.getDepth());
         while (oldNode != newNode) {
             int oldDepth = oldNode.getDepth();
             int newDepth = newNode.getDepth();
@@ -210,14 +209,11 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
                 oldNode = oldNode.getParent();
             }
         }
-        List<Move> restoreMoveList = new ArrayList<>(oldMoveList.size() + newMoveList.size());
+        List<Move<Solution_>> restoreMoveList = new ArrayList<>(oldMoveList.size() + newMoveList.size());
         restoreMoveList.addAll(oldMoveList);
         Collections.reverse(newMoveList);
         restoreMoveList.addAll(newMoveList);
-        ScoreDirector scoreDirector = phaseScope.getScoreDirector();
-        for (Move restoreMove : restoreMoveList) {
-            restoreMove.doMove(scoreDirector);
-        }
+        restoreMoveList.forEach(restoreMove -> restoreMove.doMove(phaseScope.getScoreDirector()));
         // There is no need to recalculate the score, but we still need to set it
         phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getStartingStepScore());
         if (assertWorkingSolutionScoreFromScratch) {

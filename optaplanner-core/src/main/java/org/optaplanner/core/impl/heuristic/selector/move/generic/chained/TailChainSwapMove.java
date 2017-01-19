@@ -216,7 +216,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
         if (this == o) {
             return true;
         } else if (o instanceof TailChainSwapMove) {
-            TailChainSwapMove other = (TailChainSwapMove) o;
+            TailChainSwapMove<?> other = (TailChainSwapMove) o;
             return new EqualsBuilder()
                     .append(leftEntity, other.leftEntity)
                     .append(rightValue, other.rightValue)

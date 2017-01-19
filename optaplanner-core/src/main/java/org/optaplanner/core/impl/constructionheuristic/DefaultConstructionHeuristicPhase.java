@@ -103,7 +103,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     }
 
     private void doStep(ConstructionHeuristicStepScope<Solution_> stepScope) {
-        Move nextStep = stepScope.getStep();
+        Move<Solution_> nextStep = stepScope.getStep();
         nextStep.doMove(stepScope.getScoreDirector());
         predictWorkingStepScore(stepScope, nextStep);
         if (!skipBestSolutionCloningInSteps) {
