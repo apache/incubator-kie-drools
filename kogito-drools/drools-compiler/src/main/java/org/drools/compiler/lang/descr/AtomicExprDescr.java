@@ -66,4 +66,10 @@ public class AtomicExprDescr extends BaseDescr implements ExpressionDescr {
     public void setRewrittenExpression(String rewrittenExpression) {
         this.rewrittenExpression = rewrittenExpression;
     }
+
+    @Override
+    public AtomicExprDescr replaceVariable(String oldVar, String newVar) {
+        expression = expression.replace( oldVar, newVar );
+        return this;
+    }
 }

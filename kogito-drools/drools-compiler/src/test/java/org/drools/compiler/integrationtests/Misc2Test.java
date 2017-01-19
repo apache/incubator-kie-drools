@@ -143,6 +143,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
+import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -7309,17 +7310,6 @@ public class Misc2Test extends CommonTestMethodBase {
         assertDrlHasCompilationError( str, 1 );
     }
 
-    private void assertDrlHasCompilationError( String str, int errorNr ) {
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        if ( errorNr > 0 ) {
-            assertEquals( errorNr, results.getMessages().size() );
-        } else {
-            assertTrue( results.getMessages().size() > 0 );
-        }
-    }
-
     @Test
     public void testDuplicateDeclarationInAccumulate1() {
         // DROOLS-727
@@ -9105,8 +9095,6 @@ public class Misc2Test extends CommonTestMethodBase {
                     .addContent(drl2, ResourceType.DRL)
                     .build().newKieSession();
         
-        ReteDumper.dumpRete(kieSession);
-
         kieSession.insert(new TestObject(1));
 
         assertEquals(2, kieSession.fireAllRules() );

@@ -572,7 +572,6 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
         private RuleBuildContext ruleContext;
         private Map<String, String> inferredCasts;
         private int openCcd;
-        private boolean inXpath;
 
         public MVELDumperContext() {
             this.aliases = new HashMap<String, OperatorDescr>();
@@ -669,11 +668,11 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
         }
 
         public boolean isInXpath() {
-            return inXpath;
+            return ruleContext != null && ruleContext.isInXpath();
         }
 
         public void setInXpath( boolean inXpath ) {
-            this.inXpath = inXpath;
+            ruleContext.setInXpath( inXpath );
         }
     }
 }

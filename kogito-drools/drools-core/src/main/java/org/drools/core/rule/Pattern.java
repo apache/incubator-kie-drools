@@ -20,6 +20,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.rule.constraint.MvelConstraint;
+import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Constraint.ConstraintType;
@@ -72,7 +73,7 @@ public class Pattern
 
     private boolean           passive;
     
-    private boolean                  hasXPath = false; 
+    private XpathConstraint xPath;
 
     public Pattern() {
         this(0,
@@ -153,7 +154,7 @@ public class Pattern
         annotations = (Map<String,AnnotationDefinition>) in.readObject();
         passive = in.readBoolean();
         hasNegativeConstraint = in.readBoolean();
-        hasXPath = in.readBoolean();
+        xPath = (XpathConstraint) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -169,7 +170,7 @@ public class Pattern
         out.writeObject( annotations );
         out.writeBoolean( passive );
         out.writeBoolean(hasNegativeConstraint);
-        out.writeBoolean(hasXPath);
+        out.writeObject(xPath);
     }
     
     public static InternalReadAccessor getReadAcessor(ObjectType objectType) {
@@ -288,7 +289,7 @@ public class Pattern
         if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
             this.setConstraintType( (MutableTypeConstraint) constraint );
         } else if ( constraint.getType().equals( Constraint.ConstraintType.XPATH ) ) {
-            this.hasXPath = true;
+            this.xPath = (XpathConstraint) constraint;
         }
         this.constraints.add(index, constraint);
     }
@@ -301,7 +302,7 @@ public class Pattern
             if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
                 this.setConstraintType( (MutableTypeConstraint) constraint );
             } else if ( constraint.getType().equals( Constraint.ConstraintType.XPATH ) ) {
-                this.hasXPath = true;
+                this.xPath = (XpathConstraint) constraint;
             }
             this.constraints.add(constraint);
         }
@@ -341,7 +342,15 @@ public class Pattern
     }
     
     public boolean hasXPath() {
-        return this.hasXPath;
+        return xPath != null;
+    }
+
+    public XpathConstraint getXpathConstraint() {
+        return xPath;
+    }
+
+    public Declaration getXPathDeclaration() {
+        return xPath != null ? xPath.getDeclaration() : null;
     }
 
     public Declaration addDeclaration(final String identifier) {
