@@ -376,7 +376,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                    context,
                                                    "drools",
                                                    KnowledgeHelper.class,
-                                                   false,
+                                                   context.isInXpath(),
                                                    MVELCompilationUnit.Scope.CONSTRAINT );
         } catch ( final Exception e ) {
             copyErrorLocation(e, predicateDescr);

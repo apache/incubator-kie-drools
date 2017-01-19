@@ -18,6 +18,8 @@ package org.drools.compiler.xpath;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.phreak.AbstractReactiveObject;
+import org.drools.core.phreak.ReactiveSet;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -2108,5 +2110,96 @@ public class XpathTest {
                 "end\n";
 
         assertDrlHasCompilationError( drl, 1 );
+    }
+
+    @Test
+    public void testXPathWithLocalDeclaration() {
+        // DROOLS-1411
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.Set duplicateNames; \n" +
+                "\n" +
+                "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
+                "  $ic1 : TMFileWithParentObj( $curName : name,\n" +
+                "                              $ic2: /parent{#TMFileSet}/files{name == $curName, this != $ic1 } )\n" +
+                "then\n" +
+                "  System.out.println( $ic1 + \" \" + $ic2 );\n" +
+                "  duplicateNames.add( $ic1.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        Set<String> duplicateNames = new HashSet<String>();
+        ksession.setGlobal("duplicateNames", duplicateNames);
+
+        TMFileSet x = new TMFileSet("X");
+        TMFileWithParentObj file0 = new TMFileWithParentObj(0, "File0", 47, x);
+        TMFileWithParentObj file1 = new TMFileWithParentObj(1, "File1", 47, x);
+        TMFileWithParentObj file2 = new TMFileWithParentObj(2, "File0", 47, x);
+        x.getFiles().addAll(Arrays.asList(file0, file1, file2));
+
+        ksession.insert( x );
+        ksession.insert( file0 );
+        ksession.insert( file1 );
+        ksession.insert( file2 );
+        ksession.fireAllRules();
+
+        assertTrue( duplicateNames.contains("File0") );
+        assertFalse( duplicateNames.contains("File1") );
+    }
+
+    public static class TMFileSetQuater extends AbstractReactiveObject {
+        private final String name;
+        private final Set<TMFileWithParentObj> members = new ReactiveSet<TMFileWithParentObj>();
+        public TMFileSetQuater(String name) {
+            this.name = name;
+        }
+        public String getName() {
+            return name;
+        }
+        public Set<TMFileWithParentObj> getFiles() {
+            return members;
+        }
+    }
+
+    @Test
+    public void testXPathWithLocalInnerDeclaration() {
+        // DROOLS-1411
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "import "+TMFileSetQuater.class.getCanonicalName()+";\n" +
+                "global java.util.Set duplicateNames; \n" +
+                "\n" +
+                "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
+                "  $ic1 : TMFileWithParentObj( $curName : name, $curId : id, \n" +
+                "                               $ic2: /parent{#TMFileSetQuater}/files{name == $curName, id != $curId } )\n" +
+                "then\n" +
+                "  System.out.println( $ic1 + \" \" + $ic2 );\n" +
+                "  duplicateNames.add( $ic1.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        Set duplicateNames = new HashSet();
+        ksession.setGlobal("duplicateNames", duplicateNames);
+
+        TMFileSetQuater x = new TMFileSetQuater("X");
+        TMFileWithParentObj file0 = new TMFileWithParentObj(0, "File0", 47, x);
+        TMFileWithParentObj file1 = new TMFileWithParentObj(1, "File1", 47, x);
+        TMFileWithParentObj file2 = new TMFileWithParentObj(2, "File0", 47, x);
+        x.getFiles().addAll(Arrays.asList(file0, file1, file2));
+
+        ksession.insert( x );
+        ksession.insert( file0 );
+        ksession.insert( file1 );
+        ksession.insert( file2 );
+        ksession.fireAllRules();
+
+        assertTrue( duplicateNames.contains("File0") );
+        assertFalse( duplicateNames.contains("File1") );
     }
 }

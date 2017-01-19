@@ -747,14 +747,14 @@ public class PatternBuilder
                                     buildXPathDescr(context, patternDescr, pattern, d, mvelCtx) :
                                     buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
             if (constraint != null) {
-                Declaration declFromXpath = getDeclarationCorrespondingToXpath( pattern, isXPath, constraint );
-                if (declFromXpath == null) {
+                Declaration declCorrXpath = getDeclarationCorrespondingToXpath( pattern, isXPath, constraint );
+                if (declCorrXpath == null) {
                     constraints.add(constraint);
                 } else {
                     // A constraint is using a declration bound to an xpath in the same pattern
                     // Move the constraint inside the last chunk of the xpath defining this declaration, rewriting it as 'this'
                     constraint = buildCcdDescr(context, patternDescr, pattern,
-                                               d.replaceVariable(declFromXpath.getBindingName(), "this"), descr, mvelCtx);
+                                               d.replaceVariable(declCorrXpath.getBindingName(), "this"), descr, mvelCtx);
                     if (constraint != null) {
                         pattern.getXpathConstraint().getChunks().getLast().addConstraint( constraint );
                     }
@@ -785,19 +785,17 @@ public class PatternBuilder
     }
 
     private Declaration getDeclarationCorrespondingToXpath( Pattern pattern, boolean isXPath, Constraint constraint ) {
-        Declaration declFromXpath = null;
         if (!isXPath && pattern.hasXPath()) {
             Declaration xPathDecl = pattern.getXPathDeclaration();
             if (xPathDecl != null) {
                 for ( Declaration decl : constraint.getRequiredDeclarations() ) {
                     if (xPathDecl.equals( decl )) {
-                        declFromXpath = decl;
-                        break;
+                        return decl;
                     }
                 }
             }
         }
-        return declFromXpath;
+        return null;
     }
 
     private boolean isXPathDescr(BaseDescr descr) {
