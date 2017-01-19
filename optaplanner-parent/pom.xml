@@ -180,6 +180,22 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <compilerArgs>
+              <!-- Visit https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
+                   to learn more about javac warnings -->
+              <arg>-Xmaxwarns</arg>
+              <arg>100</arg>
+              <arg>-Xlint</arg>
+              <arg>-Xlint:-rawtypes</arg>
+              <arg>-Xlint:-serial</arg>
+              <arg>-Xlint:-unchecked</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <executions>
             <execution>
