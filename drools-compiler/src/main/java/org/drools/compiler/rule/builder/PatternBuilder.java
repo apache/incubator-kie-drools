@@ -735,11 +735,30 @@ public class PatternBuilder
 
         List<BaseDescr> initialDescrs = new ArrayList<BaseDescr>( descr.getDescrs() );
         for ( BaseDescr d : initialDescrs ) {
-            Constraint constraint = isXPathDescr(d) ?
+            boolean isXPath = isXPathDescr(d);
+            if (isXPath && pattern.hasXPath()) {
+                context.addError( new DescrBuildError( context.getParentDescr(),
+                                                       descr,
+                                                       null,
+                                                       "More than a single oopath constraint is not allowed in the same pattern" ) );
+                return constraints;
+            }
+            Constraint constraint = isXPath ?
                                     buildXPathDescr(context, patternDescr, pattern, d, mvelCtx) :
                                     buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
             if (constraint != null) {
-                constraints.add(constraint);
+                Declaration declCorrXpath = getDeclarationCorrespondingToXpath( pattern, isXPath, constraint );
+                if (declCorrXpath == null) {
+                    constraints.add(constraint);
+                } else {
+                    // A constraint is using a declration bound to an xpath in the same pattern
+                    // Move the constraint inside the last chunk of the xpath defining this declaration, rewriting it as 'this'
+                    constraint = buildCcdDescr(context, patternDescr, pattern,
+                                               d.replaceVariable(declCorrXpath.getBindingName(), "this"), descr, mvelCtx);
+                    if (constraint != null) {
+                        pattern.getXpathConstraint().getChunks().getLast().addConstraint( constraint );
+                    }
+                }
             }
         }
 
@@ -763,6 +782,20 @@ public class PatternBuilder
         }
 
         return constraints;
+    }
+
+    private Declaration getDeclarationCorrespondingToXpath( Pattern pattern, boolean isXPath, Constraint constraint ) {
+        if (!isXPath && pattern.hasXPath()) {
+            Declaration xPathDecl = pattern.getXPathDeclaration();
+            if (xPathDecl != null) {
+                for ( Declaration decl : constraint.getRequiredDeclarations() ) {
+                    if (xPathDecl.equals( decl )) {
+                        return decl;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private boolean isXPathDescr(BaseDescr descr) {

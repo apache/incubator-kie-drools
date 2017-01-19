@@ -160,4 +160,8 @@ public class BaseDescr
     public String positionAsString() {
         return "[Line: " + getLine() + ", Column: " + getColumn() + "]";
     }
+
+    public BaseDescr replaceVariable(String oldVar, String newVar) {
+        throw new UnsupportedOperationException();
+    }
 }

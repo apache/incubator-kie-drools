@@ -126,6 +126,14 @@ public class RelationalExprDescr extends BaseDescr {
     }
 
     @Override
+    public RelationalExprDescr replaceVariable(String oldVar, String newVar) {
+        expression = expression.replace( oldVar, newVar );
+        left = left.replaceVariable( oldVar, newVar );
+        right = right.replaceVariable( oldVar, newVar );
+        return this;
+    }
+
+    @Override
     public String toString() {
         return this.left + (isNegated() ? " not " : " ") + getOperator() + (getParameters() != null ? getParameters().toString() + " " : " ") + this.right;
     }

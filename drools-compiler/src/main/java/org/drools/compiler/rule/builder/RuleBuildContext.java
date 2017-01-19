@@ -52,6 +52,8 @@ public class RuleBuildContext extends PackageBuildContext {
 
     private Pattern prefixPattern;
 
+    private boolean inXpath;
+
     /**
      * Default constructor
      */
@@ -141,5 +143,13 @@ public class RuleBuildContext extends PackageBuildContext {
 
     public Pattern getPrefixPattern() {
         return prefixPattern;
+    }
+
+    public boolean isInXpath() {
+        return inXpath;
+    }
+
+    public void setInXpath( boolean inXpath ) {
+        this.inXpath = inXpath;
     }
 }
