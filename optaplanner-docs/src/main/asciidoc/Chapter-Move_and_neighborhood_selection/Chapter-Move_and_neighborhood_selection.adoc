@@ -829,6 +829,7 @@ Unaccepted moves will not be selected and will therefore never have their `doMov
 ----
 public class DifferentCourseSwapMoveFilter implements SelectionFilter<SwapMove> {
 
+    @Override
     public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
         Lecture leftLecture = (Lecture) move.getLeftEntity();
         Lecture rightLecture = (Lecture) move.getRightEntity();
@@ -859,6 +860,7 @@ Unaccepted entities will not be selected and will therefore never be used to cre
 ----
 public class LongLectureSelectionFilter implements SelectionFilter<Lecture> {
 
+    @Override
     public boolean accept(ScoreDirector<CourseSchedule> scoreDirector, Lecture lecture) {
         return lecture.isLong();
     }
@@ -891,6 +893,7 @@ Unaccepted values will not be selected and will therefore never be used to creat
 ----
 public class LongPeriodSelectionFilter implements SelectionFilter<Period> {
 
+    @Override
     public boolean accept(ScoreDirector<CourseSchedule> scoreDirector, Period period) {
         return period();
     }

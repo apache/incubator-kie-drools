@@ -126,6 +126,7 @@ To make some planning entities immovable, simply add an entity `SelectionFilter`
 ----
 public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<NurseRoster, ShiftAssignment> {
 
+    @Override
     public boolean accept(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment shiftAssignment) {
         NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
         ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
