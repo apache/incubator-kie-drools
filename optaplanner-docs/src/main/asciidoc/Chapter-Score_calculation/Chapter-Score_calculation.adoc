@@ -19,8 +19,8 @@ Every `Solution` has a score.
 The score is an objective way to compare two solutions.
 The solution with the higher score is better.
 The `Solver` aims to find the `Solution` with the highest `Score` of all possible solutions.
-The _best solution_ is the `Solution` with the highest `Score` that `Solver` has encountered during solving, which might be the __optimal
-      solution__.
+The _best solution_ is the `Solution` with the highest `Score` that `Solver` has encountered during solving,
+which might be the __optimal solution__.
 
 Planner cannot automatically know which `Solution` is best for your business, so you need to tell it how to calculate the score of a given `Solution` according to your business needs.
 If you forget or are unable to implement an important business constraint, the solution is probably useless:
@@ -53,8 +53,8 @@ A negative constraint is a constraint you want to minimize.
 
 image::Chapter-Score_calculation/positiveAndNegativeConstraints.png[align="center"]
 
-The image above illustrates that **the optimal solution always has the highest
-      score**, regardless if the constraints are positive or negative.
+The image above illustrates that **the optimal solution always has the highest score**,
+regardless if the constraints are positive or negative.
 
 Most planning problems have only negative constraints and therefore have a negative score.
 In that case, the score is the sum of the weight of the negative constraints being broken, with a perfect score of 0.
@@ -987,8 +987,7 @@ The `Solver` will normally spend most of its execution time running the score ca
 [[scoreCalculationSpeed]]
 === Score Calculation Speed
 
-After solving a problem, the `Solver` will log the __score calculation speed per
-      second__.
+After solving a problem, the `Solver` will log the __score calculation speed per second__.
 This is a good measurement of Score calculation performance, despite that it is affected by non score calculation execution time.
 It depends on the problem scale of the problem dataset.
 Normally, even for high scale problems, it is higher than ``1000``, except when you are using an ``EasyScoreCalculator``.
@@ -1014,9 +1013,9 @@ For example, if a single queen A moves from row `1` to ``2``, it will not bother
 .Incremental Score Calculation for the 4 Queens Puzzle
 image::Chapter-Score_calculation/incrementalScoreCalculationNQueens04.png[align="center"]
 
-This is a huge performance and scalability gain. *Drools score calculation gives you
-      this huge scalability gain without forcing you to write a complicated incremental score calculation
-      algorithm.* Just let the Drools rule engine do the hard work.
+This is a huge performance and scalability gain.
+*Drools score calculation gives you this huge scalability gain without forcing you to write a complicated incremental score calculation algorithm.*
+Just let the Drools rule engine do the hard work.
 
 Notice that the speedup is relative to the size of your planning problem (your __n__), making incremental score calculation far more scalable.
 

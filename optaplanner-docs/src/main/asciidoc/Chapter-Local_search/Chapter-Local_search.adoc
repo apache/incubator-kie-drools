@@ -36,8 +36,7 @@ Local Search tries a number of moves on the current solution and picks the best 
 image::Chapter-Local_search/decideNextStepNQueens04.png[align="center"]
 
 Because the move _B0 to B3_ has the highest score (``-3``), it is picked as the next step.
-If multiple moves have the same highest score, one is picked randomly, in this case __B0
-      to B3__.
+If multiple moves have the same highest score, one is picked randomly, in this case __B0 to B3__.
 Note that _C0 to C3_ (not shown) could also have been picked because it also has the score ``-3``.
 
 The step is applied on the solution.
@@ -103,8 +102,7 @@ The solver phase configuration looks like this:
   </localSearch>
 ----
 
-In the example below, the `MoveSelector` generated the moves shown with the blue lines, the `Acceptor` accepted all of them and the `Forager` picked the move __B0
-      to B3__.
+In the example below, the `MoveSelector` generated the moves shown with the blue lines, the `Acceptor` accepted all of them and the `Forager` picked the move __B0 to B3__.
 
 image::Chapter-Local_search/decideNextStepNQueens04.png[align="center"]
 
@@ -566,9 +564,7 @@ Step Counting Hill Climbing also evaluates only a few moves per step.
 For a number of steps, it keeps the step score as a threshold.
 A move is accepted if it does not decrease the score, or if it leads to a score that is at least the threshold score.
 
-Scientific paper: https://www.cs.nott.ac.uk/~yxb/SCHC/SCHC_mista2013_79.pdf[An
-      initial study of a novel Step Counting Hill Climbing heuristic applied to timetabling problems by Yuri
-      Bykov, Sanja Petrovic (2013)]
+Scientific paper: https://www.cs.nott.ac.uk/~yxb/SCHC/SCHC_mista2013_79.pdf[An initial study of a novel Step Counting Hill Climbing heuristic applied to timetabling problems by Yuri Bykov, Sanja Petrovic (2013)]
 
 
 [[stepCountingHillClimbingConfiguration]]

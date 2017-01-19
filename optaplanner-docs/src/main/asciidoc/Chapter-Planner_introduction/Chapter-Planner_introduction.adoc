@@ -78,8 +78,7 @@ The implication of this is pretty dire: solving your problem is probably harder 
 * A Brute Force algorithm (even a smarter variant) will take too long.
 * A quick algorithm, for example in bin packing, __putting in the largest items first__, will return a solution that is far from optimal.
 
-By using advanced optimization algorithms, *OptaPlanner does find a good solution in
-      reasonable time for such planning problems.*
+By using advanced optimization algorithms, *OptaPlanner does find a good solution in reasonable time for such planning problems.*
 
 
 [[aPlanningProblemHasConstraints]]
@@ -97,10 +96,8 @@ Some problems have positive constraints too:
 Some basic problems (such as N Queens) only have hard constraints.
 Some problems have 3 or more levels of constraints, for example hard, medium and soft constraints.
 
-These constraints define the _score calculation_ (AKA __fitness
-      function__) of a planning problem.
-Each solution of a planning problem can be graded with a score. **With OptaPlanner, score constraints are written in an Object Oriented language, such as Java^TM^
-      code or Drools rules**.
+These constraints define the _score calculation_ (AKA __fitness function__) of a planning problem.
+Each solution of a planning problem can be graded with a score. **With OptaPlanner, score constraints are written in an Object Oriented language, such as Java^TM^ code or Drools rules**.
 Such code is easy, flexible and scalable.
 
 
@@ -119,8 +116,7 @@ Counterintuitively, the number of possible solutions is huge (if calculated corr
 As you can see in the examples, most instances have a lot more possible solutions than the minimal number of atoms in the known universe (10^80). Because there is no silver bullet to find the optimal solution, any implementation is forced to evaluate at least a subset of all those possible solutions.
 
 OptaPlanner supports several optimization algorithms to efficiently wade through that incredibly large number of possible solutions.
-Depending on the use case, some optimization algorithms perform better than others, but it's impossible to tell in advance. **With OptaPlanner, it is easy to switch the
-      optimization algorithm**, by changing the solver configuration in a few lines of XML or code.
+Depending on the use case, some optimization algorithms perform better than others, but it's impossible to tell in advance. **With OptaPlanner, it is easy to switch the optimization algorithm**, by changing the solver configuration in a few lines of XML or code.
 
 
 [[_downloadandruntheexamples]]
@@ -354,8 +350,8 @@ Those documented `impl` classes are reliable and safe to use (unless explicitly 
 [[communityAndSupport]]
 === Community and Support
 
-For news and articles, check https://www.optaplanner.org/blog/[our blog], Google+ (https://plus.google.com/+OptaPlannerOrg[OptaPlanner], https://plus.google.com/+GeoffreyDeSmet[Geoffrey De Smet]) and twitter (https://twitter.com/OptaPlanner[OptaPlanner], https://twitter.com/GeoffreyDeSmet[Geoffrey De Smet]). *If OptaPlanner
-      helps you, help us by blogging or tweeting about it!*
+For news and articles, check https://www.optaplanner.org/blog/[our blog], Google+ (https://plus.google.com/+OptaPlannerOrg[OptaPlanner], https://plus.google.com/+GeoffreyDeSmet[Geoffrey De Smet]) and twitter (https://twitter.com/OptaPlanner[OptaPlanner], https://twitter.com/GeoffreyDeSmet[Geoffrey De Smet]).
+*If OptaPlanner helps you, help us by blogging or tweeting about it!*
 
 Public questions are welcome on https://www.optaplanner.org/community/forum.html[our community forum].
 Bugs and feature requests are welcome in https://issues.jboss.org/browse/PLANNER[our issue tracker].
