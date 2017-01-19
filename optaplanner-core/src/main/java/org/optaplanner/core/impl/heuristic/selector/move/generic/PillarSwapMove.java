@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * This {@link Move} is not cacheable.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class PillarSwapMove<Solution_> extends AbstractMove {
+public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     protected final List<GenuineVariableDescriptor<Solution_>> variableDescriptorList;
 
@@ -70,7 +70,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove {
     // ************************************************************************
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         boolean movable = false;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             Object leftValue = variableDescriptor.getValue(leftPillar.get(0));
@@ -80,7 +80,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove {
                 if (!variableDescriptor.isValueRangeEntityIndependent()) {
                     ValueRangeDescriptor<Solution_> valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
                     // type cast in order to avoid having to make Move and all its sub-types generic
-                    Solution_ workingSolution = (Solution_) scoreDirector.getWorkingSolution();
+                    Solution_ workingSolution = scoreDirector.getWorkingSolution();
                     for (Object rightEntity : rightPillar) {
                         ValueRange rightValueRange = valueRangeDescriptor.extractValueRange(workingSolution, rightEntity);
                         if (!rightValueRange.contains(leftValue)) {
@@ -100,12 +100,12 @@ public class PillarSwapMove<Solution_> extends AbstractMove {
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public PillarSwapMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         return new PillarSwapMove<>(variableDescriptorList, rightPillar, leftPillar);
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             Object oldLeftValue = variableDescriptor.getValue(leftPillar.get(0));
             Object oldRightValue = variableDescriptor.getValue(rightPillar.get(0));

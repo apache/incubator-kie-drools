@@ -99,7 +99,7 @@ public class ShiftAssignmentSequenceSwitchLength2MoveFactory implements MoveList
                             List<ShiftAssignment> rightShiftAssignmentList = rightAssignmentSequence.getShiftAssignmentList();
                             for (int rightIndex = 0; rightIndex <= rightShiftAssignmentList.size() - SWITCH_LENGTH; rightIndex++) {
 
-                                List<Move> subMoveList = new ArrayList<>(SWITCH_LENGTH * 2);
+                                List<EmployeeChangeMove> subMoveList = new ArrayList<>(SWITCH_LENGTH * 2);
                                 for (ShiftAssignment leftShiftAssignment : leftShiftAssignmentList
                                         .subList(leftIndex, leftIndex + SWITCH_LENGTH)) {
                                     subMoveList.add(new EmployeeChangeMove(leftShiftAssignment, rightEmployee));

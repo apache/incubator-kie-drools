@@ -130,7 +130,7 @@ public class CompositeMoveTest {
 
         GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         Move first = new SwapMove<>(Collections.singletonList(variableDescriptor), e1, e2);
-        Move second = new ChangeMove(e1, variableDescriptor, v3);
+        Move second = new ChangeMove<>(e1, variableDescriptor, v3);
         Move move = CompositeMove.buildMove(first, second);
 
         assertSame(v1, e1.getValue());

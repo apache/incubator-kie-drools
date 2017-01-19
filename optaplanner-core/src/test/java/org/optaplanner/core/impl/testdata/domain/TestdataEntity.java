@@ -25,14 +25,14 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 @PlanningEntity
 public class TestdataEntity extends TestdataObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+    public static EntityDescriptor<TestdataSolution> buildEntityDescriptor() {
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataEntity.class);
     }
 
-    public static GenuineVariableDescriptor buildVariableDescriptorForValue() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataEntity.class);
+    public static GenuineVariableDescriptor<TestdataSolution> buildVariableDescriptorForValue() {
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        EntityDescriptor<TestdataSolution> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 

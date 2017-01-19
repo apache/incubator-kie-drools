@@ -22,18 +22,22 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class ChangeMove extends AbstractMove {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class ChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     protected final Object entity;
-    protected final GenuineVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
     protected final Object toPlanningValue;
 
-    public ChangeMove(Object entity, GenuineVariableDescriptor variableDescriptor,
+    public ChangeMove(Object entity, GenuineVariableDescriptor<Solution_> variableDescriptor,
             Object toPlanningValue) {
         this.entity = entity;
         this.variableDescriptor = variableDescriptor;
@@ -57,19 +61,19 @@ public class ChangeMove extends AbstractMove {
     // ************************************************************************
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         Object oldValue = variableDescriptor.getValue(entity);
         return !Objects.equals(oldValue, toPlanningValue);
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public ChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         Object oldValue = variableDescriptor.getValue(entity);
-        return new ChangeMove(entity, variableDescriptor, oldValue);
+        return new ChangeMove<>(entity, variableDescriptor, oldValue);
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         scoreDirector.beforeVariableChanged(variableDescriptor, entity);
         variableDescriptor.setValue(entity, toPlanningValue);
         scoreDirector.afterVariableChanged(variableDescriptor, entity);

@@ -16,13 +16,15 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Abstract superclass for {@link Move}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Move
  */
-public abstract class AbstractMove implements Move {
+public abstract class AbstractMove<Solution_> implements Move<Solution_> {
 
     @Override
     public String getSimpleMoveTypeDescription() {
@@ -30,7 +32,7 @@ public abstract class AbstractMove implements Move {
     }
 
     @Override
-    public final void doMove(ScoreDirector scoreDirector) {
+    public final void doMove(ScoreDirector<Solution_> scoreDirector) {
         doMoveOnGenuineVariables(scoreDirector);
         scoreDirector.triggerVariableListeners();
     }
@@ -40,6 +42,6 @@ public abstract class AbstractMove implements Move {
      * (because {@link #doMove(ScoreDirector)} already does that).
      * @param scoreDirector never null
      */
-    protected abstract void doMoveOnGenuineVariables(ScoreDirector scoreDirector);
+    protected abstract void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector);
 
 }

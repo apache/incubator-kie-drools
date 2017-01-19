@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Also known as a 2-opt move.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class TailChainSwapMove<Solution_> extends AbstractMove {
+public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
     protected final SingletonInverseVariableSupply inverseVariableSupply;
@@ -77,7 +77,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove {
     }
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         Object leftValue = variableDescriptor.getValue(leftEntity);
         Object rightEntity = inverseVariableSupply.getInverseSingleton(rightValue);
         if (Objects.equals(leftValue, rightValue)
@@ -95,7 +95,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove {
         if (!variableDescriptor.isValueRangeEntityIndependent()) {
             ValueRangeDescriptor<Solution_> valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
             // type cast in order to avoid having to make Move and all its sub-types generic
-            Solution_ workingSolution = (Solution_) scoreDirector.getWorkingSolution();
+            Solution_ workingSolution = scoreDirector.getWorkingSolution();
             if (rightEntity != null) {
                 ValueRange rightValueRange = valueRangeDescriptor.extractValueRange(workingSolution, rightEntity);
                 if (!rightValueRange.contains(leftValue)) {
@@ -111,7 +111,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove {
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public TailChainSwapMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         Object leftAnchor = anchorVariableSupply.getAnchor(leftEntity);
         Object rightAnchor = determineRightAnchor();
         Object leftValue = variableDescriptor.getValue(leftEntity);
@@ -131,7 +131,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove {
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         Object leftAnchor = anchorVariableSupply.getAnchor(leftEntity);
         Object rightAnchor = determineRightAnchor();
         Object leftValue = variableDescriptor.getValue(leftEntity);

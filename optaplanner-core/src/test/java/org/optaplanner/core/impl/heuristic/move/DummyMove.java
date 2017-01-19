@@ -22,7 +22,7 @@ import java.util.Collections;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.util.CodeAssertable;
 
-public class DummyMove extends AbstractMove implements CodeAssertable {
+public class DummyMove extends AbstractMove<Object> implements CodeAssertable {
 
     protected String code;
 
@@ -43,17 +43,17 @@ public class DummyMove extends AbstractMove implements CodeAssertable {
     // ************************************************************************
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Object> scoreDirector) {
         return true;
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public DummyMove createUndoMove(ScoreDirector<Object> scoreDirector) {
         return new DummyMove("undo " + code);
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<Object> scoreDirector) {
         // do nothing
     }
 

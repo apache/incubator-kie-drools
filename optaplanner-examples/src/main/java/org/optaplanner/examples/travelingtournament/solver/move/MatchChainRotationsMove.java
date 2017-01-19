@@ -29,8 +29,9 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
+import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class MatchChainRotationsMove extends AbstractMove {
+public class MatchChainRotationsMove extends AbstractMove<TravelingTournament> {
 
     private List<Match> firstMatchList;
     private List<Match> secondMatchList;
@@ -41,12 +42,12 @@ public class MatchChainRotationsMove extends AbstractMove {
     }
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<TravelingTournament> scoreDirector) {
         return true;
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public MatchChainRotationsMove createUndoMove(ScoreDirector<TravelingTournament> scoreDirector) {
         List<Match> inverseFirstMatchList = new ArrayList<>(firstMatchList);
         Collections.reverse(inverseFirstMatchList);
         List<Match> inverseSecondMatchList = new ArrayList<>(secondMatchList);
@@ -55,14 +56,14 @@ public class MatchChainRotationsMove extends AbstractMove {
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<TravelingTournament> scoreDirector) {
         rotateList(scoreDirector, firstMatchList);
         if (!secondMatchList.isEmpty()) { // TODO create SingleMatchListRotateMove
             rotateList(scoreDirector, secondMatchList);
         }
     }
 
-    private void rotateList(ScoreDirector scoreDirector, List<Match> matchList) {
+    private void rotateList(ScoreDirector<TravelingTournament> scoreDirector, List<Match> matchList) {
         Iterator<Match> it = matchList.iterator();
         Match previousMatch = it.next();
         Match match = null;

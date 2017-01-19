@@ -86,7 +86,7 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
                     BedDesignation pillarPartBedDesignation = lowestIt.next();
                     // Note: the initialCapacity is probably too high,
                     // which is bad for memory, but the opposite is bad for performance (which is worse)
-                    List<Move> moveListByPillarPartDuo = new ArrayList<>(
+                    List<BedChangeMove> moveListByPillarPartDuo = new ArrayList<>(
                             leftBedDesignationList.size() + rightBedDesignationList.size());
                     int lastNightIndex = pillarPartBedDesignation.getAdmissionPart().getLastNight().getIndex();
                     Bed otherBed;

@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.mockito.Mockito.*;
@@ -34,8 +35,8 @@ public class ChainedSwapMoveTest {
 
     @Test
     public void noTrailing() {
-        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -49,10 +50,10 @@ public class ChainedSwapMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, b1});
 
-        ChainedSwapMove move = new ChainedSwapMove(
+        ChainedSwapMove<TestdataChainedSolution> move = new ChainedSwapMove<>(
                 Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
                 a3, b1);
-        Move undoMove = move.createUndoMove(scoreDirector);
+        ChainedSwapMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         SelectorTestUtils.assertChain(a0, a1, a2, b1);
@@ -68,8 +69,8 @@ public class ChainedSwapMoveTest {
 
     @Test
     public void oldAndNewTrailing() {
-        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -84,10 +85,10 @@ public class ChainedSwapMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, b1, b2});
 
-        ChainedSwapMove move = new ChainedSwapMove(
+        ChainedSwapMove<TestdataChainedSolution> move = new ChainedSwapMove<>(
                 Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
                 a2, b1);
-        Move undoMove = move.createUndoMove(scoreDirector);
+        ChainedSwapMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         SelectorTestUtils.assertChain(a0, a1, b1, a3);
@@ -105,8 +106,8 @@ public class ChainedSwapMoveTest {
 
     @Test
     public void sameChain() {
-        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -118,10 +119,10 @@ public class ChainedSwapMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4});
 
-        ChainedSwapMove move = new ChainedSwapMove(
+        ChainedSwapMove<TestdataChainedSolution> move = new ChainedSwapMove<>(
                 Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
                 a2, a3);
-        Move undoMove = move.createUndoMove(scoreDirector);
+        ChainedSwapMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         SelectorTestUtils.assertChain(a0, a1, a3, a2, a4);
@@ -133,7 +134,7 @@ public class ChainedSwapMoveTest {
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4);
 
-        move = new ChainedSwapMove(
+        move = new ChainedSwapMove<>(
                 Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
                 a3, a2);
         undoMove = move.createUndoMove(scoreDirector);

@@ -27,14 +27,14 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 @PlanningEntity
 public class TestdataChainedEntity extends TestdataObject implements TestdataChainedObject {
 
-    public static EntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
+    public static EntityDescriptor<TestdataChainedSolution> buildEntityDescriptor() {
+        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataChainedEntity.class);
     }
 
-    public static GenuineVariableDescriptor buildVariableDescriptorForChainedObject() {
-        SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataChainedEntity.class);
+    public static GenuineVariableDescriptor<TestdataChainedSolution> buildVariableDescriptorForChainedObject() {
+        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
+        EntityDescriptor<TestdataChainedSolution> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataChainedEntity.class);
         return entityDescriptor.getGenuineVariableDescriptor("chainedObject");
     }
 

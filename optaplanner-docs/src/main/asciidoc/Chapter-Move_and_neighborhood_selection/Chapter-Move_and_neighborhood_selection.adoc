@@ -1322,12 +1322,12 @@ Your custom moves must implement the `Move` interface:
 
 [source,java,options="nowrap"]
 ----
-public interface Move {
+public interface Move<Solution_> {
 
-    boolean isMoveDoable(ScoreDirector scoreDirector);
+    boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector);
 
-    Move createUndoMove(ScoreDirector scoreDirector);
-    void doMove(ScoreDirector scoreDirector);
+    Move createUndoMove(ScoreDirector<Solution_> scoreDirector);
+    void doMove(ScoreDirector<Solution_> scoreDirector);
 
     Collection<? extends Object> getPlanningEntities();
     Collection<? extends Object> getPlanningValues();
@@ -1339,7 +1339,7 @@ Let's take a look at the `Move` implementation for 4 queens which moves a queen 
 
 [source,java,options="nowrap"]
 ----
-public class RowChangeMove extends AbstractMove {
+public class RowChangeMove extends AbstractMove<NQueens> {
 
     private Queen queen;
     private Row toRow;
@@ -1361,18 +1361,19 @@ The `Move` implementation must notify the `ScoreDirector` of any changes it make
 
 [source,java,options="nowrap"]
 ----
-    public void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    public void doMoveOnGenuineVariables(ScoreDirector<NQueens> scoreDirector) {
         scoreDirector.beforeVariableChanged(queen, "row"); // before changes are made to the queen.row
         queen.setRow(toRow);
         scoreDirector.afterVariableChanged(queen, "row"); // after changes are made to the queen.row
     }
 ----
 
-You need to call the `scoreDirector.beforeVariableChanged(Object, String)` and `scoreDirector.afterVariableChanged(Object, String)` methods directly before and after modifying the entity.
+Call the `scoreDirector.beforeVariableChanged(Object, String)` and `scoreDirector.afterVariableChanged(Object, String)`
+methods directly before and after modifying an entity's planning variable.
 
 [NOTE]
 ====
-You can alter multiple entities in a single move and effectively create a big move (also known as a coarse-grained move).
+Change multiple entities or multiple planning variables in a single move to create a coarse-grained move.
 ====
 
 [WARNING]
@@ -1380,7 +1381,7 @@ You can alter multiple entities in a single move and effectively create a big mo
 A `Move` can only change/add/remove planning entities, it must not change any of the problem facts.
 ====
 
-Planner automatically filters out _non doable moves_ by calling the `isMoveDoable(ScoreDirector)` method on a move.
+Planner automatically filters out _non doable moves_ by calling the `isMoveDoable(ScoreDirector)` method on each selected move.
 A _non doable move_ is:
 
 * A move that changes nothing on the current solution. For example, moving queen B0 to row 0 is not doable, because it is already there.
@@ -1390,7 +1391,7 @@ In the n queens example, a move which moves the queen from its current row to th
 
 [source,java,options="nowrap"]
 ----
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<NQueens> scoreDirector) {
         return !Objects.equals(queen.getRow(), toRow);
     }
 ----
@@ -1399,19 +1400,17 @@ Because we won't generate a move which can move a queen outside the board limits
 A move that is currently not doable could become doable on the working `Solution` of a later step.
 
 Each move has an __undo move__: a move (normally of the same type) which does the exact opposite.
-In the example above the undo move of _C0 to C2_ would be the move __C2 to
-      C0__.
+In the example above the undo move of _C0 to C2_ would be the move __C2 to C0__.
 An undo move is created from a ``Move``, before the `Move` has been done on the current solution.
 
 [source,java,options="nowrap"]
 ----
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public RowChangeMove createUndoMove(ScoreDirector<NQueens> scoreDirector) {
         return new RowChangeMove(queen, queen.getRow());
     }
 ----
 
-Notice that if C0 would have already been moved to C2, the undo move would create the move __C2 to
-      C2__, instead of the move __C2 to C0__.
+Notice that if C0 would have already been moved to C2, the undo move would create the move __C2 to C2__, instead of the move __C2 to C0__.
 
 A solver phase might do and undo the same `Move` more than once.
 In fact, many solver phases will iteratively do and undo a number of moves to evaluate them, before selecting one of those and doing that move again (without undoing it this time).

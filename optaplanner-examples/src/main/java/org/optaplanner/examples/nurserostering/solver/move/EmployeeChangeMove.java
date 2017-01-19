@@ -26,9 +26,10 @@ import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.nurserostering.domain.Employee;
+import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 
-public class EmployeeChangeMove extends AbstractMove {
+public class EmployeeChangeMove extends AbstractMove<NurseRoster> {
 
     private ShiftAssignment shiftAssignment;
     private Employee toEmployee;
@@ -39,17 +40,17 @@ public class EmployeeChangeMove extends AbstractMove {
     }
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<NurseRoster> scoreDirector) {
         return !Objects.equals(shiftAssignment.getEmployee(), toEmployee);
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public EmployeeChangeMove createUndoMove(ScoreDirector<NurseRoster> scoreDirector) {
         return new EmployeeChangeMove(shiftAssignment, shiftAssignment.getEmployee());
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<NurseRoster> scoreDirector) {
         NurseRosteringMoveHelper.moveEmployee(scoreDirector, shiftAssignment, toEmployee);
     }
 

@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -29,15 +30,18 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class SubChainReversingChangeMove extends AbstractMove {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     protected final SubChain subChain;
-    protected final GenuineVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
     protected final SingletonInverseVariableSupply inverseVariableSupply;
     protected final Object toPlanningValue;
 
-    public SubChainReversingChangeMove(SubChain subChain, GenuineVariableDescriptor variableDescriptor,
-            SingletonInverseVariableSupply inverseVariableSupply,  Object toPlanningValue) {
+    public SubChainReversingChangeMove(SubChain subChain, GenuineVariableDescriptor<Solution_> variableDescriptor,
+            SingletonInverseVariableSupply inverseVariableSupply, Object toPlanningValue) {
         this.subChain = subChain;
         this.variableDescriptor = variableDescriptor;
         this.inverseVariableSupply = inverseVariableSupply;
@@ -61,7 +65,7 @@ public class SubChainReversingChangeMove extends AbstractMove {
     // ************************************************************************
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         if (subChain.getEntityList().contains(toPlanningValue)) {
             return false;
         }
@@ -70,13 +74,13 @@ public class SubChainReversingChangeMove extends AbstractMove {
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public SubChainReversingChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
-        return new SubChainReversingChangeMove(subChain.reverse(), variableDescriptor, inverseVariableSupply, oldFirstValue);
+        return new SubChainReversingChangeMove<>(subChain.reverse(), variableDescriptor, inverseVariableSupply, oldFirstValue);
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         Object firstEntity = subChain.getFirstEntity();
         Object lastEntity = subChain.getLastEntity();
         Object oldFirstValue = variableDescriptor.getValue(firstEntity);
@@ -107,7 +111,7 @@ public class SubChainReversingChangeMove extends AbstractMove {
         }
     }
 
-    private void reverseChain(ScoreDirector scoreDirector, Object entity, Object previous, Object toEntity) {
+    private void reverseChain(ScoreDirector<Solution_> scoreDirector, Object entity, Object previous, Object toEntity) {
         while (entity != toEntity) {
             Object value = variableDescriptor.getValue(previous);
             scoreDirector.changeVariableFacade(variableDescriptor, previous, entity);

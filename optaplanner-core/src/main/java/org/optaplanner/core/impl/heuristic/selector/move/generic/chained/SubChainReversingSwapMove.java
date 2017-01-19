@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -31,16 +32,17 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * This {@link Move} is not cacheable.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class SubChainReversingSwapMove extends AbstractMove {
+public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_> {
 
-    private final GenuineVariableDescriptor variableDescriptor;
+    private final GenuineVariableDescriptor<Solution_> variableDescriptor;
     protected final SingletonInverseVariableSupply inverseVariableSupply;
 
     private final SubChain leftSubChain;
     private final SubChain rightSubChain;
 
-    public SubChainReversingSwapMove(GenuineVariableDescriptor variableDescriptor, SingletonInverseVariableSupply inverseVariableSupply,
+    public SubChainReversingSwapMove(GenuineVariableDescriptor<Solution_> variableDescriptor, SingletonInverseVariableSupply inverseVariableSupply,
             SubChain leftSubChain, SubChain rightSubChain) {
         this.variableDescriptor = variableDescriptor;
         this.inverseVariableSupply = inverseVariableSupply;
@@ -72,13 +74,13 @@ public class SubChainReversingSwapMove extends AbstractMove {
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
+    public SubChainReversingSwapMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
+        return new SubChainReversingSwapMove<>(variableDescriptor, inverseVariableSupply,
                 rightSubChain.reverse(), leftSubChain.reverse());
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         Object leftFirstEntity = leftSubChain.getFirstEntity();
         Object leftFirstValue = variableDescriptor.getValue(leftFirstEntity);
         Object leftLastEntity = leftSubChain.getLastEntity();
@@ -116,7 +118,7 @@ public class SubChainReversingSwapMove extends AbstractMove {
         }
     }
 
-    private void reverseChain(ScoreDirector scoreDirector, Object entity, Object previous, Object toEntity) {
+    private void reverseChain(ScoreDirector<Solution_> scoreDirector, Object entity, Object previous, Object toEntity) {
         while (entity != toEntity) {
             Object value = variableDescriptor.getValue(previous);
             scoreDirector.changeVariableFacade(variableDescriptor, previous, entity);

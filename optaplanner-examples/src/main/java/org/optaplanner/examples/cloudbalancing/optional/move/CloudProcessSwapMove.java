@@ -25,10 +25,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
-public class CloudProcessSwapMove extends AbstractMove {
+public class CloudProcessSwapMove extends AbstractMove<CloudBalance> {
 
     private CloudProcess leftCloudProcess;
     private CloudProcess rightCloudProcess;
@@ -39,17 +40,17 @@ public class CloudProcessSwapMove extends AbstractMove {
     }
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<CloudBalance> scoreDirector) {
         return !Objects.equals(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public CloudProcessSwapMove createUndoMove(ScoreDirector<CloudBalance> scoreDirector) {
         return new CloudProcessSwapMove(rightCloudProcess, leftCloudProcess);
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<CloudBalance> scoreDirector) {
         CloudComputer oldLeftCloudComputer = leftCloudProcess.getComputer();
         CloudComputer oldRightCloudComputer = rightCloudProcess.getComputer();
         scoreDirector.beforeVariableChanged(leftCloudProcess, "computer");

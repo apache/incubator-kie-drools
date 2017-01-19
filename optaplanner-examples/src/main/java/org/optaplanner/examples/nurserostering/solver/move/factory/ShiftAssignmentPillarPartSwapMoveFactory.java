@@ -98,7 +98,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
                     AssignmentSequence pillarPartAssignmentSequence = lowestIt.next();
                     // Note: the initialCapacity is probably too high,
                     // which is bad for memory, but the opposite is bad for performance (which is worse)
-                    List<Move> moveListByPillarPartDuo = new ArrayList<>(
+                    List<EmployeeMultipleChangeMove> moveListByPillarPartDuo = new ArrayList<>(
                             leftAssignmentSequenceList.size() + rightAssignmentSequenceList.size());
                     int lastDayIndex = pillarPartAssignmentSequence.getLastDayIndex();
                     Employee otherEmployee;

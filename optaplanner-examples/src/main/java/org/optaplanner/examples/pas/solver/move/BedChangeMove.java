@@ -27,8 +27,9 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.BedDesignation;
+import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class BedChangeMove extends AbstractMove {
+public class BedChangeMove extends AbstractMove<PatientAdmissionSchedule> {
 
     private BedDesignation bedDesignation;
     private Bed toBed;
@@ -39,17 +40,17 @@ public class BedChangeMove extends AbstractMove {
     }
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<PatientAdmissionSchedule> scoreDirector) {
         return !Objects.equals(bedDesignation.getBed(), toBed);
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public BedChangeMove createUndoMove(ScoreDirector<PatientAdmissionSchedule> scoreDirector) {
         return new BedChangeMove(bedDesignation, bedDesignation.getBed());
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<PatientAdmissionSchedule> scoreDirector) {
         PatientAdmissionMoveHelper.moveBed(scoreDirector, bedDesignation, toBed);
     }
 

@@ -43,9 +43,10 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * A Move should implement {@link Object#equals(Object)} and {@link Object#hashCode()} for {@link MoveTabuAcceptor}.
  * <p>
  * An implementation must extend {@link AbstractMove} to ensure backwards compatibility in future versions.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see AbstractMove
  */
-public interface Move {
+public interface Move<Solution_> {
 
     /**
      * Called before a move is evaluated to decide whether the move can be done and evaluated.
@@ -63,7 +64,7 @@ public interface Move {
      * @param scoreDirector the {@link ScoreDirector} not yet modified by the move.
      * @return true if the move achieves a change in the solution and the move is possible to do on the solution.
      */
-    boolean isMoveDoable(ScoreDirector scoreDirector);
+    boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector);
 
     /**
      * Called before the move is done, so the move can be evaluated and then be undone
@@ -71,7 +72,7 @@ public interface Move {
      * @param scoreDirector the {@link ScoreDirector} not yet modified by the move.
      * @return an undoMove which does the exact opposite of this move.
      */
-    Move createUndoMove(ScoreDirector scoreDirector);
+    Move<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector);
 
     /**
      * Does the move (which indirectly affects the {@link ScoreDirector#getWorkingSolution()}).
@@ -83,7 +84,7 @@ public interface Move {
      * This method must end with calling {@link ScoreDirector#triggerVariableListeners()} to ensure all shadow variables are updated.
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.
      */
-    void doMove(ScoreDirector scoreDirector);
+    void doMove(ScoreDirector<Solution_> scoreDirector);
 
     // ************************************************************************
     // Introspection methods

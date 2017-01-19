@@ -25,10 +25,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
 
-public class RowChangeMove extends AbstractMove {
+public class RowChangeMove extends AbstractMove<NQueens> {
 
     private Queen queen;
     private Row toRow;
@@ -39,17 +40,17 @@ public class RowChangeMove extends AbstractMove {
     }
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<NQueens> scoreDirector) {
         return !Objects.equals(queen.getRow(), toRow);
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public RowChangeMove createUndoMove(ScoreDirector<NQueens> scoreDirector) {
         return new RowChangeMove(queen, queen.getRow());
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<NQueens> scoreDirector) {
         scoreDirector.beforeVariableChanged(queen, "row"); // before changes are made
         queen.setRow(toRow);
         scoreDirector.afterVariableChanged(queen, "row"); // after changes are made

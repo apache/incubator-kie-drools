@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableSupply;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
@@ -30,16 +31,19 @@ import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class KOptMove extends AbstractMove {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class KOptMove<Solution_> extends AbstractMove<Solution_> {
 
-    protected final GenuineVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
     protected final SingletonInverseVariableSupply inverseVariableSupply;
     protected final AnchorVariableSupply anchorVariableSupply;
 
     protected final Object entity;
     protected final Object[] values;
 
-    public KOptMove(GenuineVariableDescriptor variableDescriptor,
+    public KOptMove(GenuineVariableDescriptor<Solution_> variableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply, AnchorVariableSupply anchorVariableSupply,
             Object entity, Object[] values) {
         this.variableDescriptor = variableDescriptor;
@@ -70,7 +74,7 @@ public class KOptMove extends AbstractMove {
     }
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         Object firstAnchor = anchorVariableSupply.getAnchor(entity);
         Object firstValue = variableDescriptor.getValue(entity);
         Object formerAnchor = firstAnchor;
@@ -105,18 +109,18 @@ public class KOptMove extends AbstractMove {
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public KOptMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         Object[] undoValues = new Object[values.length];
         undoValues[0] = variableDescriptor.getValue(entity);
         for (int i = 1; i < values.length; i++) {
             undoValues[i] = values[values.length - i];
         }
-        return new KOptMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
+        return new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
                 entity, undoValues);
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         Object firstValue = variableDescriptor.getValue(entity);
         Object formerEntity = entity;
         for (int i = 0; i < values.length; i++) {

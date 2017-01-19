@@ -90,7 +90,7 @@ public class PlannerTestUtils {
     // ScoreDirector methods
     // ************************************************************************
 
-    public static <Solution_> InnerScoreDirector mockScoreDirector(SolutionDescriptor<Solution_> solutionDescriptor) {
+    public static <Solution_> InnerScoreDirector<Solution_> mockScoreDirector(SolutionDescriptor<Solution_> solutionDescriptor) {
         EasyScoreDirectorFactory<Solution_> scoreDirectorFactory =
                 new EasyScoreDirectorFactory<>((EasyScoreCalculator<Solution_>) (solution_) -> SimpleScore.valueOf(0));
         scoreDirectorFactory.setSolutionDescriptor(solutionDescriptor);

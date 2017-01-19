@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -36,8 +37,8 @@ public class SubChainChangeMoveTest {
 
     @Test
     public void noTrailing() {
-        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -53,9 +54,10 @@ public class SubChainChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, b1});
 
-        SubChainChangeMove move = new SubChainChangeMove(new SubChain(Arrays.<Object>asList(a3, a4, a5)),
+        SubChainChangeMove<TestdataChainedSolution> move = new SubChainChangeMove<>(
+                new SubChain(Arrays.asList(a3, a4, a5)),
                 variableDescriptor, inverseVariableSupply, b1);
-        Move undoMove = move.createUndoMove(scoreDirector);
+        SubChainChangeMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         SelectorTestUtils.assertChain(a0, a1, a2);
@@ -70,8 +72,8 @@ public class SubChainChangeMoveTest {
 
     @Test
     public void oldAndNewTrailing() {
-        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -87,9 +89,10 @@ public class SubChainChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, b1});
 
-        SubChainChangeMove move = new SubChainChangeMove(new SubChain(Arrays.<Object>asList(a2, a3, a4)),
+        SubChainChangeMove<TestdataChainedSolution> move = new SubChainChangeMove<>(
+                new SubChain(Arrays.asList(a2, a3, a4)),
                 variableDescriptor, inverseVariableSupply, b0);
-        Move undoMove = move.createUndoMove(scoreDirector);
+        SubChainChangeMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         SelectorTestUtils.assertChain(a0, a1, a5);
@@ -106,8 +109,8 @@ public class SubChainChangeMoveTest {
 
     @Test
     public void sameChainWithOneBetween() {
-        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        InnerScoreDirector<TestdataChainedSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -120,10 +123,10 @@ public class SubChainChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5});
 
-        SubChainChangeMove move = new SubChainChangeMove(
-                new SubChain(Arrays.<Object>asList(a1, a2, a3)),
+        SubChainChangeMove<TestdataChainedSolution> move = new SubChainChangeMove<>(
+                new SubChain(Arrays.asList(a1, a2, a3)),
                 variableDescriptor, inverseVariableSupply, a4);
-        Move undoMove = move.createUndoMove(scoreDirector);
+        SubChainChangeMove<TestdataChainedSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         SelectorTestUtils.assertChain(a0, a4, a1, a2, a3, a5);
@@ -150,17 +153,17 @@ public class SubChainChangeMoveTest {
         TestdataChainedEntity b2 = new TestdataChainedEntity("b2", b1);
         TestdataChainedEntity b3 = new TestdataChainedEntity("b3", b2);
 
-        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, b1, b2, b3});
 
-        assertEquals("[a2..a4] {a1 -> b0}", new SubChainChangeMove(
+        assertEquals("[a2..a4] {a1 -> b0}", new SubChainChangeMove<>(
                 new SubChain(Arrays.<Object>asList(a2, a3, a4)), variableDescriptor, inverseVariableSupply, b0).toString());
-        assertEquals("[a1..a5] {a0 -> b3}", new SubChainChangeMove(
+        assertEquals("[a1..a5] {a0 -> b3}", new SubChainChangeMove<>(
                 new SubChain(Arrays.<Object>asList(a1, a2, a3, a4, a5)), variableDescriptor, inverseVariableSupply, b3).toString());
-        assertEquals("[a1..a3] {a0 -> a5}", new SubChainChangeMove(
+        assertEquals("[a1..a3] {a0 -> a5}", new SubChainChangeMove<>(
                 new SubChain(Arrays.<Object>asList(a1, a2, a3)), variableDescriptor, inverseVariableSupply, a5).toString());
-        assertEquals("[a3..a3] {a2 -> b2}", new SubChainChangeMove(
+        assertEquals("[a3..a3] {a2 -> b2}", new SubChainChangeMove<>(
                 new SubChain(Arrays.<Object>asList(a3)), variableDescriptor, inverseVariableSupply, b2).toString());
     }
 

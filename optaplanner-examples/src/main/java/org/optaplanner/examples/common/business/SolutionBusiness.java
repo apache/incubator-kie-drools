@@ -279,7 +279,7 @@ public class SolutionBusiness<Solution_> {
         exporter.writeSolution(solution, file);
     }
 
-    public void doMove(Move move) {
+    public void doMove(Move<Solution_> move) {
         if (solver.isSolving()) {
             logger.error("Not doing user move ({}) because the solver is solving.", move);
             return;
@@ -317,24 +317,24 @@ public class SolutionBusiness<Solution_> {
         solver.terminateEarly();
     }
 
-    public ChangeMove createChangeMove(Object entity, String variableName, Object toPlanningValue) {
+    public ChangeMove<Solution_> createChangeMove(Object entity, String variableName, Object toPlanningValue) {
         // TODO Solver should support building a ChangeMove
-        InnerScoreDirector guiInnerScoreDirector = (InnerScoreDirector) this.guiScoreDirector;
-        SolutionDescriptor solutionDescriptor = guiInnerScoreDirector.getSolutionDescriptor();
-        GenuineVariableDescriptor variableDescriptor = solutionDescriptor.findGenuineVariableDescriptorOrFail(
+        InnerScoreDirector<Solution_> guiInnerScoreDirector = (InnerScoreDirector<Solution_>) this.guiScoreDirector;
+        SolutionDescriptor<Solution_> solutionDescriptor = guiInnerScoreDirector.getSolutionDescriptor();
+        GenuineVariableDescriptor<Solution_> variableDescriptor = solutionDescriptor.findGenuineVariableDescriptorOrFail(
                 entity, variableName);
         if (variableDescriptor.isChained()) {
             SupplyManager supplyManager = guiInnerScoreDirector.getSupplyManager();
             SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
                     new SingletonInverseVariableDemand(variableDescriptor));
-            return new ChainedChangeMove(entity, variableDescriptor, inverseVariableSupply, toPlanningValue);
+            return new ChainedChangeMove<>(entity, variableDescriptor, inverseVariableSupply, toPlanningValue);
         } else {
-            return new ChangeMove(entity, variableDescriptor, toPlanningValue);
+            return new ChangeMove<>(entity, variableDescriptor, toPlanningValue);
         }
     }
 
     public void doChangeMove(Object entity, String variableName, Object toPlanningValue) {
-        ChangeMove move = createChangeMove(entity, variableName, toPlanningValue);
+        ChangeMove<Solution_> move = createChangeMove(entity, variableName, toPlanningValue);
         doMove(move);
     }
 

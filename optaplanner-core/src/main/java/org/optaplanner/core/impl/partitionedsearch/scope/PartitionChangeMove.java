@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public final class PartitionChangeMove<Solution_> extends AbstractMove {
+public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     public static <Solution_> PartitionChangeMove<Solution_> createMove(InnerScoreDirector<Solution_> scoreDirector) {
         SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
@@ -74,7 +74,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove {
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         for (Map.Entry<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> entry : changeMap.entrySet()) {
             GenuineVariableDescriptor<Solution_> variableDescriptor = entry.getKey();
             for (Pair<Object, Object> pair : entry.getValue()) {
@@ -86,12 +86,12 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove {
     }
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_>  scoreDirector) {
         return true;
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public PartitionChangeMove<Solution_> createUndoMove(ScoreDirector scoreDirector) {
         throw new UnsupportedOperationException();
     }
 

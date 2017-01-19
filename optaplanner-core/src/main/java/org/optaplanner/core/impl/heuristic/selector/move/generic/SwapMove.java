@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class SwapMove<Solution_> extends AbstractMove {
+public class SwapMove<Solution_> extends AbstractMove<Solution_> {
 
     protected final List<GenuineVariableDescriptor<Solution_>> variableDescriptorList;
 
@@ -69,7 +69,7 @@ public class SwapMove<Solution_> extends AbstractMove {
     // ************************************************************************
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         boolean movable = false;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             Object leftValue = variableDescriptor.getValue(leftEntity);
@@ -79,7 +79,7 @@ public class SwapMove<Solution_> extends AbstractMove {
                 if (!variableDescriptor.isValueRangeEntityIndependent()) {
                     ValueRangeDescriptor<Solution_> valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
                     // type cast in order to avoid having to make Move and all its sub-types generic
-                    Solution_ workingSolution = (Solution_) scoreDirector.getWorkingSolution();
+                    Solution_ workingSolution = scoreDirector.getWorkingSolution();
                     ValueRange rightValueRange = valueRangeDescriptor.extractValueRange(workingSolution, rightEntity);
                     if (!rightValueRange.contains(leftValue)) {
                         return false;
@@ -95,13 +95,13 @@ public class SwapMove<Solution_> extends AbstractMove {
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
+    public SwapMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         return new SwapMove<>(variableDescriptorList, rightEntity, leftEntity);
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!Objects.equals(oldLeftValue, oldRightValue)) {

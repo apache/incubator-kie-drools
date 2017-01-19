@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -31,16 +32,17 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * This {@link Move} is not cacheable.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class SubChainSwapMove extends AbstractMove {
+public class SubChainSwapMove<Solution_> extends AbstractMove<Solution_> {
 
-    protected final GenuineVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
     protected final SingletonInverseVariableSupply inverseVariableSupply;
 
     protected final SubChain leftSubChain;
     protected final SubChain rightSubChain;
 
-    public SubChainSwapMove(GenuineVariableDescriptor variableDescriptor, SingletonInverseVariableSupply inverseVariableSupply,
+    public SubChainSwapMove(GenuineVariableDescriptor<Solution_> variableDescriptor, SingletonInverseVariableSupply inverseVariableSupply,
             SubChain leftSubChain, SubChain rightSubChain) {
         this.variableDescriptor = variableDescriptor;
         this.inverseVariableSupply = inverseVariableSupply;
@@ -65,7 +67,7 @@ public class SubChainSwapMove extends AbstractMove {
     // ************************************************************************
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         for (Object leftEntity : leftSubChain.getEntityList()) {
             if (rightSubChain.getEntityList().contains(leftEntity)) {
                 return false;
@@ -76,13 +78,13 @@ public class SubChainSwapMove extends AbstractMove {
     }
 
     @Override
-    public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new SubChainSwapMove(variableDescriptor, inverseVariableSupply,
+    public SubChainSwapMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
+        return new SubChainSwapMove<>(variableDescriptor, inverseVariableSupply,
                 rightSubChain, leftSubChain);
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         Object leftFirstEntity = leftSubChain.getFirstEntity();
         Object leftFirstValue = variableDescriptor.getValue(leftFirstEntity);
         Object leftLastEntity = leftSubChain.getLastEntity();
