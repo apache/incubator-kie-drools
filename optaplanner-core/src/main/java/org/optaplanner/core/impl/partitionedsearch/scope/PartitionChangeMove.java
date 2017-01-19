@@ -91,7 +91,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
     }
 
     @Override
-    public PartitionChangeMove<Solution_> createUndoMove(ScoreDirector scoreDirector) {
+    public PartitionChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         throw new UnsupportedOperationException();
     }
 

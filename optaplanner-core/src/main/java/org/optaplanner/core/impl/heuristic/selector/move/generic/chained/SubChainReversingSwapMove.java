@@ -63,7 +63,7 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
     // ************************************************************************
 
     @Override
-    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         for (Object leftEntity : leftSubChain.getEntityList()) {
             if (rightSubChain.getEntityList().contains(leftEntity)) {
                 return false;
