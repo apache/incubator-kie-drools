@@ -28,21 +28,21 @@ public class DomicileDistanceStandstillStrengthWeightFactory implements Selectio
     public Comparable createSorterWeight(TspSolution tspSolution, Standstill standstill) {
         Domicile domicile = tspSolution.getDomicile();
         long domicileRoundTripDistance = domicile.getDistanceTo(standstill) + standstill.getDistanceTo(domicile);
-        return new DomicileDistanceVisitDifficultyWeight(standstill, domicileRoundTripDistance);
+        return new DomicileDistanceStandstillStrengthWeight(standstill, domicileRoundTripDistance);
     }
 
-    public static class DomicileDistanceVisitDifficultyWeight implements Comparable<DomicileDistanceVisitDifficultyWeight> {
+    public static class DomicileDistanceStandstillStrengthWeight implements Comparable<DomicileDistanceStandstillStrengthWeight> {
 
         private final Standstill standstill;
         private final long domicileRoundTripDistance;
 
-        public DomicileDistanceVisitDifficultyWeight(Standstill standstill, long domicileRoundTripDistance) {
+        public DomicileDistanceStandstillStrengthWeight(Standstill standstill, long domicileRoundTripDistance) {
             this.standstill = standstill;
             this.domicileRoundTripDistance = domicileRoundTripDistance;
         }
 
         @Override
-        public int compareTo(DomicileDistanceVisitDifficultyWeight other) {
+        public int compareTo(DomicileDistanceStandstillStrengthWeight other) {
             return new CompareToBuilder()
                     .append(other.domicileRoundTripDistance, domicileRoundTripDistance) // Decreasing: closer to depot is stronger
                     .append(standstill.getLocation().getLatitude(), other.standstill.getLocation().getLatitude())

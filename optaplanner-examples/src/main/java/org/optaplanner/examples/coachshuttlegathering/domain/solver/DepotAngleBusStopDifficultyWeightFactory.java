@@ -31,27 +31,27 @@ public class DepotAngleBusStopDifficultyWeightFactory
     @Override
     public Comparable createSorterWeight(CoachShuttleGatheringSolution solution, BusOrStop busOrStop) {
         BusHub hub = solution.getHub();
-        return new DepotAngleCustomerDifficultyWeight(busOrStop,
+        return new DepotAngleBusStopDifficultyWeight(busOrStop,
                 busOrStop.getLocation().getAngle(hub.getLocation()),
                 busOrStop.getLocation().getMaximumDistanceTo(hub.getLocation())
                         + hub.getLocation().getMaximumDistanceTo(busOrStop.getLocation()));
     }
 
-    public static class DepotAngleCustomerDifficultyWeight
-            implements Comparable<DepotAngleCustomerDifficultyWeight> {
+    public static class DepotAngleBusStopDifficultyWeight
+            implements Comparable<DepotAngleBusStopDifficultyWeight> {
 
         private final BusOrStop busOrStop;
         private final double hubAngle;
         private final int hubRoundTripDistance;
 
-        public DepotAngleCustomerDifficultyWeight(BusOrStop busOrStop, double hubAngle, int hubRoundTripDistance) {
+        public DepotAngleBusStopDifficultyWeight(BusOrStop busOrStop, double hubAngle, int hubRoundTripDistance) {
             this.busOrStop = busOrStop;
             this.hubAngle = hubAngle;
             this.hubRoundTripDistance = hubRoundTripDistance;
         }
 
         @Override
-        public int compareTo(DepotAngleCustomerDifficultyWeight other) {
+        public int compareTo(DepotAngleBusStopDifficultyWeight other) {
             return new CompareToBuilder()
                     .append(hubAngle, other.hubAngle)
                     .append(hubRoundTripDistance, other.hubRoundTripDistance) // Ascending (further from the depot are more difficult)
