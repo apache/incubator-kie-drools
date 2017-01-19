@@ -11,6 +11,7 @@ import org.drools.compiler.lang.descr.CollectDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
+import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 }
 
 @comment{
@@ -53,7 +54,8 @@ when@end{}@includeNamed{"ced"; base=rule.lhs; root=true}@if{rule.isRule()}
 then
 @{rule.consequence}@end{}
 @foreach{namedCons : rule.namedConsequences.keySet()}then[@{namedCons}]
-@{rule.namedConsequences[namedCons]}@end{}end
+@{rule.namedConsequences[namedCons]}@end{}
+end
 @end{"\n"}@end{}
 
 @end{}
@@ -71,7 +73,8 @@ then
 }not( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof ExistsDescr }@comment{    
 }exists( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof ForallDescr }@comment{    
 }forall( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof EvalDescr }@comment{    
-}eval( @{base.content} )@elseif{ base instanceof NamedConsequenceDescr }@comment{
+}eval( @{base.content} )@elseif{ base instanceof ConditionalBranchDescr }@comment{
+}@{base}@elseif{ base instanceof NamedConsequenceDescr }@comment{
 }@if{base.breaking}break@else{}do@end{}[@{base.text}] @elseif{ base instanceof PatternDescr }@comment{
 }@if{base.identifier!=null}@{base.identifier} :@if{base.unification}=@end{} @end{}@code{topAcc=(base.source instanceof AccumulateDescr && "Object[]".equals(base.objectType))}@if{!topAcc}@{base.objectType}( @foreach{constr:base.positionalConstraints}@{constr}@end{", "}@if{base.positionalConstraints.size()>0}; @end{}@foreach{constr:base.slottedConstraints}@{constr}@end{", "} ) @foreach{b:base.behaviors}| @{b.type}:@{b.subType}(@foreach{p:b.parameters}@{p}@end{", "})@end{}@end{}@includeNamed{"psource";source=base.source;topLevelAcc=topAcc;constrs=base.descrs}@end{}@end{}
 
