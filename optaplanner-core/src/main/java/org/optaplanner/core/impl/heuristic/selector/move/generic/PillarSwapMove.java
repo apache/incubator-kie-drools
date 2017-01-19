@@ -132,7 +132,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
         StringBuilder moveTypeDescription = new StringBuilder(20 * (variableDescriptorList.size() + 1));
         moveTypeDescription.append(getClass().getSimpleName()).append("(");
         String delimiter = "";
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             moveTypeDescription.append(delimiter).append(variableDescriptor.getSimpleEntityAndVariableName());
             delimiter = ", ";
         }
@@ -152,7 +152,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public Collection<? extends Object> getPlanningValues() {
         List<Object> values = new ArrayList<>(variableDescriptorList.size() * 2);
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             values.add(variableDescriptor.getValue(leftPillar.get(0)));
             values.add(variableDescriptor.getValue(rightPillar.get(0)));
         }
