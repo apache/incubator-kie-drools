@@ -44,6 +44,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.*;
 
+import static org.drools.compiler.compiler.xml.rules.DumperTestHelper.assertEqualsIgnoreWhitespace;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -227,6 +228,18 @@ public class DescrBuilderTest extends CommonTestMethodBase {
 
     @Test
     public void testConditionalBranch() {
+        String expected = "packageorg.drools.compiler\n" +
+                          "rule \"test\"\n" +
+                          "when\n" +
+                          "    Cheese( type == \"stilton\" )  \n" +
+                          "    if ( price < 10 ) do[c1] \n" +
+                          "    Cheese( type == \"cheddar\" )  \n" +
+                          "then\n" +
+                          "// do something\n" +
+                          "then[c1]\n" +
+                          "// do something else\n" +
+                          "end";
+
         PackageDescr pkg = DescrFactory.newPackage()
                 .name( "org.drools.compiler" )
                 .newRule().name( "test" )
@@ -245,6 +258,9 @@ public class DescrBuilderTest extends CommonTestMethodBase {
 
         assertEquals( 1,
                       pkg.getRules().size() );
+
+        String drl = new DrlDumper().dump( pkg );
+        assertEqualsIgnoreWhitespace(expected, drl);
 
         KnowledgePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",
