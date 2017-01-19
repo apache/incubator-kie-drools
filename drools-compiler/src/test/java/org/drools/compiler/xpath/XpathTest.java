@@ -44,14 +44,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
+import static org.junit.Assert.*;
 
 public class XpathTest {
     public static final Logger LOG = LoggerFactory.getLogger(XpathTest.class);
@@ -1987,5 +1987,126 @@ public class XpathTest {
         assertTrue  (factsCollection(ksession).contains("Y.File0"));
         assertFalse (factsCollection(ksession).contains("Y.File1"));
         assertTrue  (factsCollection(ksession).contains("Y.File2"));
+    }
+
+    @Test
+    public void testDeclarationOutsideXpath() {
+        // DROOLS-1411
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.Set duplicateNames; \n" +
+                "\n" +
+                "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
+                "  $dir1 : TMFileSet( $ic1 : /files )\n" +
+                "  TMFileSet( this == $dir1, $ic2 : /files{name == $ic1.name}, $ic2 != $ic1 )\n" +
+                "then\n" +
+                "  System.out.println( $dir1 + \".: \" + $ic1 + \" \" + $ic2 );\n" +
+                "  duplicateNames.add( $ic1.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        Set<String> duplicateNames = new HashSet<String>();
+        ksession.setGlobal("duplicateNames", duplicateNames);
+
+        TMFileSet x = new TMFileSet("X");
+        TMFile file0 = new TMFile("File0", 47);
+        TMFile file1 = new TMFile("File1", 47);
+        TMFile file2 = new TMFile("File0", 47);
+        x.getFiles().addAll(Arrays.asList(new TMFile[]{file0, file1, file2}));
+
+        ksession.insert(x);
+        ksession.fireAllRules();
+
+        assertTrue( duplicateNames.contains("File0") );
+        assertFalse( duplicateNames.contains("File1") );
+    }
+
+    @Test
+    public void testDereferencedDeclarationOutsideXpath() {
+        // DROOLS-1411
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.Set duplicateNames; \n" +
+                "\n" +
+                "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
+                "  $dir1 : TMFileSet( $ic1 : /files )\n" +
+                "  TMFileSet( this == $dir1, $ic2 : /files{this != $ic1}, $ic2.name == $ic1.name )\n" +
+                "then\n" +
+                "  System.out.println( $dir1 + \".: \" + $ic1 + \" \" + $ic2 );\n" +
+                "  duplicateNames.add( $ic1.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        Set<String> duplicateNames = new HashSet<String>();
+        ksession.setGlobal("duplicateNames", duplicateNames);
+
+        TMFileSet x = new TMFileSet("X");
+        TMFile file0 = new TMFile("File0", 47);
+        TMFile file1 = new TMFile("File1", 47);
+        TMFile file2 = new TMFile("File0", 47);
+        x.getFiles().addAll(Arrays.asList(new TMFile[]{file0, file1, file2}));
+
+        ksession.insert(x);
+        ksession.fireAllRules();
+
+        assertTrue( duplicateNames.contains("File0") );
+        assertFalse( duplicateNames.contains("File1") );
+    }
+
+    @Test
+    public void testDeclarationInsideXpath() {
+        // DROOLS-1411
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.Set duplicateNames; \n" +
+                "\n" +
+                "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
+                "  $dir1 : TMFileSet( $ic1 : /files )\n" +
+                "  TMFileSet( this == $dir1, $ic2 : /files{name == $ic1.name, this != $ic1} )\n" +
+                "then\n" +
+                "  System.out.println( $dir1 + \".: \" + $ic1 + \" \" + $ic2 );\n" +
+                "  duplicateNames.add( $ic1.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        Set<String> duplicateNames = new HashSet<String>();
+        ksession.setGlobal("duplicateNames", duplicateNames);
+
+        TMFileSet x = new TMFileSet("X");
+        TMFile file0 = new TMFile("File0", 47);
+        TMFile file1 = new TMFile("File1", 47);
+        TMFile file2 = new TMFile("File0", 47);
+        x.getFiles().addAll(Arrays.asList(new TMFile[]{file0, file1, file2}));
+
+        ksession.insert(x);
+        ksession.fireAllRules();
+
+        assertTrue( duplicateNames.contains("File0") );
+        assertFalse( duplicateNames.contains("File1") );
+    }
+
+    @Test
+    public void testCompileErrorOnDoubleXPathInPattern() {
+        // DROOLS-1411
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.Set duplicateNames; \n" +
+                "\n" +
+                "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
+                "  $dir1 : TMFileSet( $ic1 : /files, /files{name == $ic1.name, this != $ic1} )\n" +
+                "then\n" +
+                "  duplicateNames.add( $ic1.getName() );\n" +
+                "end\n";
+
+        assertDrlHasCompilationError( drl, 1 );
     }
 }
