@@ -20,9 +20,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.util.CodeAssertable;
 
-public class DummyMove extends AbstractMove<Object> implements CodeAssertable {
+public class DummyMove extends AbstractMove<TestdataSolution> implements CodeAssertable {
 
     protected String code;
 
@@ -43,28 +44,28 @@ public class DummyMove extends AbstractMove<Object> implements CodeAssertable {
     // ************************************************************************
 
     @Override
-    public boolean isMoveDoable(ScoreDirector<Object> scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<TestdataSolution> scoreDirector) {
         return true;
     }
 
     @Override
-    public DummyMove createUndoMove(ScoreDirector<Object> scoreDirector) {
+    public DummyMove createUndoMove(ScoreDirector<TestdataSolution> scoreDirector) {
         return new DummyMove("undo " + code);
     }
 
     @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector<Object> scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector<TestdataSolution> scoreDirector) {
         // do nothing
     }
 
     @Override
-    public Collection<? extends Object> getPlanningEntities() {
-        return Collections.<Object>emptyList();
+    public Collection<? extends TestdataSolution> getPlanningEntities() {
+        return Collections.<TestdataSolution>emptyList();
     }
 
     @Override
-    public Collection<? extends Object> getPlanningValues() {
-        return Collections.<Object>emptyList();
+    public Collection<? extends TestdataSolution> getPlanningValues() {
+        return Collections.<TestdataSolution>emptyList();
     }
 
     @Override

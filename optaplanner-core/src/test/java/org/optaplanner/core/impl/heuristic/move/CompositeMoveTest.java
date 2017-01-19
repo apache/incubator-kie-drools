@@ -25,10 +25,12 @@ import org.junit.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -38,23 +40,25 @@ public class CompositeMoveTest {
 
     @Test
     public void createUndoMove() {
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        Move a = new DummyMove("a");
-        Move b = new DummyMove("b");
-        Move c = new DummyMove("c");
-        CompositeMove move = new CompositeMove(a, b, c);
-        CompositeMove undoMove = move.createUndoMove(scoreDirector);
+        InnerScoreDirector<TestdataSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
+                TestdataSolution.buildSolutionDescriptor());
+        DummyMove a = new DummyMove("a");
+        DummyMove b = new DummyMove("b");
+        DummyMove c = new DummyMove("c");
+        CompositeMove<TestdataSolution> move = new CompositeMove<>(a, b, c);
+        CompositeMove<TestdataSolution> undoMove = move.createUndoMove(scoreDirector);
         assertAllCodesOfArray(move.getMoves(), "a", "b", "c");
         assertAllCodesOfArray(undoMove.getMoves(), "undo c", "undo b", "undo a");
     }
 
     @Test
     public void doMove() {
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        Move a = mock(Move.class);
-        Move b = mock(Move.class);
-        Move c = mock(Move.class);
-        CompositeMove move = new CompositeMove(a, b, c);
+        InnerScoreDirector<TestdataSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
+                TestdataSolution.buildSolutionDescriptor());
+        DummyMove a = mock(DummyMove.class);
+        DummyMove b = mock(DummyMove.class);
+        DummyMove c = mock(DummyMove.class);
+        CompositeMove<TestdataSolution> move = new CompositeMove<>(a, b, c);
         move.doMove(scoreDirector);
         verify(a, times(1)).doMove(scoreDirector);
         verify(b, times(1)).doMove(scoreDirector);
@@ -69,8 +73,8 @@ public class CompositeMoveTest {
 
     @Test
     public void buildOneElemMove() {
-        Move tmpMove = new DummyMove();
-        Move move = CompositeMove.buildMove(Collections.singletonList(tmpMove));
+        DummyMove tmpMove = new DummyMove();
+        Move<TestdataSolution> move = CompositeMove.buildMove(Collections.singletonList(tmpMove));
         assertInstanceOf(DummyMove.class, move);
 
         move = CompositeMove.buildMove(tmpMove);
@@ -79,9 +83,9 @@ public class CompositeMoveTest {
 
     @Test
     public void buildTwoElemMove() {
-        Move first = new DummyMove();
-        Move second = new NoChangeMove();
-        Move move = CompositeMove.buildMove(Arrays.asList(first, second));
+        DummyMove first = new DummyMove();
+        NoChangeMove<TestdataSolution> second = new NoChangeMove<>();
+        Move<TestdataSolution> move = CompositeMove.buildMove(Arrays.asList(first, second));
         assertInstanceOf(CompositeMove.class, move);
         assertInstanceOf(DummyMove.class, ((CompositeMove) move).getMoves()[0]);
         assertInstanceOf(NoChangeMove.class, ((CompositeMove) move).getMoves()[1]);
@@ -94,20 +98,21 @@ public class CompositeMoveTest {
 
     @Test
     public void isMoveDoable() {
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        Move first = new DummyMove();
-        Move second = mock(DummyMove.class);
+        InnerScoreDirector<TestdataSolution> scoreDirector = PlannerTestUtils.mockScoreDirector(
+                TestdataSolution.buildSolutionDescriptor());
+        DummyMove first = new DummyMove();
+        DummyMove second = mock(DummyMove.class);
         when(second.isMoveDoable(scoreDirector)).thenReturn(false);
-        Move move = CompositeMove.buildMove(first, second);
+        Move<TestdataSolution> move = CompositeMove.buildMove(first, second);
         assertEquals(false, move.isMoveDoable(scoreDirector));
     }
 
     @Test
     public void equals() {
-        Move first = new DummyMove();
-        Move second = new NoChangeMove();
-        Move move = CompositeMove.buildMove(Arrays.asList(first, second));
-        Move other = CompositeMove.buildMove(first, second);
+        DummyMove first = new DummyMove();
+        NoChangeMove<TestdataSolution> second = new NoChangeMove<>();
+        Move<TestdataSolution> move = CompositeMove.buildMove(Arrays.asList(first, second));
+        Move<TestdataSolution> other = CompositeMove.buildMove(first, second);
         assertTrue(move.equals(other));
 
         move = CompositeMove.buildMove(first, second);
@@ -129,15 +134,16 @@ public class CompositeMoveTest {
         solution.setEntityList(Arrays.asList(e1, e2));
 
         GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
-        Move first = new SwapMove<>(Collections.singletonList(variableDescriptor), e1, e2);
-        Move second = new ChangeMove<>(e1, variableDescriptor, v3);
-        Move move = CompositeMove.buildMove(first, second);
+        SwapMove<TestdataSolution> first = new SwapMove<>(Collections.singletonList(variableDescriptor), e1, e2);
+        ChangeMove<TestdataSolution> second = new ChangeMove<>(e1, variableDescriptor, v3);
+        Move<TestdataSolution> move = CompositeMove.buildMove(first, second);
 
         assertSame(v1, e1.getValue());
         assertSame(v2, e2.getValue());
 
-        ScoreDirector scoreDirector = mockScoreDirector(variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
-        Move undoMove = move.createUndoMove(scoreDirector);
+        ScoreDirector<TestdataSolution> scoreDirector
+                = mockScoreDirector(variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
+        Move<TestdataSolution> undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
         assertSame(v3, e1.getValue());
