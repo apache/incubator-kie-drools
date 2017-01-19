@@ -79,7 +79,6 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
                 movable = true;
                 if (!variableDescriptor.isValueRangeEntityIndependent()) {
                     ValueRangeDescriptor<Solution_> valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
-                    // type cast in order to avoid having to make Move and all its sub-types generic
                     Solution_ workingSolution = scoreDirector.getWorkingSolution();
                     for (Object rightEntity : rightPillar) {
                         ValueRange rightValueRange = valueRangeDescriptor.extractValueRange(workingSolution, rightEntity);
