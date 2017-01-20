@@ -96,7 +96,6 @@ public class CompositeCommand<T> extends TaskCommand<T> {
 	            @XmlElement(name="get-task-property", type=GetTaskPropertyCommand.class),
 	            @XmlElement(name="get-tasks-by-process-instance-id", type=GetTasksByProcessInstanceIdCommand.class),
 	            @XmlElement(name="get-tasks-by-status-by-process-instance-id", type=GetTasksByStatusByProcessInstanceIdCommand.class),
-	            @XmlElement(name="get-tasks-by-various-fields", type=GetTasksByVariousFieldsCommand.class),
 	            @XmlElement(name="get-tasks-for-process", type=GetTasksForProcessCommand.class),
 	            @XmlElement(name="get-tasks-owned", type=GetTasksOwnedCommand.class),
 	            @XmlElement(name="get-user", type=GetUserCommand.class),

@@ -107,20 +107,6 @@ public class SynchronizedTaskService
     }
 
     @Override
-    public void claim(long taskId, String userId, List<String> groupIds) {
-        synchronized (ksession) {
-            taskService.claim(taskId, userId, groupIds);
-        }
-    }
-
-    @Override
-    public void claimNextAvailable(String userId, List<String> groupIds) {
-        synchronized (ksession) {
-            taskService.claimNextAvailable(userId, groupIds);
-        }
-    }
-
-    @Override
     public void claimNextAvailable(String userId, String language) {
         synchronized (ksession) {
             taskService.claimNextAvailable(userId, language);
@@ -918,33 +904,6 @@ public class SynchronizedTaskService
             return null;
         }
     }
-
-
-	@Override
-	public List<TaskSummary> getTasksByVariousFields(String userId, List<Long> workItemIds,
-			List<Long> taskIds, List<Long> procInstIds, List<String> busAdmins,
-			List<String> potOwners, List<String> taskOwners,
-			List<Status> status,  List<String> language, boolean union) {
-		synchronized (ksession) {
-            if (taskService != null) {
-                return taskService.getTasksByVariousFields(userId, workItemIds, taskIds, procInstIds,
-                		busAdmins, potOwners, taskOwners, status, language, union);
-            }
-            return null;
-        }
-	}
-
-
-	@Override
-	public List<TaskSummary> getTasksByVariousFields(String userId, Map<String, List<?>> parameters, boolean union) {
-		synchronized (ksession) {
-            if (taskService != null) {
-                return taskService.getTasksByVariousFields(userId, parameters, union);
-            }
-
-            return null;
-        }
-	}
 
 	@Override
 	public List<TaskSummary> getTasksOwned(String userId, List<Status> status, QueryFilter filter) {

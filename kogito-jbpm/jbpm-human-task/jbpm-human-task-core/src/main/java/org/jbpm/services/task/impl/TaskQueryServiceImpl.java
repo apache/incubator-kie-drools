@@ -16,30 +16,21 @@
 
 package org.jbpm.services.task.impl;
 
-import static org.kie.internal.query.QueryParameterIdentifiers.ACTUAL_OWNER_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.ASCENDING_VALUE;
-import static org.kie.internal.query.QueryParameterIdentifiers.BUSINESS_ADMIN_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.DESCENDING_VALUE;
 import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
 import static org.kie.internal.query.QueryParameterIdentifiers.FIRST_RESULT;
 import static org.kie.internal.query.QueryParameterIdentifiers.MAX_RESULTS;
 import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_BY;
 import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_TYPE;
-import static org.kie.internal.query.QueryParameterIdentifiers.POTENTIAL_OWNER_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.TASK_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.TASK_STATUS_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jbpm.query.jpa.data.QueryWhere;
@@ -532,67 +523,8 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                     persistenceContext.addParametersToMap("userId", userId, "groupIds", "", "status", status, "expirationDate", expirationDate),
                     ClassUtil.<List<TaskSummary>>castClass(List.class)); 
     }
-   
-    // This method should be deleted in jBPM 7.x+
-    @Deprecated
-    public List<TaskSummary> getTasksByVariousFields(String userId, List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
-            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
-            List<Status> status,  boolean union, Integer maxResults) {
-        Map<String, List<?>> params = new HashMap<String, List<?>>();
-        params.put(WORK_ITEM_ID_LIST, workItemIds);
-        params.put(TASK_ID_LIST, taskIds);
-        params.put(PROCESS_INSTANCE_ID_LIST, procInstIds);
-        params.put(BUSINESS_ADMIN_ID_LIST, busAdmins);
-        params.put(POTENTIAL_OWNER_ID_LIST, potOwners);
-        params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
-        if(status == null || status.isEmpty()){
-          status = allActiveStatus;
-        }
-        params.put(TASK_STATUS_LIST, status);
-        
-        if( maxResults != null ) {
-            if( maxResults <= 0 ) { 
-                return new ArrayList<TaskSummary>();
-            }
-            Integer [] maxResultsArr = { maxResults };
-            params.put(MAX_RESULTS, Arrays.asList(maxResultsArr));
-        }
-        
-        return getTasksByVariousFields(userId, params, union);
-    }
-    
-    // This method should be deleted in jBPM 7.x+
-    @Deprecated
-    public List<TaskSummary> getTasksByVariousFields( String userId, Map<String, List<?>> parameters, boolean union ) { 
-        QueryWhere queryWhere = new QueryWhere();
-        queryWhere.setAscending(TASK_ID_LIST);
-        List<?> maxResultsList = parameters.remove(MAX_RESULTS);
-        if( maxResultsList != null && ! maxResultsList.isEmpty() ) { 
-            Object maxResults = maxResultsList.get(0);
-            if( maxResults instanceof Integer ) {
-                queryWhere.setCount((Integer) maxResults);
-            }
-        } 
-        
-        // convert parameters to query data
-        if( union ) { 
-            queryWhere.setToUnion();
-        } else { 
-            queryWhere.setToIntersection(); 
-        }
-        for( Entry<String, List<?>> paramEntry: parameters.entrySet() ) { 
-            List<?> paramList = paramEntry.getValue();
-            if( paramList != null && ! paramList.isEmpty() ) { 
-                queryWhere.addParameter(paramEntry.getKey(), convertToTypedArray(paramList, paramList.get(0)));
-            }
-        }
-        return query(userId, queryWhere);
-    }
-  
-    private <T> T [] convertToTypedArray(List<?> paramList, T... firstElem) { 
-        return paramList.toArray(firstElem);
-    }
-    
+
+    @Override
     public int getCompletedTaskByUserId(String userId) {
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Completed);
@@ -600,6 +532,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         return tasksCompleted.size();
     }
 
+    @Override
     public int getPendingTaskByUserId(String userId) {
         List<TaskSummary> tasksAssigned = getTasksAssignedAsPotentialOwner(userId, null, null, null);
         return tasksAssigned.size();

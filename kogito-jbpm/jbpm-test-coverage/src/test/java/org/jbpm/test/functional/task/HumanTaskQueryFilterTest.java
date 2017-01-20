@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;
 import org.jbpm.test.JbpmTestCase;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -30,6 +29,7 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
+import org.kie.internal.task.api.InternalTaskService;
 import qa.tools.ikeeper.annotation.BZ;
 
 public class HumanTaskQueryFilterTest extends JbpmTestCase {
@@ -40,7 +40,7 @@ public class HumanTaskQueryFilterTest extends JbpmTestCase {
             "org.jbpm.test.functional.task.HumanTaskQueryFilter-configurableHumanTask";
 
     private KieSession kieSession;
-    private SynchronizedTaskService taskService;
+    private InternalTaskService taskService;
     private List<ProcessInstance> instanceList;
 
     public HumanTaskQueryFilterTest() {
@@ -54,7 +54,7 @@ public class HumanTaskQueryFilterTest extends JbpmTestCase {
         createRuntimeManager(CONF_HUMAN_TASK);
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         kieSession = runtimeEngine.getKieSession();
-        taskService = (SynchronizedTaskService) runtimeEngine.getTaskService();
+        taskService = (InternalTaskService) runtimeEngine.getTaskService();
         instanceList = new ArrayList<ProcessInstance>();
     }
 

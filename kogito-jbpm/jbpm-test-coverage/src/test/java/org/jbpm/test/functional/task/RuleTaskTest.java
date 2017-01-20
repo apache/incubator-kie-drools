@@ -16,6 +16,10 @@
 
 package org.jbpm.test.functional.task;
 
+import static org.jbpm.test.tools.IterableListenerAssert.assertNextNode;
+import static org.jbpm.test.tools.IterableListenerAssert.assertProcessCompleted;
+import static org.jbpm.test.tools.IterableListenerAssert.assertProcessStarted;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +35,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.command.CommandFactory;
 import qa.tools.ikeeper.annotation.BZ;
-
-import static org.jbpm.test.tools.IterableListenerAssert.*;
 
 /**
  * Business rules task test. testing execution of rules with specified rule-flow group.

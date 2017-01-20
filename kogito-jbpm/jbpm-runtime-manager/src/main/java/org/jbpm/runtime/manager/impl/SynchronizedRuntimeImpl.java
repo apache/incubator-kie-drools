@@ -33,7 +33,7 @@ public class SynchronizedRuntimeImpl extends RuntimeEngineImpl {
     public SynchronizedRuntimeImpl(KieSession ksession, InternalTaskService taskService) {
         super(ksession, taskService);
         if (taskService != null) {
-        this.synchronizedTaskService = new SynchronizedTaskService(ksession, taskService);
+            this.synchronizedTaskService = new SynchronizedTaskService(ksession, taskService);
         }
     }
 

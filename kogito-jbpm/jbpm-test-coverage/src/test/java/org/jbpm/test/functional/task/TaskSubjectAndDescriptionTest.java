@@ -19,7 +19,6 @@ package org.jbpm.test.functional.task;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;
 import org.jbpm.test.JbpmTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +51,7 @@ public class TaskSubjectAndDescriptionTest extends JbpmTestCase {
         createRuntimeManager(HUMAN_TASK, HUMAN_TASK2);
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         kieSession = runtimeEngine.getKieSession();
-        taskService = (SynchronizedTaskService) runtimeEngine.getTaskService();
+        taskService = runtimeEngine.getTaskService();
     }
 
     @Test

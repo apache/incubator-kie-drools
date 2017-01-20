@@ -21,13 +21,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;
 import org.jbpm.test.JbpmTestCase;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.task.api.InternalTaskService;
 import qa.tools.ikeeper.annotation.BZ;
 
 public class HumanTaskAssignmentTest extends JbpmTestCase {
@@ -47,7 +47,7 @@ public class HumanTaskAssignmentTest extends JbpmTestCase {
     public void testGetTasksAssignedAsPotentialOwnerGroup() {
         createRuntimeManager(GET_TASKS_OWNER_GROUP);
         KieSession ksession = getRuntimeEngine().getKieSession();
-        SynchronizedTaskService taskService = (SynchronizedTaskService) getRuntimeEngine().getTaskService();
+        InternalTaskService taskService = (InternalTaskService) getRuntimeEngine().getTaskService();
 
         long pid = ksession.startProcess(GET_TASKS_OWNER_GROUP_ID).getId();
 
@@ -82,7 +82,7 @@ public class HumanTaskAssignmentTest extends JbpmTestCase {
     public void testGetTasksAssignedAsPotentialOwnerUser() {
         createRuntimeManager(GET_TASKS_OWNER_USER);
         KieSession ksession = getRuntimeEngine().getKieSession();
-        SynchronizedTaskService taskService = (SynchronizedTaskService) getRuntimeEngine().getTaskService();
+        InternalTaskService taskService = (InternalTaskService) getRuntimeEngine().getTaskService();
 
         long pid = ksession.startProcess(GET_TASKS_OWNER_USER_ID).getId();
 

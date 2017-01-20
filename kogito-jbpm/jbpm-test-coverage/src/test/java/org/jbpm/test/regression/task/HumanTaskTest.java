@@ -16,6 +16,9 @@
 
 package org.jbpm.test.regression.task;
 
+import static org.jbpm.test.tools.TrackingListenerAssert.assertTriggered;
+import static org.jbpm.test.tools.TrackingListenerAssert.assertTriggeredAndLeft;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +38,6 @@ import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 
 import qa.tools.ikeeper.annotation.BZ;
-import static org.jbpm.test.tools.TrackingListenerAssert.assertTriggered;
-import static org.jbpm.test.tools.TrackingListenerAssert.assertTriggeredAndLeft;
 
 public class HumanTaskTest extends JbpmTestCase {
 

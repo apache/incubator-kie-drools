@@ -82,7 +82,6 @@ import org.jbpm.services.task.commands.GetTaskOwnedByExpDateBeforeDateCommand;
 import org.jbpm.services.task.commands.GetTaskPropertyCommand;
 import org.jbpm.services.task.commands.GetTasksByProcessInstanceIdCommand;
 import org.jbpm.services.task.commands.GetTasksByStatusByProcessInstanceIdCommand;
-import org.jbpm.services.task.commands.GetTasksByVariousFieldsCommand;
 import org.jbpm.services.task.commands.GetTasksOwnedCommand;
 import org.jbpm.services.task.commands.GetUserCommand;
 import org.jbpm.services.task.commands.GetUserInfoCommand;
@@ -106,7 +105,6 @@ import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.impl.TaskSummaryQueryBuilderImpl;
 import org.kie.api.command.Command;
-import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.model.Attachment;
@@ -291,35 +289,6 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		return executor.execute(new GetTasksByProcessInstanceIdCommand(processInstanceId));
 	}
 
-    @Override
-    /**
-     *  This method should be deleted in jBPM 7.x
-     *  @see {@link CommandBasedTaskService#fluentTaskQuery}
-     */
-    @Deprecated
-    public List<TaskSummary> getTasksByVariousFields(String userId, List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
-            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, List<String> languages,
-            boolean union) {
-        GetTasksByVariousFieldsCommand cmd = new GetTasksByVariousFieldsCommand(workItemIds, taskIds, procInstIds,
-		        busAdmins, potOwners, taskOwners,
-		        statuses, union);
-        cmd.setUserId(userId);
-
-		return executor.execute(cmd);
-    }
-
-    /**
-     *  This method should be deleted in jBPM 7.x
-     *  @see {@link CommandBasedTaskService#fluentTaskQuery}
-     */
-    @Override
-    @Deprecated
-    public List<TaskSummary> getTasksByVariousFields(String userId, Map<String, List<?>> parameters, boolean union) {
-		GetTasksByVariousFieldsCommand cmd = new GetTasksByVariousFieldsCommand(parameters, union);
-		cmd.setUserId(userId);
-		return executor.execute(cmd);
-    }
-
 	@Override
     public TaskSummaryQueryBuilder taskSummaryQuery(String userId) {
         return new TaskSummaryQueryBuilderImpl(userId, this);
@@ -384,18 +353,6 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	@Override
 	public int archiveTasks(List<TaskSummary> tasks) {
 		return executor.execute(new ArchiveTasksCommand(tasks));
-	}
-
-	@Override
-	// TODO: groupIds argument is not processed!
-	public void claim(long taskId, String userId, List<String> groupIds) {
-		executor.execute(new ClaimTaskCommand(taskId, userId));
-	}
-
-	@Override
-	// TODO: groupIds argument is not processed!
-	public void claimNextAvailable(String userId, List<String> groupIds) {
-		executor.execute(new ClaimNextAvailableTaskCommand(userId));
 	}
 
 	@Override

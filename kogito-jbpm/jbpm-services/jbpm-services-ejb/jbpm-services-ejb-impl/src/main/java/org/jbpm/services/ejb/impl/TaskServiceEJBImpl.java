@@ -286,20 +286,6 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 		return delegate.getTasksAssignedByGroups(groupIds);
 	}
 
-	@Override
-	public List<TaskSummary> getTasksByVariousFields(String userId, List<Long> workItemIds,
-			List<Long> taskIds, List<Long> procInstIds, List<String> busAdmins,
-			List<String> potOwners, List<String> taskOwners,
-			List<Status> status, List<String> languages, boolean union) {
-		return delegate.getTasksByVariousFields(userId, workItemIds, taskIds, procInstIds,
-				busAdmins, potOwners, taskOwners, status, languages, union);
-	}
-
-	@Override
-	public List<TaskSummary> getTasksByVariousFields(String userId, Map<String, List<?>> parameters, boolean union) {
-		return delegate.getTasksByVariousFields(userId, parameters, union);
-	}
-
 	// unsupported method
 
 	@Override
@@ -425,16 +411,6 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 	@Override
 	public int archiveTasks(List<TaskSummary> tasks) {
 		return unsupported(int.class);
-	}
-
-	@Override
-	public void claim(long taskId, String userId, List<String> groupIds) {
-		unsupported(Void.class);
-	}
-
-	@Override
-	public void claimNextAvailable(String userId, List<String> groupIds) {
-		unsupported(Void.class);
 	}
 
 	@Override
