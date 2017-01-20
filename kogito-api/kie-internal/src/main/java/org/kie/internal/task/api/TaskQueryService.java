@@ -109,19 +109,6 @@ public interface TaskQueryService {
     int getPendingTaskByUserId(String userId);
 
     /**
-     * This method will no longer be available as of jBPM 7.x
-     *
-     * @param parameters A map of parameters to add to the query
-     * @param union Whether the query should return a union or intersection of the criteria (parameters)
-     *
-     * @see {@link #query(String, QueryData)}
-     * @return
-     */
-    @Deprecated
-    List<TaskSummary> getTasksByVariousFields( String userId, Map<String, List<?>> parameters, boolean union);
-
-
-    /**
      *
      * @param queryWhere
      * @return

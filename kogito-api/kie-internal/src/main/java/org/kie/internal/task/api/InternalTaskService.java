@@ -55,10 +55,6 @@ public interface InternalTaskService extends TaskService {
 
     int archiveTasks(List<TaskSummary> tasks);
 
-    void claim(long taskId, String userId, List<String> groupIds);
-
-    void claimNextAvailable(String userId, List<String> groupIds);
-
     void deleteFault(long taskId, String userId);
 
     void deleteOutput(long taskId, String userId);
