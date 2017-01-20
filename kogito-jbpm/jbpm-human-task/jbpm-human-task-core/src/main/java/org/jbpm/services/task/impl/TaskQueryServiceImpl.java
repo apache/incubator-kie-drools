@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 import org.jbpm.query.jpa.data.QueryWhere;
@@ -257,7 +259,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         for(Object[] item : potentialOwners){
             Long taskId = (Long) item[0];
             OrganizationalEntity potentialOwner = (OrganizationalEntity)item[1];
-            if(currentTaskId != taskId){
+            if(!Objects.equals(currentTaskId, taskId)){
                 currentTaskId = taskId;
             }
             

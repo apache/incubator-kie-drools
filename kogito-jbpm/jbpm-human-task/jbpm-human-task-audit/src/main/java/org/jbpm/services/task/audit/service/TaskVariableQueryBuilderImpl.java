@@ -118,6 +118,7 @@ public class TaskVariableQueryBuilderImpl extends AbstractTaskAuditQueryBuilderI
             break;
         case modificationDate:
             listId = QueryParameterIdentifiers.DATE_LIST;
+            break;
         case processInstanceId:
             listId = QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
             break;

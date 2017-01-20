@@ -207,7 +207,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     protected Object getInstanceFromModel(ObjectModel model, ClassLoader classloader, Map<String, Object> contaxtParams) {
     	ObjectModelResolver resolver = ObjectModelResolverProvider.get(model.getResolver());
 		if (resolver == null) {
-			logger.warn("Unable to find ObjectModelResolver for {}", model.getResolver());
+		    throw new IllegalStateException("Unable to find ObjectModelResolver for " + model.getResolver());
 		}
 		
 		return resolver.getInstance(model, classloader, contaxtParams);

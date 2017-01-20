@@ -120,6 +120,7 @@ public class TaskEventQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<Tas
             break;
         case logTime:
             listId = QueryParameterIdentifiers.DATE_LIST;
+            break;
         case processInstanceId:
             listId = QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
             break;

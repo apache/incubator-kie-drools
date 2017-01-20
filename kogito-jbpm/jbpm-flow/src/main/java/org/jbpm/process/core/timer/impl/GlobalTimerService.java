@@ -304,9 +304,10 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         		if (delegate == null) {
                     ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
                     RequestContext context = runner.createContext().with( runtime.getKieSession() );
-                    runner.execute( executable, context );
-        		}
-        		return delegate.execute(executable);
+                    return runner.execute( executable, context );
+        		} else {
+                    return delegate.execute(executable);
+                }
         	} catch (RuntimeException e) {
         		if (retry) {
         			return delegate.execute(executable, ctx);

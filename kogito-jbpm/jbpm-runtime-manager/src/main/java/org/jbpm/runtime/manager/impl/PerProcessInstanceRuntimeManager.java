@@ -15,6 +15,7 @@
  */
 package org.jbpm.runtime.manager.impl;
 
+import java.util.Objects;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
@@ -256,7 +257,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     
     public boolean validate(Long ksessionId, Long processInstanceId) {
     	Long mapped = this.mapper.findMapping(ProcessInstanceIdContext.get(processInstanceId), this.identifier);
-        if (mapped == ksessionId) {
+        if (Objects.equals(mapped, ksessionId)) {
             return true;
         }
         

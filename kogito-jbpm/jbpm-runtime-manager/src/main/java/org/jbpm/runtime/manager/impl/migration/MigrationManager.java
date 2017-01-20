@@ -254,6 +254,7 @@ public class MigrationManager {
     private void validate() {
         if (migrationSpec == null) {
             report.addEntry(Type.ERROR, "no process data given for migration");
+            return;
         }
         // source (active) process instance information
         if (isEmpty(migrationSpec.getDeploymentId())) {

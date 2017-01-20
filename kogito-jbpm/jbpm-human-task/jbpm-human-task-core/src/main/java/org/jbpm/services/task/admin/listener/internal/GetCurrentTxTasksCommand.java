@@ -15,6 +15,7 @@
 
 package org.jbpm.services.task.admin.listener.internal;
 
+import java.util.Objects;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.task.model.TaskSummary;
@@ -65,7 +66,7 @@ public class GetCurrentTxTasksCommand extends TaskCommand<List<TaskSummary>> imp
 		Set<TaskSummary> tasksToRemove = (Set<TaskSummary>) context.get("local:current-tasks");
         if (tasksToRemove != null) {
         	for (TaskSummary task : tasksToRemove) {
-        		if (task.getProcessInstanceId() == processInstanceId) {
+        		if (Objects.equals(task.getProcessInstanceId(), processInstanceId)) {
         			tasks.add(task);
         		}
         	}

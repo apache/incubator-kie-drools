@@ -83,7 +83,7 @@ public class JPAService {
         persistenceStrategy = PersistenceStrategyType.getPersistenceStrategy(type, env);
     }
 
-    public JPAService(Environment env, String peristenceUnitName) {
+    public JPAService(Environment env, String persistenceUnitName) {
         EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
         String localTransactions = (String) env.get(EnvironmentName.USE_LOCAL_TRANSACTIONS);
 

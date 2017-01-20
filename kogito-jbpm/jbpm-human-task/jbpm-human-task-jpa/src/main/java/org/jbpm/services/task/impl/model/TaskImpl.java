@@ -22,6 +22,7 @@ import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
 
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -366,7 +367,7 @@ public class TaskImpl implements InternalTask {
         if ( this.version != other.version ) {
             return false;
         }
-        if ( this.archived != other.archived ) {
+        if (!Objects.equals(this.archived, other.archived)) {
             return false;
         }
         if (taskType == null) {

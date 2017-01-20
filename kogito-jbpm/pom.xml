@@ -30,7 +30,7 @@
     <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
     <maven.jdbc.db.name/>
     <maven.jdbc.db.port/>
-    <maven.jdbc.db.server/>     
+    <maven.jdbc.db.server/>
     <maven.jdbc.driver.jar/>
     <maven.jdbc.username>sa</maven.jdbc.username>
     <maven.jdbc.password>sasa</maven.jdbc.password>
@@ -88,7 +88,7 @@
   </modules>
 
   <build>
-     <pluginManagement>
+    <pluginManagement>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -98,9 +98,33 @@
               <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
             </additionalClasspathElements>
           </configuration>
-        </plugin> 
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <configuration>
+            <maxRank>6</maxRank>
+            <effort>Max</effort>
+            <xmlOutput>true</xmlOutput>
+          </configuration>
+          <executions>
+            <execution>
+              <id>findbugs-check</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <phase>compile</phase>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencyManagement>
@@ -165,5 +189,5 @@
     </profile>
 
   </profiles>
-    
+
 </project>

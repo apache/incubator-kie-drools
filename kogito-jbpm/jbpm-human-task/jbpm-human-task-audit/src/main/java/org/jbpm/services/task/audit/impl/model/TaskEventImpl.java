@@ -25,6 +25,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -235,16 +236,16 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
       return false;
     }
     final TaskEventImpl other = (TaskEventImpl) obj;
-    if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
+    if (!Objects.equals(this.id, other.id) && (this.id == null || !this.id.equals(other.id))) {
       return false;
     }
-    if (this.version != other.version && (this.version == null || !this.version.equals(other.version))) {
+    if (!Objects.equals(this.version, other.version) && (this.version == null || !this.version.equals(other.version))) {
       return false;
     }
-    if (this.taskId != other.taskId && (this.taskId == null || !this.taskId.equals(other.taskId))) {
+    if (!Objects.equals(this.taskId, other.taskId) && (this.taskId == null || !this.taskId.equals(other.taskId))) {
       return false;
     }
-    if (this.workItemId != other.workItemId && (this.workItemId == null || !this.workItemId.equals(other.workItemId))) {
+    if (!Objects.equals(this.workItemId, other.workItemId) && (this.workItemId == null || !this.workItemId.equals(other.workItemId))) {
       return false;
     }
     if (this.type != other.type) {
@@ -253,7 +254,7 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
     if (!this.message.equals(other.message) ) {
       return false;
     }
-    if (this.processInstanceId != other.processInstanceId && (this.processInstanceId == null || !this.processInstanceId.equals(other.processInstanceId))) {
+    if (!Objects.equals(this.processInstanceId, other.processInstanceId) && (this.processInstanceId == null || !this.processInstanceId.equals(other.processInstanceId))) {
       return false;
     }
     if ((this.userId == null) ? (other.userId != null) : !this.userId.equals(other.userId)) {
