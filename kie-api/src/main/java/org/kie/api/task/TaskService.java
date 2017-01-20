@@ -96,37 +96,6 @@ public interface TaskService extends CommandExecutor {
 
     Map<String, Object> getTaskContent(long taskId);
 
-    /**
-     * This method will be removed in jBPM 7.x because of new methods that better implement this functionality.
-     * </p>
-     * This method queries using the given arguments.
-     *
-     * @param userId Optional parameter: the task user id
-     * @param workItemIds Optional parameter: a list of work item ids
-     * @param taskIds Optional parameter: a list of task ids
-     * @param procInstIds Optional parameter: a list of task ids
-     * @param busAdmins Optional parameter: a list of business administrator ids
-     * @param potOwners Optional parameter: a list of potential owners
-     * @param taskOwners Optional parameter: a list of task owners
-     * @param status Optional parameter: a list of status's
-     * @param union Required: whether the query should be a union or intersection of the criteria
-     * @return a List of {@link TaskSummary} instances that fit the critieria given
-     */
-    @Deprecated
-    List<TaskSummary> getTasksByVariousFields( String userId, List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
-            List<String> busAdmins, List<String> potOwners, List<String> taskOwners,
-            List<Status> status, List<String> language, boolean union);
-
-    /**
-     * This method will be removed in jBPM 7.x because of new methods that better implement this functionality.
-     * <p>
-     * Using this method is not recommended.
-     *
-     * @see #getTasksByVariousFields(String, List, List, List, List, List, List, List, List, boolean)
-     */
-    @Deprecated
-    List<TaskSummary> getTasksByVariousFields( String userId, Map <String, List<?>> parameters, boolean union);
-
     Long addComment(long taskId, Comment comment);
 
     Long addComment(long taskId, String addedByUserId, String commentText);
