@@ -1827,4 +1827,15 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
     }
+    
+    @Test
+    public void testCallActivityWithDataAssignment() throws Exception {
+        KieBase kbase = createKnowledgeBase("subprocess/AssignmentProcess.bpmn2", "subprocess/AssignmentSubProcess.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("name", "oldValue");
+        ProcessInstance processInstance = ksession.startProcess("assignmentProcess", params);
+        assertProcessInstanceCompleted(processInstance);
+        assertEquals("Hello Genworth welcome to jBPMS!", ((WorkflowProcessInstance) processInstance).getVariable("message"));
+    }
 }

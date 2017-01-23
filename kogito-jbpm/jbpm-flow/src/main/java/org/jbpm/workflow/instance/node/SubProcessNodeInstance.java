@@ -117,7 +117,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	            		parameterValue = MVELSafeHelper.getEvaluator().eval(mapping.getSources().get(0), new NodeInstanceResolverFactory(this));
 	            	} catch (Throwable t) {
 	            	    parameterValue = VariableUtil.resolveVariable(mapping.getSources().get(0), this);
-	                    if (parameterValue != null && !parameterValue.equals(mapping.getSources().get(0))) {
+	                    if (parameterValue != null) {
 	                        parameters.put(mapping.getTarget(), parameterValue);
 	                    } else {
     	            	    logger.error("Could not find variable scope for variable {}", mapping.getSources().get(0));
