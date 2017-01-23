@@ -19,60 +19,59 @@ package org.optaplanner.core.config.util;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.optaplanner.core.config.util.ConfigUtils.*;
 
 public class ConfigUtilsTest {
 
     @Test
-    public void testMergeProperty() {
+    public void mergeProperty() {
         Integer a = null;
         Integer b = null;
-        assertEquals(null, mergeProperty(a, b));
+        assertEquals(null, ConfigUtils.mergeProperty(a, b));
         a = Integer.valueOf(1);
-        assertEquals(null, mergeProperty(a, b));
+        assertEquals(null, ConfigUtils.mergeProperty(a, b));
         b = Integer.valueOf(10);
-        assertEquals(null, mergeProperty(a, b));
+        assertEquals(null, ConfigUtils.mergeProperty(a, b));
         b = Integer.valueOf(1);
-        assertEquals(Integer.valueOf(1), mergeProperty(a, b));
+        assertEquals(Integer.valueOf(1), ConfigUtils.mergeProperty(a, b));
         a = null;
-        assertEquals(null, mergeProperty(a, b));
+        assertEquals(null, ConfigUtils.mergeProperty(a, b));
     }
 
     @Test
-    public void testMeldProperty() {
+    public void meldProperty() {
         Integer a = null;
         Integer b = null;
-        assertEquals(null, meldProperty(a, b));
+        assertEquals(null, ConfigUtils.meldProperty(a, b));
         a = Integer.valueOf(1);
-        assertEquals(Integer.valueOf(1), meldProperty(a, b));
+        assertEquals(Integer.valueOf(1), ConfigUtils.meldProperty(a, b));
         b = Integer.valueOf(10);
-        assertEquals(mergeProperty(Integer.valueOf(1), Integer.valueOf(10)), meldProperty(a, b));
+        assertEquals(ConfigUtils.mergeProperty(Integer.valueOf(1), Integer.valueOf(10)), ConfigUtils.meldProperty(a, b));
         a = null;
-        assertEquals(Integer.valueOf(10), meldProperty(a, b));
+        assertEquals(Integer.valueOf(10), ConfigUtils.meldProperty(a, b));
     }
 
     @Test
-    public void testCeilDivide() {
-        assertEquals(10, ceilDivide(19, 2));
-        assertEquals(10, ceilDivide(20, 2));
-        assertEquals(11, ceilDivide(21, 2));
+    public void ceilDivide() {
+        assertEquals(10, ConfigUtils.ceilDivide(19, 2));
+        assertEquals(10, ConfigUtils.ceilDivide(20, 2));
+        assertEquals(11, ConfigUtils.ceilDivide(21, 2));
 
-        assertEquals(-9, ceilDivide(19, -2));
-        assertEquals(-10, ceilDivide(20, -2));
-        assertEquals(-10, ceilDivide(21, -2));
+        assertEquals(-9, ConfigUtils.ceilDivide(19, -2));
+        assertEquals(-10, ConfigUtils.ceilDivide(20, -2));
+        assertEquals(-10, ConfigUtils.ceilDivide(21, -2));
 
-        assertEquals(-9, ceilDivide(-19, 2));
-        assertEquals(-10, ceilDivide(-20, 2));
-        assertEquals(-10, ceilDivide(-21, 2));
+        assertEquals(-9, ConfigUtils.ceilDivide(-19, 2));
+        assertEquals(-10, ConfigUtils.ceilDivide(-20, 2));
+        assertEquals(-10, ConfigUtils.ceilDivide(-21, 2));
 
-        assertEquals(10, ceilDivide(-19, -2));
-        assertEquals(10, ceilDivide(-20, -2));
-        assertEquals(11, ceilDivide(-21, -2));
+        assertEquals(10, ConfigUtils.ceilDivide(-19, -2));
+        assertEquals(10, ConfigUtils.ceilDivide(-20, -2));
+        assertEquals(11, ConfigUtils.ceilDivide(-21, -2));
     }
 
     @Test(expected = ArithmeticException.class)
-    public void testCeilDivideByZero() {
-        ceilDivide(20, -0);
+    public void ceilDivideByZero() {
+        ConfigUtils.ceilDivide(20, -0);
     }
 
 }
