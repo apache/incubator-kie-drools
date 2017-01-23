@@ -22,36 +22,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.optaplanner.core.impl.heuristic.common.PropertiesConfigurable;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
-public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance>, PropertiesConfigurable {
+public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance> {
 
-    private int partCount;
-    private int minimumProcessListSize;
+    private int partCount = 4;
+    private int minimumProcessListSize = 25;
 
-    @Override
-    public void applyCustomProperties(Map<String, String> customPropertyMap) {
-        String partCountString = customPropertyMap.remove("partCount");
-        try {
-            partCount = partCountString == null ? 4 : Integer.parseInt(partCountString);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("The partCount (" + partCountString + ") cannot be parsed.", e);
-        }
-        String minimumProcessListSizeString = customPropertyMap.remove("minimumProcessListSize");
-        try {
-            minimumProcessListSize = minimumProcessListSizeString == null ? 75 : Integer.parseInt(minimumProcessListSizeString);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("The minimumProcessListSize (" + minimumProcessListSizeString + ") cannot be parsed.", e);
-        }
-        if (!customPropertyMap.isEmpty()) {
-            throw new IllegalStateException("The customProperties (" + customPropertyMap.keySet()
-                    + ") are not supported.");
-        }
+    @SuppressWarnings("unused")
+    public void setPartCount(int partCount) {
+        this.partCount = partCount;
+    }
+
+    @SuppressWarnings("unused")
+    public void setMinimumProcessListSize(int minimumProcessListSize) {
+        this.minimumProcessListSize = minimumProcessListSize;
     }
 
     @Override

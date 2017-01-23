@@ -16,13 +16,9 @@
 
 package org.optaplanner.core.impl.phase.custom;
 
-import java.util.Map;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.impl.heuristic.common.PropertiesConfigurable;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -34,7 +30,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * <p>
  * An implementation must extend {@link AbstractCustomPhaseCommand} to ensure backwards compatibility in future versions.
  * <p>
- * To add custom properties, implement the {@link PropertiesConfigurable} interface too.
+ * To add custom properties, configure custom properties and add public setters for them.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see AbstractCustomPhaseCommand
  */

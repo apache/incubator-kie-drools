@@ -19,6 +19,7 @@ package org.optaplanner.core.config.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -43,8 +44,6 @@ import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccess
 import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MethodMemberAccessor;
-import org.optaplanner.core.impl.heuristic.common.PropertiesConfigurable;
-import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 
 public class ConfigUtils {
 
@@ -57,19 +56,59 @@ public class ConfigUtils {
         }
     }
 
-    public static void applyCustomProperties(Object bean, String propertyName, Map<String, String> customProperties) {
-        if (bean instanceof PropertiesConfigurable) {
-            Map<String, String> customProperties_ = customProperties != null
-                    ? customProperties : Collections.emptyMap();
-            // Always call it to allow for initialization, even if no custom properties are configured
-            ((PropertiesConfigurable) bean).applyCustomProperties(customProperties_);
-        } else {
-            if (customProperties != null) {
-                throw new IllegalStateException("There are customProperties (" + customProperties
-                        + ") but the " + propertyName + " (" + bean.getClass()
-                        + ") does not implement " + PropertiesConfigurable.class.getSimpleName() + ".");
-            }
+    public static void applyCustomProperties(Object bean, String wrappingPropertyName,
+            Map<String, String> customProperties) {
+        if (customProperties == null) {
+            return;
         }
+        Class<?> beanClass = bean.getClass();
+        customProperties.forEach((propertyName, valueString) -> {
+            Method setterMethod = ReflectionHelper.getSetterMethod(beanClass, propertyName);
+            if (setterMethod == null) {
+                throw new IllegalStateException("The customProperty (" + propertyName
+                        + ") with value (" + valueString
+                        + ") cannot be set on class (" + beanClass
+                        + ") because it has no public setter for that property.\n"
+                        + "Maybe add a public setter for that customProperty (" + propertyName
+                        + ") on that class (" + beanClass.getSimpleName() + ").");
+            }
+            Class<?> propertyType = setterMethod.getParameterTypes()[0];
+            Object typedValue;
+            try {
+                if (propertyType.equals(String.class)) {
+                    typedValue = valueString;
+                } else if (propertyType.equals(Boolean.TYPE) || propertyType.equals(Boolean.class)) {
+                    typedValue = Boolean.parseBoolean(valueString);
+                } else if (propertyType.equals(Integer.TYPE) || propertyType.equals(Integer.class)) {
+                    typedValue = Integer.parseInt(valueString);
+                } else if (propertyType.equals(Long.TYPE) || propertyType.equals(Long.class)) {
+                    typedValue = Long.parseLong(valueString);
+                } else if (propertyType.equals(Float.TYPE) || propertyType.equals(Float.class)) {
+                    typedValue = Float.parseFloat(valueString);
+                } else if (propertyType.equals(Double.TYPE) || propertyType.equals(Double.class)) {
+                    typedValue = Double.parseDouble(valueString);
+                } else {
+                    throw new IllegalStateException("The customProperty (" + propertyName + ") of class (" + beanClass
+                            + ") has an unsupported propertyType (" + propertyType + ") for value (" + valueString + ").");
+                }
+            } catch (NumberFormatException e) {
+                throw new IllegalStateException("The customProperty (" + propertyName + ")'s value (" + valueString
+                        + ") cannot be parsed to the propertyType (" + propertyType
+                        + ") of the setterMethod (" + setterMethod + ").");
+            }
+            try {
+                setterMethod.invoke(bean, typedValue);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("Cannot call property (" + propertyName
+                        + ") setterMethod (" + setterMethod + ") on bean of class (" + bean.getClass()
+                        + ") for value (" + typedValue + ").", e);
+            } catch (InvocationTargetException e) {
+                throw new IllegalStateException("The property (" + propertyName
+                        + ") setterMethod (" + setterMethod + ") on bean of class (" + bean.getClass()
+                        + ") throws an exception for value (" + typedValue + ").",
+                        e.getCause());
+            }
+        });
     }
 
     public static <C extends AbstractConfig<C>> C inheritConfig(C original, C inherited) {

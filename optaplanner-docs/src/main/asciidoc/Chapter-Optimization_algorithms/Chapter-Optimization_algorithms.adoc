@@ -712,7 +712,7 @@ The built-in solver phases do not have this issue.
 ====
 
 To configure values of a `CustomPhaseCommand` dynamically in the solver configuration
-(so the <<benchmarker,Benchmarker>> can tweak those parameters), use the `customProperties` element:
+(so the <<benchmarker,Benchmarker>> can tweak those parameters), add the `customProperties` element:
 
 [source,xml,options="nowrap"]
 ----
@@ -723,27 +723,18 @@ To configure values of a `CustomPhaseCommand` dynamically in the solver configur
   </customPhase>
 ----
 
-Then implement the `PropertiesConfigurable` interface to override the `applyCustomProperties()` method
-to parse each custom property when a `Solver` is build.
+Then add a public setter for each custom property, which is called when a `Solver` is build.
+Most value types are supported (including boolean, integers, doubles and strings).
 
 [source,java,options="nowrap"]
 ----
-public class MyCustomPhase extends AbstractCustomPhaseCommand<MySolution>, PropertiesConfigurable {
+public class MyCustomPhase extends AbstractCustomPhaseCommand<MySolution> {
 
-    private int mySelectionSize;
+    private int mySelectionSize = 10;
 
-    @Override
-    public void applyCustomProperties(Map<String, String> customPropertyMap) {
-        String mySelectionSizeString = customPropertyMap.remove("mySelectionSize");
-        try {
-            mySelectionSize = mySelectionSizeString == null ? 10 : Integer.parseInt(mySelectionSizeString);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("The mySelectionSize (" + mySelectionSizeString + ") cannot be parsed.", e);
-        }
-        if (!customPropertyMap.isEmpty()) {
-            throw new IllegalStateException("The customProperties (" + customPropertyMap.keySet()
-                    + ") are not supported.");
-        }
+    @SuppressWarnings("unused")
+    public void setMySelectionSize(int mySelectionSize) {
+        this.mySelectionSize = mySelectionSize;
     }
 
     ...

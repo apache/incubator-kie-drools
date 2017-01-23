@@ -27,6 +27,7 @@ import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * Avoids the usage of Introspector to work on Android too.
@@ -142,6 +143,28 @@ public final class ReflectionHelper {
         } catch (NoSuchMethodException e) {
             return null;
         }
+    }
+
+    /**
+     * @param containingClass never null
+     * @param propertyName never null
+     * @return null if it doesn't exist
+     */
+    public static Method getSetterMethod(Class<?> containingClass, String propertyName) {
+        String setterName = PROPERTY_MUTATOR_PREFIX
+                + (propertyName.isEmpty() ? "" : propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
+        Method[] methods = Arrays.stream(containingClass.getMethods())
+                .filter(method -> method.getName().equals(setterName))
+                .toArray(Method[]::new);
+        if (methods.length == 0) {
+            return null;
+        }
+        if (methods.length > 1) {
+            throw new IllegalStateException("The containingClass (" + containingClass
+                    + ") has multiple setter methods (" + Arrays.toString(methods)
+                    + ") with the propertyName (" + propertyName + ").");
+        }
+        return methods[0];
     }
 
     public static void assertGetterMethod(Method getterMethod, Class<? extends Annotation> annotationClass) {

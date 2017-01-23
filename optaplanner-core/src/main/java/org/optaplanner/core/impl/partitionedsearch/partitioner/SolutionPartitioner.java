@@ -21,14 +21,13 @@ import java.util.List;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
-import org.optaplanner.core.impl.heuristic.common.PropertiesConfigurable;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Splits one {@link PlanningSolution solution} into multiple partitions.
  * The partitions are solved and merged based on the {@link PlanningSolution#locationStrategyType()}.
  * <p>
- * To add custom properties, implement the {@link PropertiesConfigurable} interface too.
+ * To add custom properties, configure custom properties and add public setters for them.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface SolutionPartitioner<Solution_> {

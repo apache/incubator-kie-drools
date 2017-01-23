@@ -213,34 +213,24 @@ To configure values of a `SolutionPartitioner` dynamically in the solver configu
   </partitionedSearch>
 ----
 
-Then implement the `PropertiesConfigurable` interface to override the `applyCustomProperties()` method
-to parse each custom property when a `Solver` is build.
+Then add a public setter for each custom property, which is called when a `Solver` is build.
+Most value types are supported (including boolean, integers, doubles and strings).
 
 [source,java,options="nowrap"]
 ----
-public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance>, PropertiesConfigurable {
+public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance> {
 
-    private int partCount;
-    private int minimumProcessListSize;
+    private int partCount = 4;
+    private int minimumProcessListSize = 25;
 
-    @Override
-    public void applyCustomProperties(Map<String, String> customPropertyMap) {
-        String partCountString = customPropertyMap.remove("partCount");
-        try {
-            partCount = partCountString == null ? 4 : Integer.parseInt(partCountString);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("The partCount (" + partCountString + ") cannot be parsed.", e);
-        }
-        String minimumProcessListSizeString = customPropertyMap.remove("minimumProcessListSize");
-        try {
-            minimumProcessListSize = minimumProcessListSizeString == null ? 75 : Integer.parseInt(minimumProcessListSizeString);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("The minimumProcessListSize (" + minimumProcessListSizeString + ") cannot be parsed.", e);
-        }
-        if (!customPropertyMap.isEmpty()) {
-            throw new IllegalStateException("The customProperties (" + customPropertyMap.keySet()
-                    + ") are not supported.");
-        }
+    @SuppressWarnings("unused")
+    public void setPartCount(int partCount) {
+        this.partCount = partCount;
+    }
+
+    @SuppressWarnings("unused")
+    public void setMinimumProcessListSize(int minimumProcessListSize) {
+        this.minimumProcessListSize = minimumProcessListSize;
     }
 
     ...

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.config.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -72,6 +75,112 @@ public class ConfigUtilsTest {
     @Test(expected = ArithmeticException.class)
     public void ceilDivideByZero() {
         ConfigUtils.ceilDivide(20, -0);
+    }
+
+    @Test
+    public void applyCustomProperties() {
+        Map<String, String> customProperties = new HashMap<>();
+        customProperties.put("string", "This is a sentence.");
+        customProperties.put("primitiveBoolean", "true");
+        customProperties.put("objectBoolean", "true");
+        customProperties.put("primitiveInt", "1");
+        customProperties.put("objectInteger", "2");
+        customProperties.put("primitiveLong", "3");
+        customProperties.put("objectLong", "4");
+        customProperties.put("primitiveFloat", "5.5");
+        customProperties.put("objectFloat", "6.6");
+        customProperties.put("primitiveDouble", "7.7");
+        customProperties.put("objectDouble", "8.8");
+        ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
+        ConfigUtils.applyCustomProperties(bean, "customProperties", customProperties);
+        assertEquals(true, bean.primitiveBoolean);
+        assertEquals(Boolean.TRUE, bean.objectBoolean);
+        assertEquals(1, bean.primitiveInt);
+        assertEquals(Integer.valueOf(2), bean.objectInteger);
+        assertEquals(3L, bean.primitiveLong);
+        assertEquals(Long.valueOf(4L), bean.objectLong);
+        assertEquals(5.5F, bean.primitiveFloat, 0.0F);
+        assertEquals(Float.valueOf(6.6F), bean.objectFloat);
+        assertEquals(7.7, bean.primitiveDouble, 0.0);
+        assertEquals(Double.valueOf(8.8), bean.objectDouble);
+        assertEquals("This is a sentence.", bean.string);
+    }
+
+    @Test
+    public void applyCustomPropertiesSubset() {
+        Map<String, String> customProperties = new HashMap<>();
+        customProperties.put("string", "This is a sentence.");
+        ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
+        ConfigUtils.applyCustomProperties(bean, "customProperties", customProperties);
+        assertEquals("This is a sentence.", bean.string);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void applyCustomPropertiesNonExistingCustomProperty() {
+        Map<String, String> customProperties = new HashMap<>();
+        customProperties.put("doesNotExist", "This is a sentence.");
+        ConfigUtilsTestBean bean = new ConfigUtilsTestBean();
+        ConfigUtils.applyCustomProperties(bean, "customProperties", customProperties);
+    }
+
+    private static class ConfigUtilsTestBean {
+
+        private boolean primitiveBoolean;
+        private Boolean objectBoolean;
+        private int primitiveInt;
+        private Integer objectInteger;
+        private long primitiveLong;
+        private Long objectLong;
+        private float primitiveFloat;
+        private Float objectFloat;
+        private double primitiveDouble;
+        private Double objectDouble;
+        private String string;
+
+        public void setPrimitiveBoolean(boolean primitiveBoolean) {
+            this.primitiveBoolean = primitiveBoolean;
+        }
+
+        public void setObjectBoolean(Boolean objectBoolean) {
+            this.objectBoolean = objectBoolean;
+        }
+
+        public void setPrimitiveInt(int primitiveInt) {
+            this.primitiveInt = primitiveInt;
+        }
+
+        public void setObjectInteger(Integer objectInteger) {
+            this.objectInteger = objectInteger;
+        }
+
+        public void setPrimitiveLong(long primitiveLong) {
+            this.primitiveLong = primitiveLong;
+        }
+
+        public void setObjectLong(Long objectLong) {
+            this.objectLong = objectLong;
+        }
+
+        public void setPrimitiveFloat(float primitiveFloat) {
+            this.primitiveFloat = primitiveFloat;
+        }
+
+        public void setObjectFloat(Float objectFloat) {
+            this.objectFloat = objectFloat;
+        }
+
+        public void setPrimitiveDouble(double primitiveDouble) {
+            this.primitiveDouble = primitiveDouble;
+        }
+
+        public void setObjectDouble(Double objectDouble) {
+            this.objectDouble = objectDouble;
+        }
+
+        public void setString(String string) {
+            this.string = string;
+        }
+
     }
 
 }
