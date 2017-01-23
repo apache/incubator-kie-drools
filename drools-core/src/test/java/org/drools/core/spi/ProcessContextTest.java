@@ -113,6 +113,7 @@ public class ProcessContextTest {
 
     private class CaseInformation implements CaseData, CaseAssignment {
 
+        private String definitionId;
         private Map<String, Object> data = new HashMap<>();
         private Map<String, OrganizationalEntity> assignment = new HashMap<>();
 
@@ -162,6 +163,11 @@ public class ProcessContextTest {
         @Override
         public void remove(String name) {
             this.data.remove(name);
+        }
+
+        @Override
+        public String getDefinitionId() {
+            return definitionId;
         }
     }
 }
