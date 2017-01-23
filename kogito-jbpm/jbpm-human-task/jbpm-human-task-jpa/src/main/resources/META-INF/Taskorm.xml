@@ -114,11 +114,10 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and
             potentialOwners.id = :userId and
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId) and
+            (:userId not member of t.peopleAssignments.excludedOwners)  and
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and             
             t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
             order by t.id DESC            
@@ -147,11 +146,10 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and
             potentialOwners.id = :userId and
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId) and
+            (:userId not member of t.peopleAssignments.excludedOwners)  and
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             t.taskData.status in (:status) 
             order by t.id DESC    
@@ -180,13 +178,12 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             t.taskData.status in (:status) and 
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and 
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)
+            (:userId not member of t.peopleAssignments.excludedOwners) 
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -213,13 +210,12 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and 
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) )  and 
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)
+            (:userId not member of t.peopleAssignments.excludedOwners) 
             order by t.id DESC          
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -246,13 +242,12 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             t.taskData.status in (:status) and 
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) )  and 
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)
+            (:userId not member of t.peopleAssignments.excludedOwners) 
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -332,14 +327,13 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and             
             t.taskData.expirationTime = :expirationDate and
             t.taskData.status in (:status) and 
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) )  and 
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)
+            (:userId not member of t.peopleAssignments.excludedOwners) 
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -367,14 +361,13 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners 
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and             
             (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
             t.taskData.status in (:status) and 
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) )  and 
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)
+            (:userId not member of t.peopleAssignments.excludedOwners) 
             order by t.id DESC     
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -468,14 +461,13 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and
             t.taskData.parentId = :parentId and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and 
             (potentialOwners.id = :userId or potentialOwners.id in (:groupIds)) and 
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId) 
+            (:userId not member of t.peopleAssignments.excludedOwners) 
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1162,13 +1154,12 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             t.taskData.status in (:status) and 
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and 
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)
+            (:userId not member of t.peopleAssignments.excludedOwners) 
             order by t.id DESC          
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1200,14 +1191,13 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
             t.taskData.status in (:status) and 
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and 
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)
+            (:userId not member of t.peopleAssignments.excludedOwners) 
             order by t.id DESC     
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1235,14 +1225,13 @@
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
-            left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             t.taskData.expirationTime = :expirationDate and
             t.taskData.status in (:status) and 
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) )  and 
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)
+            (:userId not member of t.peopleAssignments.excludedOwners) 
             order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1270,13 +1259,12 @@
             from
                 TaskImpl t
                 join t.peopleAssignments.potentialOwners potentialOwners
-                left join t.peopleAssignments.excludedOwners as excludedOwners
             where
                 t.archived = 0 and
                 (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and
                 t.taskData.status in (:status) and 
                 (potentialOwners.id  = :userId or potentialOwners.id in (:groupIds)) and 
-                (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)           
+                (:userId not member of t.peopleAssignments.excludedOwners)           
             order by t.id DESC    
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1304,14 +1292,13 @@
             from
                 TaskImpl t
                 join t.peopleAssignments.potentialOwners potentialOwners
-                left join t.peopleAssignments.excludedOwners as excludedOwners
             where
             t.archived = 0 and            
             (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
             (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
             t.taskData.status in (:status) and 
             ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) )  and 
-            (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)
+            (:userId not member of t.peopleAssignments.excludedOwners) 
             order by t.id DESC     
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1338,14 +1325,13 @@
             from
                 TaskImpl t
                 join t.peopleAssignments.potentialOwners potentialOwners
-                left join t.peopleAssignments.excludedOwners as excludedOwners
             where
                 t.archived = 0 and
                 (t.taskData.actualOwner.id = :userId or t.taskData.actualOwner is null) and 
                 t.taskData.expirationTime = :expirationDate and
                 t.taskData.status in (:status) and 
 	            ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) )  and 
-                (t.peopleAssignments.excludedOwners is empty or excludedOwners.id != :userId)
+                (:userId not member of t.peopleAssignments.excludedOwners) 
                 order by t.id DESC
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->

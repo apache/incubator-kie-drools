@@ -139,6 +139,24 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         assertEquals(0, tasks.size());
     }
     
+    @Test
+    public void testGetTasksAssignedAsPotentialOwnerWithMultipleExcluded() {
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader'), new User('Luke Cage') ], excludedOwners = [new User('Darth Vader'), new User('Luke Cage')],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name =  'This is my task name' })";
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
+        assertEquals(1, tasks.size());
+        
+        tasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(0, tasks.size());
+        
+        tasks = taskService.getTasksAssignedAsPotentialOwner("Luke Cage", "en-UK");
+        assertEquals(0, tasks.size());
+    }
+    
     // getTasksAssignedAsPotentialOwner(String userId, String language)
     
     @Test
