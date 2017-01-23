@@ -69,6 +69,7 @@ public class TaskRuleServiceImpl implements TaskRuleService {
                 session.insert(params);
             }
             session.fireAllRules();
+            session.dispose();
 
             if (!request.isAllowed()) {
                 StringBuilder error = new StringBuilder("Cannot perform operation " + scope + " :\n");

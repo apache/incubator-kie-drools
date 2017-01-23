@@ -16,6 +16,8 @@
 package org.jbpm.services.task.commands;
 
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.jbpm.services.task.assignment.AssignmentService;
+import org.jbpm.services.task.assignment.AssignmentServiceProvider;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.kie.api.runtime.Context;
@@ -97,7 +99,13 @@ public class AddTaskCommand extends UserGroupCallbackTaskCommand<Long> {
     		taskImpl = task;
     	}
 	    initializeTask(taskImpl);
-	    context.getTaskRuleService().executeRules(taskImpl, userId, data != null?data:params, TaskRuleService.ADD_TASK_SCOPE);
+	    context.getTaskRuleService().executeRules(taskImpl, userId, data != null?data:params, TaskRuleService.ADD_TASK_SCOPE);     
+        
+        // use assignment service to directly assign actual owner if enabled
+        AssignmentService assignmentService = AssignmentServiceProvider.get();
+        if (assignmentService.isEnabled()) {
+            assignmentService.assignTask(taskImpl, context);
+        }
         doCallbackOperationForPeopleAssignments((InternalPeopleAssignments) taskImpl.getPeopleAssignments(), context);
         doCallbackOperationForTaskData((InternalTaskData) taskImpl.getTaskData(), context);
         doCallbackOperationForTaskDeadlines(((InternalTask) taskImpl).getDeadlines(), context);

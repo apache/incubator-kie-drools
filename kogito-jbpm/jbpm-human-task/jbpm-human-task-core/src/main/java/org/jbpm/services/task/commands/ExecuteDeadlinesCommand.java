@@ -15,6 +15,8 @@
 
 package org.jbpm.services.task.commands;
 
+import org.jbpm.services.task.assignment.AssignmentService;
+import org.jbpm.services.task.assignment.AssignmentServiceProvider;
 import org.jbpm.services.task.deadlines.notifications.impl.NotificationListenerManager;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
@@ -141,6 +143,12 @@ public class ExecuteDeadlinesCommand extends TaskCommand<Void> {
 	                        List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>(reassignment.getPotentialOwners());
 	                        ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
 	                        ((InternalTaskData) task.getTaskData()).setActualOwner(null);
+	                        
+	                        // use assignment service to directly assign actual owner if enabled
+	                        AssignmentService assignmentService = AssignmentServiceProvider.get();
+	                        if (assignmentService.isEnabled()) {
+	                            assignmentService.assignTask(task, ctx);
+	                        }
 	
 	                        taskEventSupport.fireAfterTaskReassigned(task, ctx);
 	                    }

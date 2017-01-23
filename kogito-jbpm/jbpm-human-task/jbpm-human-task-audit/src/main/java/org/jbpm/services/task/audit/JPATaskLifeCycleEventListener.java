@@ -312,7 +312,7 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
 
     @Override
     public void afterTaskReleasedEvent(TaskEvent event) {
-        
+        String userId = "";
         Task ti = event.getTask();
         TaskPersistenceContext persistenceContext = getPersistenceContext(((TaskContext)event.getTaskContext()).getPersistenceContext());
 		try {
@@ -322,13 +322,18 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
 	        	logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
 	        	return;
 	        }
+
+            if (ti.getTaskData().getActualOwner() != null) {
+                userId = ti.getTaskData().getActualOwner().getId();
+            }
+   
 	        auditTaskImpl.setDescription(ti.getDescription());
 	        auditTaskImpl.setName(ti.getName());  
 	        auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
 	        auditTaskImpl.setPriority(ti.getPriority());
 	        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
 	        auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
-	        auditTaskImpl.setActualOwner("");
+	        auditTaskImpl.setActualOwner(userId);
 	            
 	        persistenceContext.merge(auditTaskImpl);
 		} finally {

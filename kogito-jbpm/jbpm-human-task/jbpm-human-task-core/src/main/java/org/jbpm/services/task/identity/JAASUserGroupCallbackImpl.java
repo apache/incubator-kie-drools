@@ -82,7 +82,7 @@ public class JAASUserGroupCallbackImpl extends AbstractUserGroupInfo implements 
         
 		Properties config = readProperties(propertiesLocation, DEFAULT_PROPERTIES_NAME);
 		if (config != null) {
-			this.rolePrincipleName = config.getProperty("jaas.role.principle.name");
+			this.rolePrincipleName = config.getProperty("jaas.role.principle.name", "Roles");
 		}
  	}
 	

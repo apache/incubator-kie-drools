@@ -16,8 +16,17 @@
 
 package org.jbpm.services.task;
 
+import java.lang.reflect.Constructor;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.persistence.EntityManagerFactory;
+
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.runtime.ChainableRunner;
+import org.jbpm.services.task.assignment.AssignmentServiceProvider;
+import org.jbpm.services.task.assignment.impl.AssignmentTaskEventListener;
 import org.jbpm.services.task.commands.TaskCommandExecutorImpl;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.identity.DefaultUserInfo;
@@ -33,12 +42,6 @@ import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.persistence.EntityManagerFactory;
-import java.lang.reflect.Constructor;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Task service configurator that provides fluent API approach to building <code>TaskService</code>
@@ -151,6 +154,10 @@ public class HumanTaskConfigurator {
             for (TaskLifeCycleEventListener listener : listeners) {
             	((EventService<TaskLifeCycleEventListener>) service).registerTaskEventListener(listener);
             }
+            if (AssignmentServiceProvider.get().isEnabled()) {
+                ((EventService<TaskLifeCycleEventListener>) service).registerTaskEventListener(new AssignmentTaskEventListener());
+            }
+            
             // initialize deadline service with command executor for processing
             if (TaskDeadlinesServiceImpl.getInstance() == null) {
             	TaskDeadlinesServiceImpl.initialize(commandExecutor);

@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.util.MVELSafeHelper;
+import org.jbpm.services.task.assignment.AssignmentService;
+import org.jbpm.services.task.assignment.AssignmentServiceProvider;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
@@ -401,14 +403,17 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                     break;
                 }
                 case Forward: {
+                    invokeAssignmentService(task, context, userId);
                 	taskEventSupport.fireAfterTaskForwarded(task, context);
                     break;
                 }   
                 case Nominate: {
+                    invokeAssignmentService(task, context, userId);
                 	taskEventSupport.fireAfterTaskNominated(task, context);
                     break;
                 }
                 case Release: {
+                    invokeAssignmentService(task, context, userId);
                 	taskEventSupport.fireAfterTaskReleased(task, context);
                     break;
                 }
@@ -440,6 +445,13 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
     }
 
+    protected void invokeAssignmentService(Task taskImpl, TaskContext context, String excludedUser) {
+        // use assignment service to directly assign actual owner if enabled
+        AssignmentService assignmentService = AssignmentServiceProvider.get();
+        if (assignmentService.isEnabled()) {
+            assignmentService.assignTask(taskImpl, context, excludedUser);
+        }
+    }
     
     public static Map<Operation, List<OperationCommand>> initMVELOperations() {
 
