@@ -41,7 +41,7 @@
       <include name="commons-collections*.jar"/>
       <include name="dom4j-1.6.1.jar"/>
       <include name="antlr-2.7.7.jar"/>
-      <include name="hibernate-jpa-2.0-api*.jar"/>
+      <include name="hibernate-jpa-2.1-api*.jar"/>
       <include name="jta-1.1.jar"/>
 	  <include name="jboss-transaction-api*.jar"/>
       <include name="javassist-*.jar"/>
