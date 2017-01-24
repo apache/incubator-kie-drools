@@ -44,6 +44,7 @@ public class CaseFileInstanceMarshallingStrategy implements ObjectMarshallingStr
     private static final Logger logger = LoggerFactory.getLogger(CaseFileInstanceMarshallingStrategy.class);
     
     private static final String CASE_ID_KEY = "CaseId";
+    private static final String CASE_DEF_ID_KEY = "CaseDefId";
     private static final String CASE_START_KEY = "CaseStart";
     private static final String CASE_END_KEY = "CaseEnd";
     private static final String CASE_REOPEN_KEY = "CaseReopen";
@@ -119,6 +120,7 @@ public class CaseFileInstanceMarshallingStrategy implements ObjectMarshallingStr
         CaseFileInstanceImpl caseFile = (CaseFileInstanceImpl) object;
         Map<String, Object> caseFileContent = new HashMap<>();
         caseFileContent.put(CASE_ID_KEY, caseFile.getCaseId());
+        caseFileContent.put(CASE_DEF_ID_KEY, caseFile.getDefinitionId());
         caseFileContent.put(CASE_START_KEY, caseFile.getCaseStartDate());
         caseFileContent.put(CASE_END_KEY, caseFile.getCaseEndDate());
         caseFileContent.put(CASE_REOPEN_KEY, caseFile.getCaseReopenDate());
@@ -162,6 +164,7 @@ public class CaseFileInstanceMarshallingStrategy implements ObjectMarshallingStr
         
         CaseFileInstanceImpl caseFileInstance = new CaseFileInstanceImpl();
         caseFileInstance.setCaseId((String)caseFileContent.get(CASE_ID_KEY));
+        caseFileInstance.setDefinitionId((String)caseFileContent.get(CASE_DEF_ID_KEY));
         caseFileInstance.setCaseStartDate((Date)caseFileContent.get(CASE_START_KEY));
         caseFileInstance.setCaseEndDate((Date)caseFileContent.get(CASE_END_KEY));
         caseFileInstance.setCaseReopenDate((Date)caseFileContent.get(CASE_REOPEN_KEY));

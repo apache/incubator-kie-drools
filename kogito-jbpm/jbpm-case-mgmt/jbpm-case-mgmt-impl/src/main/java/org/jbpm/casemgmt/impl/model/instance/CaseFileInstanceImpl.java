@@ -48,6 +48,8 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     
     private String separator = System.getProperty("org.jbpm.ht.user.separator", ",");
 
+    private String definitionId;
+    
     private String caseId;
     private Date caseStartDate;
     private Date caseEndDate;
@@ -63,19 +65,22 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
         
     }
     
-    public CaseFileInstanceImpl(String caseId) {
+    public CaseFileInstanceImpl(String caseId, String caseDefinitionId) {
         this.caseId = caseId;
+        this.definitionId = caseDefinitionId;
         this.caseStartDate = new Date();
     }
     
-    public CaseFileInstanceImpl(Map<String, Object> data) {        
+    public CaseFileInstanceImpl(String caseDefinitionId, Map<String, Object> data) {        
         this.data = data;
+        this.definitionId = caseDefinitionId;
         this.caseStartDate = new Date();
     }
     
-    public CaseFileInstanceImpl(String caseId, Map<String, Object> data) {
+    public CaseFileInstanceImpl(String caseId, String caseDefinitionId, Map<String, Object> data) {
         this.caseId = caseId;
         this.data = data;
+        this.definitionId = caseDefinitionId;
         this.caseStartDate = new Date();
     }
 
@@ -244,6 +249,14 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     
     public void setComments(List<CommentInstance> comments) {
         this.comments = comments;
+    }    
+
+    public String getDefinitionId() {
+        return definitionId;
+    }
+
+    public void setDefinitionId(String caseDefinitionId) {
+        this.definitionId = caseDefinitionId;
     }
 
     @Override
@@ -252,6 +265,7 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
         int result = 1;
         result = prime * result + ((caseEndDate == null) ? 0 : caseEndDate.hashCode());
         result = prime * result + ((caseId == null) ? 0 : caseId.hashCode());
+        result = prime * result + ((definitionId == null) ? 0 : definitionId.hashCode());
         result = prime * result + ((caseStartDate == null) ? 0 : caseStartDate.hashCode());
         result = prime * result + ((caseReopenDate == null) ? 0 : caseReopenDate.hashCode());
         result = prime * result + ((data == null) ? 0 : data.hashCode());
@@ -276,6 +290,11 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
             if (other.caseId != null)
                 return false;
         } else if (!caseId.equals(other.caseId))
+            return false;
+        if (definitionId == null) {
+            if (other.definitionId != null)
+                return false;
+        } else if (!definitionId.equals(other.definitionId))
             return false;
         if (caseStartDate == null) {
             if (other.caseStartDate != null)

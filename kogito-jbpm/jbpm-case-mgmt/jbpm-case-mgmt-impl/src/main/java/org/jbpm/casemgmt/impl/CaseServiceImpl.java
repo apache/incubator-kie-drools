@@ -141,7 +141,7 @@ public class CaseServiceImpl implements CaseService {
         logger.debug("Generated case id {} for case definition id {}", caseId, caseDefinitionId);
         
         if (caseFile == null) {
-            caseFile = new CaseFileInstanceImpl(caseId);
+            caseFile = new CaseFileInstanceImpl(caseId, caseDefinitionId);
             ((CaseFileInstanceImpl)caseFile).setupRoles(caseDef.getCaseRoles());     
             logger.debug("CaseFile was not given, creating new empty one.");
         } else {
@@ -455,7 +455,7 @@ public class CaseServiceImpl implements CaseService {
     @Override
     public CaseFileInstance newCaseFileInstance(String deploymentId, String caseDefinition, Map<String, Object> data) {
         CaseDefinition def = caseRuntimeDataService.getCase(deploymentId, caseDefinition);
-        CaseFileInstanceImpl caseFile = new CaseFileInstanceImpl(data);
+        CaseFileInstanceImpl caseFile = new CaseFileInstanceImpl(caseDefinition, data);
         caseFile.setupRoles(def.getCaseRoles());
         
         return caseFile;
@@ -464,7 +464,7 @@ public class CaseServiceImpl implements CaseService {
     @Override
     public CaseFileInstance newCaseFileInstance(String deploymentId, String caseDefinition, Map<String, Object> data, Map<String, OrganizationalEntity> rolesAssignment) {
         CaseDefinition def = caseRuntimeDataService.getCase(deploymentId, caseDefinition);
-        CaseFileInstanceImpl caseFile = new CaseFileInstanceImpl(data);
+        CaseFileInstanceImpl caseFile = new CaseFileInstanceImpl(caseDefinition, data);
         caseFile.setupRoles(def.getCaseRoles());
         
         rolesAssignment.entrySet().stream().forEach(entry -> caseFile.assign(entry.getKey(), entry.getValue()));

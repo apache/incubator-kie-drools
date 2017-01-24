@@ -101,6 +101,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         processes.add("cases/UserStageAdhocCase.bpmn2");
         processes.add("cases/ScriptRoleAssignmentCase.bpmn2");
         processes.add("cases/NoStartNodeAdhocCase.bpmn2");
+        processes.add("cases/CaseFileConditionalEvent.bpmn2");
         // add processes that can be used by cases but are not cases themselves
         processes.add("processes/DataVerificationProcess.bpmn2");
         
@@ -1584,6 +1585,82 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             }
         }
     }
+    @Test
+    public void testStartCaseWithConditionalEvent() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        Map<String, Object> data = new HashMap<>();
+        data.put("Documents", new ArrayList<>());
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), COND_CASE_P_ID, data);        
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), COND_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            caseService.cancelCase(caseId);            
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartCaseWithConditionalEventCompleteCase() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        List<String> docs = new ArrayList<>();
+        docs.add("First doc");
+        
+        Map<String, Object> data = new HashMap<>();
+        data.put("Documents", docs);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), COND_CASE_P_ID, data);        
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), COND_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case instance should already be completed");
+            } catch (CaseNotFoundException e) {
+                // case is already completed as the docs where given at the start
+                caseId = null;
+            }
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }    
+    
     
     /*
      * Helper methods
