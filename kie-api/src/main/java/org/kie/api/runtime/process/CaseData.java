@@ -50,4 +50,11 @@ public interface CaseData {
      * @param name
      */
     void remove(String name);
+    
+    
+    /**
+     * Returns case definition id of this case file
+     * @return
+     */
+    String getDefinitionId();
 }
