@@ -304,7 +304,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
         private void addShiftToDayOfWeekAndShiftTypeToShiftListMap(ShiftDate shiftDate, ShiftType shiftType,
                 Shift shift) {
-            Pair<DayOfWeek, ShiftType>key = Pair.of(shiftDate.getDayOfWeek(), shiftType);
+            Pair<DayOfWeek, ShiftType> key = Pair.of(shiftDate.getDayOfWeek(), shiftType);
             List<Shift> dayOfWeekAndShiftTypeToShiftList = dayOfWeekAndShiftTypeToShiftListMap.computeIfAbsent(key,
                     k -> new ArrayList<>((shiftDateMap.size() + 6) / 7));
             dayOfWeekAndShiftTypeToShiftList.add(shift);
