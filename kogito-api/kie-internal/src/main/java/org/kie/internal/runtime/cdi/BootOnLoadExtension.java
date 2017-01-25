@@ -18,7 +18,6 @@ package org.kie.internal.runtime.cdi;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;

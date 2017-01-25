@@ -16,14 +16,13 @@
 
 package org.kie.api.runtime;
 
+import java.util.Map;
+
 import org.kie.api.KieBase;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.rule.RuleRuntime;
-import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.time.SessionClock;
-
-import java.util.Map;
 
 public interface KieRuntime
     extends

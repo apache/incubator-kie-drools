@@ -15,14 +15,14 @@
 
 package org.kie.internal.runtime.cdi;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ActivateExtension implements Extension {
 

@@ -16,13 +16,13 @@
 
 package org.kie.api.io;
 
-import org.kie.api.Service;
-import org.kie.api.definition.KieDescr;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+
+import org.kie.api.Service;
+import org.kie.api.definition.KieDescr;
 
 /**
  * KieResources is a factory that provides Resource implementations for the desired IO resource

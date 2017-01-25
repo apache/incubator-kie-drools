@@ -15,8 +15,6 @@
 
 package org.kie.internal.jaxb;
 
-import static org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,11 +22,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
+import static org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter.createJaxbStringObjectMapEntry;
+import static org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter.deserializeObject;
 
 /**
  * This implements {@link Map} in order to fool JSON..

@@ -15,8 +15,6 @@
 
 package org.kie.internal.runtime;
 
-import org.kie.internal.assembler.KieAssemblers;
-
 import java.util.HashMap;
 import java.util.Map;
 

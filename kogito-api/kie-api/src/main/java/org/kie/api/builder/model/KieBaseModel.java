@@ -16,12 +16,12 @@
 
 package org.kie.api.builder.model;
 
+import java.util.List;
+import java.util.Map;
+
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * KieBaseModel is a model allowing to programmatically define a KieBase

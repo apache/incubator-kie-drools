@@ -16,14 +16,14 @@
 
 package org.kie.api.runtime;
 
+import java.util.Collection;
+
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
-
-import java.util.Collection;
 
 /**
  * A container for all the KieBases of a given KieModule

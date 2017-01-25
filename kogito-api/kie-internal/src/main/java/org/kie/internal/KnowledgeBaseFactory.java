@@ -16,12 +16,12 @@
 
 package org.kie.internal;
 
+import java.util.Properties;
+
 import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
-
-import java.util.Properties;
+import org.kie.internal.utils.ServiceRegistryImpl;
 
 /**
  * <p>

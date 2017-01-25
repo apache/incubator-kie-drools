@@ -16,13 +16,12 @@
 
 package org.kie.api.command;
 
+import java.util.List;
+import java.util.Map;
+
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * KieCommands is a factory for Commands that can be used by classes that implement CommandExecutor. Typically more than one Command

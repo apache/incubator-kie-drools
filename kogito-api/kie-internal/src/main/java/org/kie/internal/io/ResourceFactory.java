@@ -21,9 +21,9 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
+import org.kie.api.io.Resource;
 import org.kie.internal.definition.KnowledgeDescr;
 import org.kie.internal.utils.ServiceRegistryImpl;
-import org.kie.api.io.Resource;
 
 /**
  * <p>

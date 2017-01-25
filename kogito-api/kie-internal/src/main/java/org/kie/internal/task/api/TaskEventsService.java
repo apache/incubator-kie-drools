@@ -15,8 +15,6 @@
  */
 package org.kie.internal.task.api;
 
-
-
 import java.util.List;
 
 import org.kie.internal.task.api.model.TaskEvent;

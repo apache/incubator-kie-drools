@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Attachment;
-import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.I18NText;

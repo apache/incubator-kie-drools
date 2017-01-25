@@ -16,11 +16,6 @@
 
 package org.kie.api.management;
 
-import java.util.Date;
-import java.util.Map;
-
-import javax.management.ObjectName;
-
 /**
  * An MBean interface for {@link org.kie.api.runtime.KieSession} monitoring
  */

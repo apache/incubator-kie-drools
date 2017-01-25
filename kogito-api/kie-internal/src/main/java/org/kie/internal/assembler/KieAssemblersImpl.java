@@ -15,10 +15,10 @@
 
 package org.kie.internal.assembler;
 
-import org.kie.api.io.ResourceType;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.api.io.ResourceType;
 
 public class KieAssemblersImpl implements KieAssemblers {
     private Map<ResourceType, KieAssemblerService> assemblers;

@@ -16,9 +16,9 @@
 
 package org.kie.api.runtime.rule;
 
-import org.kie.api.runtime.ObjectFilter;
-
 import java.util.Collection;
+
+import org.kie.api.runtime.ObjectFilter;
 
 /**
  * <p>An entry-point is an abstract channel through where facts are inserted into the engine.</p>

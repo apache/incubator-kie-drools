@@ -16,12 +16,11 @@
 
 package org.kie.internal.builder;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.api.Service;
-
 import java.util.Properties;
 
 import com.sun.tools.xjc.Options;
+import org.kie.api.Service;
+import org.kie.internal.KnowledgeBase;
 
 /**
  * KnowledgeBuilderFactoryService is used by the KnowledgeBuilderFactory to "provide" it's concrete implementation.

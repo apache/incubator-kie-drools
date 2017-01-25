@@ -15,10 +15,10 @@
 
 package org.kie.internal.weaver;
 
-import org.kie.api.io.ResourceType;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.api.io.ResourceType;
 
 public class KieWeaversImpl implements KieWeavers {
     private Map<ResourceType, KieWeaverService> weavers;

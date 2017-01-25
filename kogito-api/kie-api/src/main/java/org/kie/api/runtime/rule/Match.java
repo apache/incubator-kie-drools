@@ -16,9 +16,9 @@
 
 package org.kie.api.runtime.rule;
 
-import org.kie.api.definition.rule.Rule;
-
 import java.util.List;
+
+import org.kie.api.definition.rule.Rule;
 
 public interface Match {
 

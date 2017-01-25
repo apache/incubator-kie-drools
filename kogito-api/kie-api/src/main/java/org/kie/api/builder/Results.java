@@ -16,9 +16,9 @@
 
 package org.kie.api.builder;
 
-import org.kie.api.builder.Message.Level;
-
 import java.util.List;
+
+import org.kie.api.builder.Message.Level;
 
 /**
  * The Results of the building process of a KieModule

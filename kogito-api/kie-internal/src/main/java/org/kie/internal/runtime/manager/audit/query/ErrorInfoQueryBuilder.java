@@ -19,7 +19,6 @@ import java.util.Date;
 
 import org.kie.api.executor.ErrorInfo;
 import org.kie.internal.query.ExtendedParametrizedQueryBuilder;
-import org.kie.internal.runtime.manager.audit.query.AuditLogQueryBuilder.OrderBy;
 
 public interface ErrorInfoQueryBuilder extends ExtendedParametrizedQueryBuilder<ErrorInfoQueryBuilder, ErrorInfo> {
 

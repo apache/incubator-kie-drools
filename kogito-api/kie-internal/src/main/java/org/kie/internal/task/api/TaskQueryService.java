@@ -25,7 +25,6 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
-import org.kie.internal.query.data.QueryData;
 
 
 /**

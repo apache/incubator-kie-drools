@@ -16,8 +16,8 @@
 
 package org.kie.internal.io;
 
-import org.kie.internal.SystemEventListener;
 import org.kie.api.io.Resource;
+import org.kie.internal.SystemEventListener;
 
 /**
  * <p>

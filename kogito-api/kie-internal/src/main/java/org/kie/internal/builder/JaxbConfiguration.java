@@ -18,9 +18,8 @@ package org.kie.internal.builder;
 
 import java.util.List;
 
-import org.kie.api.io.ResourceConfiguration;
-
 import com.sun.tools.xjc.Options;
+import org.kie.api.io.ResourceConfiguration;
 
 public interface JaxbConfiguration
     extends

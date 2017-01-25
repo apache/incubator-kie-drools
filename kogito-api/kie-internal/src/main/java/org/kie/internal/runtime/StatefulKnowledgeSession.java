@@ -16,9 +16,9 @@
 
 package org.kie.internal.runtime;
 
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
-import org.kie.api.runtime.KieSession;
 
 
 /**

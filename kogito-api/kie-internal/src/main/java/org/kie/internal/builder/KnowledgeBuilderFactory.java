@@ -18,10 +18,9 @@ package org.kie.internal.builder;
 
 import java.util.Properties;
 
+import com.sun.tools.xjc.Options;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.utils.ServiceRegistryImpl;
-
-import com.sun.tools.xjc.Options;
 
 /**
  * This factory is used to build the knowledge base resources that are held collectively in
