@@ -120,7 +120,7 @@
                 <goal>check</goal>
               </goals>
               <configuration>
-                <checkstyleRules>
+                <checkstyleRules combine.self="override">
                   <module name="Checker">
                     <property name="severity" value="warning" default="warning"/>
                     <!-- Checks whether files end with a new line. -->
