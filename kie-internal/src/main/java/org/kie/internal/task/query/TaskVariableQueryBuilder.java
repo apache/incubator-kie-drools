@@ -17,11 +17,9 @@ package org.kie.internal.task.query;
 
 import java.util.Date;
 
-import org.kie.internal.query.ProcessInstanceIdQueryBuilder;
 import org.kie.internal.runtime.manager.audit.query.ProcessIdQueryBuilder;
 import org.kie.internal.task.api.TaskVariable;
 import org.kie.internal.task.api.TaskVariable.VariableType;
-import org.kie.internal.task.api.model.TaskEvent;
 
 public interface TaskVariableQueryBuilder extends ProcessIdQueryBuilder<TaskVariableQueryBuilder, TaskVariable> {
 

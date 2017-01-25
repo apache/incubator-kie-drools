@@ -16,10 +16,10 @@
 
 package org.kie.api.concurrent;
 
-import org.kie.api.Service;
-
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
+
+import org.kie.api.Service;
 
 public interface KieExecutors extends Service {
 

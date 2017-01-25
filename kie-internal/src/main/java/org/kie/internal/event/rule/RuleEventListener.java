@@ -17,9 +17,6 @@
 package org.kie.internal.event.rule;
 
 
-import org.kie.api.definition.rule.Rule;
-import org.kie.api.runtime.rule.Match;
-
 import java.util.EventListener;
 
 public interface RuleEventListener extends

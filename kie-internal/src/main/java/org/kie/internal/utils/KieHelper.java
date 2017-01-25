@@ -16,6 +16,8 @@
 
 package org.kie.internal.utils;
 
+import java.io.InputStream;
+
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -30,8 +32,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
-
-import java.io.InputStream;
 
 import static org.kie.api.io.ResourceType.determineResourceType;
 

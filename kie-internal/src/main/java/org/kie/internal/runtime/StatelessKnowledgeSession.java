@@ -16,8 +16,8 @@
 
 package org.kie.internal.runtime;
 
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.event.KnowledgeRuntimeEventManager;
 
 
 /**

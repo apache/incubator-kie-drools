@@ -17,6 +17,13 @@
 
 package org.kie.internal.utils;
 
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.kie.api.KieServices;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScannerFactoryService;
@@ -34,13 +41,6 @@ import org.kie.internal.weaver.KieWeavers;
 import org.kie.internal.weaver.KieWeaversImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * This is an internal class, not for public consumption.

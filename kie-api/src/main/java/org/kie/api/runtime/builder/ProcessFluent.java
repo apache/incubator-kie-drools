@@ -15,9 +15,9 @@
  */
 package org.kie.api.runtime.builder;
 
-import org.kie.api.runtime.process.ProcessRuntime;
-
 import java.util.Map;
+
+import org.kie.api.runtime.process.ProcessRuntime;
 
 /**
  * see {@link ProcessRuntime}

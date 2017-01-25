@@ -16,10 +16,10 @@
 
 package org.kie.api.builder.model;
 
+import java.util.List;
+
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
-
-import java.util.List;
 
 /**
  * KieSessionModel is a model allowing to programmatically define a KieSession

@@ -18,7 +18,7 @@
   <description>The common API for KIE (Drools, jBPM and OptaPlanner)</description>
 
   <properties>
-    <checkstyle.failOnValidation>true</checkstyle.failOnValidation>
+    <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
   </properties>
 

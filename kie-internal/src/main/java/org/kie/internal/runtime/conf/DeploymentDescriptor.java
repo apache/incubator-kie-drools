@@ -17,7 +17,6 @@
 package org.kie.internal.runtime.conf;
 
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 

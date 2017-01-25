@@ -16,9 +16,9 @@
 
 package org.kie.api.runtime.builder;
 
-import org.kie.api.runtime.process.WorkItemHandler;
-
 import java.util.Map;
+
+import org.kie.api.runtime.process.WorkItemHandler;
 
 /**
  * A work item manager is responsible for finding the right

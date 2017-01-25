@@ -16,10 +16,10 @@
 
 package org.kie.api.definition.process;
 
+import java.util.Map;
+
 import org.kie.api.definition.KieDefinition;
 import org.kie.api.io.Resource;
-
-import java.util.Map;
 
 /**
  * A Process represents one modular piece of business logic that can be executed by

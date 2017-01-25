@@ -17,7 +17,6 @@ package org.kie.internal.task.query;
 
 import java.util.Date;
 
-import org.kie.internal.query.ExtendedParametrizedQueryBuilder;
 import org.kie.internal.query.ProcessInstanceIdQueryBuilder;
 import org.kie.internal.task.api.model.TaskEvent;
 import org.kie.internal.task.api.model.TaskEvent.TaskEventType;

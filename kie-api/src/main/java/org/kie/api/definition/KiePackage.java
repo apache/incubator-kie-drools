@@ -16,13 +16,13 @@
 
 package org.kie.api.definition;
 
+import java.util.Collection;
+
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
-
-import java.util.Collection;
 
 /**
  * This provides a collection of knowledge definitions that can be given to a {@link org.kie.api.KieBase}.

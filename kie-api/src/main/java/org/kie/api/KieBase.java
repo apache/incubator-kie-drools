@@ -16,6 +16,9 @@
 
 package org.kie.api;
 
+import java.util.Collection;
+import java.util.Set;
+
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Query;
@@ -26,9 +29,6 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
-
-import java.util.Collection;
-import java.util.Set;
 
 /**
  * <p>

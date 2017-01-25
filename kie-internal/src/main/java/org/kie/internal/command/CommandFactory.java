@@ -16,17 +16,16 @@
 
 package org.kie.internal.command;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
-import org.kie.api.command.KieCommands;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

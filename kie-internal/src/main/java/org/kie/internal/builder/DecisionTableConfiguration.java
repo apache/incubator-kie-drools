@@ -16,10 +16,10 @@
 
 package org.kie.internal.builder;
 
+import java.util.List;
+
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
-
-import java.util.List;
 
 /**
  * ResourceConfiguration for decision tables. It allows for the type of the decision, XLS or CSV, to be specified

@@ -19,15 +19,13 @@ package org.kie.internal.builder.help;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import com.sun.tools.xjc.Options;
+import org.kie.api.io.Resource;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.api.io.Resource;
-
-import com.sun.tools.xjc.Options;
 
 /**
  * Provides helper methods for working with JAXB and a Knowledgebase, it takes care of the Classpath issues when
