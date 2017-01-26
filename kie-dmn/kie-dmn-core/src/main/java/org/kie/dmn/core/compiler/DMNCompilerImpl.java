@@ -102,7 +102,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                     model.addMessage( DMNMessage.Severity.ERROR, "Invalid variable name '"+variableName+"' in input data '"+input.getId()+"'", input.getId() );
                 }
                 InputDataNode idn = new InputDataNode( input );
-                DMNType type = resolveTypeRef( model, idn, e, input.getVariable().getTypeRef() );
+                DMNType type = resolveTypeRef( model, idn, e, input.getVariable(), input.getVariable().getTypeRef() );
                 idn.setDmnType( type );
                 model.addInput( idn );
                 model.getTypeRegistry().put( input.getVariable().getTypeRef(), type );
@@ -111,9 +111,9 @@ public class DMNCompilerImpl implements DMNCompiler {
                 DecisionNode dn = new DecisionNode( decision );
                 DMNType type = null;
                 if( decision.getVariable() != null && decision.getVariable().getTypeRef() != null ) {
-                    type = resolveTypeRef( model, dn, decision, decision.getVariable().getTypeRef() );
+                    type = resolveTypeRef( model, dn, decision, decision.getVariable(), decision.getVariable().getTypeRef() );
                 } else {
-                    type = resolveTypeRef( model, dn, decision, null );
+                    type = resolveTypeRef( model, dn, decision, decision, null );
                 }
                 dn.setResultType( type );
                 model.addDecision( dn );
@@ -122,11 +122,11 @@ public class DMNCompilerImpl implements DMNCompiler {
                 BusinessKnowledgeModelNode bkmn = new BusinessKnowledgeModelNode( bkm );
                 DMNType type = null;
                 if( bkm.getVariable() != null && bkm.getVariable().getTypeRef() != null ) {
-                    type = resolveTypeRef( model, bkmn, bkm, bkm.getVariable().getTypeRef() );
+                    type = resolveTypeRef( model, bkmn, bkm, bkm.getVariable(), bkm.getVariable().getTypeRef() );
                 } else {
                     // TODO: need to handle cases where the variable is not defined or does not have a type;
                     // for now the call bellow will return type UNKNOWN
-                    type = resolveTypeRef( model, bkmn, bkm, null );
+                    type = resolveTypeRef( model, bkmn, bkm, bkm,null );
                 }
                 bkmn.setResultType( type );
                 model.addBusinessKnowledgeModel( bkmn );
@@ -203,7 +203,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         BaseDMNTypeImpl type = null;
         if( itemDef.getTypeRef() != null ) {
             // this is a reference to an existing type, so resolve the reference
-            type = (BaseDMNTypeImpl) resolveTypeRef( dmnModel, node, itemDef, itemDef.getTypeRef() );
+            type = (BaseDMNTypeImpl) resolveTypeRef( dmnModel, node, itemDef, itemDef, itemDef.getTypeRef() );
             if( type != null ) {
                 // we have to clone this type definition into a new one
                 type = type.clone();
@@ -234,10 +234,10 @@ public class DMNCompilerImpl implements DMNCompiler {
         return type;
     }
 
-    private DMNType resolveTypeRef(DMNModelImpl dmnModel, DMNNode node, NamedElement model, QName typeRef) {
+    private DMNType resolveTypeRef(DMNModelImpl dmnModel, DMNNode node, NamedElement model, DMNModelInstrumentedBase localElement, QName typeRef) {
         if( typeRef != null ) {
             String prefix = typeRef.getPrefix();
-            String namespace = model.getNamespaceURI( prefix );
+            String namespace = localElement.getNamespaceURI( prefix );
             if( namespace != null && DMNModelInstrumentedBase.URI_FEEL.equals( namespace ) ) {
                 Type feelType = BuiltInType.determineTypeFromName( typeRef.getLocalPart() );
                 if( feelType == BuiltInType.CONTEXT || feelType == BuiltInType.UNKNOWN ) {
@@ -246,12 +246,12 @@ public class DMNCompilerImpl implements DMNCompiler {
                         if( dt.getOutput().size() > 1 ) {
                             CompositeTypeImpl compType = new CompositeTypeImpl( "__t"+model.getName(), model.getId() );
                             for( OutputClause oc : dt.getOutput() ) {
-                                DMNType fieldType = resolveTypeRef( dmnModel, node, model, oc.getTypeRef() );
+                                DMNType fieldType = resolveTypeRef( dmnModel, node, model, oc, oc.getTypeRef() );
                                 compType.getFields().put( oc.getName(), fieldType );
                             }
                             return compType;
                         } else if( dt.getOutput().size() == 1 ) {
-                            return resolveTypeRef( dmnModel, node, model, dt.getOutput().get( 0 ).getTypeRef() );
+                            return resolveTypeRef( dmnModel, node, model, dt.getOutput().get( 0 ), dt.getOutput().get( 0 ).getTypeRef() );
                         }
                     }
                 }
@@ -321,7 +321,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         DMNInvocationEvaluator invEval = new DMNInvocationEvaluator( node.getName(), node.getId(), functionName, invocation );
         for( Binding binding : invocation.getBinding() ) {
             invEval.addParameter( binding.getParameter().getName(),
-                                  resolveTypeRef( model, node, binding.getParameter(), binding.getParameter().getTypeRef() ),
+                                  resolveTypeRef( model, node, binding.getParameter(), binding.getParameter(), binding.getParameter().getTypeRef() ),
                                   compileExpression( model, node, binding.getParameter().getName(), binding.getExpression() ) );
         }
         return invEval;
@@ -358,7 +358,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         for( ContextEntry ce : ctxDef.getContextEntry() ) {
             if( ce.getVariable() != null ) {
                 ctxEval.addEntry( ce.getVariable().getName(),
-                                  resolveTypeRef( model, node, ce.getVariable(), ce.getVariable().getTypeRef() ),
+                                  resolveTypeRef( model, node, ce.getVariable(), ce.getVariable(), ce.getVariable().getTypeRef() ),
                                   compileExpression( model, node, ce.getVariable().getName(), ce.getExpression() ) );
             } else {
                 // if the variable is not defined, then it should be the last
@@ -382,7 +382,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         FunctionDefinition funcDef = expression;
         DMNExpressionEvaluatorInvokerFunction func = new DMNExpressionEvaluatorInvokerFunction( node.getName(), funcDef );
         for( InformationItem p : funcDef.getFormalParameter() ) {
-            func.addParameter( p.getName(), resolveTypeRef( model, node, p, p.getTypeRef() ) );
+            func.addParameter( p.getName(), resolveTypeRef( model, node, p, p, p.getTypeRef() ) );
         }
         DMNExpressionEvaluator eval = compileExpression( model, node, functionName, funcDef.getExpression() );
         func.setEvaluator( eval );
