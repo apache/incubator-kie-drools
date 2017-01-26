@@ -179,6 +179,7 @@ public class TimerManager {
         // timerService.removeJob( timer.getJobHandle() );
         // }
         if (timerService instanceof RegisteredTimerServiceDelegate) {
+            timers.clear();
             return;
         }
         for (Iterator<TimerInstance> it = timers.values().iterator(); it.hasNext();) {
