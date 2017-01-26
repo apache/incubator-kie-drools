@@ -559,6 +559,25 @@ public class DMNRuntimeTest {
         assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getContext().get("time"), is( LocalTime.of( 5, 48, 23 ) ) );
     }
 
+    @Test
+    public void testAlternativeNSDecl() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "alternative_feel_ns_declaration.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0001-input-data-string" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Full Name", "John Doe" );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        assertThat( dmnResult.getDecisionResults().size(), is( 1 ) );
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getResult(), is( "Hello John Doe" ) );
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
