@@ -104,13 +104,13 @@ public class QueryCepFireUntilHaltTest {
         executorService.shutdown();
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void noResultTest() {
         QueryResults results = ksession.getQueryResults("EventsFromStream");
         assertEquals(0, results.size());
     }
     
-    @Test
+    @Test(timeout = 10000L)
     public void withResultTest() {
         secondEntryPoint.insert(new TestEvent("minusOne"));
         clock.advanceTime(5, TimeUnit.SECONDS);
@@ -128,7 +128,7 @@ public class QueryCepFireUntilHaltTest {
         assertEquals(3, results.size());
     }
     
-    @Test
+    @Test(timeout = 10000L)
     public void withNoResultTest() {
         secondEntryPoint.insert(new TestEvent("minusOne"));
         clock.advanceTime(5, TimeUnit.SECONDS);
