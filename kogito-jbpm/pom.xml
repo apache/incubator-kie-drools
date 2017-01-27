@@ -37,6 +37,8 @@
     <maven.jdbc.password>sasa</maven.jdbc.password>
     <maven.jdbc.url>jdbc:h2:tcp://localhost/${project.basedir}/target/jbpm-test;MVCC=TRUE</maven.jdbc.url>
     <maven.jdbc.schema>public</maven.jdbc.schema>
+
+    <findbugs.failOnViolation>true</findbugs.failOnViolation>
   </properties>
 
   <repositories>
@@ -100,32 +102,8 @@
             </additionalClasspathElements>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>findbugs-maven-plugin</artifactId>
-          <configuration>
-            <maxRank>6</maxRank>
-            <effort>Max</effort>
-            <xmlOutput>true</xmlOutput>
-          </configuration>
-          <executions>
-            <execution>
-              <id>findbugs-check</id>
-              <goals>
-                <goal>check</goal>
-              </goals>
-              <phase>compile</phase>
-            </execution>
-          </executions>
-        </plugin>
       </plugins>
     </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
   </build>
 
   <dependencyManagement>
