@@ -207,8 +207,8 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         wm.insert( new Cheese() );
         wm.fireAllRules();
 
-        assertEquals( 3, otnPerson.getOtnIdCounter() );
-        assertEquals( 2, otnCheese.getOtnIdCounter() );
+        assertEquals( 5, otnPerson.getOtnIdCounter() );
+        assertEquals( 4, otnCheese.getOtnIdCounter() );
     }       
 
 }
