@@ -163,26 +163,28 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     private boolean isAllowed(final OperationCommand command, final Task task, final User user,
             List<String> groupIds) {
 
-
         boolean operationAllowed = false;
+        boolean isExcludedOwner =  ((InternalPeopleAssignments) task.getPeopleAssignments()).getExcludedOwners().contains(user);
+        
         for (Allowed allowed : command.getAllowed()) {
             if (operationAllowed) {
                 break;
             }
             switch (allowed) {
                 case Owner: {
-                    operationAllowed = (task.getTaskData().getActualOwner() != null && task.getTaskData().getActualOwner().equals(user));
+                    operationAllowed = !isExcludedOwner && (task.getTaskData().getActualOwner() != null && task.getTaskData().getActualOwner().equals(user));
                     break;
                 }
                 case Initiator: {
                     operationAllowed = (
+                    		!isExcludedOwner &&
                             task.getTaskData().getCreatedBy() != null
                             && (task.getTaskData().getCreatedBy().equals(user)
                             || groupIds != null && groupIds.contains(task.getTaskData().getCreatedBy().getId())));
                     break;
                 }
                 case PotentialOwner: {
-                    operationAllowed = isAllowed(user, groupIds, (List<OrganizationalEntity>) task.getPeopleAssignments().getPotentialOwners());
+                	operationAllowed = !isExcludedOwner && isAllowed(user, groupIds, (List<OrganizationalEntity>) task.getPeopleAssignments().getPotentialOwners());
                     break;
                 }
                 case BusinessAdministrator: {
@@ -190,11 +192,11 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                     break;
                 }
                 case TaskStakeholders: {
-                    operationAllowed = isAllowed(user, groupIds, (List<OrganizationalEntity>) ((InternalPeopleAssignments) task.getPeopleAssignments()).getTaskStakeholders());
+                    operationAllowed = !isExcludedOwner && isAllowed(user, groupIds, (List<OrganizationalEntity>) ((InternalPeopleAssignments) task.getPeopleAssignments()).getTaskStakeholders());
                     break;
                 }
                 case Anyone: {
-                    operationAllowed = true;
+                    operationAllowed = !isExcludedOwner;
                     break;
                 }
             }
@@ -224,7 +226,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         }
         return false;
     }
-
+    
     private void commands(final OperationCommand command, final Task task, final User user,
             final OrganizationalEntity targetEntity, OrganizationalEntity...entities) {
 
