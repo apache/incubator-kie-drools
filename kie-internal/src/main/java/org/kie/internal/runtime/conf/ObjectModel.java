@@ -124,28 +124,37 @@ public class ObjectModel implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         ObjectModel other = (ObjectModel) obj;
         if (identifier == null) {
-            if (other.identifier != null)
+            if (other.identifier != null) {
                 return false;
-        } else if (!identifier.equals(other.identifier))
+            }
+        } else if (!identifier.equals(other.identifier)) {
             return false;
+        }
         if (parameters == null) {
-            if (other.parameters != null)
+            if (other.parameters != null) {
                 return false;
-        } else if (!parameters.equals(other.parameters))
+            }
+        } else if (!parameters.equals(other.parameters)) {
             return false;
+        }
         if (resolver == null) {
-            if (other.resolver != null)
+            if (other.resolver != null) {
                 return false;
-        } else if (!resolver.equals(other.resolver))
+            }
+        } else if (!resolver.equals(other.resolver)) {
             return false;
+        }
         return true;
     }
 }

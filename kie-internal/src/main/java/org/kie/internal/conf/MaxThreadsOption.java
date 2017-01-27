@@ -83,11 +83,13 @@ public class MaxThreadsOption implements SingleValueKieBaseOption {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) { return true; }
+        if ( obj == null ) { return false; }
+        if ( getClass() != obj.getClass() ) { return false; }
         MaxThreadsOption other = (MaxThreadsOption) obj;
-        if ( maxThreads != other.maxThreads ) return false;
+        if ( maxThreads != other.maxThreads ) {
+            return false;
+        }
         return true;
     }
 

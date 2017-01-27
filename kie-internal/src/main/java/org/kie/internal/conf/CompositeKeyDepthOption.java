@@ -83,11 +83,13 @@ public class CompositeKeyDepthOption implements SingleValueKieBaseOption {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) { return true; }
+        if ( obj == null ) { return false; }
+        if ( getClass() != obj.getClass() ) { return false; }
         CompositeKeyDepthOption other = (CompositeKeyDepthOption) obj;
-        if ( depth != other.depth ) return false;
+        if ( depth != other.depth ) {
+            return false;
+        }
         return true;
     }
 

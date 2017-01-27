@@ -89,13 +89,16 @@ public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) { return true; }
+        if ( obj == null ) { return false; }
+        if ( getClass() != obj.getClass() ) { return false; }
         DumpDirOption other = (DumpDirOption) obj;
         if ( dir == null ) {
-            if ( other.dir != null ) return false;
-        } else if ( !dir.equals( other.dir ) ) return false;
+            if ( other.dir != null ) { return false; }
+        } else if ( !dir.equals( other.dir ) ) {
+            return false;
+        }
+
         return true;
     }
 
