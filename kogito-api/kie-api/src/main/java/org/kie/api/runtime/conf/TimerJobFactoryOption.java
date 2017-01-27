@@ -78,13 +78,18 @@ public class TimerJobFactoryOption implements SingleValueKieSessionOption {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) { return true; }
+        if ( obj == null ) { return false; }
+        if ( getClass() != obj.getClass() ) { return false; }
         TimerJobFactoryOption other = (TimerJobFactoryOption) obj;
         if (  timerJobType == null ) {
-            if ( other.timerJobType != null ) return false;
-        } else if ( ! timerJobType.equals( other.timerJobType ) ) return false;
+            if ( other.timerJobType != null ) {
+                return false;
+            }
+        } else if ( ! timerJobType.equals( other.timerJobType ) ) {
+            return false;
+        }
+
         return true;
     }
 

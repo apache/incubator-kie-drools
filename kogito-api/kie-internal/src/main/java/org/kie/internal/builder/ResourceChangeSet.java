@@ -57,17 +57,24 @@ public class ResourceChangeSet {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) { return true; }
+        if ( obj == null ) { return false; }
+        if ( getClass() != obj.getClass() ) { return false; }
         ResourceChangeSet other = (ResourceChangeSet) obj;
         if ( changes == null ) {
-            if ( other.changes != null ) return false;
-        } else if ( !changes.equals( other.changes ) ) return false;
+            if ( other.changes != null ) { return false; }
+        } else if ( !changes.equals( other.changes ) ) {
+            return false;
+        }
         if ( resourceName == null ) {
-            if ( other.resourceName != null ) return false;
-        } else if ( !resourceName.equals( other.resourceName ) ) return false;
-        if ( status != other.status ) return false;
+            if ( other.resourceName != null ) { return false; }
+        } else if ( !resourceName.equals( other.resourceName ) ) {
+            return false;
+        }
+        if ( status != other.status ) {
+            return false;
+        }
+
         return true;
     }
 

@@ -99,9 +99,9 @@ public class WorkItemHandlerOption implements MultiValueKieSessionOption {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) { return true; }
+        if ( obj == null ) { return false; }
+        if ( getClass() != obj.getClass() ) { return false; }
         WorkItemHandlerOption other = (WorkItemHandlerOption) obj;
         if ( handler == null ) {
             if ( other.handler != null ) {

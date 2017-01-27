@@ -81,9 +81,9 @@ public class ConsequenceExceptionHandlerOption implements SingleValueKieBaseOpti
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) { return true; }
+        if ( obj == null ) { return false; }
+        if ( getClass() != obj.getClass() ) { return false; }
         ConsequenceExceptionHandlerOption other = (ConsequenceExceptionHandlerOption) obj;
         if ( handler == null ) {
             if ( other.handler != null ) {

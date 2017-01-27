@@ -79,13 +79,18 @@ public class BeliefSystemTypeOption implements SingleValueKieSessionOption {
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) { return true; }
+        if ( obj == null ) { return false; }
+        if ( getClass() != obj.getClass() ) { return false; }
         BeliefSystemTypeOption other = (BeliefSystemTypeOption) obj;
         if (  beliefSystemType == null ) {
-            if ( other.beliefSystemType != null ) return false;
-        } else if ( ! beliefSystemType.equals( other.beliefSystemType) ) return false;
+            if ( other.beliefSystemType != null ) {
+                return false;
+            }
+        } else if ( ! beliefSystemType.equals( other.beliefSystemType) ) {
+            return false;
+        }
+
         return true;
     }
 

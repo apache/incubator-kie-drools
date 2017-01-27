@@ -102,19 +102,19 @@ public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOptio
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) { return true; }
+        if ( obj == null ) { return false; }
+        if ( getClass() != obj.getClass() ) { return false; }
         AccumulateFunctionOption other = (AccumulateFunctionOption) obj;
         if ( function == null ) {
-            if ( other.function != null ) return false;
+            if ( other.function != null ) { return false; }
         } else if ( other.function == null ) {
             return false;
         } else if ( !function.getClass().equals( other.function.getClass() ) ) {
             return false;
         }
         if ( name == null ) {
-            if ( other.name != null ) return false;
+            if ( other.name != null ) { return false; }
         } else if ( !name.equals( other.name ) ) {
             return false;
         }

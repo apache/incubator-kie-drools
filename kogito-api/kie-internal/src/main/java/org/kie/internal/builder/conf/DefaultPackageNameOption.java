@@ -81,13 +81,15 @@ public class DefaultPackageNameOption implements SingleValueKnowledgeBuilderOpti
 
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) { return true; }
+        if ( obj == null ) { return false; }
+        if ( getClass() != obj.getClass() ) { return false; }
         DefaultPackageNameOption other = (DefaultPackageNameOption) obj;
         if ( packageName == null ) {
-            if ( other.packageName != null ) return false;
-        } else if ( !packageName.equals( other.packageName ) ) return false;
+            if ( other.packageName != null ) { return false; }
+        } else if ( !packageName.equals( other.packageName ) ) {
+            return false;
+        }
         return true;
     }
 
