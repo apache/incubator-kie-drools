@@ -181,7 +181,7 @@ public class ReteWindowNode extends WindowNode
             }
 
             if (isAllowed) {
-                ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.getFirstLeftTuple(), cloneFactHandle.getFirstRightTuple(), epNode);
+                ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.getFirstLeftTuple(), cloneFactHandle.getFirstRightTuple(), getEntryPointNode());
                 cloneFactHandle.clearLeftTuples();
                 cloneFactHandle.clearRightTuples();
 

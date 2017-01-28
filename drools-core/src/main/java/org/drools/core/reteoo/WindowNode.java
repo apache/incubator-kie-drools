@@ -225,7 +225,7 @@ public class WindowNode extends ObjectSource
         }
     }
 
-    private EntryPointNode getEntryPointNode() {
+    protected EntryPointNode getEntryPointNode() {
         return (EntryPointNode) getObjectTypeNode().getParentObjectSource();
     }
 
