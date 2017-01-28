@@ -21,7 +21,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,7 +55,7 @@ public class ReteDumper {
         if (!visitedNodes.add( node )) {
             return;
         }
-        Sink[] sinks = getSinks( node );
+        Sink[] sinks = node.getSinks();
         if (sinks != null) {
             for (Sink sink : sinks) {
                 if (sink instanceof BaseNode) {
@@ -64,21 +63,5 @@ public class ReteDumper {
                 }
             }
         }
-    }
-
-    public static Sink[] getSinks( BaseNode node ) {
-        Sink[] sinks = null;
-        if (node instanceof EntryPointNode ) {
-            EntryPointNode source = (EntryPointNode) node;
-            Collection<ObjectTypeNode> otns = source.getObjectTypeNodes().values();
-            sinks = otns.toArray(new Sink[otns.size()]);
-        } else if (node instanceof ObjectSource ) {
-            ObjectSource source = (ObjectSource) node;
-            sinks = source.getObjectSinkPropagator().getSinks();
-        } else if (node instanceof LeftTupleSource ) {
-            LeftTupleSource source = (LeftTupleSource) node;
-            sinks = source.getSinkPropagator().getSinks();
-        }
-        return sinks;
     }
 }

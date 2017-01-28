@@ -62,7 +62,6 @@ public class WindowNode extends ObjectSource
     private EntryPointId                   entryPoint;
     private ObjectSinkNode                 previousRightTupleSinkNode;
     private ObjectSinkNode                 nextRightTupleSinkNode;
-    protected EntryPointNode               epNode;
     private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
 
     public WindowNode() {
@@ -96,8 +95,6 @@ public class WindowNode extends ObjectSource
                 ((SlidingTimeWindow)b).setWindowNode( this );
             }
         }
-        epNode = (EntryPointNode) getObjectTypeNode().getParentObjectSource();
-
         hashcode = calculateHashCode();
     }
 
@@ -108,7 +105,6 @@ public class WindowNode extends ObjectSource
         constraints = (List<AlphaNodeFieldConstraint>) in.readObject();
         behavior = (BehaviorManager) in.readObject();
         entryPoint = (EntryPointId) in.readObject();
-        epNode = (EntryPointNode) getObjectTypeNode().getParentObjectSource();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -116,7 +112,6 @@ public class WindowNode extends ObjectSource
         out.writeObject(constraints);
         out.writeObject(behavior);
         out.writeObject(entryPoint);
-        epNode = (EntryPointNode) getObjectTypeNode().getParentObjectSource();
     }
 
     public short getType() {
@@ -214,7 +209,9 @@ public class WindowNode extends ObjectSource
         }
 
         if  ( isAllowed ) {
-            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.getFirstLeftTuple(), cloneFactHandle.getFirstRightTuple(), epNode );
+            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.getFirstLeftTuple(),
+                                                                                 cloneFactHandle.getFirstRightTuple(),
+                                                                                 getEntryPointNode() );
             cloneFactHandle.clearLeftTuples();
             cloneFactHandle.clearRightTuples();
 
@@ -226,6 +223,10 @@ public class WindowNode extends ObjectSource
         } else {
             ObjectTypeNode.doRetractObject(cloneFactHandle, context, workingMemory);
         }
+    }
+
+    protected EntryPointNode getEntryPointNode() {
+        return (EntryPointNode) getObjectTypeNode().getParentObjectSource();
     }
 
     public void modifyObject(InternalFactHandle factHandle,

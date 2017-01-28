@@ -98,7 +98,6 @@ public abstract class LeftTupleSource extends BaseNode
                                             ClassNotFoundException {
         super.readExternal( in );
         sink = (LeftTupleSinkPropagator) in.readObject();
-        leftInput = (LeftTupleSource) in.readObject();
         leftDeclaredMask = (BitMask) in.readObject();
         leftInferredMask = (BitMask) in.readObject();
         leftNegativeMask = (BitMask) in.readObject();
@@ -108,7 +107,6 @@ public abstract class LeftTupleSource extends BaseNode
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( sink );
-        out.writeObject( leftInput );
         out.writeObject(leftDeclaredMask);
         out.writeObject(leftInferredMask);
         out.writeObject(leftNegativeMask);

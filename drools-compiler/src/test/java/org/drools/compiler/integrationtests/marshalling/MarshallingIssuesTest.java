@@ -15,29 +15,18 @@
 
 package org.drools.compiler.integrationtests.marshalling;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
+import org.junit.Test;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
-import java.io.Reader;
-import java.io.StringReader;
-
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
-import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class MarshallingIssuesTest extends CommonTestMethodBase  {
 
@@ -146,6 +135,4 @@ public class MarshallingIssuesTest extends CommonTestMethodBase  {
         assertNotNull( ksession );
         ksession.dispose();
     }
-    
-
 }

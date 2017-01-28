@@ -27,8 +27,6 @@ import org.kie.internal.runtime.KnowledgeRuntime;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import static org.drools.core.reteoo.ReteDumper.getSinks;
-
 public class ReteComparator {
 
     private ReteComparator() { }
@@ -75,8 +73,8 @@ public class ReteComparator {
             throw new RuntimeException( node1 + " and " + node2 + " are not equal as expected" );
         }
 
-        Sink[] sinks1 = getSinks( node1 );
-        Sink[] sinks2 = getSinks( node2 );
+        Sink[] sinks1 = node1.getSinks();
+        Sink[] sinks2 = node2.getSinks();
 
         if (sinks1 == null) {
             if (sinks2 == null) {

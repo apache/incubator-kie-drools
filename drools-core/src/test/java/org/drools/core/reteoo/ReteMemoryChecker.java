@@ -23,8 +23,6 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.runtime.KieSession;
 
-import static org.drools.core.reteoo.ReteDumper.getSinks;
-
 public class ReteMemoryChecker {
 
     public static void checkNodeMemories(KieSession session) {
@@ -69,7 +67,7 @@ public class ReteMemoryChecker {
             }
         }
 
-        Sink[] sinks = getSinks( node );
+        Sink[] sinks = node.getSinks();
         if (sinks != null) {
             for (Sink sink : sinks) {
                 if (sink instanceof BaseNode) {
