@@ -23,7 +23,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
-import org.jbpm.services.cdi.test.humantaskservice.CustomHumanTaskServiceProducer.CustomTaskPersistenceContextManagerInUse;
+import org.jbpm.services.cdi.test.humantaskservice.CustomHumanTaskServiceProducer.CustomTaskServiceInUse;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -147,13 +147,12 @@ public class CustomHumanTaskServiceTest extends AbstractKieServicesBaseTest {
     }
 
     /**
-     * The CustomHumanTaskService is configured with a TaskPersistenceContextManager
-     * implementation that throws an exception to prove that the custom environment
-     * is in use.
+     * The CustomHumanTaskService is configured as a mock which throws an exception
+     * when the the execute() method is called.
      *
      * @throws Exception
      */
-    @Test(expected=CustomTaskPersistenceContextManagerInUse.class)
+    @Test(expected=CustomTaskServiceInUse.class)
     public void testCustomTaskService() throws Exception {
         customTaskService.execute(new TestCommand());
     }
