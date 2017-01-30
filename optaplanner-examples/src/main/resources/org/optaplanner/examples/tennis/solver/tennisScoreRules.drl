@@ -24,6 +24,9 @@ import org.optaplanner.examples.tennis.domain.Day;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 
+import org.apache.commons.lang3.tuple.Pair;
+import accumulate org.optaplanner.core.impl.score.director.drools.functions.LoadBalanceAccumulateFunction loadBalance;
+
 global HardMediumSoftScoreHolder scoreHolder;
 
 // ############################################################################
@@ -52,14 +55,12 @@ end
 
 rule "fairAssignmentCountPerTeam"
     when
-        $t : Team()
         accumulate(
-            $a : TeamAssignment(team == $t);
-            $total : count($a)
+            TeamAssignment(team != null, $t : team);
+            $total : loadBalance($t)
         )
     then
-        // Fairness and load balancing trick (see docs): squared to assure correctness in corner cases
-        scoreHolder.addMediumConstraintMatch(kcontext, - ($total.intValue() * $total.intValue()));
+        scoreHolder.addMediumConstraintMatch(kcontext, - (int) ($total * 1000000.0));
 end
 
 // ############################################################################
@@ -68,14 +69,11 @@ end
 
 rule "evenlyConfrontationCount"
     when
-        $t1 : Team($leftId : id)
-        $t2 : Team(id > $leftId)
         accumulate(
-            $a : TeamAssignment(team == $t1, $d : day)
-            and TeamAssignment(team == $t2, day == $d);
-            $total : count($a)
+            TeamAssignment(team != null, $t1 : team, $d : day)
+            and TeamAssignment(team != null, $t1.getId() < team.getId(), $t2 : team, day == $d);
+            $total : loadBalance(Pair.of($t1, $t2))
         )
     then
-        // Fairness and load balancing trick (see docs): squared to assure correctness in corner cases
-        scoreHolder.addSoftConstraintMatch(kcontext, - ($total.intValue() * $total.intValue()));
+        scoreHolder.addSoftConstraintMatch(kcontext, - (int) ($total * 1000000.0));
 end
