@@ -45,7 +45,7 @@ public class EJBTimerScheduler {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EJBTimerScheduler.class);
 
-	private static final Integer OVERDUE_WAIT_TIME = Integer.parseInt(System.getProperty("org.jbpm.overdue.timer.wait", "10000"));
+	private static final Integer OVERDUE_WAIT_TIME = Integer.parseInt(System.getProperty("org.jbpm.overdue.timer.wait", "20000"));
 	
 	@Resource
 	private javax.ejb.TimerService timerService;

@@ -37,6 +37,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 
 public class EjbSchedulerService implements GlobalSchedulerService {
+    
+    private static final Boolean TRANSACTIONAL = Boolean.parseBoolean(System.getProperty("org.jbpm.ejb.timer.tx", "false"));
 
 	private AtomicLong idCounter = new AtomicLong();
 	private TimerService globalTimerService;
@@ -105,7 +107,7 @@ public class EjbSchedulerService implements GlobalSchedulerService {
 
 	@Override
 	public boolean isTransactional() {
-		return false;
+		return TRANSACTIONAL;
 	}
 
 	@Override
