@@ -220,7 +220,7 @@
           <properties>
             <property>
               <name>listener</name>
-              <value>org.kie.test.util.TestListener</value>
+              <value>org.kie.test.util.TestStatusListener</value>
             </property>
           </properties>
         </configuration>

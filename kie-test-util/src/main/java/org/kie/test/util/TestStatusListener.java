@@ -27,13 +27,13 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 
-public class TestListener extends RunListener {
+public class TestStatusListener extends RunListener {
     
     private static BufferedWriter writer;
     static {
         try {
             writer = Files.newBufferedWriter(
-                    Paths.get("./target/testListener"
+                    Paths.get("./target/testStatusListener"
                                 + "." + ManagementFactory.getRuntimeMXBean().getName().replaceAll("\\W+", "")
                                 + "." + System.nanoTime()
                                 + ".log"));
