@@ -55,7 +55,7 @@ public class TestStatusListener extends RunListener {
     private static synchronized void write(String method, Failure failure) throws IOException {
         writer.write(method);
         writer.write("\t");
-        if ( failure.getMessage() != null ) writer.write(failure.getMessage());
+        if ( failure.getMessage() != null ) { writer.write(failure.getMessage()); }
         writer.newLine();
         writer.flush();
     }
