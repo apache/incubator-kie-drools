@@ -74,6 +74,7 @@ public abstract class DMNBaseConverter
                     null );
             if( object instanceof DMNModelInstrumentedBase ) {
                 ((DMNModelInstrumentedBase) object).setParent( (DMNModelInstrumentedBase) parent );
+                ( (DMNModelInstrumentedBase)parent).addChildren((DMNModelInstrumentedBase) object);
             }
             reader.moveUp();
             assignChildElement( parent, nodeName, object );
