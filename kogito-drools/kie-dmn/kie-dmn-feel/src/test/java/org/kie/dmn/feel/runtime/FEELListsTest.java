@@ -17,11 +17,13 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class FEELListsTest extends BaseFEELTest {
 
@@ -68,7 +70,31 @@ public class FEELListsTest extends BaseFEELTest {
                 // Selection
                 {"[ {x:1, y:2}, {x:2, y:3} ].y", Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ) ) },
                 {"[ {x:1, y:2}, {x:2} ].y", Arrays.asList( BigDecimal.valueOf( 2 ) ) },
-                {"[ {x:1, y:2}, {x:2, y:3} ].z", Collections.emptyList() }
+                {"[ {x:1, y:2}, {x:2, y:3} ].z", Collections.emptyList() },
+
+                // lists of intervals
+                {"[ ( 10 .. 20 ) ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, BigDecimal.valueOf( 10 ),
+                                                                   BigDecimal.valueOf( 20 ), Range.RangeBoundary.OPEN ) ) },
+                {"[ ] 10 .. 20 [ ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, BigDecimal.valueOf( 10 ),
+                                                                   BigDecimal.valueOf( 20 ), Range.RangeBoundary.OPEN ) ) },
+                {"[ ( duration(\"P1D\") .. duration(\"P10D\") ) ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ) },
+                {"[ ( duration(\"P1D\") .. duration(\"P10D\") [ ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ) },
+                {"[ ( duration(\"P1D\") .. duration(\"P10D\") ] ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.CLOSED ) ) },
+                {"[ ] duration(\"P1D\") .. duration(\"P10D\") ) ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ) },
+                {"[ ] duration(\"P1D\") .. duration(\"P10D\") [ ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ) },
+                {"[ ] duration(\"P1D\") .. duration(\"P10D\") ] ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"),
+                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.CLOSED ) ) },
+                {"[ [ duration(\"P1D\") .. duration(\"P10D\") ) ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
+                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ) },
+                {"[ [ duration(\"P1D\") .. duration(\"P10D\") [ ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
+                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ) },
+                {"[ [ duration(\"P1D\") .. duration(\"P10D\") ] ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
+                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.CLOSED ) ) }
         };
         return Arrays.asList( cases );
     }
