@@ -257,7 +257,7 @@ primary
     | context                     #primaryContext
     | '(' expression ')'          #primaryParens
     | simpleUnaryTest             #primaryUnaryTest
-    | qualifiedName (parameters)? #primaryName
+    | qualifiedName parameters?   #primaryName
     ;
 
 // #33 - #39
@@ -302,7 +302,15 @@ endpoint
 
 // #8-#12
 interval
-    : low=('('|']'|'[') start=endpoint '..' end=endpoint up=(')'|'['|']')
+    : low='(' start=endpoint '..' end=endpoint up=')'
+    | low='(' start=endpoint '..' end=endpoint up='['
+    | low='(' start=endpoint '..' end=endpoint up=']'
+    | low=']' start=endpoint '..' end=endpoint up=')'
+    | low=']' start=endpoint '..' end=endpoint up='['
+    | low=']' start=endpoint '..' end=endpoint up=']'
+    | low='[' start=endpoint '..' end=endpoint up=')'
+    | low='[' start=endpoint '..' end=endpoint up='['
+    | low='[' start=endpoint '..' end=endpoint up=']'
     ;
 
 // #20
@@ -328,7 +336,7 @@ nameRef
     ;
 
 nameRefOtherToken
-    : { helper.followUp( _input.LT(1), _localctx==null ) }? .
+    : { helper.followUp( _input.LT(1), _localctx==null ) }? ~('('|')'|'['|']'|'{'|'}')
     ;
 
 /********************************
