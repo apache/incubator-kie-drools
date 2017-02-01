@@ -1,0 +1,296 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.kie.dmn.validation;
+
+import org.kie.dmn.feel.model.v1_1.*;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.validation.ValidationMsg.Severity;
+
+rule BKM_MISSING_EXPR
+when
+    $d : BusinessKnowledgeModel( encapsulatedLogic == null || encapsulatedLogic.expression == null )
+then
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.BKM_MISSING_EXPR, $d ) );
+end
+
+rule BKM_MISSING_VAR
+when
+    $d : BusinessKnowledgeModel()
+    not( BusinessKnowledgeModel( /variable{name == $d.name}, this == $d ) )
+then
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.BKM_MISSING_VAR, $d ) );
+end
+
+rule CONTEXT_DUP_ENTRY
+when
+  $ce1 : ContextEntry( parent instanceof Context )
+  $ce2 : ContextEntry( variable!.name == $ce1.variable!.name, parent == $ce1.parent, this != $ce1 )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.CONTEXT_DUP_ENTRY, $ce1 ) );
+end
+
+rule CONTEXT_ENTRY_NOTYPEREF
+when
+  $ce1 : ContextEntry( variable != null, variable.typeRef == null )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.CONTEXT_ENTRY_NOTYPEREF, $ce1 ) );
+end
+
+rule DRGELEM_NOT_UNIQUE
+when
+  $x : DRGElement()
+  $y : DRGElement( name == $x.name, this != $x )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DRGELEM_NOT_UNIQUE, $x ) );
+end
+
+rule DECISION_MISSING_EXPR
+when
+    $d : Decision( expression == null )
+then
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DECISION_MISSING_EXPR, $d ) );
+end
+
+rule DECISION_MISSING_VAR
+when
+    $d : Decision()
+    not( Decision( /variable{name == $d.name}, this == $d ) )
+then
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DECISION_MISSING_VAR, $d ) );
+end
+
+rule DTABLE_MULTIPLEOUT_NAME
+when
+  $oc : OutputClause( parent instanceof DecisionTable, parent.output.size > 1, this.name == null )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DTABLE_MULTIPLEOUT_NAME, $oc ) );
+end
+
+rule DTABLE_MULTIPLEOUT_TYPEREF
+when
+  $oc : OutputClause( parent instanceof DecisionTable, parent.output.size > 1, this.typeRef == null )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DTABLE_MULTIPLEOUT_TYPEREF, $oc ) );
+end
+
+rule DTABLE_PRIORITY_MISSING_OUTVALS
+when
+  $oc : OutputClause( parent instanceof DecisionTable, parent#DecisionTable.hitPolicy == HitPolicy.PRIORITY, outputValues == null )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DTABLE_PRIORITY_MISSING_OUTVALS, $oc ) );
+end
+
+rule DTABLE_SINGLEOUT_NONAME
+when
+  $oc : OutputClause( parent instanceof DecisionTable, parent.output.size == 1, this.name != null )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DTABLE_SINGLEOUT_NONAME, $oc ) );
+end
+
+rule DTABLE_SINGLEOUT_TYPEREF
+when
+  $oc : OutputClause( parent instanceof DecisionTable, parent.output.size == 1, this.typeRef != null )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DTABLE_SINGLEOUT_NOTYPEREF, $oc ) );
+end
+
+rule ELEMREF_NOHASH_p1
+when
+  $oc : DMNElementReference( !href.startsWith("#"), !( href contains ":" ) ) 
+then
+System.out.println("x");
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ELEMREF_NOHASH, $oc.getHref()) );
+end
+
+rule ELEMREF_NOHASH_p2
+when
+  $oc : DMNElementReference( href contains ":", !href.substring(href.indexOf(":")+1).startsWith('#') )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ELEMREF_NOHASH, $oc.getHref() ) );
+end
+
+function String rightOfHash(String input) {
+    return input.substring(input.indexOf("#")+1);
+}
+
+rule ELEMREF_MISSING_TARGET
+when
+  $oc : DMNElementReference( $targetId : rightOfHash( href ) )
+  not ( DMNElement( id == $targetId ) ) 
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ELEMREF_MISSING_TARGET, $oc ) );
+end
+
+rule FORMAL_PARAM_DUPLICATED
+when
+    $fp1 : InformationItem( parent instanceof FunctionDefinition )
+    $fp2 : InformationItem( name == $fp1.name, parent == $fp1.parent, this != $fp1 )
+then
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.FORMAL_PARAM_DUPLICATED, $fp1 ) );
+end
+
+rule INPUTDATA_MISSING_VAR
+when
+    $id : InputData()
+    not( InputData( /variable{name == $id.name}, this == $id ) )
+then
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INPUTDATA_MISSING_VAR, $id) );
+end
+
+// The parameter names in the Binding elements SHALL be a subset of the formalParameters of the calledFunction.
+rule INVOCATION_INCONSISTENT_PARAM_NAMES
+when
+    $inv : Invocation( $targetName : expression#LiteralExpression.text )
+    $target : BusinessKnowledgeModel( name == $targetName )
+    accumulate ( Binding($s : parameter.name) from $inv.binding ; 
+                 $names : collectSet($s)  ) 
+    accumulate ( InformationItem($ts : name) from $target.encapsulatedLogic.formalParameter ; 
+                 $targetNames : collectSet($ts) ;
+                 ! $targetNames.containsAll($names) ) 
+then
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INVOCATION_INCONSISTENT_PARAM_NAMES, $inv ) );
+end
+
+rule INVOCATION_MISSING_TARGET
+when
+    $inv : Invocation( $targetName : expression#LiteralExpression.text )
+    not( DRGElement( name == $targetName ) )  
+then
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INVOCATION_MISSING_TARGET, $inv ) );
+end
+
+rule INVOCATION_WRONG_PARAM_COUNT
+when
+    $inv : Invocation( $targetName : expression#LiteralExpression.text )
+    BusinessKnowledgeModel( name == $targetName, encapsulatedLogic.formalParameter.size != $inv.binding.size ) 
+then
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INVOCATION_WRONG_PARAM_COUNT, $inv) );
+end
+
+// Not sure if this rule is really needed being a possible subset of ITEMDEF_NOT_UNIQUE 
+rule ITEMCOMP_DUPLICATED
+when
+  $ic1 : ItemDefinition( parent instanceof ItemDefinition )
+  $ic2 : ItemDefinition( name == $ic1.name, parent == $ic1.parent, this != $ic1 )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ITEMCOMP_DUPLICATED, $ic1) );
+end
+
+rule ITEMDEF_NOT_UNIQUE
+when
+  $x : ItemDefinition()
+  $y : ItemDefinition( name == $x.name, this != $x )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ITEMDEF_NOT_UNIQUE, $x ) );
+end
+
+rule RELATION_DUP_COLUMN
+when
+  $c1 : InformationItem( parent instanceof Relation )
+  $c2 : InformationItem( name == $c1.name, parent == $c1.parent, this != $c1 )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.RELATION_DUP_COLUMN, $c1 ) );
+end
+
+rule RELATION_ROW_CELL_NOTLITERAL
+when
+  $e : Expression( parent instanceof org.kie.dmn.feel.model.v1_1.List, parent.parent instanceof Relation, ! (this instanceof LiteralExpression) )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.RELATION_ROW_CELL_NOTLITERAL, $e ) );
+end
+
+rule RELATION_ROW_CELLCOUNTMISMATCH
+when
+  $row : org.kie.dmn.feel.model.v1_1.List( parent instanceof Relation, expression.size != parent.column.size )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.RELATION_ROW_CELLCOUNTMISMATCH, $row ) );
+end
+
+rule REQAUTH_NOT_KNOWLEDGESOURCE
+when
+  AuthorityRequirement( $oc: requiredAuthority )
+  DMNElement( id == rightOfHash( $oc.href ) , !(this instanceof KnowledgeSource) ) 
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.REQAUTH_NOT_KNOWLEDGESOURCE, $oc ) );
+end
+
+rule TYPEREF_NO_FEEL_TYPE_p1
+when
+  $o: Expression( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o.getTypeRef() ) );
+end
+
+rule TYPEREF_NO_FEEL_TYPE_p2
+when
+  $o: InformationItem( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
+then
+  $o: entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o.getTypeRef() ) );
+end
+
+rule TYPEREF_NO_FEEL_TYPE_p3
+when
+  $o: ItemDefinition( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o.getTypeRef() ) );
+end
+
+rule TYPEREF_NO_FEEL_TYPE_p4
+when
+  $o: OutputClause( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o.getTypeRef() ) );
+end
+
+rule TYPEREF_NOT_FEEL_NOT_DEF_p1
+when
+  $o: Expression( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
+  not( ItemDefinition( name == $typeRef ) )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o.getTypeRef() ) );
+end
+
+rule TYPEREF_NOT_FEEL_NOT_DEF_p2
+when
+  $o: InformationItem( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
+  not( ItemDefinition( name == $typeRef ) )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o.getTypeRef() ) );
+end
+
+rule TYPEREF_NOT_FEEL_NOT_DEF_p3
+when
+  $o: ItemDefinition( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
+  not( ItemDefinition( name == $typeRef ) )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o.getTypeRef() ) );
+end
+
+rule TYPEREF_NOT_FEEL_NOT_DEF_p4
+when
+  $o: OutputClause( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
+  not( ItemDefinition( name == $typeRef ) )
+then
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o.getTypeRef() ) );
+end
+
+
+rule problems
+when
+  $p: Object() from entry-point "PROBLEMS"
+then
+  // do nothing, but keep this rule for entry point definition System.err.println($p);
+end

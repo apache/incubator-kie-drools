@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.model.v1_1;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ public abstract class DMNModelInstrumentedBase {
     private Map<String, String> nsContext;
 
     private DMNModelInstrumentedBase parent;
+    private final java.util.List<DMNModelInstrumentedBase> children = new ArrayList<>();
 
     /**
      * Namespace context map as defined at the level of the given element.
@@ -56,5 +59,16 @@ public abstract class DMNModelInstrumentedBase {
 
     public void setParent(DMNModelInstrumentedBase parent) {
         this.parent = parent;
+    }
+
+    /*
+     * children element references are populated during deserialization, enabling fast access for Validation.
+     */
+    public java.util.List<DMNModelInstrumentedBase> getChildren() {
+        return Collections.unmodifiableList(children);
+    }
+    
+    public void addChildren(DMNModelInstrumentedBase child) {
+        this.children.add(child);
     }
 }
