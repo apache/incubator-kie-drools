@@ -65,6 +65,14 @@
       <!-- Used at compile time by *ScoreHibernateType -->
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <!-- Replacement for 'org.apache.geronimo.specs:geronimo-jta_1.1_spec' which is excluded from Hibernate deps. -->
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+
     <!-- Test -->
     <dependency>
       <groupId>org.hibernate</groupId>

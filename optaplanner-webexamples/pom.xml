@@ -117,6 +117,14 @@
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <!-- Collides with 'org.jboss.spec.javax.el:jboss-el-api_3.0_spec' brought in by
+               'org.jboss.spec.javax.servlet.jsp:jboss-jsp-api_2.3_spec'. -->
+          <groupId>javax.el</groupId>
+          <artifactId>javax.el-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Tests -->
@@ -144,6 +152,12 @@
         <exclusion>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <!-- Collides with 'com.google.code.findbugs:annotations' brought in by
+               optaplanner-core via 'org.reflections:reflections'. -->
+          <groupId>net.jcip</groupId>
+          <artifactId>jcip-annotations</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
