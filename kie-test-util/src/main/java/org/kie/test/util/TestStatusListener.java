@@ -38,7 +38,7 @@ public class TestStatusListener extends RunListener {
                                 + "." + System.nanoTime()
                                 + ".log"));
         } catch (IOException e) {
-            e.printStackTrace();
+            new RuntimeException( "TestStatusListener unable to open writer for logging to file test status updates.", e );
         }
     }
     
