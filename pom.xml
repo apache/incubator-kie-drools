@@ -95,12 +95,6 @@
             <forkCount>${surefire.forkCount}</forkCount>
             <reuseForks>true</reuseForks>
             <runOrder>hourly</runOrder>
-            <properties>
-              <property>
-                <name>listener</name>
-                <value>org.drools.core.util.TestListener</value>
-              </property>
-            </properties>
           </configuration>
         </plugin>
       </plugins>

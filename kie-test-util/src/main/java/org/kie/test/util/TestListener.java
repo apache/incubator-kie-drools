@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.core.util;
+package org.kie.test.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
