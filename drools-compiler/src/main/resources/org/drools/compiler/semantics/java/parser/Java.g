@@ -1301,7 +1301,7 @@ superSuffix
 
 HexLiteral : '0' ('x'|'X') HexDigit+ IntegerTypeSuffix? ;
 
-DecimalLiteral : ('0' | '1'..'9' '0'..'9'*) IntegerTypeSuffix? ;
+DecimalLiteral : ('0' | NonZeroDigit (Digits? | Underscores Digits)) IntegerTypeSuffix? ;
 
 OctalLiteral : '0' ('0'..'7')+ IntegerTypeSuffix? ;
 
@@ -1312,11 +1312,26 @@ fragment
 IntegerTypeSuffix : ('l'|'L') ;
 
 FloatingPointLiteral
-    :   ('0'..'9')+ '.' ('0'..'9')* Exponent? FloatTypeSuffix?
-    |   '.' ('0'..'9')+ Exponent? FloatTypeSuffix?
-    |   ('0'..'9')+ Exponent FloatTypeSuffix?
-    |   ('0'..'9')+ Exponent? FloatTypeSuffix
+    :   Digits '.' Digits? Exponent? FloatTypeSuffix?
+    |   '.' Digits Exponent? FloatTypeSuffix?
+    |   Digits Exponent FloatTypeSuffix?
+    |   Digits Exponent? FloatTypeSuffix
     ;
+
+fragment
+Digits: Digit (DigitOrUnderscore* Digit)? ;
+
+fragment
+Digit: '0' | NonZeroDigit ;
+
+fragment
+NonZeroDigit: ('1'..'9') ;
+
+fragment
+DigitOrUnderscore: Digit | '_' ;
+
+fragment
+Underscores: '_'+ ;
 
 fragment
 Exponent : ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
