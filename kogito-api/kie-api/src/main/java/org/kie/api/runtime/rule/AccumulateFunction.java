@@ -22,43 +22,43 @@ import java.io.Serializable;
 /**
  * An interface for accumulate external function implementations
  */
-public interface AccumulateFunction extends Externalizable {
+public interface AccumulateFunction<C extends Serializable> extends Externalizable {
 
     /**
      * Creates and returns a new context object
      * @return new context object
      */
-    Serializable createContext();
+    C createContext();
 
     /**
      * Initializes the accumulator
-     * @param context
+     * @param context never null
      * @throws Exception
      */
-    void init(Serializable context) throws Exception;
+    void init(C context) throws Exception;
 
     /**
      * Executes the accumulation action
-     * @param context
+     * @param context never null
      * @param value
      */
-    void accumulate(Serializable context,
+    void accumulate(C context,
                     Object value);
 
     /**
      * Reverses the accumulation action
-     * @param context
+     * @param context never null
      * @param value
      * @throws Exception
      */
-    void reverse(Serializable context,
+    void reverse(C context,
                  Object value) throws Exception;
 
     /**
      * @return the current value in this accumulation session
      * @throws Exception
      */
-    Object getResult(Serializable context) throws Exception;
+    Object getResult(C context) throws Exception;
 
     /**
      * @return true if the function supports reverse, otherwise false

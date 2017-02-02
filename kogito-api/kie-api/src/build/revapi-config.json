@@ -324,6 +324,36 @@
         "code": "java.method.removed",
         "old": "method java.util.List<org.kie.api.task.model.TaskSummary> org.kie.api.task.TaskService::getTasksByVariousFields(java.lang.String, java.util.Map<java.lang.String, java.util.List<?>>, boolean)",
         "justification": "Removed previously deprecated API"
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method java.io.Serializable org.kie.api.runtime.rule.AccumulateFunction::createContext()",
+        "new": "method C org.kie.api.runtime.rule.AccumulateFunction<C extends java.io.Serializable>::createContext()",
+        "oldType": "java.io.Serializable",
+        "newType": "C extends java.io.Serializable",
+        "package": "org.kie.api.runtime.rule",
+        "classSimpleName": "AccumulateFunction",
+        "methodName": "createContext",
+        "elementKind": "method",
+        "justification": "DROOLS-1419 Generify AccumulateFunction to make it less verbose to implement. This is backwards compatible."
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "interface org.kie.api.runtime.rule.AccumulateFunction",
+        "new": "interface org.kie.api.runtime.rule.AccumulateFunction<C extends java.io.Serializable>",
+        "package": "org.kie.api.runtime.rule",
+        "classSimpleName": "AccumulateFunction",
+        "elementKind": "interface",
+        "justification": "DROOLS-1419 Generify AccumulateFunction to make it less verbose to implement. This is backwards compatible."
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "interface org.kie.api.runtime.rule.AccumulateFunction",
+        "new": "interface org.kie.api.runtime.rule.AccumulateFunction<C extends java.io.Serializable>",
+        "package": "org.kie.api.runtime.rule",
+        "classSimpleName": "AccumulateFunction",
+        "elementKind": "interface",
+        "justification": "DROOLS-1419 Generify AccumulateFunction to make it less verbose to implement. This is backwards compatible."
       }
     ]
   }
