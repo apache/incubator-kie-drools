@@ -22,11 +22,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-public class IntegerSumAccumulateFunction extends AbstractAccumulateFunction {
+public class IntegerSumAccumulateFunction extends AbstractAccumulateFunction<IntegerSumAccumulateFunction.SumData> {
 
-    public void readExternal(ObjectInput in ) throws IOException, ClassNotFoundException { }
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { }
 
-    public void writeExternal(ObjectOutput out ) throws IOException { }
+    public void writeExternal(ObjectOutput out) throws IOException { }
 
     protected static class SumData implements Externalizable {
         public int total = 0;
@@ -42,28 +42,28 @@ public class IntegerSumAccumulateFunction extends AbstractAccumulateFunction {
         }
     }
 
-    public Serializable createContext() {
+    public SumData createContext() {
         return new SumData();
     }
 
-    public void init(Serializable context) {
-        ((SumData) context).total = 0;
+    public void init(SumData data) {
+        data.total = 0;
     }
 
-    public void accumulate(Serializable context, Object value) {
+    public void accumulate(SumData data, Object value) {
         if (value != null) {
-            ( (SumData) context ).total += ( (Integer) value );
+            data.total += ( (Integer) value );
         }
     }
 
-    public void reverse(Serializable context, Object value) {
+    public void reverse(SumData data, Object value) {
         if (value != null) {
-            ( (SumData) context ).total -= ( (Integer) value );
+            data.total -= ( (Integer) value );
         }
     }
 
-    public Object getResult(Serializable context) {
-        return ((SumData) context).total;
+    public Object getResult(SumData data) {
+        return data.total;
     }
 
     public boolean supportsReverse() {

@@ -25,7 +25,7 @@ import java.io.Serializable;
 /**
  * An implementation of an accumulator capable of calculating minimun values
  */
-public class MinAccumulateFunction extends AbstractAccumulateFunction {
+public class MinAccumulateFunction extends AbstractAccumulateFunction<MinAccumulateFunction.MinData> {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
@@ -49,31 +49,28 @@ public class MinAccumulateFunction extends AbstractAccumulateFunction {
         }
     }
 
-    public Serializable createContext() {
+    public MinData createContext() {
         return new MinData();
     }
 
-    public void init(Serializable context) {
-        MinData data = (MinData) context;
+    public void init(MinData data) {
         data.min = null;
     }
 
-    public void accumulate(Serializable context,
+    public void accumulate(MinData data,
                            Object value) {
         if (value != null) {
-            MinData data = (MinData) context;
             data.min = data.min == null || data.min.compareTo( value ) > 0 ?
                        (Comparable) value :
                        data.min;
         }
     }
 
-    public void reverse(Serializable context,
+    public void reverse(MinData data,
                         Object value) {
     }
 
-    public Object getResult(Serializable context) {
-        MinData data = (MinData) context;
+    public Object getResult(MinData data) {
         return data.min;
     }
 
