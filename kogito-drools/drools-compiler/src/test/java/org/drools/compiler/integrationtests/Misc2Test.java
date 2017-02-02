@@ -16,6 +16,33 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -59,7 +86,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteComparator;
-import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
@@ -114,33 +140,6 @@ import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
 import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
@@ -9099,5 +9098,29 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals(2, kieSession.fireAllRules() );
     }
-    
+
+    @Test
+    public void testUnderscoreDoubleMultiplicationCastedToInt() {
+        // DROOLS-1420
+        String str =
+                "import org.drools.compiler.Cheese\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "  Cheese( $p : price)\n" +
+                "then\n" +
+                "  int b = (int) ($p * 1_000.0);\n" +
+                "  list.add(\"\" + b);" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new Cheese( "gauda", 42 ) );
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("42000", list.get(0));
+    }
 }
