@@ -33,6 +33,7 @@ import java.util.function.Predicate;
 
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.CaseRuntimeDataService;
+import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
@@ -372,6 +373,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("deploymentId", deploymentId);
         params.put("statuses", statuses);
+        params.put("entities", collectUserAuthInfo());
         applyQueryContext(params, queryContext);
         applyDeploymentFilter(params);
         List<CaseInstance> processInstances =  commandService.execute(new QueryNameCommand<List<CaseInstance>>("getCaseInstancesByDeployment", params));
@@ -385,6 +387,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("definitionId", definitionId);
         params.put("statuses", statuses);
+        params.put("entities", collectUserAuthInfo());
         applyQueryContext(params, queryContext);
         applyDeploymentFilter(params);
         List<CaseInstance> processInstances =  commandService.execute(new QueryNameCommand<List<CaseInstance>>("getCaseInstancesByDefinition", params));
@@ -403,6 +406,48 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         List<CaseInstance> processInstances =  commandService.execute(new QueryNameCommand<List<CaseInstance>>("getCaseInstancesOwnedBy", params));
 
         return processInstances;
+    }
+    
+    @Override
+    public Collection<CaseInstance> getCaseInstancesByRole(String roleName, List<Integer> statuses, QueryContext queryContext) {
+   
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("roleName", roleName);
+        params.put("entities", collectUserAuthInfo());
+        params.put("statuses", statuses);
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+        List<CaseInstance> processInstances =  commandService.execute(new QueryNameCommand<List<CaseInstance>>("getCaseInstancesByRole", params));
+
+        return processInstances;
+    }
+    
+    @Override
+    public Collection<CaseInstance> getCaseInstancesAnyRole(List<Integer> statuses, QueryContext queryContext) {
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("entities", collectUserAuthInfo());
+        params.put("statuses", statuses);
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+        List<CaseInstance> processInstances =  commandService.execute(new QueryNameCommand<List<CaseInstance>>("getCaseInstancesAnyRole", params));
+
+        return processInstances;
+    }
+    
+    @Override
+    public CaseInstance getCaseInstanceById(String caseId) {
+                
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("correlationKey", caseId);
+        params.put("maxResults", 1);
+        
+        List<CaseInstance> processInstances =  commandService.execute(new QueryNameCommand<List<CaseInstance>>("getCaseInstanceById", params));
+        if (!processInstances.isEmpty()) {
+            return processInstances.get(0);
+        }        
+        
+        throw new CaseNotFoundException("Case " + caseId + " was not found");
     }
     
     @Override
@@ -637,4 +682,14 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     }
 
 
+    protected List<String> collectUserAuthInfo() {
+        List<String> entities = new ArrayList<>();
+        entities.add(identityProvider.getName());
+        entities.addAll(identityProvider.getRoles());
+        
+        // add special public role to allow to find cases that do not use case roles
+        entities.add(AuthorizationManager.PUBLIC_GROUP);
+        
+        return entities;
+    }
 }

@@ -25,55 +25,81 @@ import java.util.EventListener;
  */
 public interface CaseEventListener extends EventListener {
 
-    void beforeCaseStarted(CaseStartEvent event);
+    default void beforeCaseStarted(CaseStartEvent event) {        
+    };
 
-    void afterCaseStarted(CaseStartEvent event);
+    default void afterCaseStarted(CaseStartEvent event) {        
+    };
 
-    void beforeCaseCancelled(CaseCancelEvent event);
+    default void beforeCaseCancelled(CaseCancelEvent event) {        
+    };
     
-    void afterCaseCancelled(CaseCancelEvent event);
+    default void afterCaseCancelled(CaseCancelEvent event) {        
+    };
 
-    void beforeCaseDestroyed(CaseDestroyEvent event);
+    default void beforeCaseDestroyed(CaseDestroyEvent event) {        
+    };
     
-    void afterCaseDestroyed(CaseDestroyEvent event);
+    default void afterCaseDestroyed(CaseDestroyEvent event) {        
+    };
     
-    void beforeCaseReopen(CaseReopenEvent event);
+    default void beforeCaseReopen(CaseReopenEvent event) {        
+    };
 
-    void afterCaseReopen(CaseReopenEvent event);
+    default void afterCaseReopen(CaseReopenEvent event) {        
+    };
 
-    void beforeCaseCommentAdded(CaseCommentEvent event);
+    default void beforeCaseCommentAdded(CaseCommentEvent event) {        
+    };
 
-    void afterCaseCommentAdded(CaseCommentEvent event);
+    default void afterCaseCommentAdded(CaseCommentEvent event) {        
+    };
     
-    void beforeCaseCommentUpdated(CaseCommentEvent event);
+    default void beforeCaseCommentUpdated(CaseCommentEvent event) {        
+    };
     
-    void afterCaseCommentUpdated(CaseCommentEvent event);
+    default void afterCaseCommentUpdated(CaseCommentEvent event) {        
+    };
     
-    void beforeCaseCommentRemoved(CaseCommentEvent event);
+    default void beforeCaseCommentRemoved(CaseCommentEvent event) {        
+    };
     
-    void afterCaseCommentRemoved(CaseCommentEvent event);
+    default void afterCaseCommentRemoved(CaseCommentEvent event) {        
+    };
 
-    void beforeCaseRoleAssignmentAdded(CaseRoleAssignmentEvent event);
+    default void beforeCaseRoleAssignmentAdded(CaseRoleAssignmentEvent event) {        
+    };
     
-    void afterCaseRoleAssignmentAdded(CaseRoleAssignmentEvent event);
+    default void afterCaseRoleAssignmentAdded(CaseRoleAssignmentEvent event) {        
+    };
     
-    void beforeCaseRoleAssignmentRemoved(CaseRoleAssignmentEvent event);
+    default void beforeCaseRoleAssignmentRemoved(CaseRoleAssignmentEvent event) {        
+    };
     
-    void afterCaseRoleAssignmentRemoved(CaseRoleAssignmentEvent event);
+    default void afterCaseRoleAssignmentRemoved(CaseRoleAssignmentEvent event) {        
+    };
 
-    void beforeCaseDataAdded(CaseDataEvent event);
+    default void beforeCaseDataAdded(CaseDataEvent event) {        
+    };
     
-    void afterCaseDataAdded(CaseDataEvent event);
+    default void afterCaseDataAdded(CaseDataEvent event) {        
+    };
     
-    void beforeCaseDataRemoved(CaseDataEvent event);
+    default void beforeCaseDataRemoved(CaseDataEvent event) {        
+    };
     
-    void afterCaseDataRemoved(CaseDataEvent event);
+    default void afterCaseDataRemoved(CaseDataEvent event) {        
+    };
 
-    void beforeDynamicTaskAdded(CaseDynamicTaskEvent event);
+    default void beforeDynamicTaskAdded(CaseDynamicTaskEvent event) {        
+    };
     
-    void afterDynamicTaskAdded(CaseDynamicTaskEvent event);
+    default void afterDynamicTaskAdded(CaseDynamicTaskEvent event) {        
+    };
 
-    void beforeDynamicProcessAdded(CaseDynamicSubprocessEvent event);
+    default void beforeDynamicProcessAdded(CaseDynamicSubprocessEvent event) {        
+    };
     
-    void afterDynamicProcessAdded(CaseDynamicSubprocessEvent event);
+    default void afterDynamicProcessAdded(CaseDynamicSubprocessEvent event) {        
+    };
 }

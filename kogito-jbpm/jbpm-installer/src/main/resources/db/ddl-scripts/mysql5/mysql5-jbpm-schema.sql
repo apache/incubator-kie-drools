@@ -61,6 +61,23 @@
         Escalation_Constraints_Id bigint,
         primary key (id)
     );
+    
+    create table CaseIdInfo (
+        id bigint not null auto_increment,
+        caseIdPrefix varchar(255),
+        currentValue bigint,
+        primary key (id)
+    );
+
+    create table CaseRoleAssignmentLog (
+        id bigint not null auto_increment,
+        caseId varchar(255),
+        entityId varchar(255),
+        processInstanceId bigint not null,
+        roleName varchar(255),
+        type integer not null,
+        primary key (id)
+    );
 
     create table Content (
         id bigint not null auto_increment,
@@ -467,6 +484,9 @@
         add constraint FK_394nf2qoc0k9ok6omgd6jtpso 
         foreign key (Escalation_Constraints_Id) 
         references Escalation (id);
+        
+    alter table CaseIdInfo 
+        add constraint UK_CaseIdInfo_1 unique (caseIdPrefix);        
 
     alter table CorrelationPropertyInfo 
         add index FK_hrmx1m882cejwj9c04ixh50i4 (correlationKey_keyId), 

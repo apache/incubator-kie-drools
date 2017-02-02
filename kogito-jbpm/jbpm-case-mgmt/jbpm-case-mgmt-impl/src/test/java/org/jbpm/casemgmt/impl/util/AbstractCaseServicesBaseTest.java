@@ -35,12 +35,14 @@ import org.dashbuilder.DataSetCore;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.casemgmt.api.CaseRuntimeDataService;
 import org.jbpm.casemgmt.api.CaseService;
+import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
 import org.jbpm.casemgmt.api.model.CaseMilestone;
 import org.jbpm.casemgmt.api.model.CaseRole;
 import org.jbpm.casemgmt.api.model.CaseStage;
+import org.jbpm.casemgmt.impl.AuthorizationManagerImpl;
 import org.jbpm.casemgmt.impl.CaseRuntimeDataServiceImpl;
 import org.jbpm.casemgmt.impl.CaseServiceImpl;
 import org.jbpm.casemgmt.impl.event.CaseConfigurationDeploymentListener;
@@ -112,6 +114,8 @@ public abstract class AbstractCaseServicesBaseTest {
 
     protected TestIdentityProvider identityProvider;
     protected CaseIdGenerator caseIdGenerator;
+    
+    protected AuthorizationManager authorizationManager;
 
     protected static final String EMPTY_CASE_P_ID = "EmptyCase";
     protected static final String USER_TASK_STAGE_CASE_P_ID = "UserTaskWithStageCase";
@@ -139,6 +143,7 @@ public abstract class AbstractCaseServicesBaseTest {
         buildDatasource();
         emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.domain");
         identityProvider = new TestIdentityProvider();
+        authorizationManager = new AuthorizationManagerImpl(identityProvider, new TransactionalCommandService(emf));
 
         // build definition service
         bpmn2Service = new BPMN2DataServiceImpl();
@@ -198,6 +203,7 @@ public abstract class AbstractCaseServicesBaseTest {
         ((CaseServiceImpl) caseService).setDeploymentService(deploymentService);
         ((CaseServiceImpl) caseService).setRuntimeDataService(runtimeDataService);
         ((CaseServiceImpl) caseService).setCommandService(new TransactionalCommandService(emf));
+        ((CaseServiceImpl) caseService).setAuthorizationManager(authorizationManager);
 
         CaseConfigurationDeploymentListener configurationListener = new CaseConfigurationDeploymentListener();
 

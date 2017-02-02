@@ -47,4 +47,9 @@ public class TestIdentityProvider implements IdentityProvider {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public void reset() {
+        name = "testUser";
+        roles = new ArrayList<String>();
+    }
 }

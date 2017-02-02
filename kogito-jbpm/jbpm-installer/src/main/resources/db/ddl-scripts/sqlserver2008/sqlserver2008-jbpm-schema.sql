@@ -54,6 +54,23 @@
         Escalation_Constraints_Id bigint,
         primary key (id)
     );
+    
+    create table CaseIdInfo (
+        id bigint identity not null,
+        caseIdPrefix varchar(255),
+        currentValue bigint,
+        primary key (id)
+    );
+
+    create table CaseRoleAssignmentLog (
+        id bigint identity not null,
+        caseId varchar(255),
+        entityId varchar(255),
+        processInstanceId bigint not null,
+        roleName varchar(255),
+        type int not null,
+        primary key (id)
+    );    
 
     create table Content (
         id bigint identity not null,
@@ -422,6 +439,9 @@
 
     alter table QueryDefinitionStore 
         add constraint UK_4ry5gt77jvq0orfttsoghta2j unique (qName);
+        
+    alter table CaseIdInfo 
+        add constraint UK_CaseIdInfo_1 unique (caseIdPrefix);        
 
     alter table Attachment 
         add constraint FK_7ndpfa311i50bq7hy18q05va3 

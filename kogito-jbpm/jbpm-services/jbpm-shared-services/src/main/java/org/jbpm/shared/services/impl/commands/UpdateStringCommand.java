@@ -15,6 +15,8 @@
 
 package org.jbpm.shared.services.impl.commands;
 
+import java.util.Map;
+
 import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
 import org.kie.api.runtime.Context;
@@ -24,15 +26,25 @@ public class UpdateStringCommand implements ExecutableCommand<Integer> {
 	private static final long serialVersionUID = -4014807273522465028L;
 
 	private String updateString;
+	private Map<String, Object> parameters;
 
 	public UpdateStringCommand(String updateString) {
 		this.updateString = updateString;
 	}
 	
-	@Override
+	public UpdateStringCommand(String updateString, Map<String, Object> parameters) {
+        this.updateString = updateString;
+        this.parameters = parameters;
+    }
+
+    @Override
 	public Integer execute(Context context) {
 		JpaPersistenceContext ctx = (JpaPersistenceContext) context;
-		return ctx.executeUpdateString(updateString);		
+		if (parameters != null) {
+		    return ctx.executeUpdateString(updateString, parameters);
+		} else {
+		    return ctx.executeUpdateString(updateString);
+		}
 	}
 
 }

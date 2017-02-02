@@ -58,6 +58,25 @@
         primary key (id)
     ) lock datarows
     go
+    
+    create table CaseIdInfo (
+        id bigint identity not null,
+        caseIdPrefix varchar(255) null,
+        currentValue bigint null,
+        primary key (id)
+    ) lock datarows
+    go
+
+    create table CaseRoleAssignmentLog (
+        id bigint identity not null,
+        caseId varchar(255) null,
+        entityId varchar(255) null,
+        processInstanceId bigint not null,
+        roleName varchar(255) null,
+        type int not null,
+        primary key (id)
+    ) lock datarows
+    go
 
     create table Content (
         id numeric(19,0) identity not null,
@@ -471,6 +490,10 @@
         add constraint FKE3D208C06C97C90E
         foreign key (Escalation_Constraints_Id)
         references Escalation
+    go
+    
+    alter table CaseIdInfo 
+        add constraint UK_CaseIdInfo_1 unique (caseIdPrefix)
     go
 
     alter table CorrelationPropertyInfo

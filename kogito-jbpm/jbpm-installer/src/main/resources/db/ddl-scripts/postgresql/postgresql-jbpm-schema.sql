@@ -54,6 +54,23 @@
         Escalation_Constraints_Id int8,
         primary key (id)
     );
+    
+    create table CaseIdInfo (
+        id int8 not null,
+        caseIdPrefix varchar(255),
+        currentValue int8,
+        primary key (id)
+    );
+
+    create table CaseRoleAssignmentLog (
+        id int8 not null,
+        caseId varchar(255),
+        entityId varchar(255),
+        processInstanceId int8 not null,
+        roleName varchar(255),
+        type int4 not null,
+        primary key (id)
+    );    
 
     create table Content (
         id int8 not null,
@@ -437,6 +454,9 @@
         add constraint FK_394nf2qoc0k9ok6omgd6jtpso 
         foreign key (Escalation_Constraints_Id) 
         references Escalation;
+        
+    alter table CaseIdInfo 
+        add constraint UK_CaseIdInfo_1 unique (caseIdPrefix);        
 
     alter table CorrelationPropertyInfo 
         add constraint FK_hrmx1m882cejwj9c04ixh50i4 
@@ -655,6 +675,10 @@
     create sequence BAM_TASK_ID_SEQ;
 
     create sequence BOOLEANEXPR_ID_SEQ;
+    
+    create sequence CASE_ID_INFO_ID_SEQ;
+
+    create sequence CASE_ROLE_ASSIGN_LOG_ID_SEQ;    
 
     create sequence COMMENT_ID_SEQ;
 

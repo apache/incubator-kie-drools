@@ -62,6 +62,10 @@
     <class>org.jbpm.kie.services.impl.store.DeploymentStoreEntry</class>
     <!--  query service storage -->
     <class>org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity</class>
+    
+    <!-- case mgmt -->
+    <class>org.jbpm.casemgmt.impl.generator.CaseIdInfo</class>
+    <class>org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog</class>
 
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />

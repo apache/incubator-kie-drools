@@ -22,10 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.casemgmt.api.event.CaseEventListener;
+import org.jbpm.casemgmt.impl.audit.CaseInstanceAuditEventListener;
 import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.internal.runtime.Cacheable;
 import org.kie.internal.runtime.Closeable;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
@@ -51,6 +53,10 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
         if (runtimeManager instanceof PerCaseRuntimeManager) {
             List<CaseEventListener> caseEventListeners = getEventListenerFromDescriptor(runtimeManager);
             logger.debug("Adding following case event listeners {} for deployment {}", caseEventListeners, event.getDeploymentId());
+                        
+            CaseInstanceAuditEventListener auditEventListener = new CaseInstanceAuditEventListener(new TransactionalCommandService(((SimpleRuntimeEnvironment) runtimeManager.getEnvironment()).getEmf()));
+            caseEventListeners.add(auditEventListener);
+            
             CaseEventSupport caseEventSupport = new CaseEventSupport(caseEventListeners);
             ((PerCaseRuntimeManager) runtimeManager).setCaseEventSupport(caseEventSupport);
             logger.debug("CaseEventSupport configured for deployment {}", event.getDeploymentId());

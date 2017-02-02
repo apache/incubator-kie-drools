@@ -128,6 +128,13 @@ public interface CaseRuntimeDataService {
      */
     Collection<AdHocFragment> getAdHocFragmentsForCase(String caseId);
     
+    /**
+     * Returns case instance for given case id if the caller of this class is authorized to see the case instance
+     * @param caseId unique case id of the case 
+     * @return case instance with basic details or null in case it was not found or access was not granted
+     */
+    CaseInstance getCaseInstanceById(String caseId);
+    
     /*
      * Case instance query related
      */
@@ -169,6 +176,21 @@ public interface CaseRuntimeDataService {
      *
      */
     Collection<CaseInstance> getCaseInstancesOwnedBy(String owner, List<Integer> statuses, QueryContext queryContext);
+    
+    /**
+     * Returns cases instances that given user (via identity provider) has access to with given role.
+     * @param roleName name of the role that user should be
+     * @param statuses statuses of the case instances
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     */
+    Collection<CaseInstance> getCaseInstancesByRole(String roleName, List<Integer> statuses, QueryContext queryContext);
+    
+    /**
+     * Returns case instances that given user (via identity provider) is involved in in any role.
+     * @param statuses statuses of the case instances
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     */
+    Collection<CaseInstance> getCaseInstancesAnyRole(List<Integer> statuses, QueryContext queryContext);
     
     /**
      * Returns all tasks associated with given case id that are eligible for user to see.

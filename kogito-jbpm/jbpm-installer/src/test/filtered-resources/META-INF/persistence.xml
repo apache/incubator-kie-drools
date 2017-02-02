@@ -96,6 +96,9 @@
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
     <class>org.jbpm.process.audit.VariableInstanceLog</class>
+    <!-- case mgmt -->
+    <class>org.jbpm.casemgmt.impl.generator.CaseIdInfo</class>
+    <class>org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>
@@ -169,6 +172,9 @@
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
     <class>org.jbpm.process.audit.VariableInstanceLog</class>
+    <!-- case mgmt -->
+    <class>org.jbpm.casemgmt.impl.generator.CaseIdInfo</class>
+    <class>org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>
@@ -239,6 +245,9 @@
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
     <class>org.jbpm.process.audit.VariableInstanceLog</class>
+    <!-- case mgmt -->
+    <class>org.jbpm.casemgmt.impl.generator.CaseIdInfo</class>
+    <class>org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog</class>
 
     <class>org.jbpm.persistence.scripts.quartzmockentities.QrtzBlobTriggers</class>
     <class>org.jbpm.persistence.scripts.quartzmockentities.QrtzCalendars</class>

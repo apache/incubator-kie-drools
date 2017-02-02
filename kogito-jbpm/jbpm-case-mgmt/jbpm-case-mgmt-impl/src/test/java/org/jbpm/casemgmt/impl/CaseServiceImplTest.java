@@ -61,6 +61,7 @@ import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.VariableDesc;
+import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -117,10 +118,15 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         }
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
+        // use user name who is part of the case roles assignment
+        // so (s)he will be authorized to access case instance
+        identityProvider.setName("john");
     }
     
     @After
     public void cleanup() {
+        identityProvider.reset();
+        identityProvider.setRoles(new ArrayList<>());
         System.clearProperty("org.jbpm.document.storage");
         cleanupSingletonSessionId();
         if (units != null && !units.isEmpty()) {
@@ -407,8 +413,12 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
         Map<String, Object> data = new HashMap<>();
-        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
         
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
         assertNotNull(caseId);
@@ -615,8 +625,12 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
         Map<String, Object> data = new HashMap<>();
-        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
         
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
         assertNotNull(caseId);
@@ -866,8 +880,12 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
         Map<String, Object> data = new HashMap<>();
-        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, data);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, data, roleAssignments);
         
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, caseFile);
         assertNotNull(caseId);
@@ -901,8 +919,12 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
         Map<String, Object> data = new HashMap<>();
-        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, data);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, data, roleAssignments);
         
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, caseFile);
         assertNotNull(caseId);
@@ -1549,8 +1571,12 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
         Map<String, Object> data = new HashMap<>();
-        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
         
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
         assertNotNull(caseId);
@@ -1659,7 +1685,126 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
                 caseService.cancelCase(caseId);
             }
         }
-    }    
+    }  
+    
+    @Test
+    public void testCaseRolesWithQueries() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        roleAssignments.put("contact", new GroupImpl("HR"));
+        
+        Map<String, Object> data = new HashMap<>();
+        data.put("s", "description");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(HR_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(HR_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            // only john is now included in case roles
+            Collection<CaseInstance> instances = caseRuntimeDataService.getCaseInstancesAnyRole(null, new QueryContext());
+            assertNotNull(instances);
+            assertEquals(0, instances.size());
+            
+            List<Integer> status = Arrays.asList(1);
+                        
+            identityProvider.setRoles(Arrays.asList("HR"));
+            instances = caseRuntimeDataService.getCaseInstancesAnyRole(status, new QueryContext());
+            assertNotNull(instances);
+            assertEquals(1, instances.size());
+            
+            instances = caseRuntimeDataService.getCaseInstancesByRole("owner", status, new QueryContext());
+            assertNotNull(instances);
+            assertEquals(1, instances.size());
+            
+            instances = caseRuntimeDataService.getCaseInstancesByRole("contact", status, new QueryContext());
+            assertNotNull(instances);
+            assertEquals(1, instances.size());
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {            
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testCaseAuthorization() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        roleAssignments.put("contact", new GroupImpl("HR"));
+        
+        Map<String, Object> data = new HashMap<>();
+        data.put("s", "description");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(HR_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(HR_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            identityProvider.setName("mary");
+            try {
+                caseService.cancelCase(caseId);
+                fail("Mary is not owner of the case so should not be allowed to cancel the case");
+            } catch (SecurityException e) {
+                // expected
+            }
+            try {
+                caseService.destroyCase(caseId);
+                fail("Mary is not owner of the case so should not be allowed to destroy the case");
+            } catch (SecurityException e) {
+                // expected
+            }
+            
+            identityProvider.setName("john");
+            caseService.cancelCase(caseId);
+            
+            identityProvider.setName("mary");
+            try {
+                caseService.reopenCase(caseId, deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID);
+                fail("Mary is not owner of the case so should not be allowed to reopen the case");
+            } catch (SecurityException e) {
+                // expected
+            }
+            
+            identityProvider.setName("john");
+            caseService.reopenCase(caseId, deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID);
+            cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(HR_CASE_ID, cInstance.getCaseId());
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {            
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
     
     
     /*

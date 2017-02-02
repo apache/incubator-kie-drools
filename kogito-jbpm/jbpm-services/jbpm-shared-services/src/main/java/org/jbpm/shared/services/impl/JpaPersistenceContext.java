@@ -104,6 +104,17 @@ public class JpaPersistenceContext implements Context {
 		Query query = this.em.createQuery(updateString);
 		return query.executeUpdate();
 	}
+	
+	public int executeUpdateString(String updateString, Map<String, Object> parameters) {
+        check();
+        Query query = this.em.createQuery(updateString);
+        if (parameters != null && !parameters.isEmpty()) {
+            for (String name : parameters.keySet()) {                
+                query.setParameter(name, parameters.get(name));
+            }
+        }
+        return query.executeUpdate();
+    }
 
 	
 	public HashMap<String, Object> addParametersToMap(Object... parameterValues) {

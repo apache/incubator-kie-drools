@@ -30,6 +30,8 @@ import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.CaseRuntimeDataService;
 import org.jbpm.casemgmt.api.CaseService;
 import org.jbpm.casemgmt.api.StageNotFoundException;
+import org.jbpm.casemgmt.api.auth.AuthorizationManager;
+import org.jbpm.casemgmt.api.auth.AuthorizationManager.ProtectedOperation;
 import org.jbpm.casemgmt.api.dynamic.TaskSpecification;
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
@@ -97,6 +99,7 @@ public class CaseServiceImpl implements CaseService {
     private DeploymentService deploymentService;
     private CaseRuntimeDataService caseRuntimeDataService;
     private TransactionalCommandService commandService;
+    private AuthorizationManager authorizationManager;
     
     private CaseEventSupport emptyCaseEventSupport = new CaseEventSupport(Collections.emptyList());
     
@@ -122,6 +125,10 @@ public class CaseServiceImpl implements CaseService {
     
     public void setCommandService(TransactionalCommandService commandService) {
         this.commandService = commandService;
+    }
+    
+    public void setAuthorizationManager(AuthorizationManager authorizationManager) {
+        this.authorizationManager = authorizationManager;
     }
 
     @Override
@@ -156,9 +163,10 @@ public class CaseServiceImpl implements CaseService {
     
     @Override
     public CaseFileInstance getCaseFileInstance(String caseId) throws CaseNotFoundException {
+        authorizationManager.checkAuthorization(caseId);
         ProcessInstanceDesc pi = verifyCaseIdExisted(caseId);
 
-        return internalGetCaseFileInstance(caseId, pi);
+        return internalGetCaseFileInstance(caseId, pi.getDeploymentId());
     }
 
     @Override
@@ -168,13 +176,13 @@ public class CaseServiceImpl implements CaseService {
     
     @Override
     public CaseInstance getCaseInstance(String caseId, boolean withData, boolean withRoles, boolean withMilestones, boolean withStages) throws CaseNotFoundException {
-        ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
+        authorizationManager.checkAuthorization(caseId);
+        CaseInstanceImpl caseInstance = (CaseInstanceImpl) caseRuntimeDataService.getCaseInstanceById(caseId);
         
-        if (pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
-
-            CaseInstanceImpl caseInstance = new CaseInstanceImpl(caseId, pi.getProcessInstanceDescription(), pi.getProcessId(), pi.getState(), pi.getDeploymentId(), pi.getInitiator(), pi.getDataTimeStamp(), null, pi.getId(), "");
+        if (caseInstance.getStatus().equals(ProcessInstance.STATE_ACTIVE)) {
+           
             if (withData) {
-                CaseFileInstance caseFile = internalGetCaseFileInstance(caseId, pi);
+                CaseFileInstance caseFile = internalGetCaseFileInstance(caseId, caseInstance.getDeploymentId());
                 caseInstance.setCaseFile(caseFile);
             }
             if (withMilestones) {
@@ -198,6 +206,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public void cancelCase(String caseId) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.CANCEL_CASE);
         logger.debug("About to abort case {}", caseId);        
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);        
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CancelCaseCommand(caseId, processService, runtimeDataService, false));
@@ -205,6 +214,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public void destroyCase(String caseId) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.DESTROY_CASE);
         logger.debug("About to destroy permanently case {}", caseId);  
         ProcessInstanceDesc pi = verifyCaseIdExisted(caseId);        
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CancelCaseCommand(caseId, processService, runtimeDataService, true));
@@ -212,13 +222,14 @@ public class CaseServiceImpl implements CaseService {
     
 
     @Override
-    public void reopenCase(String caseId, String deploymentId, String caseDefinitionId) throws CaseNotFoundException {
+    public void reopenCase(String caseId, String deploymentId, String caseDefinitionId) throws CaseNotFoundException {        
         reopenCase(caseId, deploymentId, caseDefinitionId, new HashMap<>());
         
     }
 
     @Override
     public void reopenCase(String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.REOPEN_CASE);
         ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceByCorrelationKey(correlationKeyFactory.newCorrelationKey(caseId));
         if (pi != null) {
             throw new CaseActiveException("Case with id " + caseId + " is still active and cannot be reopened"); 
@@ -248,23 +259,27 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public void addDynamicTask(String caseId, TaskSpecification taskSpecification) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_TASK_TO_CASE);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicTaskCommand(caseId, taskSpecification.getNodeType(), pi.getId(), taskSpecification.getParameters()));
     }
     
     @Override
-    public void addDynamicTask(Long processInstanceId, TaskSpecification taskSpecification) throws ProcessInstanceNotFoundException {
+    public void addDynamicTask(Long processInstanceId, TaskSpecification taskSpecification) throws ProcessInstanceNotFoundException {        
         ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceById(processInstanceId);
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId + " or it's not active anymore");
         }
         String caseId = pi.getCorrelationKey();
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_TASK_TO_CASE);
+        
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicTaskCommand(caseId, taskSpecification.getNodeType(), pi.getId(), taskSpecification.getParameters()));
     }
 
     @Override
     public void addDynamicTaskToStage(String caseId, String stageId, TaskSpecification taskSpecification) throws CaseNotFoundException, StageNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_TASK_TO_CASE);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + pi.getId() + " or it's not active anymore");
@@ -280,12 +295,15 @@ public class CaseServiceImpl implements CaseService {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId + " or it's not active anymore");
         }
         String caseId = pi.getCorrelationKey();
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_TASK_TO_CASE);
+        
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicTaskToStageCommand(caseId, taskSpecification.getNodeType(), pi.getId(), stageId, taskSpecification.getParameters()));        
     }
     
 
     @Override
     public Long addDynamicSubprocess(String caseId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_PROCESS_TO_CASE);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + pi.getId() + " or it's not active anymore");
@@ -301,11 +319,14 @@ public class CaseServiceImpl implements CaseService {
         }
         
         String caseId = pi.getCorrelationKey();
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_PROCESS_TO_CASE);
+        
         return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessCommand(caseId, pi.getId(), processId, parameters));
     }
     
     @Override
     public Long addDynamicSubprocessToStage(String caseId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_PROCESS_TO_CASE);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
         return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessToStageCommand(caseId, pi.getId(), stageId, processId, parameters));
@@ -318,11 +339,14 @@ public class CaseServiceImpl implements CaseService {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId + " or it's not active anymore");
         }
         String caseId = pi.getCorrelationKey();
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_PROCESS_TO_CASE);
+        
         return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessToStageCommand(caseId, pi.getId(), stageId, processId, parameters));
     }
     
     @Override
     public void triggerAdHocFragment(String caseId, String fragmentName, Object data) throws CaseNotFoundException {
+        authorizationManager.checkAuthorization(caseId);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
         triggerAdHocFragment(pi.getId(), fragmentName, data);
@@ -340,6 +364,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public void addDataToCaseFile(String caseId, String name, Object value) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_DATA);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
         Map<String, Object> parameters = new HashMap<>();
@@ -350,6 +375,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public void addDataToCaseFile(String caseId, Map<String, Object> data) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_DATA);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(data));
@@ -357,6 +383,7 @@ public class CaseServiceImpl implements CaseService {
     
     @Override
     public void removeDataFromCaseFile(String caseId, String name) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.REMOVE_DATA);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
         
@@ -366,6 +393,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public void removeDataFromCaseFile(String caseId, List<String> variableNames) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.REMOVE_DATA);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new RemoveDataCaseFileInstanceCommand(variableNames));
@@ -377,21 +405,24 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public void assignToCaseRole(String caseId, String role, OrganizationalEntity entity) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_ROLE_ASSIGNMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new ModifyRoleAssignmentCommand(role, entity, true));
     }
 
     @Override
     public void removeFromCaseRole(String caseId, String role, OrganizationalEntity entity) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_ROLE_ASSIGNMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new ModifyRoleAssignmentCommand(role, entity, false));
     }
 
     @Override
     public Collection<CaseRoleInstance> getCaseRoleAssignments(String caseId) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_ROLE_ASSIGNMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
-        CaseFileInstance caseFile = internalGetCaseFileInstance(caseId, pi);
+        CaseFileInstance caseFile = internalGetCaseFileInstance(caseId, pi.getDeploymentId());
         
         return ((CaseFileInstanceImpl)caseFile).getAssignments();
     }
@@ -404,15 +435,17 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public Collection<CommentInstance> getCaseComments(String caseId, QueryContext queryContext) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_COMMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
-        CaseFileInstance caseFile = internalGetCaseFileInstance(caseId, pi);
+        CaseFileInstance caseFile = internalGetCaseFileInstance(caseId, pi.getDeploymentId());
         
         return ((CaseFileInstanceImpl)caseFile).getComments();
     }
 
     @Override
     public Collection<CommentInstance> getCaseComments(String caseId, CommentSortBy sortBy, QueryContext queryContext) throws CaseNotFoundException {
+        authorizationManager.checkAuthorization(caseId);
         Collection<CommentInstance> comments = getCaseComments(caseId, queryContext);
         
         return comments.stream().sorted((o1, o2) -> {
@@ -431,12 +464,14 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public void addCaseComment(String caseId, String author, String comment) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_COMMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(author, comment));
     }
     
     @Override
     public void updateCaseComment(String caseId, String commentId, String author, String text) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_COMMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(commentId, author, text));
         
@@ -444,6 +479,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public void removeCaseComment(String caseId, String commentId) throws CaseNotFoundException {
+        authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_COMMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(commentId));
     }
@@ -498,9 +534,9 @@ public class CaseServiceImpl implements CaseService {
      */
 
     @SuppressWarnings("unchecked")
-    protected CaseFileInstance internalGetCaseFileInstance(String caseId, ProcessInstanceDesc pi) {
+    protected CaseFileInstance internalGetCaseFileInstance(String caseId, String deploymentId) {
         logger.debug("Retrieving case file from working memory for case " + caseId);
-        Collection<CaseFileInstance> caseFiles = (Collection<CaseFileInstance>) processService.execute(pi.getDeploymentId(), CaseContext.get(caseId), commandsFactory.newGetObjects(new ClassObjectFilter(CaseFileInstance.class)));
+        Collection<CaseFileInstance> caseFiles = (Collection<CaseFileInstance>) processService.execute(deploymentId, CaseContext.get(caseId), commandsFactory.newGetObjects(new ClassObjectFilter(CaseFileInstance.class)));
         if (caseFiles.size() == 0) {
             throw new CaseNotFoundException("Case with id " + caseId + " was not found");
         } else if (caseFiles.size() == 1) {

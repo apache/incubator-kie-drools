@@ -97,10 +97,14 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         }
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
+        // use user name who is part of the case roles assignment
+        // so (s)he will be authorized to access case instance
+        identityProvider.setName("john");
     }
     
     @After
     public void cleanup() {
+        identityProvider.reset();
         System.clearProperty("org.jbpm.document.storage");
         cleanupSingletonSessionId();
         if (units != null && !units.isEmpty()) {

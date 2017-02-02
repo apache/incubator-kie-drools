@@ -29,6 +29,8 @@
         <include>org.jbpm:jbpm-shared-services</include>
         <include>org.jbpm:jbpm-test</include>
         <include>org.jbpm:jbpm-runtime-manager</include>
+        <include>org.jbpm:jbpm-case-mgmt-api</include>
+        <include>org.jbpm:jbpm-case-mgmt-impl</include>
       </includes>
       <excludes>
         <exclude>*:sources</exclude>
@@ -60,6 +62,8 @@
         <exclude>org.jbpm:jbpm-test</exclude>
         <exclude>org.jbpm:jbpm-runtime-manager</exclude>
         <exclude>org.jbpm:jbpm-examples</exclude>
+        <exclude>org.jbpm:jbpm-case-mgmt-api</exclude>
+        <exclude>org.jbpm:jbpm-case-mgmt-impl</exclude>
         <exclude>*:war</exclude>
         <exclude>*:sources</exclude>
       </excludes>

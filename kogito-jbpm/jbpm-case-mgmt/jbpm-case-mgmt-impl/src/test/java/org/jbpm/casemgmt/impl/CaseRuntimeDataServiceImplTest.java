@@ -42,12 +42,14 @@ import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
+import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryContext;
 import org.kie.scanner.MavenRepository;
@@ -93,6 +95,7 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
 
     @After
     public void cleanup() {
+        identityProvider.reset();
         cleanupSingletonSessionId();
         if (units != null && !units.isEmpty()) {
             for (DeploymentUnit unit : units) {
@@ -532,13 +535,19 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
     
     @Test
     public void testUserTasksInCase() {
+        // use user name who is part of the case roles assignment
+        // so (s)he will be authorized to access case instance
+        identityProvider.setName("john");
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
         assertNotNull(deploymentService);        
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
-        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
         String caseId2 = null;
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
         assertNotNull(caseId);
@@ -597,13 +606,19 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
     
     @Test
     public void testUserTasksInCaseWithSubprocess() {
+        // use user name who is part of the case roles assignment
+        // so (s)he will be authorized to access case instance
+        identityProvider.setName("john");
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
         assertNotNull(deploymentService);        
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
-        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
         
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
         assertNotNull(caseId);
@@ -652,13 +667,19 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
     
     @Test
     public void testUserTasksInCaseAdBusinessAdmin() {
+        // use user name who is part of the case roles assignment
+        // so (s)he will be authorized to access case instance
+        identityProvider.setName("john");
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
         assertNotNull(deploymentService);        
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
-        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
         String caseId2 = null;
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
         assertNotNull(caseId);
@@ -717,13 +738,19 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
     
     @Test
     public void testUserTasksInCaseAdStakeholder() {
+     // use user name who is part of the case roles assignment
+        // so (s)he will be authorized to access case instance
+        identityProvider.setName("john");
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
         assertNotNull(deploymentService);        
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
-        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data);
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
         String caseId2 = null;
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
         assertNotNull(caseId);
