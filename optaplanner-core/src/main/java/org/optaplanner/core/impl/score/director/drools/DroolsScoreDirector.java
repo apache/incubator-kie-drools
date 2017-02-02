@@ -216,7 +216,9 @@ public class DroolsScoreDirector<Solution_>
                     + ") was never added to this ScoreDirector.\n"
                     + "Maybe that specific instance is not in the "
                     + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
-                    + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").");
+                    + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").\n"
+                    + "Maybe first translate that external instance to the workingSolution's instance"
+                    + " with ScoreDirector.locateWorkingObject().");
         }
         kieSession.update(factHandle, problemFactOrEntity);
         super.afterProblemPropertyChanged(problemFactOrEntity);
@@ -232,7 +234,9 @@ public class DroolsScoreDirector<Solution_>
                     + ") was never added to this ScoreDirector.\n"
                     + "Maybe that specific instance is not in the "
                     + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
-                    + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").");
+                    + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").\n"
+                    + "Maybe first translate that external instance to the workingSolution's instance"
+                    + " with ScoreDirector.locateWorkingObject().");
         }
         kieSession.delete(factHandle);
         super.afterProblemFactRemoved(problemFact);
