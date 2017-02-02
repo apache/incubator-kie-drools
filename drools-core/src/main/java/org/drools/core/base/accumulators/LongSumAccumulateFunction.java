@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-public class LongSumAccumulateFunction extends AbstractAccumulateFunction {
+public class LongSumAccumulateFunction extends AbstractAccumulateFunction<LongSumAccumulateFunction.SumData> {
 
     public void readExternal(ObjectInput in ) throws IOException, ClassNotFoundException { }
 
@@ -42,28 +42,28 @@ public class LongSumAccumulateFunction extends AbstractAccumulateFunction {
         }
     }
 
-    public Serializable createContext() {
+    public SumData createContext() {
         return new SumData();
     }
 
-    public void init(Serializable context) {
-        ((SumData) context).total = 0;
+    public void init(SumData data) {
+        data.total = 0;
     }
 
-    public void accumulate(Serializable context, Object value) {
+    public void accumulate(SumData data, Object value) {
         if (value != null) {
-            ( (SumData) context ).total += ( (Long) value );
+            data.total += ( (Long) value );
         }
     }
 
-    public void reverse(Serializable context, Object value) {
+    public void reverse(SumData data, Object value) {
         if (value != null) {
-            ( (SumData) context ).total -= ( (Long) value );
+            data.total -= ( (Long) value );
         }
     }
 
-    public Object getResult(Serializable context) {
-        return ((SumData) context).total;
+    public Object getResult(SumData data) {
+        return data.total;
     }
 
     public boolean supportsReverse() {

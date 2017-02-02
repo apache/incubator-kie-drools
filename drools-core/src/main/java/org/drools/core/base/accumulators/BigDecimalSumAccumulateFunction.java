@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 /**
  * An implementation of an accumulator capable of calculating sum of values
  */
-public class BigDecimalSumAccumulateFunction extends AbstractAccumulateFunction {
+public class BigDecimalSumAccumulateFunction extends AbstractAccumulateFunction<BigDecimalSumAccumulateFunction.SumData> {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { }
 
@@ -46,32 +46,28 @@ public class BigDecimalSumAccumulateFunction extends AbstractAccumulateFunction 
         }
     }
 
-    public Serializable createContext() {
+    public SumData createContext() {
         return new SumData();
     }
 
-    public void init(Serializable context) {
-        SumData data = (SumData) context;
+    public void init(SumData data) {
         data.total = BigDecimal.ZERO;
     }
 
-    public void accumulate(Serializable context,
+    public void accumulate(SumData data,
                            Object value) {
         if (value != null) {
-            SumData data = (SumData) context;
             data.total = data.total.add( (BigDecimal) value );
         }
     }
 
-    public void reverse(Serializable context, Object value) {
+    public void reverse(SumData data, Object value) {
         if (value != null) {
-            SumData data = (SumData) context;
             data.total = data.total.subtract( (BigDecimal) value );
         }
     }
 
-    public Object getResult(Serializable context) {
-        SumData data = (SumData) context;
+    public Object getResult(SumData data) {
         return data.total;
     }
 

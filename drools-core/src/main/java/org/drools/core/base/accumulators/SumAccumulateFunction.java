@@ -25,7 +25,7 @@ import java.io.Serializable;
 /**
  * An implementation of an accumulator capable of calculating sum of values
  */
-public class SumAccumulateFunction extends AbstractAccumulateFunction {
+public class SumAccumulateFunction extends AbstractAccumulateFunction<SumAccumulateFunction.SumData> {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { }
 
@@ -46,29 +46,26 @@ public class SumAccumulateFunction extends AbstractAccumulateFunction {
 
     }
 
-    public Serializable createContext() {
+    public SumData createContext() {
         return new SumData();
     }
 
-    public void init(Serializable context) {
-        SumData data = (SumData) context;
+    public void init(SumData data) {
         data.total = 0;
     }
 
-    public void accumulate(Serializable context,
+    public void accumulate(SumData data,
                            Object value) {
-        SumData data = (SumData) context;
         data.total += ((Number) value).doubleValue();
     }
 
-    public void reverse(Serializable context,
+    public void reverse(SumData data,
                         Object value) {
-        SumData data = (SumData) context;
         data.total -= ((Number) value).doubleValue();
     }
 
-    public Object getResult(Serializable context) {
-        return ((SumData) context).total;
+    public Object getResult(SumData data) {
+        return data.total;
     }
 
     public boolean supportsReverse() {

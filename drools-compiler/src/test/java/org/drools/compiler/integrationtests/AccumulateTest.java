@@ -2606,7 +2606,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertThat( (Integer) ac.getValue().getMatch().getDeclarationValue( "$v" ), is( Integer.valueOf( 1 ) ) );
     }
 
-    public static class TestFunction implements AccumulateFunction {
+    public static class TestFunction implements AccumulateFunction<Serializable> {
         @Override
         public void writeExternal( ObjectOutput out ) throws IOException {
         }
