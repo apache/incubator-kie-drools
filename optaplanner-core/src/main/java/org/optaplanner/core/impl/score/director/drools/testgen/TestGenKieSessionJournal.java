@@ -23,6 +23,7 @@ import java.util.List;
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
+import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenInlineValue;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenNullFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenValueFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionDelete;
@@ -30,9 +31,12 @@ import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGen
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionUpdate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestGenKieSessionJournal {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestGenKieSessionJournal.class);
     private final TestGenKieSessionEventSupport eventSupport = new TestGenKieSessionEventSupport();
     private final HashMap<Object, TestGenFact> existingInstances = new HashMap<>();
     private final List<TestGenFact> facts;
@@ -80,6 +84,7 @@ public class TestGenKieSessionJournal {
     public void addFacts(Collection<Object> workingFacts) {
         int i = 0;
         for (Object instance : workingFacts) {
+            logger.trace("        Working fact added: {}[{}]", instance.getClass().getSimpleName(), instance);
             TestGenFact fact = new TestGenValueFact(i++, instance);
             facts.add(fact);
             existingInstances.put(instance, fact);
@@ -99,18 +104,34 @@ public class TestGenKieSessionJournal {
     }
 
     public void insert(Object fact) {
+        // TODO add to existing instances?
         updateJournal.add(new TestGenKieSessionInsert(operationId++, existingInstances.get(fact)));
     }
 
     public void update(Object entity, VariableDescriptor<?> variableDescriptor) {
         TestGenFact entityFact = existingInstances.get(entity);
+        if (entityFact == null) {
+            throw new IllegalStateException("The entity (" + entity.getClass().getSimpleName()
+                    + "[" + entity + "]) is not a working fact");
+        }
         Object value = variableDescriptor.getValue(entity);
         TestGenFact valueFact = value == null ? new TestGenNullFact() : existingInstances.get(value);
+        if (valueFact == null) {
+            // shadow variable
+            if (logger.isTraceEnabled()) {
+                logger.trace("Updating shadow variable {}.{} → {}({})", entity.getClass().getSimpleName(),
+                        variableDescriptor.getVariableName(),
+                        value.getClass().getSimpleName(), value);
+            }
+            valueFact = new TestGenInlineValue(value, existingInstances);
+        }
         updateJournal.add(new TestGenKieSessionUpdate(operationId++, entityFact, variableDescriptor, valueFact));
     }
 
-    public void delete(Object entity) {
-        updateJournal.add(new TestGenKieSessionDelete(operationId++, existingInstances.get(entity)));
+    public void delete(Object fact) {
+        // TODO check get(fact) is not null
+        // TODO remove from existing instances?
+        updateJournal.add(new TestGenKieSessionDelete(operationId++, existingInstances.get(fact)));
     }
 
     public void fireAllRules() {

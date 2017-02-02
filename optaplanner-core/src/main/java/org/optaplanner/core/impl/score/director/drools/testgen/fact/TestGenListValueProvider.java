@@ -17,6 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -62,6 +63,20 @@ class TestGenListValueProvider extends TestGenAbstractValueProvider<List<?>> {
             sb.append(String.format("        //%s\n", item));
             sb.append(String.format("        %s.add(%s);\n", identifier, existingInstances.get(item)));
         }
+    }
+
+    public String getInlineValue() {
+        StringBuilder sb = new StringBuilder(25 * value.size() + 17);
+        sb.append("Arrays.asList(");
+        Iterator<?> it = value.iterator();
+        if (it.hasNext()) {
+            sb.append(existingInstances.get(it.next()));
+        }
+        while (it.hasNext()) {
+            sb.append(", ").append(existingInstances.get(it.next()));
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
     @Override

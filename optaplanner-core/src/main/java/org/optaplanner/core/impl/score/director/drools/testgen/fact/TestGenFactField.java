@@ -57,8 +57,11 @@ public class TestGenFactField implements Comparable<TestGenFactField> {
 
     void print(StringBuilder sb) {
         if (active) {
-            Method setter = ReflectionHelper.getSetterMethod(
-                    fact.getInstance().getClass(), accessor.getType(), accessor.getName());
+            Method setter = ReflectionHelper.getSetterMethod(fact.getInstance().getClass(), accessor.getName());
+            if (setter == null) {
+                throw new IllegalStateException("Setter for '" + fact.getInstance().getClass().getSimpleName() + "."
+                        + accessor.getName() + "' not found!");
+            }
             valueProvider.printSetup(sb);
             // null original value means the field is uninitialized so there's no need to .set(null);
             if (valueProvider.get() != null) {

@@ -93,6 +93,27 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     }
 
     @Override
+    public void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction) {
+        try {
+            super.assertShadowVariablesAreNotStale(expectedWorkingScore, completedAction);
+        } catch (IllegalStateException e) {
+            // catch stale shadow variable exception and create a minimal reproducing test
+            // TODO check it's really stale shadow variable?
+//            TestGenCorruptedScoreReproducer reproducer = new TestGenCorruptedScoreReproducer(e.getMessage(), this);
+//            TestGenKieSessionJournal minJournal = TestGenerator.minimize(journal, reproducer);
+            try {
+//                minJournal.replay(createKieSession());
+//                throw new IllegalStateException();
+            } catch (TestGenCorruptedScoreException tgcse) {
+                writer.setCorruptedScoreException(tgcse);
+            }
+//            writer.print(minJournal, testFile);
+            writer.print(journal, testFile);
+            throw wrapOriginalException(e);
+        }
+    }
+
+    @Override
     public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
         try {
             super.assertWorkingScoreFromScratch(workingScore, completedAction);

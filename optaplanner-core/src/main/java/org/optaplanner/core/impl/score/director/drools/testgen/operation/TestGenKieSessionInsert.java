@@ -24,6 +24,9 @@ public class TestGenKieSessionInsert implements TestGenKieSessionOperation {
     private final TestGenFact fact;
 
     public TestGenKieSessionInsert(int id, TestGenFact fact) {
+        if (fact == null) {
+            throw new IllegalArgumentException("Fact may not be null.");
+        }
         this.id = id;
         this.fact = fact;
     }

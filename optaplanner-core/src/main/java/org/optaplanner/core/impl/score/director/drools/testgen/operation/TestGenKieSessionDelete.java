@@ -21,22 +21,22 @@ import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 public class TestGenKieSessionDelete implements TestGenKieSessionOperation {
 
     private final int id;
-    private final TestGenFact entity;
+    private final TestGenFact fact;
 
-    public TestGenKieSessionDelete(int id, TestGenFact entity) {
+    public TestGenKieSessionDelete(int id, TestGenFact fact) {
         this.id = id;
-        this.entity = entity;
+        this.fact = fact;
     }
 
     @Override
     public void invoke(KieSession kieSession) {
-        kieSession.delete(kieSession.getFactHandle(entity.getInstance()));
+        kieSession.delete(kieSession.getFactHandle(fact.getInstance()));
     }
 
     @Override
     public void print(StringBuilder sb) {
         sb.append(String.format("        //%s\n", this));
-        sb.append(String.format("        kieSession.delete(kieSession.getFactHandle(%s));\n", entity));
+        sb.append(String.format("        kieSession.delete(kieSession.getFactHandle(%s));\n", fact));
     }
 
     @Override
