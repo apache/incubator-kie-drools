@@ -991,11 +991,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.3166667"
-     inkscape:cx="400"
+     inkscape:zoom="1.2833333"
+     inkscape:cx="408.57143"
      inkscape:cy="300"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer1"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -1145,7 +1145,7 @@
        transform="translate(-20,382.36205)"
        xml:space="preserve"
        id="flowRoot4302-6"
-       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
          id="flowRegion4304-7"><rect
            id="rect4306-3"
            width="760"
@@ -1153,7 +1153,7 @@
            x="40"
            y="140.00014"
            style="font-size:16px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara3933">Don't use the difference from the average. Use the workload squared, variance or standard deviation.</flowPara></flowRoot>    <flowRoot
+         id="flowPara3933">Don't use the deviation from the mean. Use the workload squared, variance or standard deviation.</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3457"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"><flowRegion
@@ -2706,7 +2706,7 @@
            width="159.99989"
            id="rect3542" /></flowRegion><flowPara
          id="flowPara3544"
-         style="fill:#a40000">- sum(avgDifference)</flowPara><flowPara
+         style="fill:#a40000">- sum(deviationMean)</flowPara><flowPara
          style="font-size:12px;fill:#a40000"
          id="flowPara5432">⇔ -sum(|workload - 3|)</flowPara><flowPara
          id="flowPara3547"
@@ -3581,7 +3581,7 @@
            height="40"
            width="119.99999"
            id="rect3363" /></flowRegion><flowPara
-         id="flowPara3365">Good score</flowPara></flowRoot>    <flowRoot
+         id="flowPara3365">Better score</flowPara></flowRoot>    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot3542"
        xml:space="preserve"
@@ -3597,7 +3597,7 @@
            id="flowSpan3550"
            style="text-align:end;text-anchor:end;fill:#ce5c00"><flowSpan
    style="fill:#888a85"
-   id="flowSpan3552">- 25 - 25 - 4 - 4 -1 = </flowSpan>- 58</flowSpan></flowPara></flowRoot>    <path
+   id="flowSpan3552">- 25 - 25 - 4 - 4 -1 = </flowSpan>- 59</flowSpan></flowPara></flowRoot>    <path
        style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
        d="m 675.36084,359.00006 10,-20 10,20"
        id="path3757"
@@ -3652,7 +3652,35 @@
    style="fill:#888a85">- 36 - 9 - 9 - 4 -1 = </flowSpan>- 59</flowSpan></flowPara></flowRoot>    <path
        inkscape:connector-curvature="0"
        id="path6871"
-       d="m 675.36084,479.00006 10,20 10,-20"
-       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate" />
-  </g>
+       d="m 690,500 0,-20"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
+       d="m 680,480 0,20"
+       id="path4124"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:none;stroke:#4e9a06;stroke-width:0.99999988;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect4126"
+       width="169"
+       height="29"
+       x="600.86084"
+       y="540.5"
+       rx="4.9999986"
+       ry="5" />
+    <flowRoot
+       transform="translate(852.00049,532.4422)"
+       xml:space="preserve"
+       id="flowRoot4128"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#4e9a06;fill-opacity:1;stroke:none"><flowRegion
+         id="flowRegion4130"><rect
+           id="rect4132"
+           width="159.99997"
+           height="20"
+           x="-246.91373"
+           y="-12.44214"
+           style="font-size:14px;text-align:center;text-anchor:middle;fill:#4e9a06" /></flowRegion><flowPara
+         id="flowPara4134">Highest score</flowPara></flowRoot>  </g>
 </svg>
