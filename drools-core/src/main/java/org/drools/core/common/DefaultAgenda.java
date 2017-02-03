@@ -1218,8 +1218,10 @@ public class DefaultAgenda
     }
 
     public boolean dispose(InternalWorkingMemory wm) {
-        propagationList.dispose();
-        return executionStateMachine.dispose( wm );
+        synchronized (propagationList) {
+            propagationList.dispose();
+            return executionStateMachine.dispose( wm );
+        }
     }
 
     public boolean isAlive() {
