@@ -1007,7 +1007,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    void addBuilderResult(KnowledgeBuilderResult result) {
+    public void addBuilderResult(KnowledgeBuilderResult result) {
         this.results.add(result);
     }
 
