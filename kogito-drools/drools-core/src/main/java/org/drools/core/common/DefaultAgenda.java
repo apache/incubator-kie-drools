@@ -1123,24 +1123,32 @@ public class DefaultAgenda
         class FireUntilHaltRestHandler implements RestHandler {
             @Override
             public PropagationEntry handleRest(DefaultAgenda agenda, boolean isInternalFire) {
+                boolean deactivated = false;
+                if (isInternalFire && agenda.executionStateMachine.currentState == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT) {
+                    agenda.executionStateMachine.inactiveOnFireUntilHalt( agenda.propagationList );
+                    deactivated = true;
+                }
+
+                PropagationEntry head;
                 // this must use the same sync target as takeAllPropagations, to ensure this entire block is atomic, up to the point of wait
                 synchronized (agenda.propagationList) {
-                    PropagationEntry head = agenda.propagationList.takeAll();
+                    head = agenda.propagationList.takeAll();
 
                     // if halt() has called, the thread should not be put into a wait state
                     // instead this is just a safe way to make sure the queue is flushed before exiting the loop
-                    if (head == null && agenda.executionStateMachine.currentState == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT) {
-                        if (isInternalFire) {
-                            agenda.executionStateMachine.inactiveOnFireUntilHalt( agenda.propagationList );
-                        }
+                    if (head == null && (
+                            agenda.executionStateMachine.currentState == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT ||
+                            agenda.executionStateMachine.currentState == ExecutionStateMachine.ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT )) {
                         agenda.propagationList.waitOnRest();
-                        if (isInternalFire) {
-                            agenda.executionStateMachine.toFireUntilHalt();
-                        }
                         head = agenda.propagationList.takeAll();
                     }
-                    return head;
                 }
+
+                if (deactivated) {
+                    agenda.executionStateMachine.toFireUntilHalt();
+                }
+
+                return head;
             }
         }
     }
@@ -1152,10 +1160,8 @@ public class DefaultAgenda
 
     @Override
     public void executeTask( ExecutableEntry executable ) {
-        synchronized (propagationList) {
-            if ( !executionStateMachine.toExecuteTask( executable ) ) {
-                return;
-            }
+        if ( !executionStateMachine.toExecuteTask( executable ) ) {
+            return;
         }
 
         try {
