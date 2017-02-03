@@ -25,7 +25,7 @@ import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 
 import org.apache.commons.lang3.tuple.Pair;
-import accumulate org.optaplanner.core.impl.score.director.drools.functions.LoadBalanceAccumulateFunction loadBalance;
+import accumulate org.optaplanner.examples.tennis.solver.drools.functions.LoadBalanceByCountAccumulateFunction loadBalanceByCount;
 
 global HardMediumSoftScoreHolder scoreHolder;
 
@@ -57,10 +57,10 @@ rule "fairAssignmentCountPerTeam"
     when
         accumulate(
             TeamAssignment(team != null, $t : team);
-            $total : loadBalance($t)
+            $total : loadBalanceByCount($t)
         )
     then
-        scoreHolder.addMediumConstraintMatch(kcontext, - (int) ($total * 1000000.0));
+        scoreHolder.addMediumConstraintMatch(kcontext, - (int) $total.getRootSquaredDeviationMillis());
 end
 
 // ############################################################################
@@ -72,8 +72,8 @@ rule "evenlyConfrontationCount"
         accumulate(
             TeamAssignment(team != null, $t1 : team, $d : day)
             and TeamAssignment(team != null, $t1.getId() < team.getId(), $t2 : team, day == $d);
-            $total : loadBalance(Pair.of($t1, $t2))
+            $total : loadBalanceByCount(Pair.of($t1, $t2))
         )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - (int) ($total * 1000000.0));
+        scoreHolder.addSoftConstraintMatch(kcontext, - (int) $total.getRootSquaredDeviationMillis());
 end
