@@ -105,7 +105,6 @@ public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super 
             fromSpace++;
         }
 
-
         // Only checking the modulus is not enough: 1-MAR + 1 month doesn't include 7-MAR but the modulus is 0 anyway
         return fromSpace % incrementUnitAmount == 0
                 && value.equals(from.plus(fromSpace, incrementUnitType));
