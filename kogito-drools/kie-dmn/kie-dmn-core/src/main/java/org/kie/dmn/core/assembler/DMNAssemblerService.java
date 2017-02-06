@@ -26,13 +26,16 @@ import org.kie.api.io.ResourceType;
 import org.kie.dmn.core.api.DMNCompiler;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.DMNModel;
+import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
 import org.kie.internal.assembler.KieAssemblerService;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.io.ResourceTypePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class DMNAssemblerService implements KieAssemblerService {
@@ -66,9 +69,15 @@ public class DMNAssemblerService implements KieAssemblerService {
             if ( dmnpkg == null ) {
                 dmnpkg = new DMNPackageImpl( namespace );
                 rpkg.put(ResourceType.DMN, dmnpkg);
+            } else {
+                if ( dmnpkg.getModel( model.getName() ) != null ) {
+                    ((KnowledgeBuilderImpl) kbuilder).addBuilderResult(new DMNKnowledgeBuilderError(resource, namespace, "Duplicate model name " + model.getName() + " in namespace " + namespace));
+                    logger.error( "Duplicate model name {} in namespace {}", model.getName(), namespace );
+                }
             }
             dmnpkg.addModel( model.getName(), model );
         } else {
+            ((KnowledgeBuilderImpl) kbuilder).addBuilderResult(new DMNKnowledgeBuilderError(resource, "Unable to compile DMN model for the resource"));
             logger.error( "Unable to compile DMN model for resource {}", resource.getSourcePath() );
         }
     }
