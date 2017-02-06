@@ -598,6 +598,24 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 
         return Collections.unmodifiableCollection(processInstances);
     }
+    
+
+    @Override
+    public Collection<ProcessInstanceDesc> getProcessInstancesByParent(Long parentProcessInstanceId, List<Integer> states, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        if (states == null || states.isEmpty()) {
+            states = new ArrayList<Integer>();
+            states.add(ProcessInstance.STATE_ACTIVE);
+        }
+        params.put("states", states);
+        params.put("parentId", parentProcessInstanceId);
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+
+        List<ProcessInstanceDesc> processInstances = commandService.execute(new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByParent", params));
+        return processInstances;
+    }
 
     /*
      * end
@@ -1299,4 +1317,5 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
          }
          return source;
      }
+
 }

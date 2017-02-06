@@ -28,6 +28,12 @@ import java.util.Map;
  * instead of <code>1</code>, <code>10</code>, <code>100</code> 
  */
 public interface CaseIdGenerator {
+    
+    /**
+     * Identifier of the generator so it can be found and registered at runtime
+     * @return unique identifier
+     */
+    String getIdentifier();
 
     /**
      * Should be called only one time per given prefix. Subsequent calls with same prefix do not affect the generator state.
@@ -45,7 +51,7 @@ public interface CaseIdGenerator {
     /**
      * Generates next value for given prefix. Returned value should include the prefix as part of the returned value.
      * @param prefix unique prefix that should be used for generating case identifiers
-     * @return complete case id in format (PREFIX-GNERATED_VALUE)
+     * @return complete case id in format (PREFIX-GENERATED_VALUE)
      * @param optionalParameters map of optionalParameters that might be helpful for implementation
      * @throws CasePrefixNotFoundException in case given prefix was not registered
      */

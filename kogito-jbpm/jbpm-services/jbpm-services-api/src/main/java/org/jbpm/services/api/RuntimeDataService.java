@@ -193,6 +193,16 @@ public interface RuntimeDataService {
      */
     Collection<ProcessInstanceDesc> getProcessInstancesByVariableAndValue(String variableName, String variableValue, List<Integer> states, QueryContext queryContext);
 
+    /**
+     * Returns list of process instance descriptions
+     * @param parentProcessInstanceId id of the parent process instance
+     * @param states list of possible state (int) values that the {@link ProcessInstance} can have. If null will return only active instances
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     * @return A list of {@link ProcessInstanceDesc} instances representing the available process instances.
+     */
+    Collection<ProcessInstanceDesc> getProcessInstancesByParent(Long parentProcessInstanceId, List<Integer> states, QueryContext queryContext);
+    
+    
     // Node and Variable instance information
 
     /**

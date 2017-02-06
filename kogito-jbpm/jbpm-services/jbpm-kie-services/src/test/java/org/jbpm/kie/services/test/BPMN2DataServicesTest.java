@@ -231,7 +231,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         assertNotNull(reusableProcesses);
         assertEquals(1, reusableProcesses.size());
 
-        assertEquals("signal", reusableProcesses.iterator().next());
+        assertEquals("org.jbpm.signal", reusableProcesses.iterator().next());
     }
 
     @Test

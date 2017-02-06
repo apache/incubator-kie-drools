@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,44 +17,41 @@
 package org.jbpm.casemgmt.impl.generator;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
 import org.jbpm.casemgmt.api.generator.CasePrefixNotFoundException;
 
 /**
- * Simple in memory (usually for test or demo purpose) case id generator.
- * It does not provide any actual storage of the generated values.
+ * Generator that in general does not generate but rely on given case ids.
+ * By default it expects to have "CaseId" parameter given that represents case id. 
+ * The name of the property can be changed by system property:<br/>
+ * <code>org.jbpm.cases.generator.caseid.param</code>
  *
  */
-public class InMemoryCaseIdGenerator implements CaseIdGenerator {
+public class NoneCaseIdGenerator implements CaseIdGenerator {
 
-    private static ConcurrentMap<String, AtomicLong> sequences = new ConcurrentHashMap<>();
-    private static final String IDENTIFIER = "InMemory";
-    
+    private static final String CASE_ID_PARAM = System.getProperty("org.jbpm.cases.generator.caseid.param", "CaseId");
+    private static final String IDENTIFIER = "None";
+   
     @Override
     public void register(String prefix) {
-        sequences.putIfAbsent(prefix, new AtomicLong());
+        // no-op as it completely relies on given CaseId as parameter
     }
 
     @Override
     public void unregister(String prefix) {
-        sequences.remove(prefix);
+        // no-op as it completely relies on given CaseId as parameter   
     }
 
     @Override
     public String generate(String prefix, Map<String, Object> optionalParameters) throws CasePrefixNotFoundException {
-        if (!sequences.containsKey(prefix)) {
-            throw new CasePrefixNotFoundException("No case identifier prefix '" + prefix + "' was registered");
+        if (optionalParameters == null || !optionalParameters.containsKey(CASE_ID_PARAM)) {
+            throw new CasePrefixNotFoundException("No case identifier found in parameters");
         }
         
-        long nextVal = sequences.get(prefix).incrementAndGet();
-        String paddedNumber = String.format("%010d", nextVal);
-        return prefix + "-" + paddedNumber;
+        return optionalParameters.get(CASE_ID_PARAM).toString();
     }
-    
+
     @Override
     public String getIdentifier() {
         return IDENTIFIER;

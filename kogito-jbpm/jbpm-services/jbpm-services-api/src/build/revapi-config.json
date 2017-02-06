@@ -65,6 +65,24 @@
         "old": "field org.jbpm.services.api.query.model.QueryParam.serialVersionUID",
         "new": "field org.jbpm.services.api.query.model.QueryParam.serialVersionUID",
         "justification": "Not an issue, only static methods were added so there is no need to change serial version."
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method java.util.Collection<org.jbpm.services.api.model.ProcessInstanceDesc> org.jbpm.services.api.RuntimeDataService::getProcessInstancesByParent(java.lang.Long, java.util.List<java.lang.Integer>, org.kie.api.runtime.query.QueryContext)",
+        "package": "org.jbpm.services.api",
+        "classSimpleName": "RuntimeDataService",
+        "methodName": "getProcessInstancesByParent",
+        "elementKind": "method",
+        "justification": "Added method to search by parent process instance id"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method boolean org.jbpm.services.api.model.ProcessDefinition::isActive()",
+        "package": "org.jbpm.services.api.model",
+        "classSimpleName": "ProcessDefinition",
+        "methodName": "isActive",
+        "elementKind": "method",
+        "justification": "promoted isActive to the api for easier use"
       }
     ]
   }

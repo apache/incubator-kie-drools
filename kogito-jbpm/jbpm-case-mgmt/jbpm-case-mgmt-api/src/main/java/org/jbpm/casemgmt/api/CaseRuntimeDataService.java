@@ -25,6 +25,7 @@ import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseStageInstance;
 import org.jbpm.services.api.model.NodeInstanceDesc;
+import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
@@ -73,6 +74,30 @@ public interface CaseRuntimeDataService {
      *
      */
     Collection<CaseDefinition> getCasesByDeployment(String deploymentId, QueryContext queryContext);
+    
+    /*
+     * Process definition related
+     */
+    
+    /**
+     * Returns process definitions that are not considered as case definitions.
+     * @param queryContext control parameters for the result e.g. sorting, paging 
+     */
+    Collection<ProcessDefinition> getProcessDefinitions(QueryContext queryContext);
+    
+    /**
+     * Returns process definitions that are not considered as case definitions and are filtered by process id or name.
+     * @param filter regex based filter for either name or id of the process
+     * @param queryContext control parameters for the result e.g. sorting, paging 
+     */
+    Collection<ProcessDefinition> getProcessDefinitions(String filter, QueryContext queryContext);
+    
+    /**
+     * Returns process definitions that are not considered as case definitions that belongs to given deployment.
+     * @param deploymentId deployment id the processes should be found for
+     * @param queryContext control parameters for the result e.g. sorting, paging 
+     */
+    Collection<ProcessDefinition> getProcessDefinitionsByDeployment(String deploymentId, QueryContext queryContext);
     
     /*
      * Case instance related

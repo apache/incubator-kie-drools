@@ -43,10 +43,17 @@ public class TableCaseIdGenerator implements CaseIdGenerator {
     private static final Logger logger = LoggerFactory.getLogger(TableCaseIdGenerator.class);
     private boolean removeOnUnregister = Boolean.parseBoolean(System.getProperty("org.jbpm.casemgmt.table.generator.clean", "false"));
     
+    private static final String IDENTIFIER = "DB";
+    
     private TransactionalCommandService commandService;
 
     public TableCaseIdGenerator(TransactionalCommandService commandService) {
         this.commandService = commandService;
+    }
+    
+    @Override
+    public String getIdentifier() {
+        return IDENTIFIER;
     }
 
     @Override

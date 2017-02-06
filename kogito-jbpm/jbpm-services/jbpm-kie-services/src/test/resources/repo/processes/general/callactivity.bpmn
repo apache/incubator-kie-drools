@@ -22,7 +22,7 @@
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
-    <callActivity id="_2" name="CallActivity" calledElement="signal" >
+    <callActivity id="_2" name="CallActivity" calledElement="org.jbpm.signal" >
       <ioSpecification>
         <dataInput id="_2_subXInput" name="subX" />
         <dataOutput id="_2_subYOutput" name="subY" />

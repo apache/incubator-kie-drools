@@ -50,6 +50,7 @@ import org.jbpm.casemgmt.impl.model.CaseDefinitionImpl;
 import org.jbpm.casemgmt.impl.model.CaseMilestoneImpl;
 import org.jbpm.casemgmt.impl.model.CaseRoleImpl;
 import org.jbpm.casemgmt.impl.model.CaseStageImpl;
+import org.jbpm.casemgmt.impl.model.ProcessDefinitionComparator;
 import org.jbpm.casemgmt.impl.model.instance.CaseMilestoneInstanceImpl;
 import org.jbpm.casemgmt.impl.model.instance.CaseStageInstanceImpl;
 import org.jbpm.kie.services.impl.model.NodeInstanceDesc;
@@ -60,6 +61,7 @@ import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.DeployedAsset;
+import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
@@ -86,6 +88,7 @@ import org.kie.internal.query.QueryContext;
 public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, DeploymentEventListener {
 
     protected Set<CaseDefinitionImpl> availableCases = new HashSet<CaseDefinitionImpl>();
+    protected Set<ProcessDefinition> availableProcesses = new HashSet<ProcessDefinition>();
 
     private CorrelationKeyFactory correlationKeyFactory = KieInternalServices.Factory.get().newCorrelationKeyFactory();
     
@@ -169,7 +172,11 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         Collection<DeployedAsset> assets = event.getDeployedUnit().getDeployedAssets();
         List<String> roles = null;
         for( DeployedAsset asset : assets ) {
-            if( asset instanceof ProcessAssetDesc ) {                
+            if( asset instanceof ProcessAssetDesc ) {  
+                // if it's not dynamic it's considered as not case definition
+                if (!((ProcessAssetDesc) asset).isDynamic()) {
+                    availableProcesses.add((ProcessAssetDesc) asset);
+                }
                 if (roles == null) {
                     roles = ((ProcessAssetDesc) asset).getRoles();
                 }
@@ -190,6 +197,12 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
                     .collect(toList());
         
         availableCases.removeAll(undeployed);
+        
+        Collection<ProcessDefinition> undeployedProcesses = availableProcesses.stream()
+                .filter(process -> process.getDeploymentId().equals(event.getDeploymentId()))
+                .collect(toList());
+        
+        availableProcesses.removeAll(undeployedProcesses);
         
         undeployed.forEach(caseDef -> caseIdGenerator.unregister(caseDef.getIdentifierPrefix()));
         deploymentRolesManager.removeRolesForDeployment(event.getDeploymentId());
@@ -250,6 +263,45 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         Collection<CaseDefinition> cases = availableCases.stream()
                 .filter(caseDef -> caseDef.isActive() && caseDef.getDeploymentId().equals(deploymentId))
                 .sorted(new CaseDefinitionComparator(queryContext.getOrderBy(), queryContext.isAscending()))
+                .skip(queryContext.getOffset())
+                .limit(queryContext.getCount())
+                .collect(toList());
+        return cases;
+    }
+    
+    /*
+     * Process definitions related
+     */
+    @Override
+    public Collection<ProcessDefinition> getProcessDefinitions(QueryContext queryContext) {
+        Collection<ProcessDefinition> cases = availableProcesses.stream()
+                .filter(caseDef -> caseDef.isActive())
+                .sorted(new ProcessDefinitionComparator(queryContext.getOrderBy(), queryContext.isAscending()))
+                .skip(queryContext.getOffset())
+                .limit(queryContext.getCount())
+                .collect(toList());
+        return cases;
+    }
+
+    @Override
+    public Collection<ProcessDefinition> getProcessDefinitions(String filter, QueryContext queryContext) {
+        String pattern = "(?i)^.*"+filter+".*$";
+        
+        Collection<ProcessDefinition> cases = availableProcesses.stream()
+                .filter(caseDef -> caseDef.isActive() 
+                        && (caseDef.getId().matches(pattern) || caseDef.getName().matches(pattern)))
+                .sorted(new ProcessDefinitionComparator(queryContext.getOrderBy(), queryContext.isAscending()))
+                .skip(queryContext.getOffset())
+                .limit(queryContext.getCount())
+                .collect(toList());
+        return cases;
+    }
+
+    @Override
+    public Collection<ProcessDefinition> getProcessDefinitionsByDeployment(String deploymentId, QueryContext queryContext) {
+        Collection<ProcessDefinition> cases = availableProcesses.stream()
+                .filter(caseDef -> caseDef.isActive() && caseDef.getDeploymentId().equals(deploymentId))
+                .sorted(new ProcessDefinitionComparator(queryContext.getOrderBy(), queryContext.isAscending()))
                 .skip(queryContext.getOffset())
                 .limit(queryContext.getCount())
                 .collect(toList());

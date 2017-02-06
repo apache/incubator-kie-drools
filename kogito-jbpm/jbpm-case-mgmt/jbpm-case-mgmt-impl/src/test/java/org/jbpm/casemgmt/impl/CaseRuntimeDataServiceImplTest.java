@@ -42,6 +42,7 @@ import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
+import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -806,5 +807,36 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
                 caseService.cancelCase(caseId2);
             }
         }
+    }
+    
+    @Test
+    public void testGetProcessDefinitions() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        Collection<ProcessDefinition> processes = caseRuntimeDataService.getProcessDefinitions(new QueryContext());
+        assertNotNull(processes);
+        assertEquals(2, processes.size());
+
+        Map<String, ProcessDefinition> mappedProcesses = mapProcesses(processes);        
+        assertTrue(mappedProcesses.containsKey("UserTask"));
+        assertTrue(mappedProcesses.containsKey("DataVerification"));
+        
+        processes = caseRuntimeDataService.getProcessDefinitions("User", new QueryContext());
+        assertNotNull(processes);
+        assertEquals(1, processes.size());
+        
+        mappedProcesses = mapProcesses(processes);        
+        assertTrue(mappedProcesses.containsKey("UserTask"));
+        
+        processes = caseRuntimeDataService.getProcessDefinitionsByDeployment(deploymentUnit.getIdentifier(), new QueryContext());
+        assertNotNull(processes);
+        assertEquals(2, processes.size());
+
+        mappedProcesses = mapProcesses(processes);        
+        assertTrue(mappedProcesses.containsKey("UserTask"));
+        assertTrue(mappedProcesses.containsKey("DataVerification"));
     }
 }

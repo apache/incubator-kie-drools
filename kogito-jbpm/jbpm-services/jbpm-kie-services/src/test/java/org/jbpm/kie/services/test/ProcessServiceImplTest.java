@@ -26,6 +26,7 @@ import static org.kie.scanner.MavenRepository.getMavenRepository;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +77,7 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
         processes.add("repo/processes/general/humanTask.bpmn");
         processes.add("repo/processes/general/import.bpmn");
         processes.add("repo/processes/general/signal.bpmn");
+        processes.add("repo/processes/general/callactivity.bpmn");
 
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -906,5 +908,47 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
         } catch (ProcessInstanceNotFoundException e) {
             // expected
         }
+    }
+    
+    @Test
+    public void testStartProcessCallActivity() {
+        assertNotNull(deploymentService);
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        assertNotNull(processService);
+
+        long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "ParentProcess");
+        assertNotNull(processInstanceId);
+
+        ProcessInstance pi = processService.getProcessInstance(processInstanceId);
+        assertNotNull(pi);
+        
+        Collection<ProcessInstanceDesc> children = runtimeDataService.getProcessInstancesByParent(processInstanceId, null, new QueryContext());
+        assertNotNull(children);
+        assertEquals(1, children.size());
+        
+        ProcessInstanceDesc childInstance = children.iterator().next();
+        assertNotNull(childInstance);
+        assertEquals("org.jbpm.signal", childInstance.getProcessId());
+        
+        children = runtimeDataService.getProcessInstancesByParent(processInstanceId, Arrays.asList(2, 3), new QueryContext());
+        assertNotNull(children);
+        assertEquals(0, children.size());
+        
+        processService.signalProcessInstance(childInstance.getId(), "MySignal", null);
+        
+        children = runtimeDataService.getProcessInstancesByParent(processInstanceId, Arrays.asList(2, 3), new QueryContext());
+        assertNotNull(children);
+        assertEquals(1, children.size());
+        
+        childInstance = children.iterator().next();
+        assertNotNull(childInstance);
+        assertEquals("org.jbpm.signal", childInstance.getProcessId());
+        
+        pi = processService.getProcessInstance(processInstanceId);
+        assertNull(pi);
     }
 }

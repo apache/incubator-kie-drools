@@ -49,4 +49,6 @@ public interface ProcessDefinition extends Serializable, DeployedAsset {
     Collection<String> getGlobals();
 
     Collection<String> getReferencedRules();
+    
+    boolean isActive();
 }
