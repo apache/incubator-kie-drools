@@ -115,7 +115,7 @@ public class TestGenKieSessionJournal {
                     + "[" + entity + "]) is not a working fact");
         }
         Object value = variableDescriptor.getValue(entity);
-        TestGenFact valueFact = value == null ? new TestGenNullFact() : existingInstances.get(value);
+        TestGenFact valueFact = value == null ? TestGenNullFact.INSTANCE : existingInstances.get(value);
         if (valueFact == null) {
             // shadow variable
             if (logger.isTraceEnabled()) {

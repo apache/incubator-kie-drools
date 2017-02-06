@@ -21,6 +21,11 @@ import java.util.Map;
 
 public class TestGenNullFact implements TestGenFact {
 
+    public static final TestGenNullFact INSTANCE = new TestGenNullFact();
+
+    private TestGenNullFact() {
+    }
+
     @Override
     public void setUp(Map<Object, TestGenFact> existingInstances) {
     }
