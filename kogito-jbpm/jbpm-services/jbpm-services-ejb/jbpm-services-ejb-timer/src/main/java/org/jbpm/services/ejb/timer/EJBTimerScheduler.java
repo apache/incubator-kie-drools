@@ -84,8 +84,8 @@ public class EJBTimerScheduler {
 	
 	public void internalSchedule(TimerJobInstance timerJobInstance) {
 		TimerConfig config = new TimerConfig(new EjbTimerJob(timerJobInstance), true);
-		Date expirationTime = timerJobInstance.getTrigger().nextFireTime();
-		
+		Date expirationTime = timerJobInstance.getTrigger().hasNextFireTime();
+		logger.debug("Timer expiration date is {}", expirationTime);
 		if (expirationTime != null) {
 			timerService.createSingleActionTimer(expirationTime, config);
 			logger.debug("Timer scheduled {} on {} scheduler service", timerJobInstance);
