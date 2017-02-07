@@ -94,8 +94,16 @@
 
     <!-- JSON serialization -->
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
    
     <!-- TEST -->
@@ -110,6 +118,12 @@
 	    <groupId>org.jbpm</groupId>
 	    <artifactId>jbpm-human-task-jpa</artifactId>
 	    <scope>test</scope>
+	    <exclusions>
+	      <exclusion>
+	        <artifactId>jackson-core-asl</artifactId>
+	        <groupId>org.codehaus.jackson</groupId>
+	      </exclusion>
+	    </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -180,6 +194,24 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jackson-core-asl</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jackson-mapper-asl</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jackson-xc</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jackson-jaxrs</artifactId>
+          <groupId>org.codehaus.jackson</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>

@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.jbpm.services.task.impl.model.xml.InternalJaxbWrapper.GetterUser;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
@@ -38,6 +37,8 @@ import org.kie.api.task.model.TaskData;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.InternalTaskData;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 @XmlType(name = "task-data")
 @XmlAccessorType(XmlAccessType.FIELD)

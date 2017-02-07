@@ -15,7 +15,8 @@
 
 package org.jbpm.services.task.impl.model.xml;
 
-import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.*;
+import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.unsupported;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -27,10 +28,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.jbpm.services.task.impl.model.xml.InternalJaxbWrapper.GetterUser;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.User;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 @XmlRootElement(name="comment")
 @XmlAccessorType(XmlAccessType.FIELD)

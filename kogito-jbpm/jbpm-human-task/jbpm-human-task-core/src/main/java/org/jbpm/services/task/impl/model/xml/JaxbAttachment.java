@@ -23,10 +23,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.jbpm.services.task.impl.model.xml.InternalJaxbWrapper.GetterUser;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.User;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 @XmlType(name="attachment")
 @XmlAccessorType(XmlAccessType.FIELD)

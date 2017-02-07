@@ -6,9 +6,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.ContentData;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 @XmlRootElement(name="content-data")
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -16,7 +16,8 @@
 package org.jbpm.services.task.impl.model.xml;
 
 import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.convertListFromInterfaceToJaxbImpl;
-import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.*;
+import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.unsupported;
+import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.whenNull;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -31,8 +32,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.jbpm.services.task.commands.AddTaskCommand;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
@@ -53,6 +52,9 @@ import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.SubTasksStrategy;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @XmlRootElement(name="task")
 @XmlAccessorType(XmlAccessType.FIELD)

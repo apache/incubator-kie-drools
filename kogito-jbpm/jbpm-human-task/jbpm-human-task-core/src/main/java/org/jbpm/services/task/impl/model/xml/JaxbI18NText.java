@@ -24,9 +24,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.jbpm.services.task.impl.model.xml.InternalJaxbWrapper.GetterI18NText;
 import org.kie.api.task.model.I18NText;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 @XmlRootElement(name="i18n-text")
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -26,8 +26,9 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.kie.api.task.model.User;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties({"realClass"})
 public class AbstractJaxbTaskObject<T> {
