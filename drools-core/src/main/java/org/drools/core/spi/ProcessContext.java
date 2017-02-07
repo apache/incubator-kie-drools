@@ -23,6 +23,7 @@ import org.kie.api.runtime.process.CaseData;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,10 @@ import java.util.Collection;
 public class ProcessContext implements org.kie.api.runtime.process.ProcessContext {
     
     private static Logger logger = LoggerFactory.getLogger(ProcessContext.class);
-    
+
+    private static final String DEFAULT_ENTRY_POINT = "DEFAULT";
+    private static final String ENTRY_POINT_VAR_NAME = "_EntryPoint_";
+
     private KieRuntime kruntime;
     private ProcessInstance processInstance;
     private NodeInstance nodeInstance;
@@ -91,21 +95,40 @@ public class ProcessContext implements org.kie.api.runtime.process.ProcessContex
     }
 
     public CaseData getCaseData() {
+        EntryPoint entryPoint = kruntime.getEntryPoint(getEntryPointName());
+        if (entryPoint != null) {
+            Collection<? extends Object> objects = entryPoint.getObjects(new ClassObjectFilter(CaseData.class));
+            if (objects.size() == 0) {
+                return null;
+            }
 
-        Collection<? extends Object> objects = kruntime.getObjects(new ClassObjectFilter(CaseData.class));
-        if (objects.size() == 0) {
-            return null;
+            return (CaseData) objects.iterator().next();
         }
 
-        return (CaseData) objects.iterator().next();
+        return null;
     }
 
     public CaseAssignment getCaseAssignment() {
-        Collection<? extends Object> objects = kruntime.getObjects(new ClassObjectFilter(CaseAssignment.class));
-        if (objects.size() == 0) {
-            return null;
+        EntryPoint entryPoint = kruntime.getEntryPoint(getEntryPointName());
+        if (entryPoint != null) {
+            Collection<? extends Object> objects = entryPoint.getObjects(new ClassObjectFilter(CaseAssignment.class));
+            if (objects.size() == 0) {
+                return null;
+            }
+
+            return (CaseAssignment) objects.iterator().next();
         }
 
-        return (CaseAssignment) objects.iterator().next();
+        return null;
+    }
+
+    protected String getEntryPointName() {
+        if (getProcessInstance() != null) {
+            String entryPointName = (String) getVariable(ENTRY_POINT_VAR_NAME);
+            if (entryPointName != null) {
+                return entryPointName;
+            }
+        }
+        return DEFAULT_ENTRY_POINT;
     }
 }
