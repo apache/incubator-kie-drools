@@ -125,6 +125,7 @@ public abstract class AbstractCaseServicesBaseTest {
     protected static final String USER_TASK_STAGE_ADHOC_CASE_P_ID = "UserStageAdhocCase";
     protected static final String NO_START_NODE_CASE_P_ID = "NoStartNodeAdhocCase";
     protected static final String COND_CASE_P_ID = "CaseFileConditionalEvent";
+    protected static final String TWO_STAGES_CASE_P_ID = "CaseWithTwoStages";
 
     protected static final String SUBPROCESS_P_ID = "DataVerification";
 
