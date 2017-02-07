@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Entity
-@SequenceGenerator(name="workItemInfoIdSeq", sequenceName="WORKITEMINFO_ID_SEQ")
+@SequenceGenerator(name="workItemInfoIdSeq", sequenceName="WORKITEMINFO_ID_SEQ", allocationSize=1)
 public class WorkItemInfo implements Transformable {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkItemInfo.class);

@@ -30,7 +30,7 @@ import org.drools.persistence.SessionMarshallingHelper;
 import org.drools.persistence.Transformable;
 
 @Entity
-@SequenceGenerator(name="sessionInfoIdSeq", sequenceName="SESSIONINFO_ID_SEQ")
+@SequenceGenerator(name="sessionInfoIdSeq", sequenceName="SESSIONINFO_ID_SEQ", allocationSize=1)
 public class SessionInfo implements Transformable {
     
     private @Id
