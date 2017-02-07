@@ -30,6 +30,7 @@ import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -58,11 +59,22 @@ public class DMNDTExpressionEvaluator
             List<String> paramNames = dt.getParameterNames().get( 0 );
             Object[] params = new Object[paramNames.size()];
             EvaluationContextImpl ctx = new EvaluationContextImpl( feel.getEventsManager() );
+
+            ctx.enterFrame();
+            // need to set the values for in context variables...
+            for ( Map.Entry<String,Object> entry : result.getContext().getAll().entrySet() ) {
+                ctx.setValue( entry.getKey(), entry.getValue() );
+            }
             for ( int i = 0; i < params.length; i++ ) {
                 params[i] = feel.evaluate( paramNames.get( i ), result.getContext().getAll() );
                 ctx.setValue( paramNames.get( i ), params[i] );
             }
             Object dtr = dt.invoke( ctx, params ).cata( e -> { events.add( e); return null; }, Function.identity());
+
+            // since ctx is a local variable that will be discarded, no need for a try/finally,
+            // but still wanted to match the enter/exit frame for future maintainability purposes
+            ctx.exitFrame();
+
             r = processEvents( events, eventManager, result );
             return new EvaluatorResult( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {

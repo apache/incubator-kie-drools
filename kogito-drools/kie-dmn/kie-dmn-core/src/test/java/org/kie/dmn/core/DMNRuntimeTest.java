@@ -578,6 +578,22 @@ public class DMNRuntimeTest {
         assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
     }
 
+    @Test
+    public void testDTInContext() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_in_context.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_4acdcb25-b298-435e-abd5-efd00ed686a5", "Drawing 1" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        assertThat( dmnResult.getDecisionResults().size(), is( 1 ) );
+        assertThat( dmnResult.getDecisionResultByName( "D1" ).getResult(), is( instanceOf( Map.class ) ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( ((Map)result.get( "D1" )).get( "Text color" ), is( "red" ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
