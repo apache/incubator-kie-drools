@@ -18,6 +18,7 @@ package org.kie.dmn.validation;
 import org.kie.dmn.feel.model.v1_1.*;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.validation.ValidationMsg.Severity;
+import org.kie.dmn.feel.parser.feel11.FEELParser;
 
 rule BKM_MISSING_EXPR
 when
@@ -195,6 +196,13 @@ when
   $y : ItemDefinition( name == $x.name, this != $x )
 then
   entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ITEMDEF_NOT_UNIQUE, $x ) );
+end
+
+rule NAME_INVALID
+when
+    $ne : NamedElement( FEELParser.isVariableNameValid( name ) == false )
+then
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.NAME_INVALID, $ne) );
 end
 
 rule RELATION_DUP_COLUMN
