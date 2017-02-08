@@ -284,6 +284,14 @@ public class ValidatorTest {
     }
     
     @Test
+    public void testNAME_INVALID() {
+        Definitions definitions = utilDefinitions( "NAME_INVALID.dmn", "NAME_INVALID" );
+        List<ValidationMsg> validate = validator.validateModel(definitions);
+        
+        assertTrue( validate.stream().anyMatch( p -> p.getMessage().equals( Msg.NAME_INVALID ) ) );
+    }
+    
+    @Test
     public void testRELATION_DUP_COLUMN() {
         Definitions definitions = utilDefinitions( "RELATION_DUP_COLUMN.dmn", "RELATION_DUP_COLUMN" );
         List<ValidationMsg> validate = validator.validateModel(definitions);

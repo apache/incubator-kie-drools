@@ -40,6 +40,7 @@ public enum Msg {
     INVOCATION_WRONG_PARAM_COUNT("Invocation referecing a DRGElement but number of parameters is not consistent with target"),
     ITEMCOMP_DUPLICATED("itemComponent with duplicated name within a same parent itemDefinition"),
     ITEMDEF_NOT_UNIQUE("itemDefinition name is not unique in the model"),
+    NAME_INVALID("the NamedElement attribute 'name' is not a valid FEEL name definition"),
     RELATION_DUP_COLUMN("Relation contains duplicate column name"),
     RELATION_ROW_CELL_NOTLITERAL("Relation contains a row with a cell which is not a literalExpression"),
     RELATION_ROW_CELLCOUNTMISMATCH("Relation contains a row with wrong number of cells"),
