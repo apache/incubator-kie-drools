@@ -880,6 +880,7 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             
             caseService.addDataToCaseFile(caseId, "customData", "nextStagePlease");
             
+            
             stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
             assertNotNull(stage);
             assertEquals(1, stage.size());

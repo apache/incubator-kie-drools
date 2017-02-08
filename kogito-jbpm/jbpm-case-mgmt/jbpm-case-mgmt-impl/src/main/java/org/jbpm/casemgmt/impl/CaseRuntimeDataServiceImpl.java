@@ -352,7 +352,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         }
         List<String> foundMilestones = new ArrayList<>();
         
-        Collection<CaseMilestoneInstance> milestones = nodes.stream()
+        List<CaseMilestoneInstance> milestones = nodes.stream()
         .filter(filterNodes)
         .map(n -> {
             foundMilestones.add(n.getName());
@@ -369,7 +369,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
             .forEach(cmi -> milestones.add(cmi));
         }
         
-        return milestones;
+        return applyPagination(milestones, queryContext);
     }
 
     @Override
@@ -380,9 +380,9 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         }
         
         CaseDefinition caseDef = getCase(pi.getDeploymentId(), pi.getProcessId());
-        Collection<CaseStageInstance> stages = internalGetCaseStages(caseDef, caseId, activeOnly, queryContext);
+        List<CaseStageInstance> stages = internalGetCaseStages(caseDef, caseId, activeOnly, queryContext);
         
-        return stages;
+        return applyPagination(stages, queryContext);
     }
     
     /*
@@ -564,7 +564,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
      * Helper methods to parse process and extract case related information
      */
     
-    public Collection<CaseStageInstance> internalGetCaseStages(CaseDefinition caseDef, String caseId, boolean activeOnly, QueryContext queryContext) {
+    public List<CaseStageInstance> internalGetCaseStages(CaseDefinition caseDef, String caseId, boolean activeOnly, QueryContext queryContext) {
         
         CorrelationKey correlationKey = correlationKeyFactory.newCorrelationKey(caseId);
         Collection<org.jbpm.services.api.model.NodeInstanceDesc> nodes = runtimeDataService.getNodeInstancesByCorrelationKeyNodeType(correlationKey, 
@@ -584,7 +584,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         }
         
         List<String> triggeredStages = new ArrayList<>();
-        Collection<CaseStageInstance> stages = new ArrayList<>();
+        List<CaseStageInstance> stages = new ArrayList<>();
         nodes.stream()
         .filter(filterNodes)
         .map(n -> {
@@ -743,5 +743,23 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         entities.add(AuthorizationManager.PUBLIC_GROUP);
         
         return entities;
+    }
+    
+    protected <T> Collection<T> applyPagination(List<T> input, QueryContext queryContext) {
+        if (queryContext != null) {
+            int start = queryContext.getOffset();
+            int end = start + queryContext.getCount();
+            if (input.size() < start) {
+                // no elements in given range
+                return new ArrayList<T>();
+            } else if (input.size() >= end) {
+                return Collections.unmodifiableCollection(new ArrayList<T>(input.subList(start, end)));
+            } else if (input.size() < end) {
+                return Collections.unmodifiableCollection(new ArrayList<T>(input.subList(start, input.size())));
+            }
+
+        }
+
+        return Collections.unmodifiableCollection(input);
     }
 }

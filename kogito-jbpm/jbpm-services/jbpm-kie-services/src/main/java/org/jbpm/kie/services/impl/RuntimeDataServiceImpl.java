@@ -716,7 +716,6 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         params.put("correlationKey", correlationKey.toExternalForm() + "%");
         params.put("states", states);
         params.put("nodeTypes", nodeTypes);
-        applyQueryContext(params, queryContext);
         List<NodeInstanceDesc> nodeInstances = commandService.execute(
                 new QueryNameCommand<List<NodeInstanceDesc>>("getNodeInstancesByCorrelationKeyAndNodeType",
                 params));
