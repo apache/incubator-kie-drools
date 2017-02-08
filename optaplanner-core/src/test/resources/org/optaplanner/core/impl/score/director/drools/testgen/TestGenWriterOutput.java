@@ -52,7 +52,7 @@ public class TestGenWriterOutput {
     public void test() {
         //operation U #1
         testdataEntity_1.setValue(testdataValue_2);
-        kieSession.update(kieSession.getFactHandle(testdataEntity_1), testdataEntity_1);
+        kieSession.update(kieSession.getFactHandle(testdataEntity_1), testdataEntity_1, "value");
         //operation D #2
         kieSession.delete(kieSession.getFactHandle(testdataValue_2));
         //operation F #3

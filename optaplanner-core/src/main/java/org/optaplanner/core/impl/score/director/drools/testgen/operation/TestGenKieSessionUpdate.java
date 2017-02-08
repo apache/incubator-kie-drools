@@ -32,6 +32,7 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
     private static final Logger logger = LoggerFactory.getLogger(TestGenKieSessionUpdate.class);
     private final int id;
     private final TestGenFact entity;
+    private final String variableName;
     private final BeanPropertyMemberAccessor accessor;
     private final String setterName;
     private final TestGenFact value;
@@ -43,6 +44,7 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
         }
         this.id = id;
         this.entity = entity;
+        this.variableName = variableDescriptor.getVariableName();
         this.value = value;
         Method getter = ReflectionHelper.getGetterMethod(
                 variableDescriptor.getEntityDescriptor().getEntityClass(),
@@ -77,14 +79,15 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
         if (fh == null) {
             throw new IllegalStateException("No fact handle for " + entity);
         }
-        kieSession.update(fh, entity.getInstance());
+        kieSession.update(fh, entity.getInstance(), variableName);
     }
 
     @Override
     public void print(StringBuilder sb) {
         sb.append(String.format("        //%s\n", this));
         sb.append(String.format("        %s.%s(%s);\n", entity, setterName, value));
-        sb.append(String.format("        kieSession.update(kieSession.getFactHandle(%s), %s);\n", entity, entity));
+        sb.append(String.format("        kieSession.update(kieSession.getFactHandle(%s), %s, \"%s\");\n",
+                entity, entity, variableName));
     }
 
     @Override
