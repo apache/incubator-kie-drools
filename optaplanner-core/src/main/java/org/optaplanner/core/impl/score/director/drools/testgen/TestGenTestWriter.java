@@ -23,16 +23,17 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionUpdate;
 import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedScoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,7 @@ class TestGenTestWriter {
 
     private void printInit() {
         sb.append("package org.optaplanner.testgen;\n\n");
-        SortedSet<String> imports = new TreeSet<>();
+        List<String> imports = new ArrayList<>();
         imports.add("org.junit.Before");
         imports.add("org.junit.Test");
         imports.add("org.kie.api.KieServices");
@@ -84,18 +85,26 @@ class TestGenTestWriter {
             imports.add(ScoreHolder.class.getCanonicalName());
             imports.add(scoreDefinition.getClass().getCanonicalName());
         }
-        for (TestGenFact fact : journal.getFacts()) {
-            for (Class<?> cls : fact.getImports()) {
-                String pkgName = cls.getPackage().getName();
-                if (!pkgName.equals("java.lang")) {
-                    imports.add(cls.getCanonicalName());
-                }
-            }
-        }
 
-        for (String cls : imports) {
-            sb.append(String.format("import %s;\n", cls));
-        }
+        Stream<String> classes = Stream.concat(
+                // imports from facts
+                journal.getFacts().stream()
+                .flatMap(fact -> fact.getImports().stream()),
+                // imports from update operations (including shadow variable updates with inline values)
+                journal.getMoveOperations().stream()
+                .filter(op -> op instanceof TestGenKieSessionUpdate)
+                .flatMap(up -> {
+                    return ((TestGenKieSessionUpdate) up).getValue().getImports().stream();
+                })
+        )
+                .filter(cls -> !cls.getPackage().getName().equals("java.lang"))
+                .map(cls -> cls.getCanonicalName());
+
+        Stream.concat(imports.stream(), classes)
+                .distinct()
+                .sorted()
+                .forEach(cls -> sb.append(String.format("import %s;\n", cls)));
+
         sb.append("\n")
                 .append("public class ").append(className).append(" {\n\n")
                 .append("    KieContainer kieContainer;\n")

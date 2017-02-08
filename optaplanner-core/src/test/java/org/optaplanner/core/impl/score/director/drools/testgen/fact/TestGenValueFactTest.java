@@ -153,4 +153,26 @@ public class TestGenValueFactTest {
         assertEquals("desc", instance.getDescription());
     }
 
+    @Test
+    public void inlineValueList() {
+        // prepare instances and facts
+        TestdataEntity a = new TestdataEntity();
+        TestdataEntity b = new TestdataEntity();
+        TestGenValueFact fa = new TestGenValueFact(0, a);
+        TestGenValueFact fb = new TestGenValueFact(1, b);
+        HashMap<Object, TestGenFact> instances = new HashMap<>();
+        instances.put(a, fa);
+        instances.put(b, fb);
+
+        // create the "inverse list" (simulation of inverse relationship shadow variable)
+        ArrayList<TestdataEntity> inverseList = new ArrayList<>();
+        inverseList.add(a);
+        inverseList.add(b);
+
+        // create the inline value of the inverse list
+        TestGenInlineValue val = new TestGenInlineValue(inverseList, instances);
+        assertTrue(val.getImports().contains(Arrays.class));
+        assertEquals("Arrays.asList(" + fa.getVariableName() + ", " + fb.getVariableName() + ")", val.toString());
+    }
+
 }

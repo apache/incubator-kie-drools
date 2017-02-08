@@ -15,6 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class TestGenInlineValue implements TestGenFact {
 
     private final Object instance;
     private final String instanceToString;
+    private final ArrayList<Class<?>> imports = new ArrayList<>();
 
     public TestGenInlineValue(Object value, Map<Object, TestGenFact> existingInstances) {
         if (value == null) {
@@ -37,6 +39,7 @@ public class TestGenInlineValue implements TestGenFact {
         if (List.class.isAssignableFrom(value.getClass())) {
             instanceToString = new TestGenListValueProvider((List) value, null, null, existingInstances)
                     .getInlineValue();
+            imports.add(java.util.Arrays.class);
         } else {
             this.instanceToString = value.toString();
         }
@@ -64,7 +67,7 @@ public class TestGenInlineValue implements TestGenFact {
 
     @Override
     public List<Class<?>> getImports() {
-        return Collections.emptyList();
+        return Collections.unmodifiableList(imports);
     }
 
     @Override
