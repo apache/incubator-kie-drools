@@ -1448,7 +1448,6 @@ public class DefaultAgenda
                 if (currentState != ExecutionState.INACTIVE && currentState != ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT) {
                     setCurrentState( ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT );
                     stateMachineLock.notify();
-                    propagationList.onEngineInactive();
                 }
             }
         }
