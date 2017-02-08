@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertyEntity;
+import org.optaplanner.core.impl.testdata.domain.testgen.TestdataGetterSetterTypeMismatch;
 
 import static org.junit.Assert.*;
 
@@ -134,4 +135,22 @@ public class TestGenValueFactTest {
         assertTrue(imports.contains(HashMap.class));
         assertTrue(imports.contains(String.class));
     }
+
+    /**
+     * Covers situations where getter returns a supertype of the property type. This occurs in the Coach Shuttle
+     * Gathering example.
+     */
+    @Test
+    public void getterSetterTypeMismatch() {
+        TestdataGetterSetterTypeMismatch instance = new TestdataGetterSetterTypeMismatch();
+        instance.setDescription("desc");
+        TestGenValueFact fact = new TestGenValueFact(0, instance);
+        HashMap<Object, TestGenFact> instances = new HashMap<>();
+        fact.setUp(instances);
+        instance.setDescription("");
+        assertEquals("", instance.getDescription());
+        fact.reset();
+        assertEquals("desc", instance.getDescription());
+    }
+
 }

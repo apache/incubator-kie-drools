@@ -15,28 +15,39 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
-import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 
 public class TestGenFactField implements Comparable<TestGenFactField> {
 
     private final TestGenValueFact fact;
-    private final BeanPropertyMemberAccessor accessor;
+    private final String propertyName;
+    private final Method setter;
     private final TestGenValueProvider<?> valueProvider;
     private boolean active = true;
 
-    TestGenFactField(TestGenValueFact fact, BeanPropertyMemberAccessor accessor, TestGenValueProvider<?> valueProvider) {
+    TestGenFactField(TestGenValueFact fact, String propertyName, TestGenValueProvider<?> valueProvider) {
         this.fact = fact;
-        this.accessor = accessor;
+        this.propertyName = propertyName;
         this.valueProvider = valueProvider;
+        setter = ReflectionHelper.getSetterMethod(fact.getInstance().getClass(), propertyName);
+        if (setter == null) {
+            throw new IllegalStateException("Setter for '" + fact.getInstance().getClass().getSimpleName() + "."
+                    + propertyName + "' not found!");
+        }
     }
 
     void reset() {
         Object value = active ? valueProvider.get() : valueProvider.getUninitialized();
-        accessor.executeSetter(fact.getInstance(), value);
+        try {
+            setter.invoke(fact.getInstance(), value);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            throw new RuntimeException("Failed to reset " + fact.getInstance().getClass().getSimpleName() + "."
+                    + propertyName, ex);
+        }
     }
 
     public List<Class<?>> getImports() {
@@ -57,11 +68,6 @@ public class TestGenFactField implements Comparable<TestGenFactField> {
 
     void print(StringBuilder sb) {
         if (active) {
-            Method setter = ReflectionHelper.getSetterMethod(fact.getInstance().getClass(), accessor.getName());
-            if (setter == null) {
-                throw new IllegalStateException("Setter for '" + fact.getInstance().getClass().getSimpleName() + "."
-                        + accessor.getName() + "' not found!");
-            }
             valueProvider.printSetup(sb);
             // null original value means the field is uninitialized so there's no need to .set(null);
             if (valueProvider.get() != null) {
@@ -73,7 +79,7 @@ public class TestGenFactField implements Comparable<TestGenFactField> {
 
     @Override
     public int compareTo(TestGenFactField o) {
-        return accessor.getName().compareTo(o.accessor.getName());
+        return propertyName.compareTo(o.propertyName);
     }
 
 }

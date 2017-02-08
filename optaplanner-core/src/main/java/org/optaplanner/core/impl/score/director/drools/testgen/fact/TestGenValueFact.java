@@ -66,44 +66,44 @@ public class TestGenValueFact implements TestGenFact {
             Object value = accessor.executeGetter(instance);
             if (value != null) {
                 if (field.getType().equals(String.class)) {
-                    fields.add(new TestGenFactField(this, accessor, new TestGenStringValueProvider((String) value)));
+                    fields.add(new TestGenFactField(this, fieldName, new TestGenStringValueProvider((String) value)));
                 } else if (field.getType().isPrimitive()) {
-                    fields.add(new TestGenFactField(this, accessor, new TestGenPrimitiveValueProvider(value)));
+                    fields.add(new TestGenFactField(this, fieldName, new TestGenPrimitiveValueProvider(value)));
                 } else if (field.getType().isEnum()) {
-                    fields.add(new TestGenFactField(this, accessor, new TestGenEnumValueProvider((Enum) value)));
+                    fields.add(new TestGenFactField(this, fieldName, new TestGenEnumValueProvider((Enum) value)));
                 } else if (existingInstances.containsKey(value)) {
                     String id = existingInstances.get(value).toString();
                     TestGenExistingInstanceValueProvider instanceProvider = new TestGenExistingInstanceValueProvider(
                             value, id, existingInstances.get(value));
-                    fields.add(new TestGenFactField(this, accessor, instanceProvider));
+                    fields.add(new TestGenFactField(this, fieldName, instanceProvider));
                 } else if (field.getType().equals(List.class)) {
                     String id = variableName + "_" + field.getName();
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                     TestGenListValueProvider listValueProvider = new TestGenListValueProvider(
                             (List) value, id, typeArgs[0], existingInstances);
-                    fields.add(new TestGenFactField(this, accessor, listValueProvider));
+                    fields.add(new TestGenFactField(this, fieldName, listValueProvider));
                 } else if (field.getType().equals(Set.class)) {
                     String id = variableName + "_" + field.getName();
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                     TestGenSetValueProvider setValueProvider = new TestGenSetValueProvider(
                             (Set) value, id, typeArgs[0], existingInstances);
-                    fields.add(new TestGenFactField(this, accessor, setValueProvider));
+                    fields.add(new TestGenFactField(this, fieldName, setValueProvider));
                 } else if (field.getType().equals(Map.class)) {
                     String id = variableName + "_" + field.getName();
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                     TestGenMapValueProvider mapValueProvider = new TestGenMapValueProvider(
                             (Map) value, id, typeArgs, existingInstances);
-                    fields.add(new TestGenFactField(this, accessor, mapValueProvider));
+                    fields.add(new TestGenFactField(this, fieldName, mapValueProvider));
                 } else {
                     Method parseMethod = getParseMethod(field);
                     if (parseMethod != null) {
-                        fields.add(new TestGenFactField(this, accessor, new TestGenParsedValueProvider(parseMethod, value)));
+                        fields.add(new TestGenFactField(this, fieldName, new TestGenParsedValueProvider(parseMethod, value)));
                     } else {
                         throw new IllegalStateException("Unsupported type: " + field.getType());
                     }
                 }
             } else {
-                fields.add(new TestGenFactField(this, accessor, new TestGenNullValueProvider()));
+                fields.add(new TestGenFactField(this, fieldName, new TestGenNullValueProvider()));
             }
         }
     }
