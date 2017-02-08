@@ -16,14 +16,17 @@
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionFireAllRules;
 import org.optaplanner.core.impl.solver.event.AbstractEventSupport;
 
-public class TestGenKieSessionEventSupport extends AbstractEventSupport<TestGenKieSessionListener> implements TestGenKieSessionListener {
+public class TestGenKieSessionEventSupport extends AbstractEventSupport<TestGenKieSessionListener>
+        implements TestGenKieSessionListener {
 
     @Override
-    public void afterFireAllRules(KieSession kieSession, TestGenKieSessionJournal journal) {
+    public void afterFireAllRules(KieSession kieSession, TestGenKieSessionJournal journal,
+            TestGenKieSessionFireAllRules fire) {
         for (TestGenKieSessionListener listener : eventListenerSet) {
-            listener.afterFireAllRules(kieSession, journal);
+            listener.afterFireAllRules(kieSession, journal, fire);
         }
     }
 

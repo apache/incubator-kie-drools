@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,17 +24,20 @@ import org.optaplanner.core.impl.score.director.drools.testgen.TestGenDroolsScor
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionJournal;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionListener;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionFireAllRules;
-import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionInsert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemReproducer, TestGenKieSessionListener {
+public class TestGenCorruptedVariableListenerReproducer implements
+        TestGenOriginalProblemReproducer,
+        TestGenKieSessionListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestGenCorruptedScoreReproducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestGenCorruptedVariableListenerReproducer.class);
     private final String analysis;
     private final TestGenDroolsScoreDirector<?> scoreDirector;
+    private Score<?> lastWorkingScore;
+    private int lastFireId;
 
-    public TestGenCorruptedScoreReproducer(String analysis, TestGenDroolsScoreDirector<?> scoreDirector) {
+    public TestGenCorruptedVariableListenerReproducer(String analysis, TestGenDroolsScoreDirector<?> scoreDirector) {
         this.analysis = analysis;
         this.scoreDirector = scoreDirector;
     }
@@ -47,18 +50,20 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
     @Override
     public void assertReproducible(TestGenKieSessionJournal journal, String message) {
         if (!isReproducible(journal)) {
-            throw new IllegalStateException(message + " The score is not corrupted.");
+            throw new IllegalStateException(message + " Variable listeners are not corrupted.");
         }
     }
 
     /**
-     * Detects corrupted score for the given journal. It should behave equally to
-     * {@link AbstractScoreDirector#assertWorkingScoreFromScratch(Score, Object)}.
-     * @param journal journal tested for corrupted score
-     * @return true if replaying the journal leads to the original corrupted score
+     * Detects variable listener corruption. This condition is indicated by a difference between last working score and
+     * the score calculated during {@link AbstractScoreDirector#assertShadowVariablesAreNotStale()}.
+     * @param journal journal tested for a corrupted variable listener
+     * @return true if replaying the journal leads to the original corrupted score (after triggering variable listeners)
      */
     @Override
     public boolean isReproducible(TestGenKieSessionJournal journal) {
+        lastWorkingScore = null;
+        lastFireId = Integer.MAX_VALUE;
         journal.addListener(this);
         try {
             journal.replay(scoreDirector.createKieSession());
@@ -82,19 +87,21 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
     @Override
     public void afterFireAllRules(KieSession kieSession, TestGenKieSessionJournal journal,
             TestGenKieSessionFireAllRules fire) {
-        KieSession uncorruptedSession = scoreDirector.createKieSession();
-        for (TestGenKieSessionInsert insert : journal.getInitialInserts()) {
-            Object object = insert.getFact().getInstance();
-            uncorruptedSession.insert(object);
-        }
-        uncorruptedSession.fireAllRules();
-        uncorruptedSession.dispose();
-        Score<?> uncorruptedScore = extractScore(uncorruptedSession);
         Score<?> workingScore = extractScore(kieSession);
-        if (!workingScore.equals(uncorruptedScore)) {
-            logger.debug("    Score: working[{}], uncorrupted[{}]", workingScore, uncorruptedScore);
-            throw new TestGenCorruptedScoreException(workingScore, uncorruptedScore);
+        if (fire.isAssertFire()) {
+            logger.debug("    [Assert mode] Score: working[{}], uncorrupted[{}] ({})",
+                    workingScore, lastWorkingScore, fire);
+            // if this assertion fire's score is different from the previous fire it means that a shadow variable
+            // update was corrupted
+            if (lastFireId == fire.getFireId() - 1
+                    && !workingScore.equals(lastWorkingScore)) {
+                throw new TestGenCorruptedScoreException(workingScore, lastWorkingScore);
+            }
+        } else {
+            logger.debug("      Score: {} ({})", workingScore, fire);
         }
+        lastWorkingScore = workingScore;
+        lastFireId = fire.getFireId();
     }
 
     @Override

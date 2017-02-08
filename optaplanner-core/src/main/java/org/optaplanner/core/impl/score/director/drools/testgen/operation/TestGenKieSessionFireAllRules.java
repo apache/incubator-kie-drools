@@ -22,10 +22,23 @@ import org.slf4j.LoggerFactory;
 public class TestGenKieSessionFireAllRules implements TestGenKieSessionOperation {
 
     private static final Logger logger = LoggerFactory.getLogger(TestGenKieSessionFireAllRules.class);
+    private static int fireCounter = 0;
+    private final int fireId;
     private final int id;
+    private final boolean assertFire;
 
-    public TestGenKieSessionFireAllRules(int id) {
+    public TestGenKieSessionFireAllRules(int id, boolean assertFire) {
+        fireId = fireCounter++;
         this.id = id;
+        this.assertFire = assertFire;
+    }
+
+    public boolean isAssertFire() {
+        return assertFire;
+    }
+
+    public int getFireId() {
+        return fireId;
     }
 
     @Override

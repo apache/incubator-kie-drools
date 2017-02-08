@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedScoreException;
 import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedScoreReproducer;
+import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedVariableListenerReproducer;
 import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenDroolsExceptionReproducer;
 
 public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<Solution_> {
@@ -95,21 +96,31 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     @Override
     public void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction) {
         try {
+            journal.enterAssertMode();
             super.assertShadowVariablesAreNotStale(expectedWorkingScore, completedAction);
+            journal.exitAssertMode();
         } catch (IllegalStateException e) {
-            // catch stale shadow variable exception and create a minimal reproducing test
-            // TODO check it's really stale shadow variable?
-//            TestGenCorruptedScoreReproducer reproducer = new TestGenCorruptedScoreReproducer(e.getMessage(), this);
-//            TestGenKieSessionJournal minJournal = TestGenerator.minimize(journal, reproducer);
-            try {
-//                minJournal.replay(createKieSession());
-//                throw new IllegalStateException();
-            } catch (TestGenCorruptedScoreException tgcse) {
-                writer.setCorruptedScoreException(tgcse);
+            // catch corrupted VariableListener exception and create a minimal reproducing test
+            if (e.getMessage().startsWith("Impossible")) {
+                TestGenCorruptedVariableListenerReproducer reproducer
+                        = new TestGenCorruptedVariableListenerReproducer(e.getMessage(), this);
+                // FIXME this is currently broken. The pruning needs to be smarter and not remove genuine variable
+                // updates that directly affect shadow variables in the last (corrupted) variable listeners update.
+                // If the genuine update is removed the shadow update obviously becomes inconsistent, which leads
+                // to a false positive and the journal no longer reproduces the original issue. This is the current
+                // state.
+                TestGenKieSessionJournal minJournal = TestGenerator.minimize(journal, reproducer);
+                try {
+                    minJournal.replay(createKieSession());
+                    throw new IllegalStateException();
+                } catch (TestGenCorruptedScoreException tgcse) {
+                    writer.setCorruptedScoreException(tgcse);
+                }
+                writer.print(minJournal, testFile);
+                throw wrapOriginalException(e);
+            } else {
+                throw new UnsupportedOperationException("Stale shadow variable reproducer not implemented.");
             }
-//            writer.print(minJournal, testFile);
-            writer.print(journal, testFile);
-            throw wrapOriginalException(e);
         }
     }
 

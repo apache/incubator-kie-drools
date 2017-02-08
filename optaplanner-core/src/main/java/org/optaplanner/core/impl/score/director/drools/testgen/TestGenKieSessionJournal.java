@@ -43,6 +43,7 @@ public class TestGenKieSessionJournal {
     private final List<TestGenKieSessionInsert> initialInsertJournal;
     private final List<TestGenKieSessionOperation> updateJournal;
     private int operationId = 0;
+    private boolean assertMode = false;
 
     public TestGenKieSessionJournal() {
         facts = new ArrayList<>();
@@ -73,7 +74,7 @@ public class TestGenKieSessionJournal {
                 op.invoke(replayKieSession);
                 // detect corrupted score after firing rules
                 if (op.getClass().equals(TestGenKieSessionFireAllRules.class)) {
-                    eventSupport.afterFireAllRules(replayKieSession, this);
+                    eventSupport.afterFireAllRules(replayKieSession, this, (TestGenKieSessionFireAllRules) op);
                 }
             }
         } finally {
@@ -135,7 +136,8 @@ public class TestGenKieSessionJournal {
     }
 
     public void fireAllRules() {
-        updateJournal.add(new TestGenKieSessionFireAllRules(operationId++));
+        TestGenKieSessionFireAllRules fire = new TestGenKieSessionFireAllRules(operationId++, assertMode);
+        updateJournal.add(fire);
     }
 
     public void dispose() {
@@ -144,6 +146,14 @@ public class TestGenKieSessionJournal {
         initialInsertJournal.clear();
         updateJournal.clear();
         operationId = 0;
+    }
+
+    void enterAssertMode() {
+        assertMode = true;
+    }
+
+    void exitAssertMode() {
+        assertMode = false;
     }
 
     //------------------------------------------------------------------------------------------------------------------

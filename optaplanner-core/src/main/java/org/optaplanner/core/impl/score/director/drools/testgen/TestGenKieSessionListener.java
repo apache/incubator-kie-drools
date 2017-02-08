@@ -18,8 +18,9 @@ package org.optaplanner.core.impl.score.director.drools.testgen;
 import java.util.EventListener;
 
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionFireAllRules;
 
 public interface TestGenKieSessionListener extends EventListener {
 
-    void afterFireAllRules(KieSession kieSession, TestGenKieSessionJournal journal);
+    void afterFireAllRules(KieSession kieSession, TestGenKieSessionJournal journal, TestGenKieSessionFireAllRules fire);
 }
