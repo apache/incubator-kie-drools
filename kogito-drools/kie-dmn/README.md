@@ -32,6 +32,10 @@ nondeterministic behavior based on the context and differences in behavior based
 2. __List functions `or()` and `and()`__: the spec defines two list functions named `or()` and `and()`, but 
 according to the FEEL grammar, these are not valid function names, as `and` and `or` are reserved keywords.
  This implementation renamed these functions to `any()` and `all()` respectively, in anticipation for DMN 1.2.
+ 
+3. __Keyword `in` can not be used in variable names__: the spec defines that any keyword can be reused as part
+ of a variable name, but the ambiguities caused with the `for ... in ... return` loop prevent the reuse of the `in` 
+ keyword. All other keywords are supported as part of variable names.
 
 ## b. Extensions
 
