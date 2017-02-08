@@ -16,6 +16,17 @@
 
 package org.drools.core.common;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -51,17 +62,6 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.ERRORMSG;
 import static org.drools.core.reteoo.ObjectTypeNode.retractLeftTuples;
@@ -138,6 +138,7 @@ public class DefaultAgenda
         INACTIVE( false, true ),         // fire        | fire          | exec
         FIRING_ALL_RULES( true, true ),  // do nothing  | wait + fire   | enqueue
         FIRING_UNTIL_HALT( true, true ), // do nothing  | do nothing    | enqueue
+        INACTIVE_ON_FIRING_UNTIL_HALT( true, true ),
         HALTING( false, true ),          // wait + fire | wait + fire   | enqueue
         EXECUTING_TASK( false, true ),   // wait + fire | wait + fire   | wait + exec
         DEACTIVATED( false, true ),      // wait + fire | wait + fire   | wait + exec
@@ -1359,7 +1360,18 @@ public class DefaultAgenda
         class FireUntilHaltRestHandler  implements RestHandler {
             @Override
             public PropagationEntry handleRest(InternalWorkingMemory wm, DefaultAgenda agenda) {
-                return wm.handleRestOnFireUntilHalt( agenda.currentState );
+                boolean deactivated = false;
+                if (agenda.currentState == ExecutionState.FIRING_UNTIL_HALT) {
+                    agenda.inactiveOnFireUntilHalt();
+                    deactivated = true;
+                }
+                try {
+                    return wm.handleRestOnFireUntilHalt( agenda.currentState );
+                } finally {
+                    if (deactivated) {
+                        agenda.toFireUntilHalt();
+                    }
+                }
             }
         }
     }
@@ -1373,7 +1385,7 @@ public class DefaultAgenda
     }
 
     private void waitInactive() {
-        while ( currentState != ExecutionState.INACTIVE) {
+        while ( currentState != ExecutionState.INACTIVE && currentState != ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT ) {
             try {
                 stateMachineLock.wait();
             } catch (InterruptedException e) {
@@ -1445,7 +1457,7 @@ public class DefaultAgenda
     public boolean tryDeactivate() {
         synchronized (stateMachineLock) {
             pauseFiringUntilHalt();
-            if ( currentState == ExecutionState.INACTIVE ) {
+            if ( currentState == ExecutionState.INACTIVE || currentState == ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT ) {
                 setCurrentState( ExecutionState.DEACTIVATED );
                 return true;
             }
@@ -1466,6 +1478,24 @@ public class DefaultAgenda
             if (currentState.isFiring()) {
                 setCurrentState( ExecutionState.HALTING );
             }
+        }
+    }
+
+    private void inactiveOnFireUntilHalt() {
+        synchronized (stateMachineLock) {
+            if (currentState != ExecutionState.INACTIVE && currentState != ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT) {
+                setCurrentState( ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT );
+                stateMachineLock.notify();
+            }
+        }
+    }
+
+    private void toFireUntilHalt() {
+        synchronized (stateMachineLock) {
+            if ( currentState == ExecutionState.FIRING_UNTIL_HALT ) {
+                return;
+            }
+            waitAndEnterExecutionState( ExecutionState.FIRING_UNTIL_HALT );
         }
     }
 
