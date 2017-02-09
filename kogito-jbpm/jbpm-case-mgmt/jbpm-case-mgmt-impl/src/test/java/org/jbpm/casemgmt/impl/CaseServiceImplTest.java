@@ -1805,30 +1805,5 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             }
         }
     }
-    
-    
-    /*
-     * Helper methods
-     */
-    
-    protected void assertComment(CommentInstance comment, String author, String content) {
-        assertNotNull(comment);
-        assertEquals(author, comment.getAuthor());
-        assertEquals(content, comment.getComment());
-    }
-    
-    protected void assertTask(TaskSummary task, String actor, String name, Status status) {
-        assertNotNull(task);            
-        assertEquals(name, task.getName());
-        assertEquals(actor, task.getActualOwnerId());
-        assertEquals(status, task.getStatus());
-    }
-    
-    protected void assertCaseInstance(String caseId, String name) {
-        CaseInstance cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
-        assertNotNull(cInstance);
-        assertEquals(caseId, cInstance.getCaseId());
-        assertNotNull(cInstance.getCaseFile());
-        assertEquals(name, cInstance.getCaseFile().getData("name"));
-    }
+
 }

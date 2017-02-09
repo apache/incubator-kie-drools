@@ -17,6 +17,8 @@
 package org.jbpm.casemgmt.impl.util;
 
 import static java.util.stream.Collectors.toMap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -42,6 +44,8 @@ import org.jbpm.casemgmt.api.model.CaseDefinition;
 import org.jbpm.casemgmt.api.model.CaseMilestone;
 import org.jbpm.casemgmt.api.model.CaseRole;
 import org.jbpm.casemgmt.api.model.CaseStage;
+import org.jbpm.casemgmt.api.model.instance.CaseInstance;
+import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.jbpm.casemgmt.impl.AuthorizationManagerImpl;
 import org.jbpm.casemgmt.impl.CaseRuntimeDataServiceImpl;
 import org.jbpm.casemgmt.impl.CaseServiceImpl;
@@ -83,6 +87,8 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.DeploymentDescriptorBuilder;
@@ -127,6 +133,7 @@ public abstract class AbstractCaseServicesBaseTest {
     protected static final String NO_START_NODE_CASE_P_ID = "NoStartNodeAdhocCase";
     protected static final String COND_CASE_P_ID = "CaseFileConditionalEvent";
     protected static final String TWO_STAGES_CASE_P_ID = "CaseWithTwoStages";
+    protected static final String TWO_STAGES_CONDITIONS_CASE_P_ID = "CaseWithTwoStagesConditions";
 
     protected static final String SUBPROCESS_P_ID = "DataVerification";
 
@@ -426,4 +433,25 @@ public abstract class AbstractCaseServicesBaseTest {
         return nodes.stream().collect(toMap(NodeInstanceDesc::getName, n -> n));
     }
 
+    
+    protected void assertComment(CommentInstance comment, String author, String content) {
+        assertNotNull(comment);
+        assertEquals(author, comment.getAuthor());
+        assertEquals(content, comment.getComment());
+    }
+    
+    protected void assertTask(TaskSummary task, String actor, String name, Status status) {
+        assertNotNull(task);            
+        assertEquals(name, task.getName());
+        assertEquals(actor, task.getActualOwnerId());
+        assertEquals(status, task.getStatus());
+    }
+    
+    protected void assertCaseInstance(String caseId, String name) {
+        CaseInstance cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
+        assertNotNull(cInstance);
+        assertEquals(caseId, cInstance.getCaseId());
+        assertNotNull(cInstance.getCaseFile());
+        assertEquals(name, cInstance.getCaseFile().getData("name"));
+    }
 }

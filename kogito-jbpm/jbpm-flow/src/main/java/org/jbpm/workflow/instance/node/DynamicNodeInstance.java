@@ -69,7 +69,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
         
         String rule = "RuleFlow-AdHocComplete-" + getProcessInstance().getProcessId() + "-" + getDynamicNode().getUniqueId();
         boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-            .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getId());
+            .isRuleActiveInRuleFlowGroup(getRuleFlowGroupName(), rule, getProcessInstance().getId());
         if (isActive) {
             triggerCompleted();
         } else {
