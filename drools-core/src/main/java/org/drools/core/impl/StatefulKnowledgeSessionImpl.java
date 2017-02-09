@@ -16,6 +16,26 @@
 
 package org.drools.core.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
@@ -35,6 +55,7 @@ import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.ConcurrentNodeMemories;
 import org.drools.core.common.DefaultAgenda;
+import org.drools.core.common.DefaultAgenda.ExecutionState;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventFactHandle;
@@ -142,26 +163,6 @@ import org.kie.internal.runtime.KieRuntimes;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.beliefs.Mode;
 import org.kie.internal.utils.ServiceRegistryImpl;
-
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -2123,7 +2124,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
             // if halt() has called, the thread should not be put into a wait state
             // instead this is just a safe way to make sure the queue is flushed before exiting the loop
-            if (head == null && currentState == DefaultAgenda.ExecutionState.FIRING_UNTIL_HALT) {
+            if (head == null &&
+                ( currentState == DefaultAgenda.ExecutionState.FIRING_UNTIL_HALT ||
+                  currentState == ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT)) {
                 propagationList.waitOnRest();
                 head = takeAllPropagations();
             }
