@@ -27,6 +27,10 @@ import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGen
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Detects variable listener corruption. This condition is indicated by a difference between last working score and
+ * the score calculated during {@link AbstractScoreDirector#assertShadowVariablesAreNotStale(Score, Object)}.
+ */
 public class TestGenCorruptedVariableListenerReproducer implements
         TestGenOriginalProblemReproducer,
         TestGenKieSessionListener {
@@ -48,18 +52,12 @@ public class TestGenCorruptedVariableListenerReproducer implements
     }
 
     @Override
-    public void assertReproducible(TestGenKieSessionJournal journal, String message) {
+    public void assertReproducible(TestGenKieSessionJournal journal, String contextDescription) {
         if (!isReproducible(journal)) {
-            throw new IllegalStateException(message + " Variable listeners are not corrupted.");
+            throw new IllegalStateException(contextDescription + " Variable listeners are not corrupted.");
         }
     }
 
-    /**
-     * Detects variable listener corruption. This condition is indicated by a difference between last working score and
-     * the score calculated during {@link AbstractScoreDirector#assertShadowVariablesAreNotStale()}.
-     * @param journal journal tested for a corrupted variable listener
-     * @return true if replaying the journal leads to the original corrupted score (after triggering variable listeners)
-     */
     @Override
     public boolean isReproducible(TestGenKieSessionJournal journal) {
         lastWorkingScore = null;

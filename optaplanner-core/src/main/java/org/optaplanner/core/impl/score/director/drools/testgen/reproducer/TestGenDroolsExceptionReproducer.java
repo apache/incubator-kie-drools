@@ -22,13 +22,17 @@ import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSession
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Reproduces the exception originally thrown by Drools during a call to KIE session.
+ */
 public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemReproducer {
 
     private static final Logger logger = LoggerFactory.getLogger(TestGenDroolsExceptionReproducer.class);
     private final RuntimeException originalException;
     private final TestGenDroolsScoreDirector<?> scoreDirector;
 
-    public TestGenDroolsExceptionReproducer(RuntimeException originalException, TestGenDroolsScoreDirector<?> scoreDirector) {
+    public TestGenDroolsExceptionReproducer(RuntimeException originalException,
+            TestGenDroolsScoreDirector<?> scoreDirector) {
         this.originalException = originalException;
         this.scoreDirector = scoreDirector;
     }
@@ -59,13 +63,13 @@ public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemR
     }
 
     @Override
-    public void assertReproducible(TestGenKieSessionJournal journal, String message) {
+    public void assertReproducible(TestGenKieSessionJournal journal, String contextDescription) {
         try {
             journal.replay(scoreDirector.createKieSession());
-            throw new IllegalStateException(message + " No exception thrown.");
+            throw new IllegalStateException(contextDescription + " No exception thrown.");
         } catch (RuntimeException reproducedException) {
             if (!areEqual(originalException, reproducedException)) {
-                throw new IllegalStateException(message
+                throw new IllegalStateException(contextDescription
                         + "\nExpected [" + originalException + "]"
                         + "\nCaused [" + reproducedException + "]",
                         reproducedException);

@@ -28,6 +28,10 @@ import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGen
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Detects corrupted score for the given journal. It should behave equally to
+ * {@link AbstractScoreDirector#assertWorkingScoreFromScratch(Score, Object)}.
+ */
 public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemReproducer, TestGenKieSessionListener {
 
     private static final Logger logger = LoggerFactory.getLogger(TestGenCorruptedScoreReproducer.class);
@@ -45,18 +49,12 @@ public class TestGenCorruptedScoreReproducer implements TestGenOriginalProblemRe
     }
 
     @Override
-    public void assertReproducible(TestGenKieSessionJournal journal, String message) {
+    public void assertReproducible(TestGenKieSessionJournal journal, String contextDescription) {
         if (!isReproducible(journal)) {
-            throw new IllegalStateException(message + " The score is not corrupted.");
+            throw new IllegalStateException(contextDescription + " The score is not corrupted.");
         }
     }
 
-    /**
-     * Detects corrupted score for the given journal. It should behave equally to
-     * {@link AbstractScoreDirector#assertWorkingScoreFromScratch(Score, Object)}.
-     * @param journal journal tested for corrupted score
-     * @return true if replaying the journal leads to the original corrupted score
-     */
     @Override
     public boolean isReproducible(TestGenKieSessionJournal journal) {
         journal.addListener(this);

@@ -19,7 +19,18 @@ import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSession
 
 public interface TestGenOriginalProblemReproducer {
 
+    /**
+     * Replay the journal and decide if the original problem is reproducible.
+     * @param journal journal tested for the original problem
+     * @return true if replaying the journal leads to the original problem
+     */
     boolean isReproducible(TestGenKieSessionJournal journal);
 
-    void assertReproducible(TestGenKieSessionJournal journal, String message);
+    /**
+     * Throws exception if the original problem is not reproducible with the given journal.
+     * @param journal journal tested for the original problem
+     * @param contextDescription describes the context in which the problem should be reproducible
+     */
+    void assertReproducible(TestGenKieSessionJournal journal, String contextDescription);
+
 }
