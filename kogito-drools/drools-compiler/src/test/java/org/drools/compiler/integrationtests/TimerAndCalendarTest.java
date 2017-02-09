@@ -34,7 +34,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.conf.TimedRuleExectionOption;
+import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.Calendar;
@@ -300,7 +300,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        conf.setOption( TimedRuleExectionOption.YES );
+        conf.setOption( TimedRuleExecutionOption.YES );
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
@@ -1671,7 +1671,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(ClockTypeOption.get("pseudo"));
-        conf.setOption(TimedRuleExectionOption.YES);
+        conf.setOption(TimedRuleExecutionOption.YES);
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
@@ -1788,7 +1788,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(ClockTypeOption.get("pseudo"));
-        conf.setOption(TimedRuleExectionOption.YES);
+        conf.setOption(TimedRuleExecutionOption.YES);
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
@@ -1825,7 +1825,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "end\n";
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption(TimedRuleExectionOption.YES);
+        conf.setOption(TimedRuleExecutionOption.YES);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
 

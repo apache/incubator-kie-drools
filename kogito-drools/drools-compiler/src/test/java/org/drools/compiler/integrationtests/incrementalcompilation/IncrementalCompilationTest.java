@@ -62,7 +62,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.conf.TimedRuleExectionOption;
+import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.IncrementalResults;
@@ -3223,7 +3223,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
        KieContainer kc = ks.newKieContainer(km.getReleaseId());
 
        KieSessionConfiguration ksconf = ks.newKieSessionConfiguration();
-       ksconf.setOption(TimedRuleExectionOption.YES);
+       ksconf.setOption(TimedRuleExecutionOption.YES);
        ksconf.setOption(TimerJobFactoryOption.get("trackable"));
        ksconf.setOption(ClockTypeOption.get("pseudo"));
 

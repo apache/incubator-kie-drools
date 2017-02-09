@@ -28,7 +28,7 @@ import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.KeepReferenceOption;
 import org.kie.api.runtime.conf.QueryListenerOption;
-import org.kie.api.runtime.conf.TimedRuleExectionOption;
+import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -157,7 +157,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
         setForceEagerActivationFilter(ForceEagerActivationOption.resolve(this.chainedProperties.getProperty(ForceEagerActivationOption.PROPERTY_NAME,
                                                                                                             "false")).getFilter());
 
-        setTimedRuleExecutionFilter(TimedRuleExectionOption.resolve(this.chainedProperties.getProperty(TimedRuleExectionOption.PROPERTY_NAME,
+        setTimedRuleExecutionFilter(TimedRuleExecutionOption.resolve(this.chainedProperties.getProperty(TimedRuleExecutionOption.PROPERTY_NAME,
                                                                                                        "false")).getFilter());
 
         setBeliefSystemType( BeliefSystemType.resolveBeliefSystemType( this.chainedProperties.getProperty( BeliefSystemTypeOption.PROPERTY_NAME,

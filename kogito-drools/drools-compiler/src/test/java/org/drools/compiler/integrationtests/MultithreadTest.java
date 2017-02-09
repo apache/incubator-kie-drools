@@ -30,7 +30,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.conf.TimedRuleExectionOption;
+import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
@@ -786,7 +786,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieBase kbase = helper.build( EventProcessingOption.STREAM );
         KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
-        ksconf.setOption( TimedRuleExectionOption.YES );
+        ksconf.setOption( TimedRuleExecutionOption.YES );
         final KieSession ksession = kbase.newKieSession(ksconf, null);
 
         new Thread() {
@@ -828,7 +828,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieBase kbase = helper.build( EventProcessingOption.STREAM );
         KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
-        ksconf.setOption( TimedRuleExectionOption.YES );
+        ksconf.setOption( TimedRuleExecutionOption.YES );
         final KieSession ksession = kbase.newKieSession(ksconf, null);
 
         new Thread() {
