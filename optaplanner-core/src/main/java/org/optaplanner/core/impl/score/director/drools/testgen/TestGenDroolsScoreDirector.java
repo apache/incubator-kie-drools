@@ -16,7 +16,9 @@
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
 import java.io.File;
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.List;
 
 import org.kie.api.runtime.KieSession;
@@ -39,6 +41,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     private final TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
     private final File testFile = new File(TEST_CLASS_NAME + ".java");
     private final TestGenTestWriter writer = new TestGenTestWriter();
+    private final Deque<String> oldValues = new ArrayDeque<>();
 
     public TestGenDroolsScoreDirector(
             DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
@@ -163,9 +166,32 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     }
 
     @Override
+    public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+        if (logger.isTraceEnabled()) {
+            Object oldValue = variableDescriptor.getValue(entity);
+            if (oldValue == null) {
+                // ArrayDeque doesn't allow null values
+                oldValues.push("null");
+            } else {
+                oldValues.push(oldValue.toString());
+            }
+        }
+        super.beforeVariableChanged(variableDescriptor, entity);
+    }
+
+    @Override
     public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
-        journal.update(entity, variableDescriptor);
         super.afterVariableChanged(variableDescriptor, entity);
+        journal.update(entity, variableDescriptor);
+
+        if (logger.isTraceEnabled()) {
+            logger.trace("          Updating variable {}.{}[{}]: {} → {}",
+                    entity,
+                    variableDescriptor.getVariableName(),
+                    variableDescriptor.getVariablePropertyType().getSimpleName(),
+                    oldValues.pop(),
+                    variableDescriptor.getValue(entity));
+        }
     }
 
     @Override

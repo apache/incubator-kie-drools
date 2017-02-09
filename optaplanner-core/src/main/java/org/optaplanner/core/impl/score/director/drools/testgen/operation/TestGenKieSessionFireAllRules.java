@@ -43,7 +43,7 @@ public class TestGenKieSessionFireAllRules implements TestGenKieSessionOperation
 
     @Override
     public void invoke(KieSession kieSession) {
-        logger.trace("        FIRE");
+        logger.trace("        [{}] FIRE ALL RULES", id);
         kieSession.fireAllRules();
     }
 

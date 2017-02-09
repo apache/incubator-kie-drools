@@ -119,11 +119,6 @@ public class TestGenKieSessionJournal {
         TestGenFact valueFact = value == null ? TestGenNullFact.INSTANCE : existingInstances.get(value);
         if (valueFact == null) {
             // shadow variable
-            if (logger.isTraceEnabled()) {
-                logger.trace("Updating shadow variable {}.{} → {}({})", entity.getClass().getSimpleName(),
-                        variableDescriptor.getVariableName(),
-                        value.getClass().getSimpleName(), value);
-            }
             valueFact = new TestGenInlineValue(value, existingInstances);
         }
         updateJournal.add(new TestGenKieSessionUpdate(operationId++, entityFact, variableDescriptor, valueFact));
@@ -137,6 +132,7 @@ public class TestGenKieSessionJournal {
 
     public void fireAllRules() {
         TestGenKieSessionFireAllRules fire = new TestGenKieSessionFireAllRules(operationId++, assertMode);
+        logger.trace("        FIRE ALL RULES ({})", fire);
         updateJournal.add(fire);
     }
 

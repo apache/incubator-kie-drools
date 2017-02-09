@@ -36,7 +36,8 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
     private final String setterName;
     private final TestGenFact value;
 
-    public TestGenKieSessionUpdate(int id, TestGenFact entity, VariableDescriptor<?> variableDescriptor, TestGenFact value) {
+    public TestGenKieSessionUpdate(int id, TestGenFact entity, VariableDescriptor<?> variableDescriptor,
+            TestGenFact value) {
         if (value == null) {
             throw new IllegalArgumentException("value may not be null");
         }
@@ -63,7 +64,14 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
 
     @Override
     public void invoke(KieSession kieSession) {
-        logger.trace("        {} ← {}", entity.getInstance(), value.getInstance());
+        if (logger.isTraceEnabled()) {
+            logger.trace("        [{}] {}.{}: {} → {}",
+                    id,
+                    entity.getInstance(),
+                    accessor.getName(),
+                    accessor.executeGetter(entity.getInstance()),
+                    value.getInstance());
+        }
         accessor.executeSetter(entity.getInstance(), value.getInstance());
         FactHandle fh = kieSession.getFactHandle(entity.getInstance());
         if (fh == null) {
