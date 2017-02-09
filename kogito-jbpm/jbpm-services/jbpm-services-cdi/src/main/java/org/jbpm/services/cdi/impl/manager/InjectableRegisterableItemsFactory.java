@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -33,7 +32,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.drools.compiler.kie.util.CDIHelper;
+import org.drools.compiler.kie.util.InjectionHelper;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
@@ -158,10 +157,10 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             }
             try {
 
-                CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
+                InjectionHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
             } catch (Throwable e) {
                 // use fallback mechanism
-                CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession());
+                InjectionHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession());
             }
         }
         try {

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.drools.compiler.kie.util.CDIHelper;
+import org.drools.compiler.kie.util.InjectionHelper;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.kie.api.builder.model.KieSessionModel;
@@ -88,11 +88,11 @@ public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFac
         parameters.put("classLoader", getRuntimeManager().getEnvironment().getClassLoader());
         try {
 
-            CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
+            InjectionHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
         } catch (Exception e) {
         	e.printStackTrace();
             // use fallback mechanism
-            CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession());
+            InjectionHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession());
         }
         
         return super.getWorkItemHandlers(runtime);
