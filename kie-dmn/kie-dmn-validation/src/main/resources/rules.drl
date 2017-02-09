@@ -112,15 +112,14 @@ rule ELEMREF_NOHASH_p1
 when
   $oc : DMNElementReference( !href.startsWith("#"), !( href contains ":" ) ) 
 then
-System.out.println("x");
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ELEMREF_NOHASH, $oc.getHref()) );
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ELEMREF_NOHASH, $oc ) );
 end
 
 rule ELEMREF_NOHASH_p2
 when
   $oc : DMNElementReference( href contains ":", !href.substring(href.indexOf(":")+1).startsWith('#') )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ELEMREF_NOHASH, $oc.getHref() ) );
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ELEMREF_NOHASH, $oc ) );
 end
 
 function String rightOfHash(String input) {
@@ -148,7 +147,7 @@ when
     $id : InputData()
     not( InputData( /variable{name == $id.name}, this == $id ) )
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INPUTDATA_MISSING_VAR, $id) );
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INPUTDATA_MISSING_VAR, $id ) );
 end
 
 // The parameter names in the Binding elements SHALL be a subset of the formalParameters of the calledFunction.
@@ -178,7 +177,7 @@ when
     $inv : Invocation( $targetName : expression#LiteralExpression.text )
     BusinessKnowledgeModel( name == $targetName, encapsulatedLogic.formalParameter.size != $inv.binding.size ) 
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INVOCATION_WRONG_PARAM_COUNT, $inv) );
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INVOCATION_WRONG_PARAM_COUNT, $inv ) );
 end
 
 // Not sure if this rule is really needed being a possible subset of ITEMDEF_NOT_UNIQUE 
@@ -187,7 +186,7 @@ when
   $ic1 : ItemDefinition( parent instanceof ItemDefinition )
   $ic2 : ItemDefinition( name == $ic1.name, parent == $ic1.parent, this != $ic1 )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ITEMCOMP_DUPLICATED, $ic1) );
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ITEMCOMP_DUPLICATED, $ic1 ) );
 end
 
 rule ITEMDEF_NOT_UNIQUE
@@ -202,7 +201,7 @@ rule NAME_INVALID
 when
     $ne : NamedElement( FEELParser.isVariableNameValid( name ) == false )
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.NAME_INVALID, $ne) );
+    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.NAME_INVALID, $ne ) );
 end
 
 rule RELATION_DUP_COLUMN
@@ -239,28 +238,28 @@ rule TYPEREF_NO_FEEL_TYPE_p1
 when
   $o: Expression( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o.getTypeRef() ) );
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o ) );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p2
 when
   $o: InformationItem( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  $o: entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o.getTypeRef() ) );
+  $o: entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o ) );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p3
 when
   $o: ItemDefinition( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o.getTypeRef() ) );
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o ) );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p4
 when
   $o: OutputClause( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o.getTypeRef() ) );
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o ) );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p1
@@ -268,7 +267,7 @@ when
   $o: Expression( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o.getTypeRef() ) );
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p2
@@ -276,7 +275,7 @@ when
   $o: InformationItem( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o.getTypeRef() ) );
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p3
@@ -284,7 +283,7 @@ when
   $o: ItemDefinition( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o.getTypeRef() ) );
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p4
@@ -292,7 +291,7 @@ when
   $o: OutputClause( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o.getTypeRef() ) );
+  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
 end
 
 
@@ -300,5 +299,5 @@ rule problems
 when
   $p: Object() from entry-point "PROBLEMS"
 then
-  // do nothing, but keep this rule for entry point definition System.err.println($p);
+  // do nothing, but keep this rule for entry point definition // System.err.println($p);
 end
