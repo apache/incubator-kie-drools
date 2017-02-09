@@ -147,6 +147,14 @@ public interface CaseRuntimeDataService {
     Collection<NodeInstanceDesc> getActiveNodesForCase(String caseId, QueryContext queryContext);
     
     /**
+     * Returns completed nodes in given case regardless in what process instance they belong to.
+     * @param caseId unique id of the case
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     *
+     */
+    Collection<NodeInstanceDesc> getCompletedNodesForCase(String caseId, QueryContext queryContext);
+    
+    /**
      * Returns list of AdHocFragments available in given case. It includes all ad hoc fragments that are 
      * eligible for triggering - meaning it's container is active (case instance or stage)
      * @param caseId unique id of the case

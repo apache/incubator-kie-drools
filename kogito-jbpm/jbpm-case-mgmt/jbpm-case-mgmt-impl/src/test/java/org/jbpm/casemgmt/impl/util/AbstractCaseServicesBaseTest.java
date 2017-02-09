@@ -64,6 +64,7 @@ import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.UserTaskService;
+import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
 import org.jbpm.services.api.query.QueryService;
@@ -419,6 +420,10 @@ public abstract class AbstractCaseServicesBaseTest {
     
     protected Map<String, ProcessDefinition> mapProcesses(Collection<ProcessDefinition> processes) {
         return processes.stream().collect(toMap(ProcessDefinition::getId, p -> p));
+    }
+    
+    protected Map<String, NodeInstanceDesc> mapNodeInstances(Collection<NodeInstanceDesc> nodes) {
+        return nodes.stream().collect(toMap(NodeInstanceDesc::getName, n -> n));
     }
 
 }

@@ -393,10 +393,20 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     @Override
     public Collection<org.jbpm.services.api.model.NodeInstanceDesc> getActiveNodesForCase(String caseId, QueryContext queryContext) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("caseId", caseId);
+        params.put("caseId", caseId + "%");
         applyQueryContext(params, queryContext);
         applyDeploymentFilter(params);
         List<org.jbpm.services.api.model.NodeInstanceDesc> nodeInstances =  commandService.execute(new QueryNameCommand<List<org.jbpm.services.api.model.NodeInstanceDesc>>("getActiveNodesForCase", params));
+        return nodeInstances;
+    }
+    
+    @Override
+    public Collection<org.jbpm.services.api.model.NodeInstanceDesc> getCompletedNodesForCase(String caseId, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("caseId", caseId + "%");
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+        List<org.jbpm.services.api.model.NodeInstanceDesc> nodeInstances =  commandService.execute(new QueryNameCommand<List<org.jbpm.services.api.model.NodeInstanceDesc>>("getCompletedNodesForCase", params));
         return nodeInstances;
     }
 
