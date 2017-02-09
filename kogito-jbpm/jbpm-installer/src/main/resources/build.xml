@@ -450,7 +450,7 @@
   <target name="start.jboss">
     <property name="jboss.full.path.win" location="${jboss.home}/bin/standalone.bat" />
     <exec executable="${jboss.full.path.win}" spawn="yes" osfamily="windows">
-      <env key="JAVA_OPTS" value="-Xms256m -Xmx512m" />
+      <env key="JAVA_OPTS" value="-Xms512m -Xmx1024m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="--server-config=standalone-full.xml" />
@@ -468,7 +468,7 @@
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/standalone.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
-      <env key="JAVA_OPTS" value="-Xms256m -Xmx512m" />
+      <env key="JAVA_OPTS" value="-Xms512m -Xmx1024m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="--server-config=standalone-full.xml" />
