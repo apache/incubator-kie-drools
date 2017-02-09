@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.XMLConstants;
+import javax.xml.stream.Location;
 
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
@@ -46,8 +47,12 @@ public abstract class DMNModelInstrumentedBaseConverter
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
         DMNModelInstrumentedBase mib = (DMNModelInstrumentedBase) parent;
 
-        Map<String, String> currentNSCtx = ((CustomStaxReader) reader.underlyingReader()).getNsContext();
+        CustomStaxReader customStaxReader = (CustomStaxReader) reader.underlyingReader();
+        
+        Map<String, String> currentNSCtx = customStaxReader.getNsContext();
         mib.getNsContext().putAll(currentNSCtx);
+        
+        mib.setLocation( customStaxReader.getLocation() );
     }
     
     @Override
