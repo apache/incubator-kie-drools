@@ -249,18 +249,35 @@ public class XpathAnalysisTest {
     }
 
     @Test
-    public void testComplexWithCast() {
-        final String xpath = "/address#MyAddressType/street#MyStreetType[1]{name#MyNameType.value == \"Elm\"}.city";
+    public void testBasicCast() {
+        final String xpath = "/address/street{#MyStreetType, name.value == \"Elm\"}.city";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
         assertEquals("The XPath should be valid.", false, result.hasError());
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address#MyAddressType", true, false, new ArrayList<String>(), "MyAddressType", -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name#MyNameType.value == \"Elm\"")), "MyStreetType", 1),
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name.value == \"Elm\"")), "MyStreetType", -1),
                 iterator.next());
         verifyXpathPart(new XpathAnalysis.XpathPart("city", false, false, new ArrayList<String>(), null, -1), iterator.next());
+        assertEquals(false, iterator.hasNext());
+    }
+
+    @Test
+    public void testComplexCast() {
+        final String xpath = "/address/street[1]{#MyStreetType, name.value == \"Elm\"}.city{#MyCityType, value, #MyCityMoreSpecificType}";
+        final XpathAnalysis result = XpathAnalysis.analyze(xpath);
+
+        assertEquals("The XPath should be valid.", false, result.hasError());
+        assertNull(result.getError());
+
+        final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name.value == \"Elm\"")), "MyStreetType", 1),
+                iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("city", false, false, new ArrayList<String>(Arrays.asList("value")), "MyCityMoreSpecificType", -1),
+                iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
