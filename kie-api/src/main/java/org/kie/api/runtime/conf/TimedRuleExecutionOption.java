@@ -17,24 +17,24 @@ package org.kie.api.runtime.conf;
 
 import org.kie.api.definition.rule.Rule;
 
-public class TimedRuleExectionOption implements SingleValueKieSessionOption {
+public class TimedRuleExecutionOption implements SingleValueKieSessionOption {
 
     private static final long serialVersionUID = 510l;
 
-    public static final String PROPERTY_NAME = "drools.timedRuleExection";
+    public static final String PROPERTY_NAME = "drools.timedRuleExecution";
 
-    public static final TimedRuleExectionOption YES = new TimedRuleExectionOption(new TimedRuleExecutionFilter() {
+    public static final TimedRuleExecutionOption YES = new TimedRuleExecutionOption(new TimedRuleExecutionFilter() {
         @Override
         public boolean accept(Rule[] rules) {
             return true;
         }
     });
 
-    public static final TimedRuleExectionOption NO = new TimedRuleExectionOption(null);
+    public static final TimedRuleExecutionOption NO = new TimedRuleExecutionOption(null);
 
     private final TimedRuleExecutionFilter filter;
 
-    private TimedRuleExectionOption( final TimedRuleExecutionFilter filter ) {
+    private TimedRuleExecutionOption( final TimedRuleExecutionFilter filter ) {
         this.filter = filter;
     }
 
@@ -46,13 +46,13 @@ public class TimedRuleExectionOption implements SingleValueKieSessionOption {
         return filter;
     }
 
-    public static class FILTERED extends TimedRuleExectionOption {
+    public static class FILTERED extends TimedRuleExecutionOption {
         public FILTERED(TimedRuleExecutionFilter filter) {
             super(filter);
         }
     }
 
-    public static TimedRuleExectionOption resolve(String value) {
+    public static TimedRuleExecutionOption resolve(String value) {
         return Boolean.valueOf( value ) ? YES : NO;
     }
 }
