@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamReader;
 
 import com.thoughtworks.xstream.io.xml.QNameMap;
@@ -30,5 +31,9 @@ public class CustomStaxReader extends StaxReader {
             nsContext.put(nsPrefix!=null?nsPrefix:XMLConstants.DEFAULT_NS_PREFIX, nsId );
         }
         return nsContext;
+    }
+    
+    public Location getLocation() {
+        return in.getLocation();
     }
 }

@@ -30,7 +30,7 @@ public enum Msg {
     DTABLE_SINGLEOUT_NONAME("Decision table with single output should not have output name"),
     DTABLE_SINGLEOUT_NOTYPEREF("Decision table with single output should not have output typeRef"),
     ELEMREF_MISSING_TARGET("Element reference is pointing to a unknown target"),
-    ELEMREF_NOHASH("Element reference should point to an anchor (using hash sign) for an element to be referenced"),
+    ELEMREF_NOHASH("This element 'href' reference is expected to be using an anchor (hash sign) for pointing to a target element reference"),
     FAILED_VALIDATOR("The Validator Was unable to compile embedded DMN validation rules, validation of the DMN Model cannot be performed"),
     FAILED_XML_VALIDATION("Failed XML validation of DMN file"),
     FORMAL_PARAM_DUPLICATED("formal parameter with duplicated name"),
@@ -45,8 +45,8 @@ public enum Msg {
     RELATION_ROW_CELL_NOTLITERAL("Relation contains a row with a cell which is not a literalExpression"),
     RELATION_ROW_CELLCOUNTMISMATCH("Relation contains a row with wrong number of cells"),
     REQAUTH_NOT_KNOWLEDGESOURCE("RequiredAuthority is not pointing to a KnowledgeSource"),
-    TYPEREF_NO_FEEL_TYPE("typeRef is not a valid built-in FEEL type"),
-    TYPEREF_NOT_FEEL_NOT_DEF("typeRef is not in FEEL namespace and not defined with itemDefinition")
+    TYPEREF_NO_FEEL_TYPE("This element indicates a 'typeRef' which is not a valid built-in FEEL type"),
+    TYPEREF_NOT_FEEL_NOT_DEF("This element indicates a 'typeRef' which is not in FEEL namespace and not defined with itemDefinition")
     ;
 
     private String shortname;

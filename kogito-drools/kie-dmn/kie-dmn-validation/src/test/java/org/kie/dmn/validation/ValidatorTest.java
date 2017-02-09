@@ -17,13 +17,13 @@
 package org.kie.dmn.validation;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
+
+import javax.xml.stream.Location;
 
 import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.AfterClass;
@@ -34,6 +34,7 @@ import org.kie.dmn.core.DMNInputRuntimeTest;
 import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.api.DMNRuntime;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.feel.model.v1_1.Definitions;
 import org.kie.dmn.validation.Msg;
 import org.kie.dmn.validation.ValidationMsg;
@@ -143,7 +144,14 @@ public class ValidatorTest {
         Definitions definitions = utilDefinitions( "DECISION_MISSING_VAR.dmn", "DECISION_MISSING_VAR" );
         List<ValidationMsg> validate = validator.validateModel(definitions);
         
-        assertTrue( validate.stream().anyMatch( p -> p.getMessage().equals( Msg.DECISION_MISSING_VAR ) ) );
+        assertEquals(1, validate.stream().filter( p -> p.getMessage().equals( Msg.DECISION_MISSING_VAR )).count() );
+        
+        ValidationMsg msg0 = validate.stream().filter( p -> p.getMessage().equals( Msg.DECISION_MISSING_VAR )).findFirst().get();
+        assertEquals(Msg.DECISION_MISSING_VAR, msg0.getMessage());
+        
+        DMNModelInstrumentedBase base = (DMNModelInstrumentedBase) msg0.getReference();
+        Location loc0 = base.getLocation();
+        assertEquals("In the DECISION_MISSING_VAR.dmn file, the element Decision faulty here is on line 24. ", 24, loc0.getLineNumber());
     }
     
     @Test

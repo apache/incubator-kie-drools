@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.stream.Location;
 
 public abstract class DMNModelInstrumentedBase {
     public static final String URI_FEEL = "http://www.omg.org/spec/FEEL/20140401";
@@ -31,6 +32,7 @@ public abstract class DMNModelInstrumentedBase {
 
     private DMNModelInstrumentedBase parent;
     private final java.util.List<DMNModelInstrumentedBase> children = new ArrayList<>();
+    private Location location;
 
     /**
      * Namespace context map as defined at the level of the given element.
@@ -70,5 +72,60 @@ public abstract class DMNModelInstrumentedBase {
     
     public void addChildren(DMNModelInstrumentedBase child) {
         this.children.add(child);
+    }
+
+    public void setLocation(Location location) {
+        this.location = new RowLocation(location);
+    }
+    
+    /**
+     * Returns an approximated location of the XML origin for this DMN Model node.
+     */
+    public Location getLocation() {
+        return location;
+    }
+    
+    static class RowLocation implements Location {
+        private int lineNumber;
+        private String publicId;
+        private String systemId;
+        
+        RowLocation(Location from) {
+            this.lineNumber = from.getLineNumber();
+            this.publicId = from.getPublicId();
+            this.systemId = from.getSystemId();
+        }
+
+        @Override
+        public int getLineNumber() {
+            return this.lineNumber;
+        }
+
+        @Override
+        public int getColumnNumber() {
+            return -1;
+        }
+
+        @Override
+        public int getCharacterOffset() {
+            return -1;
+        }
+
+        @Override
+        public String getPublicId() {
+            return this.publicId;
+        }
+
+        @Override
+        public String getSystemId() {
+            return this.systemId;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("RowLocation [getLineNumber()=").append(getLineNumber()).append(", getColumnNumber()=").append(getColumnNumber()).append(", getCharacterOffset()=").append(getCharacterOffset()).append(", getPublicId()=").append(getPublicId()).append(", getSystemId()=").append(getSystemId()).append("]");
+            return builder.toString();
+        }
     }
 }
