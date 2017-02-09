@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,22 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-class TestGenListValueProvider extends TestGenAbstractValueProvider<List<?>> {
+class TestGenInlineListValueProvider extends TestGenAbstractValueProvider<List<?>> {
 
-    private final String identifier;
-    private final Type typeArgument;
     private final Map<Object, TestGenFact> existingInstances;
-    private final List<Class<?>> imports = new ArrayList<>();
     private final List<TestGenFact> requiredFacts;
 
-    public TestGenListValueProvider(List<?> value, String identifier, Type genericType,
-            Map<Object, TestGenFact> existingInstances) {
+    public TestGenInlineListValueProvider(List<?> value, Map<Object, TestGenFact> existingInstances) {
         super(value);
-        this.identifier = identifier;
-        this.typeArgument = genericType;
         this.existingInstances = existingInstances;
-        imports.add(ArrayList.class);
-        imports.add((Class<?>) genericType);
         requiredFacts = value.stream()
                 .map(i -> existingInstances.get(i))
                 .filter(Objects::nonNull)
@@ -51,22 +44,22 @@ class TestGenListValueProvider extends TestGenAbstractValueProvider<List<?>> {
 
     @Override
     public List<Class<?>> getImports() {
-        return imports;
-    }
-
-    @Override
-    public void printSetup(StringBuilder sb) {
-        String e = ((Class<?>) typeArgument).getSimpleName();
-        sb.append(String.format("        ArrayList<%s> %s = new ArrayList<%s>();\n", e, identifier, e));
-        for (Object item : value) {
-            sb.append(String.format("        //%s\n", item));
-            sb.append(String.format("        %s.add(%s);\n", identifier, existingInstances.get(item)));
-        }
+        return Collections.singletonList(Arrays.class);
     }
 
     @Override
     public String toString() {
-        return identifier;
+        StringBuilder sb = new StringBuilder(25 * value.size() + 17);
+        sb.append("Arrays.asList(");
+        Iterator<?> it = value.iterator();
+        if (it.hasNext()) {
+            sb.append(existingInstances.get(it.next()));
+        }
+        while (it.hasNext()) {
+            sb.append(", ").append(existingInstances.get(it.next()));
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
 }

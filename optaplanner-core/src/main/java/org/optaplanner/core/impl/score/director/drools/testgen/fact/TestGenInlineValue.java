@@ -15,7 +15,6 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +27,7 @@ import java.util.Map;
 public class TestGenInlineValue implements TestGenFact {
 
     private final Object instance;
-    private final String instanceToString;
-    private final ArrayList<Class<?>> imports = new ArrayList<>();
+    private final TestGenValueProvider<?> valueProvider;
 
     public TestGenInlineValue(Object value, Map<Object, TestGenFact> existingInstances) {
         if (value == null) {
@@ -37,11 +35,14 @@ public class TestGenInlineValue implements TestGenFact {
         }
         this.instance = value;
         if (List.class.isAssignableFrom(value.getClass())) {
-            instanceToString = new TestGenListValueProvider((List) value, null, null, existingInstances)
-                    .getInlineValue();
-            imports.add(java.util.Arrays.class);
+            valueProvider = new TestGenInlineListValueProvider((List<?>) value, existingInstances);
         } else {
-            this.instanceToString = value.toString();
+            valueProvider = new TestGenAbstractValueProvider<Object>(value) {
+                @Override
+                public String toString() {
+                    return value.toString();
+                }
+            };
         }
     }
 
@@ -62,12 +63,12 @@ public class TestGenInlineValue implements TestGenFact {
 
     @Override
     public List<TestGenFact> getDependencies() {
-        return Collections.emptyList();
+        return valueProvider.getRequiredFacts();
     }
 
     @Override
     public List<Class<?>> getImports() {
-        return Collections.unmodifiableList(imports);
+        return valueProvider.getImports();
     }
 
     @Override
@@ -87,7 +88,7 @@ public class TestGenInlineValue implements TestGenFact {
 
     @Override
     public String toString() {
-        return instanceToString;
+        return valueProvider.toString();
     }
 
 }
