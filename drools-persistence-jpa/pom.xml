@@ -105,6 +105,11 @@
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-cdi</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
       <scope>provided</scope>

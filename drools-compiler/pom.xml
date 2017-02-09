@@ -147,28 +147,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
-      <exclusions>
-        <exclusion>
-          <groupId>javax.el</groupId>
-          <artifactId>javax.el-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.interceptor</groupId>
-          <artifactId>javax.interceptor-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency><!-- It works in any CDI container, but the weld CDI container is used for testing -->
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <!-- test: byteman -->
     <dependency>
       <groupId>org.jboss.byteman</groupId>
@@ -261,6 +239,7 @@
                    in ECJ directly to export the versions correctly in the MANIFEST.MF. -->
               org.eclipse.jdt.*;version="[0,1)";resolution:=optional,
               org.osgi.*;resolution:=optional,
+              org.drools.cdi;resolution:=optional,
               org.jbpm.process.instance.impl;resolution:=optional,
               org.kie.scanner;resolution:=optional,
               =org.kie.spring;resolution:=optional,
@@ -270,9 +249,6 @@
               org.drools.compiler.*
             </Export-Package>
             <Bundle-Activator>org.drools.compiler.osgi.Activator</Bundle-Activator>
-            <Provide-Capability>
-              org.ops4j.pax.cdi.extension; extension=kie-cdi
-            </Provide-Capability>
             <_removeheaders>Private-Package</_removeheaders>
           </instructions>
         </configuration>
