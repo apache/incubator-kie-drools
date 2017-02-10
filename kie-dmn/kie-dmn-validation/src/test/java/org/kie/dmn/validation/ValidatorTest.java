@@ -346,4 +346,17 @@ public class ValidatorTest {
 
         assertTrue( validate.stream().anyMatch( p -> p.getMessage().equals( Msg.TYPEREF_NOT_FEEL_NOT_DEF ) ) );
     }
+    
+    @Test
+    public void testTYPEREF_NOT_FEEL_NOT_DEF_valid() {
+        // DROOLS-1433
+        // the assumption is that the following document TYPEREF_NOT_FEEL_NOT_DEF_valid.dmn should NOT contain any Msg.TYPEREF_NOT_FEEL_NOT_DEF at all
+        // the test also highlight typically in a DMN model many nodes would not define a typeRef, resulting in a large number of false negative
+        Definitions definitions = utilDefinitions( "TYPEREF_NOT_FEEL_NOT_DEF_valid.dmn", "TYPEREF_NOT_FEEL_NOT_DEF_valid" );
+        List<ValidationMsg> validate = validator.validateModel(definitions);
+
+        validate.forEach(m -> System.out.println( m.getMessage()) );
+        
+        assertTrue( validate.stream().noneMatch( p -> p.getMessage().equals( Msg.TYPEREF_NOT_FEEL_NOT_DEF ) ) );
+    }
 }
