@@ -264,7 +264,7 @@ end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p1
 when
-  $o: Expression( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
+  $o: Expression( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
   entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
@@ -272,7 +272,7 @@ end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p2
 when
-  $o: InformationItem( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
+  $o: InformationItem( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
   entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
@@ -280,7 +280,7 @@ end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p3
 when
-  $o: ItemDefinition( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
+  $o: ItemDefinition( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
   entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
@@ -288,7 +288,7 @@ end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p4
 when
-  $o: OutputClause( typeRef == null || typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
+  $o: OutputClause( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
   entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
