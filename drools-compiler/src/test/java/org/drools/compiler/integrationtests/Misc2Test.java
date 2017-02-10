@@ -9060,45 +9060,6 @@ public class Misc2Test extends CommonTestMethodBase {
         assertFalse( list.contains( "GreaterThanCompare:null" ) );
     }
     
-    public static class TestStaticUtils {
-        public static int return1() { 
-            return 1;
-        }
-    }
-    
-    @Test
-    public void testShouldAlphaShareBecauseSameConstantDespiteDifferentSyntax() {
-        // DROOLS-1404
-        String drl1 = "package c;\n" + 
-                "import " + TestObject.class.getCanonicalName() + "\n" +
-                "rule fileArule1 when\n" + 
-                "  TestObject(value == 1)\n" + 
-                "then\n" + 
-                "end\n" + 
-                "";
-        String drl2 = "package iTzXzx;\n" + // <<- keep the different package
-                "import " + TestObject.class.getCanonicalName() + "\n" +
-                "import " + TestStaticUtils.class.getCanonicalName() + "\n" +
-                "rule fileBrule1 when\n" + 
-                "  TestObject(value == TestStaticUtils.return1() )\n" + 
-                "then\n" + 
-                "end\n" +
-                "rule fileBrule2 when\n" + // <<- keep this rule
-                "  TestObject(value == 0 )\n" + 
-                "then\n" + 
-                "end\n" + 
-                "";
-
-        KieSession kieSession = new KieHelper()
-                    .addContent(drl1, ResourceType.DRL)
-                    .addContent(drl2, ResourceType.DRL)
-                    .build().newKieSession();
-        
-        kieSession.insert(new TestObject(1));
-
-        assertEquals(2, kieSession.fireAllRules() );
-    }
-
     @Test
     public void testUnderscoreDoubleMultiplicationCastedToInt() {
         // DROOLS-1420
