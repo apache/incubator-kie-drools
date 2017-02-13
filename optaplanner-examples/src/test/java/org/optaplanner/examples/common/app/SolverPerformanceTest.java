@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
  * <p>
  * Always use a {@link Test#timeout()} value on {@link Test}.
  * The timeout should be the triple of the timeout on a normal 3 year old desktop computer,
- * because some of the jenkins machines are old.
+ * because some of the Jenkins machines are old.
  * For example, on a normal 3 year old desktop computer it always finishes in less than 1 minute,
  * then specify a timeout of 3 minutes.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

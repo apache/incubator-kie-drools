@@ -431,7 +431,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         if (!expectedWorkingScore.equals(workingScore)) {
             throw new IllegalStateException(
                     "Score corruption: the expectedWorkingScore (" + expectedWorkingScore
-                    + ") is not the workingScore  (" + workingScore
+                    + ") is not the workingScore (" + workingScore
                     + ") after completedAction (" + completedAction + ").");
         }
     }
@@ -468,7 +468,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                             + " the entity (" + entity
                             + ")'s shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
                             + ")'s corrupted value (" + originalValue + ") changed to uncorrupted value (" + newValue
-                            + ") after all " + VariableListener.class.getSimpleName() + "s were triggered without changes to the genuine variables.\n"
+                            + ") after all " + VariableListener.class.getSimpleName()
+                            + "s were triggered without changes to the genuine variables.\n"
                             + "Maybe the " + VariableListener.class.getSimpleName() + " class ("
                             + shadowVariableDescriptor.getVariableListenerClass().getSimpleName()
                             + ") for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
@@ -481,8 +482,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         if (!expectedWorkingScore.equals(workingScore)) {
             throw new IllegalStateException("Impossible " + VariableListener.class.getSimpleName() + " corruption:"
                     + " the expectedWorkingScore (" + expectedWorkingScore
-                    + ") is not the workingScore  (" + workingScore
-                    + ") after all " + VariableListener.class.getSimpleName() + "s were triggered without changes to the genuine variables.\n"
+                    + ") is not the workingScore (" + workingScore
+                    + ") after all " + VariableListener.class.getSimpleName()
+                    + "s were triggered without changes to the genuine variables.\n"
                     + "But all the shadow variable values are still the same, so this is impossible.");
         }
     }

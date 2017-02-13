@@ -26,8 +26,8 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 
 /**
- * This {@link SolverRankingWeightFactory} orders a {@link SolverBenchmarkResult} by how how many time each of it's
- * {@link SingleBenchmarkResult} beat the {@link SingleBenchmarkResult} of the other {@link SolverBenchmarkResult}s.
+ * This {@link SolverRankingWeightFactory} orders a {@link SolverBenchmarkResult} by how many times each of its
+ * {@link SingleBenchmarkResult}s beat {@link SingleBenchmarkResult}s of the other {@link SolverBenchmarkResult}.
  * It maximizes the overall ranking.
  * <p>
  * When the inputSolutions differ greatly in size or difficulty, this often produces a difference in
