@@ -15,6 +15,11 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -33,11 +38,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class PropertyReactivityTest extends CommonTestMethodBase {
 
@@ -1568,5 +1568,77 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         public void setName(String name) {
             this.name = name;
         }
+    }
+
+    public interface StopOrHub {
+
+        boolean isVisitedByCoach();
+    }
+
+    public static class BusStop implements StopOrHub {
+
+        private boolean visitedByCoach;
+
+        @Override
+        public boolean isVisitedByCoach() {
+            return visitedByCoach;
+        }
+
+        public BusStop setVisitedByCoach(boolean visitedByCoach) {
+            this.visitedByCoach = visitedByCoach;
+            return this;
+        }
+    }
+
+    public static class Shuttle {
+
+        private StopOrHub destination;
+
+        public StopOrHub getDestination() {
+            return destination;
+        }
+
+        public Shuttle setDestination(StopOrHub destination) {
+            this.destination = destination;
+            return this;
+        }
+
+    }
+
+    @Test
+    public void testSetterInConcreteClass2() {
+        // DROOLS-1369
+        String drl = "package org.test;\n"
+                     + "import " + BusStop.class.getCanonicalName() + ";\n"
+                     + "import " + Shuttle.class.getCanonicalName() + ";\n"
+                     + "import " + StopOrHub.class.getCanonicalName() + ";\n"
+                     + "rule shuttleDestinationIsCoachOrHub\n"
+                     + "    when\n"
+                     + "        $destination : StopOrHub(visitedByCoach == false)\n"
+                     + "        Shuttle(destination == $destination)\n"
+                     + "    then\n"
+                     + "end";
+        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        BusStop busStop = new BusStop();
+        Shuttle shuttle = new Shuttle();
+        busStop.setVisitedByCoach(true);
+
+        FactHandle fhShuttle = kieSession.insert(shuttle);
+        FactHandle fhBusStop = kieSession.insert(busStop);
+
+        kieSession.update(fhShuttle, shuttle.setDestination(busStop));
+        assertEquals(0, kieSession.fireAllRules());
+
+        // removing the property name from this update will make the test pass
+        kieSession.update(fhBusStop, busStop.setVisitedByCoach(false), "visitedByCoach");
+        // LHS is now satisfied, the rule should fire but it doesn't
+        assertEquals(busStop, shuttle.getDestination());
+        assertFalse(busStop.isVisitedByCoach());
+        assertEquals(1, kieSession.fireAllRules()); // change the expected value to 0 to get further
+
+        // after this update (without any real fact modification) the rule will fire as expected
+        kieSession.update(fhBusStop, busStop);
+        assertEquals(1, kieSession.fireAllRules());
     }
 }
