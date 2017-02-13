@@ -15,17 +15,17 @@
 
 package org.drools.core.metadata;
 
-import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.PropertySpecificUtil;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.bitmask.BitMask;
-
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.PropertySpecificUtil;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.bitmask.BitMask;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
@@ -122,13 +122,13 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
 
 
     protected void computeModificationMasks( InternalKnowledgeBase knowledgeBase ) {
-        List<String> settableProperties = getSettableProperties( target, knowledgeBase );
+        List<String> settableProperties = getAccessibleProperties( target, knowledgeBase );
         modificationMask = PropertySpecificUtil.getEmptyPropertyReactiveMask( settableProperties.size() );
 
         if ( with != null ) {
             List<String>[] inverseSettableProperties = new List[ with.length ];
             for ( int j = 0; j < with.length; j++ ) {
-                inverseSettableProperties[ j ] = getSettableProperties( with[ j ], knowledgeBase );
+                inverseSettableProperties[ j ] = getAccessibleProperties( with[ j ], knowledgeBase );
                 extraMasks[ j ] = PropertySpecificUtil.getEmptyPropertyReactiveMask( inverseSettableProperties[ j ].size() );
             }
             for ( int j = 0; j < with.length; j++ ) {
@@ -140,11 +140,11 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
     }
 
 
-    protected List<String> getSettableProperties( Object o, InternalKnowledgeBase knowledgeBase ) {
+    protected List<String> getAccessibleProperties( Object o, InternalKnowledgeBase knowledgeBase ) {
         if ( knowledgeBase != null ) {
             return PropertySpecificUtil.getSettableProperties( knowledgeBase, o.getClass() );
         } else {
-            return ClassUtils.getSettableProperties( o.getClass() );
+            return ClassUtils.getAccessibleProperties( o.getClass() );
         }
     }
 

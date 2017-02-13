@@ -321,7 +321,7 @@ public class NamedEntryPoint
 
         TypeDeclaration typeDeclaration = kBase.getOrCreateExactTypeDeclaration( modifiedClass );
         BitMask mask = typeDeclaration.isPropertyReactive() ?
-                       calculatePositiveMask(asList(modifiedProperties), typeDeclaration.getSettableProperties()) :
+                       calculatePositiveMask(asList(modifiedProperties), typeDeclaration.getAccessibleProperties() ) :
                        AllSetBitMask.get();
 
         update( (InternalFactHandle) handle, object, mask, modifiedClass, null);

@@ -1570,11 +1570,13 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
     }
 
+    @PropertyReactive
     public interface StopOrHub {
 
         boolean isVisitedByCoach();
     }
 
+    @PropertyReactive
     public static class BusStop implements StopOrHub {
 
         private boolean visitedByCoach;
@@ -1590,6 +1592,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
     }
 
+    @PropertyReactive
     public static class Shuttle {
 
         private StopOrHub destination;

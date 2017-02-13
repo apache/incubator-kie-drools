@@ -188,7 +188,7 @@ public class SubKlass_<T extends SubKlass> extends Klass_<T> implements Serializ
 
         @Override
         protected void cachePropertyNames() {
-            propertyNames = ClassUtils.getSettableProperties( SubKlass.class );
+            propertyNames = ClassUtils.getAccessibleProperties( SubKlass.class );
         }
 
         @Override

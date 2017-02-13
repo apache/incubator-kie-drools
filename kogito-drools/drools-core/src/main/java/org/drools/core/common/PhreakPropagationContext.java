@@ -16,6 +16,13 @@
 
 package org.drools.core.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -29,13 +36,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
@@ -311,8 +311,8 @@ public class PhreakPropagationContext
             return this;
         }
 
-        List<String> typeClassProps = getSettableProperties(workingMemory, classType, pkgName);
-        List<String> modifiedClassProps = getSettableProperties( workingMemory, modifiedClass );
+        List<String> typeClassProps = getAccessibleProperties( workingMemory, classType, pkgName );
+        List<String> modifiedClassProps = getAccessibleProperties( workingMemory, modifiedClass );
         modificationMask = getEmptyPropertyReactiveMask(typeClassProps.size());
 
         for (int i = 0; i < modifiedClassProps.size(); i++) {
@@ -333,17 +333,17 @@ public class PhreakPropagationContext
         return this;
     }
 
-    private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType) {
-        return getSettableProperties(workingMemory, classType, classType.getPackage().getName());
+    private List<String> getAccessibleProperties( InternalWorkingMemory workingMemory, Class<?> classType ) {
+        return getAccessibleProperties( workingMemory, classType, classType.getPackage().getName() );
     }
 
-    private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType, String pkgName) {
+    private List<String> getAccessibleProperties( InternalWorkingMemory workingMemory, Class<?> classType, String pkgName ) {
         if ( pkgName.equals( "java.lang" ) || pkgName.equals( "java.util" ) ) {
             return Collections.EMPTY_LIST;
         }
         InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( pkgName );
         TypeDeclaration tdecl =  pkg != null ? pkg.getTypeDeclaration( classType ) : null;
-        return tdecl != null ? tdecl.getSettableProperties() : Collections.EMPTY_LIST;
+        return tdecl != null ? tdecl.getAccessibleProperties() : Collections.EMPTY_LIST;
     }
 
     public MarshallerReaderContext getReaderContext() {

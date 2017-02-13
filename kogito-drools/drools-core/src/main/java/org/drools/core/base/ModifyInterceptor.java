@@ -96,7 +96,7 @@ public class ModifyInterceptor
             return;
         }
 
-        List<String> settableProperties = typeDeclaration.getSettableProperties();
+        List<String> settableProperties = typeDeclaration.getAccessibleProperties();
         modificationMask = getEmptyPropertyReactiveMask(settableProperties.size());
 
         // TODO: access parmValuePairs without reflection

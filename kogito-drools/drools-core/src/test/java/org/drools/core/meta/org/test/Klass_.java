@@ -21,7 +21,6 @@ import org.drools.core.metadata.DonLiteral;
 import org.drools.core.metadata.Lit;
 import org.drools.core.metadata.ManyToManyPropertyLiteral;
 import org.drools.core.metadata.ManyToOnePropertyLiteral;
-import org.drools.core.metadata.ManyToOneValuedMetaProperty;
 import org.drools.core.metadata.ManyValuedMetaProperty;
 import org.drools.core.metadata.MetaClass;
 import org.drools.core.metadata.MetaProperty;
@@ -30,7 +29,6 @@ import org.drools.core.metadata.ModifyLiteral;
 import org.drools.core.metadata.NewInstance;
 import org.drools.core.metadata.NewInstanceLiteral;
 import org.drools.core.metadata.OneToOnePropertyLiteral;
-import org.drools.core.metadata.OneToOneValuedMetaProperty;
 import org.drools.core.metadata.OneValuedMetaProperty;
 import org.drools.core.metadata.ToOnePropertyLiteral;
 import org.drools.core.metadata.With;
@@ -228,7 +226,7 @@ public class Klass_<T extends Klass> extends MetadataContainer<T> implements Ser
 
         @Override
         protected void cachePropertyNames() {
-            propertyNames = ClassUtils.getSettableProperties( Klass.class );
+            propertyNames = ClassUtils.getAccessibleProperties( Klass.class );
         }
 
         @Override

@@ -551,7 +551,7 @@ public class PatternBuilder
                                                    "Wrong usage of @" + Watch.class.getSimpleName() + " annotation on class " + patternClass.getName() + " that is not annotated as @PropertyReactive" ) );
         }
         typeDeclaration.setTypeClass(patternClass);
-        return typeDeclaration.getSettableProperties();
+        return typeDeclaration.getAccessibleProperties();
     }
 
     private TypeDeclaration getTypeDeclarationForPattern(RuleBuildContext context, Pattern pattern) {
@@ -1450,7 +1450,7 @@ public class PatternBuilder
                 TypeDeclaration typeDeclaration = context.getKnowledgeBuilder().getTypeDeclaration(patternClass);
 
                 String fieldName = (( ClassFieldReader) extractor ).getFieldName();
-                if ( typeDeclaration.getSettableProperties().contains(fieldName) ) {
+                if ( typeDeclaration.getAccessibleProperties().contains( fieldName ) ) {
                     List<String> watchlist = pattern.getListenedProperties();
                     if ( watchlist == null ) {
                         watchlist = new ArrayList<String>( );

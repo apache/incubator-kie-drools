@@ -28,7 +28,6 @@ import org.drools.core.metadata.ModifyLiteral;
 import org.drools.core.metadata.NewInstanceLiteral;
 import org.drools.core.metadata.OneToManyPropertyLiteral;
 import org.drools.core.metadata.OneToOnePropertyLiteral;
-import org.drools.core.metadata.OneToOneValuedMetaProperty;
 import org.drools.core.metadata.OneValuedMetaProperty;
 import org.drools.core.metadata.ToOnePropertyLiteral;
 import org.drools.core.metadata.With;
@@ -242,7 +241,7 @@ public class AnotherKlass_<T extends AnotherKlass> extends MetadataContainer<T> 
 
         @Override
         protected void cachePropertyNames() {
-            propertyNames = ClassUtils.getSettableProperties( AnotherKlass.class );
+            propertyNames = ClassUtils.getAccessibleProperties( AnotherKlass.class );
         }
 
         public AnotherKlass_NewInstance<T> newInstance( Object id, With... args ) {
