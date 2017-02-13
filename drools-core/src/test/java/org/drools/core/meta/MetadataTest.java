@@ -15,6 +15,13 @@
 
 package org.drools.core.meta;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.meta.org.test.AnotherKlass;
@@ -34,20 +41,7 @@ import org.drools.core.test.model.Person;
 import org.drools.core.util.StandaloneTraitFactory;
 import org.junit.Test;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MetadataTest {
 
@@ -159,7 +153,7 @@ public class MetadataTest {
         SubKlassImpl ski = new SubKlassImpl();
         SubKlass_.SubKlass_Modify task = SubKlass_.modify( ski ).prop( "hello" ).subProp( 42 );
         task.call();
-        assertEquals( "80", task.getModificationMask().toString() );
+        assertEquals( "144", task.getModificationMask().toString() );
 
         SubKlass_.SubKlass_Modify task2 = SubKlass_.modify( ski ).prop( "hello" );
         task2.call();
@@ -167,7 +161,7 @@ public class MetadataTest {
 
         SubKlass_.SubKlass_Modify task3 = SubKlass_.modify( ski ).subProp( 42 );
         task3.call();
-        assertEquals( "64", task3.getModificationMask().toString() );
+        assertEquals( "128", task3.getModificationMask().toString() );
     }
 
 

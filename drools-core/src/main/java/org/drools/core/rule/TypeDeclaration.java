@@ -109,7 +109,7 @@ public class TypeDeclaration
     private boolean                valid;
     private boolean                propertyReactive;
     private boolean javaBased;
-    private transient List<String> settableProprties;
+    private transient List<String> accessibleProperties;
 
     private transient ObjectType   objectType;
     private long                   expirationOffset = -1;
@@ -480,11 +480,11 @@ public class TypeDeclaration
         this.novel = novel;
     }
 
-    public List<String> getSettableProperties() {
-        if ( settableProprties == null ) {
-            settableProprties = propertyReactive ? ClassUtils.getSettableProperties( getTypeClass() ) : Collections.emptyList();
+    public List<String> getAccessibleProperties() {
+        if ( accessibleProperties == null ) {
+            accessibleProperties = propertyReactive ? ClassUtils.getAccessibleProperties( getTypeClass() ) : Collections.emptyList();
         }
-        return settableProprties;
+        return accessibleProperties;
     }
 
     public String toString() {

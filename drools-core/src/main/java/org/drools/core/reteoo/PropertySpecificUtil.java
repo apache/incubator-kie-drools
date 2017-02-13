@@ -111,6 +111,6 @@ public class PropertySpecificUtil {
     }
 
     public static List<String> getSettableProperties(InternalKnowledgeBase kBase, Class<?> nodeClass) {
-        return kBase.getOrCreateExactTypeDeclaration(nodeClass).getSettableProperties();
+        return kBase.getOrCreateExactTypeDeclaration(nodeClass).getAccessibleProperties();
     }
 }
