@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.compiler.integrationtests.facts.FactWithList;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.AlphaNode;
@@ -257,6 +258,40 @@ public class SharingTest extends CommonTestMethodBase {
                 .build().newKieSession();
 
         kieSession.insert(new Misc2Test.TestObject( 1) );
+
+        assertEquals(2, kieSession.fireAllRules() );
+    }
+
+    @Test
+    public void testShouldAlphaShareNotEqualsInDifferentPackages2() {
+        // DROOLS-1404
+        String drl1 = "package c;\n" +
+                "import " + FactWithList.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule fileArule1 when\n" +
+                "  FactWithList(items contains \"test\")\n" +
+                "then\n" +
+                "end\n" +
+                "";
+        String drl2 = "package iTzXzx;\n" + // <<- keep the different package
+                "import " + FactWithList.class.getCanonicalName() + "\n" +
+                "rule fileBrule1 when\n" +
+                "  FactWithList(items contains \"test\")\n" +
+                "then\n" +
+                "end\n" +
+                "rule fileBrule2 when\n" + // <<- keep this rule
+                "  FactWithList(items contains \"testtest\")\n" +
+                "then\n" +
+                "end\n" +
+                "";
+
+        KieSession kieSession = new KieHelper()
+                .addContent(drl1, ResourceType.DRL)
+                .addContent(drl2, ResourceType.DRL)
+                .build().newKieSession();
+
+        final FactWithList factWithList = new FactWithList("test");
+        kieSession.insert(factWithList);
 
         assertEquals(2, kieSession.fireAllRules() );
     }
