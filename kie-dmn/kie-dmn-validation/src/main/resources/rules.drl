@@ -228,7 +228,7 @@ end
 
 rule REQAUTH_NOT_KNOWLEDGESOURCE
 when
-  AuthorityRequirement( $oc: requiredAuthority )
+  AuthorityRequirement( requiredAuthority != null, $oc: requiredAuthority )
   DMNElement( id == rightOfHash( $oc.href ) , !(this instanceof KnowledgeSource) ) 
 then
   entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.REQAUTH_NOT_KNOWLEDGESOURCE, $oc ) );
