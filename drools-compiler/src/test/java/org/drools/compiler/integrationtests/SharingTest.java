@@ -1,6 +1,5 @@
 package org.drools.compiler.integrationtests;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -236,7 +235,6 @@ public class SharingTest extends CommonTestMethodBase {
         // DROOLS-1404
         String drl1 = "package c;\n" +
                       "import " + Misc2Test.TestObject.class.getCanonicalName() + "\n" +
-                      "\n" +
                       "rule fileArule1 when\n" +
                       "  TestObject(value >= 1 )\n" +
                       "then\n" +
