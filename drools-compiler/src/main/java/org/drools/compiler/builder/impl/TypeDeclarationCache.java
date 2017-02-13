@@ -15,6 +15,18 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.Annotated;
@@ -27,21 +39,8 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.ClassUtils;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.Position;
-import org.kie.api.definition.type.Role;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.Match;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.drools.compiler.builder.impl.TypeDeclarationConfigurator.processTypeAnnotations;
 import static org.drools.core.util.BitMaskUtil.isSet;
@@ -262,11 +261,6 @@ public class TypeDeclarationCache {
 
     private TypeDeclaration createTypeDeclarationForBean(Class<?> cls) {
         TypeDeclaration typeDeclaration = new TypeDeclaration(cls);
-
-        Role role = cls.getAnnotation(Role.class);
-        if (role != null) {
-            typeDeclaration.setRole(role.value());
-        }
 
         String namespace = ClassUtils.getPackage( cls );
         PackageRegistry pkgRegistry = kbuilder.getPackageRegistry( namespace );

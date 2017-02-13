@@ -15,8 +15,9 @@
 
 package org.drools.core.reteoo;
 
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -25,11 +26,8 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.AllSetButLastBitMask;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.util.bitmask.EmptyBitMask;
 import org.drools.core.util.bitmask.EmptyButLastBitMask;
-
-import java.util.List;
 
 public class PropertySpecificUtil {
 
@@ -112,31 +110,7 @@ public class PropertySpecificUtil {
         return mask.isSet(index + CUSTOM_BITS_OFFSET);
     }
 
-    public static List<String> getSettableProperties(InternalWorkingMemory workingMemory, ObjectTypeNode objectTypeNode) {
-        return getSettableProperties(workingMemory.getKnowledgeBase(), objectTypeNode);
-    }
-
-    public static List<String> getSettableProperties(InternalKnowledgeBase kBase, ObjectTypeNode objectTypeNode) {
-        return getSettableProperties(kBase, getNodeClass(objectTypeNode));
-    }
-
     public static List<String> getSettableProperties(InternalKnowledgeBase kBase, Class<?> nodeClass) {
-        if (nodeClass == null) {
-            return null;
-        }
-        TypeDeclaration typeDeclaration = kBase.getExactTypeDeclaration(nodeClass);
-        if (typeDeclaration == null) {
-            return ClassUtils.getSettableProperties(nodeClass);
-        }
-        typeDeclaration.setTypeClass(nodeClass);
-        return typeDeclaration.getSettableProperties();
-    }
-
-    private static Class<?> getNodeClass( ObjectTypeNode objectTypeNode ) {
-        if (objectTypeNode == null) {
-            return null;
-        }
-        ObjectType objectType = objectTypeNode.getObjectType();
-        return objectType != null && objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
+        return kBase.getOrCreateExactTypeDeclaration(nodeClass).getSettableProperties();
     }
 }

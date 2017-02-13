@@ -16,6 +16,16 @@
 
 package org.drools.core.common;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.TraitHelper;
@@ -30,28 +40,18 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
-
 import static java.util.Arrays.asList;
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
 public class NamedEntryPoint
     implements
@@ -318,11 +318,13 @@ public class NamedEntryPoint
                        Object object,
                        String... modifiedProperties) {
         Class modifiedClass = object.getClass();
-        update( (InternalFactHandle) handle,
-                object,
-                calculatePositiveMask(asList(modifiedProperties), getSettableProperties(kBase, modifiedClass)),
-                modifiedClass,
-                null);
+
+        TypeDeclaration typeDeclaration = kBase.getOrCreateExactTypeDeclaration( modifiedClass );
+        BitMask mask = typeDeclaration.isPropertyReactive() ?
+                       calculatePositiveMask(asList(modifiedProperties), typeDeclaration.getSettableProperties()) :
+                       AllSetBitMask.get();
+
+        update( (InternalFactHandle) handle, object, mask, modifiedClass, null);
     }
 
     public void update(final FactHandle factHandle,
@@ -330,11 +332,7 @@ public class NamedEntryPoint
                        final BitMask mask,
                        final Class<?> modifiedClass,
                        final Activation activation) {
-        update( (InternalFactHandle) factHandle,
-                object,
-                mask,
-                modifiedClass,
-                activation );
+        update( (InternalFactHandle) factHandle, object, mask, modifiedClass, activation );
     }
 
     public InternalFactHandle update(InternalFactHandle handle,

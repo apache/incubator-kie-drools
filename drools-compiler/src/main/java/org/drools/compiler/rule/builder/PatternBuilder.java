@@ -307,6 +307,16 @@ public class PatternBuilder
     }
 
     private boolean isEvent(RuleBuildContext context, Class<?> userProvidedClass) {
+        TypeDeclaration typeDeclaration = getTypeDeclaration( context, userProvidedClass );
+
+        if (typeDeclaration != null) {
+            return typeDeclaration.getRole() == Role.Type.EVENT;
+        }
+        Role role = userProvidedClass.getAnnotation( Role.class );
+        return role != null && role.value() == Role.Type.EVENT;
+    }
+
+    private TypeDeclaration getTypeDeclaration( RuleBuildContext context, Class<?> userProvidedClass ) {
         String packageName = ClassUtils.getPackage( userProvidedClass );
         KnowledgeBuilderImpl kbuilder = context.getKnowledgeBuilder();
         PackageRegistry pkgr = kbuilder.getPackageRegistry( packageName );
@@ -319,12 +329,7 @@ public class PatternBuilder
         if (typeDeclaration == null) {
             typeDeclaration = context.getPkg().getTypeDeclaration( userProvidedClass );
         }
-
-        if (typeDeclaration != null) {
-            return typeDeclaration.getRole() == Role.Type.EVENT;
-        }
-        Role role = userProvidedClass.getAnnotation( Role.class );
-        return role != null && role.value() == Role.Type.EVENT;
+        return typeDeclaration;
     }
 
     private void processSource( RuleBuildContext context, PatternDescr patternDescr, Pattern pattern ) {
