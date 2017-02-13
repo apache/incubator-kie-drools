@@ -55,19 +55,16 @@
         <groupId>org.jbpm</groupId>
         <artifactId>test-kjar-integration</artifactId>
         <version>${project.version}</version>
-        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.jbpm</groupId>
         <artifactId>test-kjar-evaluation</artifactId>
         <version>${project.version}</version>
-        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.jbpm</groupId>
         <artifactId>test-kjar-bpmn-build</artifactId>
         <version>${project.version}</version>
-        <scope>runtime</scope>
       </dependency>
 
       <!-- test domain classes -->
@@ -98,17 +95,14 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>test-kjar-integration</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>test-kjar-evaluation</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>test-kjar-bpmn-build</artifactId>
-      <scope>runtime</scope>
     </dependency>
 
     <!-- test domain classes -->

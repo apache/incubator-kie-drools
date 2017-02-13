@@ -43,7 +43,68 @@
     <container.log.file>${container.profile.dir}/profile-log.txt</container.log.file>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>idep-jbpm-ejb-services</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>idep-hibernate-entitymanager</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>idep-jbpm</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>idep-jbpm-ejb-services</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>idep-jbpm-persistence</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>idep-rest</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
+    <!-- idep-jbpm-ejb-services and it's submodules are expected to be present in a local maven repository before
+         running this test suite. As jBPM uses maven parallel build, this dependency has to be materialized. -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>idep-jbpm-ejb-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>idep-hibernate-entitymanager</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>idep-jbpm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>idep-jbpm-ejb-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>idep-jbpm-persistence</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>idep-rest</artifactId>
+    </dependency>
 
     <!--H2 for Cargo plugin-->
     <dependency>
