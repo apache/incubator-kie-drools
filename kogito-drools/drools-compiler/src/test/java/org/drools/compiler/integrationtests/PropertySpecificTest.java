@@ -15,17 +15,26 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 import org.junit.Test;
@@ -41,16 +50,24 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
 public class PropertySpecificTest extends CommonTestMethodBase {
-    
+
+    public static List<String> getSettableProperties(InternalWorkingMemory workingMemory, ObjectTypeNode objectTypeNode) {
+        return getSettableProperties(workingMemory.getKnowledgeBase(), objectTypeNode);
+    }
+
+    public static List<String> getSettableProperties( InternalKnowledgeBase kBase, ObjectTypeNode objectTypeNode ) {
+        return PropertySpecificUtil.getSettableProperties( kBase, getNodeClass( objectTypeNode ) );
+    }
+
+    public static Class<?> getNodeClass( ObjectTypeNode objectTypeNode ) {
+        ObjectType objectType = objectTypeNode.getObjectType();
+        return objectType != null && objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
+    }
+
     @Test
     public void testRTNodeEmptyLHS() {
         String rule = "package org.drools.compiler.integrationtests\n" +
@@ -1206,7 +1223,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL );
-        assertEquals(1, kbuilder.getErrors().size());
+        assertTrue(kbuilder.hasErrors());
     }
 
     @Test

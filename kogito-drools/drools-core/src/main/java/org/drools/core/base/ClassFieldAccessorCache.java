@@ -16,15 +16,15 @@
 
 package org.drools.core.base;
 
-import org.drools.core.util.ByteArrayClassLoader;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.asm.ClassFieldInspector;
-
 import java.security.ProtectionDomain;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.drools.core.util.ByteArrayClassLoader;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.asm.ClassFieldInspector;
 
 public class ClassFieldAccessorCache {
 
@@ -46,8 +46,7 @@ public class ClassFieldAccessorCache {
         // lookup the class when the ClassObjectType might refer to the class from another ClassLoader
         Class cls = lookupClass ? getClass( objectType.getClassName() ) : objectType.getClassType();
         CacheEntry cache = getCacheEntry( cls );
-        return cache.getClassObjectType( cls,
-                                         objectType );
+        return cache.getClassObjectType( cls, objectType );
     }
 
     public static class ClassObjectTypeKey {

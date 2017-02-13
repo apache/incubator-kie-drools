@@ -16,6 +16,13 @@
 
 package org.drools.core.rule;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.GeneratedFact;
@@ -24,15 +31,10 @@ import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
+import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.Resource;
 import org.kie.internal.definition.KnowledgeDefinition;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
 
 /**
  * The type declaration class stores all type's metadata
@@ -129,6 +131,15 @@ public class TypeDeclaration
         setTypeClass(typeClass);
         javaBased = true;
         setTypeClassDef( new ClassDefinition( typeClass ) );
+
+        Role role = typeClass.getAnnotation(Role.class);
+        if (role != null) {
+            setRole(role.value());
+        }
+
+        if (typeClass.getAnnotation(PropertyReactive.class) != null) {
+            setPropertyReactive(true);
+        }
     }
 
     public TypeDeclaration( String typeName ) {
@@ -471,7 +482,7 @@ public class TypeDeclaration
 
     public List<String> getSettableProperties() {
         if ( settableProprties == null ) {
-            settableProprties = ClassUtils.getSettableProperties( getTypeClass() );
+            settableProprties = propertyReactive ? ClassUtils.getSettableProperties( getTypeClass() ) : Collections.emptyList();
         }
         return settableProprties;
     }
