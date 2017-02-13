@@ -12,9 +12,9 @@ import com.thoughtworks.xstream.io.xml.StaxReader;
 
 
 public class CustomStaxReader extends StaxReader {
-
     /** 
-     * ATTENTION use read-only methods do not mutate
+     * ATTENTION this is intercepted during XStream StaxDriver creation as there is no proper API to inherit.
+     * Do not mutate reference - mutating this reference would not sort any effect on the actual underlying StaxReader
      */
     private XMLStreamReader in;
 

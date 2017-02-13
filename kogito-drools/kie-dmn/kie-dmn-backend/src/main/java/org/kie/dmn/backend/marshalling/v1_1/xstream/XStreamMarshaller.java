@@ -20,10 +20,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.AbstractPullReader;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.io.xml.StaxReader;
 import com.thoughtworks.xstream.io.xml.StaxWriter;
-
-import javanet.staxutils.StaxUtilsXMLOutputFactory;
 
 import org.kie.dmn.feel.model.v1_1.Artifact;
 import org.kie.dmn.feel.model.v1_1.Association;
@@ -71,7 +68,6 @@ import org.xml.sax.InputSource;
 import java.io.*;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -95,18 +91,6 @@ public class XStreamMarshaller
 //        qmap.registerMapping(new javax.xml.namespace.QName("http://www.omg.org/spec/FEEL/20140401", "feel", "feel"), "dddecision"); // FIXME still not sure how to output non-used ns like 'feel:'
         
         staxDriver = new StaxDriver() {
-
-            private XMLOutputFactory outputFactory = null;
-
-            public XMLOutputFactory getOutputFactory() {
-                if (outputFactory == null) {
-                    XMLOutputFactory factory = new StaxUtilsXMLOutputFactory(super.getOutputFactory());
-                    factory.setProperty(StaxUtilsXMLOutputFactory.INDENTING, Boolean.TRUE);
-                    outputFactory = factory;
-                }
-                return outputFactory;
-            }
-            
             public AbstractPullReader createStaxReader(XMLStreamReader in) {
                 return new CustomStaxReader(getQnameMap(), in);
             }
