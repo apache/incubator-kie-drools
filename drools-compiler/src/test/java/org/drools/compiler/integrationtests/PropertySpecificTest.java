@@ -1223,7 +1223,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL );
-        assertEquals(1, kbuilder.getErrors().size());
+        assertTrue(kbuilder.hasErrors());
     }
 
     @Test
