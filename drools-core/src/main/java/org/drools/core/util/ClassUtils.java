@@ -16,11 +16,6 @@
 
 package org.drools.core.util;
 
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
-import org.kie.api.definition.type.Modifies;
-import org.kie.internal.utils.ClassLoaderUtil;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -46,6 +41,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
+import org.kie.api.definition.type.Modifies;
+import org.kie.internal.utils.ClassLoaderUtil;
 
 import static org.drools.core.util.StringUtils.ucFirst;
 
@@ -411,13 +411,13 @@ public final class ClassUtils {
         return null;
     }
 
-    public static List<String> getSettableProperties(Class<?> clazz) {
-        Set<SetterInClass> props = new TreeSet<SetterInClass>();
+    public static List<String> getAccessibleProperties( Class<?> clazz ) {
+        Set<PropertyInClass> props = new TreeSet<PropertyInClass>();
         for (Method m : clazz.getMethods()) {
-            if (m.getParameterTypes().length == 1) {
-                String propName = setter2property(m.getName());
-                if (propName != null) {
-                    props.add( new SetterInClass( propName, m.getDeclaringClass() ) );
+            if (m.getParameterTypes().length == 0) {
+                String propName = getter2property(m.getName());
+                if (propName != null && !propName.equals( "class" )) {
+                    props.add( new PropertyInClass( propName, m.getDeclaringClass() ) );
                 }
             }
 
@@ -426,15 +426,15 @@ public final class ClassUtils {
 
         for (Field f : clazz.getFields()) {
             if ( !Modifier.isFinal(f.getModifiers()) && !Modifier.isStatic(f.getModifiers()) ) {
-                props.add( new SetterInClass( f.getName(), f.getDeclaringClass() ) );
+                props.add( new PropertyInClass( f.getName(), f.getDeclaringClass() ) );
             }
         }
 
-        List<String> settableProperties = new ArrayList<String>();
-        for ( SetterInClass setter : props ) {
-            settableProperties.add(setter.setter);
+        List<String> accessibleProperties = new ArrayList<String>();
+        for ( PropertyInClass setter : props ) {
+            accessibleProperties.add(setter.setter);
         }
-        return settableProperties;
+        return accessibleProperties;
     }
 
     public static Method getAccessor(Class<?> clazz, String field) {
@@ -453,24 +453,24 @@ public final class ClassUtils {
         }
     }
 
-    private static void processModifiesAnnotation(Class<?> clazz, Set<SetterInClass> props, Method m) {
+    private static void processModifiesAnnotation( Class<?> clazz, Set<PropertyInClass> props, Method m ) {
         Modifies modifies = m.getAnnotation( Modifies.class );
         if (modifies != null) {
             for (String prop : modifies.value()) {
                 prop = prop.trim();
                 try {
                     Field field = clazz.getField(prop);
-                    props.add( new SetterInClass( field.getName(), field.getDeclaringClass() ) );
+                    props.add( new PropertyInClass( field.getName(), field.getDeclaringClass() ) );
                 } catch (NoSuchFieldException e) {
                     String getter = "get" + prop.substring(0, 1).toUpperCase() + prop.substring(1);
                     try {
                         Method method = clazz.getMethod(getter);
-                        props.add( new SetterInClass( prop, method.getDeclaringClass() ) );
+                        props.add( new PropertyInClass( prop, method.getDeclaringClass() ) );
                     } catch (NoSuchMethodException e1) {
                         getter = "is" + prop.substring(0, 1).toUpperCase() + prop.substring(1);
                         try {
                             Method method = clazz.getMethod(getter);
-                            props.add( new SetterInClass( prop, method.getDeclaringClass() ) );
+                            props.add( new PropertyInClass( prop, method.getDeclaringClass() ) );
                         } catch (NoSuchMethodException e2) {
                             throw new RuntimeException(e2);
                         }
@@ -536,17 +536,17 @@ public final class ClassUtils {
         return Iterable.class.isAssignableFrom( clazz ) || clazz.isArray();
     }
 
-    private static class SetterInClass implements Comparable {
+    private static class PropertyInClass implements Comparable {
         private final String setter;
         private final Class<?> clazz;
 
-        private SetterInClass(String setter, Class<?> clazz) {
+        private PropertyInClass( String setter, Class<?> clazz ) {
             this.setter = setter;
             this.clazz = clazz;
         }
 
         public int compareTo(Object o) {
-            SetterInClass other = (SetterInClass) o;
+            PropertyInClass other = (PropertyInClass) o;
             if (clazz == other.clazz) {
                 return setter.compareTo(other.setter);
             }
@@ -555,7 +555,7 @@ public final class ClassUtils {
 
         @Override
         public boolean equals(Object obj) {
-            SetterInClass other = (SetterInClass) obj;
+            PropertyInClass other = (PropertyInClass) obj;
             return clazz == other.clazz && setter.equals(other.setter);
         }
 

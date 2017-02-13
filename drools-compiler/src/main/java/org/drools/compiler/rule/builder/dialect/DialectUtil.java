@@ -604,7 +604,7 @@ public final class DialectUtil {
         boolean isPropertyReactive = typeDeclaration != null && typeDeclaration.isPropertyReactive();
         if (isPropertyReactive) {
             typeDeclaration.setTypeClass(typeClass);
-            settableProperties = typeDeclaration.getSettableProperties();
+            settableProperties = typeDeclaration.getAccessibleProperties();
         }
 
         ConsequenceMetaData.Statement statement = null;
@@ -661,7 +661,7 @@ public final class DialectUtil {
             List<String> settableProperties = null;
             if (isPropertyReactive) {
                 typeDeclaration.setTypeClass(typeClass);
-                settableProperties = typeDeclaration.getSettableProperties();
+                settableProperties = typeDeclaration.getAccessibleProperties();
                 modificationMask = getEmptyPropertyReactiveMask(settableProperties.size());
             }
 
