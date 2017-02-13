@@ -332,6 +332,16 @@ public class ValidatorTest {
     }
     
     @Test
+    public void testREQAUTH_NOT_KNOWLEDGESOURCEbis() {
+        // DROOLS-1435
+        Definitions definitions = utilDefinitions( "REQAUTH_NOT_KNOWLEDGESOURCEbis.dmn", "REQAUTH_NOT_KNOWLEDGESOURCEbis" );
+        List<ValidationMsg> validate = validator.validateModel(definitions);
+
+        // this test should just pass without any NPE:
+        assertTrue( validate.size() > 0 );
+    }
+    
+    @Test
     public void testTYPEREF_NO_FEEL_TYPE() {
         Definitions definitions = utilDefinitions( "TYPEREF_NO_FEEL_TYPE.dmn", "TYPEREF_NO_FEEL_TYPE" );
         List<ValidationMsg> validate = validator.validateModel(definitions);
