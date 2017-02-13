@@ -617,7 +617,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         Map<String, Object> thisImports = ((MVELDialectRuntimeData) kbase.getPackage( thisPkg ).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
         Map<String, Object> otherImports = ((MVELDialectRuntimeData) kbase.getPackage( otherPkg ).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
 
-        if (fieldValue != null) {
+        if (fieldValue != null && constraintType.getOperator() != null) {
             return equalsExpressionTokensInBothImports(getLeftInExpression(constraintType), thisImports, otherImports);
         } else {
             return equalsExpressionTokensInBothImports(expression, thisImports, otherImports);
