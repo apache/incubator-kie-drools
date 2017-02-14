@@ -38,7 +38,8 @@ public class UnaryTestNode
         GTE( ">=" ),
         NE( "!=" ),
         EQ( "=" ),
-        NOT( "not" );
+        NOT( "not" ),
+        IN( "in" );
 
         public final String symbol;
 
@@ -54,6 +55,13 @@ public class UnaryTestNode
             }
             throw new IllegalArgumentException( "No operator found for symbol '" + symbol + "'" );
         }
+    }
+
+    public UnaryTestNode( String op, BaseNode value ) {
+        super();
+        setText( op+" "+value.getText() );
+        this.operator = UnaryOperator.determineOperator( op );
+        this.value = value;
     }
 
     public UnaryTestNode(ParserRuleContext ctx, String op, BaseNode value) {
@@ -110,6 +118,11 @@ public class UnaryTestNode
                 return (c, o) -> {
                     Object val = value.evaluate( c );
                     return o == null || val == null ? null : ((Comparable) o).compareTo( val ) != 0;
+                };
+            case IN:
+                return (c, o) -> {
+                    Object val = value.evaluate( c );
+                    return o != null && ((Range) val).includes( (Comparable<?>) o );
                 };
             case NOT:
                 return (c, o) -> {
