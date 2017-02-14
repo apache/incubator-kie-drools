@@ -55,6 +55,7 @@ public class DefaultSignalManager implements SignalManager {
 		//this first "if" is not pretty, but allows to synchronize only when needed
 		if (eventListeners == null) {
 			synchronized(processEventListeners){
+				eventListeners = processEventListeners.get(type);
 				if(eventListeners==null){
 					eventListeners = new CopyOnWriteArrayList<EventListener>();
 					processEventListeners.put(type, eventListeners);
@@ -69,6 +70,10 @@ public class DefaultSignalManager implements SignalManager {
 			List<EventListener> eventListeners = processEventListeners.get(type);
 			if (eventListeners != null) {
 				eventListeners.remove(eventListener);
+				if (eventListeners.isEmpty()) {
+					processEventListeners.remove(type);
+					eventListeners = null;
+				}
 			}
 		}
 	}
