@@ -26,6 +26,7 @@ import org.optaplanner.examples.tennis.domain.TeamAssignment;
 
 import org.apache.commons.lang3.tuple.Pair;
 import accumulate org.optaplanner.examples.tennis.solver.drools.functions.LoadBalanceByCountAccumulateFunction loadBalanceByCount;
+import accumulate org.optaplanner.examples.tennis.solver.drools.functions.LoadBalanceAccumulateFunction loadBalance;
 
 global HardMediumSoftScoreHolder scoreHolder;
 
@@ -53,6 +54,7 @@ end
 // Medium constraints
 // ############################################################################
 
+// Faster, but does not combine well with other constraints in the same level
 rule "fairAssignmentCountPerTeam"
     when
         accumulate(
@@ -63,10 +65,26 @@ rule "fairAssignmentCountPerTeam"
         scoreHolder.addMediumConstraintMatch(kcontext, - (int) $total.getZeroDeviationSquaredSumRootMillis());
 end
 
+// Slower, but combines well with other constraints (regardless of dataset scale) and is zero if perfectly fair
+//rule "fairAssignmentCountPerTeam"
+//    when
+//        accumulate(
+//            $t : Team()
+//            and accumulate(
+//                TeamAssignment(team == $t);
+//                $assignmentCount : count()
+//            );
+//            $result : loadBalance($assignmentCount)
+//        )
+//    then
+//        scoreHolder.addMediumConstraintMatch(kcontext, - (int) $result.getMeanDeviationSquaredSumRootMillis());
+//end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################
 
+// Faster, but does not combine well with other constraints in the same level
 rule "evenlyConfrontationCount"
     when
         accumulate(
@@ -77,3 +95,20 @@ rule "evenlyConfrontationCount"
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - (int) $total.getZeroDeviationSquaredSumRootMillis());
 end
+
+// Slower, but combines well with other constraints (regardless of dataset scale) and is zero if perfectly fair
+//rule "evenlyConfrontationCount"
+//    when
+//        accumulate(
+//            $t1 : Team()
+//            and $t2 : Team($t1.getId() < id)
+//            and accumulate(
+//                TeamAssignment(team == $t1, $d : day)
+//                and TeamAssignment(team == $t2, day == $d);
+//                $confrontationCount : count()
+//            );
+//            $result : loadBalance($confrontationCount)
+//        )
+//    then
+//        scoreHolder.addSoftConstraintMatch(kcontext, - (int) $result.getMeanDeviationSquaredSumRootMillis());
+//end
