@@ -19,8 +19,10 @@ package org.kie.dmn.feel;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.FEELEventListener;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -101,6 +103,17 @@ public interface FEEL {
      * @return the result of the evaluation of the expression.
      */
     Object evaluate(CompiledExpression expression, Map<String, Object> inputVariables);
+
+    /**
+     * Evaluates the given expression as a list of of unary tests.
+     * The syntax for this is defined in the FEEL grammar rule #17,
+     * i.e., a list of unary tests separated by commas.
+     *
+     * @param expression a unary test list expression
+     *
+     * @return a List of compiled UnaryTests
+     */
+    List<UnaryTest> evaluateUnaryTests( String expression );
 
     /**
      * Registers a new event listener into this FEEL instance.

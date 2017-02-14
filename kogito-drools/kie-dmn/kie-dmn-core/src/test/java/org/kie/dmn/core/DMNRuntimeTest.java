@@ -594,6 +594,56 @@ public class DMNRuntimeTest {
         assertThat( ((Map)result.get( "D1" )).get( "Text color" ), is( "red" ) );
     }
 
+    @Test
+    public void testDTUsingEqualsUnaryTestWithVariable1() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_using_variables.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.hasErrors(), is( false ) );
+
+        Map<String, Object> complex = new HashMap<>(  );
+        complex.put( "aBoolean", true );
+        complex.put( "aNumber", 10 );
+        complex.put( "aString", "bar" );
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Complex", complex );
+        context.set( "Another boolean", true );
+        context.set( "Another String", "bar");
+        context.set( "Another number", 10 );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Compare Boolean" ), is( "Same boolean" ) );
+        assertThat( result.get( "Compare Number" ), is( "Equals" ) );
+        assertThat( result.get( "Compare String" ), is( "Same String" ) );
+    }
+
+    @Test
+    public void testDTUsingEqualsUnaryTestWithVariable2() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_using_variables.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.hasErrors(), is( false ) );
+
+        Map<String, Object> complex = new HashMap<>(  );
+        complex.put( "aBoolean", true );
+        complex.put( "aNumber", 10 );
+        complex.put( "aString", "bar" );
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Complex", complex );
+        context.set( "Another boolean", false );
+        context.set( "Another String", "foo");
+        context.set( "Another number", 20 );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Compare Boolean" ), is( "Not same boolean" ) );
+        assertThat( result.get( "Compare Number" ), is( "Bigger" ) );
+        assertThat( result.get( "Compare String" ), is( "Different String" ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }

@@ -31,6 +31,8 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.model.v1_1.*;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
@@ -45,10 +47,8 @@ import org.slf4j.LoggerFactory;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -395,7 +395,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         for( InputClause ic : dt.getInput() ) {
             String inputExpressionText = ic.getInputExpression().getText();
             String inputValuesText =  Optional.ofNullable( ic.getInputValues() ).map( UnaryTests::getText).orElse( null);
-            inputs.add( new DTInputClause(inputExpressionText, inputValuesText, textToUnaryTestList(inputValuesText) ) );
+            inputs.add( new DTInputClause(inputExpressionText, inputValuesText, textToUnaryTestList( feel, inputValuesText) ) );
         }
         List<DTOutputClause> outputs = new ArrayList<>(  );
         for( OutputClause oc : dt.getOutput() ) {
@@ -410,7 +410,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         for( DecisionRule dr : dt.getRule() ) {
             DTDecisionRule rule = new DTDecisionRule( index++ );
             for( UnaryTests ut : dr.getInputEntry() ) {
-                List<UnaryTest> tests = textToUnaryTestList( ut.getText() );
+                List<UnaryTest> tests = textToUnaryTestList( feel, ut.getText() );
                 rule.getInputEntry().add( (c, x) -> tests.stream().anyMatch( t -> t.apply( c, x ) ) );
             }
             for( LiteralExpression le : dr.getOutputEntry() ) {
@@ -449,27 +449,11 @@ public class DMNCompilerImpl implements DMNCompiler {
         return evaluator;
     }
 
-    /**
-     * TODO quick hack to parse values, in case they are a list
-     * @param text
-     * @return
-     */
-    protected static List<UnaryTest> textToUnaryTestList(String text) {
+    protected static List<UnaryTest> textToUnaryTestList(FEEL feel, String text) {
         if (text == null || text.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Object> ie = (List<Object>) FEEL.newInstance().evaluate( "[ " + text + " ]" );
-        List<UnaryTest> tests = new ArrayList<>(  );
-        for( Object o : ie ) {
-            if ( o instanceof UnaryTest ) {
-                tests.add( (UnaryTest) o );
-            } else if ( o instanceof Range ) {
-                tests.add( (c, x) -> x != null && ((Range) o).includes( (Comparable<?>) x ) );
-            } else {
-                tests.add( (c, x) -> x != null && x.equals( o ) );
-            }
-        }
-        return tests;
+        return feel.evaluateUnaryTests( text );
     }
 
 
