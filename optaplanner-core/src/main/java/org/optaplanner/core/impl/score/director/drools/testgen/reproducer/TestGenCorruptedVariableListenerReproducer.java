@@ -16,6 +16,7 @@
 package org.optaplanner.core.impl.score.director.drools.testgen.reproducer;
 
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.ConsequenceException;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
@@ -68,6 +69,9 @@ public class TestGenCorruptedVariableListenerReproducer implements
             return false;
         } catch (TestGenCorruptedScoreException e) {
             return true;
+        } catch (ConsequenceException e) {
+            logger.debug("    Journal pruning not possible: {}", e.toString());
+            return false;
         } catch (RuntimeException e) {
             if (e.getMessage() != null && e.getMessage().startsWith("No fact handle for ")) {
                 // this is common when removing insert of a fact that is later updated - not interesting
