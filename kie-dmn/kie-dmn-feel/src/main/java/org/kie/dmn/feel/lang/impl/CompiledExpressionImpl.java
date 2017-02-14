@@ -33,6 +33,10 @@ public class CompiledExpressionImpl implements CompiledExpression {
         return expression;
     }
 
+    public void setExpression( ASTNode expression ) {
+        this.expression = expression;
+    }
+
     public Object evaluate(FEELEventListenersManager eventsManager, Map<String, Object> inputVariables) {
         EvaluationContextImpl ctx = new EvaluationContextImpl( eventsManager );
         inputVariables.entrySet().stream().forEach( e -> ctx.setValue( e.getKey(), e.getValue() ) );

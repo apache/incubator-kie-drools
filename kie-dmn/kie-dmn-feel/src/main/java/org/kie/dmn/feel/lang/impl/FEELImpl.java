@@ -20,15 +20,14 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
-import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
+import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.FEELEventListener;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Language runtime entry point
@@ -53,6 +52,15 @@ public class FEELImpl
         return ce;
     }
 
+    public CompiledExpression compileExpressionList(String expression, CompilerContext ctx) {
+        FEEL_1_1Parser parser = FEELParser.parse( eventsManager, expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
+        ParseTree tree = parser.expressionList();
+        ASTBuilderVisitor v = new ASTBuilderVisitor();
+        BaseNode expr = v.visit( tree );
+        CompiledExpression ce = new CompiledExpressionImpl( expr );
+        return ce;
+    }
+
     public Object evaluate(String expression) {
         return evaluate( expression, FEELImpl.EMPTY_INPUT );
     }
@@ -68,6 +76,36 @@ public class FEELImpl
 
     public Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {
         return ((CompiledExpressionImpl) expr).evaluate( eventsManager, inputVariables );
+    }
+
+    @Override
+    public List<UnaryTest> evaluateUnaryTests(String expression) {
+        // DMN defines a special case where, unless the expressions are unary tests
+        // or ranges, they need to be converted into an equality test unary expression.
+        // This way, we have to compile and check the low level AST nodes to properly
+        // deal with this case
+        CompilerContext ctx = newCompilerContext();
+        CompiledExpressionImpl compiledExpression = (CompiledExpressionImpl) compileExpressionList( expression, ctx );
+        if( compiledExpression != null ) {
+            ListNode listNode = (ListNode) compiledExpression.getExpression();
+            List<BaseNode> tests = new ArrayList<>(  );
+            for( BaseNode o : listNode.getElements() ) {
+                if ( o instanceof UnaryTestNode || o instanceof DashNode ) {
+                    tests.add( o );
+                } else if( o instanceof RangeNode ) {
+                    tests.add( new UnaryTestNode( "in", o ) );
+                } else {
+                    tests.add( new UnaryTestNode( "=", o ) );
+                }
+            }
+            listNode.setElements( tests );
+            compiledExpression.setExpression( listNode );
+
+            // now we can evaluate the expression to build the list of unary tests
+            List<UnaryTest> uts = (List<UnaryTest>) evaluate( compiledExpression, FEELImpl.EMPTY_INPUT );
+            return uts;
+        }
+        return Collections.emptyList();
     }
 
     @Override
