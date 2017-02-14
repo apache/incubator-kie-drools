@@ -60,7 +60,7 @@ rule "fairAssignmentCountPerTeam"
             $total : loadBalanceByCount($t)
         )
     then
-        scoreHolder.addMediumConstraintMatch(kcontext, - (int) $total.getRootSquaredDeviationMillis());
+        scoreHolder.addMediumConstraintMatch(kcontext, - (int) $total.getZeroDeviationSquaredSumRootMillis());
 end
 
 // ############################################################################
@@ -75,5 +75,5 @@ rule "evenlyConfrontationCount"
             $total : loadBalanceByCount(Pair.of($t1, $t2))
         )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - (int) $total.getRootSquaredDeviationMillis());
+        scoreHolder.addSoftConstraintMatch(kcontext, - (int) $total.getZeroDeviationSquaredSumRootMillis());
 end

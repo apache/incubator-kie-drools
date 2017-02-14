@@ -24,36 +24,34 @@ import java.util.Map;
 
 import org.kie.api.runtime.rule.AccumulateFunction;
 
-public class LoadBalanceByCountAccumulateFunction implements AccumulateFunction {
+public class LoadBalanceByCountAccumulateFunction implements AccumulateFunction<LoadBalanceByCountAccumulateFunction.LoadBalanceByCountData> {
 
-    protected static class LoadBalanceData implements Serializable {
+    protected static class LoadBalanceByCountData implements Serializable {
 
-        private Map<Object, Long> groupWeightMap;
+        private Map<Object, Long> groupCountMap;
         // the sum of squared deviation from zero
-        private long squaredDeviation;
+        private long squaredSum;
 
     }
 
     @Override
-    public Serializable createContext() {
-        return new LoadBalanceData();
+    public LoadBalanceByCountData createContext() {
+        return new LoadBalanceByCountData();
     }
 
     @Override
-    public void init(Serializable context) {
-        LoadBalanceData data = (LoadBalanceData) context;
-        data.groupWeightMap = new HashMap<>();
-        data.squaredDeviation = 0L;
+    public void init(LoadBalanceByCountData data) {
+        data.groupCountMap = new HashMap<>();
+        data.squaredSum = 0L;
     }
 
     @Override
-    public void accumulate(Serializable context, Object groupBy) {
-        LoadBalanceData data = (LoadBalanceData) context;
-        long count = data.groupWeightMap.compute(groupBy,
+    public void accumulate(LoadBalanceByCountData data, Object groupBy) {
+        long count = data.groupCountMap.compute(groupBy,
                 (key, value) -> (value == null) ? 1L : value + 1L);
-        // squaredDeviation = squaredDeviation - (count - 1)² + count²
-        // <=> squaredDeviation = squaredDeviation + (2 * count - 1)
-        data.squaredDeviation += (2 * count - 1);
+        // squaredZeroDeviation = squaredZeroDeviation - (count - 1)² + count²
+        // <=> squaredZeroDeviation = squaredZeroDeviation + (2 * count - 1)
+        data.squaredSum += (2 * count - 1);
     }
 
     @Override
@@ -62,22 +60,20 @@ public class LoadBalanceByCountAccumulateFunction implements AccumulateFunction 
     }
 
     @Override
-    public void reverse(Serializable context, Object groupBy) {
-        LoadBalanceData data = (LoadBalanceData) context;
-        Long count = data.groupWeightMap.compute(groupBy,
+    public void reverse(LoadBalanceByCountData data, Object groupBy) {
+        Long count = data.groupCountMap.compute(groupBy,
                 (key, value) -> (value.longValue() == 1L) ? null : value - 1L);
-        data.squaredDeviation -= (count == null) ? 1L : (2 * count + 1);
+        data.squaredSum -= (count == null) ? 1L : (2 * count + 1);
     }
 
     @Override
-    public Class<LoadBalanceResult> getResultType() {
-        return LoadBalanceResult.class;
+    public Class<LoadBalanceByCountResult> getResultType() {
+        return LoadBalanceByCountResult.class;
     }
 
     @Override
-    public LoadBalanceResult getResult(Serializable context) {
-        LoadBalanceData data = (LoadBalanceData) context;
-        return new LoadBalanceResult(data.squaredDeviation);
+    public LoadBalanceByCountResult getResult(LoadBalanceByCountData data) {
+        return new LoadBalanceByCountResult(data.squaredSum);
     }
 
     @Override
@@ -88,29 +84,40 @@ public class LoadBalanceByCountAccumulateFunction implements AccumulateFunction 
     public void readExternal(ObjectInput in) {
     }
 
-    public static class LoadBalanceResult implements Serializable {
+    public static class LoadBalanceByCountResult implements Serializable {
 
-        private final long squaredDeviation;
+        private final long squaredSum;
 
-        public LoadBalanceResult(long squaredDeviation) {
-            this.squaredDeviation = squaredDeviation;
+        public LoadBalanceByCountResult(long squaredSum) {
+            this.squaredSum = squaredSum;
         }
 
-        public long getSquaredDeviation() {
-            return squaredDeviation;
+        public long getZeroDeviationSquaredSum() {
+            return squaredSum;
         }
 
-        public long getRootSquaredDeviationMillis() {
-            return getRootSquaredDeviation(1_000.0);
+        /**
+         * @return {@link #getZeroDeviationSquaredSumRoot(double)} multiplied by {@literal 1 000}
+         */
+        public long getZeroDeviationSquaredSumRootMillis() {
+            return getZeroDeviationSquaredSumRoot(1_000.0);
         }
 
-        public long getRootSquaredDeviationMicros() {
-            return getRootSquaredDeviation(1_000_000.0);
+        /**
+         * @return {@link #getZeroDeviationSquaredSumRoot(double)} multiplied by {@literal 1 000 000}
+         */
+        public long getZeroDeviationSquaredSumRootMicros() {
+            return getZeroDeviationSquaredSumRoot(1_000_000.0);
         }
 
-        public long getRootSquaredDeviation(double scaleMultiplier) {
-            return (long) (Math.sqrt((double) squaredDeviation) * scaleMultiplier);
+        /**
+         * @param scaleMultiplier {@code > 0}
+         * @return {@code >= 0}, {@code latexmath:[f(n) = \sqrt{\sum_{i=1}^{n} (x_i - 0)^2}]} multiplied by scaleMultiplier
+         */
+        public long getZeroDeviationSquaredSumRoot(double scaleMultiplier) {
+            return (long) (Math.sqrt((double) squaredSum) * scaleMultiplier);
         }
+
     }
 
 }

@@ -27,27 +27,27 @@ public class LoadBalanceByCountAccumulateFunctionTest {
     @Test
     public void accumulate() {
         LoadBalanceByCountAccumulateFunction function = new LoadBalanceByCountAccumulateFunction();
-        Serializable context = function.createContext();
+        LoadBalanceByCountAccumulateFunction.LoadBalanceByCountData context = function.createContext();
         function.init(context);
         Object a = new Object();
         Object b = new Object();
         Object c = new Object();
         function.accumulate(context, a);
-        assertEquals(1000, function.getResult(context).getRootSquaredDeviationMillis());
+        assertEquals(1000, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
         function.accumulate(context, a);
-        assertEquals(2000, function.getResult(context).getRootSquaredDeviationMillis());
+        assertEquals(2000, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
         function.accumulate(context, a);
-        assertEquals(3000, function.getResult(context).getRootSquaredDeviationMillis());
+        assertEquals(3000, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
         function.reverse(context, a);
-        assertEquals(2000, function.getResult(context).getRootSquaredDeviationMillis());
+        assertEquals(2000, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
         function.accumulate(context, b);
-        assertEquals(2236, function.getResult(context).getRootSquaredDeviationMillis());
+        assertEquals(2236, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
         function.accumulate(context, c);
-        assertEquals(2449, function.getResult(context).getRootSquaredDeviationMillis());
+        assertEquals(2449, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
         function.accumulate(context, c);
-        assertEquals(3000, function.getResult(context).getRootSquaredDeviationMillis());
+        assertEquals(3000, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
         function.reverse(context, b);
-        assertEquals(2828, function.getResult(context).getRootSquaredDeviationMillis());
+        assertEquals(2828, function.getResult(context).getZeroDeviationSquaredSumRootMillis());
     }
 
 }
