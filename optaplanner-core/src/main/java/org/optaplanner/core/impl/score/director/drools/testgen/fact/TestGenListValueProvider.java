@@ -57,7 +57,7 @@ class TestGenListValueProvider extends TestGenAbstractValueProvider<List<?>> {
     @Override
     public void printSetup(StringBuilder sb) {
         String e = ((Class<?>) typeArgument).getSimpleName();
-        sb.append(String.format("        ArrayList<%s> %s = new ArrayList<%s>();\n", e, identifier, e));
+        sb.append(String.format("        ArrayList<%s> %s = new ArrayList<>();\n", e, identifier));
         for (Object item : value) {
             sb.append(String.format("        //%s\n", item));
             sb.append(String.format("        %s.add(%s);\n", identifier, existingInstances.get(item)));
