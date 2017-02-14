@@ -67,4 +67,12 @@ public class RoadLocationArc implements Serializable {
     // Complex methods
     // ************************************************************************
 
+    @Override
+    public String toString() {
+        return "Road arc [coach: "
+                + coachDistance + "m/" + coachDuration
+                + "s, shuttle: "
+                + shuttleDistance + "m/" + shuttleDuration + "s]";
+    }
+
 }
