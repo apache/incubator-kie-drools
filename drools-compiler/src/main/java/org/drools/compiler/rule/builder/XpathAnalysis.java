@@ -109,13 +109,13 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
         List<XpathPart> parts = new ArrayList<XpathPart>();
         boolean lazyPath = false;
         int i = 0;
-        if (xpath.charAt(0) == '/') {
+        if (xpath.length() >= 1 && xpath.charAt(0) == '/') {
             i = 1;
-        } else if (xpath.charAt(0) == '?' && xpath.charAt(1) == '/') {
+        } else if (xpath.length() >= 2 && xpath.charAt(0) == '?' && xpath.charAt(1) == '/') {
             lazyPath = true;
             i = 2;
         } else {
-            new XpathAnalysis(parts, "An oopath expression has to start with '/' or '?/'");
+            return new XpathAnalysis(parts, "An oopath expression has to start with '/' or '?/'");
         }
 
         List<String> constraints = new ArrayList<String>();
