@@ -16,6 +16,12 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.BitSet;
+import java.util.Collection;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -27,14 +33,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoderImpl;
-import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.BitSet;
-import java.util.Collection;
 
 public class TraitObjectTypeNode extends ObjectTypeNode {
 
@@ -146,32 +145,10 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         } else {
             if ( factHandle.isTraiting() )  {
                 if ( isModifyAllowed( factHandle )  ) {
-
-                    // "don" update :
-                    if ( context.getModificationMask().isSet( PropertySpecificUtil.TRAITABLE_BIT )
-                            && modifyPreviousTuples.peekLeftTuple() != null
-                            && modifyPreviousTuples.peekLeftTuple().getPropagationContext().getType() == PropagationContext.Type.INSERTION ) {
-                        // property reactivity may block trait proxies which have been asserted and then immediately updated because of another "don"
-
-                        BitMask originalMask = context.getModificationMask();
-                        context.setModificationMask( AllSetBitMask.get() );
-
-                        //System.err.println(" MODIFY DON PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + " checks in " + typeMask );
-
-                        this.sink.propagateModifyObject( factHandle,
-                                                         modifyPreviousTuples,
-                                                         context.adaptModificationMaskForObjectType( objectType, workingMemory ),
-                                                         workingMemory );
-                        context.setModificationMask( originalMask );
-
-                    } else {
-                        // System.err.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> "  + " checks in " + typeMask );
-                        this.sink.propagateModifyObject( factHandle,
-                                modifyPreviousTuples,
-                                context.adaptModificationMaskForObjectType( objectType, workingMemory ),
-                                workingMemory );
-                    }
-
+                    this.sink.propagateModifyObject( factHandle,
+                                                     modifyPreviousTuples,
+                                                     context.adaptModificationMaskForObjectType( objectType, workingMemory ),
+                                                     workingMemory );
                 } else {
                     //System.err.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + " checks in " + typeMask );
                 }

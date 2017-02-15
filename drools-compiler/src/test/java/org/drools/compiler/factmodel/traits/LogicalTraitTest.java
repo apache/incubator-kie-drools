@@ -18,6 +18,7 @@ package org.drools.compiler.factmodel.traits;
 
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.factmodel.traits.CoreWrapper;
@@ -27,18 +28,23 @@ import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -512,6 +518,7 @@ public class LogicalTraitTest extends CommonTestMethodBase {
         }
     }
 
+    @Category(ReviseTraitTestWithPRAlwaysCategory.class)
     @Test
     public void testHardGetSetOnLogicallyTraitedField() {
         String drl = "package org.drools.test; " +
@@ -547,10 +554,10 @@ public class LogicalTraitTest extends CommonTestMethodBase {
                      "  modify( $o ) { getValue().setNum( 99 ); } " +
                      "end ";
 
-        KnowledgeBase knowledgeBase = loadKnowledgeBaseFromString( drl );
+        KieBase knowledgeBase = new KieHelper(PropertySpecificOption.ALLOWED).addContent( drl, ResourceType.DRL ).build();
         TraitFactory.setMode( mode, knowledgeBase );
 
-        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = knowledgeBase.newKieSession();
         ArrayList list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
 

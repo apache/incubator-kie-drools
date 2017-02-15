@@ -326,17 +326,29 @@ public class ClassDefinition
         if (modifiedPropsByMethod == null) {
             modifiedPropsByMethod = new HashMap<String, List<String>>();
         }
-        String methodName = method.getName() + "_" + method.getParameterTypes().length;
+        String methodName = modifiedPropsByMethodKey(method);
         modifiedPropsByMethod.put(methodName, props);
     }
 
     public List<String> getModifiedPropsByMethod(Method method) {
-        String methodName = method.getName() + "_" + method.getParameterTypes().length;
-        return getModifiedPropsByMethod(methodName);
+        return getModifiedPropsByMethod(method.getName(), method.getParameterTypes().length );
     }
 
-    public List<String> getModifiedPropsByMethod(String methodName) {
-        return modifiedPropsByMethod == null ? null : modifiedPropsByMethod.get(methodName);
+    public List<String> getModifiedPropsByMethod(String methodName, int args) {
+        if (modifiedPropsByMethod == null) {
+            return null; 
+        }
+        
+        List<String> byExactNumberOfArgs = modifiedPropsByMethod.get( methodName + "_" + args );
+        List<String> bestEffortVarArgs = modifiedPropsByMethod.get( methodName + "_*" ); 
+        if ( byExactNumberOfArgs != null ) {
+            return byExactNumberOfArgs;
+        }
+        return bestEffortVarArgs; // << indeed maybe null
+    }
+    
+    public static String modifiedPropsByMethodKey(Method method) {
+        return method.getName() + "_" + ( method.isVarArgs() ? "*" : method.getParameterTypes().length );
     }
 
     public boolean isReactive() {

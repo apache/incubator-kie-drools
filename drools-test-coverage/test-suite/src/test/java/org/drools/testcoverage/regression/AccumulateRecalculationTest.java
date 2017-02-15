@@ -36,7 +36,7 @@ public class AccumulateRecalculationTest {
                         "rule RuleAccumulate \n" +
                         "  no-loop true\n" +
                         "when\n" +
-                        "  $target: MyFact(name == \"target\");\n" +
+                        "  $target: MyFact(name == \"target\")\n" +
                         "  $sum : Integer( ) from accumulate (\n" +
                         "    $v1: MyFact(name str[startsWith] \"src\", currentValue != null),\n" +
                         "    init ( int total = 0; ),\n" +
@@ -59,7 +59,7 @@ public class AccumulateRecalculationTest {
                         "\n" +
                         "rule RuleFollowing \n" +
                         "when\n" +
-                        "  $target: MyFact(name == \"target\");\n" +
+                        "  $target: MyFact(name == \"target\") @watch(currentValue)\n" +
                         "then\n" +
                         "  System.out.println(\" Fired!! RuleFollowing target=\" + $target.toString());\n" +
                         "end\n";
@@ -86,7 +86,7 @@ public class AccumulateRecalculationTest {
                         "\n" +
                         "rule RuleFollowing \n" +
                         "when\n" +
-                        "  $target: MyFact(name == \"target\");\n" +
+                        "  $target: MyFact(name == \"target\") @watch(currentValue)\n" +
                         "then\n" +
                         "  System.out.println(\" Fired!! RuleFollowing target=\" + $target.toString());\n" +
                         "end\n";
@@ -119,7 +119,7 @@ public class AccumulateRecalculationTest {
                         "\n" +
                         "rule RuleFollowing \n" +
                         "when\n" +
-                        "  $target: MyFact(name == \"target\");\n" +
+                        "  $target: MyFact(name == \"target\") @watch(currentValue)\n" +
                         "then\n" +
                         "  System.out.println(\" Fired!! RuleFollowing target=\" + $target.toString());\n" +
                         "end\n";
@@ -146,7 +146,7 @@ public class AccumulateRecalculationTest {
                         "\n" +
                         "rule RuleFollowing \n" +
                         "when\n" +
-                        "  $target: MyFact(name == \"target\");\n" +
+                        "  $target: MyFact(name == \"target\") @watch(currentValue)\n" +
                         "then\n" +
                         "  System.out.println(\" Fired!! RuleFollowing target=\" + $target.toString());\n" +
                         "end\n";

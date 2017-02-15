@@ -71,7 +71,7 @@ public class AllSetBitMask extends SingleLongBitMask implements BitMask, AllSetM
 
     @Override
     public boolean intersects(BitMask mask) {
-        return !mask.isEmpty();
+        return true;
     }
 
     @Override

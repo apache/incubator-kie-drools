@@ -122,7 +122,7 @@ public class KnowledgeBuilderConfigurationImpl
 
     private boolean                           classLoaderCache        = true;
 
-    private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALLOWED;
+    private static final PropertySpecificOption DEFAULT_PROP_SPEC_OPT = PropertySpecificOption.ALWAYS;
     private PropertySpecificOption            propertySpecificOption  = DEFAULT_PROP_SPEC_OPT;
 
     private String                            defaultPackageName;

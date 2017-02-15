@@ -18,6 +18,7 @@ package org.drools.compiler.factmodel.traits;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.ObjectFilter;
 import org.drools.core.base.ClassObjectType;
@@ -52,6 +53,7 @@ import org.drools.core.util.HierarchyEncoder;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
@@ -75,6 +77,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
@@ -4304,7 +4307,6 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
     @Test
     public void testPropagation() {
         String drl = "package org.drools.test;\n" +
@@ -4339,7 +4341,7 @@ public class TraitTest extends CommonTestMethodBase {
             drl += " ) then System.out.println( \"@@ as H >> " + x + " detected \" ); list.add( \"H" + x + "\" ); end \n";
         }
 
-        KieSession ks = getSessionFromString( drl );
+        KieSession ks = new KieHelper().addContent( drl, ResourceType.DRL ).build().newKieSession();
         TraitFactory.setMode( mode, ks.getKieBase() );
 
         List list = new ArrayList();
@@ -5193,7 +5195,7 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 1 ), list );
     }
 
-
+    @Category(ReviseTraitTestWithPRAlwaysCategory.class)
     @Test(timeout=10000)
     public void testClassLiteralsWithOr() {
 
@@ -5239,7 +5241,7 @@ public class TraitTest extends CommonTestMethodBase {
                      "";
 
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent( drl, ResourceType.DRL ).build();
         TraitFactory.setMode( mode, kbase );
         ArrayList list = new ArrayList();
 
@@ -5560,7 +5562,6 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 1, otn.getObjectSinkPropagator().getSinks().length );
     }
 
-
     @Test
     public void testPartitionWithSiblingsOnDelete() {
         String drl =
@@ -5591,7 +5592,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "rule RC when C() then list.add( 'C' ); end " +
                 " ";
 
-        KieBase kbase = getKieBaseFromString( drl );
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
         TraitFactory.setMode( mode, kbase );
         KieSession ksession = kbase.newKieSession();
 
@@ -5601,6 +5602,8 @@ public class TraitTest extends CommonTestMethodBase {
         Entity e = new Entity();
         ksession.insert( e );
         ksession.fireAllRules();
+        
+        assertEquals( Arrays.asList( 'A', 'B', 'C' ), list );
 
         ksession.insert( "go" );
         ksession.fireAllRules();
