@@ -36,9 +36,12 @@ public class ObjectModelResolverProvider {
     public static List<ObjectModelResolver> getResolvers() {
         if (resolvers == null) {
             synchronized (serviceLoader) {
-                resolvers = new ArrayList<ObjectModelResolver>();
-                for (ObjectModelResolver reolver : serviceLoader) {
-                    resolvers.add(reolver);
+                if (resolvers == null) {
+                    List<ObjectModelResolver> foundResolvers = new ArrayList<ObjectModelResolver>();
+                    for (ObjectModelResolver resolver : serviceLoader) {
+                        foundResolvers.add(resolver);
+                    }
+                    resolvers = foundResolvers;
                 }
             }
         }
