@@ -96,6 +96,28 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
     </dependency>
+  
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>kie-dmn-model</artifactId>
+          <groupId>org.kie</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- TODO remove kie-dmn-core once api is moved to kie-dmn-api -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>kie-dmn-model</artifactId>
+          <groupId>org.kie</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
@@ -144,4 +166,5 @@
       </exclusions>
     </dependency>
   </dependencies>
+
 </project>

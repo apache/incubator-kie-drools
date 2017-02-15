@@ -65,6 +65,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+ 
     
     <!-- Test -->
     <dependency>
@@ -75,6 +76,11 @@
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-core</artifactId>
       <scope>test</scope>
     </dependency>
     

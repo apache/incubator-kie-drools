@@ -166,9 +166,24 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 if (ruleSetNode.getTo() == null && !acceptsNoOutgoingConnections(node)) {
                     addErrorMessage(process, node, errors, "RuleSet has no outgoing connection.");
                 }
-                final String ruleFlowGroup = ruleSetNode.getRuleFlowGroup();
-                if (ruleFlowGroup == null || "".equals(ruleFlowGroup)) {
-                    addErrorMessage(process, node, errors, "RuleSet has no ruleflow-group.");
+                final String language = ruleSetNode.getLanguage();
+                
+                if (RuleSetNode.DRL_LANG.equals(language)) {
+                    final String ruleFlowGroup = ruleSetNode.getRuleFlowGroup();
+                    if (ruleFlowGroup == null || "".equals(ruleFlowGroup)) {
+                        addErrorMessage(process, node, errors, "RuleSet (DRL) has no ruleflow-group.");
+                    }
+                } else if (RuleSetNode.DMN_LANG.equals(language)) { 
+                    final String namespace = ruleSetNode.getNamespace();
+                    if (namespace == null || "".equals(namespace)) {
+                        addErrorMessage(process, node, errors, "RuleSet (DMN) has no namespace.");
+                    }
+                    final String model = ruleSetNode.getModel();
+                    if (model == null || "".equals(model)) {
+                        addErrorMessage(process, node, errors, "RuleSet (DMN) has no model.");
+                    }
+                } else {
+                    addErrorMessage(process, node, errors, "Unsupported rule language '" + language + "'");
                 }
                 if (ruleSetNode.getTimers() != null) {
 	                for (Timer timer: ruleSetNode.getTimers().keySet()) {

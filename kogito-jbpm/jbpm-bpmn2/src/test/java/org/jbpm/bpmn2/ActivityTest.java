@@ -74,6 +74,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1837,5 +1839,90 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("assignmentProcess", params);
         assertProcessInstanceCompleted(processInstance);
         assertEquals("Hello Genworth welcome to jBPMS!", ((WorkflowProcessInstance) processInstance).getVariable("message"));
+    }
+    
+    @Test
+    public void testDMNBusinessRuleTask()throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "dmn/BPMN2-BusinessRuleTaskDMN.bpmn2", "dmn/0020-vacation-days.dmn");
+        ksession = createKnowledgeSession(kbase);
+        // first run 16, 1 and expected days is 27
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("age", 16);
+        params.put("yearsOfService", 1);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        BigDecimal vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
+        assertEquals(BigDecimal.valueOf(27), vacationDays);
+        
+        // second run 44, 20 and expected days is 24
+        params = new HashMap<String, Object>();
+        params.put("age", 44);
+        params.put("yearsOfService", 20);
+        processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
+        assertEquals(BigDecimal.valueOf(24), vacationDays);
+        
+        // second run 50, 30 and expected days is 30
+        params = new HashMap<String, Object>();
+        params.put("age", 50);
+        params.put("yearsOfService", 30);
+        processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
+        assertEquals(BigDecimal.valueOf(30), vacationDays);
+    }
+    
+    @Test
+    public void testDMNBusinessRuleTaskByDecisionName()throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "dmn/BPMN2-BusinessRuleTaskDMNByDecisionName.bpmn2", "dmn/0020-vacation-days.dmn");
+        ksession = createKnowledgeSession(kbase);
+        // first run 16, 1 and expected days is 5
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("age", 16);
+        params.put("yearsOfService", 1);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        BigDecimal vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
+        assertEquals(BigDecimal.valueOf(5), vacationDays);
+    }
+    
+    @Test
+    public void testDMNBusinessRuleTaskMultipleDecisionsOutput()throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "dmn/BPMN2-BusinessRuleTaskDMNMultipleDecisionsOutput.bpmn2", "dmn/0020-vacation-days.dmn");
+        ksession = createKnowledgeSession(kbase);
+        // first run 16, 1 and expected days is 5
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("age", 16);
+        params.put("yearsOfService", 1);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-BusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        BigDecimal vacationDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("vacationDays");
+        assertEquals(BigDecimal.valueOf(27), vacationDays);
+        BigDecimal extraDays = (BigDecimal) ((WorkflowProcessInstance) processInstance).getVariable("extraDays");
+        assertEquals(BigDecimal.valueOf(5), extraDays);
+    }
+    
+    @Test
+    public void testDMNBusinessRuleTaskInvalidExecution()throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "dmn/BPMN2-BusinessRuleTaskDMNByDecisionName.bpmn2", "dmn/0020-vacation-days.dmn");
+        ksession = createKnowledgeSession(kbase);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("age", 16);        
+        
+        try {
+            ksession.startProcess("BPMN2-BusinessRuleTask", params);
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("DMN result errors"));
+        }        
     }
 }

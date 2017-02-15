@@ -37,6 +37,9 @@ import org.xml.sax.SAXException;
 
 public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 	
+    private static final String NAMESPACE_PROP = "namespace";
+    private static final String MODEL_PROP = "model";
+    private static final String DECISION_PROP = "decision";
 	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
     
     protected Node createNode(Attributes attrs) {
@@ -56,6 +59,12 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 		if (ruleFlowGroup != null) {
 			ruleSetNode.setRuleFlowGroup(ruleFlowGroup);
 		}
+		String language = element.getAttribute("implementation");
+		if (language == null || language.equalsIgnoreCase("##unspecified") || language.isEmpty()) {
+		    language = RuleSetNode.DRL_LANG;
+		}
+		ruleSetNode.setLanguage(language);
+		
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -68,6 +77,9 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
             }
             xmlNode = xmlNode.getNextSibling();
         }
+		ruleSetNode.setNamespace((String) ruleSetNode.removeParameter(NAMESPACE_PROP));
+		ruleSetNode.setModel((String) ruleSetNode.removeParameter(MODEL_PROP));
+		ruleSetNode.setDecision((String) ruleSetNode.removeParameter(DECISION_PROP));
 		
         handleScript(ruleSetNode, element, "onEntry");
         handleScript(ruleSetNode, element, "onExit");
@@ -77,8 +89,11 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 		RuleSetNode ruleSetNode = (RuleSetNode) node;
 		writeNode("businessRuleTask", ruleSetNode, xmlDump, metaDataType);
 		if (ruleSetNode.getRuleFlowGroup() != null) {
-			xmlDump.append("g:ruleFlowGroup=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ruleSetNode.getRuleFlowGroup()) + "\" >" + EOL);
+			xmlDump.append("g:ruleFlowGroup=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ruleSetNode.getRuleFlowGroup()) + "\" " + EOL);
 		}
+		
+        xmlDump.append(" implementation=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ruleSetNode.getLanguage()) + "\" >" + EOL);        
+		
 		writeExtensionElements(ruleSetNode, xmlDump);
 		writeIO(ruleSetNode, xmlDump);
 		endNode("businessRuleTask", xmlDump);

@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
@@ -39,6 +40,12 @@ import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.dmn.core.api.DMNContext;
+import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.api.DMNMessage.Severity;
+import org.kie.dmn.core.api.DMNModel;
+import org.kie.dmn.core.api.DMNResult;
+import org.kie.dmn.core.api.DMNRuntime;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
@@ -72,34 +79,72 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     	if ( !org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals( type ) ) {
             throw new IllegalArgumentException( "A RuleSetNode only accepts default incoming connections!" );
         }
-    	// first set rule flow group
-    	setRuleFlowGroup(resolveRuleFlowGroup(getRuleSetNode().getRuleFlowGroup()));
-    	
-    	//proceed
+    	RuleSetNode ruleSetNode = getRuleSetNode();
     	KnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
-    	Map<String, Object> inputs = evaluateParameters(getRuleSetNode());
-    	for (Entry<String, Object> entry : inputs.entrySet()) {
-    	    String inputKey = getRuleFlowGroup() + "_" +getProcessInstance().getId() +"_"+entry.getKey();
-    	    
-    	    factHandles.put(inputKey, kruntime.insert(entry.getValue()));
-    	}
+    	Map<String, Object> inputs = evaluateParameters(ruleSetNode);
     	
-    	if (actAsWaitState()) {
-        	addRuleSetListener();
-            ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-            	.activateRuleFlowGroup( getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
-            
+    	if (ruleSetNode.isDMN()) {
+    	    String namespace = resolveVariable(ruleSetNode.getNamespace());
+    	    String model = resolveVariable(ruleSetNode.getModel());
+    	    String decision = resolveVariable(ruleSetNode.getDecision());
+    	    
+    	    DMNRuntime runtime = ((KieSession) kruntime).getKieRuntime(DMNRuntime.class);
+    	    DMNModel dmnModel = runtime.getModel(namespace, model);
+    	    if (dmnModel == null) {
+    	        throw new IllegalArgumentException("DMN model '" + model + "' not found with namespace '" + namespace + "'");
+    	    }
+    	    DMNResult dmnResult = null;
+    	    DMNContext context = DMNFactory.newContext();
+    	    
+    	    for (Entry<String, Object> entry : inputs.entrySet()) {
+    	        context.set(entry.getKey(), entry.getValue());
+    	    }
+    	    
+    	    if (decision != null && !decision.isEmpty()) {
+    	        dmnResult = runtime.evaluateDecisionByName(dmnModel, decision, context);
+    	    } else {
+    	        dmnResult = runtime.evaluateAll(dmnModel, context);
+    	    }
+    	    
+    	    if (dmnResult.hasErrors()) {
+    	        String errors = dmnResult.getMessages(Severity.ERROR).stream()
+    	                .map(message -> message.toString())
+    	                .collect(Collectors.joining(", "));
+    	        
+    	        throw new RuntimeException("DMN result errors:: " + errors);
+    	    }
+    	    processOutputs(dmnResult.getContext().getAll());
+    	    triggerCompleted();
     	} else {
-    	    ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-            .activateRuleFlowGroup( getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
-        
-    	    ((KieSession)getProcessInstance().getKnowledgeRuntime()).fireAllRules();
+    	
+        	// first set rule flow group
+        	setRuleFlowGroup(resolveRuleFlowGroup(ruleSetNode.getRuleFlowGroup()));
+        	
+        	//proceed        	        	
+        	for (Entry<String, Object> entry : inputs.entrySet()) {
+        	    String inputKey = getRuleFlowGroup() + "_" +getProcessInstance().getId() +"_"+entry.getKey();
+        	    
+        	    factHandles.put(inputKey, kruntime.insert(entry.getValue()));
+        	}
+        	
+        	if (actAsWaitState()) {
+            	addRuleSetListener();
+                ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                	.activateRuleFlowGroup( getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
+                
+        	} else {
+        	    ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                .activateRuleFlowGroup( getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
             
-            removeEventListeners();
-            retractFacts();
-            triggerCompleted();
+        	    ((KieSession)getProcessInstance().getKnowledgeRuntime()).fireAllRules();
+                
+                removeEventListeners();
+                retractFacts();
+                triggerCompleted();
+        	}
     	}
     }
+   
     
     public void addEventListeners() {
         super.addEventListeners();
@@ -155,16 +200,21 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 	        
 	    }
 	    
+	    processOutputs(objects);
+        factHandles.clear();
+	}
+	
+	private void processOutputs(Map<String, Object> objects) {
 	    RuleSetNode ruleSetNode = getRuleSetNode();
         if (ruleSetNode != null) {
             for (Iterator<DataAssociation> iterator = ruleSetNode.getOutAssociations().iterator(); iterator.hasNext(); ) {
                 DataAssociation association = iterator.next();
                 if (association.getTransformation() != null) {
-                	Transformation transformation = association.getTransformation();
-                	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
-                	if (transformer != null) {
-                		Object parameterValue = transformer.transform(transformation.getCompiledExpression(), objects);
-                		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                    Transformation transformation = association.getTransformation();
+                    DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
+                    if (transformer != null) {
+                        Object parameterValue = transformer.transform(transformation.getCompiledExpression(), objects);
+                        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                         resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
                         if (variableScopeInstance != null && parameterValue != null) {
                               
@@ -173,10 +223,10 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                             logger.warn("Could not find variable scope for variable {}", association.getTarget());
                             logger.warn("Continuing without setting variable.");
                         }
-                		if (parameterValue != null) {
-                			variableScopeInstance.setVariable(association.getTarget(), parameterValue);
+                        if (parameterValue != null) {
+                            variableScopeInstance.setVariable(association.getTarget(), parameterValue);
                         }
-                	}
+                    }
                 } else if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
                     VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                     resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
@@ -203,10 +253,10 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 }               
             }
         }
-        factHandles.clear();
-	}
-	
-	protected Map<String, Object> evaluateParameters(RuleSetNode ruleSetNode) {
+        
+    }
+
+    protected Map<String, Object> evaluateParameters(RuleSetNode ruleSetNode) {
 	    Map<String, Object> replacements = new HashMap<String, Object>();
 	    
         for (Iterator<DataAssociation> iterator = ruleSetNode.getInAssociations().iterator(); iterator.hasNext(); ) {

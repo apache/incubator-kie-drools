@@ -31,8 +31,20 @@ import org.kie.api.definition.process.Connection;
 public class RuleSetNode extends StateBasedNode {
 
     private static final long serialVersionUID = 510l;
+    
+    public static final String DRL_LANG = "http://www.jboss.org/drools/rule";
+    public static final String DMN_LANG = "http://www.jboss.org/drools/dmn";
 
+    private String language = DRL_LANG;
+    
+    // drl related properties
     private String ruleFlowGroup;
+    
+    // dmn related properties
+    private String namespace;
+    private String model;
+    private String decision;
+    
     private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
     private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
     
@@ -44,6 +56,38 @@ public class RuleSetNode extends StateBasedNode {
 
     public String getRuleFlowGroup() {
         return this.ruleFlowGroup;
+    }
+    
+    public String getLanguage() {
+        return language;
+    }
+    
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+    
+    public String getNamespace() {
+        return namespace;
+    }
+    
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+    
+    public String getModel() {
+        return model;
+    }
+    
+    public void setModel(String model) {
+        this.model = model;
+    }
+    
+    public String getDecision() {
+        return decision;
+    }
+    
+    public void setDecision(String decision) {
+        this.decision = decision;
     }
 
     public void validateAddIncomingConnection(final String type, final Connection connection) {
@@ -156,4 +200,11 @@ public class RuleSetNode extends StateBasedNode {
         return this.parameters.get(param);
     }
     
+    public Object removeParameter(String param) {
+        return this.parameters.remove(param);
+    }
+    
+    public boolean isDMN() {
+        return DMN_LANG.equals(language);
+    }
 }
