@@ -1,5 +1,3 @@
-image:https://jenkins-kieci.rhcloud.com/buildStatus/icon?job=optaplanner["Build Status", link="https://jenkins-kieci.rhcloud.com/job/optaplanner"]
-
 == Quick development start
 
 To build and run from source:
