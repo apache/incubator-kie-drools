@@ -32,6 +32,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.conf.EvaluatorOption;
 import org.kie.internal.builder.conf.KnowledgeBuilderOption;
+import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
 
 import static org.kie.api.io.ResourceType.determineResourceType;
 
@@ -53,6 +54,8 @@ public class KieHelper {
             for ( KnowledgeBuilderOption opt : options ) {
                 if ( opt instanceof EvaluatorOption) {
                     kmm.setConfigurationProperty( EvaluatorOption.PROPERTY_NAME + opt.getPropertyName(), ( (EvaluatorOption) opt ).getEvaluatorDefinition().getClass().getName() );
+                } else if ( opt instanceof SingleValueKnowledgeBuilderOption ) {
+                    kmm.setConfigurationProperty(opt.getPropertyName(), opt.toString());
                 }
             }
             this.setKieModuleModel( kmm );
