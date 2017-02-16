@@ -19,7 +19,10 @@ package org.optaplanner.swing.impl;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.Semaphore;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -36,6 +39,8 @@ import javax.swing.WindowConstants;
 // TODO move to optaplanner-swingwb, the Swing version of optaplanner-wb (which doesn't exist yet either)
 public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
+    private static final Semaphore windowCountSemaphore = new Semaphore(5);
+
     public static void register() {
         SwingUncaughtExceptionHandler exceptionHandler = new SwingUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(exceptionHandler);
@@ -51,6 +56,10 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
     }
 
     private void displayException(Thread t, Throwable e) {
+        if (!windowCountSemaphore.tryAcquire()) {
+            System.err.println("Too many exception windows open, failed to display the latest exception.");
+            return;
+        }
         final JFrame exceptionFrame = new JFrame("Uncaught exception: " + e.getMessage());
         Icon errorIcon = UIManager.getIcon("OptionPane.errorIcon");
         BufferedImage errorImage = new BufferedImage(
@@ -100,6 +109,12 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
         });
         buttonPanel.add(exitApplicationButton);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
+        exceptionFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                windowCountSemaphore.release();
+            }
+        });
         exceptionFrame.setContentPane(contentPanel);
         exceptionFrame.pack();
         exceptionFrame.setLocationRelativeTo(null);
