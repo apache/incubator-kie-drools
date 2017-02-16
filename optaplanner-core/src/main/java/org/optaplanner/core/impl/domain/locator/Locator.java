@@ -21,22 +21,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.locator.PlanningId;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see PlanningId
  * @see ScoreDirector#locateWorkingObject(Object)
  */
-public class Locator<Solution_> {
+public class Locator {
 
     private final LocationStrategyResolver locationStrategyResolver;
 
     private Map<Object, Object> idToWorkingObjectMap;
 
-    public Locator(SolutionDescriptor<Solution_> solutionDescriptor) {
+    public Locator(SolutionDescriptor<?> solutionDescriptor) {
         this.locationStrategyResolver = solutionDescriptor.getLocationStrategyResolver();
     }
 

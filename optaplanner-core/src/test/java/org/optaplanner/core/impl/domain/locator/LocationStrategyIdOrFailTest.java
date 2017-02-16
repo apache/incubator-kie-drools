@@ -34,13 +34,13 @@ public class LocationStrategyIdOrFailTest {
 
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
-    private Locator<TestdataSolutionLocationStrategyIdOrFail> locator;
+    private Locator locator;
 
     @Before
     public void setUpLocator() {
         SolutionDescriptor<TestdataSolutionLocationStrategyIdOrFail> solutionDescriptor
                 = SolutionDescriptor.buildSolutionDescriptor(TestdataSolutionLocationStrategyIdOrFail.class);
-        locator = new Locator<>(solutionDescriptor);
+        locator = new Locator(solutionDescriptor);
         locator.resetWorkingObjects(Collections.emptyList());
     }
 

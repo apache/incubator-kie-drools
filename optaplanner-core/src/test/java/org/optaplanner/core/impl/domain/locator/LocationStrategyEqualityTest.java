@@ -34,13 +34,13 @@ public class LocationStrategyEqualityTest {
 
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
-    private Locator<TestdataSolutionLocationStrategyEquality> locator;
+    private Locator locator;
 
     @Before
     public void setUpLocator() {
         SolutionDescriptor<TestdataSolutionLocationStrategyEquality> solutionDescriptor
                 = SolutionDescriptor.buildSolutionDescriptor(TestdataSolutionLocationStrategyEquality.class);
-        locator = new Locator<>(solutionDescriptor);
+        locator = new Locator(solutionDescriptor);
         locator.resetWorkingObjects(Collections.emptyList());
     }
 

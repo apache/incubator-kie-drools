@@ -61,7 +61,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     protected final Factory_ scoreDirectorFactory;
     protected final boolean locatorEnabled;
-    protected final Locator<Solution_> locator;
+    protected final Locator locator;
     protected boolean constraintMatchEnabledPreference;
     protected final VariableListenerSupport<Solution_> variableListenerSupport;
 
@@ -77,7 +77,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
             boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.locatorEnabled = locatorEnabled;
-        locator = locatorEnabled ? new Locator<>(scoreDirectorFactory.getSolutionDescriptor()) : null;
+        locator = locatorEnabled ? new Locator(scoreDirectorFactory.getSolutionDescriptor()) : null;
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
         variableListenerSupport = new VariableListenerSupport<>(this);
         variableListenerSupport.linkVariableListeners();

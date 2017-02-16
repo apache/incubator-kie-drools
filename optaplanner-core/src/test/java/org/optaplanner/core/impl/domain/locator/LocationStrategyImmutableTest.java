@@ -36,7 +36,7 @@ public class LocationStrategyImmutableTest {
 
     private final Object internalObject;
     private final Object externalObject;
-    private Locator<TestdataSolutionLocationStrategyIdOrFail> locator;
+    private Locator locator;
 
     public LocationStrategyImmutableTest(Object internalObject, Object externalObject) {
         this.internalObject = internalObject;
@@ -67,7 +67,7 @@ public class LocationStrategyImmutableTest {
     public void setUpLocator() {
         SolutionDescriptor<TestdataSolutionLocationStrategyIdOrFail> solutionDescriptor
                 = SolutionDescriptor.buildSolutionDescriptor(TestdataSolutionLocationStrategyIdOrFail.class);
-        locator = new Locator<>(solutionDescriptor);
+        locator = new Locator(solutionDescriptor);
         locator.resetWorkingObjects(Collections.emptyList());
     }
 
