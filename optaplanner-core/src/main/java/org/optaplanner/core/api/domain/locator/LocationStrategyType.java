@@ -21,8 +21,8 @@ import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProp
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * Determines how {@link ScoreDirector#locateWorkingObject(Object)} to map
- * a {@link ProblemFactCollectionProperty problem fact} or a{@link PlanningEntity planning entity}
+ * Determines how {@link ScoreDirector#locateWorkingObject(Object)} maps
+ * a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning entity}
  * from an external copy to the internal one.
  */
 public enum LocationStrategyType {
@@ -41,11 +41,10 @@ public enum LocationStrategyType {
      */
     PLANNING_ID_OR_FAIL_FAST,
     /**
-     * Map by {@link Object#equals(Object)} and {@link Object#hashCode()}.
-     * If there is no such field or method,
-     * there is no mapping and {@link ScoreDirector#locateWorkingObject(Object)} must not be used.
-     * <p>
-     * This is the default.
+     * Map by {@link Object#equals(Object) equals(Object)} and {@link Object#hashCode() hashCode()}.
+     * If any of these two methods is not overridden by the working object's class or some of its superclasses,
+     * {@link ScoreDirector#locateWorkingObject(Object)} must not be used because it cannot work correctly with
+     * {@link Object}'s equals and hashCode implementations.
      */
     EQUALITY,
     /**
