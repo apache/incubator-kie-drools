@@ -39,6 +39,10 @@
     <url>https://github.com/droolsjbpm/kie-dmn</url>
   </scm>
 
+  <properties>
+    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+  </properties>
+
   <modules>
     <module>kie-dmn-api</module>
     <module>kie-dmn-model</module>
