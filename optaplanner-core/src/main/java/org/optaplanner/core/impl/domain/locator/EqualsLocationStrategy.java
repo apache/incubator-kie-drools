@@ -22,7 +22,11 @@ public class EqualsLocationStrategy implements LocationStrategy {
 
     @Override
     public void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
-        idToWorkingObjectMap.put(workingObject, workingObject);
+        Object oldAddedObject = idToWorkingObjectMap.put(workingObject, workingObject);
+        if (oldAddedObject != null) {
+            throw new IllegalStateException("An object that is equal to workingObject (" + workingObject
+                    + ") has already been added.");
+        }
     }
 
     @Override

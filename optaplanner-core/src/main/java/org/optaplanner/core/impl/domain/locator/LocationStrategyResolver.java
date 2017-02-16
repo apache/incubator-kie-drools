@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.domain.locator;
 
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -88,6 +89,21 @@ public class LocationStrategyResolver {
                     }
                     return new PlanningIdLocationStrategy(memberAccessor2);
                 case EQUALITY:
+                    try {
+                        Method equals = object.getClass().getMethod("equals", Object.class);
+                        if (equals.getDeclaringClass().equals(Object.class)) {
+                            throw new IllegalArgumentException("The class (" + object.getClass().getSimpleName()
+                                    + ") doesn't override equals method, neither does any superclass.");
+                        }
+                        Method hashCode = object.getClass().getMethod("hashCode");
+                        if (hashCode.getDeclaringClass().equals(Object.class)) {
+                            throw new IllegalArgumentException("The class (" + object.getClass().getSimpleName()
+                                    + ") overrides equals but neither it nor any superclass overrides hashCode method."
+                            );
+                        }
+                    } catch (NoSuchMethodException ex) {
+                        throw new IllegalStateException("This cannot happen, equals and hashCode always exist!", ex);
+                    }
                     return new EqualsLocationStrategy();
                 case NONE:
                     return new NoneLocationStrategy();
@@ -104,8 +120,8 @@ public class LocationStrategyResolver {
             return null;
         }
         if (memberList.size() > 1) {
-            throw new IllegalStateException("The class (" + clazz
-                    + ") has " +  memberList.size() + " members (" + memberList + ") with a "
+            throw new IllegalArgumentException("The class (" + clazz
+                    + ") has " + memberList.size() + " members (" + memberList + ") with a "
                     + PlanningId.class.getSimpleName() + " annotation.");
         }
         Member member = memberList.get(0);
