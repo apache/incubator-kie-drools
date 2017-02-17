@@ -40,12 +40,11 @@ import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.dmn.core.api.DMNContext;
-import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.api.DMNMessage.Severity;
-import org.kie.dmn.core.api.DMNModel;
-import org.kie.dmn.core.api.DMNResult;
-import org.kie.dmn.core.api.DMNRuntime;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage.Severity;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
@@ -94,7 +93,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     	        throw new IllegalArgumentException("DMN model '" + model + "' not found with namespace '" + namespace + "'");
     	    }
     	    DMNResult dmnResult = null;
-    	    DMNContext context = DMNFactory.newContext();
+    	    DMNContext context = runtime.newContext();
     	    
     	    for (Entry<String, Object> entry : inputs.entrySet()) {
     	        context.set(entry.getKey(), entry.getValue());
