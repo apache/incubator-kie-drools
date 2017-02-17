@@ -16,28 +16,16 @@
 
 package org.drools.core.io.impl;
 
-import org.kie.api.definition.KieDescr;
-import org.kie.internal.io.ResourceChangeNotifier;
-import org.kie.internal.io.ResourceFactoryService;
-import org.kie.api.io.Resource;
-import org.kie.internal.io.ResourceChangeScanner;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-public class ResourceFactoryServiceImpl
-    implements
-        ResourceFactoryService {
+import org.kie.api.definition.KieDescr;
+import org.kie.api.io.KieResources;
+import org.kie.api.io.Resource;
 
-    public ResourceChangeNotifier getResourceChangeNotifierService() {
-        throw new UnsupportedOperationException();
-    }
-
-    public ResourceChangeScanner getResourceChangeScannerService() {
-        throw new UnsupportedOperationException();
-    }
+public class ResourceFactoryServiceImpl implements KieResources {
 
     public Resource newByteArrayResource(byte[] bytes) {
         return new ByteArrayResource( bytes );
