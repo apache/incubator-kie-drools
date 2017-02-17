@@ -19,9 +19,9 @@ package org.kie.internal.utils;
 import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,14 +59,16 @@ public class ChainedProperties
     private static final int MAX_CACHE_ENTRIES = Integer.parseInt(System.getProperty("org.kie.property.cache.size", "100"));
     private static final boolean CACHE_ENABLED = Boolean.parseBoolean(System.getProperty("org.kie.property.cache.enabled", "false"));
 
-    protected static Map<CacheKey, List<URL>> resourceUrlCache = new LinkedHashMap<CacheKey, List<URL>>() {
-        private static final long serialVersionUID = -2324394641773215253L;
+    protected static Map<CacheKey, List<Properties>> propertiesCache =
+    		Collections.synchronizedMap(
+    				new LinkedHashMap<CacheKey, List<Properties>>() {
+		private static final long serialVersionUID = -4728876927433598466L;
 
-        protected boolean removeEldestEntry(
-                Map.Entry<CacheKey, List<URL>> eldest) {
+		protected boolean removeEldestEntry(
+                Map.Entry<CacheKey, List<Properties>> eldest) {
             return size() > MAX_CACHE_ENTRIES;
         }
-    };
+    });
 
     private List<Properties> props;
     private List<Properties> defaultProps;
@@ -75,14 +77,11 @@ public class ChainedProperties
     }
 
     public ChainedProperties(String confFileName, ClassLoader classLoader) {
-        this( confFileName,
-              classLoader,
-              true );
+        this(confFileName, classLoader, true);
     }
 
-    public ChainedProperties(String confFileName,
-                             ClassLoader classLoader,
-                             boolean populateDefaults) {
+    public ChainedProperties(String confFileName, ClassLoader classLoader,
+    		boolean populateDefaults) {
 
         this.props = new ArrayList<Properties>();
         this.defaultProps = new ArrayList<Properties>();
@@ -97,77 +96,74 @@ public class ChainedProperties
                         this.props );
 
         // User home properties file
-        loadProperties( System.getProperty( "user.home" ) + "/drools." + confFileName,
-                        this.props );
+        loadProperties( System.getProperty( "user.home" ) + "/drools."
+        		+ confFileName, this.props );
 
         // Working directory properties file
-        loadProperties( "drools." + confFileName,
-                        this.props );
+        loadProperties( "drools." + confFileName, this.props );
 
         // check META-INF directories for all known ClassLoaders
-        //ClassLoader confClassLoader = classLoader;
-        loadProperties( getResources( "META-INF/drools." + confFileName,
-                                      classLoader ),
-                        this.props, classLoader );
-        loadProperties( getResources( "/META-INF/drools." + confFileName,
-                                      classLoader ),
-                        this.props, classLoader );
 
-        loadPropertiesFromClassLoader( confFileName, classLoader, Thread.currentThread().getContextClassLoader() );
+        // DROOLS-1443 load properties from supplied classLoader
+        loadProperties( "META-INF/drools." + confFileName, classLoader,
+        		this.props );
+
+        // DROOLS-1443 load properties from supplied classLoader
+        loadProperties( "/META-INF/drools." + confFileName, classLoader,
+        		this.props );
+
+        ClassLoader contextClassLoader = Thread.currentThread()
+        		.getContextClassLoader();
+        if ( contextClassLoader != null && contextClassLoader != classLoader ) {
+        	// DROOLS-1443 load properties from context classLoader
+        	loadProperties(confFileName, contextClassLoader, this.props);
+        }
 
         ClassLoader systemClassLoader = null;
         try {
             systemClassLoader = ClassLoader.getSystemClassLoader();
         } catch (SecurityException se) {
-            // DROOLS-1125: the system class loader cannot be retrieved in Google App Engine - ignore
+            // DROOLS-1125: the system class loader cannot be retrieved in
+        	// Google App Engine - ignore
         }
-        loadPropertiesFromClassLoader( confFileName, classLoader, systemClassLoader );
+        if ( systemClassLoader != null && systemClassLoader != classLoader ) {
+        	// DROOLS-1443 load properties from system classLoader
+        	loadProperties(confFileName, systemClassLoader, this.props);
+        }
 
         if ( !populateDefaults ) {
             return;
         }
 
         // load defaults
-        loadProperties( getResources( "META-INF/drools.default." + confFileName,
-                                      classLoader ),
-                        this.defaultProps, classLoader );
-        loadProperties( getResources( "/META-INF/drools.default." + confFileName,
-                                      classLoader ),
-                        this.defaultProps, classLoader );
+        // DROOLS-1443 load default properties from supplied classLoader
+        loadProperties( "META-INF/drools.default." + confFileName, classLoader,
+        		this.defaultProps);
+        // DROOLS-1443 load default properties from supplied classLoader
+        loadProperties( "/META-INF/drools.default." + confFileName, classLoader,
+        		this.defaultProps);
 
-        loadDefaultsFromClassLoader( confFileName, classLoader, Thread.currentThread().getContextClassLoader() );
-        loadDefaultsFromClassLoader( confFileName, classLoader, systemClassLoader );
+        if ( contextClassLoader != null && contextClassLoader != classLoader ) {
+        	// DROOLS-1443 load default properties from context classLoader
+        	loadProperties(confFileName, contextClassLoader, this.defaultProps);
+        }
+        if ( systemClassLoader != null && systemClassLoader != classLoader ) {
+        	// DROOLS-1443 load default properties from system classLoader
+        	loadProperties(confFileName, systemClassLoader, this.defaultProps);
+        }
 
-        // this happens only in OSGi: for some reason doing ClassLoader.getResources() doesn't work
-        // but doing Class.getResourse() does
+        // this happens only in OSGi: for some reason doing
+        // ClassLoader.getResources() doesn't work but doing
+        // Class.getResourse() does
         if (this.defaultProps.isEmpty()) {
             try {
-                Class<?> c = Class.forName("org.drools.compiler.lang.MVELDumper", false, classLoader);
-                URL confURL = c.getResource("/META-INF/drools.default." + confFileName);
+                Class<?> c = Class.forName(
+                		"org.drools.compiler.lang.MVELDumper", false,
+                		classLoader);
+                URL confURL = c.getResource("/META-INF/drools.default."
+                		+ confFileName);
                 loadProperties(confURL, this.defaultProps);
             } catch (ClassNotFoundException e) { }
-        }
-    }
-
-    private void loadDefaultsFromClassLoader( String confFileName, ClassLoader classLoader, ClassLoader confClassLoader ) {
-        if ( confClassLoader != null && confClassLoader != classLoader ) {
-            loadProperties( getResources( "META-INF/drools.default." + confFileName,
-                                          confClassLoader ),
-                            this.defaultProps, confClassLoader );
-            loadProperties( getResources( "/META-INF/drools.default." + confFileName,
-                                          confClassLoader ),
-                            this.defaultProps, confClassLoader );
-        }
-    }
-
-    private void loadPropertiesFromClassLoader( String confFileName, ClassLoader classLoader, ClassLoader confClassLoader ) {
-        if ( confClassLoader != null && confClassLoader != classLoader ) {
-            loadProperties( getResources( "META-INF/drools." + confFileName,
-                                          confClassLoader ),
-                            this.props, confClassLoader );
-            loadProperties( getResources( "/META-INF/drools." + confFileName,
-                                          confClassLoader ),
-                            this.props, confClassLoader );
         }
     }
 
@@ -181,40 +177,6 @@ public class ChainedProperties
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( props );
         out.writeObject( defaultProps );
-    }
-
-    private Enumeration<URL> getResources(String name,
-                                          ClassLoader classLoader) {
-
-        if (CACHE_ENABLED) {
-            CacheKey cacheKey = new CacheKey(name, classLoader);
-            List<URL> urlList = resourceUrlCache.get(cacheKey);
-
-            if (urlList == null) {
-                Enumeration<URL> resources = null;
-                try {
-                    resources = classLoader.getResources(name);
-                } catch (IOException e) {
-                    logger.error("error", e);
-                }
-                synchronized (resourceUrlCache) {
-                    resourceUrlCache.put(cacheKey, Collections.list(resources));
-                }
-
-                return resources;
-            } else {
-
-                return Collections.enumeration(urlList);
-            }
-        }
-
-        Enumeration<URL> enumeration = null;
-        try {
-            enumeration = classLoader.getResources(name);
-        } catch ( IOException e ) {
-            logger.error("error", e);
-        }
-        return enumeration;
     }
 
     /**
@@ -285,53 +247,70 @@ public class ChainedProperties
         }
     }
 
-    private void loadProperties(Enumeration<URL> enumeration,
-                                List<Properties> chain, ClassLoader classLoader) {
-        if ( enumeration == null ) {
-            return;
-        }
-
-        while ( enumeration.hasMoreElements() ) {
-            URL url = (URL) enumeration.nextElement();
-            loadProperties( url,
-                            chain );
-        }
+    private void loadProperties(String fileName,
+    							List<Properties> chain) {
+    	if (fileName != null) {
+    		File file = new File(fileName);
+    		if (file != null && file.exists()) {
+    			loadProperties(fileName, null, chain);
+    		}
+    	}
     }
 
     private void loadProperties(String fileName,
-                                List<Properties> chain) {
-        if ( fileName != null ) {
-            File file = new File( fileName );
-            if ( file != null && file.exists() ) {
-                try {
-                    loadProperties( file.toURL(),
-                                    chain );
-                } catch ( MalformedURLException e ) {
-                    throw new IllegalArgumentException( "file.toURL() failed for " + fileName + " properties value '" + file + "'" );
-                }
-            } else {
-                //throw new IllegalArgumentException( fileName + " is specified but cannot be found '" + file + "'" );
-            }
+    							ClassLoader classLoader,
+								List<Properties> chain) {
+    	if (!CACHE_ENABLED) {
+    	    try {
+                chain.addAll(read(fileName,classLoader));
+            } catch (IOException e){}
+    	    return;
         }
+        CacheKey ck = new CacheKey(fileName, classLoader);
+    	List<Properties> cached = propertiesCache.get(ck);
+    	if (cached == null) {
+    	    try {
+                cached = read(fileName, classLoader);
+                propertiesCache.put(ck, cached);
+            } catch (IOException e) {}
+        }
+    	if (cached != null) chain.addAll(cached);
     }
 
-    private void loadProperties(URL confURL,
-                                List<Properties> chain) {
+    private List<Properties> read(String fileName, ClassLoader classLoader)
+            throws IOException {
+        List<Properties> properties = new ArrayList<>();
+        Enumeration<URL> resources;
+        if (classLoader != null) {
+            resources = classLoader.getResources(fileName);
+        } else {
+            resources = Collections.enumeration(Collections.singletonList(new File(fileName).toURI().toURL()));
+        }
+        while (resources.hasMoreElements()) {
+            Properties p = new Properties();
+            URL nextElement = resources.nextElement();
+            try (InputStream is = nextElement.openStream()) {
+                p.load(is);
+                properties.add(p);
+            }
+        }
+        return properties;
+    }
+
+    private void loadProperties(URL confURL, List<Properties> chain) {
         if ( confURL == null ) {
             return;
         }
-        try {
-
+        try ( InputStream is = confURL.openStream() ) {
             Properties properties = new Properties();
-            java.io.InputStream is = confURL.openStream();
             properties.load( is );
-            is.close();
-
             chain.add( properties );
         } catch ( IOException e ) {
             //throw new IllegalArgumentException( "Invalid URL to properties file '" + confURL.toExternalForm() + "'" );
         }
     }
+
+
     /*
      * optional cache handling to improve performance to avoid duplicated loads of properties
      */
