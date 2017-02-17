@@ -1,5 +1,6 @@
 [[quickStart]]
-= Quick Start
+= Getting Started: A Cloud Balancing Demonstration
+//Christy suggested that this isn't really a "quickstart". I don't know how you feel about renaming a chapter?
 :doctype: book
 :sectnums:
 :toc: left
@@ -71,7 +72,9 @@ image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
 [[cloudBalancingDomainModelDesign]]
 === Domain Model Design
 
-Beginning with the domain model:
+Using a domain model helps determine which classes are planning entities and which of their properties are planning variables. Using a domain model helps to simplify contraints, improve performance, and increase flexibility for future needs. 
+
+Beginning with the <<domainModelingGuide,domain model>>:
 
 * ``Computer``: represents a computer with certain hardware (CPU power, RAM memory, network bandwidth) and maintenance cost.
 * ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by Planner.
