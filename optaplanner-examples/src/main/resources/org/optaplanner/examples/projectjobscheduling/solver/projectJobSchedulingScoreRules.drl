@@ -89,7 +89,7 @@ rule "totalProjectDelay"
                $criticalPathEndDate : projectCriticalPathEndDate)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, 0,  $criticalPathEndDate - $endDate);
-end        
+end
 
 
 rule "totalMakespan"

@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.ConstraintMatchAwareIncrementalScoreCalculator;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
@@ -453,45 +452,46 @@ public class MachineReassignmentIncrementalScoreCalculator
 
     @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        LongConstraintMatchTotal maximumCapacityMatchTotal = new LongConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "maximumCapacity", 0);
-        LongConstraintMatchTotal serviceConflictMatchTotal = new LongConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "serviceConflict", 0);
-        LongConstraintMatchTotal serviceLocationSpreadMatchTotal = new LongConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "serviceLocationSpread", 0);
-        LongConstraintMatchTotal serviceDependencyMatchTotal = new LongConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "serviceDependency", 0);
-        LongConstraintMatchTotal loadCostMatchTotal = new LongConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "loadCost", 1);
-        LongConstraintMatchTotal balanceCostMatchTotal = new LongConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "balanceCost", 1);
-        LongConstraintMatchTotal processMoveCostMatchTotal = new LongConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "processMoveCost", 1);
-        LongConstraintMatchTotal serviceMoveCostMatchTotal = new LongConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "serviceMoveCost", 1);
-        LongConstraintMatchTotal machineMoveCostMatchTotal = new LongConstraintMatchTotal(
-                CONSTRAINT_PACKAGE, "machineMoveCost", 1);
+        ConstraintMatchTotal maximumCapacityMatchTotal = new ConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "maximumCapacity", HardSoftLongScore.ZERO);
+        ConstraintMatchTotal serviceConflictMatchTotal = new ConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "serviceConflict", HardSoftLongScore.ZERO);
+        ConstraintMatchTotal serviceLocationSpreadMatchTotal = new ConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "serviceLocationSpread", HardSoftLongScore.ZERO);
+        ConstraintMatchTotal serviceDependencyMatchTotal = new ConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "serviceDependency", HardSoftLongScore.ZERO);
+        ConstraintMatchTotal loadCostMatchTotal = new ConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "loadCost", HardSoftLongScore.ZERO);
+        ConstraintMatchTotal balanceCostMatchTotal = new ConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "balanceCost", HardSoftLongScore.ZERO);
+        ConstraintMatchTotal processMoveCostMatchTotal = new ConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "processMoveCost", HardSoftLongScore.ZERO);
+        ConstraintMatchTotal serviceMoveCostMatchTotal = new ConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "serviceMoveCost", HardSoftLongScore.ZERO);
+        ConstraintMatchTotal machineMoveCostMatchTotal = new ConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "machineMoveCost", HardSoftLongScore.ZERO);
 
         for (MrServiceScorePart serviceScorePart : serviceScorePartMap.values()) {
             MrService service = serviceScorePart.service;
             if (service.getLocationSpread() > serviceScorePart.locationBag.size()) {
                 serviceLocationSpreadMatchTotal.addConstraintMatch(
-                        Arrays.<Object>asList(service),
-                        - (service.getLocationSpread() - serviceScorePart.locationBag.size()));
+                        Arrays.asList(service),
+                        HardSoftLongScore.valueOf(
+                                - (service.getLocationSpread() - serviceScorePart.locationBag.size()), 0));
             }
         }
         for (MrMachineScorePart machineScorePart : machineScorePartMap.values()) {
             for (MrMachineCapacityScorePart machineCapacityScorePart : machineScorePart.machineCapacityScorePartList) {
                 if (machineCapacityScorePart.maximumAvailable < 0L) {
                     maximumCapacityMatchTotal.addConstraintMatch(
-                            Arrays.<Object>asList(machineCapacityScorePart.machineCapacity),
-                            machineCapacityScorePart.maximumAvailable);
+                            Arrays.asList(machineCapacityScorePart.machineCapacity),
+                            HardSoftLongScore.valueOf(machineCapacityScorePart.maximumAvailable, 0));
                 }
                 if (machineCapacityScorePart.safetyAvailable < 0L) {
                     loadCostMatchTotal.addConstraintMatch(
-                            Arrays.<Object>asList(machineCapacityScorePart.machineCapacity),
-                            machineCapacityScorePart.safetyAvailable
-                                    * machineCapacityScorePart.machineCapacity.getResource().getLoadCostWeight());
+                            Arrays.asList(machineCapacityScorePart.machineCapacity),
+                            HardSoftLongScore.valueOf(0, machineCapacityScorePart.safetyAvailable
+                                    * machineCapacityScorePart.machineCapacity.getResource().getLoadCostWeight()));
                 }
             }
             for (MrBalancePenalty balancePenalty : machineReassignment.getBalancePenaltyList()) {
@@ -504,8 +504,9 @@ public class MachineReassignmentIncrementalScoreCalculator
                     // targetAvailable might be negative, but that's ok (and even avoids score traps)
                     if (targetAvailable < minimumTargetAvailable) {
                         balanceCostMatchTotal.addConstraintMatch(
-                                Arrays.<Object>asList(machineScorePart.machine, balancePenalty),
-                                - (minimumTargetAvailable - targetAvailable) * balancePenalty.getWeight());
+                                Arrays.asList(machineScorePart.machine, balancePenalty),
+                                HardSoftLongScore.valueOf(0,
+                                        - (minimumTargetAvailable - targetAvailable) * balancePenalty.getWeight()));
                     }
                 }
             }
@@ -515,8 +516,8 @@ public class MachineReassignmentIncrementalScoreCalculator
                     serviceProcessCount = 0;
                 }
                 serviceConflictMatchTotal.addConstraintMatch(
-                        Arrays.<Object>asList(entry.getKey()),
-                        - (serviceProcessCount - 1));
+                        Arrays.asList(entry.getKey()),
+                        HardSoftLongScore.valueOf(- (serviceProcessCount - 1), 0));
 
             }
         }
@@ -526,23 +527,25 @@ public class MachineReassignmentIncrementalScoreCalculator
                         .neighborhoodBag.get(processAssignment.getNeighborhood());
                 if (toDependencyNeighborhoodProcessCount == 0) {
                     serviceDependencyMatchTotal.addConstraintMatch(
-                            Arrays.<Object>asList(processAssignment, toDependencyService),
-                            - 1);
+                            Arrays.asList(processAssignment, toDependencyService),
+                            HardSoftLongScore.valueOf(- 1, 0));
                 }
             }
             if (processAssignment.isMoved()) {
                 processMoveCostMatchTotal.addConstraintMatch(
-                        Arrays.<Object>asList(processAssignment),
-                        - (processAssignment.getProcessMoveCost() * globalPenaltyInfo.getProcessMoveCostWeight()));
+                        Arrays.asList(processAssignment),
+                        HardSoftLongScore.valueOf(0,
+                                - (processAssignment.getProcessMoveCost() * globalPenaltyInfo.getProcessMoveCostWeight())));
                 machineMoveCostMatchTotal.addConstraintMatch(
-                        Arrays.<Object>asList(processAssignment),
-                        - (processAssignment.getMachineMoveCost() * globalPenaltyInfo.getMachineMoveCostWeight()));
+                        Arrays.asList(processAssignment),
+                        HardSoftLongScore.valueOf(0,
+                                - (processAssignment.getMachineMoveCost() * globalPenaltyInfo.getMachineMoveCostWeight())));
             }
         }
         for (int i = 0; i < serviceMoveCost; i++) {
             serviceMoveCostMatchTotal.addConstraintMatch(
-                    Arrays.<Object>asList(i),
-                    - globalPenaltyInfo.getServiceMoveCostWeight());
+                    Arrays.asList(i),
+                    HardSoftLongScore.valueOf(0, - globalPenaltyInfo.getServiceMoveCostWeight()));
         }
 
         List<ConstraintMatchTotal> constraintMatchTotalList = new ArrayList<>(4);

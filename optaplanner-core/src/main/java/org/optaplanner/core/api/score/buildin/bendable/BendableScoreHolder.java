@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -31,7 +32,7 @@ public class BendableScoreHolder extends AbstractScoreHolder {
     private int[] softScores;
 
     public BendableScoreHolder(boolean constraintMatchEnabled, int hardLevelsSize, int softLevelsSize) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, BendableScore.zero(hardLevelsSize, softLevelsSize));
         hardScores = new int[hardLevelsSize];
         softScores = new int[softLevelsSize];
     }
@@ -64,12 +65,14 @@ public class BendableScoreHolder extends AbstractScoreHolder {
      */
     public void addHardConstraintMatch(RuleContext kcontext, final int hardLevel, final int weight) {
         hardScores[hardLevel] += weight;
-        registerIntConstraintMatch(kcontext, hardLevel, weight, new IntConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScores[hardLevel] -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> hardScores[hardLevel] -= weight,
+                () -> {
+                    int[] newHardScores = new int[hardScores.length];
+                    int[] newSoftScores = new int[softScores.length];
+                    newHardScores[hardLevel] = weight;
+                    return BendableScore.valueOf(newHardScores, newSoftScores);
+                });
     }
 
     /**
@@ -80,12 +83,14 @@ public class BendableScoreHolder extends AbstractScoreHolder {
      */
     public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final int weight) {
         softScores[softLevel] += weight;
-        registerIntConstraintMatch(kcontext, getHardLevelsSize() + softLevel, weight, new IntConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScores[softLevel] -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> softScores[softLevel] -= weight,
+                () -> {
+                    int[] newHardScores = new int[hardScores.length];
+                    int[] newSoftScores = new int[softScores.length];
+                    newSoftScores[softLevel] = weight;
+                    return BendableScore.valueOf(newHardScores, newSoftScores);
+                });
     }
 
     @Override

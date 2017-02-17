@@ -27,7 +27,6 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 
 import static org.junit.Assert.assertEquals;
@@ -81,7 +80,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
         ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector();
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
-        ConstraintMatchTotal matchTotal = findConstraintMatchTotal(constraintPackage, constraintName, scoreLevel, scoreDirector);
+        ConstraintMatchTotal matchTotal = findConstraintMatchTotal(constraintPackage, constraintName, scoreDirector);
         // A matchTotal is null if the score rule didn't fire now and never fired in a previous incremental calculation
         // (including those that are undone).
         // To avoid user pitfalls, the expectedWeight cannot be null and a matchTotal of null is treated as zero.
@@ -111,7 +110,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
                         + " type (" + expectedWeight.getClass() + ") for expectedWeight (" + expectedWeight + ").");
             }
         } else {
-            assertEquals(expectedWeight, matchTotal.getWeightTotalAsNumber());
+            assertEquals(expectedWeight, matchTotal.getScoreTotal().toLevelNumbers()[scoreLevel]);
         }
     }
 
@@ -119,21 +118,19 @@ public abstract class AbstractScoreVerifier<Solution_> {
      * @param constraintPackage sometimes null.
      * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
      * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
-     * @param scoreLevel at least 0
      * @param scoreDirector never null
      * @return null if there is no constraint matched or the constraint doesn't exist
      */
     private ConstraintMatchTotal findConstraintMatchTotal(
-            String constraintPackage, String constraintName, int scoreLevel, ScoreDirector<Solution_> scoreDirector) {
+            String constraintPackage, String constraintName, ScoreDirector<Solution_> scoreDirector) {
         ConstraintMatchTotal matchTotal = null;
         for (ConstraintMatchTotal selectedMatchTotal : scoreDirector.getConstraintMatchTotals()) {
-            if (selectedMatchTotal.getScoreLevel() == scoreLevel
-                    && selectedMatchTotal.getConstraintName().equals(constraintName)
+            if (selectedMatchTotal.getConstraintName().equals(constraintName)
                     && (constraintPackage == null || selectedMatchTotal.getConstraintPackage().equals(constraintPackage))) {
                 if (matchTotal != null) {
                     throw new IllegalArgumentException("The constraintName (" + constraintName
-                            + ") is used by 2 different constraintMatches (" + matchTotal.getIdentificationString()
-                            + " and " + selectedMatchTotal.getIdentificationString() + ").");
+                            + ") is used by 2 different constraintMatches (" + matchTotal.getConstraintId()
+                            + " and " + selectedMatchTotal.getConstraintId() + ").");
                 }
                 matchTotal = selectedMatchTotal;
             }

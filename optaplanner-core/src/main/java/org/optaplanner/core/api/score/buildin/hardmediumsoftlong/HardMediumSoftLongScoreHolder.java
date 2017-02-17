@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.buildin.hardmediumsoftlong;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -31,7 +32,7 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
     protected long softScore;
 
     public HardMediumSoftLongScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, HardMediumSoftLongScore.ZERO);
     }
 
     public long getHardScore() {
@@ -56,12 +57,9 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
      */
     public void addHardConstraintMatch(RuleContext kcontext, final long weight) {
         hardScore += weight;
-        registerLongConstraintMatch(kcontext, 0, weight, new LongConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScore -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> hardScore -= weight,
+                () -> HardMediumSoftLongScore.valueOf(weight, 0L, 0L));
     }
 
     /**
@@ -70,12 +68,9 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
      */
     public void addMediumConstraintMatch(RuleContext kcontext, final long weight) {
         mediumScore += weight;
-        registerLongConstraintMatch(kcontext, 1, weight, new LongConstraintUndoListener() {
-            @Override
-            public void undo() {
-                mediumScore -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> mediumScore -= weight,
+                () -> HardMediumSoftLongScore.valueOf(0L, weight, 0L));
     }
 
     /**
@@ -84,12 +79,9 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
      */
     public void addSoftConstraintMatch(RuleContext kcontext, final long weight) {
         softScore += weight;
-        registerLongConstraintMatch(kcontext, 2, weight, new LongConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScore -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> softScore -= weight,
+                () -> HardMediumSoftLongScore.valueOf(0L, 0L, weight));
     }
 
     @Override

@@ -19,6 +19,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -41,12 +42,12 @@ public class ScoreHolderTest {
     }
 
     private ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
-        return new AbstractScoreHolder(constraintMatchEnabled) {
+        return new AbstractScoreHolder(constraintMatchEnabled, SimpleScore.ZERO) {
             private static final long serialVersionUID = 3167742145462539743L;
 
             @Override
             public Score<?> extractScore(int initScore) {
-                return null;
+                return SimpleScore.valueOf(0);
             }
         };
     }

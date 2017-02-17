@@ -585,9 +585,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                         Arrays.<Object>asList(
                                 constraintMatchTotal.getConstraintPackage(),
                                 constraintMatchTotal.getConstraintName(),
-                                constraintMatchTotal.getScoreLevel(),
                                 constraintMatch.getJustificationList(),
-                                constraintMatch.getWeightAsNumber()),
+                                constraintMatch.getScore()),
                         constraintMatch);
                 if (previousConstraintMatch != null) {
                     throw new IllegalStateException("Score corruption because the constraintMatch (" + constraintMatch

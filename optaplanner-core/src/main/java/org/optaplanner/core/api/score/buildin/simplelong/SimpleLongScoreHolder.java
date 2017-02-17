@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.simplelong;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -28,7 +29,7 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder {
     protected long score;
 
     public SimpleLongScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, SimpleLongScore.ZERO);
     }
 
     public long getScore() {
@@ -45,12 +46,9 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder {
      */
     public void addConstraintMatch(RuleContext kcontext, final long weight) {
         score += weight;
-        registerLongConstraintMatch(kcontext, 0, weight, new LongConstraintUndoListener() {
-            @Override
-            public void undo() {
-                score -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> score -= weight,
+                () -> SimpleLongScore.valueOf(weight));
     }
 
     @Override

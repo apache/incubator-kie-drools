@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal;
 import java.math.BigDecimal;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -30,7 +31,7 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     protected BigDecimal softScore;
 
     public HardMediumSoftBigDecimalScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, HardMediumSoftBigDecimalScore.ZERO);
     }
 
     public BigDecimal getHardScore() {
@@ -59,12 +60,9 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder {
      */
     public void addHardConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         hardScore = (hardScore == null) ? weight : hardScore.add(weight);
-        registerBigDecimalConstraintMatch(kcontext, 0, weight, new BigDecimalConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScore = hardScore.subtract(weight);
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> hardScore = hardScore.subtract(weight),
+                () -> HardMediumSoftBigDecimalScore.valueOf(weight, BigDecimal.ZERO, BigDecimal.ZERO));
     }
 
     /**
@@ -77,12 +75,9 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder {
      */
     public void addMediumConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         mediumScore = (mediumScore == null) ? weight : mediumScore.add(weight);
-        registerBigDecimalConstraintMatch(kcontext, 1, weight, new BigDecimalConstraintUndoListener() {
-            @Override
-            public void undo() {
-                mediumScore = mediumScore.subtract(weight);
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> mediumScore = mediumScore.subtract(weight),
+                () -> HardMediumSoftBigDecimalScore.valueOf(BigDecimal.ZERO, weight, BigDecimal.ZERO));
     }
 
     /**
@@ -95,12 +90,9 @@ public class HardMediumSoftBigDecimalScoreHolder extends AbstractScoreHolder {
      */
     public void addSoftConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         softScore = (softScore == null) ? weight : softScore.add(weight);
-        registerBigDecimalConstraintMatch(kcontext, 2, weight, new BigDecimalConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScore = softScore.subtract(weight);
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> softScore = softScore.subtract(weight),
+                () -> HardMediumSoftBigDecimalScore.valueOf(BigDecimal.ZERO, BigDecimal.ZERO, weight));
     }
 
     @Override

@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalb
 import java.io.File;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +47,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -86,7 +88,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
 
     @Override
     public void close(Solver<Solution_> solver) {
-        ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
+        ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
     private class ConstraintMatchTotalBestScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
@@ -118,28 +120,8 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
                             timeMillisSpent,
                             constraintMatchTotal.getConstraintPackage(),
                             constraintMatchTotal.getConstraintName(),
-                            constraintMatchTotal.getScoreLevel(),
                             constraintMatchTotal.getConstraintMatchCount(),
-                            constraintMatchTotal.getWeightTotalAsNumber().doubleValue()));
-                }
-            }
-        }
-
-        @Override
-        public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
-            if (phaseScope instanceof LocalSearchPhaseScope) {
-                if (constraintMatchEnabled && !pointList.isEmpty()) {
-                    // Draw horizontal lines from the last new best step to how long the solver actually ran
-                    // HACK because this also adds a entry in the CSV (and it should not do that)
-                    long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpentUpToNow();
-                    ConstraintMatchTotalBestScoreStatisticPoint previousPoint = pointList.get(pointList.size() - 1);
-                    pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
-                            timeMillisSpent,
-                            previousPoint.getConstraintPackage(),
-                            previousPoint.getConstraintName(),
-                            previousPoint.getScoreLevel(),
-                            previousPoint.getConstraintMatchCount(),
-                            previousPoint.getWeightTotal()));
+                            constraintMatchTotal.getScoreTotal()));
                 }
             }
         }
@@ -153,16 +135,16 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
     @Override
     protected String getCsvHeader() {
         return ConstraintMatchTotalBestScoreStatisticPoint.buildCsvLine(
-                "timeMillisSpent", "constraintPackage", "constraintName", "scoreLevel",
-                "constraintMatchCount", "weightTotal");
+                "timeMillisSpent", "constraintPackage", "constraintName",
+                "constraintMatchCount", "scoreTotal");
     }
 
     @Override
     protected ConstraintMatchTotalBestScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
         return new ConstraintMatchTotalBestScoreStatisticPoint(Long.parseLong(csvLine.get(0)),
-                csvLine.get(1), csvLine.get(2), Integer.parseInt(csvLine.get(3)),
-                Integer.parseInt(csvLine.get(4)), Double.parseDouble(csvLine.get(5)));
+                csvLine.get(1), csvLine.get(2),
+                Integer.parseInt(csvLine.get(3)), scoreDefinition.parseScore(csvLine.get(4)));
     }
 
     // ************************************************************************
@@ -174,23 +156,34 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
         List<Map<String, XYSeries>> constraintIdToWeightSeriesMapList
                 = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         for (ConstraintMatchTotalBestScoreStatisticPoint point : getPointList()) {
-            int scoreLevel = point.getScoreLevel();
-            if (scoreLevel >= BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE) {
-                continue;
-            }
-            while (scoreLevel >= constraintIdToWeightSeriesMapList.size()) {
-                constraintIdToWeightSeriesMapList.add(new LinkedHashMap<>());
-            }
-            Map<String, XYSeries> constraintIdToWeightSeriesMap = constraintIdToWeightSeriesMapList.get(scoreLevel);
-            if (constraintIdToWeightSeriesMap == null) {
-                constraintIdToWeightSeriesMap = new LinkedHashMap<>();
-                constraintIdToWeightSeriesMapList.set(scoreLevel, constraintIdToWeightSeriesMap);
-            }
-            String constraintId = point.getConstraintPackage() + ":" + point.getConstraintName();
-            XYSeries weightSeries = constraintIdToWeightSeriesMap.computeIfAbsent(constraintId,
-                    k -> new XYSeries(point.getConstraintName() + " weight"));
             long timeMillisSpent = point.getTimeMillisSpent();
-            weightSeries.add(timeMillisSpent, point.getWeightTotal());
+            double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScoreTotal());
+            for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
+                if (i >= constraintIdToWeightSeriesMapList.size()) {
+                    constraintIdToWeightSeriesMapList.add(new LinkedHashMap<>());
+                }
+                Map<String, XYSeries> constraintIdToWeightSeriesMap = constraintIdToWeightSeriesMapList.get(i);
+                XYSeries weightSeries = constraintIdToWeightSeriesMap.computeIfAbsent(point.getConstraintId(),
+                        k -> new XYSeries(point.getConstraintName() + " weight"));
+                // Only add changes
+                if (levelValues[i] != ((weightSeries.getItemCount() == 0) ? 0.0
+                        : weightSeries.getY(weightSeries.getItemCount() - 1).doubleValue())) {
+                    weightSeries.add(timeMillisSpent, levelValues[i]);
+                }
+            }
+        }
+        long timeMillisSpent = subSingleBenchmarkResult.getTimeMillisSpent();
+        for (Map<String, XYSeries> constraintIdToWeightSeriesMap : constraintIdToWeightSeriesMapList) {
+            for (Iterator<Map.Entry<String, XYSeries>> it = constraintIdToWeightSeriesMap.entrySet().iterator(); it.hasNext(); ) {
+                XYSeries weightSeries = it.next().getValue();
+                if (weightSeries.getItemCount() == 0) {
+                    // Only show the constraint type on the score levels that it affects
+                    it.remove();
+                } else {
+                    // Draw a horizontal line from the last new best step to how long the solver actually ran
+                    weightSeries.add(timeMillisSpent, weightSeries.getY(weightSeries.getItemCount() - 1).doubleValue());
+                }
+            }
         }
         graphFileList = new ArrayList<>(constraintIdToWeightSeriesMapList.size());
         for (int scoreLevelIndex = 0; scoreLevelIndex < constraintIdToWeightSeriesMapList.size(); scoreLevelIndex++) {

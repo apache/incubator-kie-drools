@@ -32,6 +32,8 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
  */
 public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
+    public static final SimpleDoubleScore ZERO = new SimpleDoubleScore(0, 0.0);
+
     public static SimpleDoubleScore parseScore(String scoreString) {
         String[] scoreTokens = parseScoreTokens(SimpleDoubleScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleDoubleScore.class, scoreString, scoreTokens[0]);

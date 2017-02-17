@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.hardsoftlong;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -29,7 +30,7 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder {
     protected long softScore;
 
     public HardSoftLongScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, HardSoftLongScore.ZERO);
     }
 
     public long getHardScore() {
@@ -50,12 +51,9 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder {
      */
     public void addHardConstraintMatch(RuleContext kcontext, final long weight) {
         hardScore += weight;
-        registerLongConstraintMatch(kcontext, 0, weight, new LongConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScore -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> hardScore -= weight,
+                () -> HardSoftLongScore.valueOf(weight, 0L));
     }
 
     /**
@@ -64,12 +62,9 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder {
      */
     public void addSoftConstraintMatch(RuleContext kcontext, final long weight) {
         softScore += weight;
-        registerLongConstraintMatch(kcontext, 1, weight, new LongConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScore -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> softScore -= weight,
+                () -> HardSoftLongScore.valueOf(0L, weight));
     }
 
     @Override

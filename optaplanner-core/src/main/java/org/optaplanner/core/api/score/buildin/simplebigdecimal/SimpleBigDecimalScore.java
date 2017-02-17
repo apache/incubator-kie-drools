@@ -30,6 +30,8 @@ import org.optaplanner.core.api.score.Score;
  */
 public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalScore> {
 
+    public static final SimpleBigDecimalScore ZERO = new SimpleBigDecimalScore(0, BigDecimal.ZERO);
+
     public static SimpleBigDecimalScore parseScore(String scoreString) {
         String[] scoreTokens = parseScoreTokens(SimpleBigDecimalScore.class, scoreString, "");
         int initScore = parseInitScore(SimpleBigDecimalScore.class, scoreString, scoreTokens[0]);

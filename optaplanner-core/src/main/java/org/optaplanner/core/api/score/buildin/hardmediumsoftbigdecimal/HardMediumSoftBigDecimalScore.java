@@ -36,6 +36,7 @@ import org.optaplanner.core.api.score.Score;
 public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediumSoftBigDecimalScore>
         implements FeasibilityScore<HardMediumSoftBigDecimalScore> {
 
+    public static final HardMediumSoftBigDecimalScore ZERO = new HardMediumSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
     private static final String HARD_LABEL = "hard";
     private static final String MEDIUM_LABEL = "medium";
     private static final String SOFT_LABEL = "soft";

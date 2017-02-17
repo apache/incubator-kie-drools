@@ -75,6 +75,10 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
         return new BendableLongScore(0, hardScores, softScores);
     }
 
+    public static BendableLongScore zero(int hardLevelsSize, int softLevelsSize) {
+        return new BendableLongScore(0, new long[hardLevelsSize], new long[softLevelsSize]);
+    }
+
     // ************************************************************************
     // Fields
     // ************************************************************************

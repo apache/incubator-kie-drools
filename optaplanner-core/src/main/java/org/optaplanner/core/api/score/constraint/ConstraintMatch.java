@@ -20,24 +20,31 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.optaplanner.core.api.score.Score;
 
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}.
  */
-public abstract class ConstraintMatch implements Serializable, Comparable<ConstraintMatch> {
+public class ConstraintMatch implements Serializable, Comparable<ConstraintMatch> {
 
     protected final String constraintPackage;
     protected final String constraintName;
-    protected final int scoreLevel;
 
     protected final List<Object> justificationList;
+    protected final Score score;
 
-    protected ConstraintMatch(String constraintPackage, String constraintName, int scoreLevel,
-            List<Object> justificationList) {
+    /**
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param justificationList never null, sometimes empty
+     * @param score never null
+     */
+    public ConstraintMatch(String constraintPackage, String constraintName,
+            List<Object> justificationList, Score score) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
-        this.scoreLevel = scoreLevel;
         this.justificationList = justificationList;
+        this.score = score;
     }
 
     public String getConstraintPackage() {
@@ -48,22 +55,24 @@ public abstract class ConstraintMatch implements Serializable, Comparable<Constr
         return constraintName;
     }
 
-    public int getScoreLevel() {
-        return scoreLevel;
-    }
-
     public List<Object> getJustificationList() {
         return justificationList;
     }
 
-    public abstract Number getWeightAsNumber();
+    public Score getScore() {
+        return score;
+    }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
+    public String getConstraintId() {
+        return constraintPackage + "/" + constraintName;
+    }
+
     public String getIdentificationString() {
-        return constraintPackage + "/" + constraintName + "/level" + scoreLevel + "/" + justificationList;
+        return getConstraintId() + "/" + justificationList;
     }
 
     @Override
@@ -71,14 +80,13 @@ public abstract class ConstraintMatch implements Serializable, Comparable<Constr
         return new CompareToBuilder()
                 .append(getConstraintPackage(), other.getConstraintPackage())
                 .append(getConstraintName(), other.getConstraintName())
-                .append(getScoreLevel(), other.getScoreLevel())
                 .append(getJustificationList(), other.getJustificationList())
-                .append(getWeightAsNumber(), other.getWeightAsNumber())
+                .append(getScore(), other.getScore())
                 .toComparison();
     }
 
     public String toString() {
-        return getIdentificationString()  + "=" + getWeightAsNumber();
+        return getIdentificationString() + "=" + getScore();
     }
 
 }

@@ -29,7 +29,7 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
     protected int softScore;
 
     public HardSoftScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, HardSoftScore.ZERO);
     }
 
     public int getHardScore() {
@@ -50,12 +50,9 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
      */
     public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
         hardScore += weight;
-        registerIntConstraintMatch(kcontext, 0, weight, new IntConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScore -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> hardScore -= weight,
+                () -> HardSoftScore.valueOf(weight, 0));
     }
 
     /**
@@ -64,12 +61,9 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
      */
     public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
         softScore += weight;
-        registerIntConstraintMatch(kcontext, 1, weight, new IntConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScore -= weight;
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> softScore -= weight,
+                () -> HardSoftScore.valueOf(0, weight));
     }
 
     @Override

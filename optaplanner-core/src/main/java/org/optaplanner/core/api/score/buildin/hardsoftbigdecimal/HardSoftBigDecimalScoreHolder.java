@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -31,7 +32,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     protected BigDecimal softScore = null;
 
     public HardSoftBigDecimalScoreHolder(boolean constraintMatchEnabled) {
-        super(constraintMatchEnabled);
+        super(constraintMatchEnabled, HardSoftBigDecimalScore.ZERO);
     }
 
     public BigDecimal getHardScore() {
@@ -52,12 +53,9 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
      */
     public void addHardConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         hardScore = (hardScore == null) ? weight : hardScore.add(weight);
-        registerBigDecimalConstraintMatch(kcontext, 0, weight, new BigDecimalConstraintUndoListener() {
-            @Override
-            public void undo() {
-                hardScore = hardScore.subtract(weight);
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> hardScore = hardScore.subtract(weight),
+                () -> HardSoftBigDecimalScore.valueOf(weight, BigDecimal.ZERO));
     }
 
     /**
@@ -66,12 +64,9 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
      */
     public void addSoftConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         softScore = (softScore == null) ? weight : softScore.add(weight);
-        registerBigDecimalConstraintMatch(kcontext, 1, weight, new BigDecimalConstraintUndoListener() {
-            @Override
-            public void undo() {
-                softScore = softScore.subtract(weight);
-            }
-        });
+        registerConstraintMatch(kcontext,
+                () -> softScore = softScore.subtract(weight),
+                () -> HardSoftBigDecimalScore.valueOf(BigDecimal.ZERO, weight));
     }
 
     @Override

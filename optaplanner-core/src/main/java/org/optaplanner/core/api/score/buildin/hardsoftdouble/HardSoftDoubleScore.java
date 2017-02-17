@@ -36,6 +36,7 @@ import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDeci
 public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore>
         implements FeasibilityScore<HardSoftDoubleScore> {
 
+    public static final HardSoftDoubleScore ZERO = new HardSoftDoubleScore(0, 0.0, 0.0);
     private static final String HARD_LABEL = "hard";
     private static final String SOFT_LABEL = "soft";
 

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 
 /**
@@ -74,6 +75,14 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
      * @return never null
      */
     public static BendableBigDecimalScore valueOf(BigDecimal[] hardScores, BigDecimal[] softScores) {
+        return new BendableBigDecimalScore(0, hardScores, softScores);
+    }
+
+    public static BendableBigDecimalScore zero(int hardLevelsSize, int softLevelsSize) {
+        BigDecimal[] hardScores = new BigDecimal[hardLevelsSize];
+        Arrays.fill(hardScores, BigDecimal.ZERO);
+        BigDecimal[] softScores = new BigDecimal[softLevelsSize];
+        Arrays.fill(softScores, BigDecimal.ZERO);
         return new BendableBigDecimalScore(0, hardScores, softScores);
     }
 

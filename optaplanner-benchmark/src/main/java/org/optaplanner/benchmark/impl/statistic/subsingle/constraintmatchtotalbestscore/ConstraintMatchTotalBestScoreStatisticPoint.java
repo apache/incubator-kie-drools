@@ -17,25 +17,24 @@
 package org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalbestscore;
 
 import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
+import org.optaplanner.core.api.score.Score;
 
 public class ConstraintMatchTotalBestScoreStatisticPoint extends StatisticPoint {
 
     private final long timeMillisSpent;
-    protected final String constraintPackage;
-    protected final String constraintName;
-    protected final int scoreLevel;
+    private final String constraintPackage;
+    private final String constraintName;
     private final int constraintMatchCount;
-    private final double weightTotal;
+    private final Score scoreTotal;
 
     public ConstraintMatchTotalBestScoreStatisticPoint(long timeMillisSpent,
-            String constraintPackage, String constraintName, int scoreLevel,
-            int constraintMatchCount, double weightTotal) {
+            String constraintPackage, String constraintName,
+            int constraintMatchCount, Score scoreTotal) {
         this.timeMillisSpent = timeMillisSpent;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
-        this.scoreLevel = scoreLevel;
         this.constraintMatchCount = constraintMatchCount;
-        this.weightTotal = weightTotal;
+        this.scoreTotal = scoreTotal;
     }
 
     public long getTimeMillisSpent() {
@@ -50,22 +49,22 @@ public class ConstraintMatchTotalBestScoreStatisticPoint extends StatisticPoint 
         return constraintName;
     }
 
-    public int getScoreLevel() {
-        return scoreLevel;
-    }
-
     public int getConstraintMatchCount() {
         return constraintMatchCount;
     }
 
-    public double getWeightTotal() {
-        return weightTotal;
+    public Score getScoreTotal() {
+        return scoreTotal;
+    }
+
+    public String getConstraintId() {
+        return constraintPackage + "/" + constraintName;
     }
 
     @Override
     public String toCsvLine() {
-        return buildCsvLineWithStrings(timeMillisSpent, constraintPackage, constraintName, Integer.toString(scoreLevel),
-                Integer.toString(constraintMatchCount), Double.toString(weightTotal));
+        return buildCsvLineWithStrings(timeMillisSpent, constraintPackage, constraintName,
+                Integer.toString(constraintMatchCount), scoreTotal.toString());
     }
 
 }

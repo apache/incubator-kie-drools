@@ -20,10 +20,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.drools.core.common.AgendaItem;
 import org.kie.api.definition.rule.Rule;
@@ -31,15 +31,9 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.RuleRuntime;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalConstraintMatch;
-import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.primdouble.DoubleConstraintMatch;
-import org.optaplanner.core.api.score.constraint.primdouble.DoubleConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.primint.IntConstraintMatch;
-import org.optaplanner.core.api.score.constraint.primint.IntConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatch;
-import org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatchTotal;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
@@ -47,12 +41,14 @@ import org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatchTot
 public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
     protected final boolean constraintMatchEnabled;
-    protected final Map<List<Object>, ConstraintMatchTotal> constraintMatchTotalMap;
+    protected final Map<String, ConstraintMatchTotal> constraintMatchTotalMap;
+    protected final Score zeroScore;
 
-    protected AbstractScoreHolder(boolean constraintMatchEnabled) {
+    protected AbstractScoreHolder(boolean constraintMatchEnabled, Score zeroScore) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         // TODO Can we set the initial capacity of this map more accurately? For example: number of rules
         constraintMatchTotalMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
+        this.zeroScore = zeroScore;
     }
 
     @Override
@@ -73,218 +69,68 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     // Worker methods
     // ************************************************************************
 
-    protected void registerIntConstraintMatch(RuleContext kcontext, int scoreLevel, int weight,
-            final IntConstraintUndoListener constraintUndoListener) {
-        if (constraintMatchEnabled) {
-            // Not needed in fast code: Add ConstraintMatch
-            constraintUndoListener.constraintMatchTotal = findIntConstraintMatchTotal(kcontext, scoreLevel);
-            constraintUndoListener.constraintMatch = constraintUndoListener
-                    .constraintMatchTotal.addConstraintMatch(kcontext, weight);
-        }
-        putConstraintUndoListener(kcontext, scoreLevel, constraintUndoListener);
-    }
-
-    protected abstract class IntConstraintUndoListener implements ConstraintUndoListener {
-
-        private IntConstraintMatchTotal constraintMatchTotal;
-        private IntConstraintMatch constraintMatch;
-
-        @Override
-        public final void unMatch() {
-            undo();
-            if (constraintMatchEnabled) {
-                // Not needed in fast code: Remove ConstraintMatch
-                constraintMatchTotal.removeConstraintMatch(constraintMatch);
-            }
-        }
-
-    }
-
-    private IntConstraintMatchTotal findIntConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
-        Rule rule = kcontext.getRule();
-        String constraintPackage = rule.getPackageName();
-        String constraintName = rule.getName();
-        List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
-        IntConstraintMatchTotal matchTotal = (IntConstraintMatchTotal) constraintMatchTotalMap.get(key);
-        if (matchTotal == null) {
-            matchTotal = new IntConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
-            constraintMatchTotalMap.put(key, matchTotal);
-        }
-        return matchTotal;
-    }
-
-    protected void registerLongConstraintMatch(RuleContext kcontext, int scoreLevel, long weight,
-            final LongConstraintUndoListener constraintUndoListener) {
-        if (constraintMatchEnabled) {
-            // Not needed in fast code: Add ConstraintMatch
-            constraintUndoListener.constraintMatchTotal = findLongConstraintMatchTotal(kcontext, scoreLevel);
-            constraintUndoListener.constraintMatch = constraintUndoListener
-                    .constraintMatchTotal.addConstraintMatch(kcontext, weight);
-        }
-        putConstraintUndoListener(kcontext, scoreLevel, constraintUndoListener);
-    }
-
-    protected abstract class LongConstraintUndoListener implements ConstraintUndoListener {
-
-        private LongConstraintMatchTotal constraintMatchTotal;
-        private LongConstraintMatch constraintMatch;
-
-        @Override
-        public final void unMatch() {
-            undo();
-            if (constraintMatchEnabled) {
-                // Not needed in fast code: Remove ConstraintMatch
-                constraintMatchTotal.removeConstraintMatch(constraintMatch);
-            }
-        }
-
-    }
-
-    private LongConstraintMatchTotal findLongConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
-        Rule rule = kcontext.getRule();
-        String constraintPackage = rule.getPackageName();
-        String constraintName = rule.getName();
-        List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
-        LongConstraintMatchTotal matchTotal = (LongConstraintMatchTotal) constraintMatchTotalMap.get(key);
-        if (matchTotal == null) {
-            matchTotal = new LongConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
-            constraintMatchTotalMap.put(key, matchTotal);
-        }
-        return matchTotal;
-    }
-
-    protected void registerDoubleConstraintMatch(RuleContext kcontext, int scoreLevel, double weight,
-            final DoubleConstraintUndoListener constraintUndoListener) {
-        if (constraintMatchEnabled) {
-            // Not needed in fast code: Add ConstraintMatch
-            constraintUndoListener.constraintMatchTotal = findDoubleConstraintMatchTotal(kcontext, scoreLevel);
-            constraintUndoListener.constraintMatch = constraintUndoListener
-                    .constraintMatchTotal.addConstraintMatch(kcontext, weight);
-        }
-        putConstraintUndoListener(kcontext, scoreLevel, constraintUndoListener);
-    }
-
-    protected abstract class DoubleConstraintUndoListener implements ConstraintUndoListener {
-
-        private DoubleConstraintMatchTotal constraintMatchTotal;
-        private DoubleConstraintMatch constraintMatch;
-
-        @Override
-        public final void unMatch() {
-            undo();
-            if (constraintMatchEnabled) {
-                // Not needed in fast code: Remove ConstraintMatch
-                constraintMatchTotal.removeConstraintMatch(constraintMatch);
-            }
-        }
-
-    }
-
-    private DoubleConstraintMatchTotal findDoubleConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
-        Rule rule = kcontext.getRule();
-        String constraintPackage = rule.getPackageName();
-        String constraintName = rule.getName();
-        List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
-        DoubleConstraintMatchTotal matchTotal = (DoubleConstraintMatchTotal) constraintMatchTotalMap.get(key);
-        if (matchTotal == null) {
-            matchTotal = new DoubleConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
-            constraintMatchTotalMap.put(key, matchTotal);
-        }
-        return matchTotal;
-    }
-
-    protected void registerBigDecimalConstraintMatch(RuleContext kcontext, int scoreLevel, BigDecimal weight,
-            final BigDecimalConstraintUndoListener constraintUndoListener) {
-        if (constraintMatchEnabled) {
-            // Not needed in fast code: Add ConstraintMatch
-            constraintUndoListener.constraintMatchTotal = findBigDecimalConstraintMatchTotal(kcontext, scoreLevel);
-            constraintUndoListener.constraintMatch = constraintUndoListener
-                    .constraintMatchTotal.addConstraintMatch(kcontext, weight);
-        }
-        putConstraintUndoListener(kcontext, scoreLevel, constraintUndoListener);
-    }
-
-    protected abstract class BigDecimalConstraintUndoListener implements ConstraintUndoListener {
-
-        private BigDecimalConstraintMatchTotal constraintMatchTotal;
-        private BigDecimalConstraintMatch constraintMatch;
-
-        @Override
-        public final void unMatch() {
-            undo();
-            if (constraintMatchEnabled) {
-                // Not needed in fast code: Remove ConstraintMatch
-                constraintMatchTotal.removeConstraintMatch(constraintMatch);
-            }
-        }
-
-    }
-
-    private BigDecimalConstraintMatchTotal findBigDecimalConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
-        Rule rule = kcontext.getRule();
-        String constraintPackage = rule.getPackageName();
-        String constraintName = rule.getName();
-        List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
-        BigDecimalConstraintMatchTotal matchTotal = (BigDecimalConstraintMatchTotal) constraintMatchTotalMap.get(key);
-        if (matchTotal == null) {
-            matchTotal = new BigDecimalConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
-            constraintMatchTotalMap.put(key, matchTotal);
-        }
-        return matchTotal;
-    }
-
-    private void putConstraintUndoListener(RuleContext kcontext, int scoreLevel, ConstraintUndoListener constraintUndoListener) {
+    protected void registerConstraintMatch(RuleContext kcontext,
+            final Runnable constraintUndoListener, Supplier<Score> scoreSupplier) {
         AgendaItem<?> agendaItem = (AgendaItem) kcontext.getMatch();
         ActivationUnMatchListener activationUnMatchListener = agendaItem.getActivationUnMatchListener();
-        if (activationUnMatchListener != null) {
-            MultiLevelActivationUnMatchListener multiLevelActivationUnMatchListener = (MultiLevelActivationUnMatchListener) activationUnMatchListener;
-            multiLevelActivationUnMatchListener.overwriteMatch(scoreLevel, constraintUndoListener);
+        ConstraintActivationUnMatchListener constraintActivationUnMatchListener;
+        if (activationUnMatchListener == null) {
+            constraintActivationUnMatchListener = new ConstraintActivationUnMatchListener(constraintUndoListener);
+            if (constraintMatchEnabled) {
+                // Not needed in fast code: Add ConstraintMatch
+                constraintActivationUnMatchListener.constraintMatchTotal = findConstraintMatchTotal(kcontext);
+            }
+            agendaItem.setActivationUnMatchListener(constraintActivationUnMatchListener);
         } else {
-            MultiLevelActivationUnMatchListener multiLevelActivationUnMatchListener = new MultiLevelActivationUnMatchListener(scoreLevel, constraintUndoListener);
-            agendaItem.setActivationUnMatchListener(multiLevelActivationUnMatchListener);
+            constraintActivationUnMatchListener = (ConstraintActivationUnMatchListener) activationUnMatchListener;
+            constraintActivationUnMatchListener.overwriteMatch(constraintUndoListener);
+        }
+        if (constraintMatchEnabled) {
+            // Not needed in fast code: Add ConstraintMatch
+            constraintActivationUnMatchListener.constraintMatch = constraintActivationUnMatchListener
+                    .constraintMatchTotal.addConstraintMatch(kcontext, scoreSupplier.get());
         }
     }
 
-    protected interface ConstraintUndoListener {
-
-        /**
-         * Calls {@link #undo()}
-         * and if constraint matches are enabled, also removes them from {@link ConstraintMatchTotal}.
-         */
-        void unMatch();
-
-        /**
-         * Undo the adding of a score weight for a specific score level.
-         */
-        void undo();
-
+    private ConstraintMatchTotal findConstraintMatchTotal(RuleContext kcontext) {
+        Rule rule = kcontext.getRule();
+        String constraintPackage = rule.getPackageName();
+        String constraintName = rule.getName();
+        String constraintId = constraintPackage + "/" + constraintName;
+        return constraintMatchTotalMap.computeIfAbsent(constraintId,
+                k -> new ConstraintMatchTotal(constraintPackage, constraintName, zeroScore));
     }
 
-    private static class MultiLevelActivationUnMatchListener implements ActivationUnMatchListener {
 
-        private static final int INITIAL_MAP_CAPACITY = 2;
+    private class ConstraintActivationUnMatchListener implements ActivationUnMatchListener {
 
-        private Map<Integer, ConstraintUndoListener> scoreLevelToConstraintUndoListenerMap;
+        private Runnable constraintUndoListener;
 
-        public MultiLevelActivationUnMatchListener(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
-            // Most use cases use only 1 scoreLevel per score rule and there are likely many instances of this class,
-            // so the initialCapacity is very memory conservative
-            scoreLevelToConstraintUndoListenerMap = new HashMap<>(INITIAL_MAP_CAPACITY);
-            scoreLevelToConstraintUndoListenerMap.put(scoreLevel, constraintUndoListener);
+        private ConstraintMatchTotal constraintMatchTotal;
+        private ConstraintMatch constraintMatch;
+
+        public ConstraintActivationUnMatchListener(Runnable constraintUndoListener) {
+            this.constraintUndoListener = constraintUndoListener;
         }
 
         @Override
         public final void unMatch(RuleRuntime ruleRuntime, Match match) {
-            for (ConstraintUndoListener constraintUndoListener : scoreLevelToConstraintUndoListenerMap.values()) {
-                constraintUndoListener.unMatch();
-            }
-            scoreLevelToConstraintUndoListenerMap.clear();
+            unMatch();
+            constraintUndoListener = null;
         }
 
-        public void overwriteMatch(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
-            ConstraintUndoListener oldConstraintUndoListener = scoreLevelToConstraintUndoListenerMap.put(scoreLevel, constraintUndoListener);
-            if (oldConstraintUndoListener != null) {
-                oldConstraintUndoListener.unMatch();
+        public void overwriteMatch(Runnable constraintUndoListener) {
+            if (this.constraintUndoListener != null) {
+                unMatch();
+            }
+            this.constraintUndoListener = constraintUndoListener;
+        }
+
+        public final void unMatch() {
+            constraintUndoListener.run();
+            if (constraintMatchEnabled) {
+                // Not needed in fast code: Remove ConstraintMatch
+                constraintMatchTotal.removeConstraintMatch(constraintMatch);
             }
         }
 

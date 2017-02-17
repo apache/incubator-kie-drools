@@ -17,56 +17,105 @@
 package org.optaplanner.core.api.score.constraint;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Retrievable from {@link ScoreDirector#getConstraintMatchTotals()}.
  */
-public abstract class ConstraintMatchTotal implements Serializable, Comparable<ConstraintMatchTotal> {
+public class ConstraintMatchTotal implements Serializable, Comparable<ConstraintMatchTotal> {
 
     protected final String constraintPackage;
     protected final String constraintName;
-    protected final int scoreLevel;
 
-    protected ConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
+    protected final Set<ConstraintMatch> constraintMatchSet;
+    protected Score scoreTotal;
+
+    /**
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param zeroScore never null
+     */
+    public ConstraintMatchTotal(String constraintPackage, String constraintName, Score zeroScore) {
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
-        this.scoreLevel = scoreLevel;
+        constraintMatchSet = new LinkedHashSet<>();
+        scoreTotal = zeroScore;
     }
 
+    /**
+     * @return never null
+     */
     public String getConstraintPackage() {
         return constraintPackage;
     }
 
+    /**
+     * @return never null
+     */
     public String getConstraintName() {
         return constraintName;
     }
 
-    public int getScoreLevel() {
-        return scoreLevel;
+    /**
+     * @return never null
+     */
+    public Set<ConstraintMatch> getConstraintMatchSet() {
+        return constraintMatchSet;
     }
 
-    public String getConstraintId() {
-        return constraintPackage + ":" + constraintName + ":" + scoreLevel;
-    }
-
-    public abstract Set<? extends ConstraintMatch> getConstraintMatchSet();
-
+    /**
+     * @return {@code >= 0}
+     */
     public int getConstraintMatchCount() {
         return getConstraintMatchSet().size();
     }
 
-    public abstract Number getWeightTotalAsNumber();
+    /**
+     * @return never null
+     */
+    public Score getScoreTotal() {
+        return scoreTotal;
+    }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public ConstraintMatch addConstraintMatch(RuleContext kcontext, Score score) {
+        List<Object> justificationList = extractJustificationList(kcontext);
+        return addConstraintMatch(justificationList, score);
+    }
+
+    public ConstraintMatch addConstraintMatch(List<Object> justificationList, Score score) {
+        scoreTotal = scoreTotal.add(score);
+        ConstraintMatch constraintMatch = new ConstraintMatch(constraintPackage, constraintName,
+                justificationList, score);
+        boolean added = constraintMatchSet.add(constraintMatch);
+        if (!added) {
+            throw new IllegalStateException("The constraintMatchTotal (" + this
+                    + ") could not add constraintMatch (" + constraintMatch
+                    + ") to its constraintMatchSet (" + constraintMatchSet + ").");
+        }
+        return constraintMatch;
+    }
+
+    public void removeConstraintMatch(ConstraintMatch constraintMatch) {
+        scoreTotal = scoreTotal.subtract(constraintMatch.getScore());
+        boolean removed = constraintMatchSet.remove(constraintMatch);
+        if (!removed) {
+            throw new IllegalStateException("The constraintMatchTotal (" + this
+                    + ") could not remove constraintMatch (" + constraintMatch
+                    + ") from its constraintMatchSet (" + constraintMatchSet + ").");
+        }
+    }
 
     protected List<Object> extractJustificationList(RuleContext kcontext) {
         List<Object> droolsMatchObjects = kcontext.getMatch().getObjects();
@@ -74,23 +123,26 @@ public abstract class ConstraintMatchTotal implements Serializable, Comparable<C
         return Lists.reverse(droolsMatchObjects);
     }
 
-    public String getIdentificationString() {
-        return constraintPackage + "/" + constraintName + "/level" + scoreLevel;
+    // ************************************************************************
+    // Infrastructure methods
+    // ************************************************************************
+
+    public String getConstraintId() {
+        return constraintPackage + "/" + constraintName;
     }
 
     @Override
     public int compareTo(ConstraintMatchTotal other) {
         return new CompareToBuilder()
-                .append(getScoreLevel(), other.getScoreLevel())
                 .append(getConstraintPackage(), other.getConstraintPackage())
                 .append(getConstraintName(), other.getConstraintName())
-                .append(getWeightTotalAsNumber(), other.getWeightTotalAsNumber())
+                .append(getScoreTotal(), other.getScoreTotal())
                 .toComparison();
     }
 
     @Override
     public String toString() {
-        return getIdentificationString() + "=" + getWeightTotalAsNumber();
+        return getConstraintId() + "=" + getScoreTotal();
     }
 
 }
