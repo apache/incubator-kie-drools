@@ -23,10 +23,10 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.kie.dmn.core.api.DMNModel;
-import org.kie.dmn.core.api.DMNRuntime;
-import org.kie.dmn.core.api.DMNType;
-import org.kie.dmn.core.ast.ItemDefNode;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.FeelTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;

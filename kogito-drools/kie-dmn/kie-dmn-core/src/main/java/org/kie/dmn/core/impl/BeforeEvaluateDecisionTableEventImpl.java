@@ -16,17 +16,17 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNResult;
-import org.kie.dmn.core.api.event.BeforeEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 
 public class BeforeEvaluateDecisionTableEventImpl
         implements BeforeEvaluateDecisionTableEvent {
 
     private final String nodeName;
     private final String dtName;
-    private final DMNResultImpl result;
+    private final DMNResult result;
 
-    public BeforeEvaluateDecisionTableEventImpl(String nodeName, String dtName, DMNResultImpl result) {
+    public BeforeEvaluateDecisionTableEventImpl(String nodeName, String dtName, DMNResult result) {
         this.nodeName = nodeName;
         this.dtName = dtName;
         this.result = result;

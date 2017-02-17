@@ -16,10 +16,10 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNContext;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.kie.dmn.api.core.DMNContext;
 
 public class DMNContextImpl
         implements DMNContext {

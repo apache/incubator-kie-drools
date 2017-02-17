@@ -18,7 +18,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Optional;
 
-import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.util.Either;
 
 public class FEELFnResult<T> extends Either<FEELEvent, T> {

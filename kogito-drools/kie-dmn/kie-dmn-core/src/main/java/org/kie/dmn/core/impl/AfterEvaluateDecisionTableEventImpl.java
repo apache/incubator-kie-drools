@@ -16,8 +16,8 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNResult;
-import org.kie.dmn.core.api.event.AfterEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +31,7 @@ public class AfterEvaluateDecisionTableEventImpl
     private final List<Integer> matches;
     private final List<Integer> fired;
 
-    public AfterEvaluateDecisionTableEventImpl(String nodeName, String dtName, DMNResultImpl result, List<Integer> matches, List<Integer> fired) {
+    public AfterEvaluateDecisionTableEventImpl(String nodeName, String dtName, DMNResult result, List<Integer> matches, List<Integer> fired) {
         this.nodeName = nodeName;
         this.dtName = dtName;
         this.result = result;

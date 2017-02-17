@@ -16,9 +16,9 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class EndsWithFunction

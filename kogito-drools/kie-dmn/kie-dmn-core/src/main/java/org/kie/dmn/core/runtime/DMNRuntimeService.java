@@ -16,7 +16,7 @@
 
 package org.kie.dmn.core.runtime;
 
-import org.kie.dmn.core.api.DMNRuntime;
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.internal.runtime.KieRuntimeService;
 import org.kie.internal.runtime.KnowledgeRuntime;

@@ -16,7 +16,7 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNType;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 

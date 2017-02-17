@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 
 public class AppendFunction
         extends BaseFEELFunction {

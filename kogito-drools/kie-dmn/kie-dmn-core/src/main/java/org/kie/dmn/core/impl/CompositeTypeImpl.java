@@ -16,10 +16,10 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNType;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.kie.dmn.api.core.DMNType;
 
 public class CompositeTypeImpl
         extends BaseDMNTypeImpl {

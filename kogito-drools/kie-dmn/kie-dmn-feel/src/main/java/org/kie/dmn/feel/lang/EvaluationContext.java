@@ -16,8 +16,8 @@
 
 package org.kie.dmn.feel.lang;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
 
 import java.util.Map;
 import java.util.function.Supplier;

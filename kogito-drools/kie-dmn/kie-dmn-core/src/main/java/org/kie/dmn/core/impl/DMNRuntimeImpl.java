@@ -19,14 +19,21 @@ package org.kie.dmn.core.impl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.dmn.core.api.*;
-import org.kie.dmn.core.api.event.DMNRuntimeEventListener;
-import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
-import org.kie.dmn.core.ast.BusinessKnowledgeModelNode;
-import org.kie.dmn.core.ast.DMNExpressionEvaluator;
-import org.kie.dmn.core.ast.DMNNode;
-import org.kie.dmn.core.ast.DecisionNode;
-import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNPackage;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
+import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
+import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.internal.io.ResourceTypePackage;
 
 import java.util.*;
@@ -35,8 +42,8 @@ import java.util.List;
 public class DMNRuntimeImpl
         implements DMNRuntime {
 
-    private KieRuntime                     runtime;
-    private InternalDMNRuntimeEventManager eventManager;
+    private KieRuntime                         runtime;
+    private DMNRuntimeEventManagerImpl         eventManager;
 
     public DMNRuntimeImpl(KieRuntime runtime) {
         this.runtime = runtime;
@@ -127,7 +134,8 @@ public class DMNRuntimeImpl
         }
     }
 
-    private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode bkm) {
+    private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode b) {
+        BusinessKnowledgeModelNodeImpl bkm = (BusinessKnowledgeModelNodeImpl) b;
         if( result.getContext().isDefined( bkm.getName() ) ) {
             // already resolved
             // TODO: do we need to check if the defined variable is a function as it should?
@@ -154,8 +162,8 @@ public class DMNRuntimeImpl
                 }
             }
 
-            DMNExpressionEvaluator.EvaluatorResult er = bkm.getEvaluator().evaluate( eventManager, result );
-            if( er.getResultType() == DMNExpressionEvaluator.ResultType.SUCCESS ) {
+            EvaluatorResult er = bkm.getEvaluator().evaluate( eventManager, result );
+            if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                 result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), er.getResult() );
             }
         } catch( Throwable t ) {
@@ -165,7 +173,8 @@ public class DMNRuntimeImpl
         }
     }
 
-    private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode decision) {
+    private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode d) {
+        DecisionNodeImpl decision = (DecisionNodeImpl) d;
         if( result.getContext().isDefined( decision.getName() ) ) {
             // already resolved
             return true;
@@ -210,8 +219,8 @@ public class DMNRuntimeImpl
                 return false;
             }
             try {
-                DMNExpressionEvaluator.EvaluatorResult er = decision.getEvaluator().evaluate( eventManager, result );
-                if( er.getResultType() == DMNExpressionEvaluator.ResultType.SUCCESS ) {
+                EvaluatorResult er = decision.getEvaluator().evaluate( eventManager, result );
+                if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                     Object value = er.getResult();
                     if( ! decision.getResultType().isCollection() && value instanceof Collection &&
                         ((Collection)value).size()==1 ) {
@@ -247,6 +256,11 @@ public class DMNRuntimeImpl
                                             t );
         dr.getMessages().add( msg );
         dr.setEvaluationStatus( status );
+    }
+
+    @Override
+    public DMNContext newContext() {
+        return DMNFactory.newContext();
     }
 
 }

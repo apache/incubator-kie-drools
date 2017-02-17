@@ -27,9 +27,9 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
 
-import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class TimeFunction

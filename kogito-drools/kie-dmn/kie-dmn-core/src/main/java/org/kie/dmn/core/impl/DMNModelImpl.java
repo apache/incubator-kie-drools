@@ -16,13 +16,18 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNMessage;
-import org.kie.dmn.core.api.DMNModel;
-import org.kie.dmn.core.api.DMNType;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.api.core.ast.ItemDefNode;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.ast.*;
 import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
 import org.kie.dmn.feel.model.v1_1.Definitions;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -122,7 +127,7 @@ public class DMNModelImpl
 
     @Override
     public Set<InputDataNode> getRequiredInputsForDecisionName(String decisionName) {
-        DecisionNode decision = getDecisionByName( decisionName );
+        DecisionNodeImpl decision = (DecisionNodeImpl) getDecisionByName( decisionName );
         Set<InputDataNode> inputs = new HashSet<>();
         if ( decision != null ) {
             collectRequiredInputs( decision.getDependencies().values(), inputs );
@@ -132,7 +137,7 @@ public class DMNModelImpl
 
     @Override
     public Set<InputDataNode> getRequiredInputsForDecisionId(String decisionId) {
-        DecisionNode decision = getDecisionById( decisionId );
+        DecisionNodeImpl decision = (DecisionNodeImpl) getDecisionById( decisionId );
         Set<InputDataNode> inputs = new HashSet<>();
         if ( decision != null ) {
             collectRequiredInputs( decision.getDependencies().values(), inputs );
@@ -169,7 +174,7 @@ public class DMNModelImpl
 
     @Override
     public Set<InputDataNode> getRequiredInputsForBusinessKnowledgeModelName(String bkmName) {
-        BusinessKnowledgeModelNode bkm = getBusinessKnowledgeModelByName( bkmName );
+        BusinessKnowledgeModelNodeImpl bkm = (BusinessKnowledgeModelNodeImpl) getBusinessKnowledgeModelByName( bkmName );
         Set<InputDataNode> inputs = new HashSet<>();
         if ( bkm != null ) {
             collectRequiredInputs( bkm.getDependencies().values(), inputs );
@@ -179,7 +184,7 @@ public class DMNModelImpl
 
     @Override
     public Set<InputDataNode> getRequiredInputsForBusinessKnowledgeModelId(String bkmId) {
-        BusinessKnowledgeModelNode bkm = getBusinessKnowledgeModelById( bkmId );
+        BusinessKnowledgeModelNodeImpl bkm = (BusinessKnowledgeModelNodeImpl) getBusinessKnowledgeModelById( bkmId );
         Set<InputDataNode> inputs = new HashSet<>();
         if ( bkm != null ) {
             collectRequiredInputs( bkm.getDependencies().values(), inputs );
@@ -192,9 +197,9 @@ public class DMNModelImpl
             if ( dep instanceof InputDataNode ) {
                 inputs.add( (InputDataNode) dep );
             } else if ( dep instanceof DecisionNode ) {
-                collectRequiredInputs( ((DecisionNode) dep).getDependencies().values(), inputs );
+                collectRequiredInputs( ((DecisionNodeImpl) dep).getDependencies().values(), inputs );
             } else if ( dep instanceof BusinessKnowledgeModelNode ) {
-                collectRequiredInputs( ((BusinessKnowledgeModelNode) dep).getDependencies().values(), inputs );
+                collectRequiredInputs( ((BusinessKnowledgeModelNodeImpl) dep).getDependencies().values(), inputs );
             }
         } );
     }

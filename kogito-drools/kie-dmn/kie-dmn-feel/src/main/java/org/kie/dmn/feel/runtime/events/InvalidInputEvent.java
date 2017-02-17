@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.runtime.events;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+
 /**
  * An event class to report a syntax error as returned by the parser
  */

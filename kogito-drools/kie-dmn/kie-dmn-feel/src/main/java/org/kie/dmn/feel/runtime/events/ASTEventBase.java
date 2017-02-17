@@ -16,8 +16,9 @@
 
 package org.kie.dmn.feel.runtime.events;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.ast.ASTNode;
-import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 
 /**
  * A base class with common functionality to all events

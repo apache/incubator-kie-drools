@@ -16,16 +16,22 @@
 
 package org.kie.dmn.core.ast;
 
-import org.kie.dmn.core.api.DMNMessage;
-import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.api.core.ast.DMNNode;
+import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNRuntimeEventManagerImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesSelectedEvent;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 
 import java.util.ArrayList;
@@ -52,7 +58,9 @@ public class DMNDTExpressionEvaluator
     }
 
     @Override
-    public EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+    public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult dmnr) {
+        DMNRuntimeEventManagerImpl eventManager = (DMNRuntimeEventManagerImpl) dmrem;
+        DMNResultImpl result = (DMNResultImpl) dmnr;
         EventResults r = null;
         try {
             eventManager.fireBeforeEvaluateDecisionTable( node.getName(), dt.getName(), result );
@@ -76,13 +84,13 @@ public class DMNDTExpressionEvaluator
             ctx.exitFrame();
 
             r = processEvents( events, eventManager, result );
-            return new EvaluatorResult( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
+            return new EvaluatorResultImpl( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
             eventManager.fireAfterEvaluateDecisionTable( node.getName(), dt.getName(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
         }
     }
 
-    private EventResults processEvents(List<FEELEvent> events, InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+    private EventResults processEvents(List<FEELEvent> events, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
         EventResults r = new EventResults();
         for ( FEELEvent e : events ) {
             if ( e instanceof DecisionTableRulesMatchedEvent ) {

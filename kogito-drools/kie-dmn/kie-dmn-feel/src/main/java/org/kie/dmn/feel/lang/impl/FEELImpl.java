@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.lang.impl;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -25,7 +26,6 @@ import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.events.FEELEventListener;
 
 import java.util.*;
 

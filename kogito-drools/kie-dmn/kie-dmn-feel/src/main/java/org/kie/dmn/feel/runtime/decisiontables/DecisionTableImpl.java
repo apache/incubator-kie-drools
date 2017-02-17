@@ -16,16 +16,16 @@
 
 package org.kie.dmn.feel.runtime.decisiontables;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
-import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.util.Either;
 import org.slf4j.Logger;

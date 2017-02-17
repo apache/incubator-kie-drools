@@ -16,20 +16,17 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNResult;
-import org.kie.dmn.core.api.event.AfterEvaluateBKMEvent;
-import org.kie.dmn.core.api.event.AfterEvaluateDecisionEvent;
-import org.kie.dmn.core.ast.BusinessKnowledgeModelNode;
-import org.kie.dmn.core.ast.DecisionNode;
-import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
 
 public class AfterEvaluateBKMEventImpl
         implements AfterEvaluateBKMEvent {
 
     private BusinessKnowledgeModelNode bkm;
-    private DMNResultImpl              result;
+    private DMNResult                  result;
 
-    public AfterEvaluateBKMEventImpl(BusinessKnowledgeModelNode bkm, DMNResultImpl result) {
+    public AfterEvaluateBKMEventImpl(BusinessKnowledgeModelNode bkm, DMNResult result) {
         this.bkm = bkm;
         this.result = result;
     }

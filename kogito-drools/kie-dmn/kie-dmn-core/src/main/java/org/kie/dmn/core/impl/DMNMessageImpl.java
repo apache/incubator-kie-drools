@@ -16,8 +16,8 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNMessage;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class DMNMessageImpl implements DMNMessage {
     private Severity  severity;

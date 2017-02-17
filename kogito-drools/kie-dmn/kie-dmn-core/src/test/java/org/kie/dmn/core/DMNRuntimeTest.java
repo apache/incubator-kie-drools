@@ -17,6 +17,16 @@
 package org.kie.dmn.core;
 
 import org.junit.Test;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.*;
 import org.kie.dmn.core.util.DMNRuntimeUtil;

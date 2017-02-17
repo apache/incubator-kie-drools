@@ -26,6 +26,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+
 /**
  * An event class to report an evaluation error occured due to invalid parameters.
  */

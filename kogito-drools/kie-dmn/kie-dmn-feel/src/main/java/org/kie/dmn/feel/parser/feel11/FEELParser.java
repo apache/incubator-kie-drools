@@ -17,10 +17,10 @@
 package org.kie.dmn.feel.parser.feel11;
 
 import org.antlr.v4.runtime.*;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
 import java.util.Collections;

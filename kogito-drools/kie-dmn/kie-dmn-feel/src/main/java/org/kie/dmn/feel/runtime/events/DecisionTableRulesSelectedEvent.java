@@ -18,6 +18,8 @@ package org.kie.dmn.feel.runtime.events;
 
 import java.util.List;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+
 /**
  * An event class to report all rules selected as a result for a decision table.
  *
