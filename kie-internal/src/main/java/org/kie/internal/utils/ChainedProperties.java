@@ -60,11 +60,11 @@ public class ChainedProperties
     private static final boolean CACHE_ENABLED = Boolean.parseBoolean(System.getProperty("org.kie.property.cache.enabled", "false"));
 
     protected static Map<CacheKey, List<Properties>> propertiesCache =
-    		Collections.synchronizedMap(
-    				new LinkedHashMap<CacheKey, List<Properties>>() {
-		private static final long serialVersionUID = -4728876927433598466L;
+            Collections.synchronizedMap(
+                    new LinkedHashMap<CacheKey, List<Properties>>() {
+        private static final long serialVersionUID = -4728876927433598466L;
 
-		protected boolean removeEldestEntry(
+        protected boolean removeEldestEntry(
                 Map.Entry<CacheKey, List<Properties>> eldest) {
             return size() > MAX_CACHE_ENTRIES;
         }
@@ -81,7 +81,7 @@ public class ChainedProperties
     }
 
     public ChainedProperties(String confFileName, ClassLoader classLoader,
-    		boolean populateDefaults) {
+            boolean populateDefaults) {
 
         this.props = new ArrayList<Properties>();
         this.defaultProps = new ArrayList<Properties>();
@@ -97,7 +97,7 @@ public class ChainedProperties
 
         // User home properties file
         loadProperties( System.getProperty( "user.home" ) + "/drools."
-        		+ confFileName, this.props );
+                + confFileName, this.props );
 
         // Working directory properties file
         loadProperties( "drools." + confFileName, this.props );
@@ -106,17 +106,17 @@ public class ChainedProperties
 
         // DROOLS-1443 load properties from supplied classLoader
         loadProperties( "META-INF/drools." + confFileName, classLoader,
-        		this.props );
+                this.props );
 
         // DROOLS-1443 load properties from supplied classLoader
         loadProperties( "/META-INF/drools." + confFileName, classLoader,
-        		this.props );
+                this.props );
 
         ClassLoader contextClassLoader = Thread.currentThread()
-        		.getContextClassLoader();
+                .getContextClassLoader();
         if ( contextClassLoader != null && contextClassLoader != classLoader ) {
-        	// DROOLS-1443 load properties from context classLoader
-        	loadProperties(confFileName, contextClassLoader, this.props);
+            // DROOLS-1443 load properties from context classLoader
+            loadProperties(confFileName, contextClassLoader, this.props);
         }
 
         ClassLoader systemClassLoader = null;
@@ -124,11 +124,11 @@ public class ChainedProperties
             systemClassLoader = ClassLoader.getSystemClassLoader();
         } catch (SecurityException se) {
             // DROOLS-1125: the system class loader cannot be retrieved in
-        	// Google App Engine - ignore
+            // Google App Engine - ignore
         }
         if ( systemClassLoader != null && systemClassLoader != classLoader ) {
-        	// DROOLS-1443 load properties from system classLoader
-        	loadProperties(confFileName, systemClassLoader, this.props);
+            // DROOLS-1443 load properties from system classLoader
+            loadProperties(confFileName, systemClassLoader, this.props);
         }
 
         if ( !populateDefaults ) {
@@ -138,18 +138,18 @@ public class ChainedProperties
         // load defaults
         // DROOLS-1443 load default properties from supplied classLoader
         loadProperties( "META-INF/drools.default." + confFileName, classLoader,
-        		this.defaultProps);
+                this.defaultProps);
         // DROOLS-1443 load default properties from supplied classLoader
         loadProperties( "/META-INF/drools.default." + confFileName, classLoader,
-        		this.defaultProps);
+                this.defaultProps);
 
         if ( contextClassLoader != null && contextClassLoader != classLoader ) {
-        	// DROOLS-1443 load default properties from context classLoader
-        	loadProperties(confFileName, contextClassLoader, this.defaultProps);
+            // DROOLS-1443 load default properties from context classLoader
+            loadProperties(confFileName, contextClassLoader, this.defaultProps);
         }
         if ( systemClassLoader != null && systemClassLoader != classLoader ) {
-        	// DROOLS-1443 load default properties from system classLoader
-        	loadProperties(confFileName, systemClassLoader, this.defaultProps);
+            // DROOLS-1443 load default properties from system classLoader
+            loadProperties(confFileName, systemClassLoader, this.defaultProps);
         }
 
         // this happens only in OSGi: for some reason doing
@@ -158,10 +158,10 @@ public class ChainedProperties
         if (this.defaultProps.isEmpty()) {
             try {
                 Class<?> c = Class.forName(
-                		"org.drools.compiler.lang.MVELDumper", false,
-                		classLoader);
+                        "org.drools.compiler.lang.MVELDumper", false,
+                        classLoader);
                 URL confURL = c.getResource("/META-INF/drools.default."
-                		+ confFileName);
+                        + confFileName);
                 loadProperties(confURL, this.defaultProps);
             } catch (ClassNotFoundException e) { }
         }
@@ -248,33 +248,35 @@ public class ChainedProperties
     }
 
     private void loadProperties(String fileName,
-    							List<Properties> chain) {
-    	if (fileName != null) {
-    		File file = new File(fileName);
-    		if (file != null && file.exists()) {
-    			loadProperties(fileName, null, chain);
-    		}
-    	}
+                                List<Properties> chain) {
+        if (fileName != null) {
+            File file = new File(fileName);
+            if (file != null && file.exists()) {
+                loadProperties(fileName, null, chain);
+            }
+        }
     }
 
     private void loadProperties(String fileName,
-    							ClassLoader classLoader,
-								List<Properties> chain) {
-    	if (!CACHE_ENABLED) {
-    	    try {
+                                ClassLoader classLoader,
+                                List<Properties> chain) {
+        if (!CACHE_ENABLED) {
+            try {
                 chain.addAll(read(fileName,classLoader));
             } catch (IOException e){}
-    	    return;
+            return;
         }
         CacheKey ck = new CacheKey(fileName, classLoader);
-    	List<Properties> cached = propertiesCache.get(ck);
-    	if (cached == null) {
-    	    try {
+        List<Properties> cached = propertiesCache.get(ck);
+        if (cached == null) {
+            try {
                 cached = read(fileName, classLoader);
                 propertiesCache.put(ck, cached);
             } catch (IOException e) {}
         }
-    	if (cached != null) chain.addAll(cached);
+        if (cached != null) {
+            chain.addAll(cached);
+        }
     }
 
     private List<Properties> read(String fileName, ClassLoader classLoader)
