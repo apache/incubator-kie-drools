@@ -26,14 +26,11 @@ import org.kie.api.Service;
  */
 public interface ServiceRegistry extends Service {
 
-    public void registerLocator(Class cls,
-                                Callable cal);
+    void registerLocator(Class cls, Callable cal);
 
-    public void unregisterLocator(Class cls);
+    void unregisterLocator(Class cls);
 
-    public <T> T get(Class<T> cls);
+    <T> T get(Class<T> cls);
 
-    public void addDefault(Class cls,
-                           String impl);
-
+    void addDefault(Class cls, String impl);
 }

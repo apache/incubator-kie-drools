@@ -28,6 +28,7 @@ import org.kie.api.KieServices;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.api.concurrent.KieExecutors;
+import org.kie.api.io.KieResources;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.internal.assembler.KieAssemblers;
@@ -182,11 +183,9 @@ public class ServiceRegistryImpl
         addDefault( "org.kie.internal.KnowledgeBaseFactoryService",
                     "org.drools.core.impl.KnowledgeBaseFactoryServiceImpl" );
 
-        addDefault( "org.kie.internal.io.ResourceFactoryService",
+        addDefault( KieResources.class,
                     "org.drools.core.io.impl.ResourceFactoryServiceImpl" );
 
-        addDefault(  "org.kie.internal.SystemEventListenerService",
-                     "org.drools.core.impl.SystemEventListenerServiceImpl" );
         addDefault(  KieMarshallers.class,
                      "org.drools.core.marshalling.impl.MarshallerProviderImpl");
         addDefault(  KieExecutors.class,

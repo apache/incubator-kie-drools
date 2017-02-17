@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
+import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.internal.definition.KnowledgeDescr;
 import org.kie.internal.utils.ServiceRegistryImpl;
@@ -43,25 +44,7 @@ import org.kie.internal.utils.ServiceRegistryImpl;
  * </pre>
  */
 public class ResourceFactory {
-    private static ResourceFactoryService factoryService;
-
-    /**
-     * A Service that can be started, to provide notifications of changed Resources.
-     *
-     * @return
-     */
-    public static ResourceChangeNotifier getResourceChangeNotifierService() {
-        return getFactoryService().getResourceChangeNotifierService();
-    }
-
-    /**
-     * As service, that scans the disk for changes, this acts as a Monitor for the Notifer service.
-     *
-     * @return
-     */
-     public static ResourceChangeScanner getResourceChangeScannerService() {
-        return getFactoryService().getResourceChangeScannerService();
-    }
+    private static KieResources factoryService;
 
     public static Resource newUrlResource(URL url) {
         return getFactoryService().newUrlResource( url );
@@ -145,11 +128,11 @@ public class ResourceFactory {
         return getFactoryService().newDescrResource( descr );
     }
 
-    private static synchronized void setFactoryService(ResourceFactoryService factoryService) {
+    private static synchronized void setFactoryService(KieResources factoryService) {
         ResourceFactory.factoryService = factoryService;
     }
 
-    private static synchronized ResourceFactoryService getFactoryService() {
+    private static synchronized KieResources getFactoryService() {
         if ( factoryService == null ) {
             loadFactoryService();
         }
@@ -157,7 +140,7 @@ public class ResourceFactory {
     }
 
     private static void loadFactoryService() {
-        setFactoryService( ServiceRegistryImpl.getInstance().get( ResourceFactoryService.class ) );
+        setFactoryService( ServiceRegistryImpl.getInstance().get( KieResources.class ) );
     }
 
 }
