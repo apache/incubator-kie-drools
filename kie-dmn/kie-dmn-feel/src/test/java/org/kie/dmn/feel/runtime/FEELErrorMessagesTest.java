@@ -17,11 +17,11 @@
 package org.kie.dmn.feel.runtime;
 
 import org.junit.Test;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.FEELEventListener;
 
 public class FEELErrorMessagesTest {
 

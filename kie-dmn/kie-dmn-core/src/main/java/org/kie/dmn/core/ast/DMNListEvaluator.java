@@ -16,9 +16,13 @@
 
 package org.kie.dmn.core.ast;
 
-import org.kie.dmn.core.api.DMNContext;
-import org.kie.dmn.core.api.DMNMessage;
-import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.slf4j.Logger;
@@ -51,7 +55,8 @@ public class DMNListEvaluator
     }
 
     @Override
-    public EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+    public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
+        DMNResultImpl result = (DMNResultImpl) dmnr;
         List<Object> results = new ArrayList<>();
         DMNContext previousContext = result.getContext();
         DMNContextImpl dmnContext = (DMNContextImpl) previousContext.clone();
@@ -71,7 +76,7 @@ public class DMNListEvaluator
                                 DMNMessage.Severity.ERROR,
                                 message,
                                 nodeId );
-                        return new EvaluatorResult( results, ResultType.FAILURE );
+                        return new EvaluatorResultImpl( results, ResultType.FAILURE );
                     }
                 } catch ( Exception e ) {
                     String message = "Error evaluating list element on position '" + (index + 1) + "' on list '" + name + "'";
@@ -81,7 +86,7 @@ public class DMNListEvaluator
                             message,
                             nodeId,
                             e );
-                    return new EvaluatorResult( results, ResultType.FAILURE );
+                    return new EvaluatorResultImpl( results, ResultType.FAILURE );
                 } finally {
                     index++;
                 }
@@ -89,7 +94,7 @@ public class DMNListEvaluator
         } finally {
             result.setContext( previousContext );
         }
-        return new EvaluatorResult( results, ResultType.SUCCESS );
+        return new EvaluatorResultImpl( results, ResultType.SUCCESS );
     }
 
 }

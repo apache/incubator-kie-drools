@@ -16,11 +16,11 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNType;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.kie.dmn.api.core.DMNType;
 
 public abstract class BaseDMNTypeImpl
         implements DMNType {

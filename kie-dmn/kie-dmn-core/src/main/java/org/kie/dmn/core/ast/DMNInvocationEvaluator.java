@@ -16,10 +16,16 @@
 
 package org.kie.dmn.core.ast;
 
-import org.kie.dmn.core.api.DMNContext;
-import org.kie.dmn.core.api.DMNMessage;
-import org.kie.dmn.core.api.DMNType;
-import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.feel.FEEL;
@@ -28,8 +34,6 @@ import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.model.v1_1.Invocation;
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.FEELEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +70,8 @@ public class DMNInvocationEvaluator
     }
 
     @Override
-    public EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+    public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
+        DMNResultImpl result = (DMNResultImpl) dmnr;
         DMNContext previousContext = result.getContext();
         DMNContextImpl dmnContext = (DMNContextImpl) previousContext.clone();
         result.setContext( dmnContext );
@@ -81,7 +86,7 @@ public class DMNInvocationEvaluator
                         DMNMessage.Severity.ERROR,
                         message,
                         nodeId );
-                return new EvaluatorResult( null, ResultType.FAILURE );
+                return new EvaluatorResultImpl( null, ResultType.FAILURE );
             }
             Object[] namedParams = new Object[parameters.size()];
             int index = 0;
@@ -97,7 +102,7 @@ public class DMNInvocationEvaluator
                                 DMNMessage.Severity.ERROR,
                                 message,
                                 nodeId );
-                        return new EvaluatorResult( null, ResultType.FAILURE );
+                        return new EvaluatorResultImpl( null, ResultType.FAILURE );
                     }
                 } catch ( Exception e ) {
                     String message = "Error invoking parameter expression for parameter '" + param.name + "' on node '" + nodeName + "'.";
@@ -107,7 +112,7 @@ public class DMNInvocationEvaluator
                             message,
                             nodeId,
                             e );
-                    return new EvaluatorResult( null, ResultType.FAILURE );
+                    return new EvaluatorResultImpl( null, ResultType.FAILURE );
                 }
             }
 
@@ -115,7 +120,7 @@ public class DMNInvocationEvaluator
             invocationResult = function.invokeReflectively( ctx, namedParams );
 
             boolean hasErrors = hasErrors( events, eventManager, result );
-            return new EvaluatorResult( invocationResult, hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
+            return new EvaluatorResultImpl( invocationResult, hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } catch ( Throwable t ) {
             String message = "Error invoking function '" + functionName + "' on node '" + nodeName + "'";
             logger.error( message );
@@ -127,7 +132,7 @@ public class DMNInvocationEvaluator
         } finally {
             result.setContext( previousContext );
         }
-        return new EvaluatorResult( invocationResult, ResultType.SUCCESS );
+        return new EvaluatorResultImpl( invocationResult, ResultType.SUCCESS );
     }
 
     private static class ActualParameter {
@@ -147,7 +152,7 @@ public class DMNInvocationEvaluator
         this.events.add( event );
     }
 
-    private boolean hasErrors(List<FEELEvent> events, InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+    private boolean hasErrors(List<FEELEvent> events, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
         boolean hasErrors = false;
         for ( FEELEvent e : events ) {
             if ( e.getSeverity() == FEELEvent.Severity.ERROR ) {

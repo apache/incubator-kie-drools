@@ -24,8 +24,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 
 @RunWith(Parameterized.class)
 public abstract class BaseFEELTest {

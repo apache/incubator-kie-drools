@@ -16,13 +16,13 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNMessage;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.dmn.api.core.DMNMessage;
+
 public class DMNDecisionResultImpl
-        implements org.kie.dmn.core.api.DMNDecisionResult {
+        implements org.kie.dmn.api.core.DMNDecisionResult {
     private String           decisionId;
     private String           decisionName;
     private Object           result;

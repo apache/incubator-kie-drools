@@ -16,14 +16,17 @@
 
 package org.kie.dmn.core.ast;
 
-import org.kie.dmn.core.api.DMNContext;
-import org.kie.dmn.core.api.DMNType;
-import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.model.v1_1.FunctionDefinition;
-import org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,10 +68,11 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
     }
 
     @Override
-    public EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+    public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
+        DMNResultImpl result = (DMNResultImpl) dmnr;
         // when this evaluator is executed, it should return a "FEEL function" to register in the context
         DMNExpressionEvaluatorFunction function = new DMNExpressionEvaluatorFunction( name, parameters, evaluator, eventManager, result );
-        return new EvaluatorResult( function, ResultType.SUCCESS );
+        return new EvaluatorResultImpl( function, ResultType.SUCCESS );
     }
 
     private static class FormalParameter {
@@ -84,10 +88,10 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
     public static class DMNExpressionEvaluatorFunction extends BaseFEELFunction {
         private final List<FormalParameter> parameters;
         private final DMNExpressionEvaluator evaluator;
-        private final InternalDMNRuntimeEventManager eventManager;
+        private final DMNRuntimeEventManager eventManager;
         private final DMNResultImpl resultContext;
 
-        public DMNExpressionEvaluatorFunction(String name, List<FormalParameter> parameters, DMNExpressionEvaluator evaluator, InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+        public DMNExpressionEvaluatorFunction(String name, List<FormalParameter> parameters, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
             super( name );
             this.parameters = parameters;
             this.evaluator = evaluator;

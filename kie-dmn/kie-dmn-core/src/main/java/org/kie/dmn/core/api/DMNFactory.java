@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core.api;
 
+import org.kie.dmn.api.core.DMNCompiler;
+import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNContextImpl;
 

@@ -16,10 +16,14 @@
 
 package org.kie.dmn.core.ast;
 
-import org.kie.dmn.core.api.DMNContext;
-import org.kie.dmn.core.api.DMNMessage;
-import org.kie.dmn.core.api.DMNType;
-import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.feel.model.v1_1.Context;
@@ -51,7 +55,8 @@ public class DMNContextEvaluator
     }
 
     @Override
-    public EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+    public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
+        DMNResultImpl result = (DMNResultImpl) dmnr;
         // when this evaluator is executed, it should either return a Map of key/value pairs
         // where keys are the name of the entries and values are the result of the evaluations
         // OR if a default result is implemented, it should return the result instead
@@ -81,20 +86,20 @@ public class DMNContextEvaluator
                                 DMNMessage.Severity.ERROR,
                                 message,
                                 null ); // can we retrieve the source ID here?
-                        return new EvaluatorResult( results, ResultType.FAILURE );
+                        return new EvaluatorResultImpl( results, ResultType.FAILURE );
                     }
                 } catch ( Exception e ) {
                     logger.error( "Error invoking expression for node '" + name + "'.", e );
-                    return new EvaluatorResult( results, ResultType.FAILURE );
+                    return new EvaluatorResultImpl( results, ResultType.FAILURE );
                 }
             }
         } finally {
             result.setContext( previousContext );
         }
         if( results.containsKey( RESULT_ENTRY ) ) {
-            return new EvaluatorResult( results.get( RESULT_ENTRY ), ResultType.SUCCESS );
+            return new EvaluatorResultImpl( results.get( RESULT_ENTRY ), ResultType.SUCCESS );
         } else {
-            return new EvaluatorResult( results, ResultType.SUCCESS );
+            return new EvaluatorResultImpl( results, ResultType.SUCCESS );
         }
     }
 

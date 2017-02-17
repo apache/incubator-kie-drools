@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.runtime.events;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+
 /**
  * A base class with common functionality to all events
  */
