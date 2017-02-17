@@ -170,6 +170,20 @@ public class MemoryKieModule extends AbstractKieModule
                 return null;
             }
         }
+
+        @Override public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof MemoryKieModuleResourceProvider)) return false;
+
+            MemoryKieModuleResourceProvider that =
+                    (MemoryKieModuleResourceProvider) o;
+
+            return mfs != null ? mfs.equals(that.mfs) : that.mfs == null;
+        }
+
+        @Override public int hashCode() {
+            return mfs != null ? mfs.hashCode() : 0;
+        }
     }
 
     private static class MemoryFileURLStreamHandler extends URLStreamHandler {
