@@ -16,17 +16,17 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNResult;
-import org.kie.dmn.core.api.event.BeforeEvaluateDecisionEvent;
-import org.kie.dmn.core.ast.DecisionNode;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 
 public class BeforeEvaluateDecisionEventImpl
         implements BeforeEvaluateDecisionEvent {
 
     private DecisionNode  decision;
-    private DMNResultImpl result;
+    private DMNResult     result;
 
-    public BeforeEvaluateDecisionEventImpl(DecisionNode decision, DMNResultImpl result) {
+    public BeforeEvaluateDecisionEventImpl(DecisionNode decision, DMNResult result) {
         this.decision = decision;
         this.result = result;
     }

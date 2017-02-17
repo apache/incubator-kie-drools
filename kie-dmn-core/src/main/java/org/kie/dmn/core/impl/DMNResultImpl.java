@@ -16,11 +16,11 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.api.DMNContext;
-import org.kie.dmn.core.api.DMNDecisionResult;
-import org.kie.dmn.core.api.DMNMessage;
-import org.kie.dmn.core.api.DMNResult;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
