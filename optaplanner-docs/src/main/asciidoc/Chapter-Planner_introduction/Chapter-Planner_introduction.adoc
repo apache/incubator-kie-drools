@@ -278,17 +278,20 @@ image::Chapter-Planner_introduction/plannerWebexamplesScreenshot.png[align="cent
 
 To run the examples in your favorite IDE:
 
-. Configure your IDE:
-** In IntelliJ IDEA, NetBeans or a non-vanilla Eclipse, just open the file [path]_examples/sources/pom.xml_ as a new project, the maven integration will take care of the rest.
-** In a vanilla Eclipse (which lacks the M2Eclipse plugin), open a new project for the directory [path]_examples/sources_ .
-*** Add all the jars to the classpath from the directory [path]_binaries_ and the directory [path]_examples/binaries_ , except for the file [path]_examples/binaries/optaplanner-examples-*.jar_ .
-*** Add the Java source directory [path]_src/main/java_ and the Java resources directory [path]_src/main/resources_ .
+* In IntelliJ IDEA, NetBeans or a non-vanilla Eclipse:
++
+. Open the file [path]_examples/sources/pom.xml_ as a new project, the maven integration will take care of the rest.
+. Run the examples from the project.
+
+* In a vanilla Eclipse (which lacks the M2Eclipse plugin):
+. Open a new project for the directory [path]_examples/sources_ .
+. Add all the jars to the classpath from the directory [path]_binaries_ and the directory [path]_examples/binaries_ , except for the file [path]_examples/binaries/optaplanner-examples-*.jar_ .
+. Add the Java source directory [path]_src/main/java_ and the Java resources directory [path]_src/main/resources_ .
 . Create a run configuration:
 ** Main class: `org.optaplanner.examples.app.OptaPlannerExamplesApp`
 ** VM parameters (optional): `-Xmx512M -server`
 .. To run a specific example directly and skip the example selection window, run its `App` class (for example ``CloudBalancingApp``) instead of ``OptaPlannerExamplesApp``.
 . Run that run configuration.
-
 
 
 [[useWithMavenGradleEtc]]
