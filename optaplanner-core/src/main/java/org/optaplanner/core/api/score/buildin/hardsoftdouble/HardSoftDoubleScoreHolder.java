@@ -50,24 +50,40 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param hardWeight higher is better, negative for a penalty, positive for a reward
      */
-    public void addHardConstraintMatch(RuleContext kcontext, final double weight) {
-        hardScore += weight;
+    public void addHardConstraintMatch(RuleContext kcontext, double hardWeight) {
+        hardScore += hardWeight;
         registerConstraintMatch(kcontext,
-                () -> hardScore -= weight,
-                () -> HardSoftDoubleScore.valueOf(weight, 0.0));
+                () -> hardScore -= hardWeight,
+                () -> HardSoftDoubleScore.valueOf(hardWeight, 0.0));
     }
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param softWeight higher is better, negative for a penalty, positive for a reward
      */
-    public void addSoftConstraintMatch(RuleContext kcontext, final double weight) {
-        softScore += weight;
+    public void addSoftConstraintMatch(RuleContext kcontext, double softWeight) {
+        softScore += softWeight;
         registerConstraintMatch(kcontext,
-                () -> softScore -= weight,
-                () -> HardSoftDoubleScore.valueOf(0.0, weight));
+                () -> softScore -= softWeight,
+                () -> HardSoftDoubleScore.valueOf(0.0, softWeight));
+    }
+
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeight higher is better, negative for a penalty, positive for a reward
+     * @param softWeight higher is better, negative for a penalty, positive for a reward
+     */
+    public void addMultiConstraintMatch(RuleContext kcontext, double hardWeight, double softWeight) {
+        hardScore += hardWeight;
+        softScore += softWeight;
+        registerConstraintMatch(kcontext,
+                () -> {
+                    hardScore -= hardWeight;
+                    softScore -= softWeight;
+                },
+                () -> HardSoftDoubleScore.valueOf(hardWeight, softWeight));
     }
 
     @Override

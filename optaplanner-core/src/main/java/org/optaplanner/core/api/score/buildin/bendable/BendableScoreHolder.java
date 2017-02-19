@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
@@ -63,7 +64,7 @@ public class BendableScoreHolder extends AbstractScoreHolder {
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @param weight higher is better, negative for a penalty, positive for a reward
      */
-    public void addHardConstraintMatch(RuleContext kcontext, final int hardLevel, final int weight) {
+    public void addHardConstraintMatch(RuleContext kcontext, int hardLevel, int weight) {
         hardScores[hardLevel] += weight;
         registerConstraintMatch(kcontext,
                 () -> hardScores[hardLevel] -= weight,
@@ -81,7 +82,7 @@ public class BendableScoreHolder extends AbstractScoreHolder {
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @param weight higher is better, negative for a penalty, positive for a reward
      */
-    public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final int weight) {
+    public void addSoftConstraintMatch(RuleContext kcontext, int softLevel, int weight) {
         softScores[softLevel] += weight;
         registerConstraintMatch(kcontext,
                 () -> softScores[softLevel] -= weight,
@@ -91,6 +92,38 @@ public class BendableScoreHolder extends AbstractScoreHolder {
                     newSoftScores[softLevel] = weight;
                     return BendableScore.valueOf(newHardScores, newSoftScores);
                 });
+    }
+
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeights never null, array of length {@link #getHardLevelsSize()}
+     * @param softWeights never null, array of length {@link #getSoftLevelsSize()}
+     */
+    public void addMultiConstraintMatch(RuleContext kcontext, int[] hardWeights, int[] softWeights) {
+        if (hardScores.length != hardWeights.length) {
+            throw new IllegalArgumentException("The hardScores length (" + hardScores.length
+                    + ") is different than the hardWeights length (" + hardWeights.length + ").");
+        }
+        for (int i = 0; i < hardScores.length; i++) {
+            hardScores[i] += hardWeights[i];
+        }
+        if (softScores.length != softWeights.length) {
+            throw new IllegalArgumentException("The softScores length (" + softScores.length
+                    + ") is different than the softWeights length (" + softWeights.length + ").");
+        }
+        for (int i = 0; i < softScores.length; i++) {
+            softScores[i] += softWeights[i];
+        }
+        registerConstraintMatch(kcontext,
+                () -> {
+                    for (int i = 0; i < hardScores.length; i++) {
+                        hardScores[i] -= hardWeights[i];
+                    }
+                    for (int i = 0; i < softScores.length; i++) {
+                        softScores[i] -= softWeights[i];
+                    }
+                },
+                () -> BendableScore.valueOf(hardWeights, softWeights));
     }
 
     @Override

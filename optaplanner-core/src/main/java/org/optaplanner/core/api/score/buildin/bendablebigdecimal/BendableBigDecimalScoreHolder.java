@@ -22,6 +22,7 @@ import java.util.Arrays;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
@@ -64,9 +65,9 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder {
      * @param kcontext never null, the magic variable in DRL
      * @param hardLevel {@code 0 <= hardLevel <} {@link #getHardLevelsSize()}.
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param weight never null, higher is better, negative for a penalty, positive for a reward
      */
-    public void addHardConstraintMatch(RuleContext kcontext, final int hardLevel, final BigDecimal weight) {
+    public void addHardConstraintMatch(RuleContext kcontext, int hardLevel, BigDecimal weight) {
         hardScores[hardLevel] = hardScores[hardLevel].add(weight);
         registerConstraintMatch(kcontext,
                 () -> hardScores[hardLevel] = hardScores[hardLevel].subtract(weight),
@@ -84,9 +85,9 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder {
      * @param kcontext never null, the magic variable in DRL
      * @param softLevel {@code 0 <= softLevel <} {@link #getSoftLevelsSize()}.
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param weight never null, higher is better, negative for a penalty, positive for a reward
      */
-    public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final BigDecimal weight) {
+    public void addSoftConstraintMatch(RuleContext kcontext, int softLevel, BigDecimal weight) {
         softScores[softLevel] = softScores[softLevel].add(weight);
         registerConstraintMatch(kcontext,
                 () -> softScores[softLevel] = softScores[softLevel].subtract(weight),
@@ -98,6 +99,38 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder {
                     newSoftScores[softLevel] = weight;
                     return BendableBigDecimalScore.valueOf(newHardScores, newSoftScores);
                 });
+    }
+
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardWeights never null, array of length {@link #getHardLevelsSize()}, does not contain any nulls
+     * @param softWeights never null, array of length {@link #getSoftLevelsSize()}, does not contain any nulls
+     */
+    public void addMultiConstraintMatch(RuleContext kcontext, BigDecimal[] hardWeights, BigDecimal[] softWeights) {
+        if (hardScores.length != hardWeights.length) {
+            throw new IllegalArgumentException("The hardScores length (" + hardScores.length
+                    + ") is different than the hardWeights length (" + hardWeights.length + ").");
+        }
+        for (int i = 0; i < hardScores.length; i++) {
+            hardScores[i] = hardScores[i].add(hardWeights[i]);
+        }
+        if (softScores.length != softWeights.length) {
+            throw new IllegalArgumentException("The softScores length (" + softScores.length
+                    + ") is different than the softWeights length (" + softWeights.length + ").");
+        }
+        for (int i = 0; i < softScores.length; i++) {
+            softScores[i] = softScores[i].add(softWeights[i]);
+        }
+        registerConstraintMatch(kcontext,
+                () -> {
+                    for (int i = 0; i < hardScores.length; i++) {
+                        hardScores[i] = hardScores[i].subtract(hardWeights[i]);
+                    }
+                    for (int i = 0; i < softScores.length; i++) {
+                        softScores[i] = softScores[i].subtract(softWeights[i]);
+                    }
+                },
+                () -> BendableBigDecimalScore.valueOf(hardWeights, softWeights));
     }
 
     @Override

@@ -44,9 +44,9 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
 
     /**
      * @param kcontext never null, the magic variable in DRL
-     * @param weight higher is better, negative for a penalty, positive for a reward
+     * @param weight never null, higher is better, negative for a penalty, positive for a reward
      */
-    public void addConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
+    public void addConstraintMatch(RuleContext kcontext, BigDecimal weight) {
         score = (score == null) ? weight : score.add(weight);
         registerConstraintMatch(kcontext,
                 () -> score = score.subtract(weight),
