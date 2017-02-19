@@ -191,7 +191,7 @@ public class MVELCompilationUnit
     public void writeExternal( ObjectOutput out ) throws IOException {
         out.writeUTF( name );
 
-        out.writeUTF( expression );
+        out.writeObject( expression );
 
         out.writeObject( globalIdentifiers );
         out.writeObject( operators );
@@ -212,7 +212,7 @@ public class MVELCompilationUnit
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
         name = in.readUTF();
-        expression = in.readUTF();
+        expression = (String) in.readObject();
 
         globalIdentifiers = (String[]) in.readObject();
         operators = (EvaluatorWrapper[]) in.readObject();
