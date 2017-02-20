@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.bendable;
 
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
 import static org.junit.Assert.*;
@@ -37,35 +38,48 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
     public void addConstraintMatch(boolean constraintMatchEnabled) {
         BendableScoreHolder scoreHolder = new BendableScoreHolder(constraintMatchEnabled, 1, 2);
 
-        scoreHolder.addHardConstraintMatch(mockRuleContext("scoreRule1"), 0, -10000);
-        assertEquals(BendableScore.valueOfUninitialized(0, new int[]{-10000}, new int[]{0, 0}), scoreHolder.extractScore(0));
+        RuleContext hard1 = mockRuleContext("hard1");
+        scoreHolder.addHardConstraintMatch(hard1, 0, -1);
+        assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), scoreHolder.extractScore(0));
 
-        RuleContext ruleContext2 = mockRuleContext("scoreRule2");
-        scoreHolder.addHardConstraintMatch(ruleContext2, 0, -2000);
-        assertEquals(BendableScore.valueOfUninitialized(0, new int[]{-12000}, new int[]{0, 0}), scoreHolder.extractScore(0));
-        callUnMatch(ruleContext2);
-        assertEquals(BendableScore.valueOfUninitialized(0, new int[]{-10000}, new int[]{0, 0}), scoreHolder.extractScore(0));
+        RuleContext hard2Undo = mockRuleContext("hard2Undo");
+        scoreHolder.addHardConstraintMatch(hard2Undo, 0, -8);
+        assertEquals(BendableScore.valueOf(new int[]{-9}, new int[]{0, 0}), scoreHolder.extractScore(0));
+        callUnMatch(hard2Undo);
+        assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), scoreHolder.extractScore(0));
 
-        RuleContext ruleContext3 = mockRuleContext("scoreRule3");
-        scoreHolder.addHardConstraintMatch(ruleContext3, 0, -900);
-        scoreHolder.addHardConstraintMatch(ruleContext3, 0, -300); // Overwrite existing
-        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, -90); // Different score level
-        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, -40); // Overwrite existing
-        assertEquals(BendableScore.valueOfUninitialized(0, new int[]{-10300}, new int[]{-40, 0}), scoreHolder.extractScore(0));
+        RuleContext medium1 = mockRuleContext("medium1");
+        scoreHolder.addSoftConstraintMatch(medium1, 0, -10);
+        scoreHolder.addSoftConstraintMatch(medium1, 0, -20); // Overwrite existing
 
-        scoreHolder.addSoftConstraintMatch(mockRuleContext("scoreRule4"), 1, -5);
-        assertEquals(BendableScore.valueOfUninitialized(0, new int[]{-10300}, new int[]{-40, -5}), scoreHolder.extractScore(0));
+        RuleContext soft1 = mockRuleContext("soft1");
+        scoreHolder.addSoftConstraintMatch(soft1, 1, -100);
+        scoreHolder.addSoftConstraintMatch(soft1, 1, -300); // Overwrite existing
 
-        RuleContext ruleContext5 = mockRuleContext("scoreRule5");
-        scoreHolder.addHardConstraintMatch(ruleContext5, 0, -2000);
-        scoreHolder.addSoftConstraintMatch(ruleContext5, 0, -2000); // Different score level
-        assertEquals(BendableScore.valueOfUninitialized(0, new int[]{-12300}, new int[]{-2040, -5}), scoreHolder.extractScore(0));
-        callUnMatch(ruleContext5);
-        assertEquals(BendableScore.valueOfUninitialized(0, new int[]{-10300}, new int[]{-40, -5}), scoreHolder.extractScore(0));
-        assertEquals(BendableScore.valueOfUninitialized(-7, new int[]{-10300}, new int[]{-40, -5}), scoreHolder.extractScore(-7));
+        RuleContext multi1 = mockRuleContext("multi1");
+        scoreHolder.addMultiConstraintMatch(multi1, new int[]{-1000}, new int[]{-10000, -100000});
+        scoreHolder.addMultiConstraintMatch(multi1, new int[]{-4000}, new int[]{-50000, -600000}); // Overwrite existing
 
+        RuleContext hard3 = mockRuleContext("hard3");
+        scoreHolder.addHardConstraintMatch(hard3, 0, -1000000);
+        scoreHolder.addHardConstraintMatch(hard3, 0, -7000000); // Overwrite existing
+
+        RuleContext soft2Undo = mockRuleContext("soft2Undo");
+        scoreHolder.addSoftConstraintMatch(soft2Undo, 1, -99);
+        callUnMatch(soft2Undo);
+
+        RuleContext multi2Undo = mockRuleContext("multi2Undo");
+        scoreHolder.addMultiConstraintMatch(multi2Undo, new int[]{-999}, new int[]{-999, -999});
+        callUnMatch(multi2Undo);
+
+        RuleContext medium2Undo = mockRuleContext("medium2Undo");
+        scoreHolder.addSoftConstraintMatch(medium2Undo, 0, -9999);
+        callUnMatch(medium2Undo);
+
+        assertEquals(BendableScore.valueOf(new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(0));
+        assertEquals(BendableScore.valueOfUninitialized(-7, new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(7, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(9, scoreHolder.getConstraintMatchTotals().size());
         }
     }
 

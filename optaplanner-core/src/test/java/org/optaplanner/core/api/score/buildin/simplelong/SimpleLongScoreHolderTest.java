@@ -37,15 +37,16 @@ public class SimpleLongScoreHolderTest extends AbstractScoreHolderTest {
     public void addConstraintMatch(boolean constraintMatchEnabled) {
         SimpleLongScoreHolder scoreHolder = new SimpleLongScoreHolder(constraintMatchEnabled);
 
-        scoreHolder.addConstraintMatch(mockRuleContext("scoreRule1"), -1000L);
+        RuleContext scoreRule1 = mockRuleContext("scoreRule1");
+        scoreHolder.addConstraintMatch(scoreRule1, -1000L);
 
-        RuleContext ruleContext2 = mockRuleContext("scoreRule2");
-        scoreHolder.addConstraintMatch(ruleContext2, -200L);
-        callUnMatch(ruleContext2);
+        RuleContext scoreRule2 = mockRuleContext("scoreRule2");
+        scoreHolder.addConstraintMatch(scoreRule2, -200L);
+        callUnMatch(scoreRule2);
 
-        RuleContext ruleContext3 = mockRuleContext("scoreRule3");
-        scoreHolder.addConstraintMatch(ruleContext3, -30L);
-        scoreHolder.addConstraintMatch(ruleContext3, -3L); // Overwrite existing
+        RuleContext scoreRule3 = mockRuleContext("scoreRule3");
+        scoreHolder.addConstraintMatch(scoreRule3, -30L);
+        scoreHolder.addConstraintMatch(scoreRule3, -3L); // Overwrite existing
 
         assertEquals(SimpleLongScore.valueOfUninitialized(0, -1003L), scoreHolder.extractScore(0));
         assertEquals(SimpleLongScore.valueOfUninitialized(-7, -1003L), scoreHolder.extractScore(-7));

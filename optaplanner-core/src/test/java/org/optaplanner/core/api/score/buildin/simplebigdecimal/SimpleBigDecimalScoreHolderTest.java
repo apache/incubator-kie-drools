@@ -39,15 +39,16 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
     public void addConstraintMatch(boolean constraintMatchEnabled) {
         SimpleBigDecimalScoreHolder scoreHolder = new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
 
-        scoreHolder.addConstraintMatch(mockRuleContext("scoreRule1"), new BigDecimal("-10.00"));
+        RuleContext scoreRule1 = mockRuleContext("scoreRule1");
+        scoreHolder.addConstraintMatch(scoreRule1, new BigDecimal("-10.00"));
 
-        RuleContext ruleContext2 = mockRuleContext("scoreRule2");
-        scoreHolder.addConstraintMatch(ruleContext2, new BigDecimal("-2.00"));
-        callUnMatch(ruleContext2);
+        RuleContext scoreRule2 = mockRuleContext("scoreRule2");
+        scoreHolder.addConstraintMatch(scoreRule2, new BigDecimal("-2.00"));
+        callUnMatch(scoreRule2);
 
-        RuleContext ruleContext3 = mockRuleContext("scoreRule3");
-        scoreHolder.addConstraintMatch(ruleContext3, new BigDecimal("-0.30"));
-        scoreHolder.addConstraintMatch(ruleContext3, new BigDecimal("-0.03")); // Overwrite existing
+        RuleContext scoreRule3 = mockRuleContext("scoreRule3");
+        scoreHolder.addConstraintMatch(scoreRule3, new BigDecimal("-0.30"));
+        scoreHolder.addConstraintMatch(scoreRule3, new BigDecimal("-0.03")); // Overwrite existing
 
         assertEquals(SimpleBigDecimalScore.valueOfUninitialized(0, new BigDecimal("-10.03")), scoreHolder.extractScore(0));
         assertEquals(SimpleBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-10.03")), scoreHolder.extractScore(-7));

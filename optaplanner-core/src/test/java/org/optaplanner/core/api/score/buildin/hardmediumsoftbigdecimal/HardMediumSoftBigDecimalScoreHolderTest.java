@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
 import static org.junit.Assert.*;
@@ -38,33 +39,45 @@ public class HardMediumSoftBigDecimalScoreHolderTest extends AbstractScoreHolder
     public void addConstraintMatch(boolean constraintMatchEnabled) {
         HardMediumSoftBigDecimalScoreHolder scoreHolder = new HardMediumSoftBigDecimalScoreHolder(constraintMatchEnabled);
 
-        scoreHolder.addHardConstraintMatch(mockRuleContext("scoreRule1"),
-                new BigDecimal("-10.00"));
+        RuleContext hard1 = mockRuleContext("hard1");
+        scoreHolder.addHardConstraintMatch(hard1, new BigDecimal("-0.01"));
 
-        RuleContext ruleContext2 = mockRuleContext("scoreRule2");
-        scoreHolder.addHardConstraintMatch(ruleContext2, new BigDecimal("-2.00"));
-        callUnMatch(ruleContext2);
+        RuleContext hard2Undo = mockRuleContext("hard2Undo");
+        scoreHolder.addHardConstraintMatch(hard2Undo, new BigDecimal("-0.09"));
+        callUnMatch(hard2Undo);
 
-        RuleContext ruleContext3 = mockRuleContext("scoreRule3");
-        scoreHolder.addSoftConstraintMatch(ruleContext3, new BigDecimal("-0.30"));
-        scoreHolder.addSoftConstraintMatch(ruleContext3, new BigDecimal("-0.03")); // Overwrite existing
-        scoreHolder.addHardConstraintMatch(ruleContext3, new BigDecimal("-3.00")); // Different score level
-        scoreHolder.addHardConstraintMatch(ruleContext3, new BigDecimal("-4.00")); // Overwrite existing
-        scoreHolder.addMediumConstraintMatch(ruleContext3, new BigDecimal("-80"));
-        scoreHolder.addMediumConstraintMatch(ruleContext3, new BigDecimal("7.20")); // Overwrite existing
+        RuleContext medium1 = mockRuleContext("medium1");
+        scoreHolder.addMediumConstraintMatch(medium1, new BigDecimal("-0.10"));
+        scoreHolder.addMediumConstraintMatch(medium1, new BigDecimal("-0.20")); // Overwrite existing
 
-        RuleContext ruleContext4 = mockRuleContext("scoreRule4");
-        scoreHolder.addHardConstraintMatch(ruleContext4, new BigDecimal("-1.00"));
-        scoreHolder.addMediumConstraintMatch(ruleContext4, new BigDecimal("1.00"));
-        scoreHolder.addSoftConstraintMatch(ruleContext4, new BigDecimal("-1.00"));
-        callUnMatch(ruleContext4);
+        RuleContext soft1 = mockRuleContext("soft1");
+        scoreHolder.addSoftConstraintMatch(soft1, new BigDecimal("-1.00"));
+        scoreHolder.addSoftConstraintMatch(soft1, new BigDecimal("-3.00")); // Overwrite existing
 
-        assertEquals(HardMediumSoftBigDecimalScore.valueOfUninitialized(0, new BigDecimal("-14.00"), new BigDecimal("7.20"), new BigDecimal("-0.03")),
-                scoreHolder.extractScore(0));
-        assertEquals(HardMediumSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-14.00"), new BigDecimal("7.20"), new BigDecimal("-0.03")),
-                scoreHolder.extractScore(-7));
+        RuleContext multi1 = mockRuleContext("multi1");
+        scoreHolder.addMultiConstraintMatch(multi1, new BigDecimal("-10.00"), new BigDecimal("-100.00"), new BigDecimal("-1000.00"));
+        scoreHolder.addMultiConstraintMatch(multi1, new BigDecimal("-40.00"), new BigDecimal("-500.00"), new BigDecimal("-6000.00")); // Overwrite existing
+
+        RuleContext hard3 = mockRuleContext("hard3");
+        scoreHolder.addHardConstraintMatch(hard3, new BigDecimal("-10000.00"));
+        scoreHolder.addHardConstraintMatch(hard3, new BigDecimal("-70000.00")); // Overwrite existing
+
+        RuleContext soft2Undo = mockRuleContext("soft2Undo");
+        scoreHolder.addSoftConstraintMatch(soft2Undo, new BigDecimal("-0.99"));
+        callUnMatch(soft2Undo);
+
+        RuleContext multi2Undo = mockRuleContext("multi2Undo");
+        scoreHolder.addMultiConstraintMatch(multi2Undo, new BigDecimal("-9.99"), new BigDecimal("-9.99"), new BigDecimal("-9.99"));
+        callUnMatch(multi2Undo);
+
+        RuleContext medium2Undo = mockRuleContext("medium2Undo");
+        scoreHolder.addMediumConstraintMatch(medium2Undo, new BigDecimal("-99.99"));
+        callUnMatch(medium2Undo);
+
+        assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-70040.01"), new BigDecimal("-500.20"), new BigDecimal("-6003.00")), scoreHolder.extractScore(0));
+        assertEquals(HardMediumSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-70040.01"), new BigDecimal("-500.20"), new BigDecimal("-6003.00")), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(8, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(9, scoreHolder.getConstraintMatchTotals().size());
         }
     }
 
