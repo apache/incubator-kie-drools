@@ -43,10 +43,13 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, new BigDecimal("-0.01"));
+        assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
-        scoreHolder.addHardConstraintMatch(hard2Undo, new BigDecimal("-0.09"));
+        scoreHolder.addHardConstraintMatch(hard2Undo, new BigDecimal("-0.08"));
+        assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-0.09"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
         callUnMatch(hard2Undo);
+        assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
 
         RuleContext soft1 = mockRuleContext("soft1");
         scoreHolder.addSoftConstraintMatch(soft1, new BigDecimal("-0.10"));

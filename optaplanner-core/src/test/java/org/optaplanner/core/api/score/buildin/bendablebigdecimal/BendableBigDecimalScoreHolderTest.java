@@ -42,13 +42,13 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, 0, new BigDecimal("-0.01"));
-        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{new BigDecimal("-0.01")}, new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO}), scoreHolder.extractScore(0));
+        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{new BigDecimal("-0.01")}, new BigDecimal[]{new BigDecimal("0.00"), new BigDecimal("0.00")}), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, 0, new BigDecimal("-0.08"));
-        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{new BigDecimal("-0.09")}, new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO}), scoreHolder.extractScore(0));
+        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{new BigDecimal("-0.09")}, new BigDecimal[]{new BigDecimal("0.00"), new BigDecimal("0.00")}), scoreHolder.extractScore(0));
         callUnMatch(hard2Undo);
-        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{new BigDecimal("-0.01")}, new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO}), scoreHolder.extractScore(0));
+        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{new BigDecimal("-0.01")}, new BigDecimal[]{new BigDecimal("0.00"), new BigDecimal("0.00")}), scoreHolder.extractScore(0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addSoftConstraintMatch(medium1, 0, new BigDecimal("-0.10"));

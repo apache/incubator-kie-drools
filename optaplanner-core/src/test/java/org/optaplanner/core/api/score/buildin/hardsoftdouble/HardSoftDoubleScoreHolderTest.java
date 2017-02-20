@@ -40,10 +40,13 @@ public class HardSoftDoubleScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -0.01);
+        assertEquals(HardSoftDoubleScore.valueOf(-0.01, -0.00), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
-        scoreHolder.addHardConstraintMatch(hard2Undo, -0.09);
+        scoreHolder.addHardConstraintMatch(hard2Undo, -0.08);
+        // skip assertEquals due to floating point arithmetic rounding errors
         callUnMatch(hard2Undo);
+        assertEquals(HardSoftDoubleScore.valueOf(-0.01, -0.00), scoreHolder.extractScore(0));
 
         RuleContext soft1 = mockRuleContext("soft1");
         scoreHolder.addSoftConstraintMatch(soft1, -0.10);

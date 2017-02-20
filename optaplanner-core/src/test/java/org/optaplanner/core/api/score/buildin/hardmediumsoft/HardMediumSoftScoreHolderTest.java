@@ -40,10 +40,13 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -1);
+        assertEquals(HardMediumSoftScore.valueOf(-1, 0, 0), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
-        scoreHolder.addHardConstraintMatch(hard2Undo, -9);
+        scoreHolder.addHardConstraintMatch(hard2Undo, -8);
+        assertEquals(HardMediumSoftScore.valueOf(-9, 0, 0), scoreHolder.extractScore(0));
         callUnMatch(hard2Undo);
+        assertEquals(HardMediumSoftScore.valueOf(-1, 0, 0), scoreHolder.extractScore(0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addMediumConstraintMatch(medium1, -10);

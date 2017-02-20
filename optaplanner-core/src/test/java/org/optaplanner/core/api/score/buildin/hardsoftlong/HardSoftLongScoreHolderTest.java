@@ -40,10 +40,13 @@ public class HardSoftLongScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext hard1 = mockRuleContext("hard1");
         scoreHolder.addHardConstraintMatch(hard1, -1L);
+        assertEquals(HardSoftLongScore.valueOf(-1L, -0L), scoreHolder.extractScore(0));
 
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
-        scoreHolder.addHardConstraintMatch(hard2Undo, -9L);
+        scoreHolder.addHardConstraintMatch(hard2Undo, -8L);
+        assertEquals(HardSoftLongScore.valueOf(-9L, -0L), scoreHolder.extractScore(0));
         callUnMatch(hard2Undo);
+        assertEquals(HardSoftLongScore.valueOf(-1L, -0L), scoreHolder.extractScore(0));
 
         RuleContext soft1 = mockRuleContext("soft1");
         scoreHolder.addSoftConstraintMatch(soft1, -10L);
