@@ -946,8 +946,15 @@ public class PatternBuilder
         Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
 
         // create bindings
+        TypeDeclaration typeDeclaration = getTypeDeclaration(pattern, context);
         for ( BindingDescr bind : mvelCtx.getBindings() ) {
-            buildRuleBindings( context, patternDescr, pattern, bind );
+            buildRuleBindings( context, patternDescr, pattern, bind, typeDeclaration );
+        }
+
+        if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
+            for ( String field : context.getRuleDescr().lookAheadFieldsOfIdentifier( patternDescr ) ) {
+                addFieldToPatternWatchlist( pattern, typeDeclaration, field );
+            }
         }
 
         if ( expr.length() == 0 ) {
@@ -1432,10 +1439,18 @@ public class PatternBuilder
         }
     }
 
-    protected void buildRuleBindings( final RuleBuildContext context,
-                                      final PatternDescr patternDescr,
-                                      final Pattern pattern,
-                                      final BindingDescr fieldBindingDescr ) {
+    protected void buildRuleBindings( RuleBuildContext context,
+                                      PatternDescr patternDescr,
+                                      Pattern pattern,
+                                      BindingDescr fieldBindingDescr ) {
+        buildRuleBindings( context, patternDescr, pattern, fieldBindingDescr, getTypeDeclaration(pattern, context) );
+    }
+
+    protected void buildRuleBindings( RuleBuildContext context,
+                                      PatternDescr patternDescr,
+                                      Pattern pattern,
+                                      BindingDescr fieldBindingDescr,
+                                      TypeDeclaration typeDeclaration ) {
 
         if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
                                                             fieldBindingDescr.getVariable(),
@@ -1471,23 +1486,28 @@ public class PatternBuilder
 
         declr.setReadAccessor( extractor );
 
-        if ( extractor instanceof ClassFieldReader ) {
-            ObjectType patternType = pattern.getObjectType();
-            if (patternType instanceof ClassObjectType) {
-                Class<?> patternClass = ((ClassObjectType)patternType).getClassType();
-                TypeDeclaration typeDeclaration = context.getKnowledgeBuilder().getTypeDeclaration(patternClass);
-
-                String fieldName = (( ClassFieldReader) extractor ).getFieldName();
-                if ( typeDeclaration.getAccessibleProperties().contains( fieldName ) ) {
-                    List<String> watchlist = pattern.getListenedProperties();
-                    if ( watchlist == null ) {
-                        watchlist = new ArrayList<String>( );
-                        pattern.setListenedProperties( watchlist );
-                    }
-                    watchlist.add( fieldName );
-                }
-            }
+        if ( typeDeclaration != null && extractor instanceof ClassFieldReader ) {
+            addFieldToPatternWatchlist( pattern, typeDeclaration, (( ClassFieldReader) extractor ).getFieldName() );
         }
+    }
+
+    private void addFieldToPatternWatchlist( Pattern pattern, TypeDeclaration typeDeclaration, String fieldName ) {
+        if ( typeDeclaration.getAccessibleProperties().contains( fieldName ) ) {
+            Collection<String> watchlist = pattern.getListenedProperties();
+            if ( watchlist == null ) {
+                watchlist = new HashSet<>( );
+                pattern.setListenedProperties( watchlist );
+            }
+            watchlist.add( fieldName );
+        }
+    }
+
+    private TypeDeclaration getTypeDeclaration(Pattern pattern, RuleBuildContext context) {
+        if ( pattern.getObjectType() instanceof ClassObjectType ) {
+            Class<?> patternClass = ( (ClassObjectType) pattern.getObjectType() ).getClassType();
+            return context.getKnowledgeBuilder().getTypeDeclaration( patternClass );
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")
