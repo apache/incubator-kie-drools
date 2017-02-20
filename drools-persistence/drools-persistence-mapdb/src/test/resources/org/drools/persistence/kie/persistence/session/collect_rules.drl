@@ -1,0 +1,79 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.persistence.kie.persistence.session
+
+import java.util.List
+
+import org.drools.persistence.kie.persistence.session.MapDBPersistentStatefulSessionTest.Door
+import org.drools.persistence.kie.persistence.session.MapDBPersistentStatefulSessionTest.Edible
+import org.drools.persistence.kie.persistence.session.MapDBPersistentStatefulSessionTest.ListHolder
+
+global List list
+
+declare Here
+   place : String
+end
+
+declare Location
+   thing : String
+   location : String
+end
+
+query connect( String x, String y )
+   Door(x, y;)
+   or 
+   Door(y, x;)
+end
+
+query whereFood( String x, String y )
+   ( Location(x, y;) and
+      Edible(x;) )
+   or 
+   ( Location(z, y;) and
+      whereFood(x, z;) )
+end
+
+query look(String place, List things, List food, List exits)
+   Here(place;)
+   things := List() from accumulate( Location(thing, place;), collectList( thing ) )
+   food := List() from accumulate( ?whereFood(thing, place;), collectList( thing ) )
+   exits := List() from accumulate( ?connect(place, exit;), collectList( exit ) )
+end
+
+query isContainedIn( String x, String y ) 
+    Location(x, y;)
+    or 
+    ( Location(z, y;) and isContainedIn(x, z;) )
+end
+
+rule reactiveLook 
+   when
+      listHolder : ListHolder()
+      Here( $place : place)
+      ?look($place, $things; $food := food, $exits := exits)
+   then
+      listHolder.setThings($things);
+      listHolder.setFood($food);
+      listHolder.setExits($exits);
+end
+
+rule "we have a list holder"
+    when
+        look($place, $things, $food, $exits;)
+    then
+        System.out.println("We are in the " + $place);
+end
+
