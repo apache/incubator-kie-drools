@@ -351,6 +351,36 @@ public class ProjectClassLoader extends ClassLoader {
                 new DefaultInternalTypesClassLoader( this );
     }
 
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProjectClassLoader)) return false;
+
+        ProjectClassLoader that = (ProjectClassLoader) o;
+
+        if (droolsClassLoader != null ? !droolsClassLoader.equals(
+                that.droolsClassLoader) : that.droolsClassLoader != null)
+            return false;
+        if (typesClassLoader != null ? !typesClassLoader.equals(
+                that.typesClassLoader) : that.typesClassLoader != null)
+            return false;
+        if (getParent() != null ? !getParent().equals(
+                that.getParent()) : that.getParent() != null)
+            return false;
+        return resourceProvider != null ? resourceProvider.equals(
+                that.resourceProvider) : that.resourceProvider == null;
+    }
+
+    @Override public int hashCode() {
+        int result =
+                droolsClassLoader != null ? droolsClassLoader.hashCode() : 0;
+        result = 31 * result + (
+                typesClassLoader != null ? typesClassLoader.hashCode() : 0);
+        result = 31 * result + (
+                resourceProvider != null ? resourceProvider.hashCode() : 0);
+        result = 31 * result +(getParent() != null ? getParent().hashCode() : 0);
+        return result;
+    }
+
     interface InternalTypesClassLoader {
         Class<?> defineClass(String name, byte[] bytecode);
         Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException;
