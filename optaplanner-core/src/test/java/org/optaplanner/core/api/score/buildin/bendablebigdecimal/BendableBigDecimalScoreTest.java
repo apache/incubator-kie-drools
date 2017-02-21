@@ -189,6 +189,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
         assertScoresEqualsAndHashCode(
                 scoreDefinitionHSS.createScore(new BigDecimal("-10"), new BigDecimal("-200"), new BigDecimal("-3000")),
                 scoreDefinitionHSS.createScore(new BigDecimal("-10"), new BigDecimal("-200"), new BigDecimal("-3000")),
+                scoreDefinitionHSS.createScore(new BigDecimal("-10.000"), new BigDecimal("-200.000"), new BigDecimal("-3000.000")),
                 scoreDefinitionHSS.createScoreUninitialized(0, new BigDecimal("-10"), new BigDecimal("-200"), new BigDecimal("-3000"))
         );
         assertScoresEqualsAndHashCode(

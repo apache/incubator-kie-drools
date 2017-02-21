@@ -160,7 +160,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         } else if (o instanceof SimpleBigDecimalScore) {
             SimpleBigDecimalScore other = (SimpleBigDecimalScore) o;
             return initScore == other.getInitScore()
-                    && score.equals(other.getScore());
+                    && score.stripTrailingZeros().equals(other.getScore().stripTrailingZeros());
         } else {
             return false;
         }
@@ -170,7 +170,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return ((17 * 37)
                 + initScore) * 37
-                + score.hashCode();
+                + score.stripTrailingZeros().hashCode();
     }
 
     @Override

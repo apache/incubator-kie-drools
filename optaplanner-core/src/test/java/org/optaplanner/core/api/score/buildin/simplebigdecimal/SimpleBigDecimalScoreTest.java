@@ -125,6 +125,7 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
         assertScoresEqualsAndHashCode(
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-10.0")),
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-10.0")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-10.000")),
                 SimpleBigDecimalScore.valueOfUninitialized(0, new BigDecimal("-10.0"))
         );
         assertScoresEqualsAndHashCode(

@@ -145,6 +145,7 @@ public class HardMediumSoftBigDecimalScoreTest extends AbstractScoreTest {
         assertScoresEqualsAndHashCode(
                 HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-10.0"), new BigDecimal("3.0"), new BigDecimal("-200.0")),
                 HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-10.0"), new BigDecimal("3.0"), new BigDecimal("-200.0")),
+                HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-10.000"), new BigDecimal("3.000"), new BigDecimal("-200.000")),
                 HardMediumSoftBigDecimalScore.valueOfUninitialized(0, new BigDecimal("-10.0"), new BigDecimal("3.0"), new BigDecimal("-200.0"))
         );
         assertScoresEqualsAndHashCode(

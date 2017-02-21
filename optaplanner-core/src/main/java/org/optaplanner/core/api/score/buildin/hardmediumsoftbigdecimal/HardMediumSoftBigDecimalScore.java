@@ -218,9 +218,9 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         } else if (o instanceof HardMediumSoftBigDecimalScore) {
             HardMediumSoftBigDecimalScore other = (HardMediumSoftBigDecimalScore) o;
             return initScore == other.getInitScore()
-                    && hardScore.equals(other.getHardScore())
-                    && mediumScore.equals(other.getMediumScore())
-                    && softScore.equals(other.getSoftScore());
+                    && hardScore.stripTrailingZeros().equals(other.getHardScore().stripTrailingZeros())
+                    && mediumScore.stripTrailingZeros().equals(other.getMediumScore().stripTrailingZeros())
+                    && softScore.stripTrailingZeros().equals(other.getSoftScore().stripTrailingZeros());
         } else {
             return false;
         }
@@ -231,9 +231,9 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return (((((17 * 37)
                 + initScore) * 37)
-                + hardScore.hashCode()) * 37
-                + mediumScore.hashCode()) * 37
-                + softScore.hashCode();
+                + hardScore.stripTrailingZeros().hashCode()) * 37
+                + mediumScore.stripTrailingZeros().hashCode()) * 37
+                + softScore.stripTrailingZeros().hashCode();
     }
 
     @Override

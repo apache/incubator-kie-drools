@@ -192,8 +192,8 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         } else if (o instanceof HardSoftBigDecimalScore) {
             HardSoftBigDecimalScore other = (HardSoftBigDecimalScore) o;
             return initScore == other.getInitScore()
-                    && hardScore.equals(other.getHardScore())
-                    && softScore.equals(other.getSoftScore());
+                    && hardScore.stripTrailingZeros().equals(other.getHardScore().stripTrailingZeros())
+                    && softScore.stripTrailingZeros().equals(other.getSoftScore().stripTrailingZeros());
         } else {
             return false;
         }
@@ -203,8 +203,8 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return (((17 * 37)
                 + initScore) * 37
-                + hardScore.hashCode()) * 37
-                + softScore.hashCode();
+                + hardScore.stripTrailingZeros().hashCode()) * 37
+                + softScore.stripTrailingZeros().hashCode();
     }
 
     @Override

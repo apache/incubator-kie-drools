@@ -329,12 +329,12 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
                 return false;
             }
             for (int i = 0; i < hardScores.length; i++) {
-                if (!hardScores[i].equals(other.getHardScore(i))) {
+                if (!hardScores[i].stripTrailingZeros().equals(other.getHardScore(i).stripTrailingZeros())) {
                     return false;
                 }
             }
             for (int i = 0; i < softScores.length; i++) {
-                if (!softScores[i].equals(other.getSoftScore(i))) {
+                if (!softScores[i].stripTrailingZeros().equals(other.getSoftScore(i).stripTrailingZeros())) {
                     return false;
                 }
             }
@@ -347,8 +347,12 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         int hashCode = (17 * 37) + initScore;
-        hashCode = (37 * hashCode) + Arrays.hashCode(hardScores);
-        hashCode = (37 * hashCode) + Arrays.hashCode(softScores);
+        for (BigDecimal hardScore : hardScores) {
+            hashCode = (37 * hashCode) + hardScore.stripTrailingZeros().hashCode();
+        }
+        for (BigDecimal softScore : softScores) {
+            hashCode = (37 * hashCode) + softScore.stripTrailingZeros().hashCode();
+        }
         return hashCode;
     }
 
