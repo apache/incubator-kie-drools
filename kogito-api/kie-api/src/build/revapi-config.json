@@ -1,368 +1,375 @@
 {
-  "revapi": {
-    "java": {
-      "filter": {
-        "classes": {
-          "regex": true,
-          "exclude": [
-            "org\\.kie\\.api\\.osgi\\.Activator.*"
-          ],
-          "_comment": [
-            "Not used. The class is not referenced in any of the downstream (Drools, jBPM) code. The Activator itself was disabled in 2013.",
-            "Exclusion is here in order not to check the transitive classes from dependencies which this class used.",
-            "This exclude can be removed once this class is not present in the oldVersion of artifact, i.e. 7.0.0.Final."
-          ]
+  "filters": {
+    "revapi": {
+      "java": {
+        "filter": {
+          "classes": {
+            "regex": true,
+            "exclude": [
+              "org\\.kie\\.api\\.osgi\\.Activator.*"
+            ],
+            "_comment": [
+              "Not used. The class is not referenced in any of the downstream (Drools, jBPM) code. The Activator itself was disabled in 2013.",
+              "Exclusion is here in order not to check the transitive classes from dependencies which this class used.",
+              "This exclude can be removed once this class is not present in the oldVersion of artifact, i.e. 7.0.0.Final."
+            ]
+          }
         }
       }
-    },
-    "_comment": "Changes between 6.5.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
-    "ignore": [
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method void org.kie.api.runtime.KieContainer::dispose()",
-        "justification": "KieContainer dispose to free up resources, JMX resources, containerId if was registered with the KieServices"
-      },
-      {
-        "code": "java.class.removed",
-        "old": "class org.kie.api.management.KieSessionMonitoringMBean",
-        "justification": "Interface moved from MBean type to MXBean type, so interface is now KieSessionMonitoringMXBean"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method double org.kie.api.management.KieSessionMonitoringMBean::getAverageFiringTime()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getKieBaseId()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.util.Date org.kie.api.management.KieSessionMonitoringMBean::getLastReset()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method javax.management.ObjectName org.kie.api.management.KieSessionMonitoringMBean::getName()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.util.Map<java.lang.String, java.lang.String> org.kie.api.management.KieSessionMonitoringMBean::getStatsByProcess()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.util.Map<java.lang.Long, java.lang.String> org.kie.api.management.KieSessionMonitoringMBean::getStatsByProcessInstance()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.util.Map<java.lang.String, java.lang.String> org.kie.api.management.KieSessionMonitoringMBean::getStatsByRule()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getStatsForProcess(java.lang.String)",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getStatsForProcessInstance(long)",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getStatsForRule(java.lang.String)",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalFiringTime()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalMatchesCancelled()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalMatchesCreated()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalMatchesFired()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalProcessInstancesCompleted()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalProcessInstancesStarted()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method void org.kie.api.management.KieSessionMonitoringMBean::reset()",
-        "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getKieSessionName()",
-        "justification": "KieSession bean is now only aggregated per session name"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalSessions()",
-        "justification": "KieSession bean is now only aggregated per session name"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method int org.kie.api.management.KieSessionMonitoringMBean::getKieSessionId()",
-        "justification": "KieSession bean is now only aggregated per session name"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalFactCount()",
-        "justification": "KieSession bean is now only aggregated per session name"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::getKieClasspathContainer(java.lang.String)",
-        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::getKieClasspathContainer(java.lang.String, java.lang.ClassLoader)",
-        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieClasspathContainer(java.lang.String)",
-        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieClasspathContainer(java.lang.String, java.lang.ClassLoader)",
-        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieContainer(java.lang.String, org.kie.api.builder.ReleaseId)",
-        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieContainer(java.lang.String, org.kie.api.builder.ReleaseId, java.lang.ClassLoader)",
-        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.KieSessionConfiguration org.kie.api.runtime.KieContainer::getKieSessionConfiguration()",
-        "justification": "Enables retrieving the default session configuration directly from KieContainer."
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.KieSessionConfiguration org.kie.api.runtime.KieContainer::getKieSessionConfiguration(java.lang.String)",
-        "justification": "Enables retrieving the named session configuration directly from KieContainer."
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newDispose()",
-        "justification": "Enables creating new instance of DisposeCommand"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.builder.model.KieBaseModel org.kie.api.builder.model.KieSessionModel::getKieBaseModel()",
-        "justification": "Enables retrieving the KieBaseModel from a KieSessionModel."
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.builder.model.KieBaseModel org.kie.api.runtime.KieContainer::getKieBaseModel(java.lang.String)",
-        "justification": "Enables retrieving the named KieBaseModel directly from KieContainer."
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.builder.model.KieSessionModel org.kie.api.runtime.KieContainer::getKieSessionModel(java.lang.String)",
-        "justification": "Enables retrieving the named KieSessionModel directly from KieContainer."
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.logger.KieRuntimeLogger org.kie.api.logger.KieLoggers::newFileLogger(org.kie.api.event.KieRuntimeEventManager, java.lang.String, int)",
-        "justification": "Allows to configure maxEventsInMemory in FileLogger."
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.builder.model.KieBaseModel org.kie.api.builder.model.KieModuleModel::newKieBaseModel()",
-        "justification": "Makes KieBase name optional."
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method void org.kie.api.runtime.rule.EntryPoint::delete(org.kie.api.runtime.rule.FactHandle, org.kie.api.runtime.rule.FactHandle.State)",
-        "justification": "Allows to state if the FactHandle has to be removed as an explicitly asserted fact, from the Truth Maintenance System or both."
-      },
-      {
-        "code": "java.method.parameterTypeChanged",
-        "old": "method parameter void org.kie.api.runtime.ClassObjectFilter::<init>(===java.lang.Class===)",
-        "new": "method parameter void org.kie.api.runtime.ClassObjectFilter::<init>(===java.lang.Class<?>===)",
-        "justification": "Using generics is generally preferable."
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.task.model.Task org.kie.api.task.TaskContext::loadTaskVariables(org.kie.api.task.model.Task)",
-        "justification": "Allows to load task variables (both input and output) for given task"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method java.util.Map<java.lang.String, java.lang.Object> org.kie.api.task.model.TaskData::getTaskInputVariables()",
-        "justification": "Provides access to task input variables directly from a task"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method java.util.Map<java.lang.String, java.lang.Object> org.kie.api.task.model.TaskData::getTaskOutputVariables()",
-        "justification": "Provides access to task output variables directly from a task"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.manager.RuntimeManager org.kie.api.runtime.manager.RuntimeManagerFactory::newPerCaseRuntimeManager(org.kie.api.runtime.manager.RuntimeEnvironment)",
-        "justification": "Case management implementation requires new type (strategy) of RuntimeManager"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.manager.RuntimeManager org.kie.api.runtime.manager.RuntimeManagerFactory::newPerCaseRuntimeManager(org.kie.api.runtime.manager.RuntimeEnvironment, java.lang.String)",
-        "justification": "Case management implementation requires new type (strategy) of RuntimeManager"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method void org.kie.api.runtime.KieSession::submit(org.kie.api.runtime.KieSession.AtomicAction)",
-        "justification": "allow to submit atomic actions during fireUntilHalt"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method void org.kie.api.runtime.rule.EntryPoint::update(org.kie.api.runtime.rule.FactHandle, java.lang.Object, java.lang.String[])",
-        "justification": "allow to specify the set of properties that have been modified by this update"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method void org.kie.api.runtime.rule.EntryPoint::update(org.kie.api.runtime.rule.FactHandle, java.lang.Object, java.lang.String[]) @ org.kie.api.runtime.KieRuntime",
-        "justification": "allow to specify the set of properties that have been modified by this update"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method void org.kie.api.runtime.rule.EntryPoint::update(org.kie.api.runtime.rule.FactHandle, java.lang.Object, java.lang.String[]) @ org.kie.api.runtime.KieSession",
-        "justification": "allow to specify the set of properties that have been modified by this update"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method void org.kie.api.runtime.rule.EntryPoint::update(org.kie.api.runtime.rule.FactHandle, java.lang.Object, java.lang.String[]) @ org.kie.api.runtime.rule.RuleRuntime",
-        "justification": "allow to specify the set of properties that have been modified by this update"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles()",
-        "justification": "allow to build new GetFactHandlesCommand"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles(java.lang.String)",
-        "justification": "allow to build new GetFactHandlesCommand with given out identifier"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles(org.kie.api.runtime.ObjectFilter)",
-        "justification": "allow to build new GetFactHandlesCommand with given ObjectFilter"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles(org.kie.api.runtime.ObjectFilter, java.lang.String)",
-        "justification": "allow to build new GetFactHandlesCommand with given ObjectFilter and out identifier"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.process.CaseData org.kie.api.runtime.process.ProcessContext::getCaseData()",
-        "justification": "Added operations to simplify access to case data from kcontext"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method org.kie.api.runtime.process.CaseAssignment org.kie.api.runtime.process.ProcessContext::getCaseAssignment()",
-        "justification": "Added operations to simplify access to case assignments from kcontext"
-      },
-      {
-        "code": "java.method.numberOfParametersChanged",
-        "old": "method java.util.List<java.lang.String> org.kie.api.task.UserGroupCallback::getGroupsForUser(java.lang.String, java.util.List<java.lang.String>, java.util.List<java.lang.String>)",
-        "new": "method java.util.List<java.lang.String> org.kie.api.task.UserGroupCallback::getGroupsForUser(java.lang.String)",
-        "justification": "Removed unused and confusing arguments"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method <T> T org.kie.api.runtime.KieSession::getKieRuntime(java.lang.Class<T>)",
-        "justification": "Promoting internal method getKieRuntime() to the public API"
-      },
-      {
-        "code": "java.field.serialVersionUIDUnchanged",
-        "old": "field org.kie.api.io.ResourceType.serialVersionUID",
-        "new": "field org.kie.api.io.ResourceType.serialVersionUID",
-        "justification": "Not an issue, since only default serial version generated by the compiler would be different, which is not needed."
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.util.List<org.kie.api.task.model.TaskSummary> org.kie.api.task.TaskService::getTasksByGroup(java.util.List<java.lang.String>)",
-        "justification": "RHBPMS-4184: Client wants to search by group id - it was present in 6.5.0.Final, but it is not relevant for 7.0"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.util.List<org.kie.api.task.model.TaskSummary> org.kie.api.task.TaskService::getTasksByVariousFields(java.lang.String, java.util.List<java.lang.Long>, java.util.List<java.lang.Long>, java.util.List<java.lang.Long>, java.util.List<java.lang.String>, java.util.List<java.lang.String>, java.util.List<java.lang.String>, java.util.List<org.kie.api.task.model.Status>, java.util.List<java.lang.String>, boolean)",
-        "justification": "Removed previously deprecated API"
-      },
-      {
-        "code": "java.method.removed",
-        "old": "method java.util.List<org.kie.api.task.model.TaskSummary> org.kie.api.task.TaskService::getTasksByVariousFields(java.lang.String, java.util.Map<java.lang.String, java.util.List<?>>, boolean)",
-        "justification": "Removed previously deprecated API"
-      },
-      {
-        "code": "java.method.returnTypeTypeParametersChanged",
-        "old": "method java.io.Serializable org.kie.api.runtime.rule.AccumulateFunction::createContext()",
-        "new": "method C org.kie.api.runtime.rule.AccumulateFunction<C extends java.io.Serializable>::createContext()",
-        "oldType": "java.io.Serializable",
-        "newType": "C extends java.io.Serializable",
-        "package": "org.kie.api.runtime.rule",
-        "classSimpleName": "AccumulateFunction",
-        "methodName": "createContext",
-        "elementKind": "method",
-        "justification": "DROOLS-1419 Generify AccumulateFunction to make it less verbose to implement. This is backwards compatible."
-      },
-      {
-        "code": "java.generics.elementNowParameterized",
-        "old": "interface org.kie.api.runtime.rule.AccumulateFunction",
-        "new": "interface org.kie.api.runtime.rule.AccumulateFunction<C extends java.io.Serializable>",
-        "package": "org.kie.api.runtime.rule",
-        "classSimpleName": "AccumulateFunction",
-        "elementKind": "interface",
-        "justification": "DROOLS-1419 Generify AccumulateFunction to make it less verbose to implement. This is backwards compatible."
-      },
-      {
-        "code": "java.generics.formalTypeParameterAdded",
-        "old": "interface org.kie.api.runtime.rule.AccumulateFunction",
-        "new": "interface org.kie.api.runtime.rule.AccumulateFunction<C extends java.io.Serializable>",
-        "package": "org.kie.api.runtime.rule",
-        "classSimpleName": "AccumulateFunction",
-        "elementKind": "interface",
-        "justification": "DROOLS-1419 Generify AccumulateFunction to make it less verbose to implement. This is backwards compatible."
-      },
-      {
-        "code": "java.class.removed",
-        "old": "class org.kie.api.runtime.conf.TimedRuleExectionOption",
-        "package": "org.kie.api.runtime.conf",
-        "classSimpleName": "TimedRuleExectionOption",
-        "elementKind": "class",
-        "justification": "Class removed on major release 7.0.0 resolving DROOLS-1244 TimedRuleExectionOption typing mistake"
-      }
-    ]
+    }
+  },
+
+  "ignores": {
+    "revapi": {
+      "_comment": "Changes between 6.5.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
+      "ignore": [
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.runtime.KieContainer::dispose()",
+          "justification": "KieContainer dispose to free up resources, JMX resources, containerId if was registered with the KieServices"
+        },
+        {
+          "code": "java.class.removed",
+          "old": "class org.kie.api.management.KieSessionMonitoringMBean",
+          "justification": "Interface moved from MBean type to MXBean type, so interface is now KieSessionMonitoringMXBean"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method double org.kie.api.management.KieSessionMonitoringMBean::getAverageFiringTime()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getKieBaseId()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.Date org.kie.api.management.KieSessionMonitoringMBean::getLastReset()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method javax.management.ObjectName org.kie.api.management.KieSessionMonitoringMBean::getName()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.Map<java.lang.String, java.lang.String> org.kie.api.management.KieSessionMonitoringMBean::getStatsByProcess()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.Map<java.lang.Long, java.lang.String> org.kie.api.management.KieSessionMonitoringMBean::getStatsByProcessInstance()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.Map<java.lang.String, java.lang.String> org.kie.api.management.KieSessionMonitoringMBean::getStatsByRule()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getStatsForProcess(java.lang.String)",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getStatsForProcessInstance(long)",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getStatsForRule(java.lang.String)",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalFiringTime()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalMatchesCancelled()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalMatchesCreated()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalMatchesFired()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalProcessInstancesCompleted()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalProcessInstancesStarted()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void org.kie.api.management.KieSessionMonitoringMBean::reset()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getKieSessionName()",
+          "justification": "KieSession bean is now only aggregated per session name"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalSessions()",
+          "justification": "KieSession bean is now only aggregated per session name"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method int org.kie.api.management.KieSessionMonitoringMBean::getKieSessionId()",
+          "justification": "KieSession bean is now only aggregated per session name"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalFactCount()",
+          "justification": "KieSession bean is now only aggregated per session name"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::getKieClasspathContainer(java.lang.String)",
+          "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::getKieClasspathContainer(java.lang.String, java.lang.ClassLoader)",
+          "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieClasspathContainer(java.lang.String)",
+          "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieClasspathContainer(java.lang.String, java.lang.ClassLoader)",
+          "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieContainer(java.lang.String, org.kie.api.builder.ReleaseId)",
+          "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieContainer(java.lang.String, org.kie.api.builder.ReleaseId, java.lang.ClassLoader)",
+          "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieSessionConfiguration org.kie.api.runtime.KieContainer::getKieSessionConfiguration()",
+          "justification": "Enables retrieving the default session configuration directly from KieContainer."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.KieSessionConfiguration org.kie.api.runtime.KieContainer::getKieSessionConfiguration(java.lang.String)",
+          "justification": "Enables retrieving the named session configuration directly from KieContainer."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newDispose()",
+          "justification": "Enables creating new instance of DisposeCommand"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.builder.model.KieBaseModel org.kie.api.builder.model.KieSessionModel::getKieBaseModel()",
+          "justification": "Enables retrieving the KieBaseModel from a KieSessionModel."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.builder.model.KieBaseModel org.kie.api.runtime.KieContainer::getKieBaseModel(java.lang.String)",
+          "justification": "Enables retrieving the named KieBaseModel directly from KieContainer."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.builder.model.KieSessionModel org.kie.api.runtime.KieContainer::getKieSessionModel(java.lang.String)",
+          "justification": "Enables retrieving the named KieSessionModel directly from KieContainer."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.logger.KieRuntimeLogger org.kie.api.logger.KieLoggers::newFileLogger(org.kie.api.event.KieRuntimeEventManager, java.lang.String, int)",
+          "justification": "Allows to configure maxEventsInMemory in FileLogger."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.builder.model.KieBaseModel org.kie.api.builder.model.KieModuleModel::newKieBaseModel()",
+          "justification": "Makes KieBase name optional."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.runtime.rule.EntryPoint::delete(org.kie.api.runtime.rule.FactHandle, org.kie.api.runtime.rule.FactHandle.State)",
+          "justification": "Allows to state if the FactHandle has to be removed as an explicitly asserted fact, from the Truth Maintenance System or both."
+        },
+        {
+          "code": "java.method.parameterTypeChanged",
+          "old": "method parameter void org.kie.api.runtime.ClassObjectFilter::<init>(===java.lang.Class===)",
+          "new": "method parameter void org.kie.api.runtime.ClassObjectFilter::<init>(===java.lang.Class<?>===)",
+          "justification": "Using generics is generally preferable."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.task.model.Task org.kie.api.task.TaskContext::loadTaskVariables(org.kie.api.task.model.Task)",
+          "justification": "Allows to load task variables (both input and output) for given task"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Map<java.lang.String, java.lang.Object> org.kie.api.task.model.TaskData::getTaskInputVariables()",
+          "justification": "Provides access to task input variables directly from a task"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Map<java.lang.String, java.lang.Object> org.kie.api.task.model.TaskData::getTaskOutputVariables()",
+          "justification": "Provides access to task output variables directly from a task"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.manager.RuntimeManager org.kie.api.runtime.manager.RuntimeManagerFactory::newPerCaseRuntimeManager(org.kie.api.runtime.manager.RuntimeEnvironment)",
+          "justification": "Case management implementation requires new type (strategy) of RuntimeManager"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.manager.RuntimeManager org.kie.api.runtime.manager.RuntimeManagerFactory::newPerCaseRuntimeManager(org.kie.api.runtime.manager.RuntimeEnvironment, java.lang.String)",
+          "justification": "Case management implementation requires new type (strategy) of RuntimeManager"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.runtime.KieSession::submit(org.kie.api.runtime.KieSession.AtomicAction)",
+          "justification": "allow to submit atomic actions during fireUntilHalt"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.runtime.rule.EntryPoint::update(org.kie.api.runtime.rule.FactHandle, java.lang.Object, java.lang.String[])",
+          "justification": "allow to specify the set of properties that have been modified by this update"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.runtime.rule.EntryPoint::update(org.kie.api.runtime.rule.FactHandle, java.lang.Object, java.lang.String[]) @ org.kie.api.runtime.KieRuntime",
+          "justification": "allow to specify the set of properties that have been modified by this update"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.runtime.rule.EntryPoint::update(org.kie.api.runtime.rule.FactHandle, java.lang.Object, java.lang.String[]) @ org.kie.api.runtime.KieSession",
+          "justification": "allow to specify the set of properties that have been modified by this update"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.runtime.rule.EntryPoint::update(org.kie.api.runtime.rule.FactHandle, java.lang.Object, java.lang.String[]) @ org.kie.api.runtime.rule.RuleRuntime",
+          "justification": "allow to specify the set of properties that have been modified by this update"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles()",
+          "justification": "allow to build new GetFactHandlesCommand"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles(java.lang.String)",
+          "justification": "allow to build new GetFactHandlesCommand with given out identifier"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles(org.kie.api.runtime.ObjectFilter)",
+          "justification": "allow to build new GetFactHandlesCommand with given ObjectFilter"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles(org.kie.api.runtime.ObjectFilter, java.lang.String)",
+          "justification": "allow to build new GetFactHandlesCommand with given ObjectFilter and out identifier"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.process.CaseData org.kie.api.runtime.process.ProcessContext::getCaseData()",
+          "justification": "Added operations to simplify access to case data from kcontext"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.runtime.process.CaseAssignment org.kie.api.runtime.process.ProcessContext::getCaseAssignment()",
+          "justification": "Added operations to simplify access to case assignments from kcontext"
+        },
+        {
+          "code": "java.method.numberOfParametersChanged",
+          "old": "method java.util.List<java.lang.String> org.kie.api.task.UserGroupCallback::getGroupsForUser(java.lang.String, java.util.List<java.lang.String>, java.util.List<java.lang.String>)",
+          "new": "method java.util.List<java.lang.String> org.kie.api.task.UserGroupCallback::getGroupsForUser(java.lang.String)",
+          "justification": "Removed unused and confusing arguments"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <T> T org.kie.api.runtime.KieSession::getKieRuntime(java.lang.Class<T>)",
+          "justification": "Promoting internal method getKieRuntime() to the public API"
+        },
+        {
+          "code": "java.field.serialVersionUIDUnchanged",
+          "old": "field org.kie.api.io.ResourceType.serialVersionUID",
+          "new": "field org.kie.api.io.ResourceType.serialVersionUID",
+          "justification": "Not an issue, since only default serial version generated by the compiler would be different, which is not needed."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.List<org.kie.api.task.model.TaskSummary> org.kie.api.task.TaskService::getTasksByGroup(java.util.List<java.lang.String>)",
+          "justification": "RHBPMS-4184: Client wants to search by group id - it was present in 6.5.0.Final, but it is not relevant for 7.0"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.List<org.kie.api.task.model.TaskSummary> org.kie.api.task.TaskService::getTasksByVariousFields(java.lang.String, java.util.List<java.lang.Long>, java.util.List<java.lang.Long>, java.util.List<java.lang.Long>, java.util.List<java.lang.String>, java.util.List<java.lang.String>, java.util.List<java.lang.String>, java.util.List<org.kie.api.task.model.Status>, java.util.List<java.lang.String>, boolean)",
+          "justification": "Removed previously deprecated API"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.List<org.kie.api.task.model.TaskSummary> org.kie.api.task.TaskService::getTasksByVariousFields(java.lang.String, java.util.Map<java.lang.String, java.util.List<?>>, boolean)",
+          "justification": "Removed previously deprecated API"
+        },
+        {
+          "code": "java.method.returnTypeTypeParametersChanged",
+          "old": "method java.io.Serializable org.kie.api.runtime.rule.AccumulateFunction::createContext()",
+          "new": "method C org.kie.api.runtime.rule.AccumulateFunction<C extends java.io.Serializable>::createContext()",
+          "oldType": "java.io.Serializable",
+          "newType": "C extends java.io.Serializable",
+          "package": "org.kie.api.runtime.rule",
+          "classSimpleName": "AccumulateFunction",
+          "methodName": "createContext",
+          "elementKind": "method",
+          "justification": "DROOLS-1419 Generify AccumulateFunction to make it less verbose to implement. This is backwards compatible."
+        },
+        {
+          "code": "java.generics.elementNowParameterized",
+          "old": "interface org.kie.api.runtime.rule.AccumulateFunction",
+          "new": "interface org.kie.api.runtime.rule.AccumulateFunction<C extends java.io.Serializable>",
+          "package": "org.kie.api.runtime.rule",
+          "classSimpleName": "AccumulateFunction",
+          "elementKind": "interface",
+          "justification": "DROOLS-1419 Generify AccumulateFunction to make it less verbose to implement. This is backwards compatible."
+        },
+        {
+          "code": "java.generics.formalTypeParameterAdded",
+          "old": "interface org.kie.api.runtime.rule.AccumulateFunction",
+          "new": "interface org.kie.api.runtime.rule.AccumulateFunction<C extends java.io.Serializable>",
+          "package": "org.kie.api.runtime.rule",
+          "classSimpleName": "AccumulateFunction",
+          "elementKind": "interface",
+          "justification": "DROOLS-1419 Generify AccumulateFunction to make it less verbose to implement. This is backwards compatible."
+        },
+        {
+          "code": "java.class.removed",
+          "old": "class org.kie.api.runtime.conf.TimedRuleExectionOption",
+          "package": "org.kie.api.runtime.conf",
+          "classSimpleName": "TimedRuleExectionOption",
+          "elementKind": "class",
+          "justification": "Class removed on major release 7.0.0 resolving DROOLS-1244 TimedRuleExectionOption typing mistake"
+        }
+      ]
+    }
   }
 }
