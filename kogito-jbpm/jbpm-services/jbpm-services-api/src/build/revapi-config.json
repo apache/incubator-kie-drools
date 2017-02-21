@@ -1,107 +1,114 @@
 {
-  "revapi": {
-    "java": {
-      "filter": {
-        "_comment": "We don't want to check transitive classes, e.g. from kie-api, since we already check them in their own module.",
-        "packages": {
-          "regex": true,
-          "include": [
-            "org\\.jbpm\\.services\\.api.*"
-          ]
+  "filters": {
+    "revapi": {
+      "java": {
+        "filter": {
+          "_comment": "We don't want to check transitive classes, e.g. from kie-api, since we already check them in their own module.",
+          "packages": {
+            "regex": true,
+            "include": [
+              "org\\.jbpm\\.services\\.api.*"
+            ]
+          }
         }
       }
-    },
-    "_comment": "Changes between 6.5.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
-    "ignore": [
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method java.util.Collection<org.jbpm.services.api.model.NodeInstanceDesc> org.jbpm.services.api.RuntimeDataService::getNodeInstancesByCorrelationKeyNodeType(org.kie.internal.process.CorrelationKey, java.util.List<java.lang.Integer>, java.util.List<java.lang.String>, org.kie.api.runtime.query.QueryContext)",
-        "justification": "Added as it's required by case management to efficiently find node instance of given type for a case"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method java.util.Collection<org.jbpm.services.api.model.NodeInstanceDesc> org.jbpm.services.api.RuntimeDataService::getNodeInstancesByNodeType(long, java.util.List<java.lang.String>, org.kie.api.runtime.query.QueryContext)",
-        "justification": "Added as it's required by case management to efficiently find node instance of given type for a case"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method java.util.Collection<org.jbpm.services.api.model.ProcessInstanceDesc> org.jbpm.services.api.RuntimeDataService::getProcessInstancesByCorrelationKeyAndStatus(org.kie.internal.process.CorrelationKey, java.util.List<java.lang.Integer>, org.kie.api.runtime.query.QueryContext)",
-        "justification": "Needed for case mgmt to find all instances belonging to a case instance with status filtering"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method java.util.Collection<java.lang.String> org.jbpm.services.api.model.ProcessDefinition::getGlobals()",
-        "justification": "Required by change impact support to find all process definitions that might be affected in case of refactoring"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method java.util.Collection<java.lang.String> org.jbpm.services.api.model.ProcessDefinition::getReferencedRules()",
-        "justification": "Required by change impact support to find all process definitions that might be affected in case of refactoring"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method java.util.Collection<java.lang.String> org.jbpm.services.api.model.ProcessDefinition::getSignals()",
-        "justification": "Required by change impact support to find all process definitions that might be affected in case of refactoring"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method boolean org.jbpm.services.api.model.ProcessDefinition::isDynamic()",
-        "justification": "Used by case mgmt to identify process as case - being dynamic"
-      },
-      {
-        "code": "java.field.constantValueChanged",
-        "old": "field org.jbpm.services.api.query.QueryResultMapper<T>.COLUMN_ORGANIZATIONAL_ENTITY",
-        "new": "field org.jbpm.services.api.query.QueryResultMapper<T>.COLUMN_ORGANIZATIONAL_ENTITY",
-        "justification": "Fix for some of dbs with query aliases"
-      },
-      {
-        "code": "java.field.enumConstantOrderChanged",
-        "old": "field org.jbpm.services.api.query.model.QueryDefinition.Target.CUSTOM",
-        "new": "field org.jbpm.services.api.query.model.QueryDefinition.Target.CUSTOM",
-        "justification": "Included more out of the box targets for query definition that are more specific than custom and thus placed higher in the enum"
-      },
-      {
-        "code": "java.field.serialVersionUIDUnchanged",
-        "old": "field org.jbpm.services.api.query.model.QueryParam.serialVersionUID",
-        "new": "field org.jbpm.services.api.query.model.QueryParam.serialVersionUID",
-        "justification": "Not an issue, only static methods were added so there is no need to change serial version."
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method java.util.Collection<org.jbpm.services.api.model.ProcessInstanceDesc> org.jbpm.services.api.RuntimeDataService::getProcessInstancesByParent(java.lang.Long, java.util.List<java.lang.Integer>, org.kie.api.runtime.query.QueryContext)",
-        "package": "org.jbpm.services.api",
-        "classSimpleName": "RuntimeDataService",
-        "methodName": "getProcessInstancesByParent",
-        "elementKind": "method",
-        "justification": "Added method to search by parent process instance id"
-      },
-      {
-        "code": "java.method.addedToInterface",
-        "new": "method boolean org.jbpm.services.api.model.ProcessDefinition::isActive()",
-        "package": "org.jbpm.services.api.model",
-        "classSimpleName": "ProcessDefinition",
-        "methodName": "isActive",
-        "elementKind": "method",
-        "justification": "promoted isActive to the api for easier use"
-      },
-      {
-		 "code": "java.method.addedToInterface",
-		 "new": "method java.lang.String org.jbpm.services.api.model.NodeInstanceDesc::getNodeContainerId()",
-		 "package": "org.jbpm.services.api.model",
-		 "classSimpleName": "NodeInstanceDesc",
-		 "methodName": "getNodeContainerId",
-		 "elementKind": "method",
-		 "justification": "support for getting node container of given node instance to allow queries for active nodes in subprocess"
-	   },
-	   {
-		 "code": "java.method.addedToInterface",
-		 "new": "method java.lang.Long org.jbpm.services.api.model.NodeInstanceDesc::getReferenceId()",
-		 "package": "org.jbpm.services.api.model",
-		 "classSimpleName": "NodeInstanceDesc",
-		 "methodName": "getReferenceId",
-		 "elementKind": "method",
-		 "justification": "support for reference id of given node, mainly used by reusable subprocessnode to refer to actual process instance it started"
-	   }
-    ]
+    }
+  },
+
+  "ignores": {
+    "revapi": {
+      "_comment": "Changes between 6.5.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
+      "ignore": [
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Collection<org.jbpm.services.api.model.NodeInstanceDesc> org.jbpm.services.api.RuntimeDataService::getNodeInstancesByCorrelationKeyNodeType(org.kie.internal.process.CorrelationKey, java.util.List<java.lang.Integer>, java.util.List<java.lang.String>, org.kie.api.runtime.query.QueryContext)",
+          "justification": "Added as it's required by case management to efficiently find node instance of given type for a case"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Collection<org.jbpm.services.api.model.NodeInstanceDesc> org.jbpm.services.api.RuntimeDataService::getNodeInstancesByNodeType(long, java.util.List<java.lang.String>, org.kie.api.runtime.query.QueryContext)",
+          "justification": "Added as it's required by case management to efficiently find node instance of given type for a case"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Collection<org.jbpm.services.api.model.ProcessInstanceDesc> org.jbpm.services.api.RuntimeDataService::getProcessInstancesByCorrelationKeyAndStatus(org.kie.internal.process.CorrelationKey, java.util.List<java.lang.Integer>, org.kie.api.runtime.query.QueryContext)",
+          "justification": "Needed for case mgmt to find all instances belonging to a case instance with status filtering"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Collection<java.lang.String> org.jbpm.services.api.model.ProcessDefinition::getGlobals()",
+          "justification": "Required by change impact support to find all process definitions that might be affected in case of refactoring"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Collection<java.lang.String> org.jbpm.services.api.model.ProcessDefinition::getReferencedRules()",
+          "justification": "Required by change impact support to find all process definitions that might be affected in case of refactoring"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Collection<java.lang.String> org.jbpm.services.api.model.ProcessDefinition::getSignals()",
+          "justification": "Required by change impact support to find all process definitions that might be affected in case of refactoring"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method boolean org.jbpm.services.api.model.ProcessDefinition::isDynamic()",
+          "justification": "Used by case mgmt to identify process as case - being dynamic"
+        },
+        {
+          "code": "java.field.constantValueChanged",
+          "old": "field org.jbpm.services.api.query.QueryResultMapper<T>.COLUMN_ORGANIZATIONAL_ENTITY",
+          "new": "field org.jbpm.services.api.query.QueryResultMapper<T>.COLUMN_ORGANIZATIONAL_ENTITY",
+          "justification": "Fix for some of dbs with query aliases"
+        },
+        {
+          "code": "java.field.enumConstantOrderChanged",
+          "old": "field org.jbpm.services.api.query.model.QueryDefinition.Target.CUSTOM",
+          "new": "field org.jbpm.services.api.query.model.QueryDefinition.Target.CUSTOM",
+          "justification": "Included more out of the box targets for query definition that are more specific than custom and thus placed higher in the enum"
+        },
+        {
+          "code": "java.field.serialVersionUIDUnchanged",
+          "old": "field org.jbpm.services.api.query.model.QueryParam.serialVersionUID",
+          "new": "field org.jbpm.services.api.query.model.QueryParam.serialVersionUID",
+          "justification": "Not an issue, only static methods were added so there is no need to change serial version."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Collection<org.jbpm.services.api.model.ProcessInstanceDesc> org.jbpm.services.api.RuntimeDataService::getProcessInstancesByParent(java.lang.Long, java.util.List<java.lang.Integer>, org.kie.api.runtime.query.QueryContext)",
+          "package": "org.jbpm.services.api",
+          "classSimpleName": "RuntimeDataService",
+          "methodName": "getProcessInstancesByParent",
+          "elementKind": "method",
+          "justification": "Added method to search by parent process instance id"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method boolean org.jbpm.services.api.model.ProcessDefinition::isActive()",
+          "package": "org.jbpm.services.api.model",
+          "classSimpleName": "ProcessDefinition",
+          "methodName": "isActive",
+          "elementKind": "method",
+          "justification": "promoted isActive to the api for easier use"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.String org.jbpm.services.api.model.NodeInstanceDesc::getNodeContainerId()",
+          "package": "org.jbpm.services.api.model",
+          "classSimpleName": "NodeInstanceDesc",
+          "methodName": "getNodeContainerId",
+          "elementKind": "method",
+          "justification": "support for getting node container of given node instance to allow queries for active nodes in subprocess"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.Long org.jbpm.services.api.model.NodeInstanceDesc::getReferenceId()",
+          "package": "org.jbpm.services.api.model",
+          "classSimpleName": "NodeInstanceDesc",
+          "methodName": "getReferenceId",
+          "elementKind": "method",
+          "justification": "support for reference id of given node, mainly used by reusable subprocessnode to refer to actual process instance it started"
+        }
+      ]
+    }
   }
 }
