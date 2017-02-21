@@ -21,11 +21,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.api.domain.locator.LocationStrategyType;
 import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectId;
 import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectMultipleIds;
 import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectNoId;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataSolutionLocationStrategyNone;
 
 public class LocationStrategyNoneTest {
 
@@ -35,9 +34,7 @@ public class LocationStrategyNoneTest {
 
     @Before
     public void setUpLocator() {
-        SolutionDescriptor<TestdataSolutionLocationStrategyNone> solutionDescriptor
-                = SolutionDescriptor.buildSolutionDescriptor(TestdataSolutionLocationStrategyNone.class);
-        locator = new Locator(solutionDescriptor);
+        locator = new Locator(new LocationStrategyResolver(LocationStrategyType.NONE));
         locator.resetWorkingObjects(Collections.emptyList());
     }
 

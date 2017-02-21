@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.locator.PlanningId;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
@@ -34,8 +33,8 @@ public class Locator {
 
     private Map<Object, Object> idToWorkingObjectMap;
 
-    public Locator(SolutionDescriptor<?> solutionDescriptor) {
-        this.locationStrategyResolver = solutionDescriptor.getLocationStrategyResolver();
+    public Locator(LocationStrategyResolver locationStrategyResolver) {
+        this.locationStrategyResolver = locationStrategyResolver;
     }
 
     public void resetWorkingObjects(Collection<Object> allFacts) {

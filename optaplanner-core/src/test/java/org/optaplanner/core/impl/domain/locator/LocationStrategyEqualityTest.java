@@ -21,12 +21,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.api.domain.locator.LocationStrategyType;
 import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectEquals;
 import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectEqualsNoHashCode;
 import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectEqualsSubclass;
 import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectNoId;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataSolutionLocationStrategyEquality;
 
 import static org.junit.Assert.*;
 
@@ -38,9 +37,7 @@ public class LocationStrategyEqualityTest {
 
     @Before
     public void setUpLocator() {
-        SolutionDescriptor<TestdataSolutionLocationStrategyEquality> solutionDescriptor
-                = SolutionDescriptor.buildSolutionDescriptor(TestdataSolutionLocationStrategyEquality.class);
-        locator = new Locator(solutionDescriptor);
+        locator = new Locator(new LocationStrategyResolver(LocationStrategyType.EQUALITY));
         locator.resetWorkingObjects(Collections.emptyList());
     }
 

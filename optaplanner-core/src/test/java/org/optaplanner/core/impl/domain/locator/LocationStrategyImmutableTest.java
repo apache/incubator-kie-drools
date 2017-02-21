@@ -26,8 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataSolutionLocationStrategyIdOrFail;
+import org.optaplanner.core.api.domain.locator.LocationStrategyType;
 
 import static org.junit.Assert.*;
 
@@ -65,9 +64,7 @@ public class LocationStrategyImmutableTest {
 
     @Before
     public void setUpLocator() {
-        SolutionDescriptor<TestdataSolutionLocationStrategyIdOrFail> solutionDescriptor
-                = SolutionDescriptor.buildSolutionDescriptor(TestdataSolutionLocationStrategyIdOrFail.class);
-        locator = new Locator(solutionDescriptor);
+        locator = new Locator(new LocationStrategyResolver(LocationStrategyType.PLANNING_ID_OR_NONE));
         locator.resetWorkingObjects(Collections.emptyList());
     }
 
