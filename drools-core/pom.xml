@@ -243,9 +243,11 @@
             </Export-Package>
             <Import-Package>
                com.sun.tools.xjc.*;resolution:=optional,
+               org.drools.persistence.api;resolution:=optional,
                org.drools.template.parser;resolution:=optional,
                org.drools.persistence.jpa;resolution:=optional,
                org.drools.persistence.jpa.processinstance;resolution:=optional,
+               org.jbpm.persistence.api;resolution:=optional,
                org.jbpm.marshalling.impl;resolution:=optional,
                org.jbpm.process.instance.impl;resolution:=optional,
                org.jbpm.process.instance.event;resolution:=optional,
