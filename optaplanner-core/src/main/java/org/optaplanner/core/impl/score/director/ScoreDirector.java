@@ -79,14 +79,14 @@ public interface ScoreDirector<Solution_> {
      */
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
-    /**
-     * Returns an aggregation of all the inverses of {@link ConstraintMatch#getJustificationList()}.
-     * <p>
-     * TODO Experimental method because it's calculated from scratch, without delta's. It will probably be renamed at some point.
-     * @return never null, each key is an element from {@link ConstraintMatch#getJustificationList()} and the value is its {@link ConstraintMatch}
-     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
-     */
-    Map<Object, List<ConstraintMatch>> extractIndictmentMap();
+//    /**
+//     * Returns an aggregation of all the inverses of {@link ConstraintMatch#getJustificationList()}.
+//     * <p>
+//     * TODO Experimental method because it's calculated from scratch, without delta's. It will probably be renamed at some point.
+//     * @return never null, each key is an element from {@link ConstraintMatch#getJustificationList()} and the value is its {@link ConstraintMatch}
+//     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+//     */
+//    Map<Object, List<ConstraintMatch>> extractIndictmentMap();
 
     void beforeEntityAdded(Object entity);
 
