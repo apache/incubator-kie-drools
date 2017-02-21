@@ -847,7 +847,272 @@
         "code": "java.method.removed",
         "old": "method long org.optaplanner.core.config.util.ConfigUtils::floorDivide(long, long)",
         "justification": "Upgrade to java 8: replace ConfigUtils.floorDivide() with Math.floorDiv()"
+      },
+      {
+        "code": "java.field.removed",
+        "old": "field org.optaplanner.core.api.score.constraint.ConstraintMatch.scoreLevel",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatch",
+        "fieldName": "scoreLevel",
+        "elementKind": "field",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.optaplanner.core.api.score.constraint.ConstraintMatch::<init>(java.lang.String, java.lang.String, ===int===, java.util.List<java.lang.Object>)",
+        "new": "parameter void org.optaplanner.core.api.score.constraint.ConstraintMatch::<init>(java.lang.String, java.lang.String, ===java.util.List<java.lang.Object>===, org.optaplanner.core.api.score.Score)",
+        "oldType": "int",
+        "newType": "java.util.List<java.lang.Object>",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatch",
+        "methodName": "<init>",
+        "parameterIndex": "2",
+        "elementKind": "parameter",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.optaplanner.core.api.score.constraint.ConstraintMatch::<init>(java.lang.String, java.lang.String, int, ===java.util.List<java.lang.Object>===)",
+        "new": "parameter void org.optaplanner.core.api.score.constraint.ConstraintMatch::<init>(java.lang.String, java.lang.String, java.util.List<java.lang.Object>, ===org.optaplanner.core.api.score.Score===)",
+        "oldType": "java.util.List<java.lang.Object>",
+        "newType": "org.optaplanner.core.api.score.Score",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatch",
+        "methodName": "<init>",
+        "parameterIndex": "3",
+        "elementKind": "parameter",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int org.optaplanner.core.api.score.constraint.ConstraintMatch::getScoreLevel()",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatch",
+        "methodName": "getScoreLevel",
+        "elementKind": "method",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.Number org.optaplanner.core.api.score.constraint.ConstraintMatch::getWeightAsNumber()",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatch",
+        "methodName": "getWeightAsNumber",
+        "elementKind": "method",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.field.removed",
+        "old": "field org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.scoreLevel",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatchTotal",
+        "fieldName": "scoreLevel",
+        "elementKind": "field",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "parameter void org.optaplanner.core.api.score.constraint.ConstraintMatchTotal::<init>(java.lang.String, java.lang.String, ===int===)",
+        "new": "parameter void org.optaplanner.core.api.score.constraint.ConstraintMatchTotal::<init>(java.lang.String, java.lang.String, ===org.optaplanner.core.api.score.Score===)",
+        "oldType": "int",
+        "newType": "org.optaplanner.core.api.score.Score",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatchTotal",
+        "methodName": "<init>",
+        "parameterIndex": "2",
+        "elementKind": "parameter",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method java.util.Set<? extends org.optaplanner.core.api.score.constraint.ConstraintMatch> org.optaplanner.core.api.score.constraint.ConstraintMatchTotal::getConstraintMatchSet()",
+        "new": "method java.util.Set<org.optaplanner.core.api.score.constraint.ConstraintMatch> org.optaplanner.core.api.score.constraint.ConstraintMatchTotal::getConstraintMatchSet()",
+        "oldType": "java.util.Set<? extends org.optaplanner.core.api.score.constraint.ConstraintMatch>",
+        "newType": "java.util.Set<org.optaplanner.core.api.score.constraint.ConstraintMatch>",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatchTotal",
+        "methodName": "getConstraintMatchSet",
+        "elementKind": "method",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String org.optaplanner.core.api.score.constraint.ConstraintMatchTotal::getIdentificationString()",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatchTotal",
+        "methodName": "getIdentificationString",
+        "elementKind": "method",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int org.optaplanner.core.api.score.constraint.ConstraintMatchTotal::getScoreLevel()",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatchTotal",
+        "methodName": "getScoreLevel",
+        "elementKind": "method",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.Number org.optaplanner.core.api.score.constraint.ConstraintMatchTotal::getWeightTotalAsNumber()",
+        "package": "org.optaplanner.core.api.score.constraint",
+        "classSimpleName": "ConstraintMatchTotal",
+        "methodName": "getWeightTotalAsNumber",
+        "elementKind": "method",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalConstraintMatch",
+        "package": "org.optaplanner.core.api.score.constraint.bigdecimal",
+        "classSimpleName": "BigDecimalConstraintMatch",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalConstraintMatchTotal",
+        "package": "org.optaplanner.core.api.score.constraint.bigdecimal",
+        "classSimpleName": "BigDecimalConstraintMatchTotal",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.constraint.primdouble.DoubleConstraintMatch",
+        "package": "org.optaplanner.core.api.score.constraint.primdouble",
+        "classSimpleName": "DoubleConstraintMatch",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.constraint.primdouble.DoubleConstraintMatchTotal",
+        "package": "org.optaplanner.core.api.score.constraint.primdouble",
+        "classSimpleName": "DoubleConstraintMatchTotal",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.constraint.primint.IntConstraintMatch",
+        "package": "org.optaplanner.core.api.score.constraint.primint",
+        "classSimpleName": "IntConstraintMatch",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.constraint.primint.IntConstraintMatchTotal",
+        "package": "org.optaplanner.core.api.score.constraint.primint",
+        "classSimpleName": "IntConstraintMatchTotal",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatch",
+        "package": "org.optaplanner.core.api.score.constraint.primlong",
+        "classSimpleName": "LongConstraintMatch",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatchTotal",
+        "package": "org.optaplanner.core.api.score.constraint.primlong",
+        "classSimpleName": "LongConstraintMatchTotal",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.holder.AbstractScoreHolder.BigDecimalConstraintUndoListener",
+        "package": "org.optaplanner.core.api.score.holder",
+        "classSimpleName": "BigDecimalConstraintUndoListener",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "interface org.optaplanner.core.api.score.holder.AbstractScoreHolder.ConstraintUndoListener",
+        "package": "org.optaplanner.core.api.score.holder",
+        "classSimpleName": "ConstraintUndoListener",
+        "elementKind": "interface",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.holder.AbstractScoreHolder.DoubleConstraintUndoListener",
+        "package": "org.optaplanner.core.api.score.holder",
+        "classSimpleName": "DoubleConstraintUndoListener",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.holder.AbstractScoreHolder.IntConstraintUndoListener",
+        "package": "org.optaplanner.core.api.score.holder",
+        "classSimpleName": "IntConstraintUndoListener",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.api.score.holder.AbstractScoreHolder.LongConstraintUndoListener",
+        "package": "org.optaplanner.core.api.score.holder",
+        "classSimpleName": "LongConstraintUndoListener",
+        "elementKind": "class",
+        "justification": "ConstraintMatch and ConstraintMatchTotal should be able to return a Score instead of an int scoreLevel and weight"
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.optaplanner.core.api.score.holder.AbstractScoreHolder::<init>(boolean)",
+        "new": "method void org.optaplanner.core.api.score.holder.AbstractScoreHolder::<init>(boolean, org.optaplanner.core.api.score.Score)",
+        "package": "org.optaplanner.core.api.score.holder",
+        "classSimpleName": "AbstractScoreHolder",
+        "methodName": "<init>",
+        "elementKind": "constructor",
+        "justification": "ConstraintMatch and ConstraintMatchTotal need to have a non-null Score, so the initial, zero score needs to be known in advance."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.holder.AbstractScoreHolder::registerBigDecimalConstraintMatch(org.kie.api.runtime.rule.RuleContext, int, java.math.BigDecimal, org.optaplanner.core.api.score.holder.AbstractScoreHolder.BigDecimalConstraintUndoListener)",
+        "package": "org.optaplanner.core.api.score.holder",
+        "classSimpleName": "AbstractScoreHolder",
+        "methodName": "registerBigDecimalConstraintMatch",
+        "elementKind": "method",
+        "justification": "The Java 8 approach of AbstractScoreHolder::registerConstraintMatch(...) is faster"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.holder.AbstractScoreHolder::registerDoubleConstraintMatch(org.kie.api.runtime.rule.RuleContext, int, double, org.optaplanner.core.api.score.holder.AbstractScoreHolder.DoubleConstraintUndoListener)",
+        "package": "org.optaplanner.core.api.score.holder",
+        "classSimpleName": "AbstractScoreHolder",
+        "methodName": "registerDoubleConstraintMatch",
+        "elementKind": "method",
+        "justification": "The Java 8 approach of AbstractScoreHolder::registerConstraintMatch(...) is faster"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.holder.AbstractScoreHolder::registerIntConstraintMatch(org.kie.api.runtime.rule.RuleContext, int, int, org.optaplanner.core.api.score.holder.AbstractScoreHolder.IntConstraintUndoListener)",
+        "package": "org.optaplanner.core.api.score.holder",
+        "classSimpleName": "AbstractScoreHolder",
+        "methodName": "registerIntConstraintMatch",
+        "elementKind": "method",
+        "justification": "The Java 8 approach of AbstractScoreHolder::registerConstraintMatch(...) is faster"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.holder.AbstractScoreHolder::registerLongConstraintMatch(org.kie.api.runtime.rule.RuleContext, int, long, org.optaplanner.core.api.score.holder.AbstractScoreHolder.LongConstraintUndoListener)",
+        "package": "org.optaplanner.core.api.score.holder",
+        "classSimpleName": "AbstractScoreHolder",
+        "methodName": "registerLongConstraintMatch",
+        "elementKind": "method",
+        "justification": "The Java 8 approach of AbstractScoreHolder::registerConstraintMatch(...) is faster"
       }
+
     ]
   }
 }
