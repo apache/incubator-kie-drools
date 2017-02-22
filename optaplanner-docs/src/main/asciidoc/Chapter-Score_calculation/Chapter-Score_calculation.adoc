@@ -651,7 +651,9 @@ A piece of incremental score calculator code can be difficult to write and to re
 Assert its correctness by using <<invalidScoreDetection,an ``EasyScoreCalculator`` to do the assertions triggered by the ``environmentMode``>>.
 ====
 
-Optionally, to explain a score with `ScoreDirector.getConstraintMatchTotals()` or to get better output when the `IncrementalScoreCalculator` is corrupted in `FAST_ASSERT` or ``FULL_ASSERT environmentMode``, implement also the `ConstraintMatchAwareIncrementalScoreCalculator` interface:
+Optionally, to explain a score with `ScoreDirector.getConstraintMatchTotals()`
+or to get better output when the `IncrementalScoreCalculator` is corrupted in `FAST_ASSERT` or `FULL_ASSERT` `environmentMode`,
+implement also the `ConstraintMatchAwareIncrementalScoreCalculator` interface:
 
 [source,java,options="nowrap"]
 ----
@@ -1180,10 +1182,10 @@ get the `ConstraintMatch` objects from the ``ScoreDirector``:
 ----
 for (ConstraintMatchTotal constraintMatchTotal : guiScoreDirector.getConstraintMatchTotals()) {
     String constraintName = constraintMatchTotal.getConstraintName();
-    Number weightTotal = constraintMatchTotal.getWeightTotalAsNumber();
+    Score scoreTotal = constraintMatchTotal.getScoreTotal();
     for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
         List<Object> justificationList = constraintMatch.getJustificationList();
-        Number weight = constraintMatch.getWeightAsNumber();
+        Score score = constraintMatch.getScore();
         ...
     }
 }
