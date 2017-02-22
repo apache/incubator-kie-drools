@@ -81,6 +81,7 @@ public abstract class AbstractPersistable implements Serializable, Comparable<Ab
                 .toComparison();
     }
 
+    @Override
     public String toString() {
         return getClass().getName().replaceAll(".*\\.", "") + "-" + id;
     }

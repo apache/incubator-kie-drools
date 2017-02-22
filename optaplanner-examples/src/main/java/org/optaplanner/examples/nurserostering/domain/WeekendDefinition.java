@@ -78,6 +78,7 @@ public enum WeekendDefinition {
         return lastDayOfWeekend;
     }
 
+    @Override
     public String toString() {
         return code;
     }

@@ -54,6 +54,7 @@ public class EmployeeConsecutiveAssignmentStart implements Comparable<EmployeeCo
         this.shiftDate = shiftDate;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -68,6 +69,7 @@ public class EmployeeConsecutiveAssignmentStart implements Comparable<EmployeeCo
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(employee)

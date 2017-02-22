@@ -296,6 +296,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
         return levelNumbers;
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {

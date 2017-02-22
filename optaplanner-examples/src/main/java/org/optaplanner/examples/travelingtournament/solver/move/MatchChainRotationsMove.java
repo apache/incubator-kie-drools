@@ -96,6 +96,7 @@ public class MatchChainRotationsMove extends AbstractMove<TravelingTournament> {
         return values;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -110,6 +111,7 @@ public class MatchChainRotationsMove extends AbstractMove<TravelingTournament> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(firstMatchList)
@@ -117,6 +119,7 @@ public class MatchChainRotationsMove extends AbstractMove<TravelingTournament> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         return "Rotation " + firstMatchList + " & Rotation " + secondMatchList;
     }

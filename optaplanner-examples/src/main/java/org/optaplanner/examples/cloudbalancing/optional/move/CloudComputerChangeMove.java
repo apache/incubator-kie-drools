@@ -66,6 +66,7 @@ public class CloudComputerChangeMove extends AbstractMove<CloudBalance> {
         return Collections.singletonList(toCloudComputer);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -80,6 +81,7 @@ public class CloudComputerChangeMove extends AbstractMove<CloudBalance> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(cloudProcess)
@@ -87,6 +89,7 @@ public class CloudComputerChangeMove extends AbstractMove<CloudBalance> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         return cloudProcess + " {" + cloudProcess.getComputer() + " -> " + toCloudComputer + "}";
     }

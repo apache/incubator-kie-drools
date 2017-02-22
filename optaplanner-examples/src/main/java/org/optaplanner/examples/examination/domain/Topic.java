@@ -72,6 +72,7 @@ public class Topic extends AbstractPersistable {
         return coincidenceTopicSet != null;
     }
 
+    @Override
     public String toString() {
         return Long.toString(id);
     }

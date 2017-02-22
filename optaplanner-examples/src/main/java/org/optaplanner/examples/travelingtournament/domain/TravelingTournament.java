@@ -88,6 +88,7 @@ public class TravelingTournament extends AbstractPersistable {
         return teamList.size();
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -111,6 +112,7 @@ public class TravelingTournament extends AbstractPersistable {
         }
     }
 
+    @Override
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
         for (Match match : matchList) {

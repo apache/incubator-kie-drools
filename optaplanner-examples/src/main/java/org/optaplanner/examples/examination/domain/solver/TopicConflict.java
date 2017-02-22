@@ -62,6 +62,7 @@ public class TopicConflict implements Serializable, Comparable<TopicConflict> {
         this.studentSize = studentSize;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -76,6 +77,7 @@ public class TopicConflict implements Serializable, Comparable<TopicConflict> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(leftTopic)

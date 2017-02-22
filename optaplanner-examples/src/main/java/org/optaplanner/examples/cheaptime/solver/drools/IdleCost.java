@@ -45,6 +45,7 @@ public class IdleCost {
         return cost;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -60,6 +61,7 @@ public class IdleCost {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(machine)

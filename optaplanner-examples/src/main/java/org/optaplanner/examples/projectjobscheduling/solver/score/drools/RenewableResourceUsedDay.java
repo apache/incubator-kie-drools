@@ -40,6 +40,7 @@ public class RenewableResourceUsedDay implements Serializable {
         return usedDay;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -54,6 +55,7 @@ public class RenewableResourceUsedDay implements Serializable {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(resource)

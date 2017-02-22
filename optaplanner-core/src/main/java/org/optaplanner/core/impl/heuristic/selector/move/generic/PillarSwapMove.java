@@ -159,6 +159,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
         return values;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -174,6 +175,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(variableDescriptorList)
@@ -182,6 +184,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove<Solution_> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         StringBuilder s = new StringBuilder(variableDescriptorList.size() * 16);
         s.append(leftPillar).append(" {");

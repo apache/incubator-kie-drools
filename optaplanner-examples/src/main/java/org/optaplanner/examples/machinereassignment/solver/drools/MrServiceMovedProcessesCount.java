@@ -42,6 +42,7 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
         return movedProcessesCount;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -56,6 +57,7 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(service)

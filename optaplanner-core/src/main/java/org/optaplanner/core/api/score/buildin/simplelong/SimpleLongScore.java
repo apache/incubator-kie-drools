@@ -136,6 +136,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
         return new Number[]{score};
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
@@ -149,6 +150,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
         }
     }
 
+    @Override
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return ((17 * 37)

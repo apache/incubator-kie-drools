@@ -44,6 +44,7 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
         return usage;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -58,6 +59,7 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(machineCapacity)

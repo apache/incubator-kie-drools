@@ -32,6 +32,7 @@ public class DeleteProcessProblemFactChange implements ProblemFactChange<CloudBa
         this.process = process;
     }
 
+    @Override
     public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
         CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
         // A SolutionCloner clones planning entity lists (such as processList), so no need to clone the processList here

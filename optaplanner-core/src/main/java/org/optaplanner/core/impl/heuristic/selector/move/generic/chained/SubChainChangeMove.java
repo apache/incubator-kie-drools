@@ -118,6 +118,7 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
         return Collections.singletonList(toPlanningValue);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -133,6 +134,7 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(subChain)
@@ -141,6 +143,7 @@ public class SubChainChangeMove<Solution_> extends AbstractMove<Solution_> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
         return subChain.toDottedString() + " {" + oldFirstValue + " -> " + toPlanningValue + "}";

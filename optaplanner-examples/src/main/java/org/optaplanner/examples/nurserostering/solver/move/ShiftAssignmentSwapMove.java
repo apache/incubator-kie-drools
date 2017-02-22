@@ -67,6 +67,7 @@ public class ShiftAssignmentSwapMove extends AbstractMove<NurseRoster> {
         return Arrays.asList(leftShiftAssignment.getEmployee(), rightShiftAssignment.getEmployee());
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -81,6 +82,7 @@ public class ShiftAssignmentSwapMove extends AbstractMove<NurseRoster> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(leftShiftAssignment)
@@ -88,6 +90,7 @@ public class ShiftAssignmentSwapMove extends AbstractMove<NurseRoster> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         return leftShiftAssignment + " {" + leftShiftAssignment.getEmployee() + "} <-> "
                 + rightShiftAssignment + " {" + rightShiftAssignment.getEmployee() + "}";

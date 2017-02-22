@@ -50,6 +50,7 @@ public class CourseConflict implements Serializable, Comparable<CourseConflict> 
         return conflictCount;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -64,6 +65,7 @@ public class CourseConflict implements Serializable, Comparable<CourseConflict> 
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(leftCourse)

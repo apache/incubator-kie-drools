@@ -32,6 +32,7 @@ public class AddProcessProblemFactChange implements ProblemFactChange<CloudBalan
         this.process = process;
     }
 
+    @Override
     public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
         CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
         // Set a unique id on the new process

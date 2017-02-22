@@ -85,6 +85,7 @@ public class ConstraintMatch implements Serializable, Comparable<ConstraintMatch
                 .toComparison();
     }
 
+    @Override
     public String toString() {
         return getIdentificationString() + "=" + getScore();
     }

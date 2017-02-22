@@ -153,6 +153,7 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
         return values;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -168,6 +169,7 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(variableDescriptor)
@@ -176,6 +178,7 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         Object oldLeftValue = variableDescriptor.getValue(leftSubChain.getFirstEntity());
         Object oldRightValue = variableDescriptor.getValue(rightSubChain.getFirstEntity());

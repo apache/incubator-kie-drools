@@ -163,6 +163,7 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
         return allValueList;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -177,6 +178,7 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(entity)
@@ -184,6 +186,7 @@ public class KOptMove<Solution_> extends AbstractMove<Solution_> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         Object leftValue = variableDescriptor.getValue(entity);
         StringBuilder builder = new StringBuilder(80 * values.length);

@@ -298,6 +298,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
         return levelNumbers;
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
@@ -327,6 +328,7 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
         }
     }
 
+    @Override
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         int hashCode = (17 * 37) + initScore;

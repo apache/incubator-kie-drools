@@ -36,6 +36,7 @@ public class PeriodWrapper {
         this.period = period;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -49,6 +50,7 @@ public class PeriodWrapper {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(period)

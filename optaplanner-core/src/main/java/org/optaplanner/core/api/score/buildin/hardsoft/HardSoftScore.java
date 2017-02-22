@@ -167,6 +167,7 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> implements
         return new Number[]{hardScore, softScore};
     }
 
+    @Override
     public boolean equals(Object o) {
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
@@ -181,6 +182,7 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> implements
         }
     }
 
+    @Override
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
         return (((17 * 37)

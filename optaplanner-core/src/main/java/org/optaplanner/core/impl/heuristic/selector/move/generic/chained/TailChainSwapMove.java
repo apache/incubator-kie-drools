@@ -212,6 +212,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
         return Arrays.asList(leftValue, rightValue);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -226,6 +227,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(leftEntity)
@@ -233,6 +235,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove<Solution_> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         Object leftValue = variableDescriptor.getValue(leftEntity);
         Object rightEntity = inverseVariableSupply.getInverseSingleton(rightValue);

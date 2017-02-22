@@ -31,6 +31,7 @@ public class AddComputerProblemFactChange implements ProblemFactChange<CloudBala
         this.computer = computer;
     }
 
+    @Override
     public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
         CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
         // Set a unique id on the new computer

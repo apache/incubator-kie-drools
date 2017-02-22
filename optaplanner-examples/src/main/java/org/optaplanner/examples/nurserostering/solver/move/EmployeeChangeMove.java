@@ -64,6 +64,7 @@ public class EmployeeChangeMove extends AbstractMove<NurseRoster> {
         return Collections.singletonList(toEmployee);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -78,6 +79,7 @@ public class EmployeeChangeMove extends AbstractMove<NurseRoster> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(shiftAssignment)
@@ -85,6 +87,7 @@ public class EmployeeChangeMove extends AbstractMove<NurseRoster> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         return shiftAssignment + " {" + shiftAssignment.getEmployee() + " -> " + toEmployee + "}";
     }

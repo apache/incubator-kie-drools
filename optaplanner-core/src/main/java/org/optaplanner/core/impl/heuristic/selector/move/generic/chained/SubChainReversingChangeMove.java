@@ -139,6 +139,7 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
         return Collections.singletonList(toPlanningValue);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -155,6 +156,7 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(subChain)
@@ -163,6 +165,7 @@ public class SubChainReversingChangeMove<Solution_> extends AbstractMove<Solutio
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
         return subChain.toDottedString() + " {" + oldFirstValue + " -reversing-> " + toPlanningValue + "}";

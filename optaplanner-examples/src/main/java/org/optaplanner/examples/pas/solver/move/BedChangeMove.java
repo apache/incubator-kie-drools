@@ -64,6 +64,7 @@ public class BedChangeMove extends AbstractMove<PatientAdmissionSchedule> {
         return Collections.singletonList(toBed);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -78,6 +79,7 @@ public class BedChangeMove extends AbstractMove<PatientAdmissionSchedule> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(bedDesignation)
@@ -85,6 +87,7 @@ public class BedChangeMove extends AbstractMove<PatientAdmissionSchedule> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         return bedDesignation + " {" + bedDesignation.getBed() + " -> " + toBed + "}";
     }

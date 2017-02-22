@@ -59,6 +59,7 @@ public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, S
         this.lastDayIndex = lastDayIndex;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -74,6 +75,7 @@ public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, S
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(employee)

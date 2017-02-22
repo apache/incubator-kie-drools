@@ -74,6 +74,7 @@ public class EmployeeMultipleChangeMove extends AbstractMove<NurseRoster> {
         return Arrays.asList(fromEmployee, toEmployee);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -89,6 +90,7 @@ public class EmployeeMultipleChangeMove extends AbstractMove<NurseRoster> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(fromEmployee)
@@ -97,6 +99,7 @@ public class EmployeeMultipleChangeMove extends AbstractMove<NurseRoster> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         return shiftAssignmentList + " {? -> " + toEmployee + "}";
     }

@@ -50,6 +50,7 @@ public class EmployeeAssignmentTotal implements Comparable<EmployeeAssignmentTot
         this.total = total;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -64,6 +65,7 @@ public class EmployeeAssignmentTotal implements Comparable<EmployeeAssignmentTot
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(employee)

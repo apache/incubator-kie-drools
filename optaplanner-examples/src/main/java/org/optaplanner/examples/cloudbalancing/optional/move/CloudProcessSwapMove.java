@@ -71,6 +71,7 @@ public class CloudProcessSwapMove extends AbstractMove<CloudBalance> {
         return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -85,6 +86,7 @@ public class CloudProcessSwapMove extends AbstractMove<CloudBalance> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(leftCloudProcess)
@@ -92,6 +94,7 @@ public class CloudProcessSwapMove extends AbstractMove<CloudBalance> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         return leftCloudProcess + " {" + leftCloudProcess.getComputer() +  "} <-> "
                 + rightCloudProcess + " {" + rightCloudProcess.getComputer() + "}";

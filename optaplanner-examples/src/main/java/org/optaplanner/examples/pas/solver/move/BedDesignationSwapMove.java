@@ -67,6 +67,7 @@ public class BedDesignationSwapMove extends AbstractMove<PatientAdmissionSchedul
         return Arrays.<Bed>asList(leftBedDesignation.getBed(), rightBedDesignation.getBed());
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -81,6 +82,7 @@ public class BedDesignationSwapMove extends AbstractMove<PatientAdmissionSchedul
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(leftBedDesignation)
@@ -88,6 +90,7 @@ public class BedDesignationSwapMove extends AbstractMove<PatientAdmissionSchedul
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         return leftBedDesignation + " {" + leftBedDesignation.getBed() + "} <-> "
                 + rightBedDesignation + " {" + rightBedDesignation.getBed() + "}";

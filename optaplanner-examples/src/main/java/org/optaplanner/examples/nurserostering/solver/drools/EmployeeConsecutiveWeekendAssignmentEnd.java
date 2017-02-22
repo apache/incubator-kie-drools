@@ -50,6 +50,7 @@ public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<Emplo
         this.sundayIndex = sundayIndex;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -64,6 +65,7 @@ public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<Emplo
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(employee)

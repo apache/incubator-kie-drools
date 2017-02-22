@@ -155,6 +155,7 @@ public class CompositeMove<Solution_> implements Move<Solution_> {
         return values;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -166,10 +167,12 @@ public class CompositeMove<Solution_> implements Move<Solution_> {
         }
     }
 
+    @Override
     public int hashCode() {
         return Arrays.hashCode(moves);
     }
 
+    @Override
     public String toString() {
         return Arrays.toString(moves);
     }

@@ -96,6 +96,7 @@ public class MachinePeriodPart {
         return period;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -112,6 +113,7 @@ public class MachinePeriodPart {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(machine)

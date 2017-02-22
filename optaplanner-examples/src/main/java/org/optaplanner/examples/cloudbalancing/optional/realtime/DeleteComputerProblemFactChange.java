@@ -34,6 +34,7 @@ public class DeleteComputerProblemFactChange implements ProblemFactChange<CloudB
         this.computer = computer;
     }
 
+    @Override
     public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
         CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
         CloudComputer workingComputer = scoreDirector.locateWorkingObject(computer);

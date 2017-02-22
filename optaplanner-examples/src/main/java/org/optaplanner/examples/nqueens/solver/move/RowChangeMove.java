@@ -66,6 +66,7 @@ public class RowChangeMove extends AbstractMove<NQueens> {
         return Collections.singletonList(toRow);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -80,6 +81,7 @@ public class RowChangeMove extends AbstractMove<NQueens> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(queen)
@@ -87,6 +89,7 @@ public class RowChangeMove extends AbstractMove<NQueens> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         return queen + " {" + queen.getRow() + " -> " + toRow + "}";
     }

@@ -118,6 +118,7 @@ public class PillarChangeMove<Solution_> extends AbstractMove<Solution_> {
         return Collections.singletonList(toPlanningValue);
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -133,6 +134,7 @@ public class PillarChangeMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(variableDescriptor)
@@ -141,6 +143,7 @@ public class PillarChangeMove<Solution_> extends AbstractMove<Solution_> {
                 .toHashCode();
     }
 
+    @Override
     public String toString() {
         Object oldValue = variableDescriptor.getValue(pillar.get(0));
         return pillar.toString() + " {" + oldValue + " -> " + toPlanningValue + "}";
