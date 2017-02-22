@@ -147,10 +147,8 @@ public class AbstractJavaProcessBuilder {
                 (String)TemplateRuntime.execute(registry.getNamedTemplate(invokerTemplate), null, new MapVariableResolverFactory(vars), registry)
         );
 
-        context.getInvokerLookups().put(invokerClassName,
-                invokerLookup);
-        context.getDescrLookups().put(invokerClassName,
-                descrLookup);
+        context.addInvokerLookup(invokerClassName, invokerLookup);
+        context.addDescrLookups(invokerClassName, descrLookup);
     }
     
     protected void collectTypes(String key, AnalysisResult analysis, ProcessBuildContext context) {

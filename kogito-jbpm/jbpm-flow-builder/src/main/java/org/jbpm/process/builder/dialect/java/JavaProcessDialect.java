@@ -67,14 +67,13 @@ public class JavaProcessDialect implements ProcessDialect {
 			// Check if an invoker - Action has been associated
 			// If so we add it to the PackageCompilationData as it will get
 			// wired up on compilation
-			final Object invoker = context.getInvokerLookups().get(className);
+			final Object invoker = context.getInvokerLookup(className);
 			if (invoker != null) {
 				data.putInvoker(className, invoker);
 			}
 			final String text = (String) context.getInvokers().get(className);
 
-			final BaseDescr descr = (BaseDescr) context.getDescrLookups().get(
-					className);
+			final BaseDescr descr = (BaseDescr) context.getDescrLookup(className);
 			javaDialect.addClassCompileTask(className, descr, text, null,
 					new ProcessInvokerErrorHandler(processDescr, process,
 							"Unable to generate action invoker."));

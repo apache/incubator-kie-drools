@@ -22,7 +22,9 @@ import java.util.Set;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.jbpm.process.builder.ProcessBuildContext;
@@ -94,10 +96,13 @@ public class AbstractMVELBuilder {
         // we can't know all the types ahead of time with processes, but we don't need return types, so it's ok
         context.setTypesafe( false ); 
         
+        RuleDescr ruleDescr = new RuleDescr(descr.getText());
+        RuleBuildContext rcontext = new RuleBuildContext( context.getKnowledgeBuilder(), ruleDescr, context.getDialectRegistry(), context.getPkg(), dialect);
+        
         MVELAnalysisResult analysis = null;
         try { 
             BoundIdentifiers boundIdentifiers 
-                = new BoundIdentifiers(variables, context.getKnowledgeBuilder().getGlobals());
+                = new BoundIdentifiers(variables, rcontext);
             analysis = ( MVELAnalysisResult ) dialect.analyzeBlock( context,
                                                                     text,
                                                                     boundIdentifiers,
