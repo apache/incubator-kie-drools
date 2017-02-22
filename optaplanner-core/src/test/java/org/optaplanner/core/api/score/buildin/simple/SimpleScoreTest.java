@@ -32,7 +32,16 @@ public class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void toShortString() {
+        assertEquals("0", SimpleScore.valueOf(0).toShortString());
+        assertEquals("-147", SimpleScore.valueOf(-147).toShortString());
+        assertEquals("-7init/-147", SimpleScore.valueOfUninitialized(-7, -147).toShortString());
+        assertEquals("-7init", SimpleScore.valueOfUninitialized(-7, 0).toShortString());
+    }
+
+    @Test
     public void testToString() {
+        assertEquals("0", SimpleScore.valueOf(0).toString());
         assertEquals("-147", SimpleScore.valueOf(-147).toString());
         assertEquals("-7init/-147", SimpleScore.valueOfUninitialized(-7, -147).toString());
     }

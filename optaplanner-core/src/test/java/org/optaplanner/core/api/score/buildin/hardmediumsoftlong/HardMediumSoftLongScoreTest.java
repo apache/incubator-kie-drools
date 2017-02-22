@@ -34,7 +34,27 @@ public class HardMediumSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void toShortString() {
+        assertEquals("0",
+                HardMediumSoftLongScore.valueOf(0L, 0L, 0L).toShortString());
+        assertEquals("-369soft",
+                HardMediumSoftLongScore.valueOf(0L, 0L, -369L).toShortString());
+        assertEquals("-258medium",
+                HardMediumSoftLongScore.valueOf(0L, -258L, 0L).toShortString());
+        assertEquals("-258medium/-369soft",
+                HardMediumSoftLongScore.valueOf(0L, -258L, -369L).toShortString());
+        assertEquals("-147hard/-258medium/-369soft",
+                HardMediumSoftLongScore.valueOf(-147L, -258L, -369L).toShortString());
+        assertEquals("-7init/-258medium",
+                HardMediumSoftLongScore.valueOfUninitialized(-7, 0L, -258L, 0L).toShortString());
+        assertEquals("-7init/-147hard/-258medium/-369soft",
+                HardMediumSoftLongScore.valueOfUninitialized(-7, -147L, -258L, -369L).toShortString());
+    }
+
+    @Test
     public void testToString() {
+        assertEquals("0hard/-258medium/-369soft",
+                HardMediumSoftLongScore.valueOf(0L, -258L, -369L).toString());
         assertEquals("-147hard/-258medium/-369soft",
                 HardMediumSoftLongScore.valueOf(-147L, -258L, -369L).toString());
         assertEquals("-7init/-147hard/-258medium/-369soft",

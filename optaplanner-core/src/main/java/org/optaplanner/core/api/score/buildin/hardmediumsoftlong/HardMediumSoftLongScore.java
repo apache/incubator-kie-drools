@@ -236,6 +236,11 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     }
 
     @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((Long) n).longValue() != 0L, HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
+    }
+
+    @Override
     public String toString() {
         return getInitPrefix() + hardScore + HARD_LABEL + "/" + mediumScore + MEDIUM_LABEL + "/" + softScore + SOFT_LABEL;
     }

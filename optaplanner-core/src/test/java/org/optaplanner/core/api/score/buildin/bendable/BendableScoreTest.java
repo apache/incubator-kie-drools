@@ -43,7 +43,20 @@ public class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void toShortString() {
+        assertEquals("0", scoreDefinitionHSS.createScore(0, 0, 0).toShortString());
+        assertEquals("[0/-369]soft", scoreDefinitionHSS.createScore(0, 0, -369).toShortString());
+        assertEquals("[-258/-369]soft", scoreDefinitionHSS.createScore(0, -258, -369).toShortString());
+        assertEquals("[-147]hard", scoreDefinitionHSS.createScore(-147, 0, 0).toShortString());
+        assertEquals("[-147]hard/[-258/-369]soft", scoreDefinitionHSS.createScore(-147, -258, -369).toShortString());
+        assertEquals("[-147/-258/-369]hard", scoreDefinitionHHH.createScore(-147, -258, -369).toShortString());
+        assertEquals("[-147/-258/-369]soft", scoreDefinitionSSS.createScore(-147, -258, -369).toShortString());
+        assertEquals("-7init/[-147/-258/-369]soft", scoreDefinitionSSS.createScoreUninitialized(-7, -147, -258, -369).toShortString());
+    }
+
+    @Test
     public void testToString() {
+        assertEquals("[0]hard/[-258/-369]soft", scoreDefinitionHSS.createScore(0, -258, -369).toString());
         assertEquals("[-147]hard/[-258/-369]soft", scoreDefinitionHSS.createScore(-147, -258, -369).toString());
         assertEquals("[-147/-258/-369]hard/[]soft", scoreDefinitionHHH.createScore(-147, -258, -369).toString());
         assertEquals("[]hard/[-147/-258/-369]soft", scoreDefinitionSSS.createScore(-147, -258, -369).toString());

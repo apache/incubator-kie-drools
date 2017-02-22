@@ -34,7 +34,19 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void toShortString() {
+        assertEquals("0", HardSoftDoubleScore.valueOf(0.0, 0.0).toShortString());
+        assertEquals("-258.3soft", HardSoftDoubleScore.valueOf(0.0, -258.3).toShortString());
+        assertEquals("-147.2hard", HardSoftDoubleScore.valueOf(-147.2, 0.0).toShortString());
+        assertEquals("-147.2hard/-258.3soft", HardSoftDoubleScore.valueOf(-147.2, -258.3).toShortString());
+        assertEquals("-7init", HardSoftDoubleScore.valueOfUninitialized(-7, 0.0, 0.0).toShortString());
+        assertEquals("-7init/-258.3soft", HardSoftDoubleScore.valueOfUninitialized(-7, 0.0, -258.3).toShortString());
+        assertEquals("-7init/-147.2hard/-258.3soft", HardSoftDoubleScore.valueOfUninitialized(-7, -147.2, -258.3).toShortString());
+    }
+
+    @Test
     public void testToString() {
+        assertEquals("0.0hard/-258.3soft", HardSoftDoubleScore.valueOf(0.0, -258.3).toString());
         assertEquals("-147.2hard/-258.3soft", HardSoftDoubleScore.valueOf(-147.2, -258.3).toString());
         assertEquals("-7init/-147.2hard/-258.3soft", HardSoftDoubleScore.valueOfUninitialized(-7, -147.2, -258.3).toString());
     }

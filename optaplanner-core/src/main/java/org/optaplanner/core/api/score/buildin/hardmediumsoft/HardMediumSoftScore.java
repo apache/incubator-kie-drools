@@ -235,6 +235,11 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
         }
     }
 
+    @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((Integer) n).intValue() != 0, HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
+    }
+
     public String toString() {
         return getInitPrefix() + hardScore + HARD_LABEL + "/" + mediumScore + MEDIUM_LABEL + "/" + softScore + SOFT_LABEL;
     }

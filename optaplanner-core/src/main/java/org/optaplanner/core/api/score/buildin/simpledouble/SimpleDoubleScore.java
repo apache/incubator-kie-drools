@@ -170,6 +170,12 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
             return Double.compare(score, other.getScore());
         }
     }
+
+    @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((Double) n).doubleValue() != 0.0, "");
+    }
+
     @Override
     public String toString() {
         return getInitPrefix() + score;

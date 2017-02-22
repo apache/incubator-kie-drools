@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.api.score;
 
+import java.util.Arrays;
+import java.util.function.Predicate;
+
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 
 /**
@@ -98,5 +101,52 @@ public abstract class AbstractBendableScore<S extends FeasibilityScore<S>> exten
      * @return {@link #getHardLevelsSize()} + {@link #getSoftLevelsSize()}
      */
     public abstract int getLevelsSize();
+
+    protected String buildBendableShortString(Predicate<Number> notZero) {
+        StringBuilder shortString = new StringBuilder();
+        if (initScore != 0) {
+            shortString.append(initScore).append(INIT_LABEL);
+        }
+        Number[] levelNumbers = toLevelNumbers();
+        int hardLevelsSize = getHardLevelsSize();
+        if (Arrays.stream(levelNumbers).limit(hardLevelsSize).anyMatch(notZero)) {
+            if (shortString.length() > 0) {
+                shortString.append("/");
+            }
+            shortString.append("[");
+            boolean first = true;
+            for (int i = 0; i < hardLevelsSize; i++) {
+                if (first) {
+                    first = false;
+                } else {
+                    shortString.append("/");
+                }
+                shortString.append(levelNumbers[i]);
+            }
+            shortString.append("]").append(HARD_LABEL);
+        }
+        int softLevelsSize = getSoftLevelsSize();
+        if (Arrays.stream(levelNumbers).skip(hardLevelsSize).anyMatch(notZero)) {
+            if (shortString.length() > 0) {
+                shortString.append("/");
+            }
+            shortString.append("[");
+            boolean first = true;
+            for (int i = 0; i < softLevelsSize; i++) {
+                if (first) {
+                    first = false;
+                } else {
+                    shortString.append("/");
+                }
+                shortString.append(levelNumbers[hardLevelsSize + i]);
+            }
+            shortString.append("]").append(SOFT_LABEL);
+        }
+        if (shortString.length() == 0) {
+            // Even for BigDecimals we use "0" over "0.0" because different levels can have different scales
+            return "0";
+        }
+        return shortString.toString();
+    }
 
 }

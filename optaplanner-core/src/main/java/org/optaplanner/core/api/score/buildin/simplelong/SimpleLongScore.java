@@ -167,6 +167,11 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
     }
 
     @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((Long) n).longValue() != 0L, "");
+    }
+
+    @Override
     public String toString() {
         return getInitPrefix() + score;
     }

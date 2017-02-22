@@ -34,7 +34,16 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void toShortString() {
+        assertEquals("0", SimpleLongScore.valueOf(0L).toShortString());
+        assertEquals("-147", SimpleLongScore.valueOf(-147L).toShortString());
+        assertEquals("-7init/-147", SimpleLongScore.valueOfUninitialized(-7, -147L).toShortString());
+        assertEquals("-7init", SimpleLongScore.valueOfUninitialized(-7, 0L).toShortString());
+    }
+
+    @Test
     public void testToString() {
+        assertEquals("0", SimpleLongScore.valueOf(0).toString());
         assertEquals("-147", SimpleLongScore.valueOf(-147L).toString());
         assertEquals("-7init/-147", SimpleLongScore.valueOfUninitialized(-7, -147L).toString());
     }

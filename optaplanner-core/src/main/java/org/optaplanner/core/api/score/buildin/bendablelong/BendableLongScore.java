@@ -355,6 +355,11 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
     }
 
     @Override
+    public String toShortString() {
+        return buildBendableShortString((n) -> ((Long) n).longValue() != 0L);
+    }
+
+    @Override
     public String toString() {
         StringBuilder s = new StringBuilder(((hardScores.length + softScores.length) * 4) + 13);
         s.append(getInitPrefix());

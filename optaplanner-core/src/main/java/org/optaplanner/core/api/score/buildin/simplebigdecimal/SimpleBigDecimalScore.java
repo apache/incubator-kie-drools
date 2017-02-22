@@ -184,6 +184,11 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     }
 
     @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0, "");
+    }
+
+    @Override
     public String toString() {
         return getInitPrefix() + score;
     }

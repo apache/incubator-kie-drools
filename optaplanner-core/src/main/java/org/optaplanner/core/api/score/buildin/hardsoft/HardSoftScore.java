@@ -202,6 +202,11 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> implements
     }
 
     @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((Integer) n).intValue() != 0, HARD_LABEL, SOFT_LABEL);
+    }
+
+    @Override
     public String toString() {
         return getInitPrefix() + hardScore + HARD_LABEL + "/" + softScore + SOFT_LABEL;
     }

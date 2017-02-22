@@ -253,6 +253,12 @@ public final class HardMediumSoftBigDecimalScore extends AbstractScore<HardMediu
     }
 
     @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0,
+                HARD_LABEL, MEDIUM_LABEL, SOFT_LABEL);
+    }
+
+    @Override
     public String toString() {
         return getInitPrefix() + hardScore + HARD_LABEL + "/" + mediumScore + MEDIUM_LABEL + "/" + softScore + SOFT_LABEL;
     }

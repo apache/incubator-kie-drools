@@ -36,7 +36,27 @@ public class HardMediumSoftBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void toShortString() {
+        assertEquals("0",
+                HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("0.0"), new BigDecimal("0.0"), new BigDecimal("0.0")).toShortString());
+        assertEquals("-258.3soft",
+                HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("0.0"), new BigDecimal("0.0"), new BigDecimal("-258.3")).toShortString());
+        assertEquals("-3.20medium",
+                HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("0.0"), new BigDecimal("-3.20"), new BigDecimal("0.0")).toShortString());
+        assertEquals("-3.20medium/-258.3soft",
+                HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("0.0"), new BigDecimal("-3.20"), new BigDecimal("-258.3")).toShortString());
+        assertEquals("-147.2hard/-3.20medium/-258.3soft",
+                HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3")).toShortString());
+        assertEquals("-7init",
+                HardMediumSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("0.0"), new BigDecimal("0.0"), new BigDecimal("0.0")).toShortString());
+        assertEquals("-7init/-147.2hard/-3.20medium/-258.3soft",
+                HardMediumSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3")).toShortString());
+    }
+
+    @Test
     public void testToString() {
+        assertEquals("0.0hard/-3.20medium/-258.3soft",
+                HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("0.0"), new BigDecimal("-3.20"), new BigDecimal("-258.3")).toString());
         assertEquals("-147.2hard/-3.20medium/-258.3soft",
                 HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-147.2"), new BigDecimal("-3.20"), new BigDecimal("-258.3")).toString());
         assertEquals("-7init/-147.2hard/-3.20medium/-258.3soft",

@@ -142,4 +142,14 @@ public interface Score<S extends Score> extends Comparable<S> {
      */
     boolean isCompatibleArithmeticArgument(Score otherScore);
 
+    /**
+     * Like {@link Object#toString()}, but trims score levels which have a zero weight.
+     * For example {@literal 0hard/-258soft} returns {@literal -258soft}.
+     * <p>
+     * Do not use this format to persist information as text, use {@link Object#toString()} instead,
+     * so it can be parsed reliably.
+     * @return never null
+     */
+    String toShortString();
+
 }

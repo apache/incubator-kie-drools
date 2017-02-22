@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.function.Predicate;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
@@ -191,6 +192,28 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
             return "";
         }
         return initScore + INIT_LABEL + "/";
+    }
+
+    protected String buildShortString(Predicate<Number> notZero, String... levelLabels) {
+        StringBuilder shortString = new StringBuilder();
+        if (initScore != 0) {
+            shortString.append(initScore).append(INIT_LABEL);
+        }
+        int i = 0;
+        for (Number levelNumber : toLevelNumbers()) {
+            if (notZero.test(levelNumber)) {
+                if (shortString.length() > 0) {
+                    shortString.append("/");
+                }
+                shortString.append(levelNumber).append(levelLabels[i]);
+            }
+            i++;
+        }
+        if (shortString.length() == 0) {
+            // Even for BigDecimals we use "0" over "0.0" because different levels can have different scales
+            return "0";
+        }
+        return shortString.toString();
     }
 
 }

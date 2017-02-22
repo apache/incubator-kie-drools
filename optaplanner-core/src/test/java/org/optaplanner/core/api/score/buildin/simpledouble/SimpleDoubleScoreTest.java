@@ -34,7 +34,16 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void toShortString() {
+        assertEquals("0", SimpleDoubleScore.valueOf(0.0).toShortString());
+        assertEquals("-147.2", SimpleDoubleScore.valueOf(-147.2).toShortString());
+        assertEquals("-7init/-147.2", SimpleDoubleScore.valueOfUninitialized(-7, -147.2).toShortString());
+        assertEquals("-7init", SimpleDoubleScore.valueOfUninitialized(-7, 0.0).toShortString());
+    }
+
+    @Test
     public void testToString() {
+        assertEquals("0.0", SimpleDoubleScore.valueOf(0.0).toString());
         assertEquals("-147.2", SimpleDoubleScore.valueOf(-147.2).toString());
         assertEquals("-7init/-147.2", SimpleDoubleScore.valueOfUninitialized(-7, -147.2).toString());
     }

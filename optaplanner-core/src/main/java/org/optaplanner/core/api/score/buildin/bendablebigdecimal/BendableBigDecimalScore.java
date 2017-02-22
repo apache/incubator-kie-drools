@@ -379,6 +379,11 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     }
 
     @Override
+    public String toShortString() {
+        return buildBendableShortString((n) -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0);
+    }
+
+    @Override
     public String toString() {
         StringBuilder s = new StringBuilder(((hardScores.length + softScores.length) * 4) + 13);
         s.append(getInitPrefix());

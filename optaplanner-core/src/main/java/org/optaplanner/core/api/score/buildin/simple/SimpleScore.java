@@ -167,6 +167,11 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     }
 
     @Override
+    public String toShortString() {
+        return buildShortString((n) -> ((Integer) n).intValue() != 0, "");
+    }
+
+    @Override
     public String toString() {
         return getInitPrefix() + score;
     }
