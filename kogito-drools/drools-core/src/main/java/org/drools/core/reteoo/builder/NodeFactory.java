@@ -58,21 +58,21 @@ import java.util.List;
 
 public interface NodeFactory {
 
-    EntryPointNode buildEntryPointNode(final int id,
-                                       final ObjectSource objectSource,
-                                       final BuildContext context);
+    EntryPointNode buildEntryPointNode( int id,
+                                        ObjectSource objectSource,
+                                        BuildContext context);
 
-    EntryPointNode buildEntryPointNode(final int id,
-                                       final RuleBasePartitionId partitionId,
-                                       final boolean partitionsEnabled,
-                                       final ObjectSource objectSource,
-                                       final EntryPointId entryPoint);
+    EntryPointNode buildEntryPointNode( int id,
+                                        RuleBasePartitionId partitionId,
+                                        boolean partitionsEnabled,
+                                        ObjectSource objectSource,
+                                        EntryPointId entryPoint);
 
 
-    AlphaNode buildAlphaNode( final int id,
-                              final AlphaNodeFieldConstraint constraint,
-                              final ObjectSource objectSource,
-                              final BuildContext context );
+    AlphaNode buildAlphaNode( int id,
+                              AlphaNodeFieldConstraint constraint,
+                              ObjectSource objectSource,
+                              BuildContext context );
 
     TerminalNode buildTerminalNode( int id,
                                     LeftTupleSource source,
@@ -86,21 +86,22 @@ public interface NodeFactory {
                                         ObjectType objectType,
                                         BuildContext context );
 
-    EvalConditionNode buildEvalNode(final int id,
-                                    final LeftTupleSource tupleSource,
-                                    final EvalCondition eval,
-                                    final BuildContext context);
+    EvalConditionNode buildEvalNode( int id,
+                                     LeftTupleSource tupleSource,
+                                     EvalCondition eval,
+                                     BuildContext context);
+
 
     RightInputAdapterNode buildRightInputNode( int id,
                                                LeftTupleSource leftInput,
                                                LeftTupleSource startTupleSource,
                                                BuildContext context );
 
-    JoinNode buildJoinNode( final int id,
-                            final LeftTupleSource leftInput,
-                            final ObjectSource rightInput,
-                            final BetaConstraints binder,
-                            final BuildContext context );
+    JoinNode buildJoinNode( int id,
+                            LeftTupleSource leftInput,
+                            ObjectSource rightInput,
+                            BetaConstraints binder,
+                            BuildContext context );
 
     NotNode buildNotNode( int id,
                           LeftTupleSource leftInput,
@@ -114,16 +115,15 @@ public interface NodeFactory {
                                 BetaConstraints binder,
                                 BuildContext context );
 
-    AccumulateNode buildAccumulateNode(int id,
-                                       LeftTupleSource leftInput,
-                                       ObjectSource rightInput,
-                                       AlphaNodeFieldConstraint[] resultConstraints,
-                                       BetaConstraints sourceBinder,
-                                       BetaConstraints resultBinder,
-                                       Accumulate accumulate,
-                                       boolean unwrapRightObject,
-                                       BuildContext context );
-
+    AccumulateNode buildAccumulateNode( int id,
+                                        LeftTupleSource leftInput,
+                                        ObjectSource rightInput,
+                                        AlphaNodeFieldConstraint[] resultConstraints,
+                                        BetaConstraints sourceBinder,
+                                        BetaConstraints resultBinder,
+                                        Accumulate accumulate,
+                                        boolean unwrapRightObject,
+                                        BuildContext context );
     LeftInputAdapterNode buildLeftInputAdapterNode( int nextId,
                                                     ObjectSource objectSource,
                                                     BuildContext context );

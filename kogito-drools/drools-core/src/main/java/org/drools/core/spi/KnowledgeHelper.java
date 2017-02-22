@@ -21,6 +21,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.kie.api.runtime.rule.RuleUnit;
 import org.drools.core.rule.Declaration;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.Channel;
@@ -166,4 +167,10 @@ public interface KnowledgeHelper
     InternalFactHandle bolster( Object object, Object value );
 
     ClassLoader getProjectClassLoader();
+
+    void run(RuleUnit ruleUnit);
+    void run(Class<? extends RuleUnit> ruleUnitClass);
+
+    void guard(RuleUnit ruleUnit);
+    void guard(Class<? extends RuleUnit> ruleUnitClass);
 }

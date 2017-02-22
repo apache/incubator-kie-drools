@@ -18,6 +18,7 @@ package org.drools.core.definitions;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TypeResolver;
+import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.kie.internal.io.ResourceTypePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitRegistry;
@@ -100,6 +101,8 @@ public interface InternalKnowledgePackage extends KnowledgePackage, Externalizab
 
     TypeResolver getTypeResolver();
     void setTypeResolver( TypeResolver typeResolver );
+
+    RuleUnitRegistry getRuleUnitRegistry();
 
     ClassFieldAccessorStore getClassFieldAccessorStore();
 

@@ -16,10 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -106,8 +106,8 @@ public class Rete extends ObjectSource
                              final InternalWorkingMemory workingMemory) {
         EntryPointId entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
-        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint,
-                                                                                                                                                                                                       factHandle.getObject() );
+        ObjectTypeConf typeConf = ((WorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint,
+                                                                                                                                                                                               factHandle.getObject() );
         node.assertObject( factHandle,
                            context,
                            typeConf,
@@ -128,7 +128,7 @@ public class Rete extends ObjectSource
                               final InternalWorkingMemory workingMemory) {
         EntryPointId entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
-        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint,
+        ObjectTypeConf typeConf = ((WorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint,
                                                                                                                                                                                                        handle.getObject() );
         node.retractObject( handle,
                             context,

@@ -45,24 +45,24 @@ public interface TypeResolver {
         boolean accept(Class<?> clazz);
     }
 
-    public static AcceptAllClassFilter ACCEPT_ALL_CLASS_FILTER = new AcceptAllClassFilter();
-    public static class AcceptAllClassFilter implements ClassFilter {
+    AcceptAllClassFilter ACCEPT_ALL_CLASS_FILTER = new AcceptAllClassFilter();
+    class AcceptAllClassFilter implements ClassFilter {
         @Override
         public boolean accept(Class<?> clazz) {
             return true;
         }
     }
 
-    public static ExcludeAnnotationClassFilter EXCLUDE_ANNOTATION_CLASS_FILTER = new ExcludeAnnotationClassFilter();
-    public static class ExcludeAnnotationClassFilter implements ClassFilter {
+    ExcludeAnnotationClassFilter EXCLUDE_ANNOTATION_CLASS_FILTER = new ExcludeAnnotationClassFilter();
+    class ExcludeAnnotationClassFilter implements ClassFilter {
         @Override
         public boolean accept(Class<?> clazz) {
             return !Annotation.class.isAssignableFrom(clazz);
         }
     }
 
-    public static OnlyAnnotationClassFilter ONLY_ANNOTATION_CLASS_FILTER = new OnlyAnnotationClassFilter();
-    public static class OnlyAnnotationClassFilter implements ClassFilter {
+    OnlyAnnotationClassFilter ONLY_ANNOTATION_CLASS_FILTER = new OnlyAnnotationClassFilter();
+    class OnlyAnnotationClassFilter implements ClassFilter {
         @Override
         public boolean accept(Class<?> clazz) {
             return Annotation.class.isAssignableFrom(clazz);

@@ -16,17 +16,13 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalWorkingMemory;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.List;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.kie.api.definition.rule.Rule;
 
 /**
  * This context class is used during rule removal to ensure
@@ -37,13 +33,11 @@ public class RuleRemovalContext
         Externalizable {
 
     // the rule being removed
-    private Rule           rule;
-
-    private CleanupAdapter cleanupAdapter;
+    private RuleImpl rule;
 
     private InternalKnowledgeBase kBase;
 
-    public RuleRemovalContext(final Rule rule) {
+    public RuleRemovalContext(RuleImpl rule) {
         this.rule = rule;
     }
 
@@ -59,21 +53,8 @@ public class RuleRemovalContext
      * 
      * @return
      */
-    public Rule getRule() {
+    public RuleImpl getRule() {
         return rule;
-    }
-
-    public void setCleanupAdapter(CleanupAdapter cleanupAdapter) {
-        this.cleanupAdapter = cleanupAdapter;
-    }
-
-    public CleanupAdapter getCleanupAdapter() {
-        return cleanupAdapter;
-    }
-
-    public static interface CleanupAdapter {
-        public void cleanUp(final LeftTuple leftTuple,
-                            final InternalWorkingMemory workingMemory);
     }
 
     public InternalKnowledgeBase getKnowledgeBase() {

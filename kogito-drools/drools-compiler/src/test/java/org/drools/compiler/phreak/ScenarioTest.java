@@ -16,7 +16,6 @@
 package org.drools.compiler.phreak;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -58,9 +57,7 @@ public class ScenarioTest {
                 .setRightType( B.class )
                 .setConstraint( "object", "!=", "$object" ).build();
 
-        sinkNode = new JoinNode();
-        sinkNode.setId( 1 );
-        sinkNode.setConstraints( new EmptyBetaConstraints() );
+        sinkNode = (JoinNode) BetaNodeBuilder.create( NodeTypeEnums.JoinNode, buildContext ).build();
         
         joinNode.addTupleSink( sinkNode );
 
@@ -743,10 +740,9 @@ public class ScenarioTest {
 
         KnowledgeBaseImpl rbase = new KnowledgeBaseImpl( "ID",
                                                    conf );
-        BuildContext buildContext = new BuildContext( rbase,
-                                                      rbase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( rbase );
 
-        RuleImpl rule = new RuleImpl( "rule1", "org.pkg1", null );
+        RuleImpl rule = new RuleImpl( "rule1").setPackage( "org.pkg1" );
         InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.pkg1" );
         pkg.getDialectRuntimeRegistry().setDialectData( "mvel", new MVELDialectRuntimeData() );
         pkg.addRule( rule );

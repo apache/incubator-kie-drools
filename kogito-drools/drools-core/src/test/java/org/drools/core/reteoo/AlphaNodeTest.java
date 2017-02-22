@@ -53,8 +53,7 @@ public class AlphaNodeTest extends DroolsTestCase {
     @Test
     public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        BuildContext buildContext = new BuildContext( kBase,
-                                                      kBase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( kBase );
         buildContext.setRule(new RuleImpl("test"));
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
@@ -125,8 +124,7 @@ public class AlphaNodeTest extends DroolsTestCase {
     @Test
     public void testReturnValueConstraintAssertObject() throws Exception {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        BuildContext buildContext = new BuildContext( kBase,
-                                                      kBase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( kBase );
         buildContext.setRule(new RuleImpl("test"));
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
@@ -189,8 +187,7 @@ public class AlphaNodeTest extends DroolsTestCase {
     public void testUpdateSinkWithoutMemory() {
         // An AlphaNode should try and repropagate from its source
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        BuildContext buildContext = new BuildContext( kBase,
-                                                      kBase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( kBase );
         buildContext.setRule(new RuleImpl("test"));
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();

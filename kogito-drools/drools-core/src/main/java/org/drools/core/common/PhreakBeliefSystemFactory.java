@@ -25,7 +25,8 @@ import java.io.Serializable;
 
 public class PhreakBeliefSystemFactory implements BeliefSystemFactory, Serializable {
 
-    public BeliefSystem createBeliefSystem(BeliefSystemType type, NamedEntryPoint ep,
+    public BeliefSystem createBeliefSystem(BeliefSystemType type,
+                                           InternalWorkingMemoryEntryPoint ep,
                                            TruthMaintenanceSystem tms) {
         switch(type) {
             case SIMPLE:

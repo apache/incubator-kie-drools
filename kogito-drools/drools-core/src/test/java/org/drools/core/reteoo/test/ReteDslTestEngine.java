@@ -16,6 +16,18 @@
 
 package org.drools.core.reteoo.test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.AssertionFailedError;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
@@ -92,18 +104,6 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runner.notification.StoppedByUserException;
 import org.mvel2.MVEL;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class ReteDslTestEngine {
 
@@ -256,10 +256,9 @@ public class ReteDslTestEngine {
 
         KnowledgeBaseImpl rbase = new KnowledgeBaseImpl( "ID",
                                                          conf );
-        BuildContext buildContext = new BuildContext( rbase,
-                                                      rbase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( rbase );
 
-        RuleImpl rule = new RuleImpl("rule1", "org.pkg1", null);
+        RuleImpl rule = new RuleImpl("rule1").setPackage( "org.pkg1");
         InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.pkg1" );
         pkg.getDialectRuntimeRegistry().setDialectData( "mvel", new MVELDialectRuntimeData() );
         pkg.addRule( rule );

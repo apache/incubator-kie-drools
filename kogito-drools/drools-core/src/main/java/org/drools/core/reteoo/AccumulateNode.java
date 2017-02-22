@@ -16,6 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.Map;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
@@ -34,13 +41,6 @@ import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.Map;
 
 /**
  * AccumulateNode

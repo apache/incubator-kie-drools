@@ -16,6 +16,13 @@
 
 package org.drools.core.rule;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collection;
+import java.util.PriorityQueue;
+
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -38,13 +45,6 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.PointInTimeTrigger;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collection;
-import java.util.PriorityQueue;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 
@@ -332,29 +332,16 @@ public class SlidingTimeWindow
             int sinkId = inCtx.readInt();
             WindowNode windowNode = (WindowNode) inCtx.sinks.get( sinkId );
 
-            WindowMemory memory = (WindowMemory) inCtx.wm.getNodeMemory( windowNode );
+            WindowMemory memory = inCtx.wm.getNodeMemory( windowNode );
 
             Object[] behaviorContext = ( Object[]  ) memory.behaviorContext;
 
             int i = inCtx.readInt();
-//            SlidingTimeWindowContext stwCtx = ( SlidingTimeWindowContext ) behaviorContext[i];
-//
-//            updateNextExpiration( stwCtx.queue.peek(),
-//                                  inCtx.wm,
-//                                  memory,
-//                                  (SlidingTimeWindow) windowNode.getBehaviors()[i],
-//                                  stwCtx );
         }
 
         public void deserialize(MarshallerReaderContext inCtx,
                                 Timer _timer) throws ClassNotFoundException {
             int i = _timer.getBehavior().getHandleId();
-            // this should probably be doing something...
-
-//            updateNextExpiration( ( RightTuple) stwCtx.queue.peek(),
-//                                  inCtx.wm,
-//                                  (SlidingTimeWindow) betaNode.getBehaviors()[i],
-//                                  stwCtx );            
         }
     }
 
@@ -436,7 +423,7 @@ public class SlidingTimeWindow
             nodeId = inCtx.readInt();
             WindowNode windowNode = (WindowNode) inCtx.sinks.get( nodeId );
 
-            WindowMemory memory = (WindowMemory) inCtx.wm.getNodeMemory( windowNode );
+            WindowMemory memory = inCtx.wm.getNodeMemory( windowNode );
 
             Behavior.Context[] behaviorContext = memory.behaviorContext;
 
@@ -451,7 +438,7 @@ public class SlidingTimeWindow
             nodeId =_action.getBehaviorExpire().getNodeId();
             WindowNode windowNode = (WindowNode) context.sinks.get( nodeId );
 
-            WindowMemory memory = (WindowMemory) context.wm.getNodeMemory( windowNode );
+            WindowMemory memory = context.wm.getNodeMemory( windowNode );
 
             Behavior.Context[] behaviorContext = memory.behaviorContext;
 

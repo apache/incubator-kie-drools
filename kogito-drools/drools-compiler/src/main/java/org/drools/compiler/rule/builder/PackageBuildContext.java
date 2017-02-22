@@ -16,11 +16,6 @@
 
 package org.drools.compiler.rule.builder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -32,6 +27,12 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Dialectable;
+import org.drools.core.rule.MVELDialectRuntimeData;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A context for the current build
@@ -57,10 +58,10 @@ public class PackageBuildContext {
     private Map<String, String>         invokers;
 
     // map<String invokerClassName, ConditionalElement ce> of generated invoker lookups
-    private Map                         invokerLookups;
+    private Map<String, Object>         invokerLookups;
 
     // map<String invokerClassName, BaseDescr descr> of descriptor lookups
-    private Map                         descrLookups;
+    private Map<String, BaseDescr>      descrLookups;
 
     // a simple counter for generated names
     private int                         counter;
@@ -92,8 +93,8 @@ public class PackageBuildContext {
 
         this.methods = new ArrayList();
         this.invokers = new HashMap<String, String>();
-        this.invokerLookups = new HashMap();
-        this.descrLookups = new HashMap();
+        this.invokerLookups = new HashMap<String, Object>();
+        this.descrLookups = new HashMap<String, BaseDescr>();
         this.errors = new ArrayList<DroolsError>();
         this.warnings = new ArrayList<DroolsWarning>();
 
@@ -172,24 +173,20 @@ public class PackageBuildContext {
      * Returns the Map<String invokerClassName, BaseDescr descr> of descriptor lookups
      * @return
      */
-    public Map getDescrLookups() {
-        return this.descrLookups;
+    public BaseDescr getDescrLookup(String className) {
+        return descrLookups.get(className);
     }
 
-    public void setDescrLookups(final Map descrLookups) {
-        this.descrLookups = descrLookups;
+    public void addDescrLookups(String className, BaseDescr baseDescr) {
+        descrLookups.put(className, baseDescr);
     }
 
-    /**
-     * Returns the Map<String invokerClassName, ConditionalElement ce> of generated invoker lookups
-     * @return
-     */
-    public Map getInvokerLookups() {
-        return this.invokerLookups;
+    public Object getInvokerLookup(String className) {
+        return invokerLookups.get(className);
     }
 
-    public void setInvokerLookups(final Map invokerLookups) {
-        this.invokerLookups = invokerLookups;
+    public void addInvokerLookup(String className, Object invokerLookup) {
+        invokerLookups.put(className, invokerLookup);
     }
 
     /**
@@ -244,4 +241,7 @@ public class PackageBuildContext {
         this.typesafe = stricttype;
     }
 
+    public MVELDialectRuntimeData getMVELDialectRuntimeData() {
+        return ( MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+    }
 }

@@ -16,6 +16,12 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultBetaConstraints;
@@ -44,12 +50,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.core.time.TimeUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Utility functions for reteoo build
@@ -145,7 +145,7 @@ public class BuildUtils {
             // shared node found
             mergeNodes(node, candidate);
             // undo previous id assignment
-            context.releaseId( candidate.getId() );
+            context.releaseId( candidate );
             if ( partition == null && context.getPartitionId() == null ) {
                 partition = node.getPartitionId();
                 // if no label in current context, create one

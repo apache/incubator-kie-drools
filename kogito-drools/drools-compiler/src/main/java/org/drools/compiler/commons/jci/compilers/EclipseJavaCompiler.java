@@ -16,9 +16,19 @@
  */
 package org.drools.compiler.commons.jci.compilers;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
@@ -36,15 +46,6 @@ import org.eclipse.jdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
 
 /**
  * Eclipse compiler implementation
@@ -415,11 +416,27 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         
         final Compiler compiler = new Compiler(nameEnvironment, policy, compilerOptions, compilerRequestor, problemFactory);
 
+        if ( ClassGenerator.DUMP_GENERATED_CLASSES ) {
+            dumpUnits( compilationUnits, pReader );
+        }
+
         compiler.compile(compilationUnits);
 
         final CompilationProblem[] result = new CompilationProblem[problems.size()];
         problems.toArray(result);
         return new org.drools.compiler.commons.jci.compilers.CompilationResult(result);
+    }
+
+    private void dumpUnits( ICompilationUnit[] compilationUnits, ResourceReader reader ) {
+        for (ICompilationUnit unit : compilationUnits) {
+            String name = ( (CompilationUnit) unit ).fileName;
+            String source = new String( reader.getBytes( name ) );
+            try {
+                IoUtils.write( new java.io.File(name.replace( '/', '.' )), reader.getBytes( name ) );
+            } catch (IOException e) {
+                throw new RuntimeException( e );
+            }
+        }
     }
 
     public JavaCompilerSettings createDefaultSettings() {

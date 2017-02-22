@@ -15,6 +15,14 @@
 
 package org.drools.compiler.rule.builder;
 
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
@@ -46,14 +54,6 @@ import org.mvel2.ConversionHandler;
 import org.mvel2.DataConversion;
 import org.mvel2.util.CompatibilityStrategy;
 import org.mvel2.util.NullType;
-
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import static org.drools.compiler.rule.builder.PatternBuilder.*;
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
@@ -132,10 +132,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         boolean isUnification = requiredDeclaration != null &&
                                 requiredDeclaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) &&
                                 Operator.EQUAL.getOperatorString().equals( operatorDescr.getOperator() );
-        boolean canBuildCompilationUnit = true;
         if (isUnification && leftValue.equals(rightValue)) {
             expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
-            canBuildCompilationUnit = false; // TODO: expression rewriting doesn't allow to create a compilation unit
         }
 
         expression = normalizeMVELVariableExpression(expression, leftValue, rightValue, relDescr);

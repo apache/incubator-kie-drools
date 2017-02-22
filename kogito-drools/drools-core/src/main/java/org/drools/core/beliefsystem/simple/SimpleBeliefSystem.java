@@ -19,6 +19,7 @@ import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
@@ -37,10 +38,10 @@ import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 public class SimpleBeliefSystem
         implements
         BeliefSystem<SimpleMode> {
-    private NamedEntryPoint        ep;
+    private InternalWorkingMemoryEntryPoint        ep;
     private TruthMaintenanceSystem tms;
 
-    public SimpleBeliefSystem(NamedEntryPoint ep,
+    public SimpleBeliefSystem(InternalWorkingMemoryEntryPoint ep,
                               TruthMaintenanceSystem tms) {
         super();
         this.ep = ep;
@@ -183,7 +184,7 @@ public class SimpleBeliefSystem
         return dep;
     }
 
-    public NamedEntryPoint getEp() {
+    public InternalWorkingMemoryEntryPoint getEp() {
         return ep;
     }
 

@@ -16,11 +16,12 @@
 
 package org.drools.core.common;
 
-import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.spi.FactHandleFactory;
-
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.spi.FactHandleFactory;
 
 public abstract class AbstractFactHandleFactory
     implements
@@ -50,8 +51,8 @@ public abstract class AbstractFactHandleFactory
     public final InternalFactHandle newFactHandle(Object object,
                                                   ObjectTypeConf conf,
                                                   InternalWorkingMemory workingMemory,
-                                                  InternalWorkingMemoryEntryPoint wmEntryPoint) {
-        return newFactHandle( this.id.incrementAndGet(),
+                                                  WorkingMemoryEntryPoint wmEntryPoint) {
+        return newFactHandle( getNextId(),
                               object,
                               conf,
                               workingMemory,
@@ -65,10 +66,10 @@ public abstract class AbstractFactHandleFactory
                                                   Object object,
                                                   ObjectTypeConf conf,
                                                   InternalWorkingMemory workingMemory,
-                                                  InternalWorkingMemoryEntryPoint wmEntryPoint) {
+                                                  WorkingMemoryEntryPoint wmEntryPoint) {
         return newFactHandle( id,
                               object,
-                              this.counter.incrementAndGet(),
+                              getNextRecency(),
                               conf,
                               workingMemory,
                               wmEntryPoint );
@@ -82,10 +83,10 @@ public abstract class AbstractFactHandleFactory
                                                      long recency,
                                                      ObjectTypeConf conf,
                                                      InternalWorkingMemory workingMemory,
-                                                     InternalWorkingMemoryEntryPoint wmEntryPoint);
+                                                     WorkingMemoryEntryPoint wmEntryPoint );
 
     public final void increaseFactHandleRecency(final InternalFactHandle factHandle) {
-        factHandle.setRecency( this.counter.incrementAndGet() );
+        factHandle.setRecency( getNextRecency() );
     }
 
     public void destroyFactHandle(final InternalFactHandle factHandle) {
@@ -96,15 +97,15 @@ public abstract class AbstractFactHandleFactory
      * @see org.kie.reteoo.FactHandleFactory#newInstance()
      */
     public abstract FactHandleFactory newInstance();
-    
-    public AtomicInteger getAtomicId() {
-        return this.id;
+
+    public int getNextId() {
+        return this.id.incrementAndGet();
     }
-    
-    public AtomicLong getAtomicRecency() {
-        return this.counter;
-    }    
-    
+
+    public long getNextRecency() {
+        return this.counter.incrementAndGet();
+    }
+
     public int getId() {
         return this.id.get();
     }

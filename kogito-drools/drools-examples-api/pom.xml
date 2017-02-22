@@ -36,6 +36,7 @@
     <module>kiecontainer-from-kierepo</module>
     <module>multiple-kbases</module>
     <module>reactive-kiesession</module>
+    <module>ruleunit</module>
   </modules>
 
 

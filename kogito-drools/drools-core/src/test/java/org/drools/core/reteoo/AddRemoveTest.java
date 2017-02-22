@@ -34,7 +34,7 @@ public class
          * MockObjectSink so we can detect assertions and retractions
          */
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        BuildContext context = new BuildContext(kBase, kBase.getReteooBuilder().getIdGenerator() );
+        BuildContext context = new BuildContext(kBase);
 
         NodeFactory nFacotry = kBase.getConfiguration().getComponentFactory().getNodeFactoryService();
         EntryPointNode entryPoint = context.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();

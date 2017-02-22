@@ -52,7 +52,6 @@ public class CollectBuilder
         final List<AlphaNodeFieldConstraint> resultAlphaConstraints = context.getAlphaConstraints();
 
         final Pattern sourcePattern = collect.getSourcePattern();
-        final Pattern resultPattern = collect.getResultPattern();
 
         // get builder for the pattern
         final ReteooComponentBuilder builder = utils.getBuilderFor( sourcePattern );
@@ -110,9 +109,7 @@ public class CollectBuilder
                                                                                                             accumulate,
                                                                                                             existSubNetwort,
                                                                                                             context );
-
         context.setTupleSource( utils.attachNode( context, accNode ) );
-
 
         // source pattern was bound, so nulling context
         context.setObjectSource( null );

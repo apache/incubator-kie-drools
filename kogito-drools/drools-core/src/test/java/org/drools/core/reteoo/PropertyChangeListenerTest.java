@@ -16,6 +16,9 @@
 
 package org.drools.core.reteoo;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -23,9 +26,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
-
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
 import static org.junit.Assert.assertEquals;
 
@@ -37,7 +37,7 @@ public class PropertyChangeListenerTest {
     @Before
     public void setUp() throws Exception {
         this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        this.buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
+        this.buildContext = new BuildContext( kBase );
 
         this.entryPoint = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();;
     }

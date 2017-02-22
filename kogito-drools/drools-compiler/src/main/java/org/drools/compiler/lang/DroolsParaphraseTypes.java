@@ -21,7 +21,8 @@ package org.drools.compiler.lang;
  */
 public enum DroolsParaphraseTypes {
     PACKAGE, 
-    IMPORT, 
+    UNIT,
+    IMPORT,
     FUNCTION_IMPORT, 
     ACCUMULATE_IMPORT, 
     GLOBAL, 

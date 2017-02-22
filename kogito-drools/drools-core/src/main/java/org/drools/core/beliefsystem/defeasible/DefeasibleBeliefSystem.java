@@ -16,12 +16,11 @@
 package org.drools.core.beliefsystem.defeasible;
 
 import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LogicalDependency;
-import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -30,7 +29,7 @@ import org.drools.core.spi.PropagationContext;
 
 public class DefeasibleBeliefSystem<M extends DefeasibleMode<M>> extends JTMSBeliefSystem<M>  {
 
-    public DefeasibleBeliefSystem(NamedEntryPoint ep, TruthMaintenanceSystem tms) {
+    public DefeasibleBeliefSystem( InternalWorkingMemoryEntryPoint ep, TruthMaintenanceSystem tms ) {
         super(ep, tms);
     }
 

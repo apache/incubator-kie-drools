@@ -58,7 +58,7 @@ public class MVELEnabledBuilder
                                                                  context.getRuleDescr(),
                                                                  context.getRuleDescr().getEnabled(),
                                                                  new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( declrs ),
-                                                                                       context.getKnowledgeBuilder().getGlobals() ),
+                                                                                       context ),
                                                                  otherVars );
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();

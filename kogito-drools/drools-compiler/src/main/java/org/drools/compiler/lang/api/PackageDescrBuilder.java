@@ -30,6 +30,12 @@ public interface PackageDescrBuilder
     public PackageDescrBuilder name( String name );
 
     /**
+     * Adds a unit statement to the package
+     * @return the UnitDescrBuilder to define the unit
+     */
+    public UnitDescrBuilder newUnit();
+
+    /**
      * Adds an import statement to the package
      * @return the ImporDescrBuilder to set the import
      */

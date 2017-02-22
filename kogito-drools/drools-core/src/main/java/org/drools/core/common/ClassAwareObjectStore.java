@@ -50,8 +50,12 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
     public ClassAwareObjectStore() { }
 
     public ClassAwareObjectStore(RuleBaseConfiguration conf, Lock lock) {
+        this(conf.getAssertBehaviour(), lock);
+    }
+
+    public ClassAwareObjectStore( RuleBaseConfiguration.AssertBehaviour assertBehaviour, Lock lock ) {
         this.lock = lock;
-        this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(conf.getAssertBehaviour());
+        this.isEqualityBehaviour = RuleBaseConfiguration.AssertBehaviour.EQUALITY.equals(assertBehaviour);
         if (isEqualityBehaviour) {
             this.equalityMap = new ObjectHashMap();
             this.equalityMap.setComparator( new EqualityAssertMapComparator() );

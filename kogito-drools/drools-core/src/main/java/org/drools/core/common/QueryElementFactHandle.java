@@ -16,6 +16,7 @@
 
 package org.drools.core.common;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
@@ -96,7 +97,7 @@ public class QueryElementFactHandle
         this.object = object;
     }    
 
-    public InternalWorkingMemoryEntryPoint getEntryPoint() {
+    public WorkingMemoryEntryPoint getEntryPoint() {
         return null;
         //throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
@@ -137,7 +138,7 @@ public class QueryElementFactHandle
         return true;
     }
 
-    public void setEntryPoint(InternalWorkingMemoryEntryPoint ep) {
+    public void setEntryPoint(WorkingMemoryEntryPoint ep ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 

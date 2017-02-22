@@ -39,6 +39,8 @@ public class PackageDescr extends BaseDescr
     private static final long               serialVersionUID       = 530l;
     private String                          documentation;
 
+    private UnitDescr                       unit;
+
     private List<ImportDescr>               imports                = Collections.emptyList();
     private List<FunctionImportDescr>       functionImports        = Collections.emptyList();
     private List<AccumulateImportDescr>     accumulateImports      = Collections.emptyList();
@@ -72,6 +74,7 @@ public class PackageDescr extends BaseDescr
             ClassNotFoundException {
         super.readExternal(in);
         documentation = in.readUTF();
+        unit = (UnitDescr) in.readObject();
         imports = (List<ImportDescr>) in.readObject();
         functionImports = (List<FunctionImportDescr>) in.readObject();
         attributes = (List<AttributeDescr>) in.readObject();
@@ -87,6 +90,7 @@ public class PackageDescr extends BaseDescr
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeUTF(documentation);
+        out.writeObject(unit);
         out.writeObject(imports);
         out.writeObject(functionImports);
         out.writeObject(attributes);
@@ -111,7 +115,15 @@ public class PackageDescr extends BaseDescr
         return this.documentation;
     }
 
-    public void addAllImports(final Collection<ImportDescr> importEntries) {
+    public void setUnit( UnitDescr unit ) {
+        this.unit = unit;
+    }
+
+    public UnitDescr getUnit() {
+        return unit;
+    }
+
+    public void addAllImports( final Collection<ImportDescr> importEntries ) {
         if (this.imports == Collections.EMPTY_LIST) {
             this.imports = new ArrayList<ImportDescr>();
         }

@@ -43,12 +43,12 @@ public class QueryElementBuilder
 
         context.setTupleSource( utils.attachNode( context,
                                                   context.getComponentFactory().getNodeFactoryService().buildQueryElementNode(
-                                                                                          context.getNextId(),
-                                                                                          context.getTupleSource(),
-                                                                                          qe,
-                                                                                          context.isTupleMemoryEnabled(),
-                                                                                          qe.isOpenQuery(),
-                                                                                          context ) ) );
+                                                                        context.getNextId(),
+                                                                        context.getTupleSource(),
+                                                                        qe,
+                                                                        context.isTupleMemoryEnabled(),
+                                                                        qe.isOpenQuery(),
+                                                                        context ) ) );
         context.popRuleComponent();
         context.incrementCurrentPatternOffset();
     }

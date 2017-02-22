@@ -42,7 +42,6 @@ public class MapGlobalResolver
     
     private Globals delegate;
 
-
     public MapGlobalResolver() {
         this.map = new ConcurrentHashMap<String, Object>();
     }

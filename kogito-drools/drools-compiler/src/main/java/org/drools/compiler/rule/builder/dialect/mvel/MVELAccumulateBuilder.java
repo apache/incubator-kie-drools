@@ -54,7 +54,6 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,20 +98,15 @@ public class MVELAccumulateBuilder
             Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations( context.getRule() );
             Map<String, Declaration> sourceOuterDeclr = source.getOuterDeclarations();
 
-            Map<String, Declaration> mergedDecl = new HashMap( decls );
-            mergedDecl.putAll( sourceOuterDeclr );
-
             Map<String, Class< ? >> declarationClasses = DeclarationScopeResolver.getDeclarationClasses( decls );
             declarationClasses.putAll( DeclarationScopeResolver.getDeclarationClasses( sourceOuterDeclr ) );
 
             BoundIdentifiers boundIds = new BoundIdentifiers( declarationClasses,
-                                                              context.getKnowledgeBuilder().getGlobals() );
-            boundIds.setDeclarations( mergedDecl );
-
-            Accumulator[] accumulators;
+                                                              context );
 
             final boolean readLocalsFromTuple = PackageBuilderUtil.isReadLocalsFromTuple(context, accumDescr, source);
 
+            Accumulator[] accumulators;
             if ( accumDescr.isExternalFunction() ) {
                 // uses accumulate functions
                 accumulators = buildExternalFunctions( context,
@@ -235,7 +229,7 @@ public class MVELAccumulateBuilder
                                                                null,
                                                                "Duplicate declaration for variable '" + func.getBind() + "' in the rule '" + context.getRule().getName() + "'" ) );
                     } else {
-                        Declaration inner = context.getDeclarationResolver().getDeclaration( context.getRule(), func.getBind() );
+                        Declaration inner = context.getDeclarationResolver().getDeclaration( func.getBind() );
                         Constraint c = new MvelConstraint( Collections.singletonList( context.getPkg().getName() ),
                                                            accumDescr.isMultiFunction()
                                                                 ? "this[ " + index + " ] == " + func.getBind()
@@ -244,7 +238,7 @@ public class MVELAccumulateBuilder
                                                            null,
                                                            null,
                                                            IndexUtil.ConstraintType.EQUAL,
-                                                           context.getDeclarationResolver().getDeclaration( context.getRule(), func.getBind() ),
+                                                           context.getDeclarationResolver().getDeclaration( func.getBind() ),
                                                            accumDescr.isMultiFunction()
                                                                 ? new ArrayElementReader( arrayReader, index, function.getResultType() )
                                                                 : new SelfReferenceClassFieldReader( function.getResultType() ),

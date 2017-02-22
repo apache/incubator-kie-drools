@@ -42,6 +42,7 @@ public class DroolsSoftKeywords {
     public static final String REFRACT      = "refract";
     public static final String DIRECT       = "direct";
     public static final String PACKAGE      = "package";
+    public static final String UNIT         = "unit";
     public static final String IMPORT       = "import";
     public static final String DIALECT      = "dialect";
     public static final String SALIENCE     = "salience";

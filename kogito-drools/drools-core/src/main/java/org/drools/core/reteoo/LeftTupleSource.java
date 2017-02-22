@@ -16,6 +16,12 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.RuleBasePartitionId;
@@ -26,12 +32,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
@@ -87,6 +87,8 @@ public abstract class LeftTupleSource extends BaseNode
               context != null ? context.getPartitionId() : RuleBasePartitionId.MAIN_PARTITION,
               context != null && context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation());
         this.sink = EmptyLeftTupleSinkAdapter.getInstance();
+
+        initMemoryId( context );
     }
 
     // ------------------------------------------------------------

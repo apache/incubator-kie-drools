@@ -22,7 +22,6 @@ import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.ObjectFilter;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.factmodel.traits.Entity;
@@ -1862,8 +1861,8 @@ public class TraitTest extends CommonTestMethodBase {
 
         FactHandle personHandle = ksession.getFactHandles( new ClassObjectFilter( Person.class ) ).iterator().next();
         InternalFactHandle h = ((InternalFactHandle) personHandle);
-        ObjectTypeConfigurationRegistry reg = ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).getObjectTypeConfigurationRegistry();
-        ObjectTypeConf conf = reg.getObjectTypeConf( ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).getEntryPoint(), ((InternalFactHandle) personHandle).getObject() );
+        ObjectTypeConfigurationRegistry reg = h.getEntryPoint().getObjectTypeConfigurationRegistry();
+        ObjectTypeConf conf = reg.getObjectTypeConf( h.getEntryPoint().getEntryPoint(), ((InternalFactHandle) personHandle).getObject() );
         assertTrue( conf.isTMSEnabled() );
 
         ksession.dispose();

@@ -21,6 +21,7 @@ import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
@@ -41,9 +42,9 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
     public static                    boolean STRICT = false;
 
     private   TruthMaintenanceSystem tms;
-    protected NamedEntryPoint        ep;
+    protected InternalWorkingMemoryEntryPoint        ep;
 
-    public JTMSBeliefSystem(NamedEntryPoint ep,
+    public JTMSBeliefSystem(InternalWorkingMemoryEntryPoint ep,
                             TruthMaintenanceSystem tms) {
         this.ep = ep;
         this.tms = tms;

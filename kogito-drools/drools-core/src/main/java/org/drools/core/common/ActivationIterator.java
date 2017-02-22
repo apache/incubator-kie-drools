@@ -15,6 +15,7 @@
 
 package org.drools.core.common;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
@@ -62,10 +63,10 @@ public class ActivationIterator
     }
 
     public static Iterator iterator(KieSession ksession) {
-        return iterator((InternalWorkingMemoryEntryPoint) ksession);
+        return iterator((WorkingMemoryEntryPoint) ksession);
     }
 
-    public static Iterator iterator(InternalWorkingMemoryEntryPoint ksession) {
+    public static Iterator iterator(WorkingMemoryEntryPoint ksession ) {
         InternalWorkingMemory wm = ksession.getInternalWorkingMemory();
         return PhreakActivationIterator.iterator(wm);
     }

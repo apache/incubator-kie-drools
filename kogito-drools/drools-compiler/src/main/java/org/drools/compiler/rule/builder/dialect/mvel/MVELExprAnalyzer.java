@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -81,7 +80,7 @@ public class MVELExprAnalyzer {
                                                        final String expr,
                                                        final BoundIdentifiers availableIdentifiers,
                                                        final Map<String, Class< ? >> localTypes,
-                                                       String contextIndeifier,
+                                                       String contextIdentifier,
                                                        Class kcontextClass) {
         if ( expr.trim().length() <= 0 ) {
             MVELAnalysisResult result = analyze( (Set<String>) Collections.EMPTY_SET, availableIdentifiers );
@@ -97,8 +96,7 @@ public class MVELExprAnalyzer {
 
         MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
-        MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-        ParserConfiguration conf = data.getParserConfiguration();
+        ParserConfiguration conf = context.getMVELDialectRuntimeData().getParserConfiguration();
 
         conf.setClassLoader( context.getKnowledgeBuilder().getRootClassLoader() );
 
@@ -152,12 +150,7 @@ public class MVELExprAnalyzer {
 
         // MVEL includes direct fields of context object in non-strict mode. so we need to strip those
         if ( availableIdentifiers.getThisClass() != null ) {
-            for ( Iterator<String> it = requiredInputs.iterator(); it.hasNext(); ) {
-                if ( PropertyTools.getFieldOrAccessor( availableIdentifiers.getThisClass(),
-                                                       it.next() ) != null ) {
-                    it.remove();
-                }
-            }
+            requiredInputs.removeIf( s -> PropertyTools.getFieldOrAccessor( availableIdentifiers.getThisClass(), s ) != null );
         }
 
         // now, set the required input types and compile again
@@ -166,41 +159,23 @@ public class MVELExprAnalyzer {
         parserContext2.setStrongTyping( true );
         parserContext2.setInterceptors( dialect.getInterceptors() );
 
-        for ( String str : requiredInputs ) {
-            Class< ? > cls = availableIdentifiers.getDeclrClasses().get( str );
-            if ( cls != null ) {
-                parserContext2.addInput( str, cls );
+        for ( String input : requiredInputs ) {
+            if ("this".equals( input )) {
                 continue;
             }
 
-            cls = availableIdentifiers.getGlobals().get( str );
-            if ( cls != null ) {
-                parserContext2.addInput( str, cls );
-                continue;
-            }
-
-            cls = availableIdentifiers.getOperators().keySet().contains( str ) ?
-                  context.getConfiguration().getComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass() :
-                  null;
-
-            if ( cls != null ) {
-                parserContext2.addInput( str, cls );
-                continue;
-            }
-
-            if ( str.equals( contextIndeifier ) ) {
-                parserContext2.addInput( contextIndeifier, kcontextClass );
-            } else if ( str.equals( "kcontext" ) ) {
-                parserContext2.addInput( "kcontext", kcontextClass );
-            } else if ( str.equals( "rule" ) ) {
-                parserContext2.addInput( "rule", Rule.class );
-            }
-
-            if ( localTypes != null ) {
-                cls = localTypes.get( str );
-                if ( cls != null ) {
-                    parserContext2.addInput( str, cls );
+            Class< ? > cls = availableIdentifiers.resolveType( input );
+            if ( cls == null ) {
+                if ( input.equals( contextIdentifier ) || input.equals( "kcontext" ) ) {
+                    cls = kcontextClass;
+                } else if ( input.equals( "rule" ) ) {
+                    cls = Rule.class;
+                } else if ( localTypes != null ) {
+                    cls = localTypes.get( input );
                 }
+            }
+            if ( cls != null ) {
+                parserContext2.addInput( input, cls );
             }
         }
 
@@ -272,11 +247,11 @@ public class MVELExprAnalyzer {
             }
         }
 
-        for ( Entry<String, Class< ? >> entry : availableIdentifiers.getGlobals().entrySet() ) {
-            if ( identifiers.contains( entry.getKey() ) ) {
-                usedGlobals.put( entry.getKey(),
-                                 entry.getValue() );
-                notBound.remove( entry.getKey() );
+        for ( String identifier : identifiers ) {
+            Class<?> type = availableIdentifiers.resolveVarType( identifier );
+            if (type != null) {
+                usedGlobals.put( identifier, type );
+                notBound.remove( identifier );
             }
         }
 
@@ -288,10 +263,13 @@ public class MVELExprAnalyzer {
             }
         }
 
-        result.setBoundIdentifiers( new BoundIdentifiers( usedDecls,
-                                                          usedGlobals,
-                                                          usedOperators,
-                                                          availableIdentifiers.getThisClass() ) );
+        BoundIdentifiers boundIdentifiers = new BoundIdentifiers( usedDecls,
+                                                                  availableIdentifiers.getContext(),
+                                                                  usedOperators,
+                                                                  availableIdentifiers.getThisClass() );
+        boundIdentifiers.setGlobals( usedGlobals );
+
+        result.setBoundIdentifiers( boundIdentifiers );
         result.setNotBoundedIdentifiers( notBound );
 
         return result;

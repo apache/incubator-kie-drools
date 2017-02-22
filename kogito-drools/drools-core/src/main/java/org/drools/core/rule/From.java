@@ -53,7 +53,7 @@ public class From extends ConditionalElement
     public From() {
     }
 
-    public From(final DataProvider dataProvider) {
+    public From(DataProvider dataProvider) {
         this.dataProvider = dataProvider;
     }
 
@@ -67,6 +67,10 @@ public class From extends ConditionalElement
         out.writeObject( dataProvider );
         out.writeObject(  resultPattern );
         out.writeObject(  resultClass );
+    }
+
+    public boolean isReactive() {
+        return dataProvider.isReactive();
     }
 
     @Override
@@ -190,6 +194,11 @@ public class From extends ConditionalElement
         @Override
         public int hashCode() {
             return delegate.hashCode();
+        }
+
+        @Override
+        public boolean isReactive() {
+            return delegate.isReactive();
         }
     }
 

@@ -22,6 +22,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.runtime.rule.RuleUnit;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
@@ -324,4 +325,10 @@ public class SequentialKnowledgeHelper
     public void cancelMatch(Match match) {
         // TODO Auto-generated method stub
     }
+
+    public void run(RuleUnit ruleUnit ) { }
+    public void run(Class<? extends RuleUnit> ruleUnitClass) { }
+
+    public void guard(RuleUnit ruleUnit ) { }
+    public void guard(Class<? extends RuleUnit> ruleUnitClass) { }
 }

@@ -15,6 +15,8 @@
 
 package org.drools.core.reteoo;
 
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
@@ -32,8 +34,6 @@ import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -106,7 +106,7 @@ public class RuleUnlinkingTest {
     public void setUp(int type) {
         KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
+        buildContext = new BuildContext( kBase );
 
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);

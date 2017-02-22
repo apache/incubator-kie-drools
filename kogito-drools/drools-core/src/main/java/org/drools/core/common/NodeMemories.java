@@ -17,7 +17,6 @@
 package org.drools.core.common;
 
 
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
@@ -29,8 +28,6 @@ public interface NodeMemories {
 
     void clearNodeMemory( MemoryFactory node );
 
-    void setKnowledgeBaseReference( InternalKnowledgeBase kBase );
-
     void clear();
 
     /**
@@ -39,10 +36,14 @@ public interface NodeMemories {
      * given memory slot for the given node ID is null, it
      * will return null.
      *
-     * @param nodeId
+     * @param memoryId
      * @return
      */
-    Memory peekNodeMemory( int nodeId );
+    Memory peekNodeMemory( int memoryId );
+
+    default Memory peekNodeMemory(NetworkNode node) {
+        return node instanceof MemoryFactory ? peekNodeMemory(((MemoryFactory)node).getMemoryId()) : null;
+    }
 
     /**
      * Returns the number of positions in this memory

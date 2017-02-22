@@ -31,6 +31,6 @@ rule "Test Consequence"
   when
     Person(name == "Michael")
   then
-    results.add( drools.getRule().getMetaAttribute("foo"));
-    results.add( drools.getRule().getMetaAttribute("foo2"));
+    results.add( drools.getRule().getMetaData().get("foo"));
+    results.add( drools.getRule().getMetaData().get("foo2"));
 end

@@ -94,7 +94,7 @@ public class QueryElementBuilder
 
         if ( !StringUtils.isEmpty( patternDescr.getIdentifier() ) ) {
             if ( query.isAbductive() ) {
-                Declaration declr = context.getDeclarationResolver().getDeclaration( query, patternDescr.getIdentifier() );
+                Declaration declr = context.getDeclarationResolver().getDeclaration( patternDescr.getIdentifier() );
                 if ( declr != null && ! patternDescr.isUnification() ) {
                     context.addError( new DescrBuildError( context.getParentDescr(),
                                                            descr,
@@ -237,8 +237,7 @@ public class QueryElementBuilder
                                  InternalReadAccessor arrayReader,
                                  Pattern pattern,
                                  BindingDescr bind ) {
-        Declaration declr = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                             bind.getVariable() );
+        Declaration declr = context.getDeclarationResolver().getDeclaration( bind.getVariable() );
         if ( declr != null ) {
             // check right maps to a slot, otherwise we can't reverse this and should error
             int pos = getPos( bind.getExpression(),
@@ -258,7 +257,7 @@ public class QueryElementBuilder
         int pos = getPos( bind.getVariable(), params );
         if ( pos >= 0 ) {
             // it's an input on a slot, is the input using bindings?
-            declr = context.getDeclarationResolver().getDeclaration( context.getRule(), bind.getExpression() );
+            declr = context.getDeclarationResolver().getDeclaration( bind.getExpression() );
             if ( declr != null ) {
                 requiredDeclarations.add( declr );
                 arguments[pos] = new QueryArgument.Declr( declr );
@@ -318,7 +317,7 @@ public class QueryElementBuilder
         boolean isVariable = isVariable( expression );
 
         DeclarationScopeResolver declarationResolver = context.getDeclarationResolver();
-        Declaration declr = isVariable ? declarationResolver.getDeclaration( query, expression ) : null;
+        Declaration declr = isVariable ? declarationResolver.getDeclaration( expression ) : null;
 
         if ( declr != null ) {
             // it exists, so it's an input
@@ -334,7 +333,7 @@ public class QueryElementBuilder
             } else {
                 List<Declaration> declarations = new ArrayList<Declaration>();
                 for (String identifier : analysisResult.getIdentifiers()) {
-                    Declaration declaration = declarationResolver.getDeclaration( query, identifier );
+                    Declaration declaration = declarationResolver.getDeclaration( identifier );
                     if (declaration != null) {
                         declarations.add( declaration );
                     }
@@ -351,7 +350,7 @@ public class QueryElementBuilder
     private AnalysisResult analyzeExpression( RuleBuildContext context, BaseDescr base, String expression ) {
         Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations( context.getRule() );
         Map<String, Class< ? >> declarationClasses = DeclarationScopeResolver.getDeclarationClasses( decls );
-        BoundIdentifiers boundIds = new BoundIdentifiers( declarationClasses, context.getKnowledgeBuilder().getGlobals() );
+        BoundIdentifiers boundIds = new BoundIdentifiers( declarationClasses, context );
         return context.getDialect().analyzeBlock( context, base, expression, boundIds );
     }
 

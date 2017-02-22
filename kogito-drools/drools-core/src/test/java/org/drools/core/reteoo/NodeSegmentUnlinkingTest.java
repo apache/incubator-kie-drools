@@ -93,7 +93,7 @@ public class NodeSegmentUnlinkingTest {
     public void setUp(int... type) {
         KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
+        buildContext = new BuildContext( kBase );
 
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
@@ -176,7 +176,7 @@ public class NodeSegmentUnlinkingTest {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        BuildContext buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( kBase );
 
         MockObjectSource mockObjectSource = new MockObjectSource( 8 );
         MockTupleSource mockTupleSource = new MockTupleSource( 9 );

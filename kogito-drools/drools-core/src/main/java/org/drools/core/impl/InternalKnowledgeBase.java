@@ -37,6 +37,7 @@ import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
@@ -75,6 +76,7 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
     Map<String, Class<?>> getGlobals();
 
     int getNodeCount();
+    int getMemoryCount(String unitName);
 
     void executeQueuedActions();
 
@@ -148,4 +150,6 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
 	void setContainerId(String containerId);
 	void initMBeans();
 
+    RuleUnitRegistry getRuleUnitRegistry();
+    boolean hasUnits();
 }

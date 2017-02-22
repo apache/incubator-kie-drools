@@ -16,6 +16,17 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.protobuf.ByteString;
 import org.drools.core.InitialFact;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -31,7 +42,6 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.Memory;
@@ -85,17 +95,6 @@ import org.drools.core.util.ObjectHashMap;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An output marshaller that uses ProtoBuf as the marshalling framework
@@ -167,7 +166,7 @@ public class ProtobufOutputMarshaller {
                 _epb.setEntryPointId( wmep.getEntryPointId() );
 
                 writeObjectTypeConfiguration( context,
-                                              ((InternalWorkingMemoryEntryPoint)wmep).getObjectTypeConfigurationRegistry(),
+                                              ((WorkingMemoryEntryPoint)wmep).getObjectTypeConfigurationRegistry(),
                                               _epb );
 
                 writeFactHandles( context,
@@ -358,27 +357,26 @@ public class ProtobufOutputMarshaller {
         NodeMemories memories = wm.getNodeMemories();
         // only some of the node memories require special serialization handling
         // so we iterate over all of them and process only those that require it
-        for ( int i = 0; i < memories.length(); i++ ) {
-            Memory memory = memories.peekNodeMemory( i );
-            // some nodes have no memory, so we need to check for nulls
+        for (BaseNode baseNode : context.sinks.values()) {
+            Memory memory = memories.peekNodeMemory( baseNode );
             if ( memory != null ) {
                 ProtobufMessages.NodeMemory _node = null;
                 switch ( memory.getNodeType() ) {
-                    case NodeTypeEnums.AccumulateNode : {
-                        _node = writeAccumulateNodeMemory( i, memory );
+                    case NodeTypeEnums.AccumulateNode: {
+                        _node = writeAccumulateNodeMemory( baseNode.getId(), memory );
                         break;
                     }
-                    case NodeTypeEnums.RightInputAdaterNode : {
+                    case NodeTypeEnums.RightInputAdaterNode: {
 
-                        _node = writeRIANodeMemory( i, context.sinks.get(i), memories );
+                        _node = writeRIANodeMemory( baseNode.getId(), baseNode, memories );
                         break;
                     }
-                    case NodeTypeEnums.FromNode : {
-                        _node = writeFromNodeMemory( i, memory );
+                    case NodeTypeEnums.FromNode: {
+                        _node = writeFromNodeMemory( baseNode.getId(), memory );
                         break;
                     }
-                    case NodeTypeEnums.QueryElementNode : {
-                        _node = writeQueryElementNodeMemory( i, memory, wm );
+                    case NodeTypeEnums.QueryElementNode: {
+                        _node = writeQueryElementNodeMemory( baseNode.getId(), memory, wm );
                         break;
                     }
                 }
@@ -388,7 +386,6 @@ public class ProtobufOutputMarshaller {
                 }
             }
         }
-
     }
 
     private static ProtobufMessages.NodeMemory writeAccumulateNodeMemory(final int nodeId,
@@ -431,7 +428,7 @@ public class ProtobufOutputMarshaller {
         ObjectSink[] sinks = riaNode.getObjectSinkPropagator().getSinks();
         BetaNode betaNode = (BetaNode) sinks[0];
 
-        Memory betaMemory = memories.peekNodeMemory( betaNode.getId() );
+        Memory betaMemory = memories.peekNodeMemory( betaNode );
         if ( betaMemory == null ) {
             return null;
         }

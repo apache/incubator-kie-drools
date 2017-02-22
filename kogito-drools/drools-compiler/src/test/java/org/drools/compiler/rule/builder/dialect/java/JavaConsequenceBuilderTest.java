@@ -69,7 +69,7 @@ public class JavaConsequenceBuilderTest {
             ruleDescr.addNamedConsequences( entry.getKey(), entry.getValue() );
         }
 
-        RuleImpl rule = new RuleImpl( ruleDescr.getName() );
+        RuleImpl rule = ruleDescr.toRule();
         
         PackageRegistry pkgRegistry = kBuilder.getPackageRegistry( pkg.getName() );
         DialectCompiletimeRegistry reg = kBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
@@ -123,7 +123,7 @@ public class JavaConsequenceBuilderTest {
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
+                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), null ) );
 
             String fixed = fixBlockDescr(context, analysis, new HashMap<String, Declaration>());
 
@@ -161,9 +161,9 @@ public class JavaConsequenceBuilderTest {
             declrCls.put( "$cheese", Cheese.class );
             
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+                                                                                      new BoundIdentifiers(declrCls, null ) );
             
-            BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+            BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
             bindings.getDeclrClasses().put( "$cheese", Cheese.class );
             bindings.getDeclrClasses().put( "age", int.class );
             
@@ -209,7 +209,7 @@ public class JavaConsequenceBuilderTest {
             ruleDescr.setConsequence( consequence );
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
+                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), null ) );
 
             String fixed = fixBlockDescr( context, analysis, new HashMap<String,Declaration>() );
 
@@ -266,9 +266,9 @@ public class JavaConsequenceBuilderTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+                                                                                  new BoundIdentifiers(declrCls, null ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
@@ -358,9 +358,9 @@ public class JavaConsequenceBuilderTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+                                                                                  new BoundIdentifiers(declrCls, null ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
@@ -441,9 +441,9 @@ public class JavaConsequenceBuilderTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+                                                                                  new BoundIdentifiers(declrCls, null ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
@@ -510,9 +510,9 @@ public class JavaConsequenceBuilderTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+                                                                                  new BoundIdentifiers(declrCls, null ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         

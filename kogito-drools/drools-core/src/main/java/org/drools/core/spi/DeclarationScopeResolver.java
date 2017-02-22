@@ -16,6 +16,12 @@
 
 package org.drools.core.spi;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Stack;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -23,42 +29,47 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.ruleunit.RuleUnitDescr;
+import org.kie.api.runtime.rule.DataSource;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
 /**
  * A class capable of resolving a declaration in the current build context
  */
 public class DeclarationScopeResolver {
     private final Stack<RuleConditionElement>        buildStack;
-    private final Map<String, Class<?>>              map;
+    private final Map<String, Class<?>>              globalMap;
     private final InternalKnowledgePackage           pkg;
 
-    private final Map<String, Declaration> declarations = new HashMap<String, Declaration>();
+    private RuleImpl rule;
+    private Optional<RuleUnitDescr> ruleUnitDescr = Optional.empty();
 
-    public DeclarationScopeResolver(final Map<String, Class<?>> map) {
-        this( map, new Stack<RuleConditionElement>() );
+    protected DeclarationScopeResolver() {
+        this( new HashMap<String, Class<?>>(), new Stack<RuleConditionElement>() );
     }
 
-    public DeclarationScopeResolver(final Map<String, Class<?>> map,
+    public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
                                     final Stack<RuleConditionElement> buildStack) {
-        this( map, buildStack, null );
+        this( globalMap, buildStack, null );
     }
 
-    public DeclarationScopeResolver(final Map<String, Class<?>> map,
+    public DeclarationScopeResolver(final Map<String, Class<?>> globalMap,
                                     final InternalKnowledgePackage pkg) {
-        this( map, new Stack<RuleConditionElement>(), pkg );
+        this( globalMap, new Stack<RuleConditionElement>(), pkg );
     }
 
-    public DeclarationScopeResolver(final Map<String, Class<?>> map,
-                                    final Stack<RuleConditionElement> buildStack,
-                                    final InternalKnowledgePackage pkg) {
-        this.map = map;
+    private DeclarationScopeResolver(Map<String, Class<?>> globalMap,
+                                     Stack<RuleConditionElement> buildStack,
+                                     InternalKnowledgePackage pkg) {
+        this.globalMap = globalMap;
         this.buildStack = buildStack;
         this.pkg = pkg;
+    }
+
+    public void setRule(RuleImpl rule) {
+        this.rule = rule;
+        this.ruleUnitDescr = pkg.getRuleUnitRegistry().getRuleUnitFor( rule );
     }
 
     public RuleConditionElement peekBuildStack() {
@@ -93,11 +104,9 @@ public class DeclarationScopeResolver {
                                               dec );
         }
         return dec;
-
     }
 
-    public Declaration getDeclaration(final RuleImpl rule,
-                                      final String identifier) {
+    public Declaration getDeclaration(String identifier) {
         // it may be a local bound variable
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
             final Declaration declaration = buildStack.get( i ).getInnerDeclarations().get( identifier );
@@ -116,9 +125,9 @@ public class DeclarationScopeResolver {
             }
         }
 
-        // it may be a global or something
-        if ( this.map.containsKey( (identifier) ) ) {
-            Class<?> cls = this.map.get( identifier );
+        // it may be a global or a rule unit variable
+        Class<?> cls = resolveVarType( identifier );
+        if ( cls != null && !DataSource.class.isAssignableFrom(cls) ) { // avoid to bind a datasource as a global
             ClassObjectType classObjectType = new ClassObjectType( cls );
 
             Declaration declaration;
@@ -144,8 +153,21 @@ public class DeclarationScopeResolver {
         return null;
     }
 
-    public static InternalReadAccessor getReadAcessor(String identifier,
-                                                      ObjectType objectType) {
+    public Class<?> resolveVarType( String identifier ) {
+        return ruleUnitDescr.flatMap( unit -> unit.getVarType( identifier ) ) // resolve identifier on rule unit ...
+                            .orElseGet( () -> globalMap.get( identifier ) );  // ... or alternatively among globals
+    }
+
+    public String normalizeValueForUnit( String value ) {
+        return ruleUnitDescr.map( unit -> {
+            int dotPos = value.indexOf( '.' );
+            String firstPart = dotPos > 0 ? value.substring( 0, dotPos ) : value;
+            return unit.hasVar( firstPart ) ? RULE_UNIT_DECLARATION + "." + value : value;
+        }).orElse( value );
+    }
+
+    private static InternalReadAccessor getReadAcessor( String identifier,
+                                                        ObjectType objectType ) {
         Class returnType = ((ClassObjectType) objectType).getClassType();
 
         if (Number.class.isAssignableFrom( returnType ) ||
@@ -174,7 +196,7 @@ public class DeclarationScopeResolver {
                 return true;
             }
         }
-        if ( this.map.containsKey( (name) ) ) {
+        if ( this.globalMap.containsKey( (name) ) ) {
             return true;
         }
 
@@ -194,7 +216,7 @@ public class DeclarationScopeResolver {
     public boolean isDuplicated(RuleImpl rule,
                                 final String name,
                                 final String type) {
-        if ( this.map.containsKey( (name) ) ) {
+        if ( this.globalMap.containsKey( (name) ) ) {
             return true;
         }
 

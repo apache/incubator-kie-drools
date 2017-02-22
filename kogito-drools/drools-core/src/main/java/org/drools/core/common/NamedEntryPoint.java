@@ -54,10 +54,10 @@ import static java.util.Arrays.asList;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
 public class NamedEntryPoint
-    implements
-    InternalWorkingMemoryEntryPoint,
-    WorkingMemoryEntryPoint,
-    PropertyChangeListener  {
+        implements
+        InternalWorkingMemoryEntryPoint,
+        WorkingMemoryEntryPoint,
+        PropertyChangeListener  {
 
     protected static final transient Logger log = LoggerFactory.getLogger(NamedEntryPoint.class);
 
@@ -75,12 +75,12 @@ public class NamedEntryPoint
     protected EntryPointId     entryPoint;
     protected EntryPointNode entryPointNode;
 
-    private ObjectTypeConfigurationRegistry typeConfReg;
+    protected ObjectTypeConfigurationRegistry typeConfReg;
 
-    private final StatefulKnowledgeSessionImpl wm;
+    protected final StatefulKnowledgeSessionImpl wm;
 
-    private FactHandleFactory         handleFactory;
-    private PropagationContextFactory pctxFactory;
+    protected FactHandleFactory         handleFactory;
+    protected PropagationContextFactory pctxFactory;
 
     protected final ReentrantLock lock;
 
@@ -110,6 +110,19 @@ public class NamedEntryPoint
         this.handleFactory = this.wm.getFactHandleFactory();
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.objectStore = new ClassAwareObjectStore(this.kBase.getConfiguration(), this.lock);
+        this.traitHelper = new TraitHelper( wm, this );
+    }
+
+    protected NamedEntryPoint( EntryPointId entryPoint,
+                               StatefulKnowledgeSessionImpl wm,
+                               FactHandleFactory handleFactory,
+                               ReentrantLock lock,
+                               ObjectStore objectStore ) {
+        this.entryPoint = entryPoint;
+        this.wm = wm;
+        this.handleFactory = handleFactory;
+        this.lock = lock;
+        this.objectStore = objectStore;
         this.traitHelper = new TraitHelper( wm, this );
     }
 
@@ -193,7 +206,7 @@ public class NamedEntryPoint
                 // check if the object already exists in the WM
                 handle = this.objectStore.getHandleForObject( object );
 
-                 if ( !typeConf.isTMSEnabled() ) {
+                if ( !typeConf.isTMSEnabled() ) {
                     // TMS not enabled for this object type
                     if ( handle != null ) {
                         return handle;
@@ -263,7 +276,7 @@ public class NamedEntryPoint
         insert( handle, object, rule, activation, typeConf, pctx );
     }
 
-    private void insert(final InternalFactHandle handle,
+    public void insert(final InternalFactHandle handle,
                         final Object object,
                         final RuleImpl rule,
                         final Activation activation,
@@ -352,11 +365,11 @@ public class NamedEntryPoint
             }
 
             final Object originalObject = handle.getObject();
-            
+
             if ( handle.getEntryPoint() != this ) {
                 throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
             }
-            
+
             final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                                 object );
 
@@ -381,7 +394,7 @@ public class NamedEntryPoint
             final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
                                                                                                rule, (activation == null) ? null : activation.getTuple(),
                                                                                                handle, entryPoint, mask, modifiedClass, null);
-            
+
             if ( typeConf.isTMSEnabled() ) {
                 EqualityKey newKey = tms.get( object );
                 EqualityKey oldKey = handle.getEqualityKey();
@@ -598,7 +611,7 @@ public class NamedEntryPoint
 
             method.invoke( object,
                            this.addRemovePropertyChangeListenerArgs );
-            
+
             if( dynamicFlag ) {
                 if( dynamicFacts == null ) {
                     dynamicFacts = new HashSet<InternalFactHandle>();
@@ -609,15 +622,15 @@ public class NamedEntryPoint
             log.error( "Warning: Method addPropertyChangeListener not found" + " on the class " + object.getClass() + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
         } catch ( final IllegalArgumentException e ) {
             log.error( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " does not take" + " a simple PropertyChangeListener argument" + " so Drools will be unable to process JavaBean"
-                                + " PropertyChangeEvents on the asserted Object" );
+                       + " PropertyChangeEvents on the asserted Object" );
         } catch ( final IllegalAccessException e ) {
             log.error( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " is not public" + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
         } catch ( final InvocationTargetException e ) {
             log.error( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " threw an InvocationTargetException" + " so Drools will be unable to process JavaBean"
-                                + " PropertyChangeEvents on the asserted Object: " + e.getMessage() );
+                       + " PropertyChangeEvents on the asserted Object: " + e.getMessage() );
         } catch ( final SecurityException e ) {
             log.error( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a" + " addPropertyChangeListener method" + " so Drools will be unable to process JavaBean"
-                                + " PropertyChangeEvents on the asserted Object: " + e.getMessage() );
+                       + " PropertyChangeEvents on the asserted Object: " + e.getMessage() );
         }
     }
 
@@ -625,7 +638,7 @@ public class NamedEntryPoint
         Object object = null;
         try {
             object = ((InternalFactHandle) handle).getObject();
-            
+
             if ( dynamicFacts != null && removeFromSet ) {
                 dynamicFacts.remove( object );
             }
@@ -723,15 +736,15 @@ public class NamedEntryPoint
     public long getFactCount() {
         return this.objectStore.size();
     }
-    
+
     private InternalFactHandle createHandle(final Object object,
                                             ObjectTypeConf typeConf) {
         return this.handleFactory.newFactHandle( object,
-                                                   typeConf,
-                                                   this.wm,
-                                                   this );
+                                                 typeConf,
+                                                 this.wm,
+                                                 this );
     }
-    
+
     public void propertyChange(final PropertyChangeEvent event) {
         final Object object = event.getSource();
         FactHandle handle = getFactHandle( object );
@@ -752,10 +765,10 @@ public class NamedEntryPoint
             dynamicFacts = null;
         }
         for( ObjectTypeConf conf : this.typeConfReg.values() ) {
-            // then, we check if any of the object types were configured using the 
+            // then, we check if any of the object types were configured using the
             // @propertyChangeSupport annotation, and clean them up
             if( conf.isDynamic() && conf.isSupportsPropertyChangeListeners() ) {
-                // it is enough to iterate the facts on the concrete object type nodes 
+                // it is enough to iterate the facts on the concrete object type nodes
                 // only, as the facts will always be in their concrete object type nodes
                 // even if they were also asserted into higher level OTNs as well
                 ObjectTypeNode otn = conf.getConcreteObjectTypeNode();
@@ -771,7 +784,7 @@ public class NamedEntryPoint
 
     public void enQueueWorkingMemoryAction(WorkingMemoryAction action) {
         wm.queueWorkingMemoryAction( action );
-    }  
+    }
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {
         if (tms == null) {

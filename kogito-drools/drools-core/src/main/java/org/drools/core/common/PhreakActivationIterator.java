@@ -15,6 +15,7 @@
 
 package org.drools.core.common;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -70,7 +71,7 @@ public class PhreakActivationIterator
     }
 
     public static PhreakActivationIterator iterator(StatefulKnowledgeSession ksession) {
-        return new PhreakActivationIterator( ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory(),
+        return new PhreakActivationIterator( ((WorkingMemoryEntryPoint) ksession).getInternalWorkingMemory(),
                                              ksession.getKieBase() );
     }
 

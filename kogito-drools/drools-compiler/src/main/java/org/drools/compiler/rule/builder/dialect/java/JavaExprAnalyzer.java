@@ -120,8 +120,8 @@ public class JavaExprAnalyzer {
      * @throws RecognitionException
      *             If an error occurs in the parser.
      */
-    private JavaAnalysisResult analyze(final JavaAnalysisResult result,
-                                   final BoundIdentifiers availableIdentifiers) throws RecognitionException {
+    private JavaAnalysisResult analyze(JavaAnalysisResult result,
+                                       BoundIdentifiers availableIdentifiers) throws RecognitionException {
         final Set<String> identifiers = result.getIdentifiers();
         final Set<String> notBound = new HashSet<String>( identifiers );
         
@@ -131,17 +131,16 @@ public class JavaExprAnalyzer {
  
         for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclrClasses().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {
-                usedDecls.put( entry.getKey(),
-                               entry.getValue() );
+                usedDecls.put( entry.getKey(), entry.getValue() );
                 notBound.remove( entry.getKey() );
             }
         }
 
-        for ( Entry<String, Class<?>> entry : availableIdentifiers.getGlobals().entrySet() ) {
-            if ( identifiers.contains( entry.getKey() ) ) {
-                usedGlobals.put( entry.getKey(),
-                               entry.getValue() );
-                notBound.remove( entry.getKey() );
+        for ( String identifier : identifiers ) {
+            Class<?> type = availableIdentifiers.resolveVarType( identifier );
+            if (type != null) {
+                usedGlobals.put( identifier, type );
+                notBound.remove( identifier );
             }
         }
 
@@ -152,9 +151,13 @@ public class JavaExprAnalyzer {
             }
         }
 
-        result.setBoundIdentifiers( new BoundIdentifiers( usedDecls,
-                                                          usedGlobals,
-                                                          usedOperators ) );
+        BoundIdentifiers boundIdentifiers = new BoundIdentifiers( usedDecls,
+                                                                  availableIdentifiers.getContext(),
+                                                                  usedOperators,
+                                                                  availableIdentifiers.getThisClass() );
+        boundIdentifiers.setGlobals( usedGlobals );
+
+        result.setBoundIdentifiers( boundIdentifiers );
         result.setNotBoundedIdentifiers( notBound );
 
         return result;

@@ -16,15 +16,15 @@
 
 package org.drools.core.common;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.SegmentMemory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.SegmentMemory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * A concurrent implementation for the node memories interface
@@ -33,23 +33,24 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     private AtomicReferenceArray<Memory> memories;
 
-    private Lock                         lock;
-    private InternalKnowledgeBase        kBase;
+    private final Lock lock = new ReentrantLock();
+    private final InternalKnowledgeBase kBase;
+    private final String unitName;
 
-    public ConcurrentNodeMemories( InternalKnowledgeBase kBase ) {
+    public ConcurrentNodeMemories( InternalKnowledgeBase kBase, String unitName ) {
         this.kBase = kBase;
-        this.memories = new AtomicReferenceArray<Memory>( this.kBase.getNodeCount() );
-        this.lock = new ReentrantLock();
+        this.unitName = unitName;
+        this.memories = new AtomicReferenceArray<Memory>( this.kBase.getMemoryCount(unitName) );
     }
 
     public void clearNodeMemory( MemoryFactory node ) {
-        if ( peekNodeMemory(node.getId()) != null ) {
-            this.memories.set(node.getId(), null);
+        if ( peekNodeMemory(node.getMemoryId()) != null ) {
+            this.memories.set(node.getMemoryId(), null);
         }
     }
     
     public void clear() {
-        this.memories = new AtomicReferenceArray<Memory>( this.kBase.getNodeCount() );
+        this.memories = new AtomicReferenceArray<Memory>( this.kBase.getMemoryCount(unitName) );
     }
 
     public void resetAllMemories(StatefulKnowledgeSession session) {
@@ -81,10 +82,10 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * before effectively doing any change on data structures. 
      */
     public Memory getNodeMemory(MemoryFactory node, InternalWorkingMemory wm) {
-        if( node.getId() >= this.memories.length() ) {
+        if( node.getMemoryId() >= this.memories.length() ) {
             resize( node );
         }
-        Memory memory = this.memories.get( node.getId() );
+        Memory memory = this.memories.get( node.getMemoryId() );
 
         if( memory == null ) {
             memory = createNodeMemory( node, wm );
@@ -104,12 +105,12 @@ public class ConcurrentNodeMemories implements NodeMemories {
             this.lock.lock();
             // need to try again in a synchronized code block to make sure
             // it was not created yet
-            Memory memory = this.memories.get( node.getId() );
+            Memory memory = this.memories.get( node.getMemoryId() );
             if( memory == null ) {
                 memory = node.createMemory( this.kBase.getConfiguration(), wm );
 
-                if( !this.memories.compareAndSet( node.getId(), null, memory ) ) {
-                    memory = this.memories.get( node.getId() );
+                if( !this.memories.compareAndSet( node.getMemoryId(), null, memory ) ) {
+                    memory = this.memories.get( node.getMemoryId() );
                 }
 
             }
@@ -126,9 +127,9 @@ public class ConcurrentNodeMemories implements NodeMemories {
     private void resize( MemoryFactory node ) {
         try {
             this.lock.lock();
-            if( node.getId() >= this.memories.length() ) {
+            if( node.getMemoryId() >= this.memories.length() ) {
                 // adding some buffer for new nodes, so that we reduce array copies
-                int size = Math.max( this.kBase.getNodeCount(), node.getId() + 32 );
+                int size = Math.max( this.kBase.getMemoryCount(unitName), node.getMemoryId() + 32 );
                 AtomicReferenceArray<Memory> newMem = new AtomicReferenceArray<Memory>( size );
                 for ( int i = 0; i < this.memories.length(); i++ ) {
                     newMem.set( i,
@@ -141,13 +142,9 @@ public class ConcurrentNodeMemories implements NodeMemories {
         }
     }
 
-    public void setKnowledgeBaseReference( InternalKnowledgeBase kBase ) {
-        this.kBase = kBase;
-    }
-
-    public Memory peekNodeMemory(int nodeId) {
-        if ( nodeId < this.memories.length() ) {
-            return this.memories.get(nodeId);
+    public Memory peekNodeMemory(int memoryId ) {
+        if ( memoryId < this.memories.length() ) {
+            return this.memories.get( memoryId );
         } else {
             return null;
         }

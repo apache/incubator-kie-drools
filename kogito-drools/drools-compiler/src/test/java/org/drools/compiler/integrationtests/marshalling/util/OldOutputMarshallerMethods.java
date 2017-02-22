@@ -15,19 +15,18 @@
 
 package org.drools.compiler.integrationtests.marshalling.util;
 
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.process.instance.WorkItem;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
+
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.process.instance.WorkItem;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 
 public class OldOutputMarshallerMethods {
 
@@ -103,16 +102,12 @@ public class OldOutputMarshallerMethods {
             stream.writeInt( -1 );
         }
 
-        if ( handle.getEntryPoint() instanceof InternalWorkingMemoryEntryPoint ) {
-            String entryPoint = ((InternalWorkingMemoryEntryPoint) handle.getEntryPoint()).getEntryPoint().getEntryPointId();
-            if ( entryPoint != null && !entryPoint.equals( "" ) ) {
-                stream.writeBoolean( true );
-                stream.writeUTF( entryPoint );
-            }
-            else {
-                stream.writeBoolean( false );
-            }
-        } else {
+        String entryPoint = handle.getEntryPoint().getEntryPoint().getEntryPointId();
+        if ( entryPoint != null && !entryPoint.equals( "" ) ) {
+            stream.writeBoolean( true );
+            stream.writeUTF( entryPoint );
+        }
+        else {
             stream.writeBoolean( false );
         }
     }

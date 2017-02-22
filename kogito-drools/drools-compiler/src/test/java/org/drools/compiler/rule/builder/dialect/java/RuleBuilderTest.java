@@ -142,8 +142,7 @@ public class RuleBuilderTest {
         when( context.getKnowledgeBuilder() ).thenReturn( new KnowledgeBuilderImpl() );
 
         // calling the build method
-        RuleBuilder builder = new RuleBuilder();
-        builder.buildAttributes( context );
+        RuleBuilder.buildAttributes( context );
 
         // check expectations
         verify( rule ).setNoLoop( true );
@@ -184,8 +183,7 @@ public class RuleBuilderTest {
         when( context.getKnowledgeBuilder() ).thenReturn( new KnowledgeBuilderImpl() );
 
         // calling the build method
-        RuleBuilder builder = new RuleBuilder();
-        builder.buildMetaAttributes( context );
+        RuleBuilder.buildMetaAttributes( context );
 
         // check expectations
         verify( rule ).addMetaAttribute( "ruleId",
@@ -214,8 +212,7 @@ public class RuleBuilderTest {
         when( context.getRuleDescr() ).thenReturn( ruleDescr );
 
         // calling the build method
-        RuleBuilder builder = new RuleBuilder();
-        builder.buildAttributes( context );
+        RuleBuilder.buildAttributes( context );
 
         // check expectations
         verify( rule ).setTimer( new IntervalTimer( null,

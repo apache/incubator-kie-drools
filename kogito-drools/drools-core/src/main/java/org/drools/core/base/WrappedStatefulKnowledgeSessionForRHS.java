@@ -1,5 +1,16 @@
 package org.drools.core.base;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.locks.Lock;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -55,6 +66,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.FactHandle.State;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.KnowledgeBase;
@@ -62,17 +74,6 @@ import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.beliefs.Mode;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.locks.Lock;
 
 /**
  * Wrapper of StatefulKnowledgeSessionImpl so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
@@ -432,10 +433,6 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		delegate.clearNodeMemory(node);
 	}
 
-	public void removeFromObjectStore(InternalFactHandle handle) {
-		delegate.removeFromObjectStore(handle);
-	}
-
 	public <T, K> T don(Activation activation, K core, Collection<Class<? extends Thing>> traits, boolean b,
 			Mode[] modes) {
 		return delegate.don(activation, core, traits, b, modes);
@@ -705,6 +702,10 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		delegate.notifyWaitOnRest();
 	}
 
+	public void cancelActivation( Activation activation, boolean declarativeAgenda ) {
+		delegate.cancelActivation( activation, declarativeAgenda );
+	}
+
 	public void clearAgenda() {
 		delegate.clearAgenda();
 	}
@@ -755,5 +756,21 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 
 	public SessionClock getSessionClock() {
 		return delegate.getSessionClock();
-	}	
+	}
+
+	public void switchToRuleUnit(RuleUnit ruleUnit) {
+        delegate.getRuleUnitExecutor().switchToRuleUnit( ruleUnit );
+	}
+
+	public void switchToRuleUnit(Class<? extends RuleUnit> ruleUnitClass) {
+		delegate.getRuleUnitExecutor().switchToRuleUnit( ruleUnitClass );
+	}
+
+	public void guardRuleUnit(RuleUnit ruleUnit, Activation activation) {
+		delegate.getRuleUnitExecutor().guardRuleUnit( ruleUnit, activation );
+	}
+
+	public void guardRuleUnit(Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
+		delegate.getRuleUnitExecutor().guardRuleUnit( ruleUnitClass, activation );
+	}
 }

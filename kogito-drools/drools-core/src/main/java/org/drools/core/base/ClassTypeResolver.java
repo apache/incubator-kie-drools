@@ -139,7 +139,7 @@ public class ClassTypeResolver
      *      java.lang.String)
      */
     /* (non-Javadoc)
-     * @see org.kie.semantics.java.TypeResolver#resolveType(java.lang.String)
+     * @see org.kie.semantics.java.TypeResolver#resolveVarType(java.lang.String)
      */
     public Class< ? > resolveType( String className, ClassFilter classFilter ) throws ClassNotFoundException {
         Class< ? > clazz = lookupFromCache( className );

@@ -16,9 +16,9 @@
 
 package org.drools.core.common;
 
-import org.kie.api.definition.rule.Rule;
-
 import java.io.Externalizable;
+
+import org.kie.api.definition.rule.Rule;
 
 /**
  * Interface used to expose generic information on Rete nodes outside of he package. It is used

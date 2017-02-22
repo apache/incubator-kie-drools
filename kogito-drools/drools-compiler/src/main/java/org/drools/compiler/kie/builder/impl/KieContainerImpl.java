@@ -593,9 +593,7 @@ public class KieContainerImpl
     }
 
     private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
-        ClassLoader cl = kieProject.getClassLoader();
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
-
         Collection<KnowledgePackage> pkgs = kModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
 
         if ( pkgs == null ) {
@@ -618,6 +616,7 @@ public class KieContainerImpl
             }
         }
 
+        ClassLoader cl = kieProject.getClassLoader();
         if (conf == null) {
             conf = getKnowledgeBaseConfiguration(kBaseModel, cl);
         } else if (conf instanceof RuleBaseConfiguration) {
@@ -872,5 +871,4 @@ public class KieContainerImpl
     public ClassLoader getClassLoader() {
         return this.kProject.getClassLoader();
     }
-
 }

@@ -115,6 +115,7 @@ public class SynchronizedPropagationList implements PropagationList {
     }
 
     public synchronized void waitOnRest() {
+        workingMemory.onSuspend();
         try {
             wait();
         } catch (InterruptedException e) {
@@ -126,6 +127,7 @@ public class SynchronizedPropagationList implements PropagationList {
     @Override
     public synchronized void notifyWaitOnRest() {
         notifyAll();
+        workingMemory.onResume();
     }
 
     @Override
