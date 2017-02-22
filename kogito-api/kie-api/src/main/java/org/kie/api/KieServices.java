@@ -316,9 +316,16 @@ public interface KieServices {
     Environment newEnvironment();
 
     /**
+     * Returns a reference to the KieServices singleton
+     */
+    static KieServices get() {
+        return Factory.get();
+    }
+
+    /**
      * A Factory for this KieServices
      */
-    public static class Factory {
+    class Factory {
         private static KieServices INSTANCE;
 
         static {
