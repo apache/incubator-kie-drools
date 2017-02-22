@@ -775,7 +775,7 @@
            width="200.00002"
            id="rect3655" /></flowRegion><flowPara
          style="font-size:15px;text-align:end;text-anchor:end;fill:#000000;fill-opacity:1"
-         id="flowPara3769">Which location strategy?</flowPara></flowRoot>    <path
+         id="flowPara3769">Which look up strategy?</flowPara></flowRoot>    <path
        style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
        d="m 400.00024,862.36169 20,20 -20,19.99996 -20,-19.99996 z"
        id="path3661"
@@ -837,7 +837,7 @@
              width="280"
              id="rect3740" /></flowRegion><flowPara
            id="flowPara3746"
-           style="font-size:15px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1">Determine location strategy</flowPara><flowPara
+           style="font-size:15px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1">Determine look up strategy</flowPara><flowPara
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1"
            id="flowPara3761">from the class of that reference.</flowPara></flowRoot>    </g>
     <path
