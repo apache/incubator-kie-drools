@@ -1111,8 +1111,16 @@
         "methodName": "registerLongConstraintMatch",
         "elementKind": "method",
         "justification": "The Java 8 approach of AbstractScoreHolder::registerConstraintMatch(...) is faster"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method java.lang.String org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score>::toShortString()",
+        "package": "org.optaplanner.core.api.score",
+        "classSimpleName": "Score",
+        "methodName": "toShortString",
+        "elementKind": "method",
+        "justification": "Useful method when explaining a score through ConstraintMatch(Total)s"
       }
-
     ]
   }
 }
