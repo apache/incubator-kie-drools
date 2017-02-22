@@ -15,9 +15,6 @@
 
 package org.drools.core.reteoo.test.dsl;
 
-import static org.drools.core.reteoo.test.ReteDslTestEngine.BUILD_CONTEXT;
-import static org.drools.core.reteoo.test.ReteDslTestEngine.WORKING_MEMORY;
-
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +22,9 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.builder.BuildContext;
+
+import static org.drools.core.reteoo.test.ReteDslTestEngine.BUILD_CONTEXT;
+import static org.drools.core.reteoo.test.ReteDslTestEngine.WORKING_MEMORY;
 
 /**
  * <p>
@@ -66,8 +66,7 @@ public class ConfigStep implements Step {
         }
 
         KnowledgeBaseImpl rbase = new KnowledgeBaseImpl("ID", conf);
-        BuildContext buildContext = new BuildContext(rbase, rbase
-                .getReteooBuilder().getIdGenerator());
+        BuildContext buildContext = new BuildContext(rbase);
 
         InternalWorkingMemory wm = (InternalWorkingMemory) rbase
                 .newStatefulSession(true);

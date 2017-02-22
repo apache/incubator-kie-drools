@@ -84,6 +84,7 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
+import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
@@ -189,6 +190,8 @@ public class KnowledgeBaseImpl
 	private ReleaseId resolvedReleaseId;
 	private String containerId;
 	private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
+
+    private RuleUnitRegistry ruleUnitRegistry = new RuleUnitRegistry();
 
     public KnowledgeBaseImpl() { }
 
@@ -976,6 +979,8 @@ public class KnowledgeBaseImpl
                 }
             }
 
+            ruleUnitRegistry.add(newPkg.getRuleUnitRegistry());
+
             this.eventSupport.fireAfterPackageAdded( newPkg );
         }
 
@@ -1356,7 +1361,7 @@ public class KnowledgeBaseImpl
                                                              EntryPointId.DEFAULT);
         epn.attach();
 
-        BuildContext context = new BuildContext(this, reteooBuilder.getIdGenerator());
+        BuildContext context = new BuildContext(this);
         context.setCurrentEntryPoint(epn.getEntryPoint());
         context.setTupleMemoryEnabled(true);
         context.setObjectTypeNodeMemoryEnabled(true);
@@ -1539,6 +1544,11 @@ public class KnowledgeBaseImpl
     public int getNodeCount() {
         // may start in 0
         return this.reteooBuilder.getIdGenerator().getLastId() + 1;
+    }
+
+    public int getMemoryCount(String topic) {
+        // may start in 0
+        return this.reteooBuilder.getIdGenerator().getLastId(topic) + 1;
     }
 
     public void addPackages(InternalKnowledgePackage[] pkgs) {
@@ -1982,6 +1992,11 @@ public class KnowledgeBaseImpl
 		this.containerId = containerId;
 	}
 
+    public RuleUnitRegistry getRuleUnitRegistry() {
+        return ruleUnitRegistry;
+    }
 
-    
+    public boolean hasUnits() {
+        return ruleUnitRegistry.hasUnits();
+    }
 }

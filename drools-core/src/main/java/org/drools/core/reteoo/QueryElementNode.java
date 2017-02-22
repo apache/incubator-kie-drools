@@ -16,6 +16,12 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
@@ -46,12 +52,6 @@ import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-import java.util.Map;
 
 public class QueryElementNode extends LeftTupleSource
     implements
@@ -411,8 +411,8 @@ public class QueryElementNode extends LeftTupleSource
                                                _handle.getId(),
                                                _handle.getRecency() ) :
                    new QueryElementFactHandle( objects,
-                                               workingMemory.getFactHandleFactory().getAtomicId().incrementAndGet(),
-                                               workingMemory.getFactHandleFactory().getAtomicRecency().incrementAndGet() );
+                                               workingMemory.getFactHandleFactory().getNextId(),
+                                               workingMemory.getFactHandleFactory().getNextRecency() );
         }
 
         public void rowRemoved(final RuleImpl rule,
@@ -470,7 +470,7 @@ public class QueryElementNode extends LeftTupleSource
 
             QueryElementFactHandle handle = (QueryElementFactHandle) rightTuple.getFactHandle();
 
-            handle.setRecency(workingMemory.getFactHandleFactory().getAtomicRecency().incrementAndGet());
+            handle.setRecency(workingMemory.getFactHandleFactory().getNextRecency());
             handle.setObject( objects );
 
             if ( dquery.isOpen() ) {

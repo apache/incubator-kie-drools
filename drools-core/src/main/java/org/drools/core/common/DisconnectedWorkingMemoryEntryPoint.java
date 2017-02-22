@@ -15,6 +15,7 @@
 
 package org.drools.core.common;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
@@ -28,7 +29,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import java.io.Serializable;
 import java.util.Collection;
 
-public class DisconnectedWorkingMemoryEntryPoint implements InternalWorkingMemoryEntryPoint, Serializable {
+public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Serializable {
     
     private String id;
     
@@ -72,6 +73,11 @@ public class DisconnectedWorkingMemoryEntryPoint implements InternalWorkingMemor
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 
+    @Override
+    public FactHandle insert( Object object, boolean dynamic ) {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
     public void retract(FactHandle handle) {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
@@ -92,6 +98,16 @@ public class DisconnectedWorkingMemoryEntryPoint implements InternalWorkingMemor
     public void update(FactHandle handle,
                        Object object,
                        String... modifiedProperties) {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint( String name ) {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public void dispose() {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 
@@ -157,11 +173,6 @@ public class DisconnectedWorkingMemoryEntryPoint implements InternalWorkingMemor
 
     @Override
     public EntryPointNode getEntryPointNode() {
-        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
-    }
-
-    @Override
-    public void removeFromObjectStore( InternalFactHandle handle ) {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 }

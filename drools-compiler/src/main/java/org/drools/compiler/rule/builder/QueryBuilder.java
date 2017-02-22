@@ -15,11 +15,11 @@
 
 package org.drools.compiler.rule.builder;
 
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.compiler.compiler.DescrBuildError;
-import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.core.beliefsystem.abductive.Abductive;
 import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.Declaration;
@@ -70,19 +70,10 @@ public class QueryBuilder implements EngineElementBuilder {
 
         Class<?> abductionReturnKlass = null;
         if ( query.isAbductive() ) {
-            AnnotationDescr ann = queryDescr.getAnnotation( Abductive.class );
-            String returnName = ann.getValueAsString( "target" );
-            try {
-                abductionReturnKlass = context.getPkg().getTypeResolver().resolveType( returnName.replace( ".class", "" ) );
-                params[ numParams ] = "";
-                types[ numParams ] = abductionReturnKlass.getName();
-
-            } catch ( ClassNotFoundException e ) {
-                context.addError( new DescrBuildError( context.getParentDescr(),
-                                                       queryDescr,
-                                                       e,
-                                                       "Unable to resolve abducible type : " + returnName ) );
-            }
+            Abductive abductive = queryDescr.getTypedAnnotation( Abductive.class );
+            abductionReturnKlass = abductive.target();
+            params[ numParams ] = "";
+            types[ numParams ] = abductionReturnKlass.getName();
         }
 
         int i = 0;

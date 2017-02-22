@@ -16,6 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
@@ -40,10 +44,6 @@ import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;

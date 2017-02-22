@@ -2280,7 +2280,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         KnowledgeBaseImpl knowledgeBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgePackageImpl impl = new KnowledgePackageImpl( "test" );
 
-        BuildContext buildContext = new BuildContext( knowledgeBase, knowledgeBase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( knowledgeBase );
         //simple rule that fires after 10 seconds
         final RuleImpl rule = new RuleImpl( "test-rule" );
         new RuleTerminalNode( 1, new MockTupleSource( 2 ), rule, rule.getLhs(), 0, buildContext );

@@ -15,11 +15,12 @@
  */
 package org.drools.compiler.lang.descr;
 
-import org.drools.core.rule.Declaration;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.rule.Declaration;
 
 public class PatternDescr extends AnnotatedBaseDescr
     implements
@@ -84,8 +85,9 @@ public class PatternDescr extends AnnotatedBaseDescr
         return query;
     }
 
-    public boolean isPassive() {
-        return query || source instanceof FromDescr;
+    public boolean isPassive(RuleBuildContext context) {
+        // when the source is a FromDesc also check that it isn't the datasource of a ruleunit
+        return query || ( source instanceof FromDescr && !context.getEntryPointId( ( (FromDescr) source ).getDataSource().getText() ).isPresent() );
     }
 
     public List< ? extends BaseDescr> getDescrs() {
@@ -94,6 +96,10 @@ public class PatternDescr extends AnnotatedBaseDescr
 
     public void addConstraint( BaseDescr base ) {
         this.constraint.addDescr( base );
+    }
+
+    public void removeAllConstraint() {
+        constraint= new AndDescr();
     }
 
     public boolean removeConstraint( BaseDescr base ) {
@@ -133,8 +139,9 @@ public class PatternDescr extends AnnotatedBaseDescr
         return returnList;
     }
 
-    public boolean isInternalFact() {
-        return this.getSource() != null && !(this.getSource() instanceof EntryPointDescr);
+    public boolean isInternalFact(RuleBuildContext context) {
+        return !(source == null || source instanceof EntryPointDescr ||
+                 (source instanceof FromDescr) && context.getEntryPointId(((FromDescr) source).getExpression()).isPresent());
     }
 
     public String toString() {

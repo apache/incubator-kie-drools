@@ -326,9 +326,9 @@ public class PatternBuilder
             context.pushRuleComponent( constraint );
             context.setObjectSource( utils.attachNode( context,
                                                        context.getComponentFactory().getNodeFactoryService().buildAlphaNode( context.getNextId(),
-                                                                                                                                            constraint,
-                                                                                                                                            context.getObjectSource(),
-                                                                                                                                            context) ) );
+                                                                                                                             constraint,
+                                                                                                                             context.getObjectSource(),
+                                                                                                                             context) ) );
             context.popRuleComponent();
         }
     }

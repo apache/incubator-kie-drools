@@ -16,7 +16,17 @@
 
 package org.drools.core.common;
 
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.TraitHelper;
+import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -27,14 +37,6 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
 import org.kie.api.runtime.rule.FactHandle;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -61,7 +63,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     private int                     objectHashCode;
     private int                     identityHashCode;
 
-    protected InternalWorkingMemoryEntryPoint entryPoint;
+    private WorkingMemoryEntryPoint entryPoint;
 
     private boolean                 disconnected;
 
@@ -73,7 +75,9 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private String                  objectClassName;
 
-    protected LinkedTuples linkedTuples;
+    protected LinkedTuples          linkedTuples;
+
+    private InternalFactHandle      parentHandle;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -101,14 +105,14 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public DefaultFactHandle(final int id,
                              final Object object,
                              final long recency,
-                             final InternalWorkingMemoryEntryPoint wmEntryPoint) {
+                             final WorkingMemoryEntryPoint wmEntryPoint) {
         this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint, false );
     }
 
     public DefaultFactHandle(final int id,
                              final Object object,
                              final long recency,
-                             final InternalWorkingMemoryEntryPoint wmEntryPoint,
+                             final WorkingMemoryEntryPoint wmEntryPoint,
                              final boolean isTraitOrTraitable ) {
         this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint, isTraitOrTraitable );
     }
@@ -117,7 +121,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                              final int identityHashCode,
                              final Object object,
                              final long recency,
-                             final InternalWorkingMemoryEntryPoint wmEntryPoint,
+                             final WorkingMemoryEntryPoint wmEntryPoint,
                              final boolean isTraitOrTraitable ) {
         this.id = id;
         setEntryPoint( wmEntryPoint );
@@ -336,12 +340,12 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return traitType != TraitTypeEnum.NON_TRAIT;
     }
 
-    public InternalWorkingMemoryEntryPoint getEntryPoint() {
+    public WorkingMemoryEntryPoint getEntryPoint() {
         return entryPoint;
     }
 
-    private void setEntryPoint( InternalWorkingMemoryEntryPoint entryPoint ) {
-        this.entryPoint = entryPoint;
+    public void setEntryPoint( WorkingMemoryEntryPoint sourceNode ) {
+        this.entryPoint = sourceNode;
         setLinkedTuples( entryPoint != null ? entryPoint.getKnowledgeBase() : null );
     }
 
@@ -912,5 +916,18 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         LinkedTuples detached = ( (CompositeLinkedTuples) linkedTuples ).partitionedTuples[i];
         ( (CompositeLinkedTuples) linkedTuples ).partitionedTuples[i] = new SingleLinkedTuples();
         return detached;
+    }
+
+    @Override
+    public InternalDataSource<?> getDataSource() {
+        return parentHandle != null ? parentHandle.getDataSource() : null;
+    }
+
+    public InternalFactHandle getParentHandle() {
+        return parentHandle;
+    }
+
+    public void setParentHandle( InternalFactHandle parentHandle ) {
+        this.parentHandle = parentHandle;
     }
 }

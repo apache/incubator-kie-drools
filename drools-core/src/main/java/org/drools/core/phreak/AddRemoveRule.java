@@ -16,6 +16,14 @@
 package org.drools.core.phreak;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -63,14 +71,6 @@ import org.drools.core.util.LinkedList;
 import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.drools.core.phreak.SegmentUtilities.isRootNode;
 
@@ -420,7 +420,7 @@ public class AddRemoveRule {
                         // If the parent has other child SegmentMemorys then it must create a new child SegmentMemory
                         // If the parent is a query node, then it's internal data structure needs changing
                         // all right input data must be propagated
-                        Memory mem = wm.getNodeMemories().peekNodeMemory( parent.getId() );
+                        Memory mem = wm.getNodeMemories().peekNodeMemory( parent );
                         if ( mem != null && mem.getSegmentMemory() != null ) {
                             SegmentMemory sm = mem.getSegmentMemory();
                             if ( sm.getFirst() != null && sm.size() < parent.getSinkPropagator().size()) {
@@ -435,7 +435,7 @@ public class AddRemoveRule {
                             correctMemoryOnSplitsChanged( parent, null, wm );
                         }
                     } else {
-                        Memory mem = wm.getNodeMemories().peekNodeMemory( child.getId() );
+                        Memory mem = wm.getNodeMemories().peekNodeMemory( child );
                         // The root of each segment
                         if ( mem != null ) {
                             SegmentMemory sm = mem.getSegmentMemory();
@@ -447,7 +447,7 @@ public class AddRemoveRule {
                         }
                     }
                 } else {
-                    Memory mem = wm.getNodeMemories().peekNodeMemory( child.getId() );
+                    Memory mem = wm.getNodeMemories().peekNodeMemory( child );
                     if ( mem != null ) {
                         mem.getSegmentMemory().notifyRuleLinkSegment( wm, pmem );
                     }
@@ -484,17 +484,17 @@ public class AddRemoveRule {
                     // If the parent is a query node, then it's internal data structure needs changing
                     // all right input data must be propagated
                     if (!visitedNodes.contains( child.getId() )) {
-                        Memory mem = wm.getNodeMemories().peekNodeMemory( parent.getId() );
+                        Memory mem = wm.getNodeMemories().peekNodeMemory( parent );
                         if ( mem != null && mem.getSegmentMemory() != null ) {
                             SegmentMemory sm = mem.getSegmentMemory();
                             if ( sm.getFirst() != null ) {
-                                SegmentMemory childSm = wm.getNodeMemories().peekNodeMemory( child.getId() ).getSegmentMemory();
+                                SegmentMemory childSm = wm.getNodeMemories().peekNodeMemory( child ).getSegmentMemory();
                                 sm.remove( childSm );
                             }
                         }
                     }
                 } else {
-                    Memory mem = wm.getNodeMemories().peekNodeMemory(child.getId());
+                    Memory mem = wm.getNodeMemories().peekNodeMemory(child);
                     // The root of each segment
                     if (mem != null) {
                         SegmentMemory sm = mem.getSegmentMemory();
@@ -546,7 +546,7 @@ public class AddRemoveRule {
 
         for ( LeftTupleNode node : pathEndNodes.subjectSplits ) {
             if (!isSplit(node, tn)) { // check if the split is there even without the processed rule
-                Memory mem = wm.getNodeMemories().peekNodeMemory(node.getId());
+                Memory mem = wm.getNodeMemories().peekNodeMemory(node);
                 if ( mem != null) {
                     SegmentMemory smem = mem.getSegmentMemory();
 
@@ -702,7 +702,7 @@ public class AddRemoveRule {
 
     private static void correctMemoryOnSplitsChanged(LeftTupleNode splitStart, TerminalNode removingTN, InternalWorkingMemory wm) {
         if (splitStart.getType() == NodeTypeEnums.UnificationNode) {
-            QueryElementNode.QueryElementNodeMemory mem = (QueryElementNode.QueryElementNodeMemory) wm.getNodeMemories().peekNodeMemory(splitStart.getId());
+            QueryElementNode.QueryElementNodeMemory mem = (QueryElementNode.QueryElementNodeMemory) wm.getNodeMemories().peekNodeMemory(splitStart);
             if (mem != null) {
                 mem.correctMemoryOnSinksChanged(removingTN);
             }
@@ -772,7 +772,7 @@ public class AddRemoveRule {
     }
 
     private static void deleteRightInputData(LeftTupleSink node, InternalWorkingMemory wm) {
-        if (wm.getNodeMemories().peekNodeMemory(node.getId()) != null) {
+        if (wm.getNodeMemories().peekNodeMemory(node) != null) {
             BetaNode   bn = (BetaNode) node;
             BetaMemory bm;
             if (bn.getType() == NodeTypeEnums.AccumulateNode) {
@@ -806,7 +806,7 @@ public class AddRemoveRule {
     private static void deleteFactsFromRightInput(BetaNode bn, InternalWorkingMemory wm) {
         ObjectSource source = bn.getRightInput();
         if (source instanceof WindowNode) {
-            WindowNode.WindowMemory memory = (WindowNode.WindowMemory) wm.getNodeMemory(((WindowNode) source));
+            WindowNode.WindowMemory memory = wm.getNodeMemory(((WindowNode) source));
             for (EventFactHandle factHandle : memory.getFactHandles()) {
                 factHandle.forEachRightTuple( rt -> {
                     if (source.equals(rt.getTupleSink())) {
@@ -839,7 +839,7 @@ public class AddRemoveRule {
         // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples
         // which provide the potential peer of the tuple being added or removed
 
-        Memory memory = wm.getNodeMemories().peekNodeMemory(node.getId());
+        Memory memory = wm.getNodeMemories().peekNodeMemory(node);
         if (memory == null || memory.getSegmentMemory() == null) {
             // segment has never been initialized, which means the rule(s) have never been linked and thus no Tuples to fix
             return;
@@ -1010,7 +1010,7 @@ public class AddRemoveRule {
         }
 
         LeftTuple peer = node.createPeer(lt);
-        Memory memory = wm.getNodeMemories().peekNodeMemory(node.getId());
+        Memory memory = wm.getNodeMemories().peekNodeMemory(node);
         if (memory == null || memory.getSegmentMemory() == null) {
             throw new IllegalStateException("Defensive Programming: this should not be possilbe, as the addRule code should init child segments if they are needed ");
         }
@@ -1027,7 +1027,7 @@ public class AddRemoveRule {
 
     private static void iterateLeftTuple(LeftTuple lt, InternalWorkingMemory wm) {
         if (NodeTypeEnums.isTerminalNode(lt.getTupleSink())) {
-            PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getTupleSink().getId() );
+            PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getTupleSink() );
             if (pmem != null) {
                 PhreakRuleTerminalNode.doLeftDelete( pmem.getActualAgenda( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), lt );
             }
@@ -1152,7 +1152,7 @@ public class AddRemoveRule {
         // create new segment, starting after split
         LeftTupleNode childNode = splitNode.getSinkPropagator().getFirstLeftTupleSink();
         SegmentMemory sm2 = new SegmentMemory(childNode); // we know there is only one sink
-        wm.getNodeMemories().peekNodeMemory( childNode.getId() ).setSegmentMemory( sm2 );
+        wm.getNodeMemories().peekNodeMemory( childNode ).setSegmentMemory( sm2 );
 
         // Move the children of sm1 to sm2
         if (sm1.getFirst() != null) {
@@ -1311,19 +1311,19 @@ public class AddRemoveRule {
 
         for (LeftTupleNode node : pathEndNodes.otherEndNodes) {
             if (node.getType() == NodeTypeEnums.RightInputAdaterNode) {
-                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemories().peekNodeMemory(node.getId());
+                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemories().peekNodeMemory(node);
                 if (riaMem != null) {
                     tnMems.otherPmems.add(riaMem.getRiaPathMemory());
                 }
             } else {
-                PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(node.getId());
+                PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(node);
                 if (pmem != null) {
                     tnMems.otherPmems.add(pmem);
                 }
             }
         }
 
-        tnMems.subjectPmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(pathEndNodes.subjectEndNode.getId());
+        tnMems.subjectPmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(pathEndNodes.subjectEndNode);
         if (tnMems.subjectPmem == null && !tnMems.otherPmems.isEmpty()) {
             // If "other pmem's are initialized, then the subject needs to be initialized too.
             tnMems.subjectPmem = (PathMemory) wm.getNodeMemory((MemoryFactory<Memory>) pathEndNodes.subjectEndNode);
@@ -1331,7 +1331,7 @@ public class AddRemoveRule {
 
         for (LeftTupleNode node : pathEndNodes.subjectEndNodes) {
             if (node.getType() == NodeTypeEnums.RightInputAdaterNode) {
-                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemories().peekNodeMemory(node.getId());
+                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemories().peekNodeMemory(node);
                 if (riaMem == null && !tnMems.otherPmems.isEmpty()) {
                     riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory<Memory>) node);
                 }
@@ -1339,7 +1339,7 @@ public class AddRemoveRule {
                     tnMems.subjectPmems.add(riaMem.getRiaPathMemory());
                 }
             } else {
-                PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(node.getId());
+                PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(node);
                 if (pmem != null) {
                     tnMems.subjectPmems.add(pmem);
                 }

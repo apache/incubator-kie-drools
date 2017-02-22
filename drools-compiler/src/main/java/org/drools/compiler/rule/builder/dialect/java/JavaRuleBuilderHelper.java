@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -104,10 +105,10 @@ public final class JavaRuleBuilderHelper {
                                                                Map<String, Declaration> decls) {
         final RuleDescr ruleDescr = context.getRuleDescr();
 
-        BoundIdentifiers bindings = new BoundIdentifiers(DeclarationScopeResolver.getDeclarationClasses( decls ),
-                                                         context.getKnowledgeBuilder().getGlobals(),
-                                                         null,
-                                                         KnowledgeHelper.class );
+        BoundIdentifiers bindings = new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ),
+                                                          context,
+                                                          Collections.EMPTY_MAP,
+                                                          KnowledgeHelper.class );
 
         String consequenceStr = ( RuleImpl.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) ?
                 (String) ruleDescr.getConsequence() :
@@ -252,12 +253,12 @@ public final class JavaRuleBuilderHelper {
                                                             registry) );
     }
 
-    public static void generateInvokerTemplate(final String invokerTemplate,
-                                               final RuleBuildContext context,
-                                               final String className,
-                                               final Map vars,
-                                               final Object invokerLookup,
-                                               final BaseDescr descrLookup) {
+    private static void generateInvokerTemplate(final String invokerTemplate,
+                                                final RuleBuildContext context,
+                                                final String className,
+                                                final Map vars,
+                                                final Object invokerLookup,
+                                                final BaseDescr descrLookup) {
         TemplateRegistry registry = getInvokerTemplateRegistry(context.getKnowledgeBuilder().getRootClassLoader());
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
 
@@ -267,10 +268,8 @@ public final class JavaRuleBuilderHelper {
                                                                      new MapVariableResolverFactory( vars ),
                                                                      registry ) );
 
-        context.getInvokerLookups().put( invokerClassName,
-                                             invokerLookup );
-        context.getDescrLookups().put( invokerClassName,
-                                           descrLookup );
+        context.addInvokerLookup( invokerClassName, invokerLookup );
+        context.addDescrLookups( invokerClassName, descrLookup );
     }
 
     public static void registerInvokerBytecode(RuleBuildContext context, Map<String, Object> vars, byte[] bytecode, Object invokerLookup) {

@@ -586,10 +586,13 @@ public class MVELDialect
         }
 
         List<String> strList = new ArrayList<String>();
-        for ( Entry<String, Class< ? >> e : analysis.getBoundIdentifiers().getGlobals().entrySet() ) {
-            strList.add( e.getKey() );
-            ids.add( e.getKey() );
-            resolvedInputs.put( e.getKey(), e.getValue() );
+        for ( String identifier : analysis.getIdentifiers() ) {
+            Class<?> type = analysis.getBoundIdentifiers().resolveVarType( identifier );
+            if (type != null) {
+                strList.add( identifier );
+                ids.add( identifier );
+                resolvedInputs.put( identifier, type );
+            }
         }
         String[] globalIdentifiers = strList.toArray( new String[strList.size()] );
 

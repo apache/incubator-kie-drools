@@ -16,6 +16,7 @@
 
 package org.drools.compiler.lang.descr;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Dialectable;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class RuleDescr extends AnnotatedBaseDescr
     private String                      parentName;
     private String                      documentation;
     private Map<String, AttributeDescr> attributes;
+    private UnitDescr                   unit;
 
     private AndDescr            lhs;
     private Object              consequence;
@@ -89,6 +91,7 @@ public class RuleDescr extends AnnotatedBaseDescr
         attributes = (Map<String, AttributeDescr>) in.readObject();
         className = (String) in.readObject();
         loadOrder = in.readInt();
+        unit = (UnitDescr) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -105,6 +108,21 @@ public class RuleDescr extends AnnotatedBaseDescr
         out.writeObject( attributes );
         out.writeObject( className );
         out.writeInt(loadOrder);
+        out.writeObject(unit);
+    }
+
+    public RuleImpl toRule() {
+        RuleImpl rule = new RuleImpl( name );
+        rule.setResource( getResource() );
+        return rule;
+    }
+
+    public UnitDescr getUnit() {
+        return unit;
+    }
+
+    public void setUnit( UnitDescr unit ) {
+        this.unit = unit;
     }
 
     public String getName() {

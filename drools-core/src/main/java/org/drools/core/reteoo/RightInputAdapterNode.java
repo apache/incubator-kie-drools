@@ -16,6 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -30,13 +37,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the
@@ -88,6 +88,7 @@ public class RightInputAdapterNode extends ObjectSource
         this.startTupleSource = startTupleSource;
 
         hashcode = calculateHashCode();
+        initMemoryId( context );
     }
 
     public void readExternal(ObjectInput in) throws IOException,

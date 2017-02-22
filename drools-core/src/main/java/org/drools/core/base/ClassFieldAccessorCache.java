@@ -26,6 +26,8 @@ import org.drools.core.util.ByteArrayClassLoader;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 
+import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
+
 public class ClassFieldAccessorCache {
 
     private Map<ClassLoader, CacheEntry> cacheByClassLoader;
@@ -126,7 +128,8 @@ public class ClassFieldAccessorCache {
 
     public Class getClass(String className) {
         try {
-            return this.classLoader.loadClass( className );
+            Class<?> primitiveType = convertPrimitiveNameToType( className );
+            return primitiveType != null ? primitiveType : this.classLoader.loadClass( className );
         } catch ( ClassNotFoundException e ) {
             throw new RuntimeException( "Unable to resolve class '" + className + "'" );
         }

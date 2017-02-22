@@ -16,6 +16,22 @@
 
 package org.drools.core.definitions.rule.impl;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
@@ -27,13 +43,11 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.LogicTransformer;
-import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;
-import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Enabled;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
@@ -43,25 +57,11 @@ import org.drools.core.time.impl.Timer;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.definition.rule.InternalRule;
 import org.kie.internal.security.KiePolicyHelper;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class RuleImpl implements Externalizable,
                                  Wireable,
@@ -92,7 +92,7 @@ public class RuleImpl implements Externalizable,
     private List<RuleImpl>           children;
 
     /** Salience value. */
-    private Salience salience;
+    private Salience                 salience = SalienceInteger.DEFAULT_SALIENCE;
 
     /** The Rule is dirty after patterns have been added */
     private boolean                  dirty;
@@ -103,9 +103,9 @@ public class RuleImpl implements Externalizable,
 
     private String                   dialect;
 
-    private String                   agendaGroup;
+    private String                   agendaGroup = AgendaGroup.MAIN;
 
-    private Map<String, Object>      metaAttributes;
+    private Map<String, Object>      metaAttributes = new HashMap<String, Object>();
 
     /** Consequence. */
     private Consequence consequence;
@@ -116,7 +116,7 @@ public class RuleImpl implements Externalizable,
     private Timer timer;
 
     /** Load order in Package */
-    private int                     loadOrder;
+    private int                      loadOrder;
 
     private String                   activationGroup;
 
@@ -124,27 +124,27 @@ public class RuleImpl implements Externalizable,
 
     private String[]                 calendars;
 
-    private Calendar dateEffective;
+    private Calendar                 dateEffective;
 
     private Calendar                 dateExpires;
 
-    private Enabled enabled;
+    private Enabled                  enabled = EnabledBoolean.ENABLED_TRUE;
 
-    private Resource resource;
+    private Resource                 resource;
 
     protected String                 activationListener;
 
-    private ConsequenceMetaData consequenceMetaData = new ConsequenceMetaData();
+    private ConsequenceMetaData      consequenceMetaData = new ConsequenceMetaData();
 
-    private List<QueryImpl> usedQueries;
+    private List<QueryImpl>          usedQueries;
 
-    private List<QueryImpl> dependingQueries;
+    private List<QueryImpl>          dependingQueries;
 
-    private int ruleFlags;
+    private int                      ruleFlags;
 
-    public RuleImpl() {
+    private String                   ruleUnitClassName;
 
-    }
+    public RuleImpl() { }
 
     /**
      * Construct a
@@ -153,38 +153,11 @@ public class RuleImpl implements Externalizable,
      * @param name
      *            The name of this rule.
      */
-    public RuleImpl(final String name,
-                    final String pkg,
-                    final String agendaGroup) {
+    public RuleImpl(String name) {
         this.name = name;
-        this.pkg = pkg;
-        this.agendaGroup = agendaGroup == null ? AgendaGroup.MAIN : agendaGroup;
         this.lhsRoot = GroupElementFactory.newAndInstance();
         setSemanticallyValid(true);
-        this.enabled = EnabledBoolean.ENABLED_TRUE;
-        this.salience = SalienceInteger.DEFAULT_SALIENCE;
-        this.metaAttributes = new HashMap<String, Object>();
         setActivationListener( "agenda" );
-    }
-
-    /**
-     * Construct a
-     * <code>Rule<code> with the given name for the specified pkg parent
-     *
-     * @param name
-     *            The name of this rule.
-     */
-    public RuleImpl(final String name,
-                    final String agendaGroup) {
-        this( name,
-              null,
-              agendaGroup );
-    }
-
-    public RuleImpl(final String name) {
-        this( name,
-              null,
-              AgendaGroup.MAIN );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -220,6 +193,8 @@ public class RuleImpl implements Externalizable,
         out.writeObject(consequenceMetaData);
         out.writeObject( usedQueries );
         out.writeInt(ruleFlags);
+
+        out.writeObject( ruleUnitClassName );
     }
 
     @SuppressWarnings("unchecked")
@@ -253,6 +228,8 @@ public class RuleImpl implements Externalizable,
         consequenceMetaData = ( ConsequenceMetaData ) in.readObject();
         usedQueries = (List<QueryImpl>) in.readObject();
         ruleFlags = in.readInt();
+
+        ruleUnitClassName = (String) in.readObject();
     }
 
     public void addUsedQuery(QueryImpl query) {
@@ -306,7 +283,6 @@ public class RuleImpl implements Externalizable,
     /**
      * Returns the Timer semantics for a rule. Timer based rules are not added directly to the Agenda
      * instead they are scheduled for Agenda addition, based on the timer.
-     * @return
      */
     public Timer getTimer() {
         return timer;
@@ -315,7 +291,6 @@ public class RuleImpl implements Externalizable,
     /**
      * Sets the timer semantics for a rule. Timer based rules are not added directly to the Agenda
      * instead they are scheduled for Agenda addition, based on the timer.
-     * @param timer
      */
     public void setTimer(Timer timer) {
         this.timer = timer;
@@ -347,8 +322,9 @@ public class RuleImpl implements Externalizable,
         return this.pkg;
     }
 
-    public void setPackage(String pkg) {
+    public RuleImpl setPackage( String pkg ) {
         this.pkg = pkg;
+        return this;
     }
 
     public String getPackageName() {
@@ -408,11 +384,12 @@ public class RuleImpl implements Externalizable,
     }
 
     public String getAgendaGroup() {
-        return this.agendaGroup;
+        return agendaGroup;
     }
 
-    public void setAgendaGroup(final String agendaGroup) {
+    public RuleImpl setAgendaGroup(final String agendaGroup) {
         this.agendaGroup = agendaGroup;
+        return this;
     }
 
     public boolean isMainAgendaGroup() {
@@ -625,33 +602,6 @@ public class RuleImpl implements Externalizable,
                                       globals );
     }
 
-    public int getSpecifity() {
-        return getSpecifity( this.lhsRoot );
-    }
-
-    private int getSpecifity(final GroupElement ce) {
-        int specificity = 0;
-        for (final RuleConditionElement object : ce.getChildren()) {
-            if (object instanceof Pattern) {
-                specificity += getSpecifity((Pattern) object);
-            } else if (object instanceof GroupElement) {
-                specificity += getSpecifity((GroupElement) object);
-            }
-        }
-        return specificity;
-    }
-
-    private int getSpecifity(final Pattern pattern) {
-        int specificity = 0;
-        for (Constraint constraint : pattern.getConstraints()) {
-            if (!(constraint instanceof Declaration)) {
-                specificity++;
-            }
-        }
-
-        return specificity;
-    }
-
     public void wire(Object object) {
         if ( object instanceof Consequence ) {
             Consequence c = KiePolicyHelper.isPolicyEnabled() ? new SafeConsequence((Consequence) object) : (Consequence) object;
@@ -856,19 +806,8 @@ public class RuleImpl implements Externalizable,
         return Collections.unmodifiableMap(metaAttributes);
     }
 
-    @Deprecated
-    public Map<String, Object> getMetaAttributes() {
-        return Collections.unmodifiableMap( metaAttributes );
-    }
-
-    @Deprecated
-    public String getMetaAttribute(final String identifier) {
-        return this.metaAttributes.get( identifier ).toString();
-    }
-
-    @Deprecated
-    public Collection<String> listMetaAttributes() {
-        return this.metaAttributes.keySet();
+    public Object getMetaData(String name) {
+        return metaAttributes.get(name);
     }
 
     public void setParent(RuleImpl parent) {
@@ -899,30 +838,6 @@ public class RuleImpl implements Externalizable,
         return children != null && !children.isEmpty();
     }
 
-    public static java.util.List getMethodBytecode( Class cls, String ruleClassName, String packageName, String methodName, String resource ) {
-        org.drools.core.util.asm.MethodComparator.Tracer visit = new org.drools.core.util.asm.MethodComparator.Tracer(methodName);
-
-        java.io.InputStream is = cls.getClassLoader().getResourceAsStream( resource );
-
-        java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
-        try {
-            byte[] data = new byte[1024];
-            int byteCount;
-            while ( (byteCount = is.read( data,
-                                          0,
-                                          1024 )) > -1 )
-            {
-                bos.write(data, 0, byteCount);
-            }
-        } catch ( java.io.IOException e ) {
-            throw new RuntimeException("Unable getResourceAsStream for Class '" + ruleClassName+ "' ");
-        }
-
-        org.mvel2.asm.ClassReader classReader = new org.mvel2.asm.ClassReader( bos.toByteArray() );
-        classReader.accept( visit, org.mvel2.asm.ClassReader.SKIP_DEBUG  );
-        return visit.getText();
-    }
-
     public boolean isQuery() {
         return false;
     }
@@ -941,6 +856,22 @@ public class RuleImpl implements Externalizable,
 
     public ConsequenceMetaData getConsequenceMetaData() {
         return consequenceMetaData;
+    }
+
+    public String getRuleUnitClassName() {
+        return ruleUnitClassName;
+    }
+
+    public void setRuleUnitClass( Class<? extends RuleUnit> ruleUnit ) {
+        setRuleUnitClassName( ruleUnit.getCanonicalName() );
+    }
+
+    public void setRuleUnitClassName( String ruleUnitClassName ) {
+        this.ruleUnitClassName = ruleUnitClassName;
+    }
+
+    public boolean hasRuleUnit() {
+        return ruleUnitClassName != null;
     }
 
     public static class SafeConsequence implements Consequence, Serializable {
@@ -1018,6 +949,25 @@ public class RuleImpl implements Externalizable,
                 }
             }, KiePolicyHelper.getAccessContext());
         }
+    }
 
+    public static java.util.List getMethodBytecode( Class cls, String ruleClassName, String packageName, String methodName, String resource ) {
+        java.io.InputStream is = cls.getClassLoader().getResourceAsStream( resource );
+        try {
+            byte[] data = readBytesFromInputStream( is );
+            org.drools.core.util.asm.MethodComparator.Tracer visit = new org.drools.core.util.asm.MethodComparator.Tracer(methodName);
+            new org.mvel2.asm.ClassReader( data ).accept( visit, org.mvel2.asm.ClassReader.SKIP_DEBUG  );
+            return visit.getText();
+        } catch ( java.io.IOException e ) {
+            throw new RuntimeException("Unable getResourceAsStream for Class '" + ruleClassName+ "' ");
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    throw new RuntimeException( e );
+                }
+            }
+        }
     }
 }

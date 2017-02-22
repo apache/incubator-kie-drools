@@ -558,5 +558,10 @@ public class XpathConstraint extends MutableTypeConstraint {
             }
             return hash;
         }
+
+        @Override
+        public boolean isReactive() {
+            return true;
+        }
     }
 }

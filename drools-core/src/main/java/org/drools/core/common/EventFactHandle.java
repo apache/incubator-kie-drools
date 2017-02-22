@@ -16,6 +16,7 @@
 
 package org.drools.core.common;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.LinkedList;
@@ -65,7 +66,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                            long recency,
                            long timestamp,
                            long duration,
-                           InternalWorkingMemoryEntryPoint wmEntryPoint ) {
+                           WorkingMemoryEntryPoint wmEntryPoint ) {
         this( id, object, recency, timestamp, duration, wmEntryPoint, false );
     }
 
@@ -74,7 +75,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                            long recency,
                            long timestamp,
                            long duration,
-                           InternalWorkingMemoryEntryPoint wmEntryPoint,
+                           WorkingMemoryEntryPoint wmEntryPoint,
                            boolean isTraitOrTraitable ) {
         super( id,
                object,
@@ -260,7 +261,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
-        clone.entryPoint = entryPoint;
+        clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );
         clone.linkedTuples = this.linkedTuples.clone();
         clone.setObjectHashCode(getObjectHashCode());
@@ -278,7 +279,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
-        clone.entryPoint = entryPoint;
+        clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );
         clone.setObjectHashCode(getObjectHashCode());
         return clone;

@@ -17,6 +17,7 @@
 package org.drools.core.reteoo.builder;
 
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.reteoo.FromNode;
 import org.drools.core.rule.From;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
@@ -41,15 +42,27 @@ public class FromBuilder
                                                                context.getAlphaConstraints().toArray( new AlphaNodeFieldConstraint[context.getAlphaConstraints().size()] ) :
                                                                new AlphaNodeFieldConstraint[0];
 
-        context.setTupleSource( utils.attachNode( context,
-                context.getComponentFactory().getNodeFactoryService().buildFromNode( context.getNextId(),
-                                                                                     from.getDataProvider(),
-                                                                                     context.getTupleSource(),
-                                                                                     alphaNodeFieldConstraints,
-                                                                                     betaConstraints,
-                                                                                     context.isTupleMemoryEnabled(),
-                                                                                     context,
-                                                                                     from ) ) );
+        NodeFactory nodeFactory = context.getComponentFactory().getNodeFactoryService();
+        FromNode fromNode = from.isReactive() ?
+                            nodeFactory.buildReactiveFromNode( context.getNextId(),
+                                                               from.getDataProvider(),
+                                                               context.getTupleSource(),
+                                                               alphaNodeFieldConstraints,
+                                                               betaConstraints,
+                                                               context.isTupleMemoryEnabled(),
+                                                               context,
+                                                               from ) :
+                            nodeFactory.buildFromNode( context.getNextId(),
+                                                       from.getDataProvider(),
+                                                       context.getTupleSource(),
+                                                       alphaNodeFieldConstraints,
+                                                       betaConstraints,
+                                                       context.isTupleMemoryEnabled(),
+                                                       context,
+                                                       from );
+
+
+        context.setTupleSource( utils.attachNode( context, fromNode ) );
         context.setAlphaConstraints( null );
         context.setBetaconstraints( null );
         context.popRuleComponent();

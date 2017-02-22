@@ -92,17 +92,25 @@ public class AnnotationFactory {
         }
 
         private Object normalizeResult(Class<?> resultClass, Object val) {
-            String value = val.toString();
             if ( resultClass == String.class ) {
+                String value = val.toString();
                 if ( annotationDescr.isStrict() ) {
                     // quotes on a String value of a strict annotation are required
                     if (value.charAt(0) == '"' && value.charAt(value.length()-1) == '"') {
                         return value.substring(1, value.length() - 1);
+                    } else {
+                        throw new RuntimeException("Cannot convert " + value + " to an instance of type " + resultClass.getName());
                     }
                 } else {
                     return value;
                 }
             }
+
+            if (resultClass.isInstance( val )) {
+                return val;
+            }
+
+            String value = val.toString();
             if (resultClass == Boolean.class || resultClass == boolean.class) {
                 return Boolean.valueOf(value);
             }

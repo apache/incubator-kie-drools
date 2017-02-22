@@ -16,6 +16,9 @@
 
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -24,9 +27,6 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MockLeftTupleSink extends LeftTupleSource
     implements
@@ -70,10 +70,6 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public void ruleAttached() {
-    }
-
-    public int getId() {
-        return this.id;
     }
 
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {

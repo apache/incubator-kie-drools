@@ -16,9 +16,14 @@
 
 package org.drools.core.common;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -32,10 +37,6 @@ import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
 
 public interface InternalAgenda
     extends
@@ -291,4 +292,8 @@ public interface InternalAgenda
     void handleException(InternalWorkingMemory wm, Activation activation, Exception e);
 
     boolean isParallelAgenda();
+
+    default PropagationList getPropagationList() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -15,6 +15,12 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
@@ -32,12 +38,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
@@ -60,6 +60,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         super(id, partitionId, partitionsEnabled);
         this.tupleSource = source;
         context.addPathEndNode(this);
+        initMemoryId( context );
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

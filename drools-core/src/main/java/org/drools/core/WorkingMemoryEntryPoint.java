@@ -17,6 +17,17 @@
 package org.drools.core;
 
 
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ObjectStore;
+import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -50,4 +61,37 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
      */
     void dispose();
 
+    ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
+
+    InternalKnowledgeBase getKnowledgeBase();
+
+    void delete(FactHandle factHandle,
+                RuleImpl rule,
+                Activation activation );
+
+    void delete(FactHandle factHandle,
+                RuleImpl rule,
+                Activation activation,
+                FactHandle.State fhState);
+
+    void update(FactHandle handle,
+                Object object,
+                BitMask mask,
+                Class<?> modifiedClass,
+                Activation activation);
+
+    TruthMaintenanceSystem getTruthMaintenanceSystem();
+
+    EntryPointId getEntryPoint();
+    InternalWorkingMemory getInternalWorkingMemory();
+
+    FactHandle getFactHandleByIdentity(Object object);
+
+    void reset();
+
+    ObjectStore getObjectStore();
+
+    FactHandleFactory getHandleFactory();
+
+    EntryPointNode getEntryPointNode();
 }

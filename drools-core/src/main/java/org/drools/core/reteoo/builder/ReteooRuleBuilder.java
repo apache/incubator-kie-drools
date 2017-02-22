@@ -16,6 +16,9 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.ActivationListenerFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
@@ -23,7 +26,11 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.AddRemoveRule;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.PathEndNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.RuleBuilder;
+import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Collect;
 import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.EntryPointId;
@@ -43,9 +50,6 @@ import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.core.time.impl.Timer;
 import org.kie.api.conf.EventProcessingOption;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ReteooRuleBuilder implements RuleBuilder {
 
@@ -99,8 +103,8 @@ public class ReteooRuleBuilder implements RuleBuilder {
      * @throws InvalidPatternException
      */
     public List<TerminalNode> addRule( final RuleImpl rule,
-            final InternalKnowledgeBase kBase,
-            final ReteooBuilder.IdGenerator idGenerator ) throws InvalidPatternException {
+                                       final InternalKnowledgeBase kBase ) throws InvalidPatternException {
+
         // the list of terminal nodes
         final List<TerminalNode> nodes = new ArrayList<TerminalNode>();
 
@@ -111,8 +115,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         for (int i = 0; i < subrules.length; i++) {
 
             // creates a clean build context for each subrule
-            final BuildContext context = new BuildContext( kBase,
-                                                           idGenerator );
+            final BuildContext context = new BuildContext( kBase );
             context.setRule( rule );
 
             // if running in STREAM mode, calculate temporal distance for events
@@ -203,7 +206,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         for ( int i = 0; i < pathEndNodes.length; i++ ) {
             PathEndNode node = context.getPathEndNodes().get(pathEndNodes.length-1-i);
             pathEndNodes[i] = node;
-            if (node instanceof RightInputAdapterNode && node.getPathEndNodes() != null) {
+            if ( node instanceof RightInputAdapterNode && node.getPathEndNodes() != null) {
                 PathEndNode[] riaPathEndNodes = new PathEndNode[node.getPathEndNodes().length + i];
                 System.arraycopy( pathEndNodes, 0, riaPathEndNodes, 0, i );
                 System.arraycopy( node.getPathEndNodes(), 0, riaPathEndNodes, i, node.getPathEndNodes().length );
@@ -229,11 +232,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
     }
 
     public void addEntryPoint( final String id,
-            final InternalKnowledgeBase kBase,
-            final ReteooBuilder.IdGenerator idGenerator ) {
+            final InternalKnowledgeBase kBase ) {
         // creates a clean build context for each subrule
-        final BuildContext context = new BuildContext( kBase,
-                                                       idGenerator );
+        final BuildContext context = new BuildContext( kBase );
         EntryPointId ep = new EntryPointId( id );
         ReteooComponentBuilder builder = utils.getBuilderFor( ep );
         builder.build(context,
@@ -242,11 +243,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
     }
 
     public WindowNode addWindowNode( WindowDeclaration window,
-                                     InternalKnowledgeBase kBase,
-                                     ReteooBuilder.IdGenerator idGenerator ) {
+                                     InternalKnowledgeBase kBase ) {
         // creates a clean build context for each subrule
-        final BuildContext context = new BuildContext( kBase,
-                                                       idGenerator );
+        final BuildContext context = new BuildContext( kBase );
         
         if ( kBase.getConfiguration().isSequential() ) {
             context.setTupleMemoryEnabled( false );

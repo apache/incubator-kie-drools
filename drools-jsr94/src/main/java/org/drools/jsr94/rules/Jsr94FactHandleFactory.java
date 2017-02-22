@@ -16,10 +16,10 @@
 
 package org.drools.jsr94.rules;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.AbstractFactHandleFactory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
@@ -36,7 +36,7 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
                                                    final long recency,
                                                    final ObjectTypeConf conf,
                                                    final InternalWorkingMemory workingMemory,
-                                                   InternalWorkingMemoryEntryPoint entryPoint) {
+                                                   WorkingMemoryEntryPoint entryPoint ) {
         if ( conf != null && conf.isEvent() ) {
             // later we need to centralize the following code snippet in a common method
             // shared by all fact handle factory implementations

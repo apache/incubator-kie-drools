@@ -16,6 +16,15 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Primitives;
 import org.drools.compiler.StockTick;
@@ -94,15 +103,6 @@ import org.kie.api.definition.type.TypeSafe;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBaseFactory;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -190,7 +190,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTupleImpl tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, new CompositeObjectSinkAdapterTest.MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase, null) )  );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, new CompositeObjectSinkAdapterTest.MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase) )  );
         final Activation activation = new MockActivation( rule,
                                                           0,
                                                           rule.getLhs(),
@@ -273,7 +273,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTupleImpl tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, new CompositeObjectSinkAdapterTest.MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase, null) )  );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, new CompositeObjectSinkAdapterTest.MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase) )  );
         final Activation activation = new MockActivation( newRule,
                                                           0,
                                                           newRule.getLhs(),

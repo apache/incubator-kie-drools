@@ -16,6 +16,7 @@
 
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.util.debug.DebugList;
 import org.drools.core.ClockType;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
@@ -38,13 +39,11 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 import static org.junit.Assert.*;
 
@@ -192,20 +191,6 @@ public class ParallelEvaluationTest {
                 "then\n" +
                 "    list.add(" + -i + ");\n" +
                 "end\n";
-    }
-
-    public static class DebugList<T> extends ArrayList<T> {
-        Consumer<DebugList<T>> onItemAdded;
-
-        @Override
-        public synchronized boolean add( T t ) {
-            System.out.println( Thread.currentThread() + " adding " + t );
-            boolean result = super.add( t );
-            if (onItemAdded != null) {
-                onItemAdded.accept( this );
-            }
-            return result;
-        }
     }
 
     @Test(timeout = 10000L)

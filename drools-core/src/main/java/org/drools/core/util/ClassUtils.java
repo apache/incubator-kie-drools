@@ -62,6 +62,8 @@ public final class ClassUtils {
 
     private static final Map<String, String> abbreviationMap;
 
+    private static final Map<String, Class<?>> primitiveNameToType;
+
     static {
         final Map<String, String> m = new HashMap<String, String>();
         m.put("int", "I");
@@ -78,6 +80,17 @@ public final class ClassUtils {
             r.put(e.getValue(), e.getKey());
         }
         abbreviationMap = Collections.unmodifiableMap(m);
+
+        final Map<String, Class<?>> m2 = new HashMap<String, Class<?>>();
+        m2.put("int", int.class);
+        m2.put("boolean", boolean.class);
+        m2.put("float", float.class);
+        m2.put("long", long.class);
+        m2.put("short", short.class);
+        m2.put("byte", byte.class);
+        m2.put("double", double.class);
+        m2.put("char", char.class);
+        primitiveNameToType = Collections.unmodifiableMap(m2);
     }
 
     static {
@@ -492,6 +505,10 @@ public final class ClassUtils {
         }
     }
 
+    public static boolean isAssignable( Class<?> type, Object obj ) {
+        return type.isInstance( obj ) || (type.isPrimitive() && convertFromPrimitiveType( type ).isInstance( obj ));
+    }
+
     public static boolean isConvertible( Class<?> srcPrimitive, Class<?> tgtPrimitive ) {
         if ( Boolean.TYPE.equals( srcPrimitive ) ) {
             return Boolean.TYPE.equals( tgtPrimitive );
@@ -635,31 +652,7 @@ public final class ClassUtils {
     }
 
     public static Class<?> convertPrimitiveNameToType( String typeName ) {
-        if (typeName.equals( "int" )) {
-            return int.class;
-        }
-        if (typeName.equals("boolean")) {
-            return boolean.class;
-        }
-        if (typeName.equals("char")) {
-            return char.class;
-        }
-        if (typeName.equals("byte")) {
-            return byte.class;
-        }
-        if (typeName.equals("short")) {
-            return short.class;
-        }
-        if (typeName.equals("float")) {
-            return float.class;
-        }
-        if (typeName.equals("long")) {
-            return long.class;
-        }
-        if (typeName.equals("double")) {
-            return double.class;
-        }
-        return Object.class;
+        return primitiveNameToType.get(typeName);
     }
 
     public static Set<Class<?>> getAllImplementedInterfaceNames( Class<?> klass ) {
@@ -803,5 +796,12 @@ public final class ClassUtils {
         catch ( final ClassNotFoundException cnfe ) { } // class doesn't exist
         catch ( final NoClassDefFoundError ncdfe ) { } // potential mis-match induced by Mac/OSX
         return null;
+    }
+
+    public static String getCanonicalSimpleName(Class<?> c) {
+        Class<?> enclosingClass = c.getEnclosingClass();
+        return enclosingClass != null ?
+               getCanonicalSimpleName(enclosingClass) + "." + c.getSimpleName() :
+               c.getSimpleName();
     }
 }

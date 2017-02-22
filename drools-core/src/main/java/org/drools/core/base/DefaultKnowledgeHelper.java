@@ -16,7 +16,16 @@
 
 package org.drools.core.base;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
 import org.drools.core.WorkingMemory;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.ModedAssertion;
@@ -58,16 +67,9 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
+import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.beliefs.Mode;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
@@ -396,11 +398,22 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public void update( final FactHandle handle, BitMask mask, Class<?> modifiedClass ) {
         InternalFactHandle h = (InternalFactHandle) handle;
-        ((NamedEntryPoint) h.getEntryPoint()).update( h,
-                                                      ((InternalFactHandle)handle).getObject(),
-                                                      mask,
-                                                      modifiedClass,
-                                                      this.activation );
+
+        if (h.getDataSource() != null) {
+            // This handle has been insert from a datasource, so update it
+            h.getDataSource().update( h,
+                                      ((InternalFactHandle)handle).getObject(),
+                                      mask,
+                                      modifiedClass,
+                                      this.activation );
+            return;
+        }
+
+        ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
+                                                                      ((InternalFactHandle)handle).getObject(),
+                                                                      mask,
+                                                                      modifiedClass,
+                                                                      this.activation );
         if ( h.isTraitOrTraitable() ) {
             workingMemory.updateTraits( h, mask, modifiedClass, this.activation );
         }
@@ -472,7 +485,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public Object get(final Declaration declaration) {
-        InternalWorkingMemoryEntryPoint wmTmp = (this.tuple.get( declaration )).getEntryPoint();
+        WorkingMemoryEntryPoint wmTmp = (this.tuple.get( declaration )).getEntryPoint();
         return wmTmp != null ?
                declaration.getValue( wmTmp.getInternalWorkingMemory(),
                                                      this.tuple.getObject( declaration ) )
@@ -613,5 +626,21 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public ClassLoader getProjectClassLoader() {
         return ((InternalKnowledgeBase)getKieRuntime().getKieBase()).getRootClassLoader();
+    }
+
+    public void run(RuleUnit ruleUnit ) {
+        workingMemory.switchToRuleUnit( ruleUnit );
+    }
+
+    public void run(Class<? extends RuleUnit> ruleUnitClass) {
+        workingMemory.switchToRuleUnit( ruleUnitClass );
+    }
+
+    public void guard(RuleUnit ruleUnit) {
+        workingMemory.guardRuleUnit( ruleUnit, activation );
+    }
+
+    public void guard(Class<? extends RuleUnit> ruleUnitClass) {
+        workingMemory.guardRuleUnit( ruleUnitClass, activation );
     }
 }

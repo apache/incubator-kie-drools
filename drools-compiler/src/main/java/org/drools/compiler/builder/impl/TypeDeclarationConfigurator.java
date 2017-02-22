@@ -45,7 +45,6 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
 import java.util.Map;
 
 public class TypeDeclarationConfigurator {
@@ -194,13 +193,10 @@ public class TypeDeclarationConfigurator {
         }
 
         return (MVELAnalysisResult)
-                context.getDialect().analyzeExpression(context,
-                                                       typeDescr,
-                                                       durationField,
-                                                       new BoundIdentifiers( Collections.EMPTY_MAP,
-                                                                            Collections.EMPTY_MAP,
-                                                                            Collections.EMPTY_MAP,
-                                                                            type.getTypeClass()));
+                context.getDialect().analyzeExpression( context,
+                                                        typeDescr,
+                                                        durationField,
+                                                        new BoundIdentifiers( type.getTypeClass() ) );
     }
 
     private static InternalReadAccessor getFieldExtractor( TypeDeclaration type, String timestampField, InternalKnowledgePackage pkg, MVELAnalysisResult results ) {

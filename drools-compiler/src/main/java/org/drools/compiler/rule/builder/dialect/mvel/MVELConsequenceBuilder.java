@@ -33,6 +33,7 @@ import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -137,10 +138,10 @@ public class MVELConsequenceBuilder
             
             AnalysisResult analysis = dialect.analyzeBlock( context,
                                                             text,
-                                                            new BoundIdentifiers(DeclarationScopeResolver.getDeclarationClasses(decls),
-                                                                                 context.getKnowledgeBuilder().getGlobals(),
-                                                                                 null,
-                                                                                 KnowledgeHelper.class),
+                                                            new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses(decls),
+                                                                                  context,
+                                                                                  Collections.EMPTY_MAP,
+                                                                                  KnowledgeHelper.class),
                                                             null,
                                                             "drools",
                                                             KnowledgeHelper.class );

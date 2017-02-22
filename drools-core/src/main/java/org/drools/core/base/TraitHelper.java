@@ -15,6 +15,7 @@
 
 package org.drools.core.base;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -67,10 +68,10 @@ public class TraitHelper implements Externalizable {
 
 
     private InternalWorkingMemoryActions              workingMemory;
-    private NamedEntryPoint                           entryPoint;
+    private InternalWorkingMemoryEntryPoint           entryPoint;
 
 
-    public TraitHelper( InternalWorkingMemoryActions workingMemory, NamedEntryPoint nep ) {
+    public TraitHelper( InternalWorkingMemoryActions workingMemory, InternalWorkingMemoryEntryPoint nep ) {
         this.workingMemory = workingMemory;
         this.entryPoint = nep;
     }
@@ -457,7 +458,7 @@ public class TraitHelper implements Externalizable {
         TraitableBean<K,? extends TraitableBean> inner = needsWrapping ? builder.asTraitable( core, coreDef ) : (TraitableBean<K,? extends TraitableBean>) core;
         if ( needsWrapping ) {
             InternalFactHandle h = (InternalFactHandle) lookupFactHandle( core );
-            InternalWorkingMemoryEntryPoint ep = h != null ? h.getEntryPoint() : (InternalWorkingMemoryEntryPoint) ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint("DEFAULT");
+            WorkingMemoryEntryPoint ep = h != null ? h.getEntryPoint() : ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint( "DEFAULT" );
             ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
 
             ObjectTypeConf coreConf = reg.getObjectTypeConf( ep.getEntryPoint(), core );
@@ -500,7 +501,7 @@ public class TraitHelper implements Externalizable {
 
     private <K> InternalFactHandle lookupHandleForWrapper( K core ) {
         for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
-            ObjectStore store = ((InternalWorkingMemoryEntryPoint) ep).getObjectStore();
+            ObjectStore store = ((WorkingMemoryEntryPoint) ep).getObjectStore();
             Iterator<InternalFactHandle> iter = store.iterateFactHandles();
             while ( iter.hasNext() ) {
                 InternalFactHandle handle = iter.next();

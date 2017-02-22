@@ -16,13 +16,24 @@
 
 package org.drools.compiler.rule.builder;
 
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.RuleBuildWarning;
 import org.drools.compiler.lang.DroolsSoftKeywords;
+import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.EntryPointDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELObjectExpressionBuilder;
@@ -48,14 +59,9 @@ import org.kie.api.definition.rule.ActivationListener;
 import org.kie.api.definition.rule.All;
 import org.kie.api.definition.rule.Direct;
 import org.kie.api.definition.rule.Propagation;
+import org.kie.api.definition.rule.Unit;
 
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
+import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
 /**
  * This builds the rule structure from an AST.
@@ -64,18 +70,18 @@ import java.util.StringTokenizer;
  */
 public class RuleBuilder {
 
-    // Constructor
-    public RuleBuilder() {
-    }
+    private RuleBuilder() { }
 
-
-    public void preProcess(final RuleBuildContext context) {
+    public static void preProcess(final RuleBuildContext context) {
         RuleDescr ruleDescr = context.getRuleDescr();
 
         //Query and get object instead of using String
         if ( null != ruleDescr.getParentName() && null != context.getPkg().getRule( ruleDescr.getParentName() ) ) {
             context.getRule().setParent( context.getPkg().getRule( ruleDescr.getParentName() ) );
         }
+
+        parseUnitAnnotations( context, context.getRule(), ruleDescr );
+
         // add all the rule's meta attributes
         buildMetaAttributes( context );
 
@@ -83,19 +89,21 @@ public class RuleBuilder {
             context.getDialect().getQueryBuilder().build( context,
                                                           (QueryDescr) context.getRuleDescr() );
         }
+
+        context.initRule();
     }
 
     /**
      * Build the give rule into the
      */
-    public void build(final RuleBuildContext context) {
+    public static void build(final RuleBuildContext context) {
         RuleDescr ruleDescr = context.getRuleDescr();
 
         final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
             Pattern prefixPattern = context.getPrefixPattern(); // this is established during pre-processing, if it's query
             final GroupElement ce = (GroupElement) builder.build( context,
-                                                                  ruleDescr.getLhs(),
+                                                                  getLhsForRuleUnit( context.getRule(), ruleDescr.getLhs() ),
                                                                   prefixPattern );
 
             context.getRule().setLhs( ce );
@@ -121,24 +129,42 @@ public class RuleBuilder {
         }
     }
 
-    public void buildMetaAttributes(final RuleBuildContext context ) {
+    private static AndDescr getLhsForRuleUnit(RuleImpl rule, AndDescr lhs) {
+        if (rule.hasRuleUnit()) {
+            PatternDescr unitPattern = new PatternDescr( rule.getRuleUnitClassName(), RULE_UNIT_DECLARATION );
+            unitPattern.setSource( EntryPointDescr.RULE_UNIT_ENTRY_POINT_DESCR );
+            unitPattern.setResource( rule.getResource() );
+            lhs.getDescrs().add(0, unitPattern);
+        }
+        return lhs;
+    }
+
+    public static void buildMetaAttributes(final RuleBuildContext context ) {
         RuleImpl rule = context.getRule();
         for ( String metaAttr : context.getRuleDescr().getAnnotationNames() ) {
             AnnotationDescr ad = context.getRuleDescr().getAnnotation( metaAttr );
-            try {
-                AnnotationDefinition annotationDefinition = AnnotationDefinition.build( context.getDialect().getTypeResolver().resolveType( ad.getFullyQualifiedName() ),
-                                                                                        ad.getValueMap(),
-                                                                                        context.getDialect().getTypeResolver() );
+            String adFqn = ad.getFullyQualifiedName();
+            if (adFqn != null) {
+                AnnotationDefinition annotationDefinition;
+                try {
+                    annotationDefinition = AnnotationDefinition.build( context.getDialect().getTypeResolver().resolveType( adFqn ),
+                                                                       ad.getValueMap(),
+                                                                       context.getDialect().getTypeResolver() );
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException( e );
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException( e );
+                }
                 if ( annotationDefinition.getValues().size() == 1 && annotationDefinition.getValues().containsKey( AnnotationDescr.VALUE ) ) {
                     rule.addMetaAttribute( metaAttr, annotationDefinition.getPropertyValue( AnnotationDescr.VALUE ) );
                 } else {
-                    Map<String,Object> map = new HashMap<String,Object>( annotationDefinition.getValues().size() );
+                    Map<String, Object> map = new HashMap<String, Object>( annotationDefinition.getValues().size() );
                     for ( String key : annotationDefinition.getValues().keySet() ) {
                         map.put( key, annotationDefinition.getPropertyValue( key ) );
                     }
                     rule.addMetaAttribute( metaAttr, map );
                 }
-            } catch ( Exception e ) {
+            } else {
                 if ( ad.hasValue() ) {
                     if ( ad.getValues().size() == 1 ) {
                         rule.addMetaAttribute( metaAttr,
@@ -152,11 +178,10 @@ public class RuleBuilder {
                                            null );
                 }
             }
-
         }
     }
 
-    private Object resolveValue( String value ) {
+    private static Object resolveValue( String value ) {
         // for backward compatibility, if something is not an expression, we return an string as is
         Object result = value;
         // try to resolve as an expression:
@@ -168,7 +193,7 @@ public class RuleBuilder {
         return result;
     }
 
-    public void buildAttributes(final RuleBuildContext context) {
+    public static void buildAttributes(final RuleBuildContext context) {
         final RuleImpl rule = context.getRule();
         final RuleDescr ruleDescr = context.getRuleDescr();
         boolean enforceEager = false;
@@ -249,7 +274,7 @@ public class RuleBuilder {
         parseAnnotation(context, rule, ruleDescr, enforceEager);
     }
 
-    private void parseAnnotation(RuleBuildContext context, RuleImpl rule, RuleDescr ruleDescr, boolean enforceEager) {
+    private static void parseAnnotation(RuleBuildContext context, RuleImpl rule, RuleDescr ruleDescr, boolean enforceEager) {
         try {
             ActivationListener activationListener = ruleDescr.getTypedAnnotation(ActivationListener.class);
             if (activationListener != null) {
@@ -283,26 +308,25 @@ public class RuleBuilder {
         }
     }
 
-    private boolean getBooleanValue(final AttributeDescr attributeDescr,
+    private static void parseUnitAnnotations( RuleBuildContext context, RuleImpl rule, RuleDescr ruleDescr ) {
+        try {
+            Unit unit = ruleDescr.getTypedAnnotation( Unit.class );
+            if (unit != null) {
+                rule.setRuleUnitClass( unit.value() );
+            }
+        } catch (Exception e) {
+            DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                  e.getMessage() );
+            context.addError( err  );
+        }
+    }
+
+    private static boolean getBooleanValue(final AttributeDescr attributeDescr,
                                     final boolean defaultValue) {
         return (attributeDescr.getValue() == null || "".equals( attributeDescr.getValue().trim() )) ? defaultValue : Boolean.valueOf(attributeDescr.getValue());
     }
 
-    //    private void buildDuration(final RuleBuildContext context) {
-    //        String durationText = context.getRuleDescr().getDuration();
-    //        try {
-    //            // First see if its an Integer
-    //            if ( durationText != null && !durationText.equals( "" )) {
-    //                Duration duration = new DurationInteger( Integer.parseInt( durationText ) );
-    //                context.getRule().setDuration( duration );
-    //            }
-    //        } catch (Exception e) {
-    //            // It wasn't an integer, so build as an expression
-    //            context.getDialect().getDurationBuilder().build( context );
-    //        }
-    //    }
-
-    private void buildEnabled(final RuleBuildContext context) {
+    private static void buildEnabled(final RuleBuildContext context) {
         String enabledText = context.getRuleDescr().getEnabled();
         if ( enabledText != null ) {
             if ( "true".equalsIgnoreCase( enabledText.trim() ) || "false".equalsIgnoreCase( enabledText.trim() ) ) {
@@ -317,7 +341,7 @@ public class RuleBuilder {
         }
     }
 
-    private void buildSalience(final RuleBuildContext context) {
+    private static void buildSalience(final RuleBuildContext context) {
         String salienceText = context.getRuleDescr().getSalience();
         if ( salienceText != null && !salienceText.equals( "" ) ) {
             try {
@@ -331,7 +355,7 @@ public class RuleBuilder {
         }
     }
     
-    private void buildCalendars(RuleImpl rule, String calendarsString, RuleBuildContext context) {
+    private static void buildCalendars(RuleImpl rule, String calendarsString, RuleBuildContext context) {
         Object val = null;
         try {
             val = MVELSafeHelper.getEvaluator().eval( calendarsString );
@@ -355,7 +379,7 @@ public class RuleBuilder {
         }
     }
     
-    private void buildTimer(RuleImpl rule, String timerString, RuleBuildContext context) {
+    private static void buildTimer(RuleImpl rule, String timerString, RuleBuildContext context) {
         if( timerString.indexOf( '(' ) >=0 ) {
             timerString = timerString.substring( timerString.indexOf( '(' )+1, timerString.lastIndexOf( ')' ) ).trim();
         }
@@ -446,7 +470,7 @@ public class RuleBuilder {
         rule.setTimer( timer );
     }
 
-    private String extractParam(String timerString, String name) {
+    private static String extractParam(String timerString, String name) {
         int paramPos = timerString.indexOf( name );
         if (paramPos < 0) {
             return null;
@@ -457,7 +481,7 @@ public class RuleBuilder {
         return timerString.substring( equalsPos + 1, endPos ).trim();
     }
 
-    private MVELObjectExpression createMVELExpr(String expr, RuleBuildContext context) {
+    private static MVELObjectExpression createMVELExpr(String expr, RuleBuildContext context) {
         if (expr == null) {
             return null;
         }

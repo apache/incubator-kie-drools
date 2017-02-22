@@ -20,13 +20,13 @@ import java.util.List;
 
 public interface ConditionalElementDescr {
 
-    public void insertBeforeLast(final Class<?> clazz ,final BaseDescr baseDescr );
+    void insertBeforeLast(final Class<?> clazz ,final BaseDescr baseDescr );
     
-    public void addDescr(BaseDescr baseDescr);
+    void addDescr(BaseDescr baseDescr);
 
-    public boolean removeDescr(BaseDescr baseDescr);
+    boolean removeDescr(BaseDescr baseDescr);
     
-    public void addOrMerge(final BaseDescr baseDescr);
+    void addOrMerge(final BaseDescr baseDescr);
     
-    public List<? extends BaseDescr> getDescrs();
+    List<? extends BaseDescr> getDescrs();
 }

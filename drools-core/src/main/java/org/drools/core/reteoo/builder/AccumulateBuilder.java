@@ -30,6 +30,9 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AccumulateBuilder
         implements
         ReteooComponentBuilder {

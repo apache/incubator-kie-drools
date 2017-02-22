@@ -198,6 +198,9 @@ public class AnnotationDefinition implements Externalizable, Annotation {
         } else if (char.class.equals(returnType)) {
             return unquote( value.toString() ).charAt(0);
         } else if (Class.class.equals(returnType)) {
+            if (value instanceof Class) {
+                return value;
+            }
             try {
                 String cName = value.toString().trim().replace(".class","");
                 return resolver.resolveType(cName);

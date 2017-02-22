@@ -16,6 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
@@ -40,13 +47,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import static org.junit.Assert.*;
 
 public class CompositeObjectSinkAdapterTest {
@@ -61,8 +61,7 @@ public class CompositeObjectSinkAdapterTest {
         store.setEagerWire( true );
         this.kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
 
-        this.buildContext = new BuildContext( kBase,
-                                              kBase.getReteooBuilder().getIdGenerator() );
+        this.buildContext = new BuildContext( kBase );
         this.buildContext.setRule(new RuleImpl("test"));
     }
 

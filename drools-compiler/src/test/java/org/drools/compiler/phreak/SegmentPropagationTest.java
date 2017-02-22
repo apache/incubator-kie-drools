@@ -16,7 +16,6 @@
 package org.drools.compiler.phreak;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -64,19 +63,13 @@ public class SegmentPropagationTest {
                 .setRightType( B.class )
                 .setConstraint( "object", "!=", "$object" ).build();
 
-        sinkNode0 = new JoinNode();
-        sinkNode0.setId( 1 );
-        sinkNode0.setConstraints( new EmptyBetaConstraints() );        
+        sinkNode0 = (JoinNode) BetaNodeBuilder.create( NodeTypeEnums.JoinNode, buildContext ).build();
         joinNode.addTupleSink( sinkNode0 );
         
-        sinkNode1 = new JoinNode();
-        sinkNode1.setId( 3 );
-        sinkNode1.setConstraints( new EmptyBetaConstraints() );        
+        sinkNode1 = (JoinNode) BetaNodeBuilder.create( NodeTypeEnums.JoinNode, buildContext ).build();
         joinNode.addTupleSink( sinkNode1 );   
         
-        sinkNode2 = new JoinNode();
-        sinkNode2.setId( 4 );
-        sinkNode2.setConstraints( new EmptyBetaConstraints() );        
+        sinkNode2 = (JoinNode) BetaNodeBuilder.create( NodeTypeEnums.JoinNode, buildContext ).build();
         joinNode.addTupleSink( sinkNode2 );
 
         wm = ((StatefulKnowledgeSessionImpl)buildContext.getKnowledgeBase().newStatefulKnowledgeSession());
@@ -220,10 +213,9 @@ public class SegmentPropagationTest {
 
         KnowledgeBaseImpl rbase = new KnowledgeBaseImpl( "ID",
                                                    conf );
-        BuildContext buildContext = new BuildContext( rbase,
-                                                      rbase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( rbase );
 
-        RuleImpl rule = new RuleImpl( "rule1", "org.pkg1", null );
+        RuleImpl rule = new RuleImpl( "rule1").setPackage( "org.pkg1" );
         InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.pkg1" );
         pkg.getDialectRuntimeRegistry().setDialectData( "mvel", new MVELDialectRuntimeData() );
         pkg.addRule( rule );

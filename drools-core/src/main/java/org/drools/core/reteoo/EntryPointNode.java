@@ -16,11 +16,11 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -430,7 +430,7 @@ public class EntryPointNode extends ObjectSource
 
         final ObjectType newObjectType = node.getObjectType();
 
-        InternalWorkingMemoryEntryPoint wmEntryPoint = (InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
+        WorkingMemoryEntryPoint wmEntryPoint = workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
 
         for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {
             if ( objectTypeConf.getConcreteObjectTypeNode() != null && newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {

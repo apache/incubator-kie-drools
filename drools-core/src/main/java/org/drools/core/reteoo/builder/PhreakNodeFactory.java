@@ -17,6 +17,9 @@
 package org.drools.core.reteoo.builder;
 
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.BetaConstraints;
@@ -37,7 +40,6 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.ReactiveFromNode;
@@ -60,9 +62,6 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.Timer;
-
-import java.io.Serializable;
-import java.util.List;
 
 public class PhreakNodeFactory implements NodeFactory, Serializable {
 
@@ -151,11 +150,11 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
     }
 
     public TimerNode buildTimerNode( int id,
-                                    Timer timer,
-                                    final String[] calendarNames,
-                                    final Declaration[][]   declarations,
-                                    LeftTupleSource tupleSource,
-                                    BuildContext context ) {
+                                     Timer timer,
+                                     final String[] calendarNames,
+                                     final Declaration[][]   declarations,
+                                     LeftTupleSource tupleSource,
+                                     BuildContext context ) {
         return new TimerNode( id, tupleSource, timer,calendarNames,declarations,  context );
     }
 
@@ -172,6 +171,6 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
                                       List<Behavior> behaviors,
                                       ObjectSource objectSource,
                                       BuildContext context) {
-        return new WindowNode(id, constraints, behaviors, objectSource, context);
+        return new WindowNode( id, constraints, behaviors, objectSource, context );
     }
 }
