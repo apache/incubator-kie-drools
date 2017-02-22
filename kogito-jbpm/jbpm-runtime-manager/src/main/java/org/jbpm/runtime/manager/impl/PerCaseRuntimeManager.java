@@ -238,17 +238,22 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         if (isClosed()) {
             throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
         }
-        if (canDispose(runtime)) {
-            removeLocalRuntime(runtime);
-            releaseAndCleanLock(((RuntimeEngineImpl)runtime).getKieSessionId(), runtime);
-            if (runtime instanceof Disposable) {
-                // special handling for in memory to not allow to dispose if there is any context in the mapper
-                if (mapper instanceof InMemoryMapper && ((InMemoryMapper) mapper).hasContext(runtime.getKieSession().getIdentifier())) {
-                    return;
+        try {
+            if (canDispose(runtime)) {
+                removeLocalRuntime(runtime);
+                releaseAndCleanLock(((RuntimeEngineImpl)runtime).getKieSessionId(), runtime);
+                if (runtime instanceof Disposable) {
+                    // special handling for in memory to not allow to dispose if there is any context in the mapper
+                    if (mapper instanceof InMemoryMapper && ((InMemoryMapper) mapper).hasContext(runtime.getKieSession().getIdentifier())) {
+                        return;
+                    }
+                    ((Disposable) runtime).dispose();
                 }
-                ((Disposable) runtime).dispose();
             }
-        }
+        } catch (Exception e) {
+            releaseAndCleanLock(runtime);
+            throw new RuntimeException(e);
+        }            
     }
 
     @Override

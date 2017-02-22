@@ -230,18 +230,23 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         if (runtime == null) {
             throw new RuntimeException("No runtime engine found, could not be initialized yet");
         }
-        
-        if (runtime.getKieSession() instanceof CommandBasedStatefulKnowledgeSession) {
-            CommandBasedStatefulKnowledgeSession cmd = (CommandBasedStatefulKnowledgeSession) runtime.getKieSession();
-            if (ctx != null) {
-                ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ( (SingleSessionCommandService) cmd.getRunner() ).getKieSession() );
+        try {
+            if (runtime.getKieSession() instanceof CommandBasedStatefulKnowledgeSession) {
+                CommandBasedStatefulKnowledgeSession cmd = (CommandBasedStatefulKnowledgeSession) runtime.getKieSession();
+                if (ctx != null) {
+                    ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ( (SingleSessionCommandService) cmd.getRunner() ).getKieSession() );
+                }
+                return new DisposableCommandService(cmd.getRunner(), manager, runtime, schedulerService.retryEnabled());
+            } else if (runtime.getKieSession() instanceof InternalKnowledgeRuntime && ctx != null) {
+                ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) runtime.getKieSession());
             }
-            return new DisposableCommandService(cmd.getRunner(), manager, runtime, schedulerService.retryEnabled());
-        } else if (runtime.getKieSession() instanceof InternalKnowledgeRuntime && ctx != null) {
-            ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) runtime.getKieSession());
+            
+            return new DisposableCommandService(getRunner(), manager, runtime, schedulerService.retryEnabled());
+        } catch (Throwable e) {
+            // since the DisposableCommandService was not created dispose runtime engine directly
+            manager.disposeRuntimeEngine(runtime);
+            throw new RuntimeException(e);
         }
-        
-        return new DisposableCommandService(getRunner(), manager, runtime, schedulerService.retryEnabled());
     }
 
     private ExecutableRunner<RequestContext> getRunner() {
