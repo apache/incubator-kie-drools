@@ -16,7 +16,6 @@
 
 package org.kie.api.event.rule;
 
-
 import java.util.EventListener;
 
 public interface AgendaEventListener

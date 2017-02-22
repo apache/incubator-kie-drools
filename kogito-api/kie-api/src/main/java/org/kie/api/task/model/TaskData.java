@@ -16,7 +16,6 @@
 
 package org.kie.api.task.model;
 
-
 import java.io.Externalizable;
 import java.util.Date;
 import java.util.List;

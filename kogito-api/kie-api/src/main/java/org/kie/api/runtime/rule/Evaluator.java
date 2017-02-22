@@ -16,7 +16,6 @@
 
 package org.kie.api.runtime.rule;
 
-
 import java.io.Serializable;
 
 /**

@@ -16,7 +16,6 @@
 
 package org.kie.api.event.process;
 
-
 import java.util.EventListener;
 
 /**

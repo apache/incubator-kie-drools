@@ -16,7 +16,6 @@
 
 package org.kie.internal.conf;
 
-
 import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
