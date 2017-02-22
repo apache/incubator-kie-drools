@@ -16,6 +16,7 @@
 package org.jbpm.services.task.commands;
 
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.kie.api.runtime.Context;
 import org.kie.api.task.model.Task;
@@ -69,7 +70,10 @@ public class CompleteTaskCommand extends UserGroupCallbackTaskCommand<Void> {
         groupIds = doUserGroupCallbackOperation(userId, null, context);
         context.set("local:groups", groupIds);
         
-        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);        
+        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
+        if (task == null) {            
+            throw new PermissionDeniedException("Task '" + taskId + "' not found");
+        }
         context.getTaskRuleService().executeRules(task, userId, data, TaskRuleService.COMPLETE_TASK_SCOPE);
         
         ((InternalTaskData)task.getTaskData()).setTaskOutputVariables(data);
