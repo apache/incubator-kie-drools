@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,7 +31,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.locator.Locator;
+import org.optaplanner.core.impl.domain.lookup.LookUpManager;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -60,8 +59,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final Factory_ scoreDirectorFactory;
-    protected final boolean locatorEnabled;
-    protected final Locator locator;
+    protected final boolean lookUpEnabled;
+    protected final LookUpManager lookUpManager;
     protected boolean constraintMatchEnabledPreference;
     protected final VariableListenerSupport<Solution_> variableListenerSupport;
 
@@ -74,11 +73,11 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     protected long calculationCount = 0L;
 
     protected AbstractScoreDirector(Factory_ scoreDirectorFactory,
-            boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
+            boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         this.scoreDirectorFactory = scoreDirectorFactory;
-        this.locatorEnabled = locatorEnabled;
-        locator = locatorEnabled
-                ? new Locator(scoreDirectorFactory.getSolutionDescriptor().getLocationStrategyResolver()) : null;
+        this.lookUpEnabled = lookUpEnabled;
+        lookUpManager = lookUpEnabled
+                ? new LookUpManager(scoreDirectorFactory.getSolutionDescriptor().getLookUpStrategyResolver()) : null;
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
         variableListenerSupport = new VariableListenerSupport<>(this);
         variableListenerSupport.linkVariableListeners();
@@ -99,8 +98,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         return scoreDirectorFactory.getScoreDefinition();
     }
 
-    public boolean isLocatorEnabled() {
-        return locatorEnabled;
+    public boolean isLookUpEnabled() {
+        return lookUpEnabled;
     }
 
     public boolean isConstraintMatchEnabledPreference() {
@@ -155,8 +154,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         this.workingSolution = workingSolution;
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         workingInitScore = - solutionDescriptor.countUninitializedVariables(workingSolution);
-        if (locatorEnabled) {
-            locator.resetWorkingObjects(solutionDescriptor.getAllFacts(workingSolution));
+        if (lookUpEnabled) {
+            lookUpManager.resetWorkingObjects(solutionDescriptor.getAllFacts(workingSolution));
         }
         variableListenerSupport.resetWorkingSolution();
         setWorkingEntityListDirty();
@@ -253,7 +252,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         // Breaks incremental score calculation.
         // Subclasses should overwrite this method to avoid breaking it if possible.
         AbstractScoreDirector<Solution_, Factory_> clone = (AbstractScoreDirector<Solution_, Factory_>)
-                scoreDirectorFactory.buildScoreDirector(isLocatorEnabled(), constraintMatchEnabledPreference);
+                scoreDirectorFactory.buildScoreDirector(isLookUpEnabled(), constraintMatchEnabledPreference);
         clone.setWorkingSolution(cloneWorkingSolution());
         return clone;
     }
@@ -276,8 +275,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     public void dispose() {
         workingSolution = null;
         workingInitScore = null;
-        if (locatorEnabled) {
-            locator.clearWorkingObjects();
+        if (lookUpEnabled) {
+            lookUpManager.clearWorkingObjects();
         }
         variableListenerSupport.clearWorkingSolution();
     }
@@ -326,8 +325,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     public void afterEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         workingInitScore -= entityDescriptor.countUninitializedVariables(entity);
-        if (locatorEnabled) {
-            locator.addWorkingObject(entity);
+        if (lookUpEnabled) {
+            lookUpManager.addWorkingObject(entity);
         }
         variableListenerSupport.afterEntityAdded(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
@@ -364,8 +363,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     public void afterEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
-        if (locatorEnabled) {
-            locator.removeWorkingObject(entity);
+        if (lookUpEnabled) {
+            lookUpManager.removeWorkingObject(entity);
         }
         variableListenerSupport.afterEntityRemoved(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
@@ -384,8 +383,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void afterProblemFactAdded(Object problemFact) {
-        if (locatorEnabled) {
-            locator.addWorkingObject(problemFact);
+        if (lookUpEnabled) {
+            lookUpManager.addWorkingObject(problemFact);
         }
         variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
@@ -407,19 +406,19 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void afterProblemFactRemoved(Object problemFact) {
-        if (locatorEnabled) {
-            locator.removeWorkingObject(problemFact);
+        if (lookUpEnabled) {
+            lookUpManager.removeWorkingObject(problemFact);
         }
         variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
 
     @Override
-    public <E> E locateWorkingObject(E externalObject) {
-        if (!locatorEnabled) {
-            throw new IllegalStateException("When locatorEnabled (" + locatorEnabled
+    public <E> E lookUpWorkingObject(E externalObject) {
+        if (!lookUpEnabled) {
+            throw new IllegalStateException("When lookUpEnabled (" + lookUpEnabled
                     + ") is disabled in the constructor, this method should not be called.");
         }
-        return locator.locateWorkingObject(externalObject);
+        return lookUpManager.lookUpWorkingObject(externalObject);
     }
 
     // ************************************************************************

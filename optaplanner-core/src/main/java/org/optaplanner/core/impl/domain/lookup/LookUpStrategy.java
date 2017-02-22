@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.locator;
 
-public class TestdataObjectNoId {
+package org.optaplanner.core.impl.domain.lookup;
 
-    private final Integer id = 0;
+import java.util.Map;
 
-    public TestdataObjectNoId() {
-    }
+public interface LookUpStrategy {
 
-    public Integer getId() {
-        return id;
-    }
+    void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject);
+    void removeWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject);
+    <E> E lookUpWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject);
 
 }

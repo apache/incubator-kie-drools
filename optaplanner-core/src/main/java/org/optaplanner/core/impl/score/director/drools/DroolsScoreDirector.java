@@ -44,8 +44,8 @@ public class DroolsScoreDirector<Solution_>
     protected ScoreHolder workingScoreHolder;
 
     public DroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
-            boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
-        super(scoreDirectorFactory, locatorEnabled, constraintMatchEnabledPreference);
+            boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
+        super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
     }
 
     public KieSession getKieSession() {
@@ -218,7 +218,7 @@ public class DroolsScoreDirector<Solution_>
                     + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
                     + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").\n"
                     + "Maybe first translate that external instance to the workingSolution's instance"
-                    + " with ScoreDirector.locateWorkingObject().");
+                    + " with " + ScoreDirector.class.getSimpleName() + ".lookUpWorkingObject().");
         }
         kieSession.update(factHandle, problemFactOrEntity);
         super.afterProblemPropertyChanged(problemFactOrEntity);
@@ -236,7 +236,7 @@ public class DroolsScoreDirector<Solution_>
                     + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
                     + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").\n"
                     + "Maybe first translate that external instance to the workingSolution's instance"
-                    + " with ScoreDirector.locateWorkingObject().");
+                    + " with " + ScoreDirector.class.getSimpleName() + ".lookUpWorkingObject().");
         }
         kieSession.delete(factHandle);
         super.afterProblemFactRemoved(problemFact);

@@ -37,9 +37,9 @@ public class EasyScoreDirector<Solution_>
     private final EasyScoreCalculator<Solution_> easyScoreCalculator;
 
     public EasyScoreDirector(EasyScoreDirectorFactory<Solution_> scoreDirectorFactory,
-            boolean locatorEnabled, boolean constraintMatchEnabledPreference,
+            boolean lookUpEnabled, boolean constraintMatchEnabledPreference,
             EasyScoreCalculator<Solution_> easyScoreCalculator) {
-        super(scoreDirectorFactory, locatorEnabled, constraintMatchEnabledPreference);
+        super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
         this.easyScoreCalculator = easyScoreCalculator;
     }
 

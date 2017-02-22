@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Splits one {@link PlanningSolution solution} into multiple partitions.
- * The partitions are solved and merged based on the {@link PlanningSolution#locationStrategyType()}.
+ * The partitions are solved and merged based on the {@link PlanningSolution#lookUpStrategyType()}.
  * <p>
  * To add custom properties, configure custom properties and add public setters for them.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

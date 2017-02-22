@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.locator;
+package org.optaplanner.core.impl.domain.lookup;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.optaplanner.core.api.domain.locator.LocationStrategyType;
-import org.optaplanner.core.api.domain.locator.PlanningId;
+import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -38,28 +38,28 @@ import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.FI
 /**
  * This class is thread-safe.
  */
-public class LocationStrategyResolver {
+public class LookUpStrategyResolver {
 
-    private final LocationStrategyType locationStrategyType;
+    private final LookUpStrategyType lookUpStrategyType;
 
-    private final ConcurrentMap<Class<?>, LocationStrategy> decisionCache = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<?>, LookUpStrategy> decisionCache = new ConcurrentHashMap<>();
 
-    public LocationStrategyResolver(LocationStrategyType locationStrategyType) {
-        this.locationStrategyType = locationStrategyType;
-        decisionCache.put(Boolean.class, new ImmutableLocationStrategy());
-        decisionCache.put(Byte.class, new ImmutableLocationStrategy());
-        decisionCache.put(Short.class, new ImmutableLocationStrategy());
-        decisionCache.put(Integer.class, new ImmutableLocationStrategy());
-        decisionCache.put(Long.class, new ImmutableLocationStrategy());
-        decisionCache.put(Float.class, new ImmutableLocationStrategy());
-        decisionCache.put(Double.class, new ImmutableLocationStrategy());
-        decisionCache.put(BigInteger.class, new ImmutableLocationStrategy());
-        decisionCache.put(BigDecimal.class, new ImmutableLocationStrategy());
-        decisionCache.put(Character.class, new ImmutableLocationStrategy());
-        decisionCache.put(String.class, new ImmutableLocationStrategy());
-        decisionCache.put(LocalDate.class, new ImmutableLocationStrategy());
-        decisionCache.put(LocalTime.class, new ImmutableLocationStrategy());
-        decisionCache.put(LocalDateTime.class, new ImmutableLocationStrategy());
+    public LookUpStrategyResolver(LookUpStrategyType lookUpStrategyType) {
+        this.lookUpStrategyType = lookUpStrategyType;
+        decisionCache.put(Boolean.class, new ImmutableLookUpStrategy());
+        decisionCache.put(Byte.class, new ImmutableLookUpStrategy());
+        decisionCache.put(Short.class, new ImmutableLookUpStrategy());
+        decisionCache.put(Integer.class, new ImmutableLookUpStrategy());
+        decisionCache.put(Long.class, new ImmutableLookUpStrategy());
+        decisionCache.put(Float.class, new ImmutableLookUpStrategy());
+        decisionCache.put(Double.class, new ImmutableLookUpStrategy());
+        decisionCache.put(BigInteger.class, new ImmutableLookUpStrategy());
+        decisionCache.put(BigDecimal.class, new ImmutableLookUpStrategy());
+        decisionCache.put(Character.class, new ImmutableLookUpStrategy());
+        decisionCache.put(String.class, new ImmutableLookUpStrategy());
+        decisionCache.put(LocalDate.class, new ImmutableLookUpStrategy());
+        decisionCache.put(LocalTime.class, new ImmutableLookUpStrategy());
+        decisionCache.put(LocalDateTime.class, new ImmutableLookUpStrategy());
     }
 
     /**
@@ -67,27 +67,27 @@ public class LocationStrategyResolver {
      * @param object never null
      * @return never null
      */
-    public LocationStrategy determineLocationStrategy(Object object) {
+    public LookUpStrategy determineLookUpStrategy(Object object) {
         Class<?> objectClass = object.getClass();
         return decisionCache.computeIfAbsent(objectClass, key -> {
-            switch (locationStrategyType) {
+            switch (lookUpStrategyType) {
                 case PLANNING_ID_OR_NONE:
                     MemberAccessor memberAccessor1 = findPlanningIdMemberAccessor(objectClass);
                     if (memberAccessor1 == null) {
-                        return new NoneLocationStrategy();
+                        return new NoneLookUpStrategy();
                     }
-                    return new PlanningIdLocationStrategy(memberAccessor1);
+                    return new PlanningIdLookUpStrategy(memberAccessor1);
                 case PLANNING_ID_OR_FAIL_FAST:
                     MemberAccessor memberAccessor2 = findPlanningIdMemberAccessor(objectClass);
                     if (memberAccessor2 == null) {
                         throw new IllegalArgumentException("The class (" + objectClass
                                 + ") does not have a " + PlanningId.class.getSimpleName() + " annotation,"
-                                + " but the locationStrategyType (" + locationStrategyType + ") requires it.\n"
+                                + " but the lookUpStrategyType (" + lookUpStrategyType + ") requires it.\n"
                                 + "Maybe add the " + PlanningId.class.getSimpleName() + " annotation"
                                 + " or change the " + PlanningSolution.class.getSimpleName() + " annotation's "
-                                + LocationStrategyType.class.getSimpleName() + ".");
+                                + LookUpStrategyType.class.getSimpleName() + ".");
                     }
-                    return new PlanningIdLocationStrategy(memberAccessor2);
+                    return new PlanningIdLookUpStrategy(memberAccessor2);
                 case EQUALITY:
                     Method equalsMethod;
                     Method hashCodeMethod;
@@ -107,11 +107,11 @@ public class LocationStrategyResolver {
                                 + ") overrides equals() but neither it nor any superclass"
                                 + " overrides the hashCode() method.");
                     }
-                    return new EqualsLocationStrategy();
+                    return new EqualsLookUpStrategy();
                 case NONE:
-                    return new NoneLocationStrategy();
+                    return new NoneLookUpStrategy();
                 default:
-                    throw new IllegalStateException("The locationStrategyType (" + locationStrategyType
+                    throw new IllegalStateException("The lookUpStrategyType (" + lookUpStrategyType
                             + ") is not implemented.");
             }
         });

@@ -122,8 +122,8 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
 
     @Override
     public DroolsScoreDirector<Solution_> buildScoreDirector(
-            boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
-        return new DroolsScoreDirector<>(this, locatorEnabled, constraintMatchEnabledPreference);
+            boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
+        return new DroolsScoreDirector<>(this, lookUpEnabled, constraintMatchEnabledPreference);
     }
 
     public KieSession newKieSession() {

@@ -19,7 +19,7 @@ package org.optaplanner.core.api.domain.solution;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.optaplanner.core.api.domain.locator.LocationStrategyType;
+import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
@@ -69,6 +69,6 @@ public @interface PlanningSolution {
     /**
      * @return never null
      */
-    LocationStrategyType locationStrategyType() default LocationStrategyType.PLANNING_ID_OR_NONE;
+    LookUpStrategyType lookUpStrategyType() default LookUpStrategyType.PLANNING_ID_OR_NONE;
 
 }

@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.locator;
+package org.optaplanner.core.impl.domain.lookup;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.optaplanner.core.api.domain.locator.PlanningId;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * @see PlanningId
- * @see ScoreDirector#locateWorkingObject(Object)
+ * @see ScoreDirector#lookUpWorkingObject(Object)
  */
-public class Locator {
+public class LookUpManager {
 
-    private final LocationStrategyResolver locationStrategyResolver;
+    private final LookUpStrategyResolver lookUpStrategyResolver;
 
     private Map<Object, Object> idToWorkingObjectMap;
 
-    public Locator(LocationStrategyResolver locationStrategyResolver) {
-        this.locationStrategyResolver = locationStrategyResolver;
+    public LookUpManager(LookUpStrategyResolver lookUpStrategyResolver) {
+        this.lookUpStrategyResolver = lookUpStrategyResolver;
     }
 
     public void resetWorkingObjects(Collection<Object> allFacts) {
@@ -45,13 +45,13 @@ public class Locator {
     }
 
     public void addWorkingObject(Object workingObject) {
-        LocationStrategy locationStrategy = locationStrategyResolver.determineLocationStrategy(workingObject);
-        locationStrategy.addWorkingObject(idToWorkingObjectMap, workingObject);
+        LookUpStrategy lookUpStrategy = lookUpStrategyResolver.determineLookUpStrategy(workingObject);
+        lookUpStrategy.addWorkingObject(idToWorkingObjectMap, workingObject);
     }
 
     public void removeWorkingObject(Object workingObject) {
-        LocationStrategy locationStrategy = locationStrategyResolver.determineLocationStrategy(workingObject);
-        locationStrategy.removeWorkingObject(idToWorkingObjectMap, workingObject);
+        LookUpStrategy lookUpStrategy = lookUpStrategyResolver.determineLookUpStrategy(workingObject);
+        lookUpStrategy.removeWorkingObject(idToWorkingObjectMap, workingObject);
     }
 
     public void clearWorkingObjects() {
@@ -59,19 +59,19 @@ public class Locator {
     }
 
     /**
-     * As defined by {@link ScoreDirector#locateWorkingObject(Object)}.
+     * As defined by {@link ScoreDirector#lookUpWorkingObject(Object)}.
      * @param externalObject sometimes null
      * @return null if externalObject is null or if there is no workingObject for externalObject
      * @throws IllegalArgumentException if it cannot be located or if the externalObject's class is not supported
      * @throws IllegalStateException if it cannot be located
      * @param <E> the object type
      */
-    public <E> E locateWorkingObject(E externalObject) {
+    public <E> E lookUpWorkingObject(E externalObject) {
         if (externalObject == null) {
             return null;
         }
-        LocationStrategy locationStrategy = locationStrategyResolver.determineLocationStrategy(externalObject);
-        return locationStrategy.locateWorkingObject(idToWorkingObjectMap, externalObject);
+        LookUpStrategy lookUpStrategy = lookUpStrategyResolver.determineLookUpStrategy(externalObject);
+        return lookUpStrategy.lookUpWorkingObject(idToWorkingObjectMap, externalObject);
     }
 
 }

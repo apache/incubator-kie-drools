@@ -21,12 +21,10 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
@@ -38,7 +36,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
@@ -235,7 +232,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
         logger.info("Scheduling delete of employee ({}).", employee);
         doProblemFactChange(scoreDirector -> {
             NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
-            Employee workingEmployee = scoreDirector.locateWorkingObject(employee);
+            Employee workingEmployee = scoreDirector.lookUpWorkingObject(employee);
             if (workingEmployee == null) {
                 // The employee has already been deleted (the UI asked to changed the same employee twice), so do nothing
                 return;

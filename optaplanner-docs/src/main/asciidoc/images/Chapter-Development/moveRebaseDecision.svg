@@ -14,8 +14,8 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="moveRelocationDecision.svg"
-   inkscape:export-filename="moveRelocationDecision.png"
+   sodipodi:docname="moveRebaseDecision.svg"
+   inkscape:export-filename="moveRebaseDecision.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -510,7 +510,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.2833333"
-     inkscape:cx="400"
+     inkscape:cx="401.55844"
      inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -586,7 +586,7 @@
            x="50"
            y="220.0002"
            style="font-size:35px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara4621">Move relocation decision</flowPara></flowRoot>    <g
+         id="flowPara4621">Move rebase decision</flowPara></flowRoot>    <g
        id="g3709"
        transform="translate(0,19.999997)" />
     <flowRoot
@@ -611,7 +611,7 @@
            x="50"
            y="150.00014"
            style="font-size:15px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara3157">How is a Move relocated to the state of another Thread?</flowPara></flowRoot>    <g
+         id="flowPara3157">How is a Move rebased to the state of another Thread?</flowPara></flowRoot>    <g
        id="g5140"
        transform="matrix(0.99987654,0,0,1,150.01261,9.9996625)">
       <rect
@@ -636,7 +636,7 @@
              y="46.402439"
              style="font-size:15px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
            id="flowPara4500"
-           style="font-size:15px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1">Relocate Move</flowPara><flowPara
+           style="font-size:15px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1">Rebase Move</flowPara><flowPara
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1"
            id="flowPara3593">from this thread to another thread:</flowPara><flowPara
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1"

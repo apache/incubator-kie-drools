@@ -45,11 +45,11 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
 
     public TestGenDroolsScoreDirector(
             DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
-            boolean locatorEnabled,
+            boolean lookUpEnabled,
             boolean constraintMatchEnabledPreference,
             List<String> scoreDrlList,
             List<File> scoreDrlFileList) {
-        super(scoreDirectorFactory, locatorEnabled, constraintMatchEnabledPreference);
+        super(scoreDirectorFactory, lookUpEnabled, constraintMatchEnabledPreference);
         writer.setClassName(TEST_CLASS_NAME);
         writer.setScoreDefinition(scoreDirectorFactory.getScoreDefinition());
         writer.setConstraintMatchEnabled(constraintMatchEnabledPreference);

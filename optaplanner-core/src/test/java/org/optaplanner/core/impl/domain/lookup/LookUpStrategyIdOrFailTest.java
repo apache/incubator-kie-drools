@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.domain.locator;
+package org.optaplanner.core.impl.domain.lookup;
 
 import java.util.Collections;
 
@@ -21,75 +21,72 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.optaplanner.core.api.domain.locator.LocationStrategyType;
-import org.optaplanner.core.api.domain.locator.PlanningId;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectId;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectIdSubclass;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectMultipleIds;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectNoId;
+import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectId;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectMultipleIds;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectNoId;
 
 import static org.junit.Assert.*;
 
-public class LocationStrategyIdOrNoneTest {
+public class LookUpStrategyIdOrFailTest {
 
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
-    private Locator locator;
+    private LookUpManager lookUpManager;
 
     @Before
-    public void setUpLocator() {
-        locator = new Locator(new LocationStrategyResolver(LocationStrategyType.PLANNING_ID_OR_NONE));
-        locator.resetWorkingObjects(Collections.emptyList());
+    public void setUpLookUpManager() {
+        lookUpManager = new LookUpManager(new LookUpStrategyResolver(LookUpStrategyType.PLANNING_ID_OR_FAIL_FAST));
+        lookUpManager.resetWorkingObjects(Collections.emptyList());
     }
 
     @Test
     public void addRemoveWithId() {
         TestdataObjectId object = new TestdataObjectId(0);
-        locator.addWorkingObject(object);
-        locator.removeWorkingObject(object);
+        lookUpManager.addWorkingObject(object);
+        lookUpManager.removeWorkingObject(object);
         // the removed object cannot be located
-        assertNull(locator.locateWorkingObject(object));
+        assertNull(lookUpManager.lookUpWorkingObject(object));
     }
 
     @Test
-    public void addWithNullIdInSuperclass() {
-        TestdataObjectId object = new TestdataObjectIdSubclass(null);
+    public void addWithNullId() {
+        TestdataObjectId object = new TestdataObjectId(null);
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("must not be null");
-        expectedException.expectMessage(TestdataObjectIdSubclass.class.getCanonicalName());
-        expectedException.expectMessage(object.toString());
-        locator.addWorkingObject(object);
+        lookUpManager.addWorkingObject(object);
     }
 
     @Test
     public void removeWithNullId() {
         TestdataObjectId object = new TestdataObjectId(null);
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("must not be null");
-        locator.removeWorkingObject(object);
+        lookUpManager.removeWorkingObject(object);
     }
 
     @Test
     public void addWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
-        locator.addWorkingObject(object);
+        expectedException.expect(IllegalArgumentException.class);
+        lookUpManager.addWorkingObject(object);
     }
 
     @Test
     public void removeWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
-        locator.removeWorkingObject(object);
+        expectedException.expect(IllegalArgumentException.class);
+        lookUpManager.removeWorkingObject(object);
     }
 
     @Test
     public void addSameIdTwice() {
         TestdataObjectId object = new TestdataObjectId(2);
-        locator.addWorkingObject(object);
+        lookUpManager.addWorkingObject(object);
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage(" have the same planningId ");
         expectedException.expectMessage(object.toString());
-        locator.addWorkingObject(new TestdataObjectId(2));
+        lookUpManager.addWorkingObject(new TestdataObjectId(2));
     }
 
     @Test
@@ -97,29 +94,28 @@ public class LocationStrategyIdOrNoneTest {
         TestdataObjectId object = new TestdataObjectId(0);
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("differ");
-        locator.removeWorkingObject(object);
+        lookUpManager.removeWorkingObject(object);
     }
 
     @Test
     public void locateWithId() {
         TestdataObjectId object = new TestdataObjectId(1);
-        locator.addWorkingObject(object);
-        assertSame(object, locator.locateWorkingObject(new TestdataObjectId(1)));
+        lookUpManager.addWorkingObject(object);
+        assertSame(object, lookUpManager.lookUpWorkingObject(new TestdataObjectId(1)));
     }
 
     @Test
     public void locateWithoutId() {
         TestdataObjectNoId object = new TestdataObjectNoId();
-        locator.addWorkingObject(object);
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("cannot be located");
-        locator.locateWorkingObject(object);
+        expectedException.expectMessage("does not have a " + PlanningId.class.getSimpleName());
+        lookUpManager.lookUpWorkingObject(object);
     }
 
     @Test
     public void locateWithoutAdding() {
         TestdataObjectId object = new TestdataObjectId(0);
-        assertNull(locator.locateWorkingObject(object));
+        assertNull(lookUpManager.lookUpWorkingObject(object));
     }
 
     @Test
@@ -128,7 +124,7 @@ public class LocationStrategyIdOrNoneTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("3 members");
         expectedException.expectMessage(PlanningId.class.getSimpleName());
-        locator.addWorkingObject(object);
+        lookUpManager.addWorkingObject(object);
     }
 
     @Test
@@ -137,6 +133,6 @@ public class LocationStrategyIdOrNoneTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("3 members");
         expectedException.expectMessage(PlanningId.class.getSimpleName());
-        locator.removeWorkingObject(object);
+        lookUpManager.removeWorkingObject(object);
     }
 }

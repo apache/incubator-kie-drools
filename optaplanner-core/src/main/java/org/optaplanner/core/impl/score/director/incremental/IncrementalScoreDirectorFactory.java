@@ -45,11 +45,11 @@ public class IncrementalScoreDirectorFactory<Solution_> extends AbstractScoreDir
 
     @Override
     public IncrementalScoreDirector<Solution_> buildScoreDirector(
-            boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
+            boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
         IncrementalScoreCalculator<Solution_> incrementalScoreCalculator = ConfigUtils.newInstance(this,
                 "incrementalScoreCalculatorClass", incrementalScoreCalculatorClass);
         return new IncrementalScoreDirector<>(this,
-                locatorEnabled, constraintMatchEnabledPreference, incrementalScoreCalculator);
+                lookUpEnabled, constraintMatchEnabledPreference, incrementalScoreCalculator);
     }
 
 }

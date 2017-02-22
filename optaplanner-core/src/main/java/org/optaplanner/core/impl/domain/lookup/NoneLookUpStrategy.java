@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.locator;
+package org.optaplanner.core.impl.domain.lookup;
 
 import java.util.Map;
 
-import org.optaplanner.core.api.domain.locator.LocationStrategyType;
-import org.optaplanner.core.api.domain.locator.PlanningId;
+import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class NoneLocationStrategy implements LocationStrategy {
+public class NoneLookUpStrategy implements LookUpStrategy {
 
     @Override
     public void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
@@ -36,15 +36,15 @@ public class NoneLocationStrategy implements LocationStrategy {
     }
 
     @Override
-    public <E> E locateWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
+    public <E> E lookUpWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
         throw new IllegalArgumentException("The externalObject (" + externalObject
                 + ") cannot be located.\n"
                 + "Maybe give the class (" + externalObject.getClass()
                 + ") a " + PlanningId.class.getSimpleName() + " annotation"
                 + " or change the " + PlanningSolution.class.getSimpleName() + " annotation's "
-                + LocationStrategyType.class.getSimpleName()
+                + LookUpStrategyType.class.getSimpleName()
                 + " or don't rely on functionality that depends on "
-                + ScoreDirector.class.getSimpleName() + ".locateWorkingObject().");
+                + ScoreDirector.class.getSimpleName() + ".lookUpWorkingObject().");
     }
 
 }

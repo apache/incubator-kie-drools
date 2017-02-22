@@ -13,21 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.locator;
+package org.optaplanner.core.impl.testdata.domain.lookup;
 
-import org.optaplanner.core.api.domain.locator.PlanningId;
+import java.util.Objects;
 
-public class TestdataObjectId {
+public class TestdataObjectEqualsNoHashCode {
 
-    @PlanningId
     private final Integer id;
 
-    public TestdataObjectId(Integer id) {
+    public TestdataObjectEqualsNoHashCode(Integer id) {
         this.id = id;
     }
 
-    public Integer getId() {
-        return id;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TestdataObjectEqualsNoHashCode other = (TestdataObjectEqualsNoHashCode) obj;
+        return Objects.equals(this.id, other.id);
     }
 
 }

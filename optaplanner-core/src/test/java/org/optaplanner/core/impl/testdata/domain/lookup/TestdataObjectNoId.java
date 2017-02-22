@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.locator;
+package org.optaplanner.core.impl.testdata.domain.lookup;
 
-public class TestdataObjectIdSubclass extends TestdataObjectId {
+public class TestdataObjectNoId {
 
-    public TestdataObjectIdSubclass(Integer id) {
-        super(id);
+    private final Integer id = 0;
+
+    public TestdataObjectNoId() {
     }
 
-    @Override
-    public String toString() {
-        return "id=" + getId();
+    public Integer getId() {
+        return id;
     }
 
 }

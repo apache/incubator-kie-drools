@@ -20,12 +20,10 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
@@ -34,7 +32,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
@@ -134,7 +131,7 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
         logger.info("Scheduling delete of machine ({}).", machine);
         doProblemFactChange(scoreDirector -> {
             MachineReassignment machineReassignment = scoreDirector.getWorkingSolution();
-            MrMachine workingMachine = scoreDirector.locateWorkingObject(machine);
+            MrMachine workingMachine = scoreDirector.lookUpWorkingObject(machine);
             if (workingMachine == null) {
                 // The machine has already been deleted (the UI asked to changed the same machine twice), so do nothing
                 return;

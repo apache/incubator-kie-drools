@@ -14,26 +14,33 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.locator;
+package org.optaplanner.core.impl.domain.lookup;
 
 import java.util.Map;
 
-public class ImmutableLocationStrategy implements LocationStrategy {
+public class EqualsLookUpStrategy implements LookUpStrategy {
 
     @Override
     public void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
-        // Do nothing
+        Object oldAddedObject = idToWorkingObjectMap.put(workingObject, workingObject);
+        if (oldAddedObject != null) {
+            throw new IllegalStateException("The workingObjects (" + oldAddedObject + ", " + workingObject
+                    + ") are equal (as in Object.equals()). Working objects must be unique.");
+        }
     }
 
     @Override
     public void removeWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
-        // Do nothing
+        Object removedObject = idToWorkingObjectMap.remove(workingObject);
+        if (workingObject != removedObject) {
+            throw new IllegalStateException("The workingObject (" + workingObject
+                    + ") differs from the removedObject (" + removedObject + ").");
+        }
     }
 
     @Override
-    public <E> E locateWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
-        // Because it is immutable, we can use the same one.
-        return externalObject;
+    public <E> E lookUpWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
+        return (E) idToWorkingObjectMap.get(externalObject);
     }
 
 }

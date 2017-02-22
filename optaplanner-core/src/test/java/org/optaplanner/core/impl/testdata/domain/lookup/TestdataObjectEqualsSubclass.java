@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.testdata.domain.locator;
+package org.optaplanner.core.impl.testdata.domain.lookup;
 
 public class TestdataObjectEqualsSubclass extends TestdataObjectEquals {
 

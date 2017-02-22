@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.locator;
+package org.optaplanner.core.impl.domain.lookup;
 
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.optaplanner.core.api.domain.locator.LocationStrategyType;
-import org.optaplanner.core.api.domain.locator.PlanningId;
+import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
-public class PlanningIdLocationStrategy implements LocationStrategy {
+public class PlanningIdLookUpStrategy implements LookUpStrategy {
 
     private MemberAccessor planningIdMemberAccessor;
 
-    public PlanningIdLocationStrategy(MemberAccessor planningIdMemberAccessor) {
+    public PlanningIdLookUpStrategy(MemberAccessor planningIdMemberAccessor) {
         this.planningIdMemberAccessor = planningIdMemberAccessor;
     }
 
@@ -53,7 +53,7 @@ public class PlanningIdLocationStrategy implements LocationStrategy {
     }
 
     @Override
-    public <E> E locateWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
+    public <E> E lookUpWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
         Object planningId = extractPlanningId(externalObject);
         return (E) idToWorkingObjectMap.get(planningId);
     }
@@ -68,7 +68,7 @@ public class PlanningIdLocationStrategy implements LocationStrategy {
                     + "Maybe initialize the planningId of the original object before solving" +
                     " or remove the " + PlanningId.class.getSimpleName() + " annotation"
                     + " or change the " + PlanningSolution.class.getSimpleName() + " annotation's "
-                    + LocationStrategyType.class.getSimpleName() + ".");
+                    + LookUpStrategyType.class.getSimpleName() + ".");
         }
         return Pair.of(externalObject.getClass(), planningId);
     }

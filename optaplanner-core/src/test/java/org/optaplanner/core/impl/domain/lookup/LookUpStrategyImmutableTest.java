@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.domain.locator;
+package org.optaplanner.core.impl.domain.lookup;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -26,18 +26,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.api.domain.locator.LocationStrategyType;
+import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public class LocationStrategyImmutableTest {
+public class LookUpStrategyImmutableTest {
 
     private final Object internalObject;
     private final Object externalObject;
-    private Locator locator;
+    private LookUpManager lookUpManager;
 
-    public LocationStrategyImmutableTest(Object internalObject, Object externalObject) {
+    public LookUpStrategyImmutableTest(Object internalObject, Object externalObject) {
         this.internalObject = internalObject;
         this.externalObject = externalObject;
     }
@@ -63,19 +63,19 @@ public class LocationStrategyImmutableTest {
     }
 
     @Before
-    public void setUpLocator() {
-        locator = new Locator(new LocationStrategyResolver(LocationStrategyType.PLANNING_ID_OR_NONE));
-        locator.resetWorkingObjects(Collections.emptyList());
+    public void setUpLookUpManager() {
+        lookUpManager = new LookUpManager(new LookUpStrategyResolver(LookUpStrategyType.PLANNING_ID_OR_NONE));
+        lookUpManager.resetWorkingObjects(Collections.emptyList());
     }
 
     @Test
     public void addImmutable() {
-        locator.addWorkingObject(internalObject);
+        lookUpManager.addWorkingObject(internalObject);
     }
 
     @Test
     public void removeImmutable() {
-        locator.removeWorkingObject(internalObject);
+        lookUpManager.removeWorkingObject(internalObject);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class LocationStrategyImmutableTest {
         // make sure we are working with different instances
         assertNotSame(internalObject, externalObject);
         // since they are immutable we don't care about which instance is located
-        assertEquals(internalObject, locator.locateWorkingObject(externalObject));
+        assertEquals(internalObject, lookUpManager.lookUpWorkingObject(externalObject));
     }
 
 }

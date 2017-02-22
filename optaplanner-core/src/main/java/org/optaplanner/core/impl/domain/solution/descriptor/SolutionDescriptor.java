@@ -67,7 +67,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.locator.LocationStrategyResolver;
+import org.optaplanner.core.impl.domain.lookup.LookUpStrategyResolver;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
@@ -157,7 +157,7 @@ public class SolutionDescriptor<Solution_> {
     private final List<Class<?>> reversedEntityClassList;
 
     private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorCache = new ConcurrentHashMap<>();
-    private LocationStrategyResolver locationStrategyResolver = null;
+    private LookUpStrategyResolver lookUpStrategyResolver = null;
 
     public SolutionDescriptor(Class<Solution_> solutionClass) {
         this.solutionClass = solutionClass;
@@ -291,7 +291,7 @@ public class SolutionDescriptor<Solution_> {
                     " but does not have a " + PlanningSolution.class.getSimpleName() + " annotation.");
         }
         processSolutionCloner(descriptorPolicy, solutionAnnotation);
-        locationStrategyResolver = new LocationStrategyResolver(solutionAnnotation.locationStrategyType());
+        lookUpStrategyResolver = new LookUpStrategyResolver(solutionAnnotation.lookUpStrategyType());
     }
 
     private void processSolutionCloner(DescriptorPolicy descriptorPolicy, PlanningSolution solutionAnnotation) {
@@ -761,11 +761,11 @@ public class SolutionDescriptor<Solution_> {
     }
 
     // ************************************************************************
-    // Locator methods
+    // Look up methods
     // ************************************************************************
 
-    public LocationStrategyResolver getLocationStrategyResolver() {
-        return locationStrategyResolver;
+    public LookUpStrategyResolver getLookUpStrategyResolver() {
+        return lookUpStrategyResolver;
     }
 
     // ************************************************************************

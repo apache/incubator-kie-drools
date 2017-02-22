@@ -16,9 +16,6 @@
 
 package org.optaplanner.examples.cloudbalancing.optional.realtime;
 
-import java.util.Iterator;
-import java.util.Objects;
-
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
@@ -36,7 +33,7 @@ public class DeleteProcessProblemFactChange implements ProblemFactChange<CloudBa
     public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
         CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
         // A SolutionCloner clones planning entity lists (such as processList), so no need to clone the processList here
-        CloudProcess workingProcess = scoreDirector.locateWorkingObject(process);
+        CloudProcess workingProcess = scoreDirector.lookUpWorkingObject(process);
         if (workingProcess == null) {
             // The process has already been deleted (the UI asked to changed the same process twice), so do nothing
             return;

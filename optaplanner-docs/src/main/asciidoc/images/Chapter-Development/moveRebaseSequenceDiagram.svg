@@ -14,8 +14,8 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="moveRelocationSequenceDiagram.svg"
-   inkscape:export-filename="moveRelocationSequenceDiagram.png"
+   sodipodi:docname="moveRebaseSequenceDiagram.svg"
+   inkscape:export-filename="moveRebaseSequenceDiagram.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -908,8 +908,8 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.2833333"
-     inkscape:cx="549.95006"
-     inkscape:cy="209.91293"
+     inkscape:cx="551.5085"
+     inkscape:cy="303.41943"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -1031,7 +1031,7 @@
            x="50"
            y="220.0002"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35px;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara4621">Move relocation</flowPara></flowRoot>    <g
+         id="flowPara4621">Move rebasing</flowPara></flowRoot>    <g
        id="g3709"
        transform="translate(0,19.999997)" />
     <flowRoot
@@ -2412,7 +2412,7 @@
            id="rect9798" /></flowRegion><flowPara
          id="flowPara9800"><flowSpan
    style="font-weight:bold"
-   id="flowSpan12950">relocate</flowSpan>(<flowSpan
+   id="flowSpan12950">rebase</flowSpan>(<flowSpan
    style="fill:#204a87"
    id="flowSpan9802">scoreDirector</flowSpan>)</flowPara></flowRoot>    <path
        sodipodi:nodetypes="cc"
@@ -2456,7 +2456,7 @@
            x="223.67578"
            y="431.43814"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;text-anchor:start" /></flowRegion><flowPara
-         id="flowPara12112">addMove(relocatedMove)</flowPara></flowRoot>    <path
+         id="flowPara12112">addMove(rebasedMove)</flowPara></flowRoot>    <path
        sodipodi:nodetypes="cccccc"
        style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:#fce94f;fill-opacity:0.38823529;fill-rule:nonzero;stroke:#c4a000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
        d="m 150,832.36218 150,2e-5 0,-40.00002 -10,-10 -140,-4e-5 z"

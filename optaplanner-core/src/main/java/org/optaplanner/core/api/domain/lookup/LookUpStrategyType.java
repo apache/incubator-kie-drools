@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.domain.locator;
+package org.optaplanner.core.api.domain.lookup;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * Determines how {@link ScoreDirector#locateWorkingObject(Object)} maps
+ * Determines how {@link ScoreDirector#lookUpWorkingObject(Object)} maps
  * a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning entity}
  * from an external copy to the internal one.
  */
-public enum LocationStrategyType {
+public enum LookUpStrategyType {
     /**
      * Map by the same {@link PlanningId} field or method.
      * If there is no such field or method,
-     * there is no mapping and {@link ScoreDirector#locateWorkingObject(Object)} must not be used.
+     * there is no mapping and {@link ScoreDirector#lookUpWorkingObject(Object)} must not be used.
      * If there is such a field or method, but it returns null, it fails fast.
      * <p>
      * This is the default.
@@ -43,12 +43,12 @@ public enum LocationStrategyType {
     /**
      * Map by {@link Object#equals(Object) equals(Object)} and {@link Object#hashCode() hashCode()}.
      * If any of these two methods is not overridden by the working object's class or some of its superclasses,
-     * {@link ScoreDirector#locateWorkingObject(Object)} must not be used because it cannot work correctly with
+     * {@link ScoreDirector#lookUpWorkingObject(Object)} must not be used because it cannot work correctly with
      * {@link Object}'s equals and hashCode implementations.
      */
     EQUALITY,
     /**
-     * There is no mapping and {@link ScoreDirector#locateWorkingObject(Object)} must not be used.
+     * There is no mapping and {@link ScoreDirector#lookUpWorkingObject(Object)} must not be used.
      */
     NONE;
 

@@ -30,7 +30,6 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -105,7 +104,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
         throw new UnsupportedOperationException();
     }
 
-    public PartitionChangeMove<Solution_> relocate(InnerScoreDirector<Solution_> destinationScoreDirector) {
+    public PartitionChangeMove<Solution_> rebase(InnerScoreDirector<Solution_> destinationScoreDirector) {
         Map<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> destinationChangeMap
                 = new LinkedHashMap<>(changeMap.size());
         for (Map.Entry<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> entry : changeMap.entrySet()) {
@@ -114,13 +113,13 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
             List<Pair<Object, Object>> destinationPairList = new ArrayList<>(originPairList.size());
             for (Pair<Object, Object> pair : originPairList) {
                 Object originEntity = pair.getKey();
-                Object destinationEntity = destinationScoreDirector.locateWorkingObject(originEntity);
+                Object destinationEntity = destinationScoreDirector.lookUpWorkingObject(originEntity);
                 if (destinationEntity == null && originEntity != null) {
                     throw new IllegalStateException("The destinationEntity (" + destinationEntity
                             + ") cannot be null if the originEntity (" + originEntity + ") is not null.");
                 }
                 Object originValue = pair.getValue();
-                Object destinationValue = destinationScoreDirector.locateWorkingObject(originValue);
+                Object destinationValue = destinationScoreDirector.lookUpWorkingObject(originValue);
                 if (destinationValue == null && originValue != null) {
                     throw new IllegalStateException("The destinationEntity (" + destinationEntity
                             + ")'s destinationValue (" + destinationValue

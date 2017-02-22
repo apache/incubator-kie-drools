@@ -17,14 +17,11 @@
 package org.optaplanner.core.impl.score.director;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
-import org.optaplanner.core.api.domain.locator.LocationStrategyType;
-import org.optaplanner.core.api.domain.locator.PlanningId;
+import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -127,9 +124,9 @@ public interface ScoreDirector<Solution_> {
     /**
      * Translates an entity or fact instance (often from another {@link Thread} or JVM)
      * to this {@link ScoreDirector}'s internal working instance.
-     * Useful during {@link Move} relocation and in a {@link ProblemFactChange}.
+     * Useful during {@link Move} rebasing and in a {@link ProblemFactChange}.
      * <p>
-     * Matching is determined by the {@link LocationStrategyType} on {@link PlanningSolution}.
+     * Matching is determined by the {@link LookUpStrategyType} on {@link PlanningSolution}.
      * Matching uses a {@link PlanningId} by default.
      * @param externalObject sometimes null
      * @return null if externalObject is null or if there is no workingObject for externalObject
@@ -137,7 +134,7 @@ public interface ScoreDirector<Solution_> {
      * @throws IllegalStateException if it cannot be located
      * @param <E> the object type
      */
-    <E> E locateWorkingObject(E externalObject);
+    <E> E lookUpWorkingObject(E externalObject);
 
     /**
      * Needs to be called after use because some implementations needs to clean up their resources.

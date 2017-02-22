@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.optaplanner.core.impl.domain.locator;
+package org.optaplanner.core.impl.domain.lookup;
 
 import java.util.Collections;
 
@@ -21,41 +21,41 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.optaplanner.core.api.domain.locator.LocationStrategyType;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectEquals;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectEqualsNoHashCode;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectEqualsSubclass;
-import org.optaplanner.core.impl.testdata.domain.locator.TestdataObjectNoId;
+import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectEquals;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectEqualsNoHashCode;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectEqualsSubclass;
+import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectNoId;
 
 import static org.junit.Assert.*;
 
-public class LocationStrategyEqualityTest {
+public class LookUpStrategyEqualityTest {
 
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
-    private Locator locator;
+    private LookUpManager lookUpManager;
 
     @Before
-    public void setUpLocator() {
-        locator = new Locator(new LocationStrategyResolver(LocationStrategyType.EQUALITY));
-        locator.resetWorkingObjects(Collections.emptyList());
+    public void setUpLookUpManager() {
+        lookUpManager = new LookUpManager(new LookUpStrategyResolver(LookUpStrategyType.EQUALITY));
+        lookUpManager.resetWorkingObjects(Collections.emptyList());
     }
 
     @Test
     public void addRemoveWithEquals() {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
-        locator.addWorkingObject(object);
-        locator.removeWorkingObject(object);
+        lookUpManager.addWorkingObject(object);
+        lookUpManager.removeWorkingObject(object);
         // the removed object cannot be located
-        assertNull(locator.locateWorkingObject(object));
+        assertNull(lookUpManager.lookUpWorkingObject(object));
     }
 
     @Test
     public void addWithEqualsInSuperclass() {
         TestdataObjectEqualsSubclass object = new TestdataObjectEqualsSubclass(0);
-        locator.addWorkingObject(object);
-        assertSame(object, locator.locateWorkingObject(object));
+        lookUpManager.addWorkingObject(object);
+        assertSame(object, lookUpManager.lookUpWorkingObject(object));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class LocationStrategyEqualityTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("override the equals() method");
         expectedException.expectMessage(TestdataObjectNoId.class.getSimpleName());
-        locator.addWorkingObject(object);
+        lookUpManager.addWorkingObject(object);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class LocationStrategyEqualityTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("overrides the hashCode() method");
         expectedException.expectMessage(TestdataObjectEqualsNoHashCode.class.getSimpleName());
-        locator.addWorkingObject(object);
+        lookUpManager.addWorkingObject(object);
     }
 
     @Test
@@ -82,16 +82,16 @@ public class LocationStrategyEqualityTest {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("override the equals() method");
         expectedException.expectMessage(TestdataObjectNoId.class.getSimpleName());
-        locator.removeWorkingObject(object);
+        lookUpManager.removeWorkingObject(object);
     }
 
     @Test
     public void addEqualObjects() {
         TestdataObjectEquals object = new TestdataObjectEquals(2);
-        locator.addWorkingObject(object);
+        lookUpManager.addWorkingObject(object);
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage(object.toString());
-        locator.addWorkingObject(new TestdataObjectEquals(2));
+        lookUpManager.addWorkingObject(new TestdataObjectEquals(2));
     }
 
     @Test
@@ -99,14 +99,14 @@ public class LocationStrategyEqualityTest {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("differ");
-        locator.removeWorkingObject(object);
+        lookUpManager.removeWorkingObject(object);
     }
 
     @Test
     public void locateWithEquals() {
         TestdataObjectEquals object = new TestdataObjectEquals(1);
-        locator.addWorkingObject(object);
-        assertSame(object, locator.locateWorkingObject(new TestdataObjectEquals(1)));
+        lookUpManager.addWorkingObject(object);
+        assertSame(object, lookUpManager.lookUpWorkingObject(new TestdataObjectEquals(1)));
     }
 
     @Test
@@ -114,13 +114,13 @@ public class LocationStrategyEqualityTest {
         TestdataObjectNoId object = new TestdataObjectNoId();
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("override the equals() method");
-        locator.locateWorkingObject(object);
+        lookUpManager.lookUpWorkingObject(object);
     }
 
     @Test
     public void locateWithoutAdding() {
         TestdataObjectEquals object = new TestdataObjectEquals(0);
-        assertNull(locator.locateWorkingObject(object));
+        assertNull(lookUpManager.lookUpWorkingObject(object));
     }
 
 }

@@ -42,17 +42,17 @@ public interface InnerScoreDirectorFactory<Solution_> extends ScoreDirectorFacto
     InnerScoreDirector<Solution_> buildScoreDirector();
 
     /**
-     * Like {@link #buildScoreDirector()}, but optionally disables {@link ConstraintMatch} tracking and location
+     * Like {@link #buildScoreDirector()}, but optionally disables {@link ConstraintMatch} tracking and look up
      * for more performance (presuming the {@link ScoreDirector} implementation actually supports it to begin with).
-     * @param locatorEnabled true if a {@link ScoreDirector} implementation should track all working objects
-     * for {@link ScoreDirector#locateWorkingObject(Object)}
+     * @param lookUpEnabled true if a {@link ScoreDirector} implementation should track all working objects
+     * for {@link ScoreDirector#lookUpWorkingObject(Object)}
      * @param constraintMatchEnabledPreference false if a {@link ScoreDirector} implementation
      * should not do {@link ConstraintMatch} tracking even if it supports it.
      * @return never null
      * @see ScoreDirector#isConstraintMatchEnabled()
      * @see ScoreDirector#getConstraintMatchTotals()
      */
-    InnerScoreDirector<Solution_> buildScoreDirector(boolean locatorEnabled, boolean constraintMatchEnabledPreference);
+    InnerScoreDirector<Solution_> buildScoreDirector(boolean lookUpEnabled, boolean constraintMatchEnabledPreference);
 
     /**
      * @return never null
