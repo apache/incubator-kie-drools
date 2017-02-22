@@ -49,7 +49,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
     private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
     private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
 
-    private boolean independent = true;
+    private boolean independent = true;    
 
     public void setProcessId(final String processId) {
         this.processId = processId;
@@ -227,4 +227,14 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
         }
         return super.getContext(contextId);
     }
+
+    public boolean isAbortParent() {
+        
+        String abortParent = (String) getMetaData("customAbortParent");
+        if (abortParent == null) {
+            return true;
+        }
+        return Boolean.parseBoolean(abortParent);
+    }
+
 }

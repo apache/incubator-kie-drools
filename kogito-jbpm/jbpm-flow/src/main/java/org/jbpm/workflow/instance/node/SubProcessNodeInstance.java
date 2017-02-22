@@ -314,9 +314,11 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             if (exceptionScopeInstance != null) {
 
                 exceptionScopeInstance.handleException(faultName, processInstance.getFaultData());
-                cancel();
+                if (getSubProcessNode() != null && !getSubProcessNode().isIndependent() && getSubProcessNode().isAbortParent()){
+                    cancel();
+                }
                 return;
-            } else if (getSubProcessNode() != null && !getSubProcessNode().isIndependent()){
+            } else if (getSubProcessNode() != null && !getSubProcessNode().isIndependent() && getSubProcessNode().isAbortParent()){
                 ((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED, faultName);
                 return;
             }

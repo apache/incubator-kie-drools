@@ -1923,6 +1923,40 @@ public class ActivityTest extends JbpmBpmn2TestCase {
             ksession.startProcess("BPMN2-BusinessRuleTask", params);
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("DMN result errors"));
-        }        
+        }
+    }
+    
+    @Test
+    @RequirePersistence
+    public void testCallActivitySkipAbortParent() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-CallActivitySkipAbortParent.bpmn2",
+                "BPMN2-UserTask.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "oldValue");        
+        ProcessInstance processInstance = ksession.startProcess("ParentProcess", params);
+        assertProcessInstanceActive(processInstance);       
+
+        ksession = restoreSession(ksession, true);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("john", workItem.getParameter("ActorId"));
+
+        long childPI = workItem.getProcessInstanceId();
+        assertNotEquals("Child process instance must be different", processInstance.getId(), childPI);
+        
+        ksession.abortProcessInstance(childPI);        
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        ProcessInstanceLog log = logService.findProcessInstance(childPI);
+        assertNotNull(log);
+        assertEquals(ProcessInstance.STATE_ABORTED, log.getStatus().intValue());
+        // parent process instance should not be aborted
+        log = logService.findProcessInstance(processInstance.getId());
+        assertNotNull(log);
+        assertEquals("Parent process should be completed and not aborted", ProcessInstance.STATE_COMPLETED, log.getStatus().intValue());
     }
 }
