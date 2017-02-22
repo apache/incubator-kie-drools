@@ -34,6 +34,7 @@ public class LocationStrategyIdOrNoneTest {
 
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
+
     private Locator locator;
 
     @Before

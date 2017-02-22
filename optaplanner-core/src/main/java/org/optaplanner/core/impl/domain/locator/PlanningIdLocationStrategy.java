@@ -38,7 +38,7 @@ public class PlanningIdLocationStrategy implements LocationStrategy {
         Object oldAddedObject = idToWorkingObjectMap.put(planningId, workingObject);
         if (oldAddedObject != null) {
             throw new IllegalStateException("The workingObjects (" + oldAddedObject + ", " + workingObject
-                    + ") have the same planningId (" + planningId + ").");
+                    + ") have the same planningId (" + planningId + "). Working objects must be unique.");
         }
     }
 

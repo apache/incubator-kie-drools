@@ -89,20 +89,23 @@ public class LocationStrategyResolver {
                     }
                     return new PlanningIdLocationStrategy(memberAccessor2);
                 case EQUALITY:
+                    Method equalsMethod;
+                    Method hashCodeMethod;
                     try {
-                        Method equals = object.getClass().getMethod("equals", Object.class);
-                        if (equals.getDeclaringClass().equals(Object.class)) {
-                            throw new IllegalArgumentException("The class (" + object.getClass().getSimpleName()
-                                    + ") doesn't override equals method, neither does any superclass.");
-                        }
-                        Method hashCode = object.getClass().getMethod("hashCode");
-                        if (hashCode.getDeclaringClass().equals(Object.class)) {
-                            throw new IllegalArgumentException("The class (" + object.getClass().getSimpleName()
-                                    + ") overrides equals but neither it nor any superclass overrides hashCode method."
-                            );
-                        }
-                    } catch (NoSuchMethodException ex) {
-                        throw new IllegalStateException("This cannot happen, equals and hashCode always exist!", ex);
+                        equalsMethod = object.getClass().getMethod("equals", Object.class);
+                        hashCodeMethod = object.getClass().getMethod("hashCode");
+                    } catch (NoSuchMethodException e) {
+                        throw new IllegalStateException(
+                                "Impossible state because equals() and hashCode() always exist.", e);
+                    }
+                    if (equalsMethod.getDeclaringClass().equals(Object.class)) {
+                        throw new IllegalArgumentException("The class (" + object.getClass().getSimpleName()
+                                + ") doesn't override the equals() method, neither does any superclass.");
+                    }
+                    if (hashCodeMethod.getDeclaringClass().equals(Object.class)) {
+                        throw new IllegalArgumentException("The class (" + object.getClass().getSimpleName()
+                                + ") overrides equals() but neither it nor any superclass"
+                                + " overrides the hashCode() method.");
                     }
                     return new EqualsLocationStrategy();
                 case NONE:

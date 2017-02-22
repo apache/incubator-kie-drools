@@ -30,6 +30,7 @@ import static org.junit.Assert.assertNull;
 public class LocatorTest {
 
     public final ExpectedException expectedException = ExpectedException.none();
+
     private Locator locator;
 
     @Before

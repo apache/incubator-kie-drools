@@ -24,8 +24,8 @@ public class EqualsLocationStrategy implements LocationStrategy {
     public void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
         Object oldAddedObject = idToWorkingObjectMap.put(workingObject, workingObject);
         if (oldAddedObject != null) {
-            throw new IllegalStateException("An object that is equal to workingObject (" + workingObject
-                    + ") has already been added.");
+            throw new IllegalStateException("The workingObjects (" + oldAddedObject + ", " + workingObject
+                    + ") are equal (as in Object.equals()). Working objects must be unique.");
         }
     }
 

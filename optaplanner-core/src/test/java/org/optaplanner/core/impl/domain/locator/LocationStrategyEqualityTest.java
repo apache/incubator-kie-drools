@@ -33,6 +33,7 @@ public class LocationStrategyEqualityTest {
 
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
+
     private Locator locator;
 
     @Before
@@ -61,7 +62,7 @@ public class LocationStrategyEqualityTest {
     public void addWithoutEquals() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("override equals");
+        expectedException.expectMessage("override the equals() method");
         expectedException.expectMessage(TestdataObjectNoId.class.getSimpleName());
         locator.addWorkingObject(object);
     }
@@ -70,7 +71,7 @@ public class LocationStrategyEqualityTest {
     public void addWithoutHashCode() {
         TestdataObjectEqualsNoHashCode object = new TestdataObjectEqualsNoHashCode(0);
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("overrides hashCode");
+        expectedException.expectMessage("overrides the hashCode() method");
         expectedException.expectMessage(TestdataObjectEqualsNoHashCode.class.getSimpleName());
         locator.addWorkingObject(object);
     }
@@ -79,7 +80,7 @@ public class LocationStrategyEqualityTest {
     public void removeWithoutEquals() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("override equals");
+        expectedException.expectMessage("override the equals() method");
         expectedException.expectMessage(TestdataObjectNoId.class.getSimpleName());
         locator.removeWorkingObject(object);
     }
@@ -112,7 +113,7 @@ public class LocationStrategyEqualityTest {
     public void locateWithoutEquals() {
         TestdataObjectNoId object = new TestdataObjectNoId();
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("override equals");
+        expectedException.expectMessage("override the equals() method");
         locator.locateWorkingObject(object);
     }
 
