@@ -16,7 +16,6 @@
 
 package org.kie.internal.command;
 
-
 import org.kie.api.runtime.Context;
 
 public interface ContextManager{

@@ -16,7 +16,6 @@
 
 package org.kie.internal.event.rule;
 
-
 import java.util.EventListener;
 
 public interface RuleEventListener extends
