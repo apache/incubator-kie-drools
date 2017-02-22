@@ -147,7 +147,7 @@ public class Pattern
         index = in.readInt();
         source = (PatternSource) in.readObject();
         offset = in.readInt();
-        listenedProperties = (List<String>) in.readObject();
+        listenedProperties = (Collection<String>) in.readObject();
         if ( source instanceof From ) {
             ((From)source).setResultPattern( this );
         }

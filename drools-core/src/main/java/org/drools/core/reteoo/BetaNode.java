@@ -237,8 +237,8 @@ public abstract class BetaNode extends LeftTupleSource
         rightDeclaredMask = (BitMask) in.readObject();
         rightInferredMask = (BitMask) in.readObject();
         rightNegativeMask = (BitMask) in.readObject();
-        leftListenedProperties = (List) in.readObject();
-        rightListenedProperties = (List) in.readObject();
+        leftListenedProperties = (Collection) in.readObject();
+        rightListenedProperties = (Collection) in.readObject();
         rightInputIsPassive = in.readBoolean();
         setUnificationJoin();
         super.readExternal( in );
