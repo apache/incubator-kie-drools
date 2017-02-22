@@ -418,7 +418,9 @@
       log.date,
       log.connection,
       log.type,
-      log.workItemId
+      log.workItemId,
+      log.referenceId,
+      log.nodeContainerId
       )
       from
         NodeInstanceLog log
@@ -443,7 +445,9 @@
       log.date,
       log.connection,
       log.type,
-      log.workItemId
+      log.workItemId,
+      log.referenceId,
+      log.nodeContainerId
       )
       from
         NodeInstanceLog log
@@ -470,7 +474,9 @@
       log.date,
       log.connection,
       log.type,
-      log.workItemId
+      log.workItemId,
+      log.referenceId,
+      log.nodeContainerId
       )
       from
         NodeInstanceLog log
@@ -499,7 +505,9 @@
       log.date,
       log.connection,
       log.type,
-      log.workItemId
+      log.workItemId,
+      log.referenceId,
+      log.nodeContainerId
       )
       from
         NodeInstanceLog log
@@ -528,7 +536,9 @@
       log.date,
       log.connection,
       log.type,
-      log.workItemId
+      log.workItemId,
+      log.referenceId,
+      log.nodeContainerId
       )
       from
         NodeInstanceLog log
@@ -554,7 +564,9 @@
       log.date,
       log.connection,
       log.type,
-      log.workItemId
+      log.workItemId,
+      log.referenceId,
+      log.nodeContainerId
       )
       from
         NodeInstanceLog log
@@ -580,7 +592,9 @@
       log.date,
       log.connection,
       log.type,
-      log.workItemId
+      log.workItemId,
+      log.referenceId,
+      log.nodeContainerId
       )
       from
         ProcessInstanceLog plog,

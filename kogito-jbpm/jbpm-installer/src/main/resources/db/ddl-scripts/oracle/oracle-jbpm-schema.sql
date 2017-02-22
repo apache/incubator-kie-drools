@@ -179,6 +179,8 @@
         processInstanceId number(19,0) not null,
         type number(10,0) not null,
         workItemId number(19,0),
+        nodeContainerId varchar2(255 char),
+        referenceId number(19,0),
         primary key (id)
     );
 

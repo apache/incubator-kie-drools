@@ -232,12 +232,13 @@ public class DynamicUtils {
             ((ProcessInstanceImpl) subProcessInstance).setParentProcessInstanceId(processInstance.getId());
             
             subProcessInstance = (ProcessInstance) ksession.startProcessInstance(subProcessInstance.getId());
-    		
+            subProcessNodeInstance.internalSetProcessInstanceId(subProcessInstance.getId());
+            
     		eventSupport.fireAfterNodeTriggered(subProcessNodeInstance, ksession);
     		if (subProcessInstance.getState() == ProcessInstance.STATE_COMPLETED) {
 	    		subProcessNodeInstance.triggerCompleted();
 	    	} else {
-	    		subProcessNodeInstance.internalSetProcessInstanceId(subProcessInstance.getId());
+	    		
 	    	    subProcessNodeInstance.addEventListeners();
 	    	}
     		

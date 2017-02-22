@@ -27,3 +27,6 @@ alter table CaseIdInfo
 create sequence CASE_ID_INFO_ID_SEQ;
 
 create sequence CASE_ROLE_ASSIGN_LOG_ID_SEQ;
+
+ALTER TABLE NodeInstanceLog ADD COLUMN referenceId number(19,0);
+ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar2(255 char);

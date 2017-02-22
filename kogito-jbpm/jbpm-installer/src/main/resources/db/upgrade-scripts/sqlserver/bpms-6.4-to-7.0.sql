@@ -23,3 +23,6 @@ create table CaseRoleAssignmentLog (
 
 alter table CaseIdInfo 
     add constraint UK_CaseIdInfo_1 unique (caseIdPrefix);
+    
+ALTER TABLE NodeInstanceLog ADD COLUMN referenceId numeric(19,0);
+ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar(255);    

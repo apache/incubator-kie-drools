@@ -83,7 +83,25 @@
         "methodName": "isActive",
         "elementKind": "method",
         "justification": "promoted isActive to the api for easier use"
-      }
+      },
+      {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.lang.String org.jbpm.services.api.model.NodeInstanceDesc::getNodeContainerId()",
+		 "package": "org.jbpm.services.api.model",
+		 "classSimpleName": "NodeInstanceDesc",
+		 "methodName": "getNodeContainerId",
+		 "elementKind": "method",
+		 "justification": "support for getting node container of given node instance to allow queries for active nodes in subprocess"
+	   },
+	   {
+		 "code": "java.method.addedToInterface",
+		 "new": "method java.lang.Long org.jbpm.services.api.model.NodeInstanceDesc::getReferenceId()",
+		 "package": "org.jbpm.services.api.model",
+		 "classSimpleName": "NodeInstanceDesc",
+		 "methodName": "getReferenceId",
+		 "elementKind": "method",
+		 "justification": "support for reference id of given node, mainly used by reusable subprocessnode to refer to actual process instance it started"
+	   }
     ]
   }
 }

@@ -237,7 +237,9 @@
         log.date,
         log.connection,
         log.type,
-        log.workItemId
+        log.workItemId,
+        log.referenceId,
+        log.nodeContainerId
       )
       from
         ProcessInstanceLog plog,
@@ -246,6 +248,43 @@
         plog.correlationKey like :caseId
         and plog.status = 1
         and plog.processInstanceId = log.processInstanceId
+        and log.nodeType not in ('StartNode', 'EndNode', 'Split', 'Join')
+        and log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=plog.processInstanceId  
+                    GROUP BY nil.nodeInstanceId
+                    HAVING sum(nil.type) = 0)
+        and log.type = 0  
+      ORDER BY
+        log.processInstanceId, log.nodeInstanceId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  <named-query name="getActiveNodesForCaseAndStage">
+
+    <query>
+      select
+      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
+        log.nodeInstanceId,
+        log.nodeId,
+        log.nodeName,
+        log.nodeType,
+        log.externalId,
+        log.processInstanceId,
+        log.date,
+        log.connection,
+        log.type,
+        log.workItemId,
+        log.referenceId,
+        log.nodeContainerId
+      )
+      from
+        ProcessInstanceLog plog,
+        NodeInstanceLog log        
+      where 
+        plog.correlationKey like :caseId
+        and plog.status = 1
+        and plog.processInstanceId = log.processInstanceId
+        and log.nodeContainerId = :nodeContainerId
         and log.nodeType not in ('StartNode', 'EndNode', 'Split', 'Join')
         and log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=plog.processInstanceId  
                     GROUP BY nil.nodeInstanceId
@@ -270,7 +309,9 @@
       log.date,
       log.connection,
       log.type,
-      log.workItemId
+      log.workItemId,
+      log.referenceId,
+      log.nodeContainerId
       )
       from
         ProcessInstanceLog plog,

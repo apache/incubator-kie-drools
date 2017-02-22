@@ -602,11 +602,12 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
             if (completedNodes.contains(((NodeInstanceDesc)n).getId())) {
                 status = StageStatus.Completed;
             }
-            return new CaseStageInstanceImpl(n.getNodeId(), n.getName(), stagesByName.get(n.getNodeId()).getAdHocFragments(), Collections.emptyList(), status);
+            Collection<org.jbpm.services.api.model.NodeInstanceDesc> activeNodes = getActiveNodesForCaseAndStage(caseId, n.getNodeId(), new QueryContext(0, 100));
+            return new CaseStageInstanceImpl(n.getNodeId(), n.getName(), stagesByName.get(n.getNodeId()).getAdHocFragments(), activeNodes, status);
             })
         .forEach(csi -> {
             stages.add(csi);
-            triggeredStages.add(csi.getName());
+            triggeredStages.add(csi.getName());                        
         });
         
         
@@ -619,6 +620,17 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         }
         
         return stages;
+    }
+    
+    
+    protected Collection<org.jbpm.services.api.model.NodeInstanceDesc> getActiveNodesForCaseAndStage(String caseId, String stageId, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("caseId", caseId + "%");
+        params.put("nodeContainerId", stageId);
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+        List<org.jbpm.services.api.model.NodeInstanceDesc> nodeInstances =  commandService.execute(new QueryNameCommand<List<org.jbpm.services.api.model.NodeInstanceDesc>>("getActiveNodesForCaseAndStage", params));
+        return nodeInstances;
     }
     
     private Collection<CaseRole> collectCaseRoles(Process process) {

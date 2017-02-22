@@ -196,6 +196,8 @@
         processInstanceId numeric(19,0) not null,
         type int not null,
         workItemId numeric(19,0) null,
+        nodeContainerId varchar(255) null,
+        referenceId numeric(19,0) null,
         primary key (id)
     ) lock datarows
     go

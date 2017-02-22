@@ -34,6 +34,9 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
     private Date dataTimeStamp;
 
     private Long workItemId;
+    
+    private Long referenceId;    
+    private String nodeContainerId;
 
     public NodeInstanceDesc() {
         // default constructor
@@ -42,7 +45,8 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
 
     public NodeInstanceDesc(String id, String nodeId, String name, String nodeType,
                             String deploymentId, long processInstanceId, Date date, 
-                            String connection, int type, Long workItemId) {
+                            String connection, int type, Long workItemId,
+                            Long referenceId, String nodeContainerId) {
         this.id = Long.parseLong(id);
         this.name = name;
         this.nodeId = nodeId;
@@ -53,6 +57,8 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
         this.connection = connection;
         this.type = type;
         this.workItemId = workItemId;
+        this.referenceId = referenceId;
+        this.nodeContainerId = nodeContainerId;
     }
 
     public Long getId() {
@@ -115,6 +121,14 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
 
     public void setWorkItemId(Long workItemId) {
         this.workItemId = workItemId;
-   }
+    }
+
+    public Long getReferenceId() {
+        return referenceId;
+    }
+    
+    public String getNodeContainerId() {
+        return nodeContainerId;
+    }
 
 }

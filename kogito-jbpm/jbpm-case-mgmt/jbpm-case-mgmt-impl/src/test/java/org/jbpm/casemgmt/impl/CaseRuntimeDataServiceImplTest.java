@@ -710,4 +710,93 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             }
         }
     }
+    
+    @Test
+    public void testTransitionBetweenStagesInCaseWithActiveElements() {
+        // use user name who is part of the case roles assignment
+        // so (s)he will be authorized to access case instance
+        identityProvider.setName("john");
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        Map<String, Object> data = new HashMap<>();
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), TWO_STAGES_CASE_P_ID, data, roleAssignments);
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), TWO_STAGES_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        try {
+            
+            Collection<CaseStageInstance> stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
+            assertNotNull(stage);
+            assertEquals(1, stage.size());
+            
+            CaseStageInstance stageInstance = stage.iterator().next();
+            assertEquals("Stage One", stageInstance.getName());
+            assertEquals(StageStatus.Active, stageInstance.getStatus());  
+            
+            Collection<NodeInstanceDesc> activeNodes = stageInstance.getActiveNodes();
+            assertNotNull(activeNodes);
+            assertEquals(0, activeNodes.size());            
+            
+            caseService.triggerAdHocFragment(caseId, "Task 1", data);
+            stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
+            assertNotNull(stage);
+            assertEquals(1, stage.size());
+            
+            stageInstance = stage.iterator().next();
+            assertEquals("Stage One", stageInstance.getName());
+            assertEquals(StageStatus.Active, stageInstance.getStatus());  
+            
+            activeNodes = stageInstance.getActiveNodes();
+            assertNotNull(activeNodes);
+            assertEquals(1, activeNodes.size());
+            assertEquals("Task 1", activeNodes.iterator().next().getName());
+            
+            caseService.addDataToCaseFile(caseId, "customData", "nextStagePlease");
+                        
+            stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
+            assertNotNull(stage);
+            assertEquals(1, stage.size());
+            assertEquals("Stage Two", stage.iterator().next().getName());
+            assertEquals(StageStatus.Active, stage.iterator().next().getStatus());
+                    
+            stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
+            assertNotNull(stage);
+            assertEquals(1, stage.size());
+            
+            stageInstance = stage.iterator().next();
+            assertEquals("Stage Two", stageInstance.getName());
+            assertEquals(StageStatus.Active, stageInstance.getStatus()); 
+            
+            activeNodes = stageInstance.getActiveNodes();
+            assertNotNull(activeNodes);
+            assertEquals(0, activeNodes.size());
+            
+            caseService.triggerAdHocFragment(caseId, "Task 2", data);
+            stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
+            assertNotNull(stage);
+            assertEquals(1, stage.size());
+            
+            stageInstance = stage.iterator().next();
+            assertEquals("Stage Two", stageInstance.getName());
+            assertEquals(StageStatus.Active, stageInstance.getStatus());  
+            
+            activeNodes = stageInstance.getActiveNodes();
+            assertNotNull(activeNodes);
+            assertEquals(1, activeNodes.size());
+            assertEquals("Task 2", activeNodes.iterator().next().getName());
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
 }

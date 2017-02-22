@@ -179,6 +179,8 @@
         processInstanceId bigint not null,
         type int not null,
         workItemId bigint,
+        nodeContainerId varchar(255),
+        referenceId bigint,
         primary key (id)
     );
 

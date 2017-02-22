@@ -58,6 +58,9 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
     
     private String externalId;
     
+    private Long referenceId;    
+    private String nodeContainerId;
+    
     public NodeInstanceLog() {
     }
     
@@ -162,6 +165,10 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
                 + ((connection == null) ? 0 : connection.hashCode());
 		result = prime * result
                 + ((externalId == null) ? 0 : externalId.hashCode());
+		result = prime * result
+                + ((referenceId == null) ? 0 : referenceId.hashCode());
+        result = prime * result
+                + ((nodeContainerId == null) ? 0 : nodeContainerId.hashCode());
 		return result;
 	}
 
@@ -224,6 +231,19 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
                 return false;
         } else if (!externalId.equals(other.externalId))
             return false;
+		
+		if (referenceId == null) {
+            if (other.referenceId != null)
+                return false;
+        } else if (!referenceId.equals(other.referenceId))
+            return false;
+        
+        if (nodeContainerId == null) {
+            if (other.nodeContainerId != null)
+                return false;
+        } else if (!nodeContainerId.equals(other.nodeContainerId))
+            return false;
+		
 		return true;
 	}
 
@@ -257,6 +277,22 @@ public class NodeInstanceLog implements Serializable, AuditEvent, org.kie.api.ru
 
     public void setNodeType(String nodeType) {
         this.nodeType = nodeType;
+    }
+    
+    public Long getReferenceId() {
+        return referenceId;
+    }
+    
+    public void setReferenceId(Long referenceId) {
+        this.referenceId = referenceId;
+    }
+    
+    public String getNodeContainerId() {
+        return nodeContainerId;
+    }
+    
+    public void setNodeContainerId(String nodeContainerId) {
+        this.nodeContainerId = nodeContainerId;
     }
   	
 }

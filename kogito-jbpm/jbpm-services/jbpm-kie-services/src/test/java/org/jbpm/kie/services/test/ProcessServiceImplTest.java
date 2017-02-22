@@ -951,4 +951,58 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
         pi = processService.getProcessInstance(processInstanceId);
         assertNull(pi);
     }
+    
+    @Test
+    public void testStartProcessCallActivityCheckNodes() {
+        assertNotNull(deploymentService);
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        assertNotNull(processService);
+
+        long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "ParentProcess");
+        assertNotNull(processInstanceId);
+
+        ProcessInstance pi = processService.getProcessInstance(processInstanceId);
+        assertNotNull(pi);
+        
+        Collection<ProcessInstanceDesc> children = runtimeDataService.getProcessInstancesByParent(processInstanceId, null, new QueryContext());
+        assertNotNull(children);
+        assertEquals(1, children.size());
+        
+        ProcessInstanceDesc childInstance = children.iterator().next();
+        assertNotNull(childInstance);
+        assertEquals("org.jbpm.signal", childInstance.getProcessId());
+        
+        Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
+        assertNotNull(activeNodes);
+        assertEquals(1, activeNodes.size());        
+        NodeInstanceDesc activeNode = activeNodes.iterator().next();
+        assertNotNull(activeNode);
+        assertEquals("SubProcessNode", activeNode.getNodeType());
+        assertEquals(childInstance.getId(), activeNode.getReferenceId());
+        
+        processService.signalProcessInstance(childInstance.getId(), "MySignal", null);
+        
+        children = runtimeDataService.getProcessInstancesByParent(processInstanceId, Arrays.asList(2, 3), new QueryContext());
+        assertNotNull(children);
+        assertEquals(1, children.size());
+        
+        childInstance = children.iterator().next();
+        assertNotNull(childInstance);
+        assertEquals("org.jbpm.signal", childInstance.getProcessId());
+        
+        pi = processService.getProcessInstance(processInstanceId);
+        assertNull(pi);
+        
+        Collection<NodeInstanceDesc> completedNodes = runtimeDataService.getProcessInstanceHistoryCompleted(processInstanceId, new QueryContext());
+        assertNotNull(completedNodes);
+        assertEquals(3, completedNodes.size());        
+        NodeInstanceDesc completedNode = completedNodes.stream().filter(n -> n.getNodeType().equals("SubProcessNode")).findFirst().orElse(null);
+        assertNotNull(completedNode);
+        assertEquals("SubProcessNode", completedNode.getNodeType());
+        assertEquals(childInstance.getId(), completedNode.getReferenceId());
+    }
 }

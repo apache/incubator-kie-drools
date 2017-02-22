@@ -23,8 +23,10 @@ import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
@@ -86,9 +88,11 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         Node node = nodeInstance.getNode();
         String nodeId = null;
         String nodeType = null;
+        String nodeContainerId = null;
         if (node != null) {
             nodeId = (String)node.getMetaData().get("UniqueId");
             nodeType = node.getClass().getSimpleName();
+            nodeContainerId = getNodeContainerId(node.getNodeContainer());
         } else {
             nodeId = Long.toString(nodeInstance.getNodeId());
             nodeType = (String)nodeInstance.getMetaData("NodeType");
@@ -99,13 +103,17 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         if (nodeInstance instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) nodeInstance).getWorkItem() != null) {
             log.setWorkItemId(((WorkItemNodeInstance) nodeInstance).getWorkItem().getId());
         }
+        if (nodeInstance instanceof SubProcessNodeInstance) {
+            log.setReferenceId(((SubProcessNodeInstance) nodeInstance).getProcessInstanceId());
+        }
         String connection = (String)nodeInstance.getMetaData().get("IncomingConnection");
         log.setConnection(connection);
         log.setExternalId(""+((KieSession) pnte.getKieRuntime()).getIdentifier());
         log.setNodeType(nodeType);
+        log.setNodeContainerId(nodeContainerId);
         return log;
     }
-    
+        
     @Override
     public AuditEvent buildEvent(ProcessNodeTriggeredEvent pnte, Object log) {
     	NodeInstanceImpl nodeInstance = (NodeInstanceImpl) pnte.getNodeInstance();
@@ -116,6 +124,9 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         
 	        if (nodeInstance instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) nodeInstance).getWorkItem() != null) {
 	        	logEvent.setWorkItemId(((WorkItemNodeInstance) nodeInstance).getWorkItem().getId());
+	        }
+	        if (nodeInstance instanceof SubProcessNodeInstance) {
+	            logEvent.setReferenceId(((SubProcessNodeInstance) nodeInstance).getProcessInstanceId());
 	        }
 	
 	        return logEvent;
@@ -132,9 +143,11 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         Node node = nodeInstance.getNode();
         String nodeId = null;
         String nodeType = null;
+        String nodeContainerId = null;
         if (node != null) {
             nodeId = (String)node.getMetaData().get("UniqueId");
             nodeType = node.getClass().getSimpleName();
+            nodeContainerId = getNodeContainerId(node.getNodeContainer());
         } else {
             nodeId = Long.toString(nodeInstance.getNodeId());
             nodeType = (String)nodeInstance.getMetaData("NodeType");
@@ -150,10 +163,14 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         if (nodeInstance instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) nodeInstance).getWorkItem() != null) {
             logEvent.setWorkItemId(((WorkItemNodeInstance) nodeInstance).getWorkItem().getId());
         }
+        if (nodeInstance instanceof SubProcessNodeInstance) {
+            logEvent.setReferenceId(((SubProcessNodeInstance) nodeInstance).getProcessInstanceId());
+        }
         String connection = (String)nodeInstance.getMetaData().get("OutgoingConnection");
         logEvent.setConnection(connection);
         logEvent.setExternalId(""+((KieSession) pnle.getKieRuntime()).getIdentifier());
         logEvent.setNodeType(nodeType);
+        logEvent.setNodeContainerId(nodeContainerId);
         return logEvent;
     }
 
@@ -169,6 +186,13 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
                 processInstanceId, processId, variableInstanceId, variableId, newValue, oldValue);
         log.setExternalId(""+((KieSession) pvce.getKieRuntime()).getIdentifier());
         return log;
+    }
+
+    protected String getNodeContainerId(NodeContainer nodeContainer) {
+        if (nodeContainer instanceof Node) {
+            return (String) ((Node) nodeContainer).getMetaData().get("UniqueId");
+        }
+        return null;
     }
 
 }

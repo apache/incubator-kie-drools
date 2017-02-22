@@ -39,4 +39,8 @@ public interface NodeInstanceDesc {
     String getConnection();
     
     Long getWorkItemId();
+    
+    Long getReferenceId();
+    
+    String getNodeContainerId();
 }
