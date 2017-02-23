@@ -82,7 +82,7 @@ public class OOPathLogicalBranchesTest {
     }
 
     @Test
-    public void testConstraintOr() {
+    public void testOrConstraint() {
         final String drl =
                 "import org.drools.testcoverage.common.model.Employee;\n" +
                 "import org.drools.testcoverage.common.model.Address;\n" +
@@ -117,18 +117,18 @@ public class OOPathLogicalBranchesTest {
     }
 
     @Test
-    public void testConstraintOrNoBinding() {
+    public void testOrConstraintNoBinding() {
         final String drl =
                 "import org.drools.testcoverage.common.model.Employee;\n" +
-                        "import org.drools.testcoverage.common.model.Address;\n" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  $emp: Employee( /address{ street == 'Elm' || city == 'Big City' } )\n" +
-                        "        Employee( this != $emp, /address{ street == 'Elm' || city == 'Big City' } )\n" +
-                        "then\n" +
-                        "  list.add( $emp.getName() );\n" +
-                        "end\n";
+                "import org.drools.testcoverage.common.model.Address;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  $emp: Employee( /address{ street == 'Elm' || city == 'Big City' } )\n" +
+                "        Employee( this != $emp, /address{ street == 'Elm' || city == 'Big City' } )\n" +
+                "then\n" +
+                "  list.add( $emp.getName() );\n" +
+                "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.kieSession =  kieBase.newKieSession();
@@ -152,7 +152,7 @@ public class OOPathLogicalBranchesTest {
     }
 
     @Test
-    public void testCEOr() {
+    public void testOrConditionalElement() {
         final String drl =
                 "import org.drools.testcoverage.common.model.Employee;\n" +
                 "import org.drools.testcoverage.common.model.Address;\n" +
@@ -188,21 +188,21 @@ public class OOPathLogicalBranchesTest {
     }
 
     @Test
-    public void testCEOrNoBinding() {
+    public void testOrConditionalElementNoBinding() {
         final String drl =
                 "import org.drools.testcoverage.common.model.Employee;\n" +
-                        "import org.drools.testcoverage.common.model.Address;\n" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        " $employee: (\n" +
-                        "  Employee( /address{ street == 'Elm', city == 'Big City' } )\n" +
-                        " or " +
-                        "  Employee( /address{ street == 'Elm', city == 'Small City' } )\n" +
-                        " )\n" +
-                        "then\n" +
-                        "  list.add( $employee.getName() );\n" +
-                        "end\n";
+                "import org.drools.testcoverage.common.model.Address;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                " $employee: (\n" +
+                "  Employee( /address{ street == 'Elm', city == 'Big City' } )\n" +
+                " or " +
+                "  Employee( /address{ street == 'Elm', city == 'Small City' } )\n" +
+                " )\n" +
+                "then\n" +
+                "  list.add( $employee.getName() );\n" +
+                "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.kieSession =  kieBase.newKieSession();
@@ -229,14 +229,14 @@ public class OOPathLogicalBranchesTest {
     public void testBasicAndCondition() {
         final String drl =
                 "import org.drools.testcoverage.common.model.Employee;\n" +
-                        "import org.drools.testcoverage.common.model.Address;\n" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  Employee( $address: /address{ street == 'Elm' && city == 'Big City' } )\n" +
-                        "then\n" +
-                        "  list.add( $address.getCity() );\n" +
-                        "end\n";
+                "import org.drools.testcoverage.common.model.Address;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Employee( $address: /address{ street == 'Elm' && city == 'Big City' } )\n" +
+                "then\n" +
+                "  list.add( $address.getCity() );\n" +
+                "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.kieSession =  kieBase.newKieSession();
@@ -260,18 +260,18 @@ public class OOPathLogicalBranchesTest {
     }
 
     @Test
-    public void testConstraintAnd() {
+    public void testAndConstraint() {
         final String drl =
                 "import org.drools.testcoverage.common.model.Employee;\n" +
-                        "import org.drools.testcoverage.common.model.Address;\n" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  $emp: Employee( $address: /address{ street == 'Elm' && city == 'Big City' } )\n" +
-                        "        Employee( this != $emp, /address{ street == 'Elm' && city == 'Small City' } )\n" +
-                        "then\n" +
-                        "  list.add( $address.getCity() );\n" +
-                        "end\n";
+                "import org.drools.testcoverage.common.model.Address;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  $emp: Employee( $address: /address{ street == 'Elm' && city == 'Big City' } )\n" +
+                "        Employee( this != $emp, /address{ street == 'Elm' && city == 'Small City' } )\n" +
+                "then\n" +
+                "  list.add( $address.getCity() );\n" +
+                "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.kieSession =  kieBase.newKieSession();
@@ -295,18 +295,18 @@ public class OOPathLogicalBranchesTest {
     }
 
     @Test
-    public void testConstraintAndNoBinding() {
+    public void testAndConstraintNoBinding() {
         final String drl =
                 "import org.drools.testcoverage.common.model.Employee;\n" +
-                        "import org.drools.testcoverage.common.model.Address;\n" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  $emp: Employee( /address{ street == 'Elm' && city == 'Big City' } )\n" +
-                        "        Employee( this != $emp, /address{ street == 'Elm' && city == 'Small City' } )\n" +
-                        "then\n" +
-                        "  list.add( $emp.getName() );\n" +
-                        "end\n";
+                "import org.drools.testcoverage.common.model.Address;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  $emp: Employee( /address{ street == 'Elm' && city == 'Big City' } )\n" +
+                "        Employee( this != $emp, /address{ street == 'Elm' && city == 'Small City' } )\n" +
+                "then\n" +
+                "  list.add( $emp.getName() );\n" +
+                "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.kieSession =  kieBase.newKieSession();
@@ -330,19 +330,19 @@ public class OOPathLogicalBranchesTest {
     }
 
     @Test
-    public void testCEAnd() {
+    public void testAndConditionalElement() {
         final String drl =
                 "import org.drools.testcoverage.common.model.Employee;\n" +
-                        "import org.drools.testcoverage.common.model.Address;\n" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  Employee( $address: /address{ street == 'Elm', city == 'Big City' } )\n" +
-                        " and " +
-                        "  Employee( /address{ street == 'Elm', city == 'Small City' } )\n" +
-                        "then\n" +
-                        "  list.add( $address.getCity() );\n" +
-                        "end\n";
+                "import org.drools.testcoverage.common.model.Address;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Employee( $address: /address{ street == 'Elm', city == 'Big City' } )\n" +
+                " and " +
+                "  Employee( /address{ street == 'Elm', city == 'Small City' } )\n" +
+                "then\n" +
+                "  list.add( $address.getCity() );\n" +
+                "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.kieSession =  kieBase.newKieSession();
@@ -366,19 +366,19 @@ public class OOPathLogicalBranchesTest {
     }
 
     @Test
-    public void testCEAndWithNot() {
+    public void testAndConditionalElementWithNot() {
         final String drl =
                 "import org.drools.testcoverage.common.model.Employee;\n" +
-                        "import org.drools.testcoverage.common.model.Address;\n" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  $employee: Employee( /address{ street == 'Elm', city == 'Big City' } )\n" +
-                        " and " +
-                        "  not Employee( /address{ street == 'Elm', city == 'Small City' } )\n" +
-                        "then\n" +
-                        "  list.add( $employee.getName() );\n" +
-                        "end\n";
+                "import org.drools.testcoverage.common.model.Address;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  $employee: Employee( /address{ street == 'Elm', city == 'Big City' } )\n" +
+                " and " +
+                "  not Employee( /address{ street == 'Elm', city == 'Small City' } )\n" +
+                "then\n" +
+                "  list.add( $employee.getName() );\n" +
+                "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
         this.kieSession =  kieBase.newKieSession();
