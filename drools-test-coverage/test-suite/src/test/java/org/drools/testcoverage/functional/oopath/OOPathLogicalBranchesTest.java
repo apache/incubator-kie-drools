@@ -38,12 +38,14 @@ public class OOPathLogicalBranchesTest {
     private static final KieServices KIE_SERVICES = KieServices.Factory.get();
 
     private KieSession kieSession;
+    private List<String> results;
 
     @After
     public void disposeKieSession() {
         if (this.kieSession != null) {
             this.kieSession.dispose();
             this.kieSession = null;
+            this.results = null;
         }
     }
 
@@ -61,24 +63,10 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
-        this.kieSession =  kieBase.newKieSession();
+        this.initKieSession(kieBase);
 
-        final List<String> list = new ArrayList<String>();
-        this.kieSession.setGlobal("list", list);
-
-        final Address addressOfBruno = new Address("Elm", 10, "Small City");
-        final Employee bruno = new Employee("Bruno");
-        bruno.setAddress(addressOfBruno);
-
-        final Address addressOfAlice = new Address("Elm", 10, "Big City");
-        final Employee alice = new Employee("Alice");
-        alice.setAddress(addressOfAlice);
-
-        this.kieSession.insert(bruno);
-        this.kieSession.insert(alice);
         this.kieSession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Big City", "Small City");
+        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
     @Test
@@ -96,24 +84,31 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
-        this.kieSession =  kieBase.newKieSession();
+        this.initKieSession(kieBase);
 
-        final List<String> list = new ArrayList<String>();
-        this.kieSession.setGlobal("list", list);
-
-        final Address addressOfBruno = new Address("Elm", 10, "Small City");
-        final Employee bruno = new Employee("Bruno");
-        bruno.setAddress(addressOfBruno);
-
-        final Address addressOfAlice = new Address("Elm", 10, "Big City");
-        final Employee alice = new Employee("Alice");
-        alice.setAddress(addressOfAlice);
-
-        this.kieSession.insert(bruno);
-        this.kieSession.insert(alice);
         this.kieSession.fireAllRules();
+        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
+    }
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Big City", "Small City");
+    @Test
+    public void testOrConstraintWithJoin() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Employee;\n" +
+                "import org.drools.testcoverage.common.model.Address;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  $emp: Employee( $address: /address{ street == 'Elm' || city == 'Big City' } )\n" +
+                "        Employee( this != $emp, /address{ street == $address.street || city == 'Big City' } )\n" +
+                "then\n" +
+                "  list.add( $address.getCity() );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
+        this.initKieSession(kieBase);
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
     @Test
@@ -131,24 +126,10 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
-        this.kieSession =  kieBase.newKieSession();
+        this.initKieSession(kieBase);
 
-        final List<String> list = new ArrayList<String>();
-        this.kieSession.setGlobal("list", list);
-
-        final Address addressOfBruno = new Address("Elm", 10, "Small City");
-        final Employee bruno = new Employee("Bruno");
-        bruno.setAddress(addressOfBruno);
-
-        final Address addressOfAlice = new Address("Elm", 10, "Big City");
-        final Employee alice = new Employee("Alice");
-        alice.setAddress(addressOfAlice);
-
-        this.kieSession.insert(bruno);
-        this.kieSession.insert(alice);
         this.kieSession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bruno", "Alice");
+        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Bruno", "Alice");
     }
 
     @Test
@@ -167,24 +148,10 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
-        this.kieSession =  kieBase.newKieSession();
+        this.initKieSession(kieBase);
 
-        final List<String> list = new ArrayList<String>();
-        this.kieSession.setGlobal("list", list);
-
-        final Address addressOfBruno = new Address("Elm", 10, "Small City");
-        final Employee bruno = new Employee("Bruno");
-        bruno.setAddress(addressOfBruno);
-
-        final Address addressOfAlice = new Address("Elm", 10, "Big City");
-        final Employee alice = new Employee("Alice");
-        alice.setAddress(addressOfAlice);
-
-        this.kieSession.insert(bruno);
-        this.kieSession.insert(alice);
         this.kieSession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Big City", "Small City");
+        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City", "Small City");
     }
 
     @Test
@@ -205,24 +172,10 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
-        this.kieSession =  kieBase.newKieSession();
+        this.initKieSession(kieBase);
 
-        final List<String> list = new ArrayList<String>();
-        this.kieSession.setGlobal("list", list);
-
-        final Address addressOfBruno = new Address("Elm", 10, "Small City");
-        final Employee bruno = new Employee("Bruno");
-        bruno.setAddress(addressOfBruno);
-
-        final Address addressOfAlice = new Address("Elm", 10, "Big City");
-        final Employee alice = new Employee("Alice");
-        alice.setAddress(addressOfAlice);
-
-        this.kieSession.insert(bruno);
-        this.kieSession.insert(alice);
         this.kieSession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bruno", "Alice");
+        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Bruno", "Alice");
     }
 
     @Test
@@ -239,24 +192,10 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
-        this.kieSession =  kieBase.newKieSession();
+        this.initKieSession(kieBase);
 
-        final List<String> list = new ArrayList<String>();
-        this.kieSession.setGlobal("list", list);
-
-        final Address addressOfBruno = new Address("Elm", 10, "Small City");
-        final Employee bruno = new Employee("Bruno");
-        bruno.setAddress(addressOfBruno);
-
-        final Address addressOfAlice = new Address("Elm", 10, "Big City");
-        final Employee alice = new Employee("Alice");
-        alice.setAddress(addressOfAlice);
-
-        this.kieSession.insert(bruno);
-        this.kieSession.insert(alice);
         this.kieSession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactly("Big City");
+        Assertions.assertThat(this.results).containsExactly("Big City");
     }
 
     @Test
@@ -274,24 +213,10 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
-        this.kieSession =  kieBase.newKieSession();
+        this.initKieSession(kieBase);
 
-        final List<String> list = new ArrayList<String>();
-        this.kieSession.setGlobal("list", list);
-
-        final Address addressOfBruno = new Address("Elm", 10, "Small City");
-        final Employee bruno = new Employee("Bruno");
-        bruno.setAddress(addressOfBruno);
-
-        final Address addressOfAlice = new Address("Elm", 10, "Big City");
-        final Employee alice = new Employee("Alice");
-        alice.setAddress(addressOfAlice);
-
-        this.kieSession.insert(bruno);
-        this.kieSession.insert(alice);
         this.kieSession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Big City");
+        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City");
     }
 
     @Test
@@ -309,24 +234,10 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
-        this.kieSession =  kieBase.newKieSession();
+        this.initKieSession(kieBase);
 
-        final List<String> list = new ArrayList<String>();
-        this.kieSession.setGlobal("list", list);
-
-        final Address addressOfBruno = new Address("Elm", 10, "Small City");
-        final Employee bruno = new Employee("Bruno");
-        bruno.setAddress(addressOfBruno);
-
-        final Address addressOfAlice = new Address("Elm", 10, "Big City");
-        final Employee alice = new Employee("Alice");
-        alice.setAddress(addressOfAlice);
-
-        this.kieSession.insert(bruno);
-        this.kieSession.insert(alice);
         this.kieSession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Alice");
+        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Alice");
     }
 
     @Test
@@ -345,24 +256,10 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
-        this.kieSession =  kieBase.newKieSession();
+        this.initKieSession(kieBase);
 
-        final List<String> list = new ArrayList<String>();
-        this.kieSession.setGlobal("list", list);
-
-        final Address addressOfBruno = new Address("Elm", 10, "Small City");
-        final Employee bruno = new Employee("Bruno");
-        bruno.setAddress(addressOfBruno);
-
-        final Address addressOfAlice = new Address("Elm", 10, "Big City");
-        final Employee alice = new Employee("Alice");
-        alice.setAddress(addressOfAlice);
-
-        this.kieSession.insert(bruno);
-        this.kieSession.insert(alice);
         this.kieSession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Big City");
+        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Big City");
     }
 
     @Test
@@ -381,29 +278,45 @@ public class OOPathLogicalBranchesTest {
                 "end\n";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseFromDRLResources(true, KIE_SERVICES.getResources().newByteArrayResource(drl.getBytes()));
-        this.kieSession =  kieBase.newKieSession();
+        this.createKieSession(kieBase);
 
-        final List<String> list = new ArrayList<String>();
-        this.kieSession.setGlobal("list", list);
-
-        final Address addressOfBruno = new Address("Elm", 10, "Small City");
-        final Employee bruno = new Employee("Bruno");
-        bruno.setAddress(addressOfBruno);
-
-        final Address addressOfAlice = new Address("Elm", 10, "Big City");
-        final Employee alice = new Employee("Alice");
-        alice.setAddress(addressOfAlice);
-
+        final Employee bruno = this.createEmployee("Bruno", new Address("Elm", 10, "Small City"));
         final FactHandle brunoFactHandle = this.kieSession.insert(bruno);
-        this.kieSession.insert(alice);
-        this.kieSession.fireAllRules();
 
-        Assertions.assertThat(list).isEmpty();
+        final Employee alice = this.createEmployee("Alice", new Address("Elm", 10, "Big City"));
+        this.kieSession.insert(alice);
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.results).isEmpty();
 
         this.kieSession.delete(brunoFactHandle);
         this.kieSession.fireAllRules();
+        Assertions.assertThat(this.results).containsExactlyInAnyOrder("Alice");
+    }
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Alice");
+    private void initKieSession(final KieBase kieBase) {
+        this.createKieSession(kieBase);
+        this.populateKieSession();
+    }
+
+    private void createKieSession(final KieBase kieBase) {
+        this.kieSession = kieBase.newKieSession();
+        this.results = new ArrayList<String>();
+        this.kieSession.setGlobal("list", results);
+    }
+
+    private void populateKieSession() {
+        final Employee bruno = this.createEmployee("Bruno", new Address("Elm", 10, "Small City"));
+        this.kieSession.insert(bruno);
+
+        final Employee alice = this.createEmployee("Alice", new Address("Elm", 10, "Big City"));
+        this.kieSession.insert(alice);
+    }
+
+    private Employee createEmployee(final String name, final Address address) {
+        final Employee employee = new Employee(name);
+        employee.setAddress(address);
+        return employee;
     }
 
 }
