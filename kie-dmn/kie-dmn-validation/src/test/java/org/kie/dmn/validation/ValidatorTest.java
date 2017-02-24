@@ -292,6 +292,15 @@ public class ValidatorTest {
     }
     
     @Test
+    public void testITEMDEF_NOT_UNIQUE_DROOLS_1450() {
+        // DROOLS-1450
+        Definitions definitions = utilDefinitions( "ITEMDEF_NOT_UNIQUE_DROOLS-1450.dmn", "ITEMDEF_NOT_UNIQUE" );
+        List<ValidationMsg> validate = validator.validateModel(definitions);
+        
+        assertFalse( validate.stream().anyMatch( p -> p.getMessage().equals( Msg.ITEMDEF_NOT_UNIQUE ) ) );
+    }
+    
+    @Test
     public void testNAME_INVALID() {
         Definitions definitions = utilDefinitions( "NAME_INVALID.dmn", "NAME_INVALID" );
         List<ValidationMsg> validate = validator.validateModel(definitions);
