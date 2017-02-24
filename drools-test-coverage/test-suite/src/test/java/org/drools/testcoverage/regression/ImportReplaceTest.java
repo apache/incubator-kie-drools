@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.drools.testcoverage.regression;
 
 import java.io.StringReader;
 
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.junit.Test;
@@ -62,10 +63,10 @@ public class ImportReplaceTest {
         rulesResource.setTargetPath("src/main/resources/rules.drl");
 
         // this should be OK
-        KieBaseUtil.getKieBuilderFromResources(true, declaresResource, rulesResource);
+        KieUtil.getKieBuilderFromResources(true, declaresResource, rulesResource);
 
         // this should be fine too
-        KieBaseUtil.getKieBuilderFromResources(true, rulesResource, declaresResource);
+        KieUtil.getKieBuilderFromResources(true, rulesResource, declaresResource);
     }
 
 }

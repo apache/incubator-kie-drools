@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public class KieScannerMemoryTest {
         final KieServices kieServices = KieServices.Factory.get();
 
         final MavenRepository repository = MavenRepository.getMavenRepository();
-        final KieModule kieModule = KieBaseUtil.buildAndInstallKieModuleIntoRepo(
+        final KieModule kieModule = KieBaseUtil.getKieModuleAndBuildInstallModuleFromDrl(
                 TestConstants.PACKAGE_FUNCTIONAL,
                 KieBaseTestConfiguration.CLOUD_IDENTITY,
                 "rule R when then end");

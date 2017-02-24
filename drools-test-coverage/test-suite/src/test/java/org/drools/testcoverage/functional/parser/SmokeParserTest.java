@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Collection;
 
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
@@ -39,6 +40,6 @@ public class SmokeParserTest extends ParserTest {
     @Test
     public void testParserSmoke() {
         final Resource fileResource = KieServices.Factory.get().getResources().newFileSystemResource(file);
-        KieBaseUtil.getKieBuilderFromResources(true, fileResource);
+        KieUtil.getKieBuilderFromResources(true, fileResource);
     }
 }

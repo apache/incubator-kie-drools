@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.drools.testcoverage.regression;
 
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -47,7 +48,7 @@ public class NullInListInFromTest {
     public void testNullValueInFrom() throws Exception {
         final Resource resource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
         resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBuilder kbuilder = KieBaseUtil.getKieBuilderFromResources(true, resource);
+        final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(true, resource);
 
         final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
         final KieSession ksession = kbase.newKieSession();
