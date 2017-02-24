@@ -89,13 +89,12 @@ public abstract class AbstractAvailableJobsExecutor {
             	boolean processReoccurring = false;
             	Command cmd = null;
                 CommandContext ctx = null;
+                ExecutionResults results = null;
                 List<CommandCallback> callbacks = null;
                 ClassLoader cl = getClassLoader(request.getDeploymentId());
                 try {
     
                     logger.debug("Processing Request Id: {}, status {} command {}", request.getId(), request.getStatus(), request.getCommandName());
-                    
-                    
                     byte[] reqData = request.getRequestData();
                     if (reqData != null) {
                         ObjectInputStream in = null;
@@ -111,24 +110,22 @@ public abstract class AbstractAvailableJobsExecutor {
                             }
                         }
                     }
-                    for (Map.Entry<String, Object> entry : contextData.entrySet()) {
-                    	ctx.setData(entry.getKey(), entry.getValue());
-                    }
-                    // add class loader so internally classes can be created with valid (kjar) deployment
-                    ctx.setData("ClassLoader", cl);
-                    
-                    
-                    cmd = classCacheManager.findCommand(request.getCommandName(), cl);
-                    ExecutionResults results = cmd.execute(ctx);
-                    
-                    callbacks = classCacheManager.buildCommandCallback(ctx, cl);                
-                    
-                    for (CommandCallback handler : callbacks) {
+                    if (request.getResponseData() == null) {                        
+                       
+                        for (Map.Entry<String, Object> entry : contextData.entrySet()) {
+                        	ctx.setData(entry.getKey(), entry.getValue());
+                        }
+                        // add class loader so internally classes can be created with valid (kjar) deployment
+                        ctx.setData("ClassLoader", cl);
                         
-                        handler.onCommandDone(ctx, results);
-                    }
-                    
-                    if (results != null) {
+                        
+                        cmd = classCacheManager.findCommand(request.getCommandName(), cl);
+                        results = cmd.execute(ctx);
+                      
+                        
+                        if (results == null) {
+                            results = new ExecutionResults();
+                        }
                         try {
                             ByteArrayOutputStream bout = new ByteArrayOutputStream();
                             ObjectOutputStream out = new ObjectOutputStream(bout);
@@ -138,18 +135,49 @@ public abstract class AbstractAvailableJobsExecutor {
                         } catch (IOException e) {
                             request.setResponseData(null);
                         }
+                        results.setData("CompletedAt", new Date());
+        
+                        request.setStatus(STATUS.DONE);
+                         
+                        executorStoreService.updateRequest(request);
+                        processReoccurring = true;
+                    } else {
+                        logger.debug("Job was already successfully executed, retrying callbacks only...");
+                        byte[] resData = request.getResponseData();
+                        if (resData != null) {
+                            ObjectInputStream in = null;
+                            try {
+                                in = new ClassLoaderObjectInputStream(cl, new ByteArrayInputStream(resData));
+                                results = (ExecutionResults) in.readObject();
+                            } catch (IOException e) {                        
+                                logger.warn("Exception while serializing response data", e);
+                                return;
+                            } finally {
+                                if (in != null) {
+                                    in.close();
+                                }
+                            }
+                        }
+                        request.setStatus(STATUS.DONE);
+                        
+                        executorStoreService.updateRequest(request);
+                        processReoccurring = true;
                     }
-    
-                    request.setStatus(STATUS.DONE);
-                     
-                    executorStoreService.updateRequest(request);
-                    processReoccurring = true;
+                    // callback handling after job execution
+                    callbacks = classCacheManager.buildCommandCallback(ctx, cl);                
+                    
+                    for (CommandCallback handler : callbacks) {
+                        
+                        handler.onCommandDone(ctx, results);
+                    }
                     
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } catch (Throwable e) {
                     exception = e;
-                    callbacks = classCacheManager.buildCommandCallback(ctx, cl);  
+                    if (callbacks == null) {
+                        callbacks = classCacheManager.buildCommandCallback(ctx, cl);
+                    }
                     
                 	processReoccurring = handleException(request, e, ctx, callbacks);
                 	

@@ -144,30 +144,8 @@ public abstract class BasicExecutorBaseTest {
         List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, executedRequests.size());
 
-        assertEquals(2, ((AtomicLong) cachedEntities.get((String) commandContext.getData("businessKey"))).longValue());
+        assertEquals(3, ((AtomicLong) cachedEntities.get((String) commandContext.getData("businessKey"))).longValue());
 
-        ExecutionResults results = null;
-        byte[] responseData = executedRequests.get(0).getResponseData();
-        ObjectInputStream in = null;
-        try {
-            in = new ObjectInputStream(new ByteArrayInputStream(responseData));
-            results = (ExecutionResults) in.readObject();
-        } catch (Exception e) {                        
-            logger.warn("Exception while serializing context data", e);
-            return;
-        } finally {
-            if (in != null) {
-                try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-            }
-        }
-        
-        String result = (String)results.getData("custom");
-        assertNotNull(result);
-        assertEquals("custom callback invoked", result);
     }
     
     @Test
@@ -189,30 +167,7 @@ public abstract class BasicExecutorBaseTest {
         List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, executedRequests.size());
 
-        assertEquals(2, ((AtomicLong) cachedEntities.get((String) commandContext.getData("businessKey"))).longValue());
-
-        ExecutionResults results = null;
-        byte[] responseData = executedRequests.get(0).getResponseData();
-        ObjectInputStream in = null;
-        try {
-            in = new ObjectInputStream(new ByteArrayInputStream(responseData));
-            results = (ExecutionResults) in.readObject();
-        } catch (Exception e) {                        
-            logger.warn("Exception while serializing context data", e);
-            return;
-        } finally {
-            if (in != null) {
-                try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-            }
-        }
-        
-        String result = (String)results.getData("custom");
-        assertNotNull(result);
-        assertEquals("custom callback invoked", result);
+        assertEquals(3, ((AtomicLong) cachedEntities.get((String) commandContext.getData("businessKey"))).longValue());
     }
 
     @Test

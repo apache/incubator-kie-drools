@@ -29,8 +29,10 @@ import java.util.UUID;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.drools.core.command.runtime.process.SetProcessInstanceVariablesCommand;
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.executor.objects.IncrementService;
 import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
@@ -460,6 +462,61 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
     }
+    
+    @Test(timeout=10000)
+    public void testRunProcessWithAsyncHandlerCallbackErrorRetry() throws Exception {
+        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTaskWithError.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new AsyncWorkItemHandler(executorService, "org.jbpm.executor.commands.PrintOutCommand"));
+                        return handlers;
+                    }
+                    @Override
+                    public List<ProcessEventListener> getProcessEventListeners( RuntimeEngine runtime) {
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(countDownListener);
+                        return listeners;
+                    }
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+        
+        assertEquals(0, IncrementService.get());
+        
+        Map<String, Object> params = new HashMap<String, Object>();        
+        
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask", params);
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        countDownListener.waitTillCompleted(4000);
+        
+        processInstance = ksession.getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("x", "should be fixed now");
+        ksession.execute(new SetProcessInstanceVariablesCommand(processInstance.getId(), variables));
+        
+        countDownListener.waitTillCompleted();
+        processInstance = ksession.getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
+        
+        assertEquals(1, IncrementService.get());
+    }
+    
     
     private ExecutorService buildExecutorService() {        
         emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
