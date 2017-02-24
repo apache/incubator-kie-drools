@@ -31,7 +31,7 @@ import java.util.UUID;
 /**
  * Util class that provides various methods related to Kie API.
  */
-public class KieUtil {
+public final class KieUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KieUtil.class);
 
