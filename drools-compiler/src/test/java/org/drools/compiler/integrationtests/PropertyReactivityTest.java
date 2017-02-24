@@ -36,6 +36,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
@@ -1643,5 +1644,73 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         // after this update (without any real fact modification) the rule will fire as expected
         kieSession.update(fhBusStop, busStop);
         assertEquals(1, kieSession.fireAllRules());
+    }
+
+    @Test
+    public void testWatchFieldInExternalPattern() {
+        // DROOLS-1445
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    $p1 : Person( name == \"Mario\" )\n" +
+                "    $p2 : Person( age > $p1.age ) \n" +
+                "then\n" +
+                "    list.add(\"t0\");\n" +
+                "end\n" +
+                "rule Z when\n" +
+                "    $p1 : Person( name == \"Mario\" ) \n" +
+                "then\n" +
+                "    modify($p1) { setAge(35); } \n" +
+                "end\n";
+
+        // making the default explicit:
+        KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
+                                                                          .build()
+                                                                          .newKieSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Person mario = new Person("Mario", 40);
+        Person mark = new Person("Mark", 37);
+        FactHandle fh_mario = ksession.insert(mario);
+        ksession.insert(mark);
+        int x = ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("t0", list.get(0));
+    }
+
+    @Test
+    public void testWatchFieldInExternalNotPattern() {
+        // DROOLS-1445
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    $p1 : Person( name == \"Mario\" )\n" +
+                "    not( Person( age < $p1.age ) )\n" +
+                "then\n" +
+                "    list.add(\"t0\");\n" +
+                "end\n" +
+                "rule Z when\n" +
+                "    $p1 : Person( name == \"Mario\" ) \n" +
+                "then\n" +
+                "    modify($p1) { setAge(35); } \n" +
+                "end\n";
+
+        // making the default explicit:
+        KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
+                                                                          .build()
+                                                                          .newKieSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Person mario = new Person("Mario", 40);
+        Person mark = new Person("Mark", 37);
+        FactHandle fh_mario = ksession.insert(mario);
+        ksession.insert(mark);
+        int x = ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("t0", list.get(0));
     }
 }

@@ -22,7 +22,6 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -79,7 +78,7 @@ public class KModuleWithDecisionTablesTest {
        KieBase kieBase = kContainer.getKieBase(kieBaseName);
 
        assertNotNull("KieBase not found", kieBase);
-       assertEquals("Unexpected number of KiePackages in KieBase", 1, kieBase.getKiePackages().size());
+       assertFalse("Unexpected number of KiePackages in KieBase", kieBase.getKiePackages().isEmpty());
     }
     
 }

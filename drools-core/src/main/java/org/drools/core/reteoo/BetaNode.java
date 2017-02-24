@@ -16,6 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
@@ -51,12 +58,6 @@ import org.drools.core.util.index.IndexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
@@ -90,8 +91,8 @@ public abstract class BetaNode extends LeftTupleSource
     private BitMask rightInferredMask = EmptyBitMask.get();
     private BitMask rightNegativeMask = EmptyBitMask.get();
 
-    private List<String> leftListenedProperties;
-    private List<String> rightListenedProperties;
+    private Collection<String> leftListenedProperties;
+    private Collection<String> rightListenedProperties;
 
     private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
 
@@ -201,7 +202,8 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    protected void setLeftListenedProperties(List<String> leftListenedProperties) {
+    @Override
+    protected void setLeftListenedProperties(Collection<String> leftListenedProperties) {
         this.leftListenedProperties = leftListenedProperties;
     }
 
@@ -235,8 +237,8 @@ public abstract class BetaNode extends LeftTupleSource
         rightDeclaredMask = (BitMask) in.readObject();
         rightInferredMask = (BitMask) in.readObject();
         rightNegativeMask = (BitMask) in.readObject();
-        leftListenedProperties = (List) in.readObject();
-        rightListenedProperties = (List) in.readObject();
+        leftListenedProperties = (Collection) in.readObject();
+        rightListenedProperties = (Collection) in.readObject();
         rightInputIsPassive = in.readBoolean();
         setUnificationJoin();
         super.readExternal( in );
