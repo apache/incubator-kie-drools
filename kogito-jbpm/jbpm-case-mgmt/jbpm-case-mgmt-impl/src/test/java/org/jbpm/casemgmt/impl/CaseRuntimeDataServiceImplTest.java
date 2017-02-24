@@ -211,6 +211,7 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             
             Map<String, Object> taskInput = new HashMap<>();
             taskInput.put("ActorId", "john");
+            taskInput.put("Comment", "Need to provide data");
             caseService.triggerAdHocFragment(caseId, "Missing data", taskInput);
             
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
@@ -218,6 +219,7 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             assertEquals(1, tasks.size());
             TaskSummary task = tasks.get(0);
             assertEquals("Missing data", task.getName());
+            assertEquals("Need to provide data", task.getSubject());
             
             
             caseId2 = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);

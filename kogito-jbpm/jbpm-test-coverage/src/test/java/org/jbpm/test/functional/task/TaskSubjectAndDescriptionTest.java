@@ -64,7 +64,7 @@ public class TaskSubjectAndDescriptionTest extends JbpmTestCase {
         Task t = taskService.getTaskById(task.getId());
 
         Assertions.assertThat(task.getDescription()).isEqualTo("This is description of the human task.");
-        Assertions.assertThat(task.getSubject()).isNullOrEmpty();
+        Assertions.assertThat(task.getSubject()).isEqualTo(EXPECTED_SUBJECT);
         Assertions.assertThat(t.getSubject()).isEqualTo(EXPECTED_SUBJECT);
         
         taskService.start(task.getId(), "john");
@@ -85,7 +85,7 @@ public class TaskSubjectAndDescriptionTest extends JbpmTestCase {
         Task t = taskService.getTaskById(task.getId());
 
         Assertions.assertThat(task.getDescription()).isEqualTo(EXPECTED_SUBJECT);
-        Assertions.assertThat(task.getSubject()).isNullOrEmpty();
+        Assertions.assertThat(task.getSubject()).isEqualTo(EXPECTED_SUBJECT);
         Assertions.assertThat(t.getSubject()).isEqualTo(EXPECTED_SUBJECT);
         
         taskService.start(task.getId(), "john");

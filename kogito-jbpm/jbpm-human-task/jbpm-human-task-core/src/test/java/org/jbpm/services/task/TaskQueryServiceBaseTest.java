@@ -948,4 +948,22 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         assertEquals("Bobba Fet", tasks.get(0).getActualOwnerId());
         assertEquals(true, tasks.get(0).isSkipable());
     }
+    
+    @Test
+    public void testGetTasksAssignedAsPotentialOwnerCheckSubject() {
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { subject = 'test subject', priority = 55, taskData = (with( new TaskData()) {skipable=true } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name = 'This is my task name' })";
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        
+        taskService.addTask(task, new HashMap<String, Object>());
+        List<String> groupIds = new ArrayList<String>();
+        groupIds.add("Crusaders");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds);
+        assertEquals(1, tasks.size());
+        assertEquals("Bobba Fet", tasks.get(0).getActualOwnerId());
+        assertEquals(true, tasks.get(0).isSkipable());
+        assertEquals("test subject", tasks.get(0).getSubject());
+    }
 }

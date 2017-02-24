@@ -156,6 +156,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
      */
     public TaskSummaryImpl(long id,
             String name,
+            String subject, 
             String description,
             Status status,
             int priority,
@@ -172,6 +173,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.id = id;
         this.processInstanceId = processInstanceId;
         this.name = name;
+        this.subject = subject;
         this.description = description;
         this.status = status;
         if (status != null) {

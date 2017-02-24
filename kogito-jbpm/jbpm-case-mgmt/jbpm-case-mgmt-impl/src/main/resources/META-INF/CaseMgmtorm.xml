@@ -364,6 +364,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -397,6 +398,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -432,6 +434,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,

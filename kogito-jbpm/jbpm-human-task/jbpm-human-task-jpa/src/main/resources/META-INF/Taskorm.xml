@@ -9,6 +9,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -38,6 +39,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -69,6 +71,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -98,6 +101,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -130,6 +134,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -162,6 +167,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -194,6 +200,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -226,6 +233,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -258,6 +266,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -311,6 +320,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -345,6 +355,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -445,6 +456,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -479,6 +491,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -510,20 +523,21 @@
             select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
-                    t.name,
-                    t.description,
-                    t.taskData.status,
-                    t.priority,
-                    t.taskData.actualOwner.id,
-                    t.taskData.createdBy.id,
-                    t.taskData.createdOn,
-                    t.taskData.activationTime,
-                    t.taskData.expirationTime,
-                    t.taskData.processId,
-                    t.taskData.processInstanceId,
-                    t.taskData.parentId,
-                    t.taskData.deploymentId,
-                    t.taskData.skipable              )
+                t.name,
+                t.subject,
+                t.description,
+                t.taskData.status,
+                t.priority,
+                t.taskData.actualOwner.id,
+                t.taskData.createdBy.id,
+                t.taskData.createdOn,
+                t.taskData.activationTime,
+                t.taskData.expirationTime,
+                t.taskData.processId,
+                t.taskData.processInstanceId,
+                t.taskData.parentId,
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.recipients recipients
@@ -540,6 +554,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -569,6 +584,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -599,6 +615,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -631,6 +648,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -664,6 +682,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -698,6 +717,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -736,6 +756,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -765,6 +786,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -798,6 +820,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -827,6 +850,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -861,6 +885,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -1045,6 +1070,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -1076,6 +1102,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
                 t.id,
                 t.name,
+                t.subject,
                 t.description,
                 t.taskData.status,
                 t.priority,
@@ -1138,6 +1165,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.name,
+            t.subject,
             t.description,
             t.taskData.status,
             t.priority,
@@ -1175,6 +1203,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.name,
+            t.subject,
             t.description,
             t.taskData.status,
             t.priority,
@@ -1209,6 +1238,7 @@
             new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.name,
+            t.subject,
             t.description,
             t.taskData.status,
             t.priority,
@@ -1243,6 +1273,7 @@
                 new org.jbpm.services.task.query.TaskSummaryImpl(
                     t.id,
                     t.name,
+                    t.subject,
                     t.description,
                     t.taskData.status,
                     t.priority,
@@ -1276,6 +1307,7 @@
                 new org.jbpm.services.task.query.TaskSummaryImpl(
                     t.id,
                     t.name,
+                    t.subject,
                     t.description,
                     t.taskData.status,
                     t.priority,
@@ -1309,6 +1341,7 @@
                 new org.jbpm.services.task.query.TaskSummaryImpl(
                     t.id,
                     t.name,
+                    t.subject,
                     t.description,
                     t.taskData.status,
                     t.priority,
@@ -1342,6 +1375,7 @@
                 new org.jbpm.services.task.query.TaskSummaryImpl(
                     t.id,
                     t.name,
+                    t.subject,
                     t.description,
                     t.taskData.status,
                     t.priority,

@@ -88,6 +88,7 @@ public interface QueryResultMapper<T> extends Serializable {
     public static final String COLUMN_DESCRIPTION = "DESCRIPTION";
     public static final String COLUMN_DUEDATE = "DUEDATE";
     public static final String COLUMN_NAME = "NAME";
+    public static final String COLUMN_SUBJECT = "SUBJECT";
     public static final String COLUMN_PARENTID = "PARENTID";
     public static final String COLUMN_PRIORITY = "PRIORITY";
     public static final String COLUMN_TASK_PROCESSID = "PROCESSID";

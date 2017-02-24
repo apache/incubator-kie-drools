@@ -69,6 +69,7 @@ public class TaskSummaryQueryMapper extends AbstractQueryMapper<TaskSummary> imp
         TaskSummary userTask = new TaskSummaryImpl(
                 getColumnLongValue(dataSetResult, COLUMN_TASKID, index),//taskId,
                 getColumnStringValue(dataSetResult, COLUMN_NAME, index),//name,
+                getColumnStringValue(dataSetResult, COLUMN_SUBJECT, index),//subject,
                 getColumnStringValue(dataSetResult, COLUMN_DESCRIPTION, index),//description,
                 Status.valueOf(getColumnStringValue(dataSetResult, COLUMN_TASK_STATUS, index)),//status,
                 getColumnIntValue(dataSetResult, COLUMN_PRIORITY, index),//priority,
