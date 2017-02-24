@@ -180,7 +180,7 @@ then
     entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INVOCATION_WRONG_PARAM_COUNT, $inv ) );
 end
 
-// Not sure if this rule is really needed being a possible subset of ITEMDEF_NOT_UNIQUE 
+// This is a lower level complement of ITEMDEF_NOT_UNIQUE below, for detecting duplicate attribute names inside the same ItemDefinition 
 rule ITEMCOMP_DUPLICATED
 when
   $ic1 : ItemDefinition( parent instanceof ItemDefinition )
@@ -191,8 +191,8 @@ end
 
 rule ITEMDEF_NOT_UNIQUE
 when
-  $x : ItemDefinition()
-  $y : ItemDefinition( name == $x.name, this != $x )
+  $x : ItemDefinition( !(parent instanceof ItemDefinition) )
+  $y : ItemDefinition( !(parent instanceof ItemDefinition), name == $x.name, this != $x )
 then
   entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ITEMDEF_NOT_UNIQUE, $x ) );
 end
