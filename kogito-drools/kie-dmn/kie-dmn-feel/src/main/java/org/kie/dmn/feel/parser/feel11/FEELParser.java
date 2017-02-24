@@ -45,7 +45,7 @@ public class FEELParser {
     }
 
     public static boolean isVariableNameValid( String source ) {
-        if( source == null ) {
+        if( source == null || source.isEmpty() ) {
             return false;
         }
         ANTLRInputStream input = new ANTLRInputStream(source);
