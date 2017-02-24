@@ -36,6 +36,7 @@ import org.kie.dmn.core.DMNInputRuntimeTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.feel.model.v1_1.Definitions;
+import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.validation.Msg;
 import org.kie.dmn.validation.ValidationMsg;
 import org.kie.dmn.validation.DMNValidator;
@@ -377,5 +378,18 @@ public class ValidatorTest {
         validate.forEach(m -> System.out.println( m.getMessage()) );
         
         assertTrue( validate.stream().noneMatch( p -> p.getMessage().equals( Msg.TYPEREF_NOT_FEEL_NOT_DEF ) ) );
+    }
+    
+    @Test
+    public void testNAME_INVALID_empty_name() {
+        assertFalse( FEELParser.isVariableNameValid(null) );
+        
+        // DROOLS-1447
+        assertFalse( FEELParser.isVariableNameValid("")   );
+        
+        Definitions definitions = utilDefinitions( "DROOLS-1447.dmn", "DROOLS-1447" );
+        List<ValidationMsg> validate = validator.validateModel(definitions);
+
+        assertTrue( validate.stream().anyMatch( p -> p.getMessage().equals( Msg.NAME_INVALID ) ) );
     }
 }
