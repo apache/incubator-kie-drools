@@ -16,20 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.rule.constraint.MvelConstraint;
-import org.drools.core.rule.constraint.XpathConstraint;
-import org.drools.core.spi.AcceptsClassObjectType;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.Constraint.ConstraintType;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.PatternExtractor;
-import org.drools.core.spi.SelfDateExtractor;
-import org.drools.core.spi.SelfNumberExtractor;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -43,6 +29,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.factmodel.AnnotationDefinition;
+import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.rule.constraint.MvelConstraint;
+import org.drools.core.rule.constraint.XpathConstraint;
+import org.drools.core.spi.AcceptsClassObjectType;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.Constraint.ConstraintType;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.ObjectType;
+import org.drools.core.spi.PatternExtractor;
+import org.drools.core.spi.SelfDateExtractor;
+import org.drools.core.spi.SelfNumberExtractor;
 
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.isIterable;
@@ -60,7 +60,7 @@ public class Pattern
     private int                      index;
     private PatternSource            source;
     private List<Behavior>           behaviors;
-    private List<String>             listenedProperties;
+    private Collection<String>       listenedProperties;
     private boolean                  hasNegativeConstraint;
 
     private transient XpathBackReference backRefDeclarations;
@@ -147,7 +147,7 @@ public class Pattern
         index = in.readInt();
         source = (PatternSource) in.readObject();
         offset = in.readInt();
-        listenedProperties = (List<String>) in.readObject();
+        listenedProperties = (Collection<String>) in.readObject();
         if ( source instanceof From ) {
             ((From)source).setResultPattern( this );
         }
@@ -518,11 +518,11 @@ public class Pattern
         this.behaviors.add( behavior );
     }
 
-    public List<String> getListenedProperties() {
+    public Collection<String> getListenedProperties() {
         return listenedProperties;
     }
 
-    public void setListenedProperties(List<String> listenedProperties) {
+    public void setListenedProperties(Collection<String> listenedProperties) {
         this.listenedProperties = listenedProperties;
     }
 

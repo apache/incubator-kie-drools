@@ -59,6 +59,22 @@ public class AndDescr extends AnnotatedBaseDescr
         return this.descrs;
     }
 
+    public List<PatternDescr> getAllPatternDescr() {
+        List<PatternDescr> patterns = new ArrayList<>();
+        getAllPatternDescr(this, patterns);
+        return patterns;
+    }
+
+    private void getAllPatternDescr(ConditionalElementDescr elementDescr, List<PatternDescr> patterns) {
+        for (BaseDescr base : elementDescr.getDescrs()) {
+            if (base instanceof PatternDescr) {
+                patterns.add( ( (PatternDescr) base ));
+            } else if (base instanceof ConditionalElementDescr) {
+                getAllPatternDescr( ( (ConditionalElementDescr) base ), patterns);
+            }
+        }
+    }
+
     public void addOrMerge(final BaseDescr baseDescr) {
         if ( baseDescr instanceof AndDescr ) {
             AndDescr and = (AndDescr) baseDescr;

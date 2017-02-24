@@ -610,10 +610,10 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         otn = getObjectTypeNode(kbase, "B" );
         alphaNode = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[0];
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
-        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getInferredMask());        
+        assertEquals( calculatePositiveMask(list("a", "b"), sp), alphaNode.getInferredMask());
         
-        assertEquals(  EmptyBitMask.get(), betaNode.getLeftDeclaredMask() );
-        assertEquals(  calculatePositiveMask(list("a"), sp), betaNode.getLeftInferredMask() );         
+        assertEquals(  calculatePositiveMask(list("b"), sp), betaNode.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "b"), sp), betaNode.getLeftInferredMask() );
     }    
     
     @Test
@@ -634,16 +634,16 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         BetaNode betaNode = ( BetaNode )  alphaNode.getObjectSinkPropagator().getSinks()[0];
         assertEquals( calculatePositiveMask(list("b","s"), sp), betaNode.getRightDeclaredMask() );
         assertEquals( calculatePositiveMask(list("a", "b", "s"), sp), betaNode.getRightInferredMask() );
-        assertEquals( calculatePositiveMask(list("c"), sp), betaNode.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("a", "c"), sp), betaNode.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNode.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), betaNode.getLeftInferredMask() );
 
         otn = getObjectTypeNode(kbase, "B" );
         alphaNode = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[0];
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
-        assertEquals( calculatePositiveMask(list("a", "c"), sp), alphaNode.getInferredMask());        
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode.getInferredMask());
         
-        assertEquals( calculatePositiveMask(list( "c"), sp), betaNode.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("a", "c"), sp), betaNode.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list( "b", "c" ), sp), betaNode.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list( "a", "b", "c" ), sp), betaNode.getLeftInferredMask() );
     }
 
     @Test
@@ -669,10 +669,10 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         otn = getObjectTypeNode(kbase, "B" );
         alphaNode = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[0];
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
-        assertEquals( calculatePositiveMask(list("a", "c"), sp), alphaNode.getInferredMask());
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode.getInferredMask());
 
-        assertEquals( calculatePositiveMask(list( "c"), sp), betaNode.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("c"), sp), betaNode.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list( "b", "c" ), sp), betaNode.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list( "b", "c" ), sp), betaNode.getLeftInferredMask() );
         assertEquals( calculateNegativeMask(list("!a"), sp), betaNode.getLeftNegativeMask() );
     }
 
@@ -701,8 +701,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals( calculatePositiveMask(list("b"), sp), betaNode1.getRightDeclaredMask() );
         assertEquals( calculatePositiveMask(list("a", "s", "b"), sp), betaNode1.getRightInferredMask() );
 
-        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNode1.getLeftInferredMask() );
         assertEquals( calculateNegativeMask(list("!a"), sp), betaNode1.getLeftNegativeMask() );
 
         // second share
@@ -714,8 +714,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals( calculatePositiveMask(list("b"), sp), betaNode2.getRightDeclaredMask() );
         assertEquals(  calculatePositiveMask(list("a", "i", "b"), sp), betaNode2.getRightInferredMask() );
         
-        assertEquals( calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("a", "j"), sp), betaNode2.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("b", "j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "b", "j"), sp), betaNode2.getLeftInferredMask() );
         assertEquals( calculateNegativeMask(list("!i"), sp), betaNode2.getLeftNegativeMask() );
 
         // test rule removal        
@@ -729,8 +729,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals(  calculatePositiveMask(list("b"), sp), betaNode2.getRightDeclaredMask() );
         assertEquals(  calculatePositiveMask(list("a", "i", "b"), sp), betaNode2.getRightInferredMask() );
         
-        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNode1.getLeftInferredMask() );
         assertEquals( calculateNegativeMask(list("!a"), sp), betaNode1.getLeftNegativeMask() );
 
         // have to rebuild to remove r1
@@ -751,8 +751,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals(  calculatePositiveMask(list("b"), sp), betaNode1.getRightDeclaredMask() );
         assertEquals(  calculatePositiveMask(list("a", "s", "b"), sp), betaNode1.getRightInferredMask() );   
         
-        assertEquals( calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("a", "j"), sp), betaNode2.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("b", "j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "b", "j"), sp), betaNode2.getLeftInferredMask() );
         assertEquals( calculateNegativeMask(list("!i"), sp), betaNode2.getLeftNegativeMask() );
     }
     
@@ -782,8 +782,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals( calculatePositiveMask(list("a", "c"), sp), betaNode1.getRightInferredMask() );
         assertEquals( calculateNegativeMask(list("!b"), sp), betaNode1.getRightNegativeMask() );
 
-        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNode1.getLeftInferredMask() );
         assertEquals( calculateNegativeMask(list("!a"), sp), betaNode1.getLeftNegativeMask() );
 
         // second share
@@ -798,8 +798,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals( calculateNegativeMask(list("!a"), sp), betaNode2.getRightNegativeMask() );
 
         assertEquals( calculateNegativeMask(list("!a"), sp), betaNode1.getLeftNegativeMask() );
-        assertEquals( calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("a", "j"), sp), betaNode2.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("b", "j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "b", "j"), sp), betaNode2.getLeftInferredMask() );
         assertEquals( EmptyBitMask.get(), betaNode2.getLeftNegativeMask() );
 
         // test rule removal        
@@ -814,8 +814,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals( calculatePositiveMask(list("i", "b", "s"), sp), betaNode2.getRightInferredMask() );
         assertEquals( calculateNegativeMask(list("!a"), sp), betaNode2.getRightNegativeMask() );
 
-        assertEquals( calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("a", "j"), sp), betaNode2.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("b", "j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "b", "j"), sp), betaNode2.getLeftInferredMask() );
         assertEquals( EmptyBitMask.get(), betaNode2.getLeftNegativeMask() );
 
         // have to rebuild to remove r1
@@ -837,8 +837,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals(  calculatePositiveMask(list("a", "c"), sp), betaNode1.getRightInferredMask() );
         assertEquals( calculateNegativeMask(list("!b"), sp), betaNode1.getRightNegativeMask() );
 
-        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNode1.getLeftInferredMask() );
         assertEquals( calculateNegativeMask(list("!a"), sp), betaNode1.getLeftNegativeMask() );
     }
     
@@ -2052,8 +2052,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         BetaNode betaNodeC = ( BetaNode ) otnC.getObjectSinkPropagator().getSinks()[0];
         assertEquals( EmptyBitMask.get(), betaNodeC.getRightDeclaredMask() );
         assertEquals( EmptyBitMask.get(), betaNodeC.getRightInferredMask() );
-        assertEquals( calculatePositiveMask(list("k"), sp), betaNodeC.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("a", "k"), sp), betaNodeC.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("j", "k"), sp), betaNodeC.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "j", "k"), sp), betaNodeC.getLeftInferredMask() );
     }
 
     @Test
@@ -2069,8 +2069,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         BetaNode betaNodeA = ( BetaNode ) otnA.getObjectSinkPropagator().getSinks()[0];
         assertEquals( calculatePositiveMask(list("i", "b", "c"), sp), betaNodeA.getRightDeclaredMask() );
         assertEquals( calculatePositiveMask(list("i", "b", "c"), sp), betaNodeA.getRightInferredMask() );
-        assertEquals( calculatePositiveMask(list("k"), sp), betaNodeA.getLeftDeclaredMask() );
-        assertEquals( calculatePositiveMask(list("a", "k"), sp), betaNodeA.getLeftInferredMask() );
+        assertEquals( calculatePositiveMask(list("j", "k"), sp), betaNodeA.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "j", "k"), sp), betaNodeA.getLeftInferredMask() );
 
         BetaNode betaNodeC = ( BetaNode ) otnC.getObjectSinkPropagator().getSinks()[0];
         assertEquals( EmptyBitMask.get(), betaNodeC.getRightDeclaredMask());

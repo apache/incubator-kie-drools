@@ -24,7 +24,7 @@ public class NotDescr extends AnnotatedBaseDescr
     ConditionalElementDescr {
 
     private static final long serialVersionUID = 510l;
-    private final List        descrs           = new ArrayList( 1 );
+    private final List<BaseDescr> descrs = new ArrayList<>( 1 );
 
     public NotDescr() { }
 
@@ -40,7 +40,7 @@ public class NotDescr extends AnnotatedBaseDescr
         throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
     }
 
-    public List getDescrs() {
+    public List<BaseDescr> getDescrs() {
         return this.descrs;
     }
 
