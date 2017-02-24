@@ -121,19 +121,31 @@ public class LogCleanupCommand implements Command, Reoccurring {
 			
 			olderThan = formatToUse.format(olderThanDate);
 		}
+		
+        
+        if (!skipTaskLog) {
+            // task tables
+            long taLogsRemoved = 0l;
+            taLogsRemoved = auditLogService.auditTaskDelete()
+            .processId(forProcess)      
+            .dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
+            .deploymentId(forDeployment)
+            .build()
+            .execute();
+            logger.info("TaskAuditLogRemoved {}", taLogsRemoved);
+            executionResults.setData("TaskAuditLogRemoved", taLogsRemoved);
+            
+            long teLogsRemoved = 0l;
+            teLogsRemoved = auditLogService.taskEventInstanceLogDelete()
+            .dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))        
+            .build()
+            .execute();
+            logger.info("TaskEventLogRemoved {}", teLogsRemoved);
+            executionResults.setData("TaskEventLogRemoved", teLogsRemoved);
+        }		
+		
 		if (!skipProcessLog) {
-		// process tables
-			long piLogsRemoved = 0l;		
-			piLogsRemoved = auditLogService.processInstanceLogDelete()
-			.processId(forProcess)
-			.status(ProcessInstance.STATE_COMPLETED, ProcessInstance.STATE_ABORTED)
-			.endDateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
-			.externalId(forDeployment)
-			.build()
-			.execute();
-			logger.info("ProcessInstanceLogRemoved {}", piLogsRemoved);
-			executionResults.setData("ProcessInstanceLogRemoved", piLogsRemoved);
-			
+		// process tables			
 			long niLogsRemoved = 0l;
 			niLogsRemoved = auditLogService.nodeInstanceLogDelete()
 			.processId(forProcess)
@@ -153,28 +165,19 @@ public class LogCleanupCommand implements Command, Reoccurring {
 			.execute();
 			logger.info("VariableInstanceLogRemoved {}", viLogsRemoved);
 			executionResults.setData("VariableInstanceLogRemoved", viLogsRemoved);
-		}
-		
-		if (!skipTaskLog) {
-			// task tables
-			long taLogsRemoved = 0l;
-			taLogsRemoved = auditLogService.auditTaskDelete()
-			.processId(forProcess)		
-			.dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
-			.deploymentId(forDeployment)
-			.build()
-			.execute();
-			logger.info("TaskAuditLogRemoved {}", taLogsRemoved);
-			executionResults.setData("TaskAuditLogRemoved", taLogsRemoved);
 			
-			long teLogsRemoved = 0l;
-			teLogsRemoved = auditLogService.taskEventInstanceLogDelete()
-			.dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))		
-			.build()
-			.execute();
-			logger.info("TaskEventLogRemoved {}", teLogsRemoved);
-			executionResults.setData("TaskEventLogRemoved", teLogsRemoved);
+			long piLogsRemoved = 0l;        
+            piLogsRemoved = auditLogService.processInstanceLogDelete()
+            .processId(forProcess)
+            .status(ProcessInstance.STATE_COMPLETED, ProcessInstance.STATE_ABORTED)
+            .endDateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
+            .externalId(forDeployment)
+            .build()
+            .execute();
+            logger.info("ProcessInstanceLogRemoved {}", piLogsRemoved);
+            executionResults.setData("ProcessInstanceLogRemoved", piLogsRemoved);
 		}
+
 		
 		if (!skipExecutorLog) {
 			// executor tables	

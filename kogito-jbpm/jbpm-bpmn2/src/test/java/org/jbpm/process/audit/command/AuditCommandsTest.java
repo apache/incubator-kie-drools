@@ -94,15 +94,15 @@ public class AuditCommandsTest extends JbpmBpmn2TestCase {
         log = (ProcessInstanceLog) result;
         assertEquals(log.getProcessInstanceId().longValue(), processInstance.getId());
         assertEquals(log.getProcessId(), processInstance.getProcessId());
-        
-        cmd = new ClearHistoryLogsCommand();
-        result = ksession.execute(cmd);
-        assertEquals( "There should be no more logs", 0, logService.findProcessInstances().size() );
-        
+
         // now signal process instance
         ksession = restoreSession(ksession, true);
         ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
+                
+        cmd = new ClearHistoryLogsCommand();
+        result = ksession.execute(cmd);
+        assertEquals( "There should be no more logs", 0, logService.findProcessInstances().size() );        
     }
     
     @Test

@@ -78,5 +78,8 @@ public class TaskEventDeleteBuilderImpl extends AbstractAuditDeleteBuilderImpl<T
         return TASK_EVENT_IMPL_DELETE;
     }
 
-
+    @Override
+    protected String getSubQuery() {
+        return ONLY_COMPLETED_PROCESS_INSTANCES;
+    }
 }

@@ -87,5 +87,9 @@ public class AuditTaskDeleteBuilderImpl extends AbstractAuditDeleteBuilderImpl<A
     protected String getQueryBase() {
         return AUDIT_TASK_IMPL_DELETE;
     }
-
+    
+    @Override
+    protected String getSubQuery() {
+        return ONLY_COMPLETED_PROCESS_INSTANCES;
+    }
 }

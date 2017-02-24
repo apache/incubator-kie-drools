@@ -336,21 +336,24 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("StartTimer", 5);
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        final List<Long> list = new ArrayList<Long>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
-            public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
-            }
-        });
-        assertEquals(0, list.size());
-        // Timer in the process takes 500ms, so after 2.5 seconds, there should be 5 process IDs in the list.
-        countDownListener.waitTillCompleted();
-        assertEquals(5, getNumberOfProcessInstances("MultipleStartEvents"));
-
+        try {
+            ksession.addEventListener(countDownListener);
+            TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+            ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                    workItemHandler);
+            final List<Long> list = new ArrayList<Long>();
+            ksession.addEventListener(new DefaultProcessEventListener() {
+                public void beforeProcessStarted(ProcessStartedEvent event) {
+                    list.add(event.getProcessInstance().getId());
+                }
+            });
+            assertEquals(0, list.size());
+            // Timer in the process takes 500ms, so after 2.5 seconds, there should be 5 process IDs in the list.
+            countDownListener.waitTillCompleted();
+            assertEquals(5, getNumberOfProcessInstances("MultipleStartEvents"));
+        } finally {
+            abortProcessInstances(ksession);
+        }
     }
 
     @Test

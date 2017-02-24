@@ -31,6 +31,11 @@ import static org.kie.internal.query.QueryParameterIdentifiers.*;
 
 public abstract class AbstractAuditDeleteBuilderImpl<T> extends AbstractDeleteBuilderImpl<T> implements AuditDeleteBuilder<T> {
 
+    protected static String ONLY_COMPLETED_PROCESS_INSTANCES = 
+            " l.processInstanceId in (select spl.processInstanceId \n"
+            + "FROM ProcessInstanceLog spl \n"
+            + "WHERE spl.status in (2, 3))";
+    
     protected final CommandExecutor executor; 
     protected final JPAAuditLogService jpaAuditService; 
     
@@ -146,12 +151,16 @@ public abstract class AbstractAuditDeleteBuilderImpl<T> extends AbstractDeleteBu
     
     abstract protected String getQueryBase();
     
+    protected String getSubQuery() {
+        return null;
+    }
+    
     public ParametrizedUpdate build() {
         return new ParametrizedUpdate() {
             private QueryWhere queryWhere = new QueryWhere(getQueryWhere());
             @Override
             public int execute() {
-                int result = getJpaAuditLogService().doDelete(getQueryBase(), queryWhere, getQueryType());
+                int result = getJpaAuditLogService().doDelete(getQueryBase(), queryWhere, getQueryType(), getSubQuery());
                 return result;
             }
         };

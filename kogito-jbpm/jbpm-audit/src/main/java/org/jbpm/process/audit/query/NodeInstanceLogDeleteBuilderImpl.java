@@ -33,6 +33,8 @@ public class NodeInstanceLogDeleteBuilderImpl extends
             "DELETE\n"
             + "FROM NodeInstanceLog l\n";
     
+
+    
 	public NodeInstanceLogDeleteBuilderImpl(JPAAuditLogService jpaService) {
 		super(jpaService);
 		intersect();
@@ -88,6 +90,11 @@ public class NodeInstanceLogDeleteBuilderImpl extends
 		return this;
 	}
 
+	@Override
+	protected String getSubQuery() {
+        return ONLY_COMPLETED_PROCESS_INSTANCES;
+    }
+	
     @Override
     protected Class getQueryType() {
         return NodeInstanceLog.class;

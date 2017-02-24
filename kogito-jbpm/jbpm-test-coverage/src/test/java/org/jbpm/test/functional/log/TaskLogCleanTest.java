@@ -84,6 +84,7 @@ public class TaskLogCleanTest extends JbpmTestCase {
         kieSession = createKSession(HUMAN_TASK);
 
         processInstanceList = startProcess(kieSession, HUMAN_TASK_ID, 2);
+        abortProcess(kieSession, processInstanceList);
 
         int deletedLogs = taskAuditService.auditTaskDelete()
                 .processId(HUMAN_TASK_ID)
@@ -98,7 +99,8 @@ public class TaskLogCleanTest extends JbpmTestCase {
         kieSession = createKSession(HUMAN_TASK);
 
         processInstanceList = startProcess(kieSession, HUMAN_TASK_ID, 3);
-
+        abortProcess(kieSession, processInstanceList);
+        
         int resultCount = taskAuditService.auditTaskDelete()
                 .processInstanceId(processInstanceList.get(0).getId(), processInstanceList.get(1).getId())
                 .build()
@@ -116,7 +118,7 @@ public class TaskLogCleanTest extends JbpmTestCase {
         kieSession = createKSession(HUMAN_TASK);
 
         processInstanceList = startProcess(kieSession, HUMAN_TASK_ID, 4);
-
+        abortProcess(kieSession, processInstanceList);
         TaskService taskService = getRuntimeEngine().getTaskService();
 
         // Delete the last two task logs
@@ -148,6 +150,8 @@ public class TaskLogCleanTest extends JbpmTestCase {
         Thread.sleep(1000);
         processInstanceList.addAll(startProcess(kieSession, INPUT_ASSOCIATION_ID, 1));
         processInstanceList.addAll(startProcess(kieSession, HUMAN_TASK_ID, 1));
+        
+        abortProcess(kieSession, processInstanceList);
 
         // Delete tasks created from date1 to date2.
         int resultCount = deleteAuditTaskInstanceLogs(date1, date2);
@@ -160,6 +164,7 @@ public class TaskLogCleanTest extends JbpmTestCase {
         kieSession = createKSession(HUMAN_TASK);
 
         processInstanceList.addAll(startProcess(kieSession, HUMAN_TASK_ID, 5));
+        abortProcess(kieSession, processInstanceList);
 
         // Delete tasks created from date1 to date2.
         int resultCount = deleteAuditTaskInstanceLogs(startDate, endDate);
@@ -224,7 +229,12 @@ public class TaskLogCleanTest extends JbpmTestCase {
     public void testClearLogs() {
         kieSession = createKSession(HUMAN_TASK);
         processInstanceList = startProcess(kieSession, HUMAN_TASK_ID, 2);
-
+        
+        taskAuditService.clear();
+        Assertions.assertThat(getAllAuditTaskLogs()).hasSize(processInstanceList.size());
+        
+        abortProcess(kieSession, processInstanceList);
+        
         taskAuditService.clear();
         Assertions.assertThat(getAllAuditTaskLogs()).hasSize(0);
     }

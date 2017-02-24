@@ -65,103 +65,118 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=20000)
     public void testStartTimerCycleFromDisc() throws Exception {
         CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("start", 2);
         KieBase kbase = createKnowledgeBaseFromDisc("BPMN2-StartTimerCycle.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-        
-        assertEquals(0, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
-        long sessionId = ksession.getIdentifier();
-        Environment env = ksession.getEnvironment();
-
-        final List<Long> list = new ArrayList<Long>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
-            public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
-            }
-        });
-
-        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
-                                                                                                         .addEventListener(new TriggerRulesEventListener(ksession));
-
-        
-
-        countDownListener.waitTillCompleted();
-
-        assertEquals(2, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
-        logger.info("dispose");
-        ksession.dispose();
-        
-        countDownListener = new CountDownProcessEventListener("start", 2);
-
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
-                kbase, null, env);
-        ksession.addEventListener(countDownListener);
-        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
-
-        final List<Long> list2 = new ArrayList<Long>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
-            public void beforeProcessStarted(ProcessStartedEvent event) {
-                list2.add(event.getProcessInstance().getId());
-            }
-        });
-
-        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
-                .addEventListener(new TriggerRulesEventListener(ksession));
-
-        countDownListener.waitTillCompleted();
-        ksession.dispose();
-        assertEquals(4, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
+        try {
+            StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+            ksession.addEventListener(countDownListener);
+            
+            assertEquals(0, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
+            long sessionId = ksession.getIdentifier();
+            Environment env = ksession.getEnvironment();
+    
+            final List<Long> list = new ArrayList<Long>();
+            ksession.addEventListener(new DefaultProcessEventListener() {
+                public void beforeProcessStarted(ProcessStartedEvent event) {
+                    list.add(event.getProcessInstance().getId());
+                }
+            });
+    
+            ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
+                                                                                                             .addEventListener(new TriggerRulesEventListener(ksession));
+    
+            
+    
+            countDownListener.waitTillCompleted();
+    
+            assertEquals(2, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
+            logger.info("dispose");
+            ksession.dispose();
+            
+            countDownListener = new CountDownProcessEventListener("start", 2);
+    
+            ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
+                    kbase, null, env);
+            ksession.addEventListener(countDownListener);
+            AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
+    
+            final List<Long> list2 = new ArrayList<Long>();
+            ksession.addEventListener(new DefaultProcessEventListener() {
+                public void beforeProcessStarted(ProcessStartedEvent event) {
+                    list2.add(event.getProcessInstance().getId());
+                }
+            });
+    
+            ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
+                    .addEventListener(new TriggerRulesEventListener(ksession));
+    
+            countDownListener.waitTillCompleted();        
+            assertEquals(4, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
+            
+            abortProcessInstances(ksession);
+            ksession.dispose();
+        } finally {
+            ksession = createKnowledgeSession(kbase);
+            abortProcessInstances(ksession);
+            ksession.dispose();
+        }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=20000)
     public void testStartTimerCycleFromClassPath() throws Exception {
+        
         CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("start", 2);
         KieBase kbase = createKnowledgeBase("BPMN2-StartTimerCycle.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(countDownListener);
-
-        assertEquals(0, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
-        long sessionId = ksession.getIdentifier();
-        Environment env = ksession.getEnvironment();
-
-        final List<Long> list = new ArrayList<Long>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
-            public void beforeProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
-            }
-        });
-
-        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
-                .addEventListener(new TriggerRulesEventListener(ksession));
-
-        countDownListener.waitTillCompleted();
-
-        assertEquals(2, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
-        logger.info("dispose");
-        ksession.dispose();
-
-        countDownListener = new CountDownProcessEventListener("start", 2);
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
-                kbase, null, env);
-        ksession.addEventListener(countDownListener);
-        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
-
-        final List<Long> list2 = new ArrayList<Long>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
-            public void beforeProcessStarted(ProcessStartedEvent event) {
-                list2.add(event.getProcessInstance().getId());
-            }
-        });
-
-        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
-                .addEventListener(new TriggerRulesEventListener(ksession));
-
-        countDownListener.waitTillCompleted();
-        ksession.dispose();
-        assertEquals(4, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
+        try {
+            StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+            ksession.addEventListener(countDownListener);
+    
+            assertEquals(0, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
+            long sessionId = ksession.getIdentifier();
+            Environment env = ksession.getEnvironment();
+    
+            final List<Long> list = new ArrayList<Long>();
+            ksession.addEventListener(new DefaultProcessEventListener() {
+                public void beforeProcessStarted(ProcessStartedEvent event) {
+                    list.add(event.getProcessInstance().getId());
+                }
+            });
+    
+            ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
+                    .addEventListener(new TriggerRulesEventListener(ksession));
+    
+            countDownListener.waitTillCompleted();
+    
+            assertEquals(2, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
+            logger.info("dispose");
+            ksession.dispose();
+    
+            countDownListener = new CountDownProcessEventListener("start", 2);
+            ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
+                    kbase, null, env);
+            ksession.addEventListener(countDownListener);
+            AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
+    
+            final List<Long> list2 = new ArrayList<Long>();
+            ksession.addEventListener(new DefaultProcessEventListener() {
+                public void beforeProcessStarted(ProcessStartedEvent event) {
+                    list2.add(event.getProcessInstance().getId());
+                }
+            });
+    
+            ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
+                    .addEventListener(new TriggerRulesEventListener(ksession));
+    
+            countDownListener.waitTillCompleted();
+            ksession.dispose();
+            assertEquals(4, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
+        } finally {
+            ksession = createKnowledgeSession(kbase);
+            abortProcessInstances(ksession);
+            ksession.dispose();
+        }
     }
 
     @Test @Ignore("beta4 phreak")

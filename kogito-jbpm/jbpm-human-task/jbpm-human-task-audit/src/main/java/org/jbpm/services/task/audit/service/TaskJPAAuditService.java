@@ -85,14 +85,14 @@ public class TaskJPAAuditService extends JPAAuditLogService {
 
 	@Override
     public void clear() {
-    	try {
+	    auditTaskDelete().build().execute();
+
+        taskEventInstanceLogDelete().build().execute();
+	    try {
     		super.clear();
     	} catch (Exception e) {
     		logger.warn("Unable to clear using {} due to {}", super.getClass().getName(), e.getMessage());
-    	}
-    	auditTaskDelete().build().execute();
-
-    	taskEventInstanceLogDelete().build().execute();
+    	}    	
     }
 
 	// Query API Query methods ---------------------------------------------------------------------------------------------------

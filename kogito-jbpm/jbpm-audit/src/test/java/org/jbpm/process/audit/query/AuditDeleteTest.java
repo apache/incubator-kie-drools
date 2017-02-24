@@ -193,6 +193,7 @@ public class AuditDeleteTest extends JPAAuditLogService {
     
         int numEntities = 9;
         NodeInstanceLog [] testData = new NodeInstanceLog[numEntities];
+        ProcessInstanceLog [] testDataPI = new ProcessInstanceLog[numEntities];
         
         Calendar cal = randomCal();
     
@@ -212,6 +213,9 @@ public class AuditDeleteTest extends JPAAuditLogService {
             nil.setExternalId(randomString());
             
             testData[i] = nil; 
+            
+            ProcessInstanceLog pLog = buildCompletedProcessInstance(nil.getProcessInstanceId());
+            testDataPI[i] = pLog;
         }
     
         for( int i = 0; i < numEntities; ++i ) { 
@@ -244,6 +248,7 @@ public class AuditDeleteTest extends JPAAuditLogService {
         }
         Object tx = jtaHelper.joinTransaction(em);
         for( int i = 0; i < numEntities; ++i ) {
+            em.persist(testDataPI[i]);
             em.persist(testData[i]);
         }
         jtaHelper.leaveTransaction(em, tx);
@@ -257,6 +262,7 @@ public class AuditDeleteTest extends JPAAuditLogService {
     
         int numEntities = 8;
         VariableInstanceLog [] testData = new VariableInstanceLog[numEntities];
+        ProcessInstanceLog [] testDataPI = new ProcessInstanceLog[numEntities];
        
         Calendar cal = randomCal();
         
@@ -273,6 +279,9 @@ public class AuditDeleteTest extends JPAAuditLogService {
             vil.setExternalId(randomString());
             
             testData[i] = vil; 
+            
+            ProcessInstanceLog pLog = buildCompletedProcessInstance(vil.getProcessInstanceId());
+            testDataPI[i] = pLog;
         }
     
         for( int i = 0; i < numEntities; ++i ) { 
@@ -302,11 +311,30 @@ public class AuditDeleteTest extends JPAAuditLogService {
         }
         Object tx = jtaHelper.joinTransaction(em);
         for( int i = 0; i < numEntities; ++i ) {
+            em.persist(testDataPI[i]);
             em.persist(testData[i]);
         }
         jtaHelper.leaveTransaction(em, tx);
         
         return testData;
+    }
+    
+    private ProcessInstanceLog buildCompletedProcessInstance(long processInstanceId) {
+        ProcessInstanceLog pil = new ProcessInstanceLog(processInstanceId, randomString());
+        pil.setDuration(randomLong());
+        pil.setExternalId(randomString());
+        pil.setIdentity(randomString());
+        pil.setOutcome(randomString());
+        pil.setParentProcessInstanceId(randomLong());
+        pil.setProcessId(randomString());
+        pil.setProcessName(randomString());
+        pil.setProcessVersion(randomString());
+        pil.setStatus(2);
+                
+        pil.setStart(null);        
+        pil.setEnd(null);
+        
+        return pil;
     }
 
     @Test

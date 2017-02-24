@@ -747,6 +747,17 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
             }
         }
     }
+    
+    protected void abortProcessInstances(KieSession ksession) {
+        if (sessionPersistence) {
+            try {
+                logService.findActiveProcessInstances().forEach(pi -> ksession.abortProcessInstance(pi.getId()));
+                
+            } catch(Exception e) {
+                
+            }
+        } 
+    }
 
     public void assertProcessVarExists(ProcessInstance process,
             String... processVarNames) {

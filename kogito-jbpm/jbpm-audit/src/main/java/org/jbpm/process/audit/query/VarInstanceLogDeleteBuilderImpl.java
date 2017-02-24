@@ -57,5 +57,10 @@ public class VarInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBuilderI
     protected String getQueryBase() {
         return VARIABLE_INSTANCE_LOG_DELETE;
     }
+    
+    @Override
+    protected String getSubQuery() {
+        return ONLY_COMPLETED_PROCESS_INSTANCES;
+    }
 
 }

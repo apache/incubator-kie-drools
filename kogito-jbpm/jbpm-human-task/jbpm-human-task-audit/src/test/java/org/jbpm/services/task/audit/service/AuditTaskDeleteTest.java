@@ -20,6 +20,7 @@ import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSour
 import static org.junit.Assert.assertEquals;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -27,8 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.strategy.StandaloneJtaStrategy;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.jbpm.services.task.HumanTaskServiceFactory;
@@ -103,18 +106,32 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
     	String processId = "process";
     	taskTestData = new Task[10];
     	
+    	List<ProcessInstanceLog> pLogs = new ArrayList<>();
+    	
     	for (int i = 0; i < 10; i++) {
     		cal.add(Calendar.HOUR_OF_DAY, 1);
     		Task task = new TaskFluent().setName("This is my task name")
                  .addPotentialGroup("Knights Templer")
                  .setAdminUser("Administrator")
                  .setProcessId(processId + i)
+                 .setProcessInstanceId(i)
                  .setCreatedOn(cal.getTime())
                  .getTask();
 
 			taskService.addTask(task, new HashMap<String, Object>());	
 			taskTestData[i] = task;
+			
+			ProcessInstanceLog plog = buildCompletedProcessInstance(i);
+			pLogs.add(plog);
     	}
+    	
+    	StandaloneJtaStrategy jtaHelper = new StandaloneJtaStrategy(emf);
+        EntityManager em = jtaHelper.getEntityManager();
+        Object tx = jtaHelper.joinTransaction(em);
+        pLogs.forEach(pl -> {
+            em.persist(pl);
+        });
+        jtaHelper.leaveTransaction(em, tx);
     }
 
     @Test
@@ -215,4 +232,21 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
         assertEquals(1, result);
     }
       
+    private ProcessInstanceLog buildCompletedProcessInstance(long processInstanceId) {
+        ProcessInstanceLog pil = new ProcessInstanceLog(processInstanceId, "test");
+        pil.setDuration(0L);
+        pil.setExternalId("none");
+        pil.setIdentity("none");
+        pil.setOutcome("");
+        pil.setParentProcessInstanceId(-1L);
+        pil.setProcessId("test");
+        pil.setProcessName("test process");
+        pil.setProcessVersion("1");
+        pil.setStatus(2);
+                
+        pil.setStart(null);        
+        pil.setEnd(null);
+        
+        return pil;
+    }
 }

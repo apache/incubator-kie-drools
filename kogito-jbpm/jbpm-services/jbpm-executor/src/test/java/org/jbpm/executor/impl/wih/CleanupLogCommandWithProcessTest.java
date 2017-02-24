@@ -172,6 +172,90 @@ public class CleanupLogCommandWithProcessTest extends AbstractExecutorBaseTest {
         assertEquals(0, getVariableLogSize("ScriptTask"));
     }
     
+    @Test
+    public void testRunProcessWithAsyncHandlerDontDeleteActive() throws Exception {
+        CountDownAsyncJobListener countDownListener = configureListener(1);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new DoNothingWorkItemHandler());
+                        return handlers;
+                    }
+                    
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);  
+        
+        assertEquals(0, getProcessLogSize("ScriptTask"));
+        assertEquals(0, getNodeInstanceLogSize("ScriptTask"));
+        assertEquals(0, getTaskLogSize("ScriptTask"));
+        assertEquals(0, getVariableLogSize("ScriptTask"));
+        
+        Date startDate = new Date();
+        
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        assertEquals(1, getProcessLogSize("ScriptTask"));
+        assertEquals(5, getNodeInstanceLogSize("ScriptTask"));
+        assertEquals(0, getTaskLogSize("ScriptTask"));
+        assertEquals(0, getVariableLogSize("ScriptTask"));
+        
+        scheduleLogCleanup(false, true, false, startDate, "ScriptTask", "yyyy-MM-dd", manager.getIdentifier());
+        countDownListener.waitTillCompleted();
+        System.out.println("Aborting process instance " + processInstance.getId());
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        
+        assertEquals(1, getProcessLogSize("ScriptTask"));
+        assertEquals(5, getNodeInstanceLogSize("ScriptTask"));
+        assertEquals(0, getTaskLogSize("ScriptTask"));
+        assertEquals(0, getVariableLogSize("ScriptTask"));
+        
+        runtime.getKieSession().abortProcessInstance(processInstance.getId());
+
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
+               
+        assertEquals(1, getProcessLogSize("ScriptTask"));
+        assertEquals(6, getNodeInstanceLogSize("ScriptTask"));
+        assertEquals(0, getTaskLogSize("ScriptTask"));
+        assertEquals(0, getVariableLogSize("ScriptTask"));
+        
+        // and start another one to keep it active while cleanup happens
+        processInstance = ksession.startProcess("ScriptTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        assertEquals(2, getProcessLogSize("ScriptTask"));
+        assertEquals(11, getNodeInstanceLogSize("ScriptTask"));
+        assertEquals(0, getTaskLogSize("ScriptTask"));
+        assertEquals(0, getVariableLogSize("ScriptTask"));
+        
+        Thread.sleep(1000);
+        
+        scheduleLogCleanup(false, false, false, new Date(), "ScriptTask", "yyyy-MM-dd HH:mm:ss", manager.getIdentifier());
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        assertEquals(1, getProcessLogSize("ScriptTask"));
+        assertEquals(5, getNodeInstanceLogSize("ScriptTask"));
+        assertEquals(0, getTaskLogSize("ScriptTask"));
+        assertEquals(0, getVariableLogSize("ScriptTask"));
+    }
+    
     
     private ExecutorService buildExecutorService() {        
         emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.persistence.complete");
