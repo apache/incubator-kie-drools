@@ -16,29 +16,39 @@
 
 package org.kie.dmn.feel.runtime;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+
+import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.*;
 
 public class FEELErrorMessagesTest {
 
     @Test
     public void unknownVariable() {
         FEEL feel = FEEL.newInstance();
-        feel.addListener( new FEELEventListener() {
-            @Override
-            public void onEvent(FEELEvent event) {
-                System.out.println(event);
-            }
-        } );
+        FEELEventListener fel = Mockito.mock( FEELEventListener.class );
+        feel.addListener( fel );
 
         CompilerContext ctx = feel.newCompilerContext();
-//        ctx.addInputVariableType( "a variable name", BuiltInType.UNKNOWN );
+//        ctx.addInputVariableType( "a variable name", BuiltInType.STRING );
         CompiledExpression ce = feel.compile( "a variable name", ctx );
-        System.out.println(ce);
 
+        ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass( FEELEvent.class );
+        verify( fel, times(2) ).onEvent( captor.capture() );
+
+        Assert.assertThat( captor.getAllValues().size(), is( 2 ) );
+        Assert.assertThat( captor.getAllValues().get(1), is( instanceOf( UnknownVariableErrorEvent.class ) ) );
+        Assert.assertThat( ((UnknownVariableErrorEvent)captor.getAllValues().get(1)).getOffendingSymbol(), is( "a variable name" ) );
     }
+
+
 }

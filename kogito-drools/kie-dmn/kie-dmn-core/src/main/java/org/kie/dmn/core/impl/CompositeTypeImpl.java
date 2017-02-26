@@ -16,52 +16,54 @@
 
 package org.kie.dmn.core.impl;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
 
 public class CompositeTypeImpl
         extends BaseDMNTypeImpl {
 
-    private Map<String, DMNType> fields;
+    private final Map<String, DMNType> fields;
 
     public CompositeTypeImpl() {
-        this( null, null, false, new HashMap<>(  ) );
+        this( null, null, null, false, new LinkedHashMap<>(  ), null, null );
     }
 
-    public CompositeTypeImpl(String name, String id) {
-        this( name, id, false, new HashMap<>(  ) );
+    public CompositeTypeImpl(String namespace, String name, String id) {
+        this( namespace, name, id, false, new LinkedHashMap<>(  ), null, null );
     }
 
-    public CompositeTypeImpl(String name, String id, boolean isCollection) {
-        this( name, id, isCollection, new HashMap<>(  ) );
+    public CompositeTypeImpl(String namespace, String name, String id, boolean isCollection) {
+        this( namespace, name, id, isCollection, new LinkedHashMap<>(  ), null, null );
     }
 
-    public CompositeTypeImpl(String name, String id, boolean isCollection, Map<String, DMNType> fields) {
-        super( name, id, isCollection);
+    public CompositeTypeImpl(String namespace, String name, String id, boolean isCollection, Map<String, DMNType> fields, DMNType baseType, Type feelType ) {
+        super( namespace, name, id, isCollection, baseType, feelType );
         this.fields = fields;
+        if( feelType == null ) {
+            feelType = new MapBackedType( name );
+            setFeelType( feelType );
+            if( fields != null ) {
+                for( Map.Entry<String, DMNType> field : fields.entrySet() ) {
+                    ((MapBackedType) feelType).addField( field.getKey(), ((BaseDMNTypeImpl)field.getValue()).getFeelType() );
+                }
+            }
+        }
     }
 
     public Map<String, DMNType> getFields() {
-        return fields;
+        return Collections.unmodifiableMap( fields );
     }
 
-    @Override
-    public DMNType getField(String fieldName) {
-        return fields.get( fieldName );
+    public void addField( String name, DMNType type ) {
+        this.fields.put( name, type );
+        ((MapBackedType) getFeelType()).addField( name, ((BaseDMNTypeImpl)type).getFeelType() );
     }
 
-    public void setFields(Map<String, DMNType> fields) {
-        this.fields = fields;
-    }
-
-    @Override
-    public Object parseValue(String value) {
-        return null;
-    }
-
-    @Override
     public String toString(Object value) {
         return null;
     }
@@ -73,6 +75,6 @@ public class CompositeTypeImpl
 
     @Override
     public CompositeTypeImpl clone() {
-        return new CompositeTypeImpl( getName(), getId(), isCollection(), fields );
+        return new CompositeTypeImpl( getNamespace(), getName(), getId(), isCollection(), new LinkedHashMap<>( fields), getBaseType(), getFeelType() );
     }
 }

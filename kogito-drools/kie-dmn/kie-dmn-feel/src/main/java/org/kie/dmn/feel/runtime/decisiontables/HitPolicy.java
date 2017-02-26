@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime.decisiontables;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesSelectedEvent;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.kie.dmn.feel.util.Pair;
@@ -211,7 +212,7 @@ public enum HitPolicy {
         if ( matches.isEmpty() ) {
             return null;
         }
-        List<Pair<DTDecisionRule, Object>> pairs = sortPairs( dt, matches, results );
+        List<Pair<DTDecisionRule, Object>> pairs = sortPairs( ctx, dt, matches, results );
         FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
                                                        List<Integer> indexes = Collections.singletonList( pairs.get( 0 ).getLeft().getIndex() + 1 );
                                                        return new DecisionTableRulesSelectedEvent(
@@ -238,7 +239,7 @@ public enum HitPolicy {
         if ( matches.isEmpty() ) {
             return null;
         }
-        List<Pair<DTDecisionRule, Object>> pairs = sortPairs( dt, matches, results );
+        List<Pair<DTDecisionRule, Object>> pairs = sortPairs( ctx, dt, matches, results );
         FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
                                                        List<Integer> indexes = pairs.stream().map( p -> p.getLeft().getIndex() + 1 ).collect( toList() );
                                                        return new DecisionTableRulesSelectedEvent(
@@ -253,7 +254,7 @@ public enum HitPolicy {
         return pairs.stream().map( p -> p.getRight() ).collect( Collectors.toList() );
     }
 
-    private static List<Pair<DTDecisionRule, Object>> sortPairs(DecisionTableImpl dt, List<DTDecisionRule> matches, List<Object> results) {
+    private static List<Pair<DTDecisionRule, Object>> sortPairs(EvaluationContext ctx, DecisionTableImpl dt, List<DTDecisionRule> matches, List<Object> results) {
         List<Pair<DTDecisionRule,Object>> pairs = new ArrayList<>(  );
         for( int i = 0; i < matches.size(); i++ ) {
             pairs.add( new Pair<>( matches.get( i ), results.get( i ) ) );
@@ -261,9 +262,9 @@ public enum HitPolicy {
 
         if ( dt.getOutputs().size() == 1 && !dt.getOutputs().get( 0 ).getOutputValues().isEmpty() ) {
             // single output, just sort the results
-            List<String> outs = dt.getOutputs().get( 0 ).getOutputValues();
+            List<UnaryTest> outs = dt.getOutputs().get( 0 ).getOutputValues();
             pairs.sort( (r1, r2) -> {
-                return sortByOutputsOrder( outs, r1.getRight(), r2.getRight() );
+                return sortByOutputsOrder( ctx, outs, r1.getRight(), r2.getRight() );
             } );
         } else if ( dt.getOutputs().size() > 1 ) {
             // multiple outputs, collect the ones that have values listed
@@ -272,7 +273,7 @@ public enum HitPolicy {
                 Map<String, Object> m1 = (Map<String, Object>) r1.getRight();
                 Map<String, Object> m2 = (Map<String, Object>) r2.getRight();
                 for ( DTOutputClause oc : priorities ) {
-                    int o = sortByOutputsOrder( oc.getOutputValues(), m1.get( oc.getName() ), m2.get( oc.getName() ) );
+                    int o = sortByOutputsOrder( ctx, oc.getOutputValues(), m1.get( oc.getName() ), m2.get( oc.getName() ) );
                     if ( o != 0 ) {
                         return o;
                     }
@@ -284,14 +285,24 @@ public enum HitPolicy {
         return pairs;
     }
 
-    private static int sortByOutputsOrder(List<String> outs, Object r1, Object r2) {
-        int r1i = outs.indexOf( r1 );
-        int r2i = outs.indexOf( r2 );
-        if ( r1i >= 0 && r2i >= 0 ) {
-            return r1i - r2i;
-        } else if ( r1i >= 0 ) {
+    private static int sortByOutputsOrder(EvaluationContext ctx, List<UnaryTest> outs, Object r1, Object r2) {
+        boolean r1found = false;
+        boolean r2found = false;
+        for( int index = 0; index < outs.size() && !r1found && !r2found; index++ ) {
+            UnaryTest ut = outs.get( index );
+            if( ut.apply( ctx, r1 ) ) {
+                r1found = true;
+            }
+            if( ut.apply( ctx, r2 ) ) {
+                r2found = true;
+            }
+
+        }
+        if ( r1found && r2found ) {
+            return 0;
+        } else if ( r1found ) {
             return -1;
-        } else if ( r2i >= 0 ) {
+        } else if ( r2found ) {
             return 1;
         } else {
             return 0;

@@ -44,4 +44,14 @@ public enum HitPolicy {
         throw new IllegalArgumentException( v );
     }
 
+    public boolean isMultiHit() {
+        switch ( this ) {
+            case RULE_ORDER:
+            case OUTPUT_ORDER:
+            case COLLECT:
+                return true;
+            default:
+                return false;
+        }
+    }
 }

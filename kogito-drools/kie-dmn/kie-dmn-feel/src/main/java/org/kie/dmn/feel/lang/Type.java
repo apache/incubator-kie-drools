@@ -16,14 +16,11 @@
 
 package org.kie.dmn.feel.lang;
 
+/**
+ * A type definition interface
+ */
 public interface Type {
 
     String getName();
-
-    // TODO possibly to separate in a marshaller
-    Object fromString( String value );
-
-    // TODO possibly to separate in a marshaller
-    String toString( Object value );
 
 }

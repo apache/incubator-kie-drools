@@ -14,7 +14,11 @@ grammar FEEL_1_1;
 }
 
 @parser::members {
-    private ParserHelper helper = new ParserHelper();
+    private ParserHelper helper = null;
+
+    public void setHelper( ParserHelper helper ) {
+        this.helper = helper;
+    }
 
     public ParserHelper getHelper() {
         return helper;
@@ -160,7 +164,7 @@ contextEntries
 // #60
 contextEntry
     : key { helper.pushName( $key.ctx ); }
-      ':' expression { helper.popName(); }
+      ':' expression { helper.popName(); helper.defineVariable( $key.ctx ); }
     ;
 
 // #61
@@ -234,8 +238,8 @@ powerExpression
 
 filterPathExpression
     :   unaryExpression
-    |   filterPathExpression '[' filter=expression ']'
-    |   filterPathExpression '.' qualifiedName
+    |   filterPathExpression '[' {helper.enableDynamicResolution();} filter=expression {helper.disableDynamicResolution();} ']'
+    |   filterPathExpression '.' {helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();}
     ;
 
 unaryExpression
@@ -318,12 +322,13 @@ qualifiedName
 @init {
     String name = null;
     int count = 0;
+    java.util.List<String> qn = new java.util.ArrayList<String>();
 }
 @after {
     for( int i = 0; i < count; i++ )
         helper.dismissScope();
 }
-    : n1=nameRef { name = getOriginalText( $n1.ctx ); }
+    : n1=nameRef { name = getOriginalText( $n1.ctx ); qn.add( name ); helper.validateVariable( $n1.ctx, qn, name ); }
         ( '.'
             {helper.recoverScope( name ); count++;}
             n2=nameRef
@@ -711,5 +716,5 @@ LINE_COMMENT
     ;
 
 ANY_OTHER_CHAR
-    : .
+    : ~[ \t\r\n\u000c]
     ;

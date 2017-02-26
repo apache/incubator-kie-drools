@@ -54,6 +54,9 @@ public class FilterExpressionNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
+        if( expression == null ) {
+            return null;
+        }
         Object value = expression.evaluate( ctx );
         // spec determines single values should be treated as lists of one element
         List list = value instanceof List ? (List) value : Arrays.asList( value );

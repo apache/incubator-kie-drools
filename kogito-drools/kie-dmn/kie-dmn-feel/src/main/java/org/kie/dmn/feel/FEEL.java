@@ -19,6 +19,7 @@ package org.kie.dmn.feel;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
@@ -114,6 +115,19 @@ public interface FEEL {
      * @return a List of compiled UnaryTests
      */
     List<UnaryTest> evaluateUnaryTests( String expression );
+
+    /**
+     * Evaluates the given expression as a list of of unary tests.
+     * The syntax for this is defined in the FEEL grammar rule #17,
+     * i.e., a list of unary tests separated by commas.
+     *
+     * @param expression a unary test list expression
+     * @param variableTypes map of variable names and corresponding types,
+     *                      necessary to compile the unary tests
+     *
+     * @return a List of compiled UnaryTests
+     */
+    List<UnaryTest> evaluateUnaryTests(String expression, Map<String, Type> variableTypes);
 
     /**
      * Registers a new event listener into this FEEL instance.

@@ -33,13 +33,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class EvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger( EvalHelper.class );
+    private static final Pattern SPACES_PATTERN = Pattern.compile( "\\s+" );
 
     public static String normalizeVariableName(String name) {
-        return name.replaceAll( "\\s+", " " );
+        return SPACES_PATTERN.matcher( name ).replaceAll( " " );
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {

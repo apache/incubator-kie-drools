@@ -16,11 +16,13 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import jdk.nashorn.internal.runtime.regexp.joni.constants.StringType;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
@@ -80,11 +82,19 @@ public class FEELImpl
 
     @Override
     public List<UnaryTest> evaluateUnaryTests(String expression) {
+        return evaluateUnaryTests( expression, Collections.emptyMap() );
+    }
+
+    @Override
+    public List<UnaryTest> evaluateUnaryTests(String expression, Map<String, Type> variableTypes) {
         // DMN defines a special case where, unless the expressions are unary tests
         // or ranges, they need to be converted into an equality test unary expression.
         // This way, we have to compile and check the low level AST nodes to properly
         // deal with this case
         CompilerContext ctx = newCompilerContext();
+        for( Map.Entry<String, Type> e : variableTypes.entrySet() ) {
+            ctx.addInputVariableType( e.getKey(), e.getValue() );
+        }
         CompiledExpressionImpl compiledExpression = (CompiledExpressionImpl) compileExpressionList( expression, ctx );
         if( compiledExpression != null ) {
             ListNode listNode = (ListNode) compiledExpression.getExpression();

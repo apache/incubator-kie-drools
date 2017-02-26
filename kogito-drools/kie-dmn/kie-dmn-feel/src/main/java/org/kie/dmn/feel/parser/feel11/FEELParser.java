@@ -34,6 +34,7 @@ public class FEELParser {
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         FEEL_1_1Parser parser = new FEEL_1_1Parser( tokens );
+        parser.setHelper( new ParserHelper( eventsManager ) );
         parser.setErrorHandler( new FEELErrorHandler() );
         parser.removeErrorListeners(); // removes the error listener that prints to the console
         parser.addErrorListener( new FEELParserErrorListener( eventsManager ) );
@@ -52,6 +53,7 @@ public class FEELParser {
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         FEEL_1_1Parser parser = new FEEL_1_1Parser( tokens );
+        parser.setHelper( new ParserHelper() );
         parser.setErrorHandler( new FEELErrorHandler() );
         FEELParserErrorChecker errorChecker = new FEELParserErrorChecker();
         parser.removeErrorListeners(); // removes the error listener that prints to the console

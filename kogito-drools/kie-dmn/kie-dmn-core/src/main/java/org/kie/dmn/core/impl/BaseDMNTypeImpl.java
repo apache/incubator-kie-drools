@@ -21,19 +21,38 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.UnaryTest;
 
 public abstract class BaseDMNTypeImpl
         implements DMNType {
 
-    private String  name;
-    private String  id;
-    private boolean collection;
-    private List<?> allowedValues;
+    private String          namespace;
+    private String          name;
+    private String          id;
+    private boolean         collection;
+    private List<UnaryTest> allowedValues;
+    private DMNType         baseType;
+    private Type            feelType;
 
-    public BaseDMNTypeImpl(String name, String id, boolean collection) {
+    public BaseDMNTypeImpl(String namespace, String name, String id, boolean collection, DMNType baseType, Type feelType) {
+        this.namespace = namespace;
         this.name = name;
         this.id = id;
         this.collection = collection;
+        this.feelType = feelType;
+        this.baseType = baseType;
+    }
+
+    @Override
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
     }
 
     @Override
@@ -69,23 +88,39 @@ public abstract class BaseDMNTypeImpl
     }
 
     @Override
-    public DMNType getField(String typeName) {
-        return null;
-    }
-
-    @Override
     public boolean isComposite() {
         return false;
     }
 
-    public List<?> getAllowedValues() {
+    public List<UnaryTest> getAllowedValues() {
         return allowedValues;
     }
 
-    public void setAllowedValues(List<?> allowedValues) {
+    public void setAllowedValues(List<UnaryTest> allowedValues) {
         this.allowedValues = allowedValues;
+    }
+
+    @Override
+    public DMNType getBaseType() {
+        return baseType;
+    }
+
+    public void setBaseType(DMNType baseType) {
+        this.baseType = baseType;
     }
 
     public abstract BaseDMNTypeImpl clone();
 
+    public void setFeelType(Type feelType) {
+        this.feelType = feelType;
+    }
+
+    public Type getFeelType() {
+        return feelType;
+    }
+
+    @Override
+    public String toString() {
+        return "DMNType{ "+getNamespace()+" : "+getName()+" }";
+    }
 }
