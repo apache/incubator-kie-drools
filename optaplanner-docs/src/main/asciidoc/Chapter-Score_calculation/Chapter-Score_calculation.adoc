@@ -873,7 +873,7 @@ end
 
 [NOTE]
 ====
-To learn more about the Drools rule language (DRL), consult http://drools.org/learn/documentation.html[the Drools documentation].
+To learn more about the Drools rule language (DRL), consult https://drools.org/learn/documentation.html[the Drools documentation].
 ====
 
 Most use cases also weigh their constraint types or even their matches differently, by using a specific weight for each constraint match.
