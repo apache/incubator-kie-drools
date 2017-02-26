@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.not;
 import java.util.Set;
 
 import org.junit.Test;
-import org.kie.dmn.feel.lang.CustomType;
+import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.FEELType;
 
 import test.Person;
@@ -16,8 +16,8 @@ public class JavaBackedTypeTest {
 
     @Test
     public void testPerson() {
-        CustomType personType = (CustomType) JavaBackedType.of( Person.class );
-        Set<String> personProperties = personType.getProperties().keySet();
+        CompositeType personType = (CompositeType) JavaBackedType.of( Person.class );
+        Set<String> personProperties = personType.getFields().keySet();
         
         assertThat( personProperties,  hasItem("home address") );
         assertThat( personProperties,  hasItem("address") );
@@ -60,8 +60,8 @@ public class JavaBackedTypeTest {
     
     @Test
     public void testMyPojoNoMethodAnn() {
-        CustomType personType = (CustomType) JavaBackedType.of( MyPojoNoMethodAnn.class );
-        Set<String> personProperties = personType.getProperties().keySet();
+        CompositeType personType = (CompositeType) JavaBackedType.of( MyPojoNoMethodAnn.class );
+        Set<String> personProperties = personType.getFields().keySet();
         
         assertThat( personProperties,  hasItem("a") );
         assertThat( personProperties,  hasItem("b") );

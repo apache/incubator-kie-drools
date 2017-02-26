@@ -44,11 +44,11 @@ public class InputDataNodeImpl extends DMNBaseNode
         return this.inputData.getName();
     }
 
-    public DMNType getDmnType() {
+    public DMNType getType() {
         return dmnType;
     }
 
-    public void setDmnType(DMNType dmnType) {
+    public void setType(DMNType dmnType) {
         this.dmnType = dmnType;
     }
 

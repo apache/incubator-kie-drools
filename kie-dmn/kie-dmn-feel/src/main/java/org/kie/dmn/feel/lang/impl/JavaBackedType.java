@@ -2,33 +2,25 @@ package org.kie.dmn.feel.lang.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.kie.dmn.feel.lang.CustomType;
+import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.FEELType;
-import org.kie.dmn.feel.lang.Property;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.ParserHelper;
 import org.kie.dmn.feel.util.EvalHelper;
 
-public class JavaBackedType implements CustomType {
+public class JavaBackedType implements CompositeType {
     private static Map<Class<?>, JavaBackedType> cache = new HashMap<>();
     
     private static Set<Method> javaObjectMethods = new HashSet<>( Arrays.asList( Object.class.getMethods() ) );
     
     private Class<?> wrapped;
-    private Map<String, Property> properties = new HashMap<>();
+    private Map<String, Type> properties = new LinkedHashMap<>();
 
     private JavaBackedType(Class<?> class1) {
         this.wrapped = class1;
@@ -39,9 +31,8 @@ public class JavaBackedType implements CustomType {
             .flatMap( m -> Stream.<Function<Method, Optional<String>>>of(JavaBackedType::methodToCustomProperty, EvalHelper::propertyFromAccessor)
                             .map(f -> f.apply( m ))
                             .filter(Optional::isPresent)
-                            .map(p -> new PropertyImpl( p.get(), ParserHelper.determineTypeFromClass(m.getReturnType() ) )) )
-            .forEach( p -> properties.put( p.getName() , p ) );
-            ;
+                            .map(p -> new Property( p.get(), ParserHelper.determineTypeFromClass( m.getReturnType() ) ) ) )
+            .forEach( p -> properties.put( p.name , p.type ) );
     }
 
     /**
@@ -77,22 +68,22 @@ public class JavaBackedType implements CustomType {
         return wrapped.getName();
     }
 
-    @Override
-    public Object fromString(String value) {
-        return null;
-    }
-
-    @Override
-    public String toString(Object value) {
-        return null;
-    }
-
     public Class<?> getWrapped() {
         return wrapped;
     }
 
     @Override
-    public Map<String, Property> getProperties() {
+    public Map<String, Type> getFields() {
         return this.properties;
+    }
+
+    private static class Property {
+        public final String name;
+        public final Type type;
+
+        public Property( String name, Type type ) {
+            this.name = name;
+            this.type = type;
+        }
     }
 }

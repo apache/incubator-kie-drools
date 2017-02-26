@@ -66,8 +66,6 @@ public interface DMNModel {
 
     Set<ItemDefNode> getItemDefinitions();
 
-    DMNType resolveType(QName ref);
-
     List<DMNMessage> getMessages();
 
     List<DMNMessage> getMessages(DMNMessage.Severity... sevs);

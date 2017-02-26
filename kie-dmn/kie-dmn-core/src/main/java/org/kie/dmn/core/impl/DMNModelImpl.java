@@ -37,7 +37,6 @@ public class DMNModelImpl
         implements DMNModel {
 
     private Definitions definitions;
-    private Map<QName, DMNType>                     typeRegistry = new HashMap<>();
     private Map<String, InputDataNode>              inputs       = new HashMap<>();
     private Map<String, DecisionNode>               decisions    = new HashMap<>();
     private Map<String, BusinessKnowledgeModelNode> bkms         = new HashMap<>();
@@ -230,15 +229,6 @@ public class DMNModelImpl
     @Override
     public Set<ItemDefNode> getItemDefinitions() {
         return this.itemDefs.values().stream().collect( Collectors.toSet() );
-    }
-
-    public Map<QName, DMNType> getTypeRegistry() {
-        return typeRegistry;
-    }
-
-    @Override
-    public DMNType resolveType(QName ref) {
-        return typeRegistry.get( ref );
     }
 
     @Override

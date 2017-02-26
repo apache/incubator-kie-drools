@@ -16,13 +16,6 @@
 
 package org.kie.dmn.api.core.event;
 
-import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
-
 public interface DMNRuntimeEventListener {
 
     void beforeEvaluateDecision(BeforeEvaluateDecisionEvent event);

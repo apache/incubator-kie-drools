@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.types;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -30,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public enum BuiltInType implements Type {
+public enum BuiltInType implements SimpleType {
 
     UNKNOWN("unknown"),
     NUMBER("number"),
@@ -62,7 +63,6 @@ public enum BuiltInType implements Type {
         return names;
     }
 
-    @Override
     public Object fromString(String value) {
         switch ( this ) {
             case NUMBER: return BuiltInFunctions.getFunction( NumberFunction.class).invoke( value, null, null ).cata(BuiltInType.justNull(), Function.identity());
@@ -82,7 +82,6 @@ public enum BuiltInType implements Type {
         return null;
     }
 
-    @Override
     public String toString(Object value) {
         return BuiltInFunctions.getFunction( StringFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
     }

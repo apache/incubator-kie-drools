@@ -48,7 +48,7 @@ public class DTInvokerFunction
             }
             return dt.evaluate( ctx, params );
         } catch ( Exception e ) {
-            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking decision table '"+getName()+"'.", e);
+            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking decision table '"+getName()+"': "+e.getClass().getSimpleName(), e);
         } finally {
             ctx.exitFrame();
         }

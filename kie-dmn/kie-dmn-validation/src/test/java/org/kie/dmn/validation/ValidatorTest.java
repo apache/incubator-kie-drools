@@ -19,7 +19,7 @@ package org.kie.dmn.validation;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
-import java.io.File;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -32,6 +32,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.DMNInputRuntimeTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
@@ -75,13 +77,16 @@ public class ValidatorTest {
             fail("Unable for the test suite to locate the file for XML validation.");
         }
         
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( filename, this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", modelName );
-        assertThat( dmnModel, notNullValue() );
-
-        Definitions definitions = dmnModel.getDefinitions();
-        assertThat( definitions, notNullValue() );
-        return definitions;
+        DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();
+        try( InputStreamReader isr = new InputStreamReader( getClass().getResourceAsStream( filename ) ) ) {
+            Definitions definitions = marshaller.unmarshal( isr );
+            assertThat( definitions, notNullValue() );
+            return definitions;
+        } catch ( IOException e ) {
+            e.printStackTrace();
+            fail("Unable for the test suite to locate the file for validation.");
+        }
+        return null;
     }
         
     @Test
