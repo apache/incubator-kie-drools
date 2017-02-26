@@ -21,21 +21,20 @@ import java.util.Map;
 public interface DMNType
         extends Cloneable {
 
+    String getNamespace();
+
     String getName();
 
     String getId();
 
     boolean isCollection();
 
-    Object parseValue( String value );
-
-    String toString( Object value );
-
     boolean isComposite();
 
     Map<String, DMNType> getFields();
 
-    DMNType getField( String fieldName );
+    DMNType getBaseType();
 
     DMNType clone();
+
 }

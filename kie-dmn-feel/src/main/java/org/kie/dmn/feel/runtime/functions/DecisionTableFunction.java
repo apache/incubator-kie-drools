@@ -16,6 +16,9 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.model.v1_1.DMNElement;
+import org.kie.dmn.feel.model.v1_1.DecisionTable;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
@@ -56,10 +59,12 @@ public class DecisionTableFunction
      of the output values.
      */
     public Object invoke(
-            @ParameterName("outputs") Object outputs, @ParameterName("input expression list") Object inputExpressionList,
+            @ParameterName("outputs") Object outputs,
+            @ParameterName("input expression list") Object inputExpressionList,
             @ParameterName("input values list") List<?> inputValuesList,
             @ParameterName("output values") Object outputValues,
-            @ParameterName("rule list") List<List> ruleList, @ParameterName("hit policy") String hitPolicy,
+            @ParameterName("rule list") List<List> ruleList,
+            @ParameterName("hit policy") String hitPolicy,
             @ParameterName("default output value") Object defaultOutputValue) {
         // input expression list can have a single element or be a list
         // TODO isn't ^ conflicting with the specs page 136 "input expression list: a LIST of the"
@@ -84,9 +89,10 @@ public class DecisionTableFunction
         if ( outputValues != null ) {
             if ( parseOutputs.size() == 1 ) {
                 outputClauses = new ArrayList<>();
-                outputClauses.add( new DTOutputClause( parseOutputs.get( 0 ), (List<String>) outputValues ) );
+                List<UnaryTest> outputValuesCompiled = objectToUnaryTestList( Collections.singletonList( (List<Object>) outputValues ) ).get(0);
+                outputClauses.add( new DTOutputClause( parseOutputs.get( 0 ), outputValuesCompiled ) );
             } else {
-                List<List<String>> listOfList = (List<List<String>>) outputValues;
+                List<List<UnaryTest>> listOfList = objectToUnaryTestList( (List<List<Object>>) outputValues );
                 // zip inputExpression with its inputValue
                 outputClauses = IntStream.range( 0, parseOutputs.size() )
                         .mapToObj( i -> new DTOutputClause( parseOutputs.get( i ), listOfList.get( i ) ) )
@@ -104,6 +110,21 @@ public class DecisionTableFunction
         // TODO is there a way to avoid UUID and get from _evaluation_ ctx the name of the wrapping context? 
         DecisionTableImpl dti = new DecisionTableImpl( UUID.randomUUID().toString(), inputExpressions, inputs, outputClauses, decisionRules, HitPolicy.fromString( hitPolicy ) );
         return new DTInvokerFunction( dti );
+    }
+
+    protected List<List<UnaryTest>> objectToUnaryTestList(List<List<Object>> values) {
+        if ( values == null || values.isEmpty() ) {
+            return Collections.emptyList();
+        }
+        List<List<UnaryTest>> tests = new ArrayList<>();
+        for ( List<Object> lo : values ) {
+            List<UnaryTest> uts = new ArrayList<>(  );
+            tests.add(uts);
+            for( Object t : lo ) {
+                uts.add( toUnaryTest( t ) );
+            }
+        }
+        return tests;
     }
 
     public static DTDecisionRule toDecisionRule(int index, List<?> rule, int inputSize) {

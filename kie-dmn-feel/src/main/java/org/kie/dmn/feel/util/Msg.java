@@ -21,8 +21,9 @@ package org.kie.dmn.feel.util;
  *
  */
 public class Msg {
-    
+
     public static final Message0 NULL_OR_UNKNOWN_OPERATOR = new Message0("Null or unknown operator");
+    public static final Message1 UNKNOWN_VARIABLE_REFERENCE = new Message1("Unknown variable name '%s'");
     public static final Message0 NEGATING_A_NULL = new Message0("Negating a null");
     public static final Message1 ERROR_ACCESSING_QUALIFIED_NAME = new Message1("Error accessing qualified name: %s");
     public static final Message2 ERROR_EVALUATING_PATH_EXPRESSION = new Message2("Error evaluating path expression: %s. %s");

@@ -35,10 +35,12 @@ import org.mockito.ArgumentCaptor;
 import java.math.BigDecimal;
 import java.time.*;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -177,6 +179,19 @@ public class DMNRuntimeTest {
     }
 
     @Test
+    public void testErrorMessages() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "car_damage_responsibility2.dmn", this.getClass() );
+
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_dcc63ab0-3a53-4628-8bee-3ae1f1ad683b", "Car Damage Responsibility" );
+        assertThat( dmnModel, notNullValue() );
+
+        assertThat( dmnModel.hasErrors(), is( true ) );
+        System.out.println(dmnModel.getMessages().stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) ));
+    }
+
+    @Test
     public void testOutputReuse() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Input_reuse_in_output.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_098bb607-eff7-4772-83ac-6ded8b371fa7", "Input reuse in output" );
@@ -271,14 +286,14 @@ public class DMNRuntimeTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "BoxedContext.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_0de36357-fec0-4b4e-b7f1-382d381e06e9", "Dessin 1" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
+        assertThat( formatMessages( dmnModel.getMessages() ) , dmnModel.hasErrors(), is( false ) );
 
         DMNContext context = DMNFactory.newContext();
         context.set( "a", 10 );
         context.set( "b", 5 );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        assertThat( dmnResult.hasErrors(), is( false ) );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
         assertThat( (Map<String, Object>) dmnResult.getContext().get( "Math" ), hasEntry( "Sum", BigDecimal.valueOf( 15 ) ) );
         assertThat( (Map<String, Object>) dmnResult.getContext().get( "Math" ), hasEntry( "Product", BigDecimal.valueOf( 50 ) ) );
     }
@@ -524,7 +539,6 @@ public class DMNRuntimeTest {
         runtime.addListener( DMNRuntimeUtil.createListener() );
 
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_e215ed7a-701b-4c53-b8df-4b4d23d5fe32", "Person filtering by age" );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( dmnModel, notNullValue() );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
@@ -609,7 +623,7 @@ public class DMNRuntimeTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_using_variables.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( dmnModel.hasErrors(), is( false ) );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
         Map<String, Object> complex = new HashMap<>(  );
         complex.put( "aBoolean", true );
@@ -636,14 +650,14 @@ public class DMNRuntimeTest {
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.hasErrors(), is( false ) );
 
-        Map<String, Object> complex = new HashMap<>(  );
+        Map<String, Object> complex = new HashMap<>();
         complex.put( "aBoolean", true );
         complex.put( "aNumber", 10 );
         complex.put( "aString", "bar" );
         DMNContext context = DMNFactory.newContext();
         context.set( "Complex", complex );
         context.set( "Another boolean", false );
-        context.set( "Another String", "foo");
+        context.set( "Another String", "foo" );
         context.set( "Another number", 20 );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
@@ -654,10 +668,33 @@ public class DMNRuntimeTest {
         assertThat( result.get( "Compare String" ), is( "Different String" ) );
     }
 
+    @Test
+    public void testGetViableLoanProducts() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Get_Viable_Loan_Products.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_3e1a628d-36bc-45f1-8464-b201735e5ce0", "Get Viable Loan Products" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        Map<String, Object> requested = new HashMap<>(  );
+        requested.put( "PropertyZIP", "91001" );
+        requested.put( "LoanAmt", 300000 );
+        requested.put( "Objective", "Payment" );
+        requested.put( "DownPct", new BigDecimal( "0.4" ) );
+        requested.put( "MortgageType", "Fixed 20" );
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Requested", requested );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( dmnModel.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "isConforming" ), is( true ) );
+        assertThat( (Collection<Object>) result.get( "LoanTypes" ), hasSize( 3 ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
-
 
 }
 

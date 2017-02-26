@@ -21,9 +21,9 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.kie.dmn.feel.lang.CustomType;
-import org.kie.dmn.feel.lang.FEELProperty;
-import org.kie.dmn.feel.lang.Property;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.CompositeType;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Symbol;
@@ -35,6 +35,7 @@ import org.kie.dmn.feel.lang.types.VariableSymbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,16 +50,23 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public class ParserHelper {
     public static final Logger LOG = LoggerFactory.getLogger(ParserHelper.class);
 
+    private FEELEventListenersManager eventsManager;
     private SymbolTable   symbols      = new SymbolTable();
     private Scope         currentScope = symbols.getGlobalScope();
     private Stack<String> currentName  = new Stack<>();
+    private int dynamicResolution = 0;
 
     public ParserHelper() {
+        this( null );
+    }
+
+    public ParserHelper(FEELEventListenersManager eventsManager) {
+        this.eventsManager = eventsManager;
         // initial context is loaded
         currentName.push( Scope.LOCAL );
     }
@@ -102,12 +110,12 @@ public class ParserHelper {
             currentScope = s;
         } else { 
             Symbol resolved = this.currentScope.resolve(name);
-            if ( resolved != null && resolved.getType() instanceof CustomType ) {
+            if ( resolved != null && resolved.getType() instanceof CompositeType ) {
                 pushName(name);
                 pushScope();
-                CustomType type = (CustomType) resolved.getType();
-                for ( Property f : type.getProperties().values() ) {
-                    this.currentScope.define(new VariableSymbol( f.getName(), f.getType() ));
+                CompositeType type = (CompositeType) resolved.getType();
+                for ( Map.Entry<String, Type> f : type.getFields().entrySet() ) {
+                    this.currentScope.define(new VariableSymbol( f.getKey(), f.getValue() ));
                 }
                 LOG.trace(".. PUSHED, scope name {} with symbols {}", this.currentName.peek(), this.currentScope.getSymbols());
             } else {
@@ -119,6 +127,37 @@ public class ParserHelper {
     public void dismissScope() {
         LOG.trace("dismissScope()");
         popScope();
+    }
+
+    public void validateVariable( ParserRuleContext ctx, List<String> qn, String name ) {
+        if( eventsManager != null && !isDynamicResolution() ) {
+            if( this.currentScope.getChildScopes().get( name ) == null && this.currentScope.resolve( name ) == null ) {
+                // report error
+                FEELEventListenersManager.notifyListeners( eventsManager , () -> {
+                    String varName = qn.stream().collect( Collectors.joining( "." ) );
+                    return new UnknownVariableErrorEvent( FEELEvent.Severity.ERROR,
+                                                          "Unknown variable '" + varName + "'",
+                                                          ctx.getStart().getLine(),
+                                                          ctx.getStart().getCharPositionInLine(),
+                                                          varName );
+                                                           }
+                );
+            }
+        }
+    }
+
+    public boolean isDynamicResolution() {
+        return dynamicResolution > 0;
+    }
+
+    public void disableDynamicResolution() {
+        if( dynamicResolution > 0 ) {
+            this.dynamicResolution--;
+        }
+    }
+
+    public void enableDynamicResolution() {
+        this.dynamicResolution++;
     }
     
     public void defineVariable(ParserRuleContext ctx) {

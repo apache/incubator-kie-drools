@@ -35,13 +35,4 @@ public class BuiltInTypeSymbol
         return getId();
     }
 
-    @Override
-    public Object fromString(String value) {
-        return null;
-    }
-
-    @Override
-    public String toString(Object value) {
-        return null;
-    }
 }
