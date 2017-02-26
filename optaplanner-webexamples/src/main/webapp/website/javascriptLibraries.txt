@@ -2,7 +2,7 @@ Javascript libraries
 ====================
 
 Twitter bootstrap version: 3.1.1
-Downloaded from: https://twitter.github.com/bootstrap/
+Downloaded from: https://getbootstrap.com/
 License: MIT - this is compatible with ASL 2.0: http://www.apache.org/legal/resolved.html#category-a
 
 jQuery version: 1.11.0
