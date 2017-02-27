@@ -168,6 +168,11 @@ public class RuleBuildContext extends PackageBuildContext {
         declarationResolver.setRule( rule );
     }
 
+    @Override
+    public Class< ? > resolveVarType(String identifier) {
+        return getDeclarationResolver().resolveVarType( identifier );
+    }
+
     private void initRuleUnitClassName() {
         String ruleUnitClassName = rule.getRuleUnitClassName();
         boolean nameInferredFromResource = false;

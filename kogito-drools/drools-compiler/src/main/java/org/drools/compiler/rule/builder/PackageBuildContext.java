@@ -16,6 +16,11 @@
 
 package org.drools.compiler.rule.builder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -28,11 +33,6 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Dialectable;
 import org.drools.core.rule.MVELDialectRuntimeData;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A context for the current build
@@ -243,5 +243,9 @@ public class PackageBuildContext {
 
     public MVELDialectRuntimeData getMVELDialectRuntimeData() {
         return ( MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+    }
+
+    public Class< ? > resolveVarType(String identifier) {
+        return getKnowledgeBuilder().getGlobals().get( identifier );
     }
 }
