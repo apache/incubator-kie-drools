@@ -106,7 +106,7 @@ public class BoundIdentifiers {
     }
 
     public Class< ? > resolveVarType(String identifier) {
-        return context instanceof RuleBuildContext ? ( (RuleBuildContext) context ).getDeclarationResolver().resolveVarType( identifier ) : null;
+        return context.resolveVarType(identifier);
     }
 
     public String toString() {
