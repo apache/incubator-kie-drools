@@ -244,26 +244,14 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
     public WindowNode addWindowNode( WindowDeclaration window,
                                      InternalKnowledgeBase kBase ) {
+
         // creates a clean build context for each subrule
-        final BuildContext context = new BuildContext( kBase );
-        
-        if ( kBase.getConfiguration().isSequential() ) {
-            context.setTupleMemoryEnabled( false );
-            context.setObjectTypeNodeMemoryEnabled( false );
-        } else {
-            context.setTupleMemoryEnabled( true );
-            context.setObjectTypeNodeMemoryEnabled( true );
-        }
-        
-        // gets the appropriate builder
-        final WindowBuilder builder = WindowBuilder.INSTANCE;
+        BuildContext context = new BuildContext( kBase );
+        context.setTupleMemoryEnabled( !kBase.getConfiguration().isSequential() );
+        context.setObjectTypeNodeMemoryEnabled( !kBase.getConfiguration().isSequential() );
 
         // builds and attach
-        builder.build( context,
-                       this.utils,
-                       window );
-
+        WindowBuilder.INSTANCE.build( context, this.utils, window );
         return (WindowNode) context.getObjectSource();
     }
-
 }
