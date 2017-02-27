@@ -18,6 +18,7 @@ package org.jbpm.kie.services.impl;
 
 import static java.util.Objects.requireNonNull;
 import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
+import static org.jbpm.kie.services.impl.CommonUtils.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -805,7 +806,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 	    
 	    Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
-        params.put("groupIds", identityProvider.getRoles());
+        params.put("groupIds", getAuthenticatedUserRoles(identityProvider));
         params.put("status", allActiveStatus); 
         
         applyQueryContext(params, filter);
@@ -818,7 +819,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, QueryFilter filter) {
 	    Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);        
-        params.put("groupIds", identityProvider.getRoles());
+        params.put("groupIds", getAuthenticatedUserRoles(identityProvider));
         
         applyQueryContext(params, filter);
         applyQueryFilter(params, filter);
@@ -829,7 +830,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
 	    Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);        
-        params.put("groupIds", adoptList(groupIds, identityProvider.getRoles()));
+        params.put("groupIds", adoptList(groupIds, getAuthenticatedUserRoles(identityProvider)));
         params.put("status", adoptList(status, allActiveStatus));  
         
         applyQueryContext(params, filter);
@@ -841,7 +842,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, QueryFilter filter) {
 	    Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);        
-        params.put("groupIds", identityProvider.getRoles());
+        params.put("groupIds", getAuthenticatedUserRoles(identityProvider));
         params.put("status", adoptList(status, allActiveStatus));  
         
         applyQueryContext(params, filter);
@@ -941,7 +942,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
         params.put("status", adoptList(statuses, allActiveStatus));
-        params.put("groupIds", identityProvider.getRoles());
+        params.put("groupIds", getAuthenticatedUserRoles(identityProvider));
         applyQueryContext(params, filter);
         applyQueryFilter(params, filter);
         return (List<TaskSummary>) commandService.execute(
@@ -1066,7 +1067,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 
         List<String> owners = new ArrayList<String>();
         owners.add(userId);
-        owners.addAll(identityProvider.getRoles());
+        owners.addAll(getAuthenticatedUserRoles(identityProvider));
     
         Map<String, Object> params = new HashMap<String, Object>();           
         params.put("potentialOwners", owners);
@@ -1082,7 +1083,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     public List<AuditTask> getAllAdminAuditTask(String userId, QueryFilter filter){
          List<String> businessAdmins = new ArrayList<String>();
          businessAdmins.add(userId);
-         businessAdmins.addAll(identityProvider.getRoles());
+         businessAdmins.addAll(getAuthenticatedUserRoles(identityProvider));
      
          Map<String, Object> params = new HashMap<String, Object>();           
          params.put("businessAdmins", businessAdmins);
@@ -1316,5 +1317,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
          }
          return source;
      }
+     
+     
 
 }

@@ -16,14 +16,14 @@
 
 package org.jbpm.kie.services.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.api.command.Command;
 import org.kie.internal.command.ProcessInstanceIdCommand;
+import org.kie.internal.identity.IdentityProvider;
 
-/**
- * This class is also used in the kie-remote-client module
- * 
- *
- */
+
 public class CommonUtils {
 	
 	/**
@@ -42,4 +42,16 @@ public class CommonUtils {
         return null;
 		
 	}
+	
+	// to compensate https://hibernate.atlassian.net/browse/HHH-8091 add empty element to the roles in case it's empty
+	public static List<String> getAuthenticatedUserRoles(IdentityProvider identityProvider) {
+        List<String> roles = identityProvider != null ? identityProvider.getRoles() : new ArrayList<>();
+        
+        if (roles == null || roles.isEmpty()) {
+            roles = new ArrayList<>();
+            roles.add("");
+        }
+        
+        return roles;
+    }
 }

@@ -19,6 +19,7 @@ package org.jbpm.casemgmt.impl;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
+import static org.jbpm.kie.services.impl.CommonUtils.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -539,7 +540,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         params.put("caseId", caseId + "%");
         params.put("userId", userId);
         params.put("status", adoptList(status, allActiveStatus));
-        params.put("groupIds", identityProvider.getRoles());
+        params.put("groupIds", getAuthenticatedUserRoles(identityProvider));
         applyQueryContext(params, queryContext);
         List<TaskSummary> tasks =  commandService.execute(new QueryNameCommand<List<TaskSummary>>("getCaseTasksAsPotentialOwner", params));
         return tasks;
@@ -552,7 +553,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         params.put("caseId", caseId + "%");
         params.put("userId", userId);
         params.put("status", adoptList(status, allActiveStatus));
-        params.put("groupIds", identityProvider.getRoles());
+        params.put("groupIds", getAuthenticatedUserRoles(identityProvider));
         applyQueryContext(params, queryContext);
         List<TaskSummary> tasks =  commandService.execute(new QueryNameCommand<List<TaskSummary>>("getCaseTasksAsBusinessAdmin", params));
         return tasks;
@@ -564,7 +565,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         params.put("caseId", caseId + "%");
         params.put("userId", userId);
         params.put("status", adoptList(status, allActiveStatus));
-        params.put("groupIds", identityProvider.getRoles());
+        params.put("groupIds", getAuthenticatedUserRoles(identityProvider));
         applyQueryContext(params, queryContext);
         List<TaskSummary> tasks =  commandService.execute(new QueryNameCommand<List<TaskSummary>>("getCaseTasksAsStakeholder", params));
         return tasks;
@@ -759,7 +760,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     protected List<String> collectUserAuthInfo() {
         List<String> entities = new ArrayList<>();
         entities.add(identityProvider.getName());
-        entities.addAll(identityProvider.getRoles());
+        entities.addAll(getAuthenticatedUserRoles(identityProvider));
         
         // add special public role to allow to find cases that do not use case roles
         entities.add(AuthorizationManager.PUBLIC_GROUP);
