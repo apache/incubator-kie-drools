@@ -72,27 +72,32 @@ image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
 [[cloudBalancingDomainModelDesign]]
 === Domain Model Design
 
-Using a domain model helps determine which classes are planning entities and which of their properties are planning variables. Using a domain model helps to simplify contraints, improve performance, and increase flexibility for future needs. 
 
-Beginning with the <<domainModelingGuide,domain model>>:
+Using a <<domainModelingGuide,domain model>> helps determine which classes are planning entities and which of their properties are planning variables. Using a domain model helps to simplify contraints, improve performance, and increase flexibility for future needs. 
 
+//from chapter 17 - Design Patterns
+
+. *Draw a class diagram* of your domain model. _Normalize_ it get rid of duplicate data.
+. *Write down some sample instances for each class.*
 * ``Computer``: represents a computer with certain hardware (CPU power, RAM memory, network bandwidth) and maintenance cost.
 * ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by Planner.
 * ``CloudBalance``: represents a problem. Contains every `Computer` and `Process` for a certain data set.
 
-image::Chapter-Quick_start/cloudBalanceClassDiagram.png[align="center"]
-
-In the UML class diagram above, the Planner concepts are already annotated:
+. *Determine which relationships (or fields) change during planning*.
 
 * Planning entity: the class (or classes) that changes during solving. In this example, it is the class ``Process``.
 * Planning variable: the property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
 * Planning solution: the class that represents a data set and contains all planning entities. In this example that is the class ``CloudBalance``.
 
+In the UML class diagram below, the Planner concepts are already annotated:
+
+image::Chapter-Quick_start/cloudBalanceClassDiagram.png[align="center"]
+
 
 [[cloudBalancingMainMethod]]
 === Main Method
 
-Try it yourself. <<downloadAndRunTheExamples,Download and configure the examples in your preferred IDE.>>
+Try it yourself. <<runTheExamplesInAnIDE,Download and configure the examples in your preferred IDE.>>
 Run ``org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld``.
 By default, it is configured to run for 120 seconds.
 It will execute this code:
