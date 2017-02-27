@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +38,8 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.internal.KnowledgeBaseFactory;
 
+import static org.junit.Assert.assertEquals;
+
 public class WindowTest {
 
     private KieSession ksession;
@@ -58,7 +58,7 @@ public class WindowTest {
             "end\n" +
             "\n" +
             "declare window DeclaredTimeWindow\n" +
-            "    TestEvent ( name == \"timeDec\" ) over window:time( 50ms ) from entry-point EventStream\n" +
+            "    TestEvent ( namex == \"timeDec\" ) over window:time( 50ms ) from entry-point EventStream\n" +
             "end\n" +
             "\n" +
             "declare window DeclaredLengthWindow\n" +
