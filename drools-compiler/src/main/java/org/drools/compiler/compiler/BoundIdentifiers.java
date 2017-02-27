@@ -106,7 +106,7 @@ public class BoundIdentifiers {
     }
 
     public Class< ? > resolveVarType(String identifier) {
-        return context.resolveVarType(identifier);
+        return context == null ? null : context.resolveVarType(identifier);
     }
 
     public String toString() {
