@@ -16,6 +16,10 @@
 
 package org.drools.testcoverage.functional.oopath;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.assertj.core.api.Assertions;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.testcoverage.common.model.Message;
@@ -30,10 +34,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Tests usage of OOPath expressions with CEP (events, event windows, event streams).
@@ -261,7 +261,7 @@ public class OOPathCepTest {
         this.kieSession.insert(ping3Event);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.events).as("The rule should have fired for 2 events").containsExactly(ping2Event, ping3Event);
+        Assertions.assertThat(this.events).as("The rule should have fired for 2 events").contains(ping2Event, ping3Event);
         this.events.clear();
 
         final MessageEvent pongEvent = new MessageEvent(MessageEvent.Type.sent, new Message("Pong"));
@@ -271,7 +271,7 @@ public class OOPathCepTest {
         this.kieSession.insert(ping4Event);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.events).as("The rule should have fired for ping event only").containsExactly(ping4Event);
+        Assertions.assertThat(this.events).as("The rule should have fired for ping event only").contains(ping4Event);
     }
 
     @Test
@@ -388,7 +388,7 @@ public class OOPathCepTest {
         clock.advanceTime(1, TimeUnit.SECONDS);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.events).as("The rule should have fired for 2 events").containsExactly(ping2Event, ping3Event);
+        Assertions.assertThat(this.events).as("The rule should have fired for 2 events").contains(ping2Event, ping3Event);
         this.events.clear();
 
         final MessageEvent pongEvent = new MessageEvent(MessageEvent.Type.sent, new Message("Pong"));
@@ -400,7 +400,7 @@ public class OOPathCepTest {
         clock.advanceTime(1, TimeUnit.SECONDS);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.events).as("The rule should have fired for ping event only").containsExactly(ping4Event);
+        Assertions.assertThat(this.events).as("The rule should have fired for ping event only").contains(ping4Event);
     }
 
     private void initKieSession(final KieBase kieBase) {
