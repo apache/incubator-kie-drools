@@ -66,6 +66,18 @@ public final class KieBaseUtil {
         return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 
+    public static KieBase getKieBaseFromDRLResources(final boolean failIfBuildError, final Resource... resources) {
+        generateDRLResourceTargetPath(resources);
+        final KieBuilder kieBuilder = getKieBuilderFromResources(failIfBuildError, resources);
+        return getDefaultKieBaseFromKieBuilder(kieBuilder);
+    }
+
+    private static void generateDRLResourceTargetPath(final Resource[] resources) {
+        for (int index = 0; index < resources.length; index++) {
+            resources[index].setTargetPath(String.format("rule-%d.drl", index));
+        }
+    }
+
     public static KieBase getKieBaseFromReleaseIdByName(final ReleaseId id, final String name) {
         final KieContainer container = KieServices.Factory.get().newKieContainer(id);
         if (name == null) {
