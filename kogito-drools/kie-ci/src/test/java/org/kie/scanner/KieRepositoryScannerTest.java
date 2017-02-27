@@ -372,10 +372,23 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
     @Test
     public void testLoadKieJarFromMavenRepo() throws Exception {
-        // This test depends from the former one (UGLY!) and must be run immediately after it
         KieServices ks = KieServices.Factory.get();
-
         ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
+
+        final String drl =
+                " global java.util.List list; \n" +
+                " rule R1 \n" +
+                " when \n" +
+                "     not(String()) \n" +
+                " then \n" +
+                "     list.add(15);\n" +
+                " end ";
+
+        InternalKieModule kJar1 = createKieJarFromDrl(ks, releaseId, drl);
+
+        MavenRepository repository = getMavenRepository();
+        repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
+
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
