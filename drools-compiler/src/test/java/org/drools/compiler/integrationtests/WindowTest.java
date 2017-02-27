@@ -58,7 +58,7 @@ public class WindowTest {
             "end\n" +
             "\n" +
             "declare window DeclaredTimeWindow\n" +
-            "    TestEvent ( namex == \"timeDec\" ) over window:time( 50ms ) from entry-point EventStream\n" +
+            "    TestEvent ( name == \"timeDec\" ) over window:time( 50ms ) from entry-point EventStream\n" +
             "end\n" +
             "\n" +
             "declare window DeclaredLengthWindow\n" +
