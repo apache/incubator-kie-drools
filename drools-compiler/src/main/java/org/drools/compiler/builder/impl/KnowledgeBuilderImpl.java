@@ -15,12 +15,35 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.UUID;
+
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.ConfigurableSeverityResult;
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.DeprecatedResourceTypeWarning;
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DrlParser;
@@ -131,28 +154,6 @@ import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.UUID;
 
 import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
 import static org.drools.core.util.StringUtils.isEmpty;
@@ -1765,6 +1766,13 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 final Pattern pattern = (Pattern) builder.build(context,
                                                                 wd.getPattern(),
                                                                 null);
+
+                if (pattern.getXpathConstraint() != null) {
+                    context.addError( new DescrBuildError( wd,
+                                                           context.getParentDescr(),
+                                                           null,
+                                                           "OOpath expression " + pattern.getXpathConstraint() + " not allowed in window declaration\n" ) );
+                }
 
                 window.setPattern(pattern);
             } else {
