@@ -129,7 +129,7 @@ public class SelectorTestUtils {
     }
 
     public static ValueSelector mockValueSelectorForEntity(GenuineVariableDescriptor variableDescriptor,
-                                                           ListMultimap<Object, Object> entityToValues) {
+            ListMultimap<Object, Object> entityToValues) {
         ValueSelector valueSelector = mock(ValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         for (Map.Entry<Object, Collection<Object>> entry : entityToValues.asMap().entrySet()) {
@@ -144,8 +144,8 @@ public class SelectorTestUtils {
         return valueSelector;
     }
 
-    public static EntityIndependentValueSelector mockEntityIndependentValueSelector(Class<?> entityClass, String variableName,
-            Object... values) {
+    public static EntityIndependentValueSelector mockEntityIndependentValueSelector(Class<?> entityClass,
+            String variableName, Object... values) {
         GenuineVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
         when(variableDescriptor.isValueRangeEntityIndependent()).thenReturn(true);
         return mockEntityIndependentValueSelector(variableDescriptor, values);

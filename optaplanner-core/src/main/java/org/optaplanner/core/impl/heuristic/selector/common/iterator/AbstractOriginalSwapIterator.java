@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 
+import java.util.Collections;
 import java.util.ListIterator;
 
-import com.google.common.collect.ImmutableList;
 import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
 
 public abstract class AbstractOriginalSwapIterator<S, SubS> extends UpcomingSelectionIterator<S> {
@@ -47,7 +47,7 @@ public abstract class AbstractOriginalSwapIterator<S, SubS> extends UpcomingSele
         this.rightSubSelector = rightSubSelector;
         leftEqualsRight = (leftSubSelector == rightSubSelector);
         leftSubSelectionIterator = leftSubSelector.listIterator();
-        rightSubSelectionIterator = (ListIterator<SubS>) ImmutableList.of().listIterator(); //IteratorUtils.emptyListIterator();
+        rightSubSelectionIterator = Collections.<SubS>emptyList().listIterator();
         // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
     }
 

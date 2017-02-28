@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 import java.util.Collections;
 import java.util.Iterator;
 
-import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.common.collect.Iterators;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
@@ -78,7 +77,7 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
         }
         cachedValueList = new ArrayList<>((int) childSize);
         // TODO Fail-faster if a non FromSolutionPropertyValueSelector is used
-        Iterators.addAll(cachedValueList, childValueSelector.iterator());
+        childValueSelector.iterator().forEachRemaining(cachedValueList::add);
         logger.trace("    Created cachedValueList: size ({}), valueSelector ({}).",
                 cachedValueList.size(), this);
     }

@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 import java.util.Collections;
 import java.util.Iterator;
 
-import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
