@@ -33,6 +33,7 @@ import org.apache.maven.eventspy.internal.EventSpyDispatcher;
 import org.apache.maven.execution.DefaultMavenExecutionRequestPopulator;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequestPopulator;
+import org.apache.maven.internal.aether.DefaultRepositorySystemSessionFactory;
 import org.apache.maven.model.building.DefaultModelBuilder;
 import org.apache.maven.model.building.DefaultModelProcessor;
 import org.apache.maven.model.building.ModelBuilder;
@@ -133,12 +134,12 @@ public class WiredComponentProvider implements ComponentProvider {
         locator.setServices( SettingsBuilder.class, new DefaultSettingsBuilderFactory().newInstance() );
         locator.addService( RepositorySystem.class, LegacyRepositorySystem.class );
         locator.addService( MavenRepositorySystem.class, MavenRepositorySystem.class );
+        locator.addService (DefaultRepositorySystemSessionFactory.class, DefaultRepositorySystemSessionFactory.class);
 
         locator.addService( org.eclipse.aether.RepositorySystem.class, DefaultRepositorySystem.class );
         locator.addService( PlexusCipher.class, DefaultPlexusCipher.class );
         locator.addService( SecDispatcher.class, DefaultSecDispatcher.class );
         locator.addService( SettingsDecrypter.class, DefaultSettingsDecrypter.class );
-        locator.addService( MavenExecutionRequestPopulator.class, DefaultMavenExecutionRequestPopulator.class );
         locator.addService( ArtifactRepositoryFactory.class, DefaultArtifactRepositoryFactory.class );
         locator.addService( MirrorSelector.class, DefaultMirrorSelector.class );
         locator.addService( Logger.class, ConsoleLogger.class );
@@ -170,7 +171,10 @@ public class WiredComponentProvider implements ComponentProvider {
         locator.addService( RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class );
         locator.addService( ModelBuilder.class, DefaultModelBuilder.class );
 
-        inject( MavenExecutionRequestPopulator.class, RepositorySystem.class, "repositorySystem" );
+        // DefaultMavenExecutionRequestPopulator does not have non-arg constructor so we need to create new instance
+        // manually and inform the locator about the new instance
+        MavenRepositorySystem system = locator.getService(MavenRepositorySystem.class);
+        locator.setServices( MavenExecutionRequestPopulator.class, new DefaultMavenExecutionRequestPopulator(system) );
 
         Map<String, ArtifactRepositoryLayout> layouts = new HashMap<String, ArtifactRepositoryLayout>(  );
         layouts.put("default", new DefaultRepositoryLayout());
@@ -189,20 +193,21 @@ public class WiredComponentProvider implements ComponentProvider {
 
         EventSpyDispatcher eventSpyDispatcher = new EventSpyDispatcher();
         eventSpyDispatcher.setEventSpies( new ArrayList<EventSpy>() );
-        inject( Maven.class, eventSpyDispatcher, "eventSpyDispatcher" );
-        inject( Maven.class, org.eclipse.aether.RepositorySystem.class, "repoSystem" );
-        inject( Maven.class, SettingsDecrypter.class, "settingsDecrypter" );
+        inject( DefaultRepositorySystemSessionFactory.class, Logger.class, "logger" );
+        inject( DefaultRepositorySystemSessionFactory.class, ArtifactHandlerManager.class, "artifactHandlerManager" );
+        inject( DefaultRepositorySystemSessionFactory.class, org.eclipse.aether.RepositorySystem.class, "repoSystem" );
+        inject( DefaultRepositorySystemSessionFactory.class, SettingsDecrypter.class, "settingsDecrypter" );
+        inject( DefaultRepositorySystemSessionFactory.class, eventSpyDispatcher, "eventSpyDispatcher" );
+        inject( DefaultRepositorySystemSessionFactory.class, MavenRepositorySystem.class, "mavenRepositorySystem" );
+
         inject( Maven.class, Logger.class, "logger" );
+        inject( Maven.class, DefaultRepositorySystemSessionFactory.class, "repositorySessionFactory" );
 
         inject( ProjectBuilder.class, ProjectBuildingHelper.class, "projectBuildingHelper" );
         inject( ProjectBuildingHelper.class, RepositorySystem.class, "repositorySystem" );
 
-        inject( MavenRepositorySystem.class, Logger.class, "logger");
         inject( MavenRepositorySystem.class, ArtifactHandlerManager.class, "artifactHandlerManager" );
-        inject( MavenRepositorySystem.class, ArtifactResolver.class, "artifactResolver" );
         inject( MavenRepositorySystem.class, layouts, "layouts" );
-        inject( MavenRepositorySystem.class, PlexusContainer.class, "plexus" );
-        inject( MavenRepositorySystem.class, SettingsDecrypter.class, "settingsDecrypter" );
 
         inject( ProjectBuilder.class, MavenRepositorySystem.class, "repositorySystem" );
         inject( ProjectBuilder.class, ProjectBuildingHelper.class, "projectBuildingHelper" );
