@@ -1,3 +1,4 @@
+
 [[quickStart]]
 = Getting Started: A Cloud Balancing Demonstration
 //Christy suggested that this isn't really a "quickstart". I don't know how you feel about renaming a chapter?
@@ -42,10 +43,6 @@ As you can see, it is not optimal, as it does not leave enough room to assign th
 Planner does find the more optimal solution by using additional, smarter algorithms.
 It also scales: both in data (more processes, more computers) and constraints (more hardware requirements, other constraints). So let's see how Planner can be used in this scenario.
 
-
-[[cloudBalancingValueProposition]]
-=== Value Proposition
-
 Here's executive summary of this example and <<machineReassignment,a more advanced implementation with more constraints>>:
 
 image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
@@ -75,15 +72,16 @@ image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
 
 Using a <<domainModelingGuide,domain model>> helps determine which classes are planning entities and which of their properties are planning variables. Using a domain model helps to simplify contraints, improve performance, and increase flexibility for future needs. 
 
-//from chapter 17 - Design Patterns
+//procedure from chapter 17 - Design Patterns
 
-. *Draw a class diagram* of your domain model. _Normalize_ it get rid of duplicate data.
-. *Write down some sample instances for each class.*
+. Draw a class diagram of your domain model. 
+. Normalize it to remove duplicate data.
+. Write down some sample instances for each class.
 * ``Computer``: represents a computer with certain hardware (CPU power, RAM memory, network bandwidth) and maintenance cost.
 * ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by Planner.
 * ``CloudBalance``: represents a problem. Contains every `Computer` and `Process` for a certain data set.
 
-. *Determine which relationships (or fields) change during planning*.
+. Determine which relationships (or fields) change during planning.
 
 * Planning entity: the class (or classes) that changes during solving. In this example, it is the class ``Process``.
 * Planning variable: the property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
@@ -92,147 +90,6 @@ Using a <<domainModelingGuide,domain model>> helps determine which classes are p
 In the UML class diagram below, the Planner concepts are already annotated:
 
 image::Chapter-Quick_start/cloudBalanceClassDiagram.png[align="center"]
-
-
-[[cloudBalancingMainMethod]]
-=== Main Method
-
-Try it yourself. <<runTheExamplesInAnIDE,Download and configure the examples in your preferred IDE.>>
-Run ``org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld``.
-By default, it is configured to run for 120 seconds.
-It will execute this code:
-
-.CloudBalancingHelloWorld.java
-====
-[source,java,options="nowrap"]
-----
-public class CloudBalancingHelloWorld {
-
-    public static void main(String[] args) {
-        // Build the Solver
-        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
-                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
-        Solver<CloudBalance> solver = solverFactory.buildSolver();
-
-        // Load a problem with 400 computers and 1200 processes
-        CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
-
-        // Solve the problem
-        CloudBalance solvedCloudBalance = solver.solve(unsolvedCloudBalance);
-
-        // Display the result
-        System.out.println("\nSolved cloudBalance with 400 computers and 1200 processes:\n"
-                + toDisplayString(solvedCloudBalance));
-    }
-
-    ...
-}
-----
-====
-
-The code example does the following:
-
-* Build the `Solver` based on a solver configuration (in this case <<solverConfigurationByXML,an XML file>> from the classpath).
-+
-
-[source,java,options="nowrap"]
-----
-        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
-                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
-        Solver solver<CloudBalance> = solverFactory.buildSolver();
-----
-* Load the problem. `CloudBalancingGenerator` generates a random problem: you will replace this with a class that loads a real problem, for example from a database.
-+
-
-[source,java,options="nowrap"]
-----
-        CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
-----
-* Solve the problem.
-+
-
-[source,java,options="nowrap"]
-----
-        CloudBalance solvedCloudBalance = solver.solve(unsolvedCloudBalance);
-----
-* Display the result.
-+
-
-[source,java,options="nowrap"]
-----
-        System.out.println("\nSolved cloudBalance with 400 computers and 1200 processes:\n"
-                + toDisplayString(solvedCloudBalance));
-----
-
-The only complicated part is building the ``Solver``, as detailed in the next section.
-
-
-[[cloudBalancingSolverConfiguration]]
-=== Solver Configuration
-
-Take a look at the solver configuration:
-
-.cloudBalancingSolverConfig.xml
-====
-[source,xml,options="nowrap"]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<solver>
-  <!-- Domain model configuration -->
-  <scanAnnotatedClasses/>
-
-  <!-- Score configuration -->
-  <scoreDirectorFactory>
-    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
-    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
-  </scoreDirectorFactory>
-
-  <!-- Optimization algorithms configuration -->
-  <termination>
-    <secondsSpentLimit>30</secondsSpentLimit>
-  </termination>
-</solver>
-----
-====
-
-This solver configuration consists of three parts:
-
-* **Domain model configuration**: What can Planner change? We need to make Planner aware of our domain classes. In this configuration, it will automatically scan all classes in your classpath (for an `@PlanningEntity` or `@PlanningSolution` annotation):
-+
-
-[source,xml,options="nowrap"]
-----
-  <scanAnnotatedClasses/>
-----
-* **Score configuration**: How should Planner optimize the planning variables? What is our goal? Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need to tell Planner how to calculate the score, depending on our business requirements. Further down, we will look into two alternatives to calculate the score: using an easy Java implementation, or using Drools DRL.
-+
-
-[source,xml,options="nowrap"]
-----
-  <scoreDirectorFactory>
-    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
-    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
-  </scoreDirectorFactory>
-----
-* **Optimization algorithms configuration**: How should Planner optimize it? In this case, we use the default <<optimizationAlgorithms,optimization algorithms>> (because no explicit optimization algorithms are configured) for 30 seconds:
-+
-
-[source,xml,options="nowrap"]
-----
-  <termination>
-    <secondsSpentLimit>30</secondsSpentLimit>
-  </termination>
-----
-+
-Planner should get a good result in seconds (and even in less than 15 milliseconds with <<realTimePlanning,real-time planning>>),
-but the more time it has, the better the result will be.
-Advanced use cases might use a different <<termination,termination criteria>> than a hard time limit.
-+ 
-The default algorithms will already easily surpass human planners and most in-house implementations.
-Use the <<benchmarker,Benchmarker>> to <<powerTweaking,power tweak>> to get even better results.
-
-Let's examine the domain model classes and the score configuration.
-
 
 [[cloudBalancingDomainModelImplementation]]
 === Domain Model Implementation
@@ -263,9 +120,12 @@ public class CloudComputer ... {
 [[cloudBalancingClassProcess]]
 ==== The `Process` Class
 
-The `Process` class is particularly important.
-It is the class that is modified during solving.
-We need to tell Planner that it can change the property ``computer``, so we annotate the class with `@PlanningEntity` and the getter `getComputer()` with ``@PlanningVariable``.
+The `Process` class is particularly important. It is the class that is modified during solving.
+
+We need to tell Planner that it can change the property ``computer``. To do this:
+. Annotate the class with `@PlanningEntity`.
+. Annotate the getter `getComputer()` with ``@PlanningVariable``.
+
 Of course, the property `computer` needs a setter too, so Planner can change it during solving.
 
 .CloudProcess.java
@@ -302,9 +162,9 @@ public class CloudProcess ... {
 ----
 ====
 
-Planner needs to know which values it can choose from to assign to the property ``computer``.
-Those values are retrieved from the method `CloudBalance.getComputerList()` on the planning solution, which returns a list of all computers in the current data set.
-The ``@PlanningVariable``'s `valueRangeProviderRefs` parameter on `CloudProcess.getComputer()` needs to match with the ``@ValueRangeProvider``'s `id` on CloudBalance.getComputerList().
+* Planner needs to know which values it can choose from to assign to the property ``computer``. Those values are retrieved from the method `CloudBalance.getComputerList()` on the planning solution, which returns a list of all computers in the current data set.
+
+* The ``@PlanningVariable``'s `valueRangeProviderRefs` parameter on `CloudProcess.getComputer()` needs to match with the ``@ValueRangeProvider``'s `id` on CloudBalance.getComputerList().
 
 [NOTE]
 ====
@@ -317,13 +177,15 @@ Instead of getter annotations, it is also possible to use <<annotationAlternativ
 
 The `CloudBalance` class has a [path]_@PlanningSolution_
  annotation.
-It holds a list of all computers and processes.
-It represents both the planning problem and (if it's initialized) the planning solution.
+* It holds a list of all computers and processes.
+* It represents both the planning problem and (if it's initialized) the planning solution.
 
-Planner needs to retrieve the collection of processes that it can change, therefore we annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
+. Planner needs to retrieve the collection of processes that it can change, therefore we annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
 
-The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.
+. The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.
 Planner automatically updates it when it calculates a `Score` for a solution instance and therefore it needs a setter.
+
+. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so the computers are known to it.
 
 .CloudBalance.java
 ====
@@ -363,7 +225,156 @@ public class CloudBalance ... {
 ----
 ====
 
-Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so the computers are known to it.
+
+
+[[cloudBalancingMainMethod]]
+=== Run the Cloud Balancing Hello World
+
+. <<runTheExamplesInAnIDE,Download and configure the examples in your preferred IDE.>>
+. Create a run configuration with the following main class: `org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld`
++
+By default, the Cloud Balancing Hello World is configured to run for 120 seconds.
+
+
+It will execute the following code:
+
+.CloudBalancingHelloWorld.java
+====
+[source,java,options="nowrap"]
+----
+public class CloudBalancingHelloWorld {
+
+    public static void main(String[] args) {
+        // Build the Solver
+        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
+                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+        Solver<CloudBalance> solver = solverFactory.buildSolver();
+
+        // Load a problem with 400 computers and 1200 processes
+        CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
+
+        // Solve the problem
+        CloudBalance solvedCloudBalance = solver.solve(unsolvedCloudBalance);
+
+        // Display the result
+        System.out.println("\nSolved cloudBalance with 400 computers and 1200 processes:\n"
+                + toDisplayString(solvedCloudBalance));
+    }
+
+    ...
+}
+----
+====
+
+The code example does the following:
+
+* Build the `Solver` based on a solver configuration (in this case an XML file from the classpath).
++ 
+Building the `Solver` is the most complicated part of this procedure. For more detail, see <<cloudBalancingSolverConfiguration, Solver Configuration>>.
+// I think the link here to the Solver configuration section in the Planner Configuration chapter is confusing for the user, especially as it deals with a different example.
++
+
+[source,java,options="nowrap"]
+----
+        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
+                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+        Solver solver<CloudBalance> = solverFactory.buildSolver();
+----
+* Load the problem. 
++
+`CloudBalancingGenerator` generates a random problem: you will replace this with a class that loads a real problem, for example from a database.
++
+
+[source,java,options="nowrap"]
+----
+        CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
+----
+* Solve the problem.
++
+
+[source,java,options="nowrap"]
+----
+        CloudBalance solvedCloudBalance = solver.solve(unsolvedCloudBalance);
+----
+* Display the result.
++
+
+[source,java,options="nowrap"]
+----
+        System.out.println("\nSolved cloudBalance with 400 computers and 1200 processes:\n"
+                + toDisplayString(solvedCloudBalance));
+----
+
+
+[[cloudBalancingSolverConfiguration]]
+=== Solver Configuration
+
+Take a look at the solver configuration:
+
+.cloudBalancingSolverConfig.xml
+====
+[source,xml,options="nowrap"]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!-- Domain model configuration -->
+  <scanAnnotatedClasses/>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+  </scoreDirectorFactory>
+
+  <!-- Optimization algorithms configuration -->
+  <termination>
+    <secondsSpentLimit>30</secondsSpentLimit>
+  </termination>
+</solver>
+----
+====
+
+This solver configuration consists of three parts:
+
+* **Domain model configuration**: What can Planner change? 
++
+We need to make Planner aware of our domain classes. In this configuration, it will automatically scan all classes in your classpath (for an `@PlanningEntity` or `@PlanningSolution` annotation):
++
+
+[source,xml,options="nowrap"]
+----
+  <scanAnnotatedClasses/>
+----
+* **Score configuration**: How should Planner optimize the planning variables? What is our goal? 
++
+Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need to tell Planner how to calculate the score, depending on our business requirements. Further down, we will look into two alternatives to calculate the score: using an easy Java implementation, or using Drools DRL.
++
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+  </scoreDirectorFactory>
+----
+* **Optimization algorithms configuration**: How should Planner optimize it? 
++
+In this case, we use the default <<optimizationAlgorithms,optimization algorithms>> (because no explicit optimization algorithms are configured) for 30 seconds:
++
+
+[source,xml,options="nowrap"]
+----
+  <termination>
+    <secondsSpentLimit>30</secondsSpentLimit>
+  </termination>
+----
++
+Planner should get a good result in seconds (and even in less than 15 milliseconds with <<realTimePlanning,real-time planning>>),
+but the more time it has, the better the result will be.
+Advanced use cases might use a different <<termination,termination criteria>> than a hard time limit.
++ 
+The default algorithms will already easily surpass human planners and most in-house implementations.
+Use the <<benchmarker,Benchmarker>> to <<powerTweaking,power tweak>> to get even better results.
 
 
 [[cloudBalancingScoreConfiguration]]
