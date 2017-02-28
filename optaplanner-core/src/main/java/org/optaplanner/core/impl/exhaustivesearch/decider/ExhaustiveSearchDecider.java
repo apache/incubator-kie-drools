@@ -146,9 +146,8 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
     private void doMove(ExhaustiveSearchStepScope<Solution_> stepScope, ExhaustiveSearchNode moveNode) {
         InnerScoreDirector<Solution_> scoreDirector = stepScope.getScoreDirector();
         Move<Solution_> move = moveNode.getMove();
-        Move<Solution_> undoMove = move.createUndoMove(scoreDirector);
+        Move<Solution_> undoMove = move.doMove(scoreDirector);
         moveNode.setUndoMove(undoMove);
-        move.doMove(scoreDirector);
         processMove(stepScope, moveNode);
         undoMove.doMove(scoreDirector);
         if (assertExpectedUndoMoveScore) {

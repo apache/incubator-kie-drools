@@ -122,9 +122,8 @@ public class ConstructionHeuristicDecider {
     private void doMove(ConstructionHeuristicMoveScope moveScope) {
         ScoreDirector scoreDirector = moveScope.getScoreDirector();
         Move move = moveScope.getMove();
-        Move undoMove = move.createUndoMove(scoreDirector);
+        Move undoMove = move.doMove(scoreDirector);
         moveScope.setUndoMove(undoMove);
-        move.doMove(scoreDirector);
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
         if (assertExpectedUndoMoveScore) {

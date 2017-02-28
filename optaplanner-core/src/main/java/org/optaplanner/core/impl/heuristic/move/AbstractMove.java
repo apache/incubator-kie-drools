@@ -32,10 +32,20 @@ public abstract class AbstractMove<Solution_> implements Move<Solution_> {
     }
 
     @Override
-    public final void doMove(ScoreDirector<Solution_> scoreDirector) {
+    public final AbstractMove<Solution_> doMove(ScoreDirector<Solution_> scoreDirector) {
+        AbstractMove<Solution_> undoMove = createUndoMove(scoreDirector);
         doMoveOnGenuineVariables(scoreDirector);
         scoreDirector.triggerVariableListeners();
+        return undoMove;
     }
+
+    /**
+     * Called before the move is done, so the move can be evaluated and then be undone
+     * without resulting into a permanent change in the solution.
+     * @param scoreDirector the {@link ScoreDirector} not yet modified by the move.
+     * @return an undoMove which does the exact opposite of this move.
+     */
+    protected abstract AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector);
 
     /**
      * Like {@link #doMove(ScoreDirector)} but without the {@link ScoreDirector#triggerVariableListeners()} call

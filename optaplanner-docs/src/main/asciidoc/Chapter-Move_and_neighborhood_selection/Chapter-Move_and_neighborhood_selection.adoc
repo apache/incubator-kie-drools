@@ -1307,185 +1307,199 @@ If you find one, implement that coarse-grained move, mix it with the existing mo
 [[_custommovesintroduction]]
 === Custom Moves Introduction
 
-Instead of reusing the generic ``Move``s (such as ``ChangeMove``) you can also implement your own ``Move``s.
-Generic and custom ``MoveSelector``s can be combined as desired.
+Instead of using the generic ``Move``s (such as ``ChangeMove``) you can also implement your own ``Move``.
+Generic and custom ``MoveSelector``s can be <<combiningMultipleMoveSelectors,combined>> as desired.
 
 A custom `Move` can be tailored to work to the advantage of your constraints.
-For example, in examination scheduling, changing the period of an exam A also changes the period of all the exams that need to coincide with exam A.
+For example in examination scheduling, changing the period of an exam A
+would also change the period of all the other exams that need to coincide with exam A.
 
 A custom `Move` is also slightly faster than a generic ``Move``.
 However, it's far more work to implement and much harder to avoid bugs.
-After implementing a custom ``Move``, make sure to turn on `environmentMode` ``FULL_ASSERT`` to check for score corruptions.
+After implementing a custom ``Move``, turn on `environmentMode` ``FULL_ASSERT`` to check for score corruptions.
 
 
 [[theInterfaceMove]]
 === The Interface `Move`
 
-Your custom moves must implement the `Move` interface:
+All moves implements the `Move` interface:
 
 [source,java,options="nowrap"]
 ----
 public interface Move<Solution_> {
 
     boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector);
+    Move<Solution_> doMove(ScoreDirector<Solution_> scoreDirector);
 
-    Move createUndoMove(ScoreDirector<Solution_> scoreDirector);
-    void doMove(ScoreDirector<Solution_> scoreDirector);
+    ...
+}
+----
 
-    Collection<? extends Object> getPlanningEntities();
-    Collection<? extends Object> getPlanningValues();
+To implement a custom move, it's recommend to extend `AbstractMove` instead implementing `Move` directly.
+Planner calls `AbstractMove.doMove(ScoreDirector)`, which calls `doMoveOnGenuineVariables(ScoreDirector)`.
+For example in cloud balancing, this move changes 1 process to another computer:
+
+[source,java,options="nowrap"]
+----
+public class CloudComputerChangeMove extends AbstractMove<CloudBalance> {
+
+    private CloudProcess cloudProcess;
+    private CloudComputer toCloudComputer;
+
+    public CloudComputerChangeMove(CloudProcess cloudProcess, CloudComputer toCloudComputer) {
+        this.cloudProcess = cloudProcess;
+        this.toCloudComputer = toCloudComputer;
+    }
+
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector<CloudBalance> scoreDirector) {
+        scoreDirector.beforeVariableChanged(cloudProcess, "computer");
+        cloudProcess.setComputer(toCloudComputer);
+        scoreDirector.afterVariableChanged(cloudProcess, "computer");
+    }
+
+    // ...
 
 }
 ----
 
-Let's take a look at the `Move` implementation for 4 queens which moves a queen to a different row:
-
-[source,java,options="nowrap"]
-----
-public class RowChangeMove extends AbstractMove<NQueens> {
-
-    private Queen queen;
-    private Row toRow;
-
-    public RowChangeMove(Queen queen, Row toRow) {
-        this.queen = queen;
-        this.toRow = toRow;
-    }
-
-    // ... see below
-
-}
-----
-
-An instance of `RowChangeMove` moves a queen from its current row to a different row.
-
-Planner calls the `doMove(ScoreDirector)` method to do a move, which calls ``doMoveOnGenuineVariables(ScoreDirector)``.
-The `Move` implementation must notify the `ScoreDirector` of any changes it makes to planning entity's variables:
-
-[source,java,options="nowrap"]
-----
-    public void doMoveOnGenuineVariables(ScoreDirector<NQueens> scoreDirector) {
-        scoreDirector.beforeVariableChanged(queen, "row"); // before changes are made to the queen.row
-        queen.setRow(toRow);
-        scoreDirector.afterVariableChanged(queen, "row"); // after changes are made to the queen.row
-    }
-----
-
+The implementation must notify the `ScoreDirector` of any changes it makes to planning entity's variables:
 Call the `scoreDirector.beforeVariableChanged(Object, String)` and `scoreDirector.afterVariableChanged(Object, String)`
 methods directly before and after modifying an entity's planning variable.
 
-[NOTE]
-====
-Change multiple entities or multiple planning variables in a single move to create a coarse-grained move.
-====
+The example move above is a fine-grained move because changes only 1 planning variable.
+On the other hand, a coarse-grained move changes multiple entities or multiple planning variables
+in a single move, usually to avoid breaking hard constraints by making multiple related changes at once.
+For example, a swap move is really just 2 change moves, but it keeps those 2 changes together.
 
 [WARNING]
 ====
-A `Move` can only change/add/remove planning entities, it must not change any of the problem facts.
+A `Move` can only change/add/remove planning entities,
+it must not change any of the problem facts as that will cause score corruption.
+Use <<realTimePlanning,real-time planning>> to change problem facts while solving.
 ====
 
 Planner automatically filters out _non doable moves_ by calling the `isMoveDoable(ScoreDirector)` method on each selected move.
 A _non doable move_ is:
 
-* A move that changes nothing on the current solution. For example, moving queen B0 to row 0 is not doable, because it is already there.
-* A move that is impossible to do on the current solution. For example, moving queen B0 to row 10 is not doable because it would move it outside the board limits.
+* A move that changes nothing on the current solution.
+For example, moving process `P1` on computer `X` to computer `X` is not doable, because it is already there.
+* A move that is impossible to do on the current solution.
+For example, moving process `P1` to computer `Q`  (when `Q` isn't in the list of computers) is not doable
+because it would assign a planning value that's not inside the planning variable's value range.
 
-In the n queens example, a move which moves the queen from its current row to the same row isn't doable:
+In the cloud balancing example, a move which assigns a process to the computer it's already assigned to is not doable:
 
 [source,java,options="nowrap"]
 ----
-    public boolean isMoveDoable(ScoreDirector<NQueens> scoreDirector) {
-        return !Objects.equals(queen.getRow(), toRow);
+    @Override
+    public boolean isMoveDoable(ScoreDirector<CloudBalance> scoreDirector) {
+        return !Objects.equals(cloudProcess.getComputer(), toCloudComputer);
     }
 ----
 
-Because we won't generate a move which can move a queen outside the board limits, we don't need to check it.
-A move that is currently not doable could become doable on the working `Solution` of a later step.
+We don't need to check if `toCloudComputer` is in the value range,
+because we only generates moves for which that is the case.
+A move that is currently not doable can become doable when the working `Solution` changes in a later step,
+otherwise we probably shouldn't have created it in the first place.
 
 Each move has an __undo move__: a move (normally of the same type) which does the exact opposite.
-In the example above the undo move of _C0 to C2_ would be the move __C2 to C0__.
-An undo move is created from a ``Move``, before the `Move` has been done on the current solution.
+In the cloud balancing example the undo move of `P1 {X -> Y}` is the move `P1 {Y -> X}`.
+The undo move of a move is created when the `Move` is being done on the current solution,
+before the genuine variables change:
 
 [source,java,options="nowrap"]
 ----
-    public RowChangeMove createUndoMove(ScoreDirector<NQueens> scoreDirector) {
-        return new RowChangeMove(queen, queen.getRow());
+    @Override
+    public CloudComputerChangeMove createUndoMove(ScoreDirector<CloudBalance> scoreDirector) {
+        return new CloudComputerChangeMove(cloudProcess, cloudProcess.getComputer());
     }
 ----
 
-Notice that if C0 would have already been moved to C2, the undo move would create the move __C2 to C2__, instead of the move __C2 to C0__.
+Notice that if `P1` would have already been moved to `Y`, the undo move would create the move `P1 {Y -> Y}`,
+instead of the move `P1 {Y -> X}`.
 
 A solver phase might do and undo the same `Move` more than once.
-In fact, many solver phases will iteratively do and undo a number of moves to evaluate them, before selecting one of those and doing that move again (without undoing it this time).
+In fact, many solver phases will iteratively do and undo a number of moves to evaluate them,
+before selecting one of those and doing that move again (without undoing it the last time).
 
-A `Move` must implement the `getPlanningEntities()` and `getPlanningValues()` methods.
-They are used by entity tabu and value tabu respectively.
-When they are called, the `Move` has already been done.
+A `Move` must also implement the `getPlanningEntities()` and `getPlanningValues()` methods.
+Those are used by <<tabuSearch,entity tabu and value tabu>> respectively.
+They are called after the `Move` has already been done.
 
 [source,java,options="nowrap"]
 ----
-    public List<? extends Object> getPlanningEntities() {
-        return Collections.singletonList(queen);
+    @Override
+    public Collection<? extends Object> getPlanningEntities() {
+        return Collections.singletonList(cloudProcess);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
-        return Collections.singletonList(toRow);
+        return Collections.singletonList(toCloudComputer);
     }
 ----
 
-If your `Move` changes multiple planning entities, return all of them in `getPlanningEntities()` and return all their values (to which they are changing) in ``getPlanningValues()``.
+If the `Move` changes multiple planning entities, such as in a swap move,
+return all of them in `getPlanningEntities()`
+and return all their values (to which they are changing) in ``getPlanningValues()``.
 
 [source,java,options="nowrap"]
 ----
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Arrays.asList(leftCloudProcess, rightCloudProcess);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }
 ----
 
-A `Move` must implement the `equals()` and `hashCode()` methods.
-2 moves which make the same change on a solution, should be equal.
+A `Move` must implement the `equals()` and `hashCode()` methods for <<tabuSearch,move tabu>>.
+Two moves which make the same change on a solution, should be equal ideally.
 
 [source,java,options="nowrap"]
 ----
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof RowChangeMove) {
-            RowChangeMove other = (RowChangeMove) o;
+        } else if (o instanceof CloudComputerChangeMove) {
+            CloudComputerChangeMove other = (CloudComputerChangeMove) o;
             return new EqualsBuilder()
-                    .append(queen, other.queen)
-                    .append(toRow, other.toRow)
+                    .append(cloudProcess, other.cloudProcess)
+                    .append(toCloudComputer, other.toCloudComputer)
                     .isEquals();
         } else {
             return false;
         }
     }
 
+    @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(queen)
-                .append(toRow)
+                .append(cloudProcess)
+                .append(toCloudComputer)
                 .toHashCode();
     }
 ----
 
 Notice that it checks if the other move is an instance of the same move type.
-This `instanceof` check is important because a move will be compared to a move with another move type if you're using more than 1 move type.
+This `instanceof` check is important because a move will be compared to a move with another move type
+if you have multiple move selectors.
 
 Implement the `toString()` method to keep Planner's logs readable:
 
 [source,java,options="nowrap"]
 ----
     public String toString() {
-        return queen + " {" + queen.getRow() + " -> " + toRow + "}";
+        return cloudProcess + " {" + cloudProcess.getComputer() + " -> " + toCloudComputer + "}";
     }
 ----
 
-Now that we can implement a single custom ``Move``, let's take a look at generating such custom moves.
+Now, let's generate instances of this custom ``Move`` class.
 
 
 [[moveListFactory]]
@@ -1506,13 +1520,15 @@ For example:
 
 [source,java,options="nowrap"]
 ----
-public class RowChangeMoveFactory implements MoveListFactory<NQueens> {
+public class CloudComputerChangeMoveFactory implements MoveListFactory<CloudBalance> {
 
-    public List<Move> createMoveList(NQueens nQueens) {
-        List<Move> moveList = new ArrayList<Move>();
-        for (Queen queen : nQueens.getQueenList()) {
-            for (Row toRow : nQueens.getRowList()) {
-                moveList.add(new RowChangeMove(queen, toRow));
+    @Override
+    public List<CloudComputerChangeMove> createMoveList(CloudBalance cloudBalance) {
+        List<CloudComputerChangeMove> moveList = new ArrayList<>();
+        List<CloudComputer> cloudComputerList = cloudBalance.getComputerList();
+        for (CloudProcess cloudProcess : cloudBalance.getProcessList()) {
+            for (CloudComputer cloudComputer : cloudComputerList) {
+                moveList.add(new CloudComputerChangeMove(cloudProcess, cloudComputer));
             }
         }
         return moveList;
@@ -1526,7 +1542,7 @@ Simple configuration (which can be nested in a `unionMoveSelector` just like any
 [source,xml,options="nowrap"]
 ----
     <moveListFactory>
-      <moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>
+      <moveListFactoryClass>org.optaplanner.examples.cloudbalancing.optional.move.CloudComputerChangeMoveFactory</moveListFactoryClass>
     </moveListFactory>
 ----
 
@@ -1536,18 +1552,20 @@ Advanced configuration:
 ----
     <moveListFactory>
       ... <!-- Normal moveSelector properties -->
-      <moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>
+      <moveListFactoryClass>org.optaplanner.examples.cloudbalancing.optional.move.CloudComputerChangeMoveFactory</moveListFactoryClass>
     </moveListFactory>
 ----
 
-Because the `MoveListFactory` generates all moves at once in a ``List<Move>``, it does not support `cacheType` ``JUST_IN_TIME``.
-Therefore, `moveListFactory` uses `cacheType` ``STEP`` by default and it scales badly in memory footprint.
+Because the `MoveListFactory` generates all moves at once in a ``List<Move>``,
+it does not support `cacheType` ``JUST_IN_TIME``.
+Therefore, `moveListFactory` uses `cacheType` ``STEP`` by default and it scales badly.
 
 
 [[moveIteratorFactory]]
 === ``MoveIteratorFactory``: Generate Custom Moves Just in Time
 
-Use this advanced form to generate custom moves by implementing the `MoveIteratorFactory` interface:
+Use this advanced form to generate custom moves Just In Time
+by implementing the `MoveIteratorFactory` interface:
 
 [source,java,options="nowrap"]
 ----
@@ -1562,14 +1580,16 @@ public interface MoveIteratorFactory<Solution_> {
 }
 ----
 
-The `getSize()` method must give an estimation of the size.
-It doesn't need to be correct.
+The `getSize()` method must return an estimation of the size.
+It doesn't need to be correct, but it's better too big than too small.
 The `createOriginalMoveIterator` method is called if the `selectionOrder` is `ORIGINAL` or if it is cached.
 The `createRandomMoveIterator` method is called for `selectionOrder` ``RANDOM`` combined with cacheType ``JUST_IN_TIME``.
 
 [IMPORTANT]
 ====
-Don't create a collection (list, array, map, set) of ``Move``s when creating the ``Iterator<Move>``: the whole purpose of `MoveIteratorFactory` over `MoveListFactory` is giving you the ability to create a `Move` just in time in the ``Iterator``'s method ``next()``.
+Don't create a collection (array, list, set or map) of ``Move``s when creating the ``Iterator<Move>``:
+the whole purpose of `MoveIteratorFactory` over `MoveListFactory` is to create a `Move` just in time
+in a custom ``Iterator.next()``.
 ====
 
 Simple configuration (which can be nested in a `unionMoveSelector` just like any other ``MoveSelector``):

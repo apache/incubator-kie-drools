@@ -67,14 +67,6 @@ public interface Move<Solution_> {
     boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector);
 
     /**
-     * Called before the move is done, so the move can be evaluated and then be undone
-     * without resulting into a permanent change in the solution.
-     * @param scoreDirector the {@link ScoreDirector} not yet modified by the move.
-     * @return an undoMove which does the exact opposite of this move.
-     */
-    Move<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector);
-
-    /**
      * Does the move (which indirectly affects the {@link ScoreDirector#getWorkingSolution()}).
      * When the {@link PlanningSolution working solution} is modified, the {@link ScoreDirector} must be correctly notified
      * (through {@link ScoreDirector#beforeVariableChanged(Object, String)} and
@@ -82,9 +74,13 @@ public interface Move<Solution_> {
      * otherwise later calculated {@link Score}s will be corrupted.
      * <p>
      * This method must end with calling {@link ScoreDirector#triggerVariableListeners()} to ensure all shadow variables are updated.
-     * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.
+     * <p>
+     * This method must return an undo move, so the move can be evaluated and then be undone
+     * without resulting into a permanent change in the solution.
+     * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes
+     * @return an undoMove which does the exact opposite of this move
      */
-    void doMove(ScoreDirector<Solution_> scoreDirector);
+    Move<Solution_> doMove(ScoreDirector<Solution_> scoreDirector);
 
     // ************************************************************************
     // Introspection methods

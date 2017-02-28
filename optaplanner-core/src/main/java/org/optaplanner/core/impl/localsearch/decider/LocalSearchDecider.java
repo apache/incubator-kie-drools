@@ -143,9 +143,8 @@ public class LocalSearchDecider<Solution_> {
     private void doMove(LocalSearchMoveScope<Solution_> moveScope) {
         ScoreDirector<Solution_> scoreDirector = moveScope.getScoreDirector();
         Move<Solution_> move = moveScope.getMove();
-        Move<Solution_> undoMove = move.createUndoMove(scoreDirector);
+        Move<Solution_> undoMove = move.doMove(scoreDirector);
         moveScope.setUndoMove(undoMove);
-        move.doMove(scoreDirector);
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
         if (assertExpectedUndoMoveScore) {

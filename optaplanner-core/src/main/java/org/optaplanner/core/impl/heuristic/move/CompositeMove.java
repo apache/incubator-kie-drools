@@ -96,24 +96,17 @@ public class CompositeMove<Solution_> implements Move<Solution_> {
     }
 
     @Override
-    public CompositeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
+    public CompositeMove<Solution_> doMove(ScoreDirector<Solution_> scoreDirector) {
         Move<Solution_>[] undoMoves = new Move[moves.length];
         for (int i = 0; i < moves.length; i++) {
-            // Note: this undoMove creation doesn't have the effect yet of a previous move in the moveList
-            Move<Solution_> undoMove = moves[i].createUndoMove(scoreDirector);
-            undoMoves[moves.length - 1 - i] = undoMove;
-        }
-        return new CompositeMove<>(undoMoves);
-    }
-
-    @Override
-    public void doMove(ScoreDirector<Solution_> scoreDirector) {
-        for (Move<Solution_> move : moves) {
             // Calls scoreDirector.triggerVariableListeners() between moves
             // because a later move can depend on the shadow variables changed by an earlier move
-            move.doMove(scoreDirector);
+            Move<Solution_> undoMove = moves[i].doMove(scoreDirector);
+            // Undo in reverse order and each undoMove is created after previous moves have been done
+            undoMoves[moves.length - 1 - i] = undoMove;
         }
         // No need to call scoreDirector.triggerVariableListeners() because Move.doMove() already does it for every move.
+        return new CompositeMove<>(undoMoves);
     }
 
     // ************************************************************************

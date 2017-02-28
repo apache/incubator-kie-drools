@@ -46,7 +46,7 @@ public class CompositeMoveTest {
         DummyMove b = new DummyMove("b");
         DummyMove c = new DummyMove("c");
         CompositeMove<TestdataSolution> move = new CompositeMove<>(a, b, c);
-        CompositeMove<TestdataSolution> undoMove = move.createUndoMove(scoreDirector);
+        CompositeMove<TestdataSolution> undoMove = move.doMove(scoreDirector);
         assertAllCodesOfArray(move.getMoves(), "a", "b", "c");
         assertAllCodesOfArray(undoMove.getMoves(), "undo c", "undo b", "undo a");
     }
@@ -122,7 +122,7 @@ public class CompositeMoveTest {
         assertTrue(move.equals(move));
     }
 
-    @Test @Ignore("PLANNER-611") // TODO https://issues.jboss.org/browse/PLANNER-611
+    @Test
     public void interconnectedChildMoves() {
         TestdataSolution solution = new TestdataSolution("s1");
         TestdataValue v1 = new TestdataValue("v1");
@@ -143,8 +143,7 @@ public class CompositeMoveTest {
 
         ScoreDirector<TestdataSolution> scoreDirector
                 = mockScoreDirector(variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
-        Move<TestdataSolution> undoMove = move.createUndoMove(scoreDirector);
-        move.doMove(scoreDirector);
+        Move<TestdataSolution> undoMove = move.doMove(scoreDirector);
 
         assertSame(v3, e1.getValue());
         assertSame(v1, e2.getValue());
