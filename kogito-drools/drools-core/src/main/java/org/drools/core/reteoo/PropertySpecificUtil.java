@@ -111,7 +111,7 @@ public class PropertySpecificUtil {
         return mask.isSet(index + CUSTOM_BITS_OFFSET);
     }
 
-    public static List<String> getSettableProperties(InternalKnowledgeBase kBase, Class<?> nodeClass) {
+    public static List<String> getAccessibleProperties( InternalKnowledgeBase kBase, Class<?> nodeClass ) {
         return kBase.getOrCreateExactTypeDeclaration(nodeClass).getAccessibleProperties();
     }
 }

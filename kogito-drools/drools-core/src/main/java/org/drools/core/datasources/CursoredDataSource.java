@@ -57,7 +57,7 @@ import static java.util.Arrays.asList;
 import static org.drools.core.common.DefaultFactHandle.determineIdentityHashCode;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
 
 public class CursoredDataSource<T> implements InternalDataSource<T> {
 
@@ -111,7 +111,7 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
     public void update(FactHandle handle, T object, String... modifiedProperties) {
         BitMask mask = modifiedProperties == null || modifiedProperties.length == 0 ?
                        allSetButTraitBitMask() :
-                       calculatePositiveMask(asList(modifiedProperties), getSettableProperties(workingMemory.getKnowledgeBase(), object.getClass()));
+                       calculatePositiveMask( asList(modifiedProperties), getAccessibleProperties( workingMemory.getKnowledgeBase(), object.getClass() ) );
         internalUpdate((DataSourceFactHandle) handle, object, mask, Object.class, null);
     }
 

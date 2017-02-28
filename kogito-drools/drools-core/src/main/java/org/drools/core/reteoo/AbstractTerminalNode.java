@@ -116,7 +116,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             // if property specific is not on, then accept all modification propagations
             setDeclaredMask( AllSetBitMask.get() );
         } else  {
-            List<String> settableProperties = getSettableProperties(context.getKnowledgeBase(), objectClass);
+            List<String> settableProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
             setDeclaredMask( calculatePositiveMask(pattern.getListenedProperties(), settableProperties) );
             setNegativeMask( calculateNegativeMask(pattern.getListenedProperties(), settableProperties) );
         }

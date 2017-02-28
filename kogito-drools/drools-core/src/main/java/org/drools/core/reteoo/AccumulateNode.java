@@ -21,14 +21,17 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
@@ -37,10 +40,16 @@ import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.bitmask.BitMask;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 
 /**
  * AccumulateNode
@@ -82,11 +91,31 @@ public class AccumulateNode extends BetaNode {
         this.unwrapRightObject = unwrapRightObject;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
+        addAccFunctionDeclarationsToLeftMask( context.getKnowledgeBase(), leftInput, accumulate );
+
         hashcode = this.leftInput.hashCode() ^
                    this.rightInput.hashCode() ^
                    this.accumulate.hashCode() ^
                    this.resultBinder.hashCode() ^
                    Arrays.hashCode( this.resultConstraints );
+
+    }
+
+    private void addAccFunctionDeclarationsToLeftMask( InternalKnowledgeBase kbase, LeftTupleSource leftInput, Accumulate accumulate ) {
+        BitMask leftMask = getLeftInferredMask();
+        ObjectType leftObjectType = leftInput.getObjectType();
+        if (leftObjectType instanceof ClassObjectType ) {
+            TypeDeclaration typeDeclaration = kbase.getExactTypeDeclaration( ((ClassObjectType) leftObjectType).getClassType() );
+            if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
+                List<String> accessibleProperties = typeDeclaration.getAccessibleProperties();
+                for ( Declaration decl : accumulate.getRequiredDeclarations() ) {
+                    if ( leftObjectType.equals( decl.getPattern().getObjectType() ) ) {
+                        leftMask = leftMask.setAll( calculatePositiveMask( decl.getPattern().getListenedProperties(), accessibleProperties ) );
+                    }
+                }
+            }
+        }
+        setLeftInferredMask( leftMask );
     }
 
     public void readExternal( ObjectInput in ) throws IOException,

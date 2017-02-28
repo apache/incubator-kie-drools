@@ -115,7 +115,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         Class objectClass = ((ClassWireable) objectType).getClassType();
         return isPropertyReactive( context, objectClass ) ?
                calculatePositiveMask( pattern.getListenedProperties(),
-                                      getSettableProperties( context.getKnowledgeBase(), objectClass ) ) :
+                                      getAccessibleProperties( context.getKnowledgeBase(), objectClass ) ) :
                AllSetBitMask.get();
     }
 

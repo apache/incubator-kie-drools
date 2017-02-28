@@ -142,7 +142,7 @@ public abstract class ModifyLiteral<T> extends AbstractWMTask<T> implements Modi
 
     protected List<String> getAccessibleProperties( Object o, InternalKnowledgeBase knowledgeBase ) {
         if ( knowledgeBase != null ) {
-            return PropertySpecificUtil.getSettableProperties( knowledgeBase, o.getClass() );
+            return PropertySpecificUtil.getAccessibleProperties( knowledgeBase, o.getClass() );
         } else {
             return ClassUtils.getAccessibleProperties( o.getClass() );
         }

@@ -60,7 +60,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     }
 
     public static List<String> getSettableProperties( InternalKnowledgeBase kBase, ObjectTypeNode objectTypeNode ) {
-        return PropertySpecificUtil.getSettableProperties( kBase, getNodeClass( objectTypeNode ) );
+        return PropertySpecificUtil.getAccessibleProperties( kBase, getNodeClass( objectTypeNode ) );
     }
 
     public static Class<?> getNodeClass( ObjectTypeNode objectTypeNode ) {

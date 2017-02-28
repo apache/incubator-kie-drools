@@ -254,7 +254,7 @@ public abstract class LeftTupleSource extends BaseNode
             // TODO: at the moment if pattern is null (e.g. for eval node) we cannot calculate the mask, so we leave it to 0
             if ( pattern != null ) {
                 Collection<String> leftListenedProperties = pattern.getListenedProperties();
-                List<String> settableProperties = getSettableProperties( context.getKnowledgeBase(), objectClass );
+                List<String> settableProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
                 leftDeclaredMask = calculatePositiveMask( leftListenedProperties, settableProperties );
                 leftNegativeMask = calculateNegativeMask( leftListenedProperties, settableProperties );
                 setLeftListenedProperties(leftListenedProperties);
