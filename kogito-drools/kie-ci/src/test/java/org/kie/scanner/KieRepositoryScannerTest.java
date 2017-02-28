@@ -55,11 +55,11 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
     @Parameterized.Parameters(name = "Manually wired component provider={0}")
     public static Collection modes() {
-        Object[][] locking = new Object[][] {
+        Object[][] manuallyWiredProvider = new Object[][] {
                 { true },
                 { false }
         };
-        return Arrays.asList(locking);
+        return Arrays.asList(manuallyWiredProvider);
     }
 
     public KieRepositoryScannerTest( boolean useWiredComponentProvider) {
