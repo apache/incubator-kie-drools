@@ -36,6 +36,17 @@ according to the FEEL grammar, these are not valid function names, as `and` and 
 3. __Keyword `in` can not be used in variable names__: the spec defines that any keyword can be reused as part
  of a variable name, but the ambiguities caused with the `for ... in ... return` loop prevent the reuse of the `in` 
  keyword. All other keywords are supported as part of variable names.
+ 
+4. __Support for date and time literals on ranges__: according to the grammar rules #8, #18, #19, #34 and #62, `date 
+ and time` literals are supported in ranges (pages 110-111). Chapter 10.3.2.7 on page 114, on the other hand, contradicts
+ the grammar and says they are not supported. This implementation chose to follow the grammar and support `date and 
+ time` literals on ranges, as well as extend the specification to support any arbitrary expression (see extensions below).
+
+5. __Invalid time syntax__: chapter 10.3.2.3.4 on page 112 and bullet point about `time` on page 131 both state that 
+ the `time` string lexical representation follows the XML Schema Datatypes specification as well as ISO 8601. According 
+ to the XML Schema specification (https://www.w3.org/TR/xmlschema-2/#time), the lexical representation of a time follows 
+ the pattern `hh:mm:ss.sss` without any leading character. The DMN specification uses a leading "T" in several examples,
+ that we understand is a typo a not in accordance with the standard.
 
 ## b. Extensions
 
