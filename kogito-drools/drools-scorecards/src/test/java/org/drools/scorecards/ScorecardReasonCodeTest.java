@@ -47,18 +47,17 @@ import static org.junit.Assert.fail;
 
 public class ScorecardReasonCodeTest {
 
-    private static PMML pmmlDocument;
-    private static ScorecardCompiler scorecardCompiler;
-
-
     @Test
     public void testPMMLDocument() throws Exception {
-        Assert.assertNotNull(pmmlDocument);
-
+        final ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
+        boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
+        if (!compileResult) {
+            assertErrors(scorecardCompiler);
+        }
+        Assert.assertNotNull(scorecardCompiler.getPMMLDocument());
         String pmml = scorecardCompiler.getPMML();
         Assert.assertNotNull(pmml);
         assertTrue(pmml.length() > 0);
-        //System.out.println(pmml);
     }
 
     @Test
@@ -75,15 +74,13 @@ public class ScorecardReasonCodeTest {
 
     @Test
     public void testUseReasonCodes() throws Exception {
-        scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
+        final ScorecardCompiler scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
         boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
         if (!compileResult) {
-            for(ScorecardError error : scorecardCompiler.getScorecardParseErrors()){
-                System.out.println("setup :"+error.getErrorLocation()+"->"+error.getErrorMessage());
-            }
+            assertErrors(scorecardCompiler);
         }
 
-        pmmlDocument = scorecardCompiler.getPMMLDocument();
+        final PMML pmmlDocument = scorecardCompiler.getPMMLDocument();
 
         for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
             if (serializable instanceof Scorecard){
@@ -96,15 +93,13 @@ public class ScorecardReasonCodeTest {
 
     @Test
     public void testReasonCodes() throws Exception {
-        scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
+        final ScorecardCompiler scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
         boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
         if (!compileResult) {
-            for(ScorecardError error : scorecardCompiler.getScorecardParseErrors()){
-                System.out.println("setup :"+error.getErrorLocation()+"->"+error.getErrorMessage());
-            }
+            assertErrors(scorecardCompiler);
         }
 
-        pmmlDocument = scorecardCompiler.getPMMLDocument();
+        final PMML pmmlDocument = scorecardCompiler.getPMMLDocument();
 
         for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
             if (serializable instanceof Scorecard){
@@ -130,12 +125,10 @@ public class ScorecardReasonCodeTest {
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler( INTERNAL_DECLARED_TYPES );
         boolean compileResult = scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_reasoncodes.xls"));
         if (!compileResult) {
-            for(ScorecardError error : scorecardCompiler.getScorecardParseErrors()){
-                System.out.println("setup :"+error.getErrorLocation()+"->"+error.getErrorMessage());
-            }
+            assertErrors(scorecardCompiler);
         }
 
-        pmmlDocument = scorecardCompiler.getPMMLDocument();
+        final PMML pmmlDocument = scorecardCompiler.getPMMLDocument();
 
         for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
             if (serializable instanceof Scorecard){
@@ -172,8 +165,6 @@ public class ScorecardReasonCodeTest {
         assertEquals(3, scorecardCompiler.getScorecardParseErrors().size());
         assertEquals("$D$30", scorecardCompiler.getScorecardParseErrors().get(2).getErrorLocation());
     }
-
-
 
     @Test
     public void testReasonCodesCombinations() throws Exception {
@@ -272,11 +263,6 @@ public class ScorecardReasonCodeTest {
         session.dispose();
     }
 
-
-
-
-
-
     @Test
     public void testPointsAbove() throws Exception {
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
@@ -285,7 +271,6 @@ public class ScorecardReasonCodeTest {
 
         String drl = scorecardCompiler.getDRL();
         assertNotNull(drl);
-
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
@@ -322,9 +307,6 @@ public class ScorecardReasonCodeTest {
         assertEquals( "AGE02", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
 
         session.dispose();
-
-
-
 
         session = kbase.newKieSession();
         scorecard = scorecardType.newInstance();
@@ -385,9 +367,6 @@ public class ScorecardReasonCodeTest {
 
     }
 
-
-
-
     @Test
     public void testPointsBelow() throws Exception {
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
@@ -432,7 +411,6 @@ public class ScorecardReasonCodeTest {
 
         session.dispose();
 
-
         session = kbase.newKieSession();
         scorecard = scorecardType.newInstance();
         scorecardType.set( scorecard, "age", 0 );
@@ -455,7 +433,6 @@ public class ScorecardReasonCodeTest {
         scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
         assertEquals( -1.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
         assertEquals( "OCC01", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
-
 
         session.dispose();
 
@@ -481,7 +458,6 @@ public class ScorecardReasonCodeTest {
         assertEquals( 14.0, reasonCodesMap.get( "VL001" ) );
         assertEquals( -30.0, reasonCodesMap.get( "AGE03" ) );
 
-
         scorecardOutput = session.getObjects( new ClassObjectFilter( scorecardOutputType.getFactClass() ) ).iterator().next();
         assertEquals( 41.0, scorecardOutputType.get( scorecardOutput, "calculatedScore" ) );
         assertEquals( "OCC02", scorecardOutputType.get( scorecardOutput, "reasonCode" ) );
@@ -489,6 +465,10 @@ public class ScorecardReasonCodeTest {
         session.dispose();
     }
 
-
-
+    private void assertErrors(final ScorecardCompiler compiler) {
+        final StringBuilder errorBuilder = new StringBuilder();
+        compiler.getScorecardParseErrors().forEach((error) -> errorBuilder.append(error.getErrorLocation() + " -> " + error.getErrorMessage() + "\n"));
+        final String errors = errorBuilder.toString();
+        Assert.fail("There are compile errors: \n" + errors);
+    }
 }
