@@ -15,6 +15,24 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
 import org.drools.compiler.CommonTestMethodBase;
@@ -55,29 +73,12 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.mock;
@@ -2790,6 +2791,16 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccFunctionOpaqueJoins() throws Exception {
         // DROOLS-661
+        testAccFunctionOpaqueJoins(PropertySpecificOption.ALLOWED);
+    }
+
+    @Test
+    public void testAccFunctionOpaqueJoinsWithPropertyReactivity() throws Exception {
+        // DROOLS-1445
+        testAccFunctionOpaqueJoins(PropertySpecificOption.ALWAYS);
+    }
+
+    private void testAccFunctionOpaqueJoins(PropertySpecificOption propertySpecificOption) throws Exception {
         String str = "package org.test; " +
                      "import java.util.*; " +
                      "global List list; " +
@@ -2845,7 +2856,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                      "    list2.add( $tot ); " +
                      "end ";
 
-        KieHelper helper = new KieHelper();
+        KieHelper helper = new KieHelper( propertySpecificOption );
         KieSession ks = helper.addContent( str, ResourceType.DRL ).build().newKieSession();
         List list = new ArrayList();
         ks.setGlobal( "list", list );

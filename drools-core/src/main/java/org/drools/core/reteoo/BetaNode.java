@@ -169,10 +169,10 @@ public abstract class BetaNode extends LeftTupleSource
                 Class objectClass = ((ClassObjectType) objectType).getClassType();
                 if (isPropertyReactive(context, objectClass)) {
                     rightListenedProperties = pattern.getListenedProperties();
-                    List<String> settableProperties = getSettableProperties(context.getKnowledgeBase(), objectClass);
-                    rightDeclaredMask = calculatePositiveMask(rightListenedProperties, settableProperties);
-                    rightDeclaredMask = rightDeclaredMask.setAll(constraints.getListenedPropertyMask(settableProperties));
-                    rightNegativeMask = calculateNegativeMask(rightListenedProperties, settableProperties);
+                    List<String> accessibleProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
+                    rightDeclaredMask = calculatePositiveMask(rightListenedProperties, accessibleProperties);
+                    rightDeclaredMask = rightDeclaredMask.setAll(constraints.getListenedPropertyMask(accessibleProperties));
+                    rightNegativeMask = calculateNegativeMask(rightListenedProperties, accessibleProperties);
                 } else {
                     // if property reactive is not on, then accept all modification propagations
                     rightDeclaredMask = AllSetBitMask.get();
