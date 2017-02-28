@@ -120,6 +120,7 @@ public class ConstraintMatchTotal implements Serializable, Comparable<Constraint
     protected List<Object> extractJustificationList(RuleContext kcontext) {
         List<Object> droolsMatchObjects = kcontext.getMatch().getObjects();
         // Drools always returns the rule matches in reverse order
+        // Return a reversed view on the list for performance
         return Lists.reverse(droolsMatchObjects);
     }
 
