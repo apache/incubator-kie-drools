@@ -29,6 +29,7 @@ public class HitPolicyValidation {
             case UNIQUE_HIT:
                 return new HashSet<>( Arrays.asList( GuidedDecisionTable52.ACTIVATION_GROUP_ATTR ) );
             case FIRST_HIT:
+            case RESOLVED_HIT:
                 return new HashSet<>( Arrays.asList( GuidedDecisionTable52.SALIENCE_ATTR,
                                                      GuidedDecisionTable52.ACTIVATION_GROUP_ATTR ) );
             case RULE_ORDER:

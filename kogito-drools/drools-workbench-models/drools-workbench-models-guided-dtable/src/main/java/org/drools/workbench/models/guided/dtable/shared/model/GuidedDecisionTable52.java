@@ -102,10 +102,24 @@ public class GuidedDecisionTable52 implements HasImports,
      * and generating nothing that the user does not add himself.
      */
     public enum HitPolicy {
-        NONE,
-        UNIQUE_HIT,
-        FIRST_HIT,
-        RULE_ORDER;
+
+        NONE( "#" ),
+        RESOLVED_HIT( "RC" ),
+        UNIQUE_HIT( "U" ),
+        FIRST_HIT( "F" ),
+        RULE_ORDER( "R" );
+
+        public static final String RESOLVED_HIT_METADATA_NAME = "resolved-hit-priority-over-row";
+
+        private final String id;
+
+        HitPolicy( final String id ) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
 
         public static HitPolicy getDefault() {
             return NONE;

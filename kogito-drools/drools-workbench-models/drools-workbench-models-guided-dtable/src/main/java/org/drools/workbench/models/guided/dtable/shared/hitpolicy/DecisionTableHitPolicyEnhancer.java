@@ -20,6 +20,7 @@ import java.util.List;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.validation.DecisionTableValidator;
 
 /**
@@ -39,11 +40,14 @@ public class DecisionTableHitPolicyEnhancer {
     }
 
     private GuidedDecisionTable52 enhance() {
-
         new DecisionTableValidator( dtable ).validate();
 
         switch ( dtable.getHitPolicy() ) {
 
+            case RESOLVED_HIT:
+                addActivationGroup( "resolved-hit-policy-group" );
+                addSalienceByMetadata();
+                break;
             case UNIQUE_HIT:
                 addActivationGroup( "unique-hit-policy-group" );
                 break;
@@ -57,12 +61,96 @@ public class DecisionTableHitPolicyEnhancer {
                 break;
 
         }
-
         return dtable;
     }
 
+    private void addSalienceByMetadata() {
+
+        final int priorityColumnIndex = getResolvedHitMetadataColumnIndex();
+
+        if ( priorityColumnIndex >= 0 ) {
+            final RowPriorityResolver rowPriorityResolver = getRowPriorityResolver( priorityColumnIndex );
+            final int indexOfSalienceColumn = makeSalienceColumn();
+            final RowPriorities priorities = rowPriorityResolver.getPriorityRelations();
+
+            for ( final RowNumber rowNumber : priorities.getRowNumbers() ) {
+                dtable.getData()
+                        .get( rowNumber.getRowIndex() )
+                        .get( indexOfSalienceColumn )
+                        .setNumericValue( priorities.getSalience( rowNumber )
+                                                  .getSalience() );
+            }
+        }
+    }
+
+    private RowPriorityResolver getRowPriorityResolver( final int priorityColumnIndex ) {
+
+        final int rowNumberIndex = getRowNumberColumnIndex();
+
+        final RowPriorityResolver rowPriorityResolver = new RowPriorityResolver();
+
+        for ( final List<DTCellValue52> row : dtable.getData() ) {
+
+            final int rowNumber = row.get( rowNumberIndex )
+                    .getNumericValue()
+                    .intValue();
+
+            final int priorityOver = getPriorityOver( priorityColumnIndex,
+                                                      row );
+
+            rowPriorityResolver.set( rowNumber,
+                                     priorityOver );
+        }
+
+        return rowPriorityResolver;
+    }
+
+    private int makeSalienceColumn() {
+        final AttributeCol52 attributeCol = new AttributeCol52();
+        attributeCol.setAttribute( "salience" );
+        dtable.getAttributeCols()
+                .add( attributeCol );
+
+        int columnIndex = dtable.getExpandedColumns()
+                .indexOf( attributeCol );
+
+        for ( final List<DTCellValue52> row : dtable.getData() ) {
+            row.add( columnIndex,
+                     new DTCellValue52( 0 ) );
+        }
+
+        return columnIndex;
+    }
+
+    private int getPriorityOver( final int priorityColumnIndex,
+                                 final List<DTCellValue52> row ) {
+        final String stringValue = row.get( priorityColumnIndex )
+                .getStringValue();
+        if ( stringValue == null || stringValue.trim()
+                .equals( "" ) ) {
+            return 0;
+        } else {
+            return Integer.parseInt( stringValue );
+        }
+    }
+
+    private int getResolvedHitMetadataColumnIndex() {
+        int columnIndex = -1;
+        for ( final MetadataCol52 metadataCol52 : dtable.getMetadataCols() ) {
+            if ( GuidedDecisionTable52.HitPolicy.RESOLVED_HIT_METADATA_NAME.equals( metadataCol52.getMetadata() ) ) {
+                columnIndex = dtable.getExpandedColumns()
+                        .indexOf( metadataCol52 );
+            }
+        }
+        return columnIndex;
+    }
+
+    private int getRowNumberColumnIndex() {
+        return dtable.getExpandedColumns()
+                .indexOf( dtable.getRowNumberCol() );
+    }
+
     private void addActivationGroup( final String activationGroupType ) {
-        // Add Column
         final AttributeCol52 attributeCol52 = new AttributeCol52();
         attributeCol52.setAttribute( GuidedDecisionTable52.ACTIVATION_GROUP_ATTR );
         dtable.getAttributeCols()
