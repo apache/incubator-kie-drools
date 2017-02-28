@@ -16,6 +16,12 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
@@ -32,13 +38,7 @@ import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
 
 /**
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.
@@ -152,7 +152,7 @@ public abstract class ObjectSource extends BaseNode
             // if property specific is not on, then accept all modification propagations
             declaredMask = AllSetBitMask.get();
         } else {
-            List<String> settableProperties = getSettableProperties(context.getKnowledgeBase(), objectClass);
+            List<String> settableProperties = getAccessibleProperties( context.getKnowledgeBase(), objectClass );
             declaredMask = calculateDeclaredMask(settableProperties);
         }
     }
