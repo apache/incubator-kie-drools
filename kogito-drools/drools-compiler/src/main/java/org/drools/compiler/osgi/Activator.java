@@ -16,6 +16,11 @@
 
 package org.drools.compiler.osgi;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.concurrent.Callable;
+import java.util.function.BiConsumer;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl;
 import org.drools.compiler.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.compiler.DecisionTableProvider;
@@ -23,9 +28,16 @@ import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScannerFactoryService;
+import org.kie.internal.assembler.KieAssemblerService;
+import org.kie.internal.assembler.KieAssemblers;
 import org.kie.internal.builder.KnowledgeBuilderFactoryService;
+import org.kie.internal.runtime.KieRuntimeService;
+import org.kie.internal.runtime.KieRuntimes;
 import org.kie.internal.utils.ClassLoaderResolver;
+import org.kie.internal.utils.ServiceRegistry;
 import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.internal.weaver.KieWeaverService;
+import org.kie.internal.weaver.KieWeavers;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -36,10 +48,6 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.concurrent.Callable;
-
 public class Activator
     implements
     BundleActivator {
@@ -48,12 +56,16 @@ public class Activator
 
     private ServiceRegistration kbuilderReg;
 
-    private ServiceTracker      dtableTracker;
-    private ServiceTracker      bpmn2Tracker;
-    private ServiceTracker      processRuntimeTracker;
-    private ServiceTracker      processMarshallerTracker;
-    private ServiceTracker      scannerTracker;
-    private ServiceTracker      classResolverTracker;
+    private ServiceTracker dtableTracker;
+    private ServiceTracker bpmn2Tracker;
+    private ServiceTracker processRuntimeTracker;
+    private ServiceTracker processMarshallerTracker;
+    private ServiceTracker scannerTracker;
+    private ServiceTracker classResolverTracker;
+
+    private ServiceTracker kieAssemblerServiceTracker;
+    private ServiceTracker kieWeaverServiceTracker;
+    private ServiceTracker kieRuntimeServiceTracker;
 
     public void start(BundleContext bc) throws Exception {
         logger.info( "registering compiler services" );
@@ -98,6 +110,21 @@ public class Activator
                                                         ClassLoaderResolver.class.getName(),
                                                         new DroolsServiceTracker( bc, this ) );
         this.classResolverTracker.open();
+        
+        this.kieAssemblerServiceTracker = new ServiceTracker( bc,
+                                                              KieAssemblerService.class.getName(),
+                                                              new DroolsKieComponentServiceTracker<KieAssemblerService>( bc, Activator::registerKieAssembler ) );
+        this.kieAssemblerServiceTracker.open();
+
+        this.kieWeaverServiceTracker  = new ServiceTracker( bc,
+                                                            KieWeaverService.class.getName(),
+                                                            new DroolsKieComponentServiceTracker<KieWeaverService>( bc, Activator::registerKieWeaver ) );
+        this.kieWeaverServiceTracker.open();
+
+        this.kieRuntimeServiceTracker = new ServiceTracker( bc,
+                                                            KieRuntimeService.class.getName(),
+                                                            new DroolsKieComponentServiceTracker<KieRuntimeService>( bc, Activator::registerKieRuntime ) );
+        this.kieRuntimeServiceTracker.open();
 
         logger.info( "compiler services registered" );
     }
@@ -110,6 +137,42 @@ public class Activator
         this.processMarshallerTracker.close();
         this.scannerTracker.close();
         this.classResolverTracker.close();
+        this.kieAssemblerServiceTracker.close();
+        this.kieWeaverServiceTracker.close();
+        this.kieRuntimeServiceTracker.close();
+    }
+
+    private static void registerKieAssembler(ServiceRegistry registry, KieAssemblerService service) {
+        registry.get( KieAssemblers.class ).getAssemblers().put( service.getResourceType(), service );
+    }
+
+    private static void registerKieWeaver(ServiceRegistry registry, KieWeaverService service) {
+        registry.get(KieWeavers.class).getWeavers().put(service.getResourceType(), service);
+    }
+
+    private static void registerKieRuntime(ServiceRegistry registry, KieRuntimeService service) {
+        registry.get(KieRuntimes.class).getRuntimes().put(service.getServiceInterface().getName(), service);
+    }
+
+    public static class DroolsKieComponentServiceTracker<T> implements ServiceTrackerCustomizer {
+        private final BundleContext bc;
+        private final BiConsumer<ServiceRegistry, T> register;
+
+        public DroolsKieComponentServiceTracker( BundleContext bc, BiConsumer<ServiceRegistry, T> register ) {
+            this.bc = bc;
+            this.register = register;
+        }
+
+        public Object addingService(ServiceReference ref) {
+            T service = (T) this.bc.getService( ref );
+            logger.info( "registering : " + service + " : " + service.getClass().getInterfaces()[0] );
+            register.accept( ServiceRegistryImpl.getInstance(), service );
+            return service;
+        }
+
+        public void modifiedService(ServiceReference arg0, Object arg1) { }
+
+        public void removedService(ServiceReference ref, Object arg1) { }
     }
 
     public static class DroolsServiceTracker

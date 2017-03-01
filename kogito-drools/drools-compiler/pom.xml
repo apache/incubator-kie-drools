@@ -241,6 +241,9 @@
               org.osgi.*;resolution:=optional,
               org.drools.cdi;resolution:=optional,
               org.jbpm.process.instance.impl;resolution:=optional,
+              org.kie.dmn.core.assembler;resolution:=optional,
+              org.kie.dmn.core.runtime;resolution:=optional,
+              org.kie.dmn.core.weaver;resolution:=optional,
               org.kie.scanner;resolution:=optional,
               =org.kie.spring;resolution:=optional,
               *
