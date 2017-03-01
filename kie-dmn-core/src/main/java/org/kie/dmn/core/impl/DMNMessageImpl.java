@@ -18,32 +18,35 @@ package org.kie.dmn.core.impl;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.model.v1_1.DMNElement;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 
-public class DMNMessageImpl implements DMNMessage {
-    private Severity  severity;
-    private String    message;
-    private String    sourceId;
-    private Throwable exception;
-    private FEELEvent feelEvent;
+public class DMNMessageImpl
+        implements DMNMessage {
+    private Severity                 severity;
+    private String                   message;
+    private DMNElement source;
+    private Throwable                exception;
+    private FEELEvent                feelEvent;
 
     public DMNMessageImpl() {
     }
 
-    public DMNMessageImpl(Severity severity, String message, String sourceId) {
-        this( severity, message, sourceId, (Throwable) null);
+    public DMNMessageImpl(Severity severity, String message, DMNElement source) {
+        this( severity, message, source, (Throwable) null );
     }
 
-    public DMNMessageImpl(Severity severity, String message, String sourceId, Throwable exception) {
+    public DMNMessageImpl(Severity severity, String message, DMNElement source, Throwable exception) {
         this.severity = severity;
         this.message = message;
-        this.sourceId = sourceId;
+        this.source = source;
         this.exception = exception;
     }
 
-    public DMNMessageImpl(Severity severity, String message, String sourceId, FEELEvent feelEvent) {
+    public DMNMessageImpl(Severity severity, String message, DMNElement source, FEELEvent feelEvent) {
         this.severity = severity;
         this.message = message;
-        this.sourceId = sourceId;
+        this.source = source;
         this.feelEvent = feelEvent;
     }
 
@@ -59,7 +62,12 @@ public class DMNMessageImpl implements DMNMessage {
 
     @Override
     public String getSourceId() {
-        return sourceId;
+        return source != null ? source.getId() : null;
+    }
+
+    @Override
+    public DMNElement getSourceReference() {
+        return source;
     }
 
     @Override
@@ -77,9 +85,9 @@ public class DMNMessageImpl implements DMNMessage {
         return "DMNMessage{" +
                " severity=" + severity +
                ", message='" + message + '\'' +
-               ", sourceId='" + sourceId + '\'' +
-               ", exception='" + ( exception != null ? ( exception.getClass().getSimpleName() + " : " + exception.getMessage() ) : "" ) + "'" +
-               ", feelEvent='" + ( feelEvent != null ? ( feelEvent.getClass().getSimpleName() + " : " + feelEvent.getMessage() ) : "" ) + "'" +
+               ", sourceId='" + getSourceId() + '\'' +
+               ", exception='" + (exception != null ? (exception.getClass().getSimpleName() + " : " + exception.getMessage()) : "") + "'" +
+               ", feelEvent='" + (feelEvent != null ? (feelEvent.getClass().getSimpleName() + " : " + feelEvent.getMessage()) : "") + "'" +
                "}";
     }
 
@@ -92,7 +100,7 @@ public class DMNMessageImpl implements DMNMessage {
 
         if ( severity != that.severity ) return false;
         if ( message != null ? !message.equals( that.message ) : that.message != null ) return false;
-        if ( sourceId != null ? !sourceId.equals( that.sourceId ) : that.sourceId != null ) return false;
+        if ( source != null ? !source.equals( that.source ) : that.source != null ) return false;
         if ( exception != null ? !exception.equals( that.exception ) : that.exception != null ) return false;
         return feelEvent != null ? feelEvent.equals( that.feelEvent ) : that.feelEvent == null;
 
@@ -102,7 +110,7 @@ public class DMNMessageImpl implements DMNMessage {
     public int hashCode() {
         int result = severity != null ? severity.hashCode() : 0;
         result = 31 * result + (message != null ? message.hashCode() : 0);
-        result = 31 * result + (sourceId != null ? sourceId.hashCode() : 0);
+        result = 31 * result + (source != null ? source.hashCode() : 0);
         result = 31 * result + (exception != null ? exception.hashCode() : 0);
         result = 31 * result + (feelEvent != null ? feelEvent.hashCode() : 0);
         return result;

@@ -98,10 +98,10 @@ public class DMNDTExpressionEvaluator
             } else if ( e instanceof DecisionTableRulesSelectedEvent ) {
                 r.fired = ((DecisionTableRulesSelectedEvent) e).getFired();
             } else if ( e.getSeverity() == FEELEvent.Severity.ERROR ) {
-                result.addMessage( DMNMessage.Severity.ERROR, e.getMessage(), node.getId(), e );
+                result.addMessage( DMNMessage.Severity.ERROR, e.getMessage(), ((DMNBaseNode)node).getSource(), e );
                 r.hasErrors = true;
             } else if ( e.getSeverity() == FEELEvent.Severity.WARN ) {
-                result.addMessage( DMNMessage.Severity.WARN, e.getMessage(), node.getId(), e );
+                result.addMessage( DMNMessage.Severity.WARN, e.getMessage(),((DMNBaseNode)node).getSource(), e );
             }
         }
         events.clear();
