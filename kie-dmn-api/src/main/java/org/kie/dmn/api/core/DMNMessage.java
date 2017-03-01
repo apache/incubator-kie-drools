@@ -17,7 +17,6 @@
 package org.kie.dmn.api.core;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.model.v1_1.DMNElement;
 
 /**
  * A general message interface for all DMN related messages
@@ -58,7 +57,7 @@ public interface DMNMessage {
      *
      * @return
      */
-    DMNElement getSourceReference();
+    Object getSourceReference();
 
     /**
      * If this message relates to a FEEL compilation or runtime event, this method
