@@ -670,6 +670,20 @@ public class DMNRuntimeTest {
     }
 
     @Test
+    public void testLoanComparison() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "loanComparison.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_3a1fd8f4-ea04-4453-aa30-ff14140e3441", "loanComparison" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "RequestedAmt", 500000 );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+    }
+
+    @Test
     public void testGetViableLoanProducts() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Get_Viable_Loan_Products.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_3e1a628d-36bc-45f1-8464-b201735e5ce0", "Get Viable Loan Products" );
