@@ -25,6 +25,7 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.feel.model.v1_1.DMNElement;
 import org.kie.dmn.feel.model.v1_1.Relation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,14 +37,14 @@ public class DMNRelationEvaluator
     private static final Logger logger = LoggerFactory.getLogger( DMNRelationEvaluator.class );
 
     private final String   name;
-    private final String   nodeId;
+    private final DMNElement node;
     private final Relation relationDef;
     private final List<String> columns = new ArrayList<>(  );
     private final List<List<DMNExpressionEvaluator>> rows = new ArrayList<>();
 
-    public DMNRelationEvaluator(String name, String nodeId, Relation relationDef) {
+    public DMNRelationEvaluator(String name, DMNElement node, Relation relationDef) {
         this.name = name;
-        this.nodeId = nodeId;
+        this.node = node;
         this.relationDef = relationDef;
     }
 
@@ -87,7 +88,7 @@ public class DMNRelationEvaluator
                             result.addMessage(
                                     DMNMessage.Severity.ERROR,
                                     message,
-                                    nodeId );
+                                    node );
                             return new EvaluatorResultImpl( results, ResultType.FAILURE );
                         }
                     } catch ( Exception e ) {
@@ -96,7 +97,7 @@ public class DMNRelationEvaluator
                         result.addMessage(
                                 DMNMessage.Severity.ERROR,
                                 message,
-                                nodeId,
+                                node,
                                 e );
                         return new EvaluatorResultImpl( results, ResultType.FAILURE );
                     }

@@ -32,6 +32,7 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
+import org.kie.dmn.feel.model.v1_1.DMNElement;
 import org.kie.dmn.feel.model.v1_1.Invocation;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.slf4j.Logger;
@@ -46,15 +47,15 @@ public class DMNInvocationEvaluator
 
     private final Invocation invocation;
     private final String     nodeName;
-    private final String     nodeId;
+    private final DMNElement node;
     private final String     functionName;
     private final List<ActualParameter> parameters = new ArrayList<>();
     private final FEELImpl feel;
     private final List<FEELEvent> events = new ArrayList<>();
 
-    public DMNInvocationEvaluator(String nodeName, String nodeId, String functionName, Invocation invocation) {
+    public DMNInvocationEvaluator(String nodeName, DMNElement node, String functionName, Invocation invocation) {
         this.nodeName = nodeName;
-        this.nodeId = nodeId;
+        this.node = node;
         this.functionName = functionName;
         this.invocation = invocation;
         feel = (FEELImpl) FEEL.newInstance();
@@ -85,7 +86,7 @@ public class DMNInvocationEvaluator
                 result.addMessage(
                         DMNMessage.Severity.ERROR,
                         message,
-                        nodeId );
+                        node );
                 return new EvaluatorResultImpl( null, ResultType.FAILURE );
             }
             Object[] namedParams = new Object[parameters.size()];
@@ -101,7 +102,7 @@ public class DMNInvocationEvaluator
                         result.addMessage(
                                 DMNMessage.Severity.ERROR,
                                 message,
-                                nodeId );
+                                node );
                         return new EvaluatorResultImpl( null, ResultType.FAILURE );
                     }
                 } catch ( Exception e ) {
@@ -110,7 +111,7 @@ public class DMNInvocationEvaluator
                     result.addMessage(
                             DMNMessage.Severity.ERROR,
                             message,
-                            nodeId,
+                            node,
                             e );
                     return new EvaluatorResultImpl( null, ResultType.FAILURE );
                 }
@@ -127,7 +128,7 @@ public class DMNInvocationEvaluator
             result.addMessage(
                     DMNMessage.Severity.ERROR,
                     message,
-                    nodeId,
+                    node,
                     t );
         } finally {
             result.setContext( previousContext );
@@ -156,7 +157,7 @@ public class DMNInvocationEvaluator
         boolean hasErrors = false;
         for ( FEELEvent e : events ) {
             if ( e.getSeverity() == FEELEvent.Severity.ERROR ) {
-                result.addMessage( DMNMessage.Severity.ERROR, e.getMessage(), invocation.getId(), e );
+                result.addMessage( DMNMessage.Severity.ERROR, e.getMessage(), invocation, e );
                 hasErrors = true;
             }
         }
