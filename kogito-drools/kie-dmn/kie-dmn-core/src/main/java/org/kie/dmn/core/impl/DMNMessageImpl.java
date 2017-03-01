@@ -19,7 +19,6 @@ package org.kie.dmn.core.impl;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.model.v1_1.DMNElement;
-import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 
 public class DMNMessageImpl
         implements DMNMessage {
@@ -66,7 +65,7 @@ public class DMNMessageImpl
     }
 
     @Override
-    public DMNElement getSourceReference() {
+    public Object getSourceReference() {
         return source;
     }
 
