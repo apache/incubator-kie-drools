@@ -15,6 +15,17 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -49,23 +60,13 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.kie.api.runtime.rule.Variable.v;
@@ -1212,8 +1213,18 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         list );
     }
 
-    @Test //(timeout = 10000)
-    public void testNaniSearchs() throws Exception {
+    @Test
+    public void testNaniSearchsNoPropReactivity() throws Exception {
+        testNaniSearchs(PropertySpecificOption.ALLOWED);
+    }
+
+    @Test
+    public void testNaniSearchsWithPropReactivity() throws Exception {
+        // DROOLS-1453
+        testNaniSearchs(PropertySpecificOption.ALWAYS);
+    }
+
+    private void testNaniSearchs(PropertySpecificOption propertySpecificOption) throws Exception {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
         String str = "" +
@@ -1349,9 +1360,10 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "end\n" +
                      "";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        
+        KieHelper helper = new KieHelper( propertySpecificOption );
+        helper.addContent( str, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         ksession.setGlobal( "list",
                             list );
