@@ -1877,28 +1877,6 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     }
 
     @Test(timeout = 5000)
-    public void testEval() throws Exception {
-        String rule = "package org.drools.compiler.integrationtests\n" +
-                "import " + PropertySpecificTest.Order.class.getCanonicalName() + "\n" +
-                "rule R1 when\n" +
-                "   $o : Order()\n" +
-                "   eval($o.getId().equals(\"1\"))" +
-                "then\n" +
-                "   modify( $o ) { setDiscounted( true ) };\n" +
-                "end\n";
-
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        Order order1 = new Order("1");
-        ksession.insert(order1);
-
-        int rules = ksession.fireAllRules();
-        assertEquals(1, rules);
-        assertTrue(order1.isDiscounted());
-    }
-
-    @Test(timeout = 5000)
     public void testFrom() throws Exception {
         String rule = "package org.drools.compiler.integrationtests\n" +
                       "import " + PropertySpecificTest.Order.class.getCanonicalName() + "\n" +

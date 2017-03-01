@@ -16,6 +16,11 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Map;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -24,11 +29,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.PropagationContext;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -128,7 +128,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
 
     @Override
     public boolean equals(final Object object) {
-        return this == object || internalEquals( (Rete) object );
+        return this == object || internalEquals( object );
     }
 
     @Override
