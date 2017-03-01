@@ -142,9 +142,22 @@ public class DMNCompilerImpl
         for ( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
             BusinessKnowledgeModelNodeImpl bkmi = (BusinessKnowledgeModelNodeImpl) bkm;
             linkRequirements( model, bkmi );
-            FunctionDefinition funcDef = bkm.getBusinessKnowledModel().getEncapsulatedLogic();
-            DMNExpressionEvaluator exprEvaluator = evaluatorCompiler.compileExpression( ctx, model, bkmi, bkm.getName(), funcDef );
-            bkmi.setEvaluator( exprEvaluator );
+
+            ctx.enterFrame();
+            try {
+                for( DMNNode dep : bkmi.getDependencies().values() ) {
+                    if( dep instanceof BusinessKnowledgeModelNode ) {
+                        // might need to create a DMNType for "functions" and replace the type here by that
+                        ctx.setVariable( dep.getName(), ((BusinessKnowledgeModelNode)dep).getResultType() );
+                    }
+                }
+                FunctionDefinition funcDef = bkm.getBusinessKnowledModel().getEncapsulatedLogic();
+                DMNExpressionEvaluator exprEvaluator = evaluatorCompiler.compileExpression( ctx, model, bkmi, bkm.getName(), funcDef );
+                bkmi.setEvaluator( exprEvaluator );
+            } finally {
+                ctx.exitFrame();
+            }
+
         }
         for ( DecisionNode d : model.getDecisions() ) {
             DecisionNodeImpl di = (DecisionNodeImpl) d;
