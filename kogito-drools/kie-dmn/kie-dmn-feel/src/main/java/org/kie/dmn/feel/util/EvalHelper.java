@@ -16,7 +16,10 @@
 
 package org.kie.dmn.feel.util;
 
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
+import org.kie.dmn.feel.lang.ast.InfixOpNode;
+import org.kie.dmn.feel.runtime.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +32,13 @@ import java.time.Duration;
 import java.time.Period;
 import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiPredicate;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -284,5 +290,107 @@ public class EvalHelper {
     public static String lcFirst(final String name) {
         return name.toLowerCase().charAt( 0 ) + name.substring( 1 );
     }
+
+    /**
+     * Compares left and right operands using the given predicate and returns TRUE/FALSE accordingly
+     *
+     * @param left
+     * @param right
+     * @param ctx
+     * @param op
+     * @return
+     */
+    public static Boolean compare(Object left, Object right, EvaluationContext ctx, BiPredicate<Comparable, Comparable> op) {
+        if ( left == null || right == null ) {
+            return null;
+        } else if ( (left instanceof Period && right instanceof Period ) ) {
+            // periods have special compare semantics in FEEL as it ignores "days". Only months and years are compared
+            Period lp = (Period) left;
+            Period rp = (Period) right;
+            Integer l = lp.getYears() * 12 + lp.getMonths();
+            Integer r = rp.getYears() * 12 + rp.getMonths();
+            return op.test( l, r );
+        } else if ( (left instanceof String && right instanceof String) ||
+                    (left instanceof Number && right instanceof Number) ||
+                    (left instanceof Boolean && right instanceof Boolean) ||
+                    (left instanceof Comparable && left.getClass().isAssignableFrom( right.getClass() )) ) {
+            Comparable l = (Comparable) left;
+            Comparable r = (Comparable) right;
+            return op.test( l, r );
+        }
+        return null;
+    }
+
+    /**
+     * Compares left and right for equality applying FEEL semantics to specific data types
+     *
+     * @param left
+     * @param right
+     * @param ctx
+     * @return
+     */
+    public static Boolean isEqual(Object left, Object right, EvaluationContext ctx ) {
+        if ( left == null || right == null ) {
+            return left == right;
+        }
+
+        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
+        // and vice-versa
+        if( left instanceof Collection && !(right instanceof Collection) && ((Collection)left).size() == 1 ) {
+            left = ((Collection)left).toArray()[0];
+        } else if( right instanceof Collection && !(left instanceof Collection) && ((Collection)right).size()==1 ) {
+            right = ((Collection) right).toArray()[0];
+        }
+
+        if( left instanceof Range && right instanceof Range ) {
+            return isEqual( (Range)left, (Range) right );
+        } else if( left instanceof Iterable && right instanceof Iterable ) {
+            return isEqual( (Iterable)left, (Iterable) right );
+        } else if( left instanceof Map && right instanceof Map ) {
+            return isEqual( (Map)left, (Map) right );
+        }
+        return compare( left, right, ctx, (l, r) -> l.compareTo( r ) == 0  );
+    }
+
+    private static Boolean isEqual(Range left, Range right) {
+        return left.equals( right );
+    }
+
+    private static Boolean isEqual(Iterable left, Iterable right) {
+        Iterator li = left.iterator();
+        Iterator ri = right.iterator();
+        while( li.hasNext() && ri.hasNext() ) {
+            Object l = li.next();
+            Object r = ri.next();
+            if ( !isEqual( l, r ) ) return false;
+        }
+        return li.hasNext() == ri.hasNext();
+    }
+
+    private static Boolean isEqual(Map<?,?> left, Map<?,?> right) {
+        if( left.size() != right.size() ) {
+            return false;
+        }
+        for( Map.Entry le : left.entrySet() ) {
+            Object l = le.getValue();
+            Object r = right.get( le.getKey() );
+            if ( !isEqual( l, r ) ) return false;
+        }
+        return true;
+    }
+
+    private static Boolean isEqual(Object l, Object r) {
+        if( l instanceof Iterable && r instanceof Iterable && !isEqual( (Iterable) l, (Iterable) r ) ) {
+            return false;
+        } else if( l instanceof Map && r instanceof Map && !isEqual( (Map) l, (Map) r ) ) {
+            return false;
+        } else if( l != null && r != null && !l.equals( r ) ) {
+            return false;
+        } else if( ( l == null || r == null ) && l != r ) {
+            return false;
+        }
+        return true;
+    }
+
 
 }

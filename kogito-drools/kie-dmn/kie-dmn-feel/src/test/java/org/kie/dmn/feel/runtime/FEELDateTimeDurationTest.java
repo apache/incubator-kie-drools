@@ -55,7 +55,21 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P2DT20H14M\" )", Duration.parse( "P2DT20H14M" ) },
                 { "duration( \"P2Y2M\" )", Period.parse( "P2Y2M" ) },
                 { "duration( \"P26M\" )", Period.parse( "P26M" ) },
-                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") )", Period.parse( "P1Y8M" ) }
+                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") )", Period.parse( "P1Y8M" ) },
+
+                // comparison operators
+                { "duration( \"P1Y6M\" ) = duration( \"P1Y6M\" )", Boolean.TRUE },
+                { "duration( \"P1Y6M\" ) = duration( \"P1Y8M\" )", Boolean.FALSE },
+                { "duration( \"P1Y\" ) = duration( \"P1Y\" )", Boolean.TRUE },
+                { "duration( \"P1Y\" ) = duration( \"P1M\" )", Boolean.FALSE },
+                { "duration( \"P1Y6M\" ) <= duration( \"P1Y8M\" )", Boolean.TRUE },
+                { "duration( \"P1Y6M\" ) < duration( \"P1Y8M\" )", Boolean.TRUE },
+                { "duration( \"P1Y6M\" ) > duration( \"P1Y8M\" )", Boolean.FALSE },
+                { "duration( \"P1Y6M\" ) >= duration( \"P1Y8M\" )", Boolean.FALSE },
+                { "duration( \"P1Y6M\" ) = null", Boolean.FALSE },
+                { "duration( \"P1Y6M\" ) != null", Boolean.TRUE },
+                { "duration( \"P1Y6M\" ) > null", null },
+                { "duration( \"P1Y6M\" ) < null", null }
 
                 // TODO: test properties as per page 126 of the spec
         };

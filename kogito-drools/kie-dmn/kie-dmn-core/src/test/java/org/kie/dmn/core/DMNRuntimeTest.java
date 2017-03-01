@@ -30,6 +30,7 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.*;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
@@ -685,11 +686,31 @@ public class DMNRuntimeTest {
         context.set( "Requested", requested );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        assertThat( dmnModel.hasErrors(), is( false ) );
+        assertThat( dmnResult.hasErrors(), is( false ) );
 
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "isConforming" ), is( true ) );
         assertThat( (Collection<Object>) result.get( "LoanTypes" ), hasSize( 3 ) );
+    }
+
+    @Test
+    public void testYearsAndMonthsDuration() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "yearMonthDuration.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_6eda1490-21ca-441e-8a26-ab3ca800e43c", "Drawing 1" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        BuiltInType feelType = (BuiltInType) BuiltInType.determineTypeFromName( "yearMonthDuration" );
+        Period period = (Period) feelType.fromString( "P2Y1M" );
+
+        DMNContext context = runtime.newContext();
+        context.set( "iDuration", period );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "How long" ), is( "Longer than a year" ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {

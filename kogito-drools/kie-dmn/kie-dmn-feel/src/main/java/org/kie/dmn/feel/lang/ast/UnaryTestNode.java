@@ -21,9 +21,11 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 import java.util.List;
+import java.util.function.BiPredicate;
 
 public class UnaryTestNode
         extends BaseNode {
@@ -31,7 +33,7 @@ public class UnaryTestNode
     private UnaryOperator operator;
     private BaseNode      value;
 
-    public static enum UnaryOperator {
+    public enum UnaryOperator {
         LTE( "<=" ),
         LT( "<" ),
         GT( ">" ),
@@ -90,67 +92,81 @@ public class UnaryTestNode
     public UnaryTest evaluate(EvaluationContext ctx) {
         switch ( operator ) {
             case LTE:
-                return (c, o) -> {
-                    Object val = value.evaluate( c );
-                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) <= 0;
-                };
+                return createCompareUnaryTest( (l, r) -> l.compareTo( r ) <= 0 );
             case LT:
-                return (c, o) -> {
-                    Object val = value.evaluate( c );
-                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) < 0;
-                };
+                return createCompareUnaryTest( (l, r) -> l.compareTo( r ) < 0 );
             case GT:
-                return (c, o) -> {
-                    Object val = value.evaluate( c );
-                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) > 0;
-                };
+                return createCompareUnaryTest( (l, r) -> l.compareTo( r ) > 0 );
             case GTE:
-                return (c, o) -> {
-                    Object val = value.evaluate( c );
-                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) >= 0;
-                };
+                return createCompareUnaryTest( (l, r) -> l.compareTo( r ) >= 0 );
             case EQ:
-                return (c, o) -> {
-                    Object val = value.evaluate( c );
-                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) == 0;
-                };
+                return createIsEqualUnaryTest( );
             case NE:
-                return (c, o) -> {
-                    Object val = value.evaluate( c );
-                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) != 0;
-                };
+                return createIsNotEqualUnaryTest( );
             case IN:
-                return (c, o) -> {
-                    Object val = value.evaluate( c );
-                    return o != null && ((Range) val).includes( (Comparable<?>) o );
-                };
+                return createInUnaryTest();
             case NOT:
-                return (c, o) -> {
-                    Object val = value.evaluate( c );
-                    if( o == null || val == null ) {
-                        return null;
-                    }
-                    List<Object> tests = (List<Object>) val;
-                    for( Object test : tests ) {
-                        if( test instanceof UnaryTest ) {
-                            if( ((UnaryTest)test).apply( c, o ) ) {
-                                return false;
-                            }
-                        } else if( test instanceof Range ) {
-                            if( ((Range)test).includes( (Comparable) o ) ) {
-                                return false;
-                            }
-                        } else {
-                            // test is a constant, so return false if it is equal to "o"
-                            if( test.equals( o ) ) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                };
+                return createNotUnaryTest();
         }
         ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.NULL_OR_UNKNOWN_OPERATOR)));
         return null;
     }
+
+    private UnaryTest createCompareUnaryTest( BiPredicate<Comparable, Comparable> op ) {
+        return (context, left) -> {
+            Object right = value.evaluate( context );
+            return EvalHelper.compare( left, right, context, op );
+        };
+    }
+
+    private UnaryTest createIsEqualUnaryTest( ) {
+        return (context, left) -> {
+            Object right = value.evaluate( context );
+            return EvalHelper.isEqual( left, right, context );
+        };
+    }
+
+    private UnaryTest createIsNotEqualUnaryTest( ) {
+        return (context, left) -> {
+            Object right = value.evaluate( context );
+            Boolean result = EvalHelper.isEqual( left, right, context );
+            return result != null ? ! result : null;
+        };
+    }
+
+    private UnaryTest createInUnaryTest() {
+        return (c, o) -> {
+            Object val = value.evaluate( c );
+            return o != null && ((Range) val).includes( (Comparable<?>) o );
+        };
+    }
+
+    private UnaryTest createNotUnaryTest() {
+        return (c, o) -> {
+            Object val = value.evaluate( c );
+            if( o == null || val == null ) {
+                return null;
+            }
+            List<Object> tests = (List<Object>) val;
+            for( Object test : tests ) {
+                if( test instanceof UnaryTest ) {
+                    if( ((UnaryTest)test).apply( c, o ) ) {
+                        return false;
+                    }
+                } else if( test instanceof Range ) {
+                    if( ((Range)test).includes( (Comparable) o ) ) {
+                        return false;
+                    }
+                } else {
+                    // test is a constant, so return false if it is equal to "o"
+                    if( test.equals( o ) ) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        };
+    }
+
+
 }

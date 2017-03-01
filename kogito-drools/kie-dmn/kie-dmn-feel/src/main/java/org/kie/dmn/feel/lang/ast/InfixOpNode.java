@@ -27,8 +27,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.*;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
@@ -137,17 +135,18 @@ public class InfixOpNode
             case OR:
                 return or( left, right, ctx );
             case LTE:
-                return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) <= 0 );
+                return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) <= 0 );
             case LT:
-                return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) < 0 );
+                return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) < 0 );
             case GT:
-                return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) > 0 );
+                return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) > 0 );
             case GTE:
-                return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) >= 0 );
+                return EvalHelper.compare( left, right, ctx, (l, r) -> l.compareTo( r ) >= 0 );
             case EQ:
-                return equality( left, right, ctx, (l, r) -> l.compareTo( r ) == 0 );
+                return EvalHelper.isEqual( left, right, ctx );
             case NE:
-                return equality( left, right, ctx, (l, r) -> l.compareTo( r ) != 0 );
+                Boolean result = EvalHelper.isEqual( left, right, ctx );
+                return result != null ? ! result : null;
             default:
                 return null;
         }
@@ -322,83 +321,4 @@ public class InfixOpNode
         return l || r;
     }
 
-    private Object comparison(Object left, Object right, EvaluationContext ctx, BiPredicate<Comparable, Comparable> op) {
-        if ( left == null || right == null ) {
-            return null;
-        } else if ( (left instanceof String && right instanceof String) ||
-                    (left instanceof Number && right instanceof Number) ||
-                    (left instanceof Boolean && right instanceof Boolean) ||
-                    (left instanceof Comparable && left.getClass().isAssignableFrom( right.getClass() )) ) {
-            Comparable l = (Comparable) left;
-            Comparable r = (Comparable) right;
-            return op.test( l, r );
-        }
-        return null;
-    }
-
-
-    private Object equality(Object left, Object right, EvaluationContext ctx, BiPredicate<Comparable, Comparable> op) {
-        if ( left == null && right == null ) {
-            return operator == InfixOperator.EQ;
-        } else if ( left == null || right == null ) {
-            return operator == InfixOperator.NE;
-        }
-
-        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
-        // and vice-versa
-        if( left instanceof Collection && !(right instanceof Collection) && ((Collection)left).size()==1 ) {
-            left = ((Collection)left).toArray()[0];
-        } else if( right instanceof Collection && !(left instanceof Collection) && ((Collection)right).size()==1 ) {
-            right = ((Collection) right).toArray()[0];
-        }
-
-        if( left instanceof Range && right instanceof Range ) {
-            return operator == InfixOperator.NE ^ isEqual( (Range)left, (Range) right );
-        } else if( left instanceof Iterable && right instanceof Iterable ) {
-            return operator == InfixOperator.NE ^ isEqual( (Iterable)left, (Iterable) right );
-        } else if( left instanceof Map && right instanceof Map ) {
-            return operator == InfixOperator.NE ^ isEqual( (Map)left, (Map) right );
-        }
-        return comparison( left, right, ctx, op );
-    }
-
-    private Boolean isEqual(Range left, Range right) {
-        return left.equals( right );
-    }
-
-    private Boolean isEqual(Iterable left, Iterable right) {
-        Iterator li = left.iterator();
-        Iterator ri = right.iterator();
-        while( li.hasNext() && ri.hasNext() ) {
-            Object l = li.next();
-            Object r = ri.next();
-            if ( !isEqual( l, r ) ) return false;
-        }
-        return li.hasNext() == ri.hasNext();
-    }
-
-    private Boolean isEqual(Map<?,?> left, Map<?,?> right) {
-        if( left.size() != right.size() ) {
-            return false;
-        }
-        for( Map.Entry le : left.entrySet() ) {
-            Object l = le.getValue();
-            Object r = right.get( le.getKey() );
-            if ( !isEqual( l, r ) ) return false;
-        }
-        return true;
-    }
-
-    private boolean isEqual(Object l, Object r) {
-        if( l instanceof Iterable && r instanceof Iterable && !isEqual( (Iterable) l, (Iterable) r ) ) {
-            return false;
-        } else if( l instanceof Map && r instanceof Map && !isEqual( (Map) l, (Map) r ) ) {
-            return false;
-        } else if( l != null && r != null && !l.equals( r ) ) {
-            return false;
-        } else if( ( l == null || r == null ) && l != r ) {
-            return false;
-        }
-        return true;
-    }
 }
