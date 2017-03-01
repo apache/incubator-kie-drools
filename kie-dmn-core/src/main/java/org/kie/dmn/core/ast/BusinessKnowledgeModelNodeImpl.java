@@ -19,7 +19,7 @@ package org.kie.dmn.core.ast;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
+import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
 
 public class BusinessKnowledgeModelNodeImpl
         extends DMNBaseNode

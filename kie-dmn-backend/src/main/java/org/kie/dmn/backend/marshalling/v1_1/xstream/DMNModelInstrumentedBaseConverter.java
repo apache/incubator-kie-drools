@@ -24,7 +24,7 @@ import javax.xml.stream.Location;
 
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
-import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;

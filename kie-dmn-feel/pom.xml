@@ -11,7 +11,7 @@
   </parent>
 
   <artifactId>kie-dmn-feel</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>KIE :: Decision Model Notation :: FEEL</name>
 
@@ -36,7 +36,6 @@
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
-      <version>4.5.3</version>
     </dependency>
 
     <dependency>
@@ -81,7 +80,7 @@
         <configuration>
           <instructions>
             <Import-Package>
-              org.antlr.*;resolution:=optional,
+              org.antlr.v4.runtime.*,
               *
             </Import-Package>
             <Export-Package>

@@ -15,7 +15,7 @@
 
 package org.kie.dmn.validation;
 
-import org.kie.dmn.feel.model.v1_1.*;
+import org.kie.dmn.model.v1_1.*;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.validation.ValidationMsg.Severity;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
@@ -214,14 +214,14 @@ end
 
 rule RELATION_ROW_CELL_NOTLITERAL
 when
-  $e : Expression( parent instanceof org.kie.dmn.feel.model.v1_1.List, parent.parent instanceof Relation, ! (this instanceof LiteralExpression) )
+  $e : Expression( parent instanceof org.kie.dmn.model.v1_1.List, parent.parent instanceof Relation, ! (this instanceof LiteralExpression) )
 then
   entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.RELATION_ROW_CELL_NOTLITERAL, $e ) );
 end
 
 rule RELATION_ROW_CELLCOUNTMISMATCH
 when
-  $row : org.kie.dmn.feel.model.v1_1.List( parent instanceof Relation, expression.size != parent.column.size )
+  $row : org.kie.dmn.model.v1_1.List( parent instanceof Relation, expression.size != parent.column.size )
 then
   entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.RELATION_ROW_CELLCOUNTMISMATCH, $row ) );
 end

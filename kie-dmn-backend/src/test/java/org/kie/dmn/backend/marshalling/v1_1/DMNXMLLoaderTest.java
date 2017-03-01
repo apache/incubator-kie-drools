@@ -23,11 +23,11 @@ import javax.xml.XMLConstants;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.dmn.feel.model.v1_1.Decision;
-import org.kie.dmn.feel.model.v1_1.Definitions;
-import org.kie.dmn.feel.model.v1_1.InputData;
-import org.kie.dmn.feel.model.v1_1.LiteralExpression;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.model.v1_1.Decision;
+import org.kie.dmn.model.v1_1.Definitions;
+import org.kie.dmn.model.v1_1.InputData;
+import org.kie.dmn.model.v1_1.LiteralExpression;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;

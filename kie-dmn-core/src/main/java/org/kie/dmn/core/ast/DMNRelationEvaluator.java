@@ -25,8 +25,8 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.feel.model.v1_1.DMNElement;
-import org.kie.dmn.feel.model.v1_1.Relation;
+import org.kie.dmn.model.v1_1.DMNElement;
+import org.kie.dmn.model.v1_1.Relation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
