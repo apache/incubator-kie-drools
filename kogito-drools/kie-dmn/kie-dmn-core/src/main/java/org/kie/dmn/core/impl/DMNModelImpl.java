@@ -27,6 +27,7 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.ast.*;
 import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
+import org.kie.dmn.feel.model.v1_1.DMNElement;
 import org.kie.dmn.feel.model.v1_1.Definitions;
 
 import javax.xml.namespace.QName;
@@ -251,18 +252,18 @@ public class DMNModelImpl
         this.messages.add( msg );
     }
 
-    public DMNMessage addMessage(DMNMessage.Severity severity, String message, String sourceId) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, sourceId );
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNElement source) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, source );
         this.messages.add( msg );
         return msg;
     }
 
-    public void addMessage(DMNMessage.Severity severity, String message, String sourceId, Throwable exception) {
-        this.messages.add( new DMNMessageImpl( severity, message, sourceId, exception ) );
+    public void addMessage(DMNMessage.Severity severity, String message, DMNElement source, Throwable exception) {
+        this.messages.add( new DMNMessageImpl( severity, message, source, exception ) );
     }
 
-    public void addMessage(DMNMessage.Severity severity, String message, String sourceId, FEELEvent feelEvent) {
-        this.messages.add( new DMNMessageImpl( severity, message, sourceId, feelEvent ) );
+    public void addMessage(DMNMessage.Severity severity, String message, DMNElement source, FEELEvent feelEvent) {
+        this.messages.add( new DMNMessageImpl( severity, message, source, feelEvent ) );
     }
 
 }

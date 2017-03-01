@@ -68,9 +68,9 @@ public class DMNFEELHelper
             if ( !isDuplicateEvent( model, event, msg ) ) {
                 if ( event instanceof SyntaxErrorEvent ) {
                     String errorMsg = msg + ": invalid syntax";
-                    model.addMessage( DMNMessage.Severity.ERROR, errorMsg, element.getId(), event );
+                    model.addMessage( DMNMessage.Severity.ERROR, errorMsg, element, event );
                 } else if ( event.getSeverity() == FEELEvent.Severity.ERROR ) {
-                    model.addMessage( DMNMessage.Severity.ERROR, msg + ": " + event.getMessage(), element.getId() );
+                    model.addMessage( DMNMessage.Severity.ERROR, msg + ": " + event.getMessage(), element );
                 }
             }
         }

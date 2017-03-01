@@ -21,6 +21,7 @@ import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.model.v1_1.DMNElement;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,14 +65,14 @@ public class DMNResultImpl implements DMNResult {
         this.messages.add( msg );
     }
 
-    public DMNMessage addMessage( DMNMessage.Severity severity, String message, String sourceId ) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, sourceId );
+    public DMNMessage addMessage( DMNMessage.Severity severity, String message, DMNElement source ) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, source );
         this.messages.add( msg );
         return msg;
     }
 
-    public DMNMessage addMessage( DMNMessage.Severity severity, String message, String sourceId, Throwable exception ) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, sourceId, exception );
+    public DMNMessage addMessage( DMNMessage.Severity severity, String message, DMNElement source, Throwable exception ) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, source, exception );
         if( this.messages.contains( msg ) ) {
             return this.messages.get( this.messages.indexOf( msg ) );
         }
@@ -79,8 +80,8 @@ public class DMNResultImpl implements DMNResult {
         return msg;
     }
 
-    public void addMessage( DMNMessage.Severity severity, String message, String sourceId, FEELEvent feelEvent ) {
-        this.messages.add( new DMNMessageImpl( severity, message, sourceId, feelEvent ) );
+    public void addMessage( DMNMessage.Severity severity, String message, DMNElement source, FEELEvent feelEvent ) {
+        this.messages.add( new DMNMessageImpl( severity, message, source, feelEvent ) );
     }
 
     public List<DMNDecisionResult> getDecisionResults() {

@@ -102,7 +102,7 @@ public class DMNCompilerImpl
                 String variableName = input.getVariable() != null ? input.getVariable().getName() : null;
                 if ( !variableNameIsValid( variableName ) ) {
                     logger.error( "Invalid variable name '" + variableName + "' in input data '" + input.getId() + "'" );
-                    model.addMessage( DMNMessage.Severity.ERROR, "Invalid variable name '" + variableName + "' in input data '" + input.getId() + "'", input.getId() );
+                    model.addMessage( DMNMessage.Severity.ERROR, "Invalid variable name '" + variableName + "' in input data '" + input.getId() + "'", input );
                 }
                 InputDataNodeImpl idn = new InputDataNodeImpl( input );
                 DMNType type = resolveTypeRef( model, idn, e, input.getVariable(), input.getVariable().getTypeRef() );
@@ -135,7 +135,7 @@ public class DMNCompilerImpl
                 // don't do anything as KnowledgeSource is a documentation element
                 // without runtime semantics
             } else {
-                model.addMessage( DMNMessage.Severity.ERROR, "Element " + e.getClass().getSimpleName() + " with id='" + e.getId() + "' not supported.", e.getId() );
+                model.addMessage( DMNMessage.Severity.ERROR, "Element " + e.getClass().getSimpleName() + " with id='" + e.getId() + "' not supported.", e );
             }
         }
 
@@ -184,7 +184,7 @@ public class DMNCompilerImpl
                 } else {
                     String message = "Required input '" + id + "' not found for node '" + node.getName() + "'";
                     logger.error( message );
-                    model.addMessage( DMNMessage.Severity.ERROR, message, node.getId() );
+                    model.addMessage( DMNMessage.Severity.ERROR, message, node.getSource() );
                 }
             } else if ( ir.getRequiredDecision() != null ) {
                 String id = getId( ir.getRequiredDecision() );
@@ -194,7 +194,7 @@ public class DMNCompilerImpl
                 } else {
                     String message = "Required decision '" + id + "' not found for node '" + node.getName() + "'";
                     logger.error( message );
-                    model.addMessage( DMNMessage.Severity.ERROR, message, node.getId() );
+                    model.addMessage( DMNMessage.Severity.ERROR, message, node.getSource() );
                 }
             }
         }
@@ -207,7 +207,7 @@ public class DMNCompilerImpl
                 } else {
                     String message = "Required Business Knowledge Model '" + id + "' not found for node '" + node.getName() + "'";
                     logger.error( message );
-                    model.addMessage( DMNMessage.Severity.ERROR, message, node.getId() );
+                    model.addMessage( DMNMessage.Severity.ERROR, message, node.getSource() );
                 }
             }
         }
@@ -251,7 +251,7 @@ public class DMNCompilerImpl
             } else {
                 String message = "Unknown type reference '" + itemDef.getTypeRef() + "' on node '" + node.getName() + "'";
                 logger.error( message );
-                dmnModel.addMessage( DMNMessage.Severity.ERROR, message, node.getId() );
+                dmnModel.addMessage( DMNMessage.Severity.ERROR, message, ((DMNBaseNode)node).getSource() );
             }
         } else {
             // this is a composite type
@@ -297,7 +297,7 @@ public class DMNCompilerImpl
                     errorMsg = "No '" + typeRef.toString() + "' type definition found for element '" + model.getName() + "' on node '" + node.getName() + "'";
                 }
                 logger.error( errorMsg );
-                dmnModel.addMessage( DMNMessage.Severity.ERROR, errorMsg, node.getId() );
+                dmnModel.addMessage( DMNMessage.Severity.ERROR, errorMsg, ((DMNBaseNode)node).getSource() );
             }
             return type;
         }

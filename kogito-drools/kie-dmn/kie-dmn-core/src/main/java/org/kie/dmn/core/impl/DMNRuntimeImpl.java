@@ -98,7 +98,7 @@ public class DMNRuntimeImpl
         if( decision != null ) {
             evaluateDecision( context, result, decision );
         } else {
-            result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for id '"+decisionId+"'", decisionId );
+            result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for id '"+decisionId+"'", null );
         }
         return result;
     }
@@ -145,7 +145,7 @@ public class DMNRuntimeImpl
         if( bkm.getEvaluator() == null ) {
             DMNMessage msg = result.addMessage( DMNMessage.Severity.WARN,
                                                 "Missing expression for Business Knowledge Model node '"+getIdentifier( bkm )+"'. Skipping evaluation.",
-                                                bkm.getId() );
+                                                bkm.getSource() );
             return;
         }
         try {
@@ -156,7 +156,7 @@ public class DMNRuntimeImpl
                         evaluateBKM( context, result, (BusinessKnowledgeModelNode) dep );
                     } else {
                         String message = "Missing dependency for Business Knowledge Model node '" + getIdentifier( bkm ) + "': dependency='" + getIdentifier( dep ) + "'";
-                        result.addMessage( DMNMessage.Severity.ERROR, message, bkm.getId() );
+                        result.addMessage( DMNMessage.Severity.ERROR, message, bkm.getSource() );
                         return;
                     }
                 }
@@ -167,7 +167,7 @@ public class DMNRuntimeImpl
                 result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), er.getResult() );
             }
         } catch( Throwable t ) {
-            result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating Business Knowledge Model node '"+getIdentifier( bkm )+ "': "+t.getMessage(), bkm.getId(), t );
+            result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating Business Knowledge Model node '"+getIdentifier( bkm )+ "': "+t.getMessage(), bkm.getSource(), t );
         } finally {
             eventManager.fireAfterEvaluateBKM( bkm, result );
         }
@@ -213,7 +213,7 @@ public class DMNRuntimeImpl
             if( decision.getEvaluator() == null ) {
                 DMNMessage msg = result.addMessage( DMNMessage.Severity.WARN,
                                                     "Missing expression for decision '"+decision.getName()+"'. Skipping evaluation.",
-                                                    decision.getId() );
+                                                    decision.getSource() );
                 dr.getMessages().add( msg );
                 dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
                 return false;
@@ -249,10 +249,10 @@ public class DMNRuntimeImpl
     }
 
     private void reportFailure(DMNResultImpl result, DecisionNode decision, DMNDecisionResultImpl dr, Throwable t, String message, DMNDecisionResult.DecisionEvaluationStatus status) {
-        result.addMessage( DMNMessage.Severity.ERROR, message, decision.getId(), t );
+        result.addMessage( DMNMessage.Severity.ERROR, message, decision.getDecision(), t );
         DMNMessage msg = result.addMessage( DMNMessage.Severity.ERROR,
                                             message,
-                                            decision.getId(),
+                                            decision.getDecision(),
                                             t );
         dr.getMessages().add( msg );
         dr.setEvaluationStatus( status );
