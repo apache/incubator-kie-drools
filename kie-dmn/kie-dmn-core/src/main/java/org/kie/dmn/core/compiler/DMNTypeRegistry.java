@@ -4,7 +4,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 
 import java.util.Collections;
 import java.util.HashMap;

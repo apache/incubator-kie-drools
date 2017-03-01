@@ -21,7 +21,7 @@ import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.model.v1_1.DMNElement;
+import org.kie.dmn.model.v1_1.DMNElement;
 
 import java.util.*;
 import java.util.stream.Collectors;

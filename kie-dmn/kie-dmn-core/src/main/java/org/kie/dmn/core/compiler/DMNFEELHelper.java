@@ -12,9 +12,9 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.model.v1_1.DMNElement;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
+import org.kie.dmn.model.v1_1.DMNElement;
 
 import java.util.*;
 

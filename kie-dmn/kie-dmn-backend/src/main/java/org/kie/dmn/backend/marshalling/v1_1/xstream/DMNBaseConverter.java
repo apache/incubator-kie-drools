@@ -16,13 +16,14 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
+
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
-import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 
 public abstract class DMNBaseConverter
         extends AbstractCollectionConverter {
