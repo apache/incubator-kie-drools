@@ -16,19 +16,19 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.feel.model.v1_1.Context;
-import org.kie.dmn.feel.model.v1_1.DecisionTable;
-import org.kie.dmn.feel.model.v1_1.Expression;
-import org.kie.dmn.feel.model.v1_1.FunctionDefinition;
-import org.kie.dmn.feel.model.v1_1.Invocation;
-import org.kie.dmn.feel.model.v1_1.LiteralExpression;
-import org.kie.dmn.feel.model.v1_1.Relation;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+
+import org.kie.dmn.model.v1_1.Context;
+import org.kie.dmn.model.v1_1.DecisionTable;
+import org.kie.dmn.model.v1_1.Expression;
+import org.kie.dmn.model.v1_1.FunctionDefinition;
+import org.kie.dmn.model.v1_1.Invocation;
+import org.kie.dmn.model.v1_1.LiteralExpression;
+import org.kie.dmn.model.v1_1.Relation;
 
 public class MarshallingUtils {
     private final static Pattern QNAME_PAT = Pattern.compile( "((\\{([^\\}]*)\\})?([^:]*):)?(.*)" );

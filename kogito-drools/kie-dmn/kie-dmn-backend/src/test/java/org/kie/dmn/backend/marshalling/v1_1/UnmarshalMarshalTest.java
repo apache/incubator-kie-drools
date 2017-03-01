@@ -35,7 +35,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller;
-import org.kie.dmn.feel.model.v1_1.Definitions;
+import org.kie.dmn.model.v1_1.Definitions;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
 import org.xmlunit.diff.ComparisonResult;

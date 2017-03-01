@@ -16,15 +16,15 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.feel.model.v1_1.Association;
-import org.kie.dmn.feel.model.v1_1.AssociationDirection;
-import org.kie.dmn.feel.model.v1_1.DMNElementReference;
+import org.kie.dmn.model.v1_1.Association;
+import org.kie.dmn.model.v1_1.AssociationDirection;
+import org.kie.dmn.model.v1_1.DMNElementReference;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 
 public class AssociationConverter extends ArtifactConverter {
     public static final String TARGET_REF = "targetRef";

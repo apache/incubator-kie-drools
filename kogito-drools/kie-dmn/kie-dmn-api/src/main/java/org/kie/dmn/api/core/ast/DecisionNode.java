@@ -17,7 +17,7 @@
 package org.kie.dmn.api.core.ast;
 
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.feel.model.v1_1.Decision;
+import org.kie.dmn.model.v1_1.Decision;
 
 public interface DecisionNode extends DMNNode {
 

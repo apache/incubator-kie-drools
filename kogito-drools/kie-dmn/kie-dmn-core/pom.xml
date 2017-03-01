@@ -11,9 +11,13 @@
   </parent>
 
   <artifactId>kie-dmn-core</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>KIE :: Decision Model Notation :: Core</name>
+  
+  <properties>
+    <osgi.Bundle-SymbolicName>org.kie.dmn.core</osgi.Bundle-SymbolicName>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -64,6 +68,17 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -82,5 +97,26 @@
     </dependency>
 
   </dependencies>
-
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              org.kie.dmn.core.*
+            </Export-Package>
+            <Import-Package>
+              org.kie.dmn.model.v1_1,
+              *
+            </Import-Package>
+            <Bundle-Activator>org.kie.dmn.core.osgi.Activator</Bundle-Activator>
+            <_removeheaders>Private-Package</_removeheaders>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

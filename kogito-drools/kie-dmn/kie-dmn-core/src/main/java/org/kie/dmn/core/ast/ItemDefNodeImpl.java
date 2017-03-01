@@ -19,7 +19,7 @@ package org.kie.dmn.core.ast;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
-import org.kie.dmn.feel.model.v1_1.ItemDefinition;
+import org.kie.dmn.model.v1_1.ItemDefinition;
 
 public class ItemDefNodeImpl
         extends DMNBaseNode

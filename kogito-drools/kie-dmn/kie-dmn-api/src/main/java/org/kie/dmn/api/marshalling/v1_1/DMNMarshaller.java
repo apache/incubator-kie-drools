@@ -16,10 +16,10 @@
 
 package org.kie.dmn.api.marshalling.v1_1;
 
-import org.kie.dmn.feel.model.v1_1.Definitions;
-
 import java.io.Reader;
 import java.io.Writer;
+
+import org.kie.dmn.model.v1_1.Definitions;
 
 public interface DMNMarshaller {
 

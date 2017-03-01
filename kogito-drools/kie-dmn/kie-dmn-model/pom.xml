@@ -11,8 +11,42 @@
   </parent>
 
   <artifactId>kie-dmn-model</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>KIE :: Decision Model Notation :: Model</name>
+  
+  <properties>
+    <osgi.Bundle-SymbolicName>org.kie.dmn.model</osgi.Bundle-SymbolicName>
+  </properties>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              org.kie.dmn.model.v1_1.*
+            </Export-Package>
+            <Import-Package>
+              javax.xml,
+              javax.xml.stream,
+              com.thoughtworks.xstream.mapper;resolution:=optional,
+              com.thoughtworks.xstream.converters;resolution:=optional,
+              com.thoughtworks.xstream.converters.basic;resolution:=optional,
+              com.thoughtworks.xstream.converters.collections;resolution:=optional,
+              com.thoughtworks.xstream.converters.extended;resolution:=optional,
+              com.thoughtworks.xstream.converters.enums;resolution:=optional,
+              com.thoughtworks.xstream.converters.javabean;resolution:=optional,
+              com.thoughtworks.xstream.converters.reflection;resolution:=optional
+            </Import-Package>
+            <!-- <Bundle-Activator> Activator if needed </Bundle-Activator> -->
+            <_removeheaders>Private-Package</_removeheaders>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

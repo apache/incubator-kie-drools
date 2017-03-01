@@ -20,7 +20,7 @@ import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
-import org.kie.dmn.feel.model.v1_1.Definitions;
+import org.kie.dmn.model.v1_1.Definitions;
 
 import javax.xml.namespace.QName;
 import java.util.List;

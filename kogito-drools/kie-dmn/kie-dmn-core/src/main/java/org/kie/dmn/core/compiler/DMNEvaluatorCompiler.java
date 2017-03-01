@@ -9,10 +9,10 @@ import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.*;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.model.v1_1.*;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
+import org.kie.dmn.model.v1_1.*;
 
 import java.util.*;
 import java.util.List;
@@ -38,8 +38,8 @@ public class DMNEvaluatorCompiler {
             return compileFunctionDefinition( ctx, model, node, exprName, (FunctionDefinition) expression );
         } else if ( expression instanceof Context ) {
             return compileContext( ctx, model, node, exprName, (Context) expression );
-        } else if ( expression instanceof org.kie.dmn.feel.model.v1_1.List ) {
-            return compileList( ctx, model, node, exprName, (org.kie.dmn.feel.model.v1_1.List) expression );
+        } else if ( expression instanceof org.kie.dmn.model.v1_1.List ) {
+            return compileList( ctx, model, node, exprName, (org.kie.dmn.model.v1_1.List) expression );
         } else if ( expression instanceof Relation ) {
             return compileRelation( ctx, model, node, exprName, (Relation) expression );
         } else if ( expression instanceof Invocation ) {
@@ -74,7 +74,7 @@ public class DMNEvaluatorCompiler {
         for ( InformationItem col : relationDef.getColumn() ) {
             relationEval.addColumn( col.getName() );
         }
-        for ( org.kie.dmn.feel.model.v1_1.List row : relationDef.getRow() ) {
+        for ( org.kie.dmn.model.v1_1.List row : relationDef.getRow() ) {
             java.util.List<DMNExpressionEvaluator> values = new ArrayList<>();
             for ( Expression expr : row.getExpression() ) {
                 values.add( compileExpression( ctx, model, node, relationName, expr ) );
@@ -84,8 +84,8 @@ public class DMNEvaluatorCompiler {
         return relationEval;
     }
 
-    private DMNExpressionEvaluator compileList(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String listName, org.kie.dmn.feel.model.v1_1.List expression) {
-        org.kie.dmn.feel.model.v1_1.List listDef = expression;
+    private DMNExpressionEvaluator compileList(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String listName, org.kie.dmn.model.v1_1.List expression) {
+        org.kie.dmn.model.v1_1.List listDef = expression;
         DMNListEvaluator listEval = new DMNListEvaluator( node.getName(), node.getSource(), listDef );
         for ( Expression expr : listDef.getExpression() ) {
             listEval.addElement( compileExpression( ctx, model, node, listName, expr ) );

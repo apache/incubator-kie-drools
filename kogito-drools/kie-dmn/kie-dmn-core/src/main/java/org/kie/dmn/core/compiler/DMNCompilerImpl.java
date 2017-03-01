@@ -32,9 +32,9 @@ import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.model.v1_1.*;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.model.v1_1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

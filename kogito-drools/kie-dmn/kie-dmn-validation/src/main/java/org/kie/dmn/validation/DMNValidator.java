@@ -16,10 +16,10 @@
 
 package org.kie.dmn.validation;
 
-import org.kie.dmn.feel.model.v1_1.Definitions;
-
 import java.io.File;
 import java.util.List;
+
+import org.kie.dmn.model.v1_1.Definitions;
 
 public interface DMNValidator {
 

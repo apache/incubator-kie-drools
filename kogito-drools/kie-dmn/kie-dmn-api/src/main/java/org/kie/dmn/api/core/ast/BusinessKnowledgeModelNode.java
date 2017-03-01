@@ -17,7 +17,7 @@
 package org.kie.dmn.api.core.ast;
 
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
+import org.kie.dmn.model.v1_1.BusinessKnowledgeModel;
 
 public interface BusinessKnowledgeModelNode extends DMNNode {
     

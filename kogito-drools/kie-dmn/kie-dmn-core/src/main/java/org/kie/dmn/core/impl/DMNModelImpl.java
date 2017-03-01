@@ -18,7 +18,6 @@ package org.kie.dmn.core.impl;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -26,11 +25,9 @@ import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.ast.*;
-import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
-import org.kie.dmn.feel.model.v1_1.DMNElement;
-import org.kie.dmn.feel.model.v1_1.Definitions;
+import org.kie.dmn.model.v1_1.DMNElement;
+import org.kie.dmn.model.v1_1.Definitions;
 
-import javax.xml.namespace.QName;
 import java.util.*;
 import java.util.stream.Collectors;
 

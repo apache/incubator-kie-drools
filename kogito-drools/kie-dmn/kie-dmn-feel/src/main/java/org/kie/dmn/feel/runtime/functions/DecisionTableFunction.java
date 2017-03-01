@@ -17,11 +17,11 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.model.v1_1.DMNElement;
-import org.kie.dmn.feel.model.v1_1.DecisionTable;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
+import org.kie.dmn.model.v1_1.DMNElement;
+import org.kie.dmn.model.v1_1.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
