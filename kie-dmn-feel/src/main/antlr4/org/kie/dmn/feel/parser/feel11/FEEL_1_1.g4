@@ -664,7 +664,6 @@ LE : '<=';
 GE : '>=';
 NOTEQUAL : '!=';
 
-QUESTION : '?';
 COLON : ':';
 
 POW : '**';

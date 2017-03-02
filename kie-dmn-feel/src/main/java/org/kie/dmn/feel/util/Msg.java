@@ -41,7 +41,10 @@ public class Msg {
     public static final Message1 UNABLE_TO_FIND_EXTERNAL_FUNCTION_AS_DEFINED_BY = new Message1("Unable to find external function as defined by: %s");
     public static final Message1 PARAMETER_COUNT_MISMATCH_ON_FUNCTION_DEFINITION = new Message1("Parameter count mismatch on function definition: %s");
     public static final Message1 CAN_T_INVOKE_AN_UNARY_TEST_WITH_S_PARAMETERS_UNARY_TESTS_REQUIRE_1_SINGLE_PARAMETER = new Message1("Can't invoke an unary test with %s parameters. Unary tests require 1 single parameter.");
-   
+    public static final Message2 INVALID_VARIABLE_NAME = new Message2( "A variable name cannot contain the %s '%s'");
+    public static final Message2 INVALID_VARIABLE_NAME_START = new Message2( "A variable name cannot start with the %s '%s'");
+    public static final Message0 INVALID_VARIABLE_NAME_EMPTY = new Message0( "A variable name cannot be null or empty");
+
     public static String createMessage( Message0 message) {
         return Msg.buildMessage(message);
     }

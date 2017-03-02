@@ -101,6 +101,7 @@ public class DMNEvaluatorCompiler {
             for ( ContextEntry ce : ctxDef.getContextEntry() ) {
                 if ( ce.getVariable() != null ) {
                     String entryName = ce.getVariable().getName();
+                    DMNCompilerHelper.checkVariableName( model, node.getSource(), entryName );
                     DMNType entryType = compiler.resolveTypeRef( model, node, ce.getVariable(), ce.getVariable(), ce.getVariable().getTypeRef() );
                     DMNExpressionEvaluator evaluator = compileExpression( ctx, model, node, entryName, ce.getExpression() );
                     ctxEval.addEntry(
@@ -170,6 +171,9 @@ public class DMNEvaluatorCompiler {
         index = 0;
         for ( OutputClause oc : dt.getOutput() ) {
             String outputName = oc.getName();
+            if( outputName != null ) {
+                DMNCompilerHelper.checkVariableName( model, node.getSource(), outputName );
+            }
             String id = oc.getId();
             String outputValuesText = Optional.ofNullable( oc.getOutputValues() ).map( UnaryTests::getText ).orElse( null );
             String defaultValue = oc.getDefaultOutputEntry() != null ? oc.getDefaultOutputEntry().getText() : null;
