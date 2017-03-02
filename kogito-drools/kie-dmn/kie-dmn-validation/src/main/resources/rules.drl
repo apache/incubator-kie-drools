@@ -18,7 +18,9 @@ package org.kie.dmn.validation;
 import org.kie.dmn.model.v1_1.*;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.validation.ValidationMsg.Severity;
-import org.kie.dmn.feel.parser.feel11.FEELParser;
+import org.kie.dmn.feel.parser.feel11.FEELParser
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 rule BKM_MISSING_EXPR
 when
@@ -201,6 +203,8 @@ rule NAME_INVALID
 when
     $ne : NamedElement( FEELParser.isVariableNameValid( name ) == false )
 then
+//    java.util.List<FEELEvent> see = FEELParser.checkVariableName( $ne.getName() );
+//    String customMessage = see.isEmpty()? Msg.NAME_INVALID : see.get(0).getMessage()
     entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.NAME_INVALID, $ne ) );
 end
 

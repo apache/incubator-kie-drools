@@ -256,8 +256,8 @@ public class DMNDecisionTableRuntimeTest {
         assertThat( dmnResult.getMessages().toString(), dmnResult.hasErrors(), is(false) );
 
         DMNContext result = dmnResult.getContext();
-        assertThat( (Map<String, Object>)result.get( "Decision Logic 2" ), hasEntry( "5 analysis", "A number greater than 5" ) );
-        assertThat( (Map<String, Object>)result.get( "Decision Logic 2" ), hasEntry( "100 analysis", "A number smaller than 100" ) );
+        assertThat( (Map<String, Object>)result.get( "Decision Logic 2" ), hasEntry( "the 5 analysis", "A number greater than 5" ) );
+        assertThat( (Map<String, Object>)result.get( "Decision Logic 2" ), hasEntry( "the 100 analysis", "A number smaller than 100" ) );
 
         ArgumentCaptor<AfterEvaluateDecisionTableEvent> captor = ArgumentCaptor.forClass(AfterEvaluateDecisionTableEvent.class);
         verify( listener, times(2) ).afterEvaluateDecisionTable( captor.capture() );

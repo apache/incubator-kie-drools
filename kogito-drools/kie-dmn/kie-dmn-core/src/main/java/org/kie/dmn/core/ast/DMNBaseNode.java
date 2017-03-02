@@ -54,7 +54,7 @@ public abstract class DMNBaseNode
         return identifier;
     }
 
-    public DMNElement getSource() {
+    public NamedElement getSource() {
         return source;
     }
 

@@ -19,6 +19,7 @@ package org.kie.dmn.feel.parser.feel11;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.util.Msg;
 
 import java.util.Collections;
 import java.util.Map;
@@ -1118,6 +1119,46 @@ public class FEELParserTest {
         assertThat( pathExpr.getExpression().getText(), is( "{ first name : \"bob\" }" ) );
         assertThat( pathExpr.getName(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( pathExpr.getName().getText(), is( "first name" ) );
+    }
+
+    @Test
+    public void testVariableName() {
+        String var = "valid variable name";
+        assertThat( FEELParser.isVariableNameValid( var ), is( true ) );
+    }
+
+    @Test
+    public void testVariableNameWithValidCharacters() {
+        String var = "?_873./-'+*valid";
+        assertThat( FEELParser.isVariableNameValid( var ), is( true ) );
+    }
+
+    @Test
+    public void testVariableNameWithInvalidCharacterPercent() {
+        String var = "?_873./-'%+*valid";
+        assertThat( FEELParser.isVariableNameValid( var ), is( false ) );
+        assertThat( FEELParser.checkVariableName( var ).get( 0 ).getMessage(), is( Msg.createMessage(Msg.INVALID_VARIABLE_NAME, "character", "%") ) );
+    }
+
+    @Test
+    public void testVariableNameInvalidStartCharacter() {
+        String var = "5variable can't start with a number";
+        assertThat( FEELParser.isVariableNameValid( var ), is( false ) );
+        assertThat( FEELParser.checkVariableName( var ).get( 0 ).getMessage(), is( Msg.createMessage(Msg.INVALID_VARIABLE_NAME_START, "character", "5") ) );
+    }
+
+    @Test
+    public void testVariableNameCantContainKeywordIn() {
+        String var = "variable can't contain 'in' keyword";
+        assertThat( FEELParser.isVariableNameValid( var ), is( false ) );
+        assertThat( FEELParser.checkVariableName( var ).get( 0 ).getMessage(), is( Msg.createMessage(Msg.INVALID_VARIABLE_NAME, "keyword", "in") ) );
+    }
+
+    @Test
+    public void testVariableNameCantStartWithKeyword() {
+        String var = "for keyword is an invalid start for a variable name";
+        assertThat( FEELParser.isVariableNameValid( var ), is( false ) );
+        assertThat( FEELParser.checkVariableName( var ).get( 0 ).getMessage(), is( Msg.createMessage(Msg.INVALID_VARIABLE_NAME_START, "keyword", "for") ) );
     }
 
     private void assertLocation(String inputExpression, BaseNode number) {
