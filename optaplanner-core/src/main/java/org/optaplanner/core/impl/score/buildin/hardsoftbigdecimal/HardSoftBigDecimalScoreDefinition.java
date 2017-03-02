@@ -50,6 +50,11 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
     }
 
     @Override
+    public HardSoftBigDecimalScore getZeroScore() {
+        return HardSoftBigDecimalScore.ZERO;
+    }
+
+    @Override
     public HardSoftBigDecimalScore parseScore(String scoreString) {
         return HardSoftBigDecimalScore.parseScore(scoreString);
     }

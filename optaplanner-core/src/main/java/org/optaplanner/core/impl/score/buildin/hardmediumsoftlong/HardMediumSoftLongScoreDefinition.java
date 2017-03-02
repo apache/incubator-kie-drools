@@ -50,6 +50,11 @@ public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreD
     }
 
     @Override
+    public HardMediumSoftLongScore getZeroScore() {
+        return HardMediumSoftLongScore.ZERO;
+    }
+
+    @Override
     public HardMediumSoftLongScore parseScore(String scoreString) {
         return HardMediumSoftLongScore.parseScore(scoreString);
     }

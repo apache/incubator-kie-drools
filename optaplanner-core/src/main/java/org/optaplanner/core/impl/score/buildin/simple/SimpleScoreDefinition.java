@@ -45,6 +45,11 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     }
 
     @Override
+    public SimpleScore getZeroScore() {
+        return SimpleScore.ZERO;
+    }
+
+    @Override
     public SimpleScore parseScore(String scoreString) {
         return SimpleScore.parseScore(scoreString);
     }

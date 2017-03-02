@@ -40,6 +40,11 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
     }
 
     @Override
+    public BendableLongScore getZeroScore() {
+        return BendableLongScore.zero(hardLevelsSize, softLevelsSize);
+    }
+
+    @Override
     public BendableLongScore parseScore(String scoreString) {
         BendableLongScore score = BendableLongScore.parseScore(scoreString);
         if (score.getHardLevelsSize() != hardLevelsSize) {

@@ -45,6 +45,11 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
     }
 
     @Override
+    public SimpleBigDecimalScore getZeroScore() {
+        return SimpleBigDecimalScore.ZERO;
+    }
+
+    @Override
     public SimpleBigDecimalScore parseScore(String scoreString) {
         return SimpleBigDecimalScore.parseScore(scoreString);
     }

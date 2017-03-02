@@ -45,6 +45,11 @@ public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<
     }
 
     @Override
+    public HardSoftScore getZeroScore() {
+        return HardSoftScore.ZERO;
+    }
+
+    @Override
     public HardSoftScore parseScore(String scoreString) {
         return HardSoftScore.parseScore(scoreString);
     }

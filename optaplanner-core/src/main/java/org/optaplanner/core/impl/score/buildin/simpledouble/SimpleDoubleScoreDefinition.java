@@ -45,6 +45,11 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     }
 
     @Override
+    public SimpleDoubleScore getZeroScore() {
+        return SimpleDoubleScore.ZERO;
+    }
+
+    @Override
     public SimpleDoubleScore parseScore(String scoreString) {
         return SimpleDoubleScore.parseScore(scoreString);
     }

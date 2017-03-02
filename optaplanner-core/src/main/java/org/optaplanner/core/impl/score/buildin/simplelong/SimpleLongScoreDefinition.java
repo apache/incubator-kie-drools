@@ -40,6 +40,11 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     }
 
     @Override
+    public SimpleLongScore getZeroScore() {
+        return SimpleLongScore.ZERO;
+    }
+
+    @Override
     public SimpleLongScore parseScore(String scoreString) {
         return SimpleLongScore.parseScore(scoreString);
     }

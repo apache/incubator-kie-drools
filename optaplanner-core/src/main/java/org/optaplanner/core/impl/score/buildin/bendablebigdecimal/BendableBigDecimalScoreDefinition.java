@@ -40,6 +40,11 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     }
 
     @Override
+    public BendableBigDecimalScore getZeroScore() {
+        return BendableBigDecimalScore.zero(hardLevelsSize, softLevelsSize);
+    }
+
+    @Override
     public BendableBigDecimalScore parseScore(String scoreString) {
         BendableBigDecimalScore score = BendableBigDecimalScore.parseScore(scoreString);
         if (score.getHardLevelsSize() != hardLevelsSize) {

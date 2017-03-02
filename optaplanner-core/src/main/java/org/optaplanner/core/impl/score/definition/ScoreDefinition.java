@@ -62,6 +62,12 @@ public interface ScoreDefinition<S extends Score> {
     Class<S> getScoreClass();
 
     /**
+     * The score that represents zero.
+     * @return never null
+     */
+    S getZeroScore();
+
+    /**
      * Returns a {@link String} representation of the {@link Score}.
      * @param score never null
      * @return never null

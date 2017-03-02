@@ -50,6 +50,11 @@ public class HardSoftDoubleScoreDefinition extends AbstractFeasibilityScoreDefin
     }
 
     @Override
+    public HardSoftDoubleScore getZeroScore() {
+        return HardSoftDoubleScore.ZERO;
+    }
+
+    @Override
     public HardSoftDoubleScore parseScore(String scoreString) {
         return HardSoftDoubleScore.parseScore(scoreString);
     }
