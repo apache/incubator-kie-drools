@@ -60,7 +60,7 @@ public final class KieBaseUtil {
 
     public static KieBase getKieBaseFromDRLResources(final boolean failIfBuildError, final Resource... resources) {
         generateDRLResourceTargetPath(resources);
-        final KieBuilder kieBuilder = getKieBuilderFromResources(failIfBuildError, resources);
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(failIfBuildError, resources);
         return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 

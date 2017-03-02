@@ -33,12 +33,9 @@ import java.util.Collection;
 /**
  * Convenient class to help generalizing drools StatelessKnowledgeSession and
  * StatefulKnowledgeSession. This is least common implementation. The sessions
- * are stored within and are created during construction of this class.
- * Constructor expects KnowledgeBase from which it constructs the session
- * specified by type (stateless/stateful). Session implements CommandExecutor
- * and KnowledgeRuntimeEventManager interfaces by delegating the methods
- * directly to stateless or stateful knowledge session instance.
- *
+ * are stored within and are created during construction of this class. Session
+ * implements CommandExecutor and KnowledgeRuntimeEventManager interfaces by
+ * delegating the methods directly to stateless or stateful knowledge session instance.
  */
 public class Session implements CommandExecutor, KnowledgeRuntimeEventManager {
     private KieRuntimeEventManager session;

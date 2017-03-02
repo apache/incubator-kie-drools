@@ -85,7 +85,9 @@ public enum KieSessionTestConfiguration implements KieSessionModelProvider {
 
     private boolean stateful = false;
 
-    public boolean isStateful() {return stateful;}
+    public boolean isStateful() {
+        return stateful;
+    }
 
     KieSessionTestConfiguration(final boolean stateful) {
         this.stateful = stateful;

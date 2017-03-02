@@ -42,10 +42,10 @@ public final class KieSessionUtil {
         return conf;
     }
 
-    public static Session createKieSessionFromKieBaseModel(final String moduleGroupId, final KieBaseTestConfiguration kieBaseTestConfiguration,
-                                                           final KieSessionTestConfiguration kieSessionTestConfiguration, final Resource... resources) {
+    public static Session getKieSessionFromKieBaseModel(final String moduleGroupId, final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                        final KieSessionTestConfiguration kieSessionTestConfiguration, final Resource... resources) {
         final KieModuleModel module = KieUtil.createKieModuleModel();
-        KieBaseModel kieBaseModel = kieBaseTestConfiguration.getKieBaseModel(module);
+        final KieBaseModel kieBaseModel = kieBaseTestConfiguration.getKieBaseModel(module);
 
         kieSessionTestConfiguration.getKieSessionModel(kieBaseModel);
         final KieModule kieModule = KieUtil.buildAndInstallKieModuleIntoRepo(moduleGroupId, module, resources);
@@ -57,16 +57,16 @@ public final class KieSessionUtil {
         return getKieSessionFromReleaseIdByName(releaseId, null, stateful, persisted);
     }
 
-    public static Session getKieSessionFromReleaseIdByName(final ReleaseId id, final String name,
+    public static Session getKieSessionFromReleaseIdByName(final ReleaseId releaseId, final String name,
                                                            final boolean stateful, final boolean persisted) {
-        final KieContainer container = KieServices.Factory.get().newKieContainer(id);
+        final KieContainer container = KieServices.Factory.get().newKieContainer(releaseId);
 
-        if(stateful) {
-            return new Session((name == null) ? container.newKieSession() :
-                    container.newKieSession(name), stateful, persisted);
+        if (stateful) {
+            return (name == null) ? new Session(container.newKieSession(), stateful, persisted) :
+                                    new Session(container.newKieSession(name), stateful, persisted);
         } else {
-            return new Session((name == null) ? container.newStatelessKieSession() :
-                    container.newStatelessKieSession(name), stateful, persisted);
+            return (name == null) ? new Session(container.newStatelessKieSession(), stateful, persisted) :
+                                    new Session(container.newStatelessKieSession(name), stateful, persisted);
         }
     }
 
@@ -74,7 +74,7 @@ public final class KieSessionUtil {
                                                                     final KieSessionTestConfiguration kieSessionTestConfiguration, final String drl) {
         final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
         drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return createKieSessionFromKieBaseModel(moduleGroupId, kieBaseTestConfiguration, kieSessionTestConfiguration, drlResource);
+        return getKieSessionFromKieBaseModel(moduleGroupId, kieBaseTestConfiguration, kieSessionTestConfiguration, drlResource);
     }
 
     private KieSessionUtil() {
