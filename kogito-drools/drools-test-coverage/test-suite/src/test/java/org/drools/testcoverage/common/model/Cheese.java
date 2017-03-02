@@ -28,6 +28,11 @@ public class Cheese implements Serializable {
     public Cheese() {
     }
 
+    public Cheese(final String type) {
+        super();
+        this.type = type;
+    }
+
     public Cheese(final String type, final int price) {
         super();
         this.type = type;
