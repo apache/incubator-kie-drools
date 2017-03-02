@@ -22,6 +22,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -100,10 +101,7 @@ public class DMNCompilerImpl
             if ( e instanceof InputData ) {
                 InputData input = (InputData) e;
                 String variableName = input.getVariable() != null ? input.getVariable().getName() : null;
-                if ( !variableNameIsValid( variableName ) ) {
-                    logger.error( "Invalid variable name '" + variableName + "' in input data '" + input.getId() + "'" );
-                    model.addMessage( DMNMessage.Severity.ERROR, "Invalid variable name '" + variableName + "' in input data '" + input.getId() + "'", input );
-                }
+                DMNCompilerHelper.checkVariableName( model, input, variableName );
                 InputDataNodeImpl idn = new InputDataNodeImpl( input );
                 DMNType type = resolveTypeRef( model, idn, e, input.getVariable(), input.getVariable().getTypeRef() );
                 idn.setType( type );
@@ -112,6 +110,7 @@ public class DMNCompilerImpl
                 Decision decision = (Decision) e;
                 DecisionNodeImpl dn = new DecisionNodeImpl( decision );
                 DMNType type = null;
+                DMNCompilerHelper.checkVariableName( model, decision, decision.getVariable() != null ? decision.getVariable().getName() : null );
                 if ( decision.getVariable() != null && decision.getVariable().getTypeRef() != null ) {
                     type = resolveTypeRef( model, dn, decision, decision.getVariable(), decision.getVariable().getTypeRef() );
                 } else {
@@ -123,6 +122,7 @@ public class DMNCompilerImpl
                 BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) e;
                 BusinessKnowledgeModelNodeImpl bkmn = new BusinessKnowledgeModelNodeImpl( bkm );
                 DMNType type = null;
+                DMNCompilerHelper.checkVariableName( model, bkm, bkm.getVariable() != null ? bkm.getVariable().getName() : null );
                 if ( bkm.getVariable() != null && bkm.getVariable().getTypeRef() != null ) {
                     type = resolveTypeRef( model, bkmn, bkm, bkm.getVariable(), bkm.getVariable().getTypeRef() );
                 } else {
@@ -181,10 +181,6 @@ public class DMNCompilerImpl
                 ctx.exitFrame();
             }
         }
-    }
-
-    private boolean variableNameIsValid(String variableName) {
-        return FEELParser.isVariableNameValid( variableName );
     }
 
     private void linkRequirements(DMNModelImpl model, DMNBaseNode node) {
