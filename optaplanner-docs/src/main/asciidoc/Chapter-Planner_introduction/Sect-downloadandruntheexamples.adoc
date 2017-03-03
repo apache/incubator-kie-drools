@@ -1,0 +1,217 @@
+[[_downloadandruntheexamples]]
+== Download and Run the Examples
+
+
+[[getTheReleaseZipAndRunTheExamples]]
+=== Get the Release .zip and Run the Examples
+
+To try it now:
+
+. Download a release zip of OptaPlanner from https://www.optaplanner.org[the OptaPlanner website] and unzip it.
+. Open the directory [path]_examples_ and run the script.
++ 
+Linux or Mac:
++
+
+[source,sh,options="nowrap"]
+----
+$ cd examples
+$ ./runExamples.sh
+----
++
+Windows:
++
+
+[source,sh,options="nowrap"]
+----
+$ cd examples
+$ runExamples.bat
+----
+
+image::Chapter-Planner_introduction/distributionZip.png[align="center"]
+
+The Examples GUI application will open.
+Pick an example to try it out:
+
+image::Chapter-Planner_introduction/plannerExamplesAppScreenshot.png[align="center"]
+
+
+[NOTE]
+====
+OptaPlanner itself has no GUI dependencies.
+It runs just as well on a server or a mobile JVM as it does on the desktop.
+====
+
+[discrete]
+== Run the Webexamples
+
+Besides the GUI examples, there are also a set of webexamples to try out. The webexamples include:
+
+* Vehicle routing: calculating the shortest possible route to pick up all items required for a number of different customers using either http://leafletjs.com/[Leaflet] or http://google.com/maps[Google Maps] visualizations. 
+* Cloud balancing: Assigning processes across computers with different specifications and costs. 
+
+*Prerequisites*
+
+The webexamples require several JEE APIs to run, such as:
+
+* Servlet
+* JAX-RS
+* CDI
+
+These are not required for Planner itself.
+
+**Running the Webexamples on a JEE Application Server **
+
+. Download a JEE application server, such as JBoss EAP or http://www.wildfly.org/[WildFly] and unzip it.
+. Download a release zip of OptaPlanner from https://www.optaplanner.org[the OptaPlanner website] and unzip it.
+. Open the directory [path]_webexamples_ and deploy the `optaplanner-webexamples-*.war` file on the JEE application server. 
++ 
+If using JBoss EAP in standalone mode, this can be done by adding the `optaplanner-webexamples-*.war` file to the `jboss-eap-*/standalone/deployments` folder. 
+. Open the following address in a web browser:  $$http://localhost:8080/optaplanner-webexamples-*/$$ (replace the $$*$$ with the actual version).
+
+**Deploying Webexamples on a Servlet Container**
+
+To successfully deploy the webesxamples on a servlet container (such as Jetty or Tomcat) instead of on a real JEE application server (such as WildFly):
+
+. Add the missing implementation libraries (for example RestEasy and Weld) in the `optaplanner-webexamples-*.war` manually.
+
+. Deploy the `optaplanner-webexamples-*.war` on the servlet container.
+
+
+Pick an example to try it out, such as the Vehicle Routing example:
+
+image::Chapter-Planner_introduction/plannerWebexamplesScreenshot.png[align="center"]
+
+
+[[runTheExamplesInAnIDE]]
+=== Run the Examples in an IDE (IntelliJ, Eclipse, NetBeans)
+
+To run the examples in your favorite IDE:
+
+* In IntelliJ IDEA, NetBeans or a non-vanilla Eclipse:
++
+. Open the file [path]_examples/sources/pom.xml_ as a new project, the maven integration will take care of the rest.
+. Run the examples from the project.
+
+* In a vanilla Eclipse (which lacks the M2Eclipse plugin):
+. Open a new project for the directory [path]_examples/sources_ .
+. Add all the jars to the classpath from the directory [path]_binaries_ and the directory [path]_examples/binaries_ , except for the file [path]_examples/binaries/optaplanner-examples-*.jar_ .
+. Add the Java source directory [path]_src/main/java_ and the Java resources directory [path]_src/main/resources_ .
+. Create a run configuration:
+** Main class: `org.optaplanner.examples.app.OptaPlannerExamplesApp`
+** VM parameters (optional): `-Xmx512M -server`
+.. To run a specific example directly and skip the example selection window, run its `App` class (for example ``CloudBalancingApp``) instead of ``OptaPlannerExamplesApp``.
+. Run that run configuration.
+
+
+[[useWithMavenGradleEtc]]
+=== Use OptaPlanner with Maven, Gradle, Ivy, Buildr or ANT
+
+The OptaPlanner jars are also available in http://search.maven.org/#search|ga|1|org.optaplanner[the central maven repository] (and also in
+pass:macros[https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.optaplanner~~~~[the JBoss maven repository\]]).
+
+If you use Maven, add a dependency to `optaplanner-core` in your project's [path]_pom.xml_
+:
+
+[source,xml,options="nowrap"]
+----
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
+    </dependency>
+----
+
+This is similar for Gradle, Ivy and Buildr.
+To identify the latest version, check http://search.maven.org/#search|ga|1|org.optaplanner[the central maven repository].
+
+Because you might end up using other OptaPlanner modules too, it's recommended to import the `optaplanner-bom` in Maven's `dependencyManagement` so the OptaPlanner version is specified only once:
+
+[source,xml,options="nowrap"]
+----
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-bom</artifactId>
+        <type>pom</type>
+        <version>...</version>
+        <scope>import</scope>
+      </dependency>
+      ...
+    </dependencies>
+  </dependencyManagement>
+----
+
+If you're still using ANT (without Ivy), copy all the jars from the download zip's [path]_binaries_
+ directory in your classpath.
+
+[NOTE]
+====
+The download zip's [path]_binaries_
+ directory contains far more jars then `optaplanner-core` actually uses.
+It also contains the jars used by other modules, such as ``optaplanner-benchmark``.
+
+Check the maven repository [path]_pom.xml_
+ files to determine the minimal dependency set of a specific module (for a specific version).
+====
+
+
+[[buildFromSource]]
+=== Build OptaPlanner from Source
+
+It's easy to build OptaPlanner from source.
+
+*Prerequisites*
+
+https://help.github.com/articles/set-up-git/[Set up Git].
+
+. Clone `optaplanner` from GitHub (or alternatively, download https://github.com/kiegroup/optaplanner/zipball/master[the zipball]):
++
+
+[source,sh,options="nowrap"]
+----
+$ git clone git@github.com:kiegroup/optaplanner.git optaplanner
+...
+----
++
+
+[NOTE]
+====
+If you don't have a GitHub account or your local Git installation isn't configured with it, use this command instead, to avoid an authentication issue:
+
+[source,sh,options="nowrap"]
+----
+$ git clone https://github.com/kiegroup/optaplanner.git optaplanner
+...
+----
+====
+
+. Build it with http://maven.apache.org/[Maven]:
++
+
+[source,sh,options="nowrap"]
+----
+$ cd optaplanner
+$ mvn clean install -DskipTests
+...
+----
++
+
+[NOTE]
+====
+The first time, Maven might take a long time, because it needs to download jars.
+====
+
+. Run the examples:
++
+
+[source,sh,options="nowrap"]
+----
+$ cd optaplanner-examples
+$ mvn exec:java
+...
+----
+
+. Edit the sources in your favorite IDE.
+
+.. _Optional_: use a Java profiler.

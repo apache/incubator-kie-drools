@@ -1,0 +1,56 @@
+[[governance]]
+== Governance
+
+
+[[statusOfOptaPlanner]]
+=== Status of OptaPlanner
+
+OptaPlanner is stable, reliable and scaleable. It has been heavily tested with unit, integration, and stress tests, and is used in production throughout the world. One example handles over 50 000 variables with 5000 variables each, multiple constraint types and billions of possible constraint matches. 
+
+
+[[releaseNotes]]
+=== Release Notes
+
+We release a `Beta` or `CR` version every few weeks and a `Final` version every few months. https://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
+
+
+[[backwardsCompatibility]]
+=== Backwards Compatibility
+
+OptaPlanner separates its API and implementation:
+
+* **Public API**: All classes in the package namespace *org.optaplanner.core.api* are 100% *backwards compatible* in future releases (especially minor and hotfix releases). In rare circumstances, if the major version number changes, a few specific classes might have a few backwards incompatible changes, but those will be clearly documented in https://www.optaplanner.org/download/upgradeRecipe/[the upgrade recipe].
+* **XML configuration**: The XML solver configuration is backwards compatible for all elements, except for elements that require the use of non public API classes. The XML solver configuration is defined by the classes in the package namespace **org.optaplanner.core.config**.
+* **Implementation classes**: All classes in the package namespace *org.optaplanner.core.impl* are _not_ backwards compatible: they will change in future major or minor releases (but probably not in hotfix releases). https://www.optaplanner.org/download/upgradeRecipe/[The upgrade recipe] describes every such relevant change and on how to quickly deal with it when upgrading to a newer version.
+
+
+[NOTE]
+====
+This documentation covers some `impl` classes too.
+Those documented `impl` classes are reliable and safe to use (unless explicitly marked as experimental in this documentation), but we're just not entirely comfortable yet to write their signatures in stone.
+====
+
+
+[[communityAndSupport]]
+=== Community and Support
+
+For news and articles, check https://www.optaplanner.org/blog/[our blog], Google+ (https://plus.google.com/+OptaPlannerOrg[OptaPlanner], https://plus.google.com/+GeoffreyDeSmet[Geoffrey De Smet]) and twitter (https://twitter.com/OptaPlanner[OptaPlanner], https://twitter.com/GeoffreyDeSmet[Geoffrey De Smet]).
+*If OptaPlanner helps you, help us by blogging or tweeting about it!*
+
+Public questions are welcome on https://www.optaplanner.org/community/forum.html[our community forum].
+Bugs and feature requests are welcome in https://issues.jboss.org/browse/PLANNER[our issue tracker].
+Pull requests are very welcome on GitHub and get priority treatment! By open sourcing your improvements, you 'll benefit from our peer review and from our improvements made on top of your improvements.
+
+Red Hat sponsors OptaPlanner development by employing the core team.
+For enterprise support and consulting, take a look at https://www.optaplanner.org/community/product.html[the BRMS and BPM Suite products] (which contain OptaPlanner) or https://www.redhat.com/en/about/contact/sales[contact Red Hat].
+
+
+[[relationshipWithKie]]
+=== Relationship with Drools and jBPM
+
+OptaPlanner is part of the http://www.kiegroup.org[KIE group of projects].
+It releases regularly (often once or twice per month) together with the http://www.drools.org/[Drools] rule engine and the http://www.jbpm.org/[jBPM] workflow engine.
+
+image::Chapter-Planner_introduction/kieFunctionalityOverview.png[align="center"]
+
+See <<architectureOverview,the architecture overview>> to learn more about the optional integration with Drools.
