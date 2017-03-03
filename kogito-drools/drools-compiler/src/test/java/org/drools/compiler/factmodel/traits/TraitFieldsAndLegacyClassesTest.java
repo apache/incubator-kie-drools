@@ -16,16 +16,24 @@
 package org.drools.compiler.factmodel.traits;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
+import org.drools.compiler.TurtleTestCategory;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -397,6 +405,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
     }
 
+    @Category(ReviseTraitTestWithPRAlwaysCategory.class)
     @Test
     public void testTraitFieldUpdate4() {
 
@@ -462,10 +471,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = new KieHelper(PropertySpecificOption.ALLOWED).addContent( drl, ResourceType.DRL ).build();
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 

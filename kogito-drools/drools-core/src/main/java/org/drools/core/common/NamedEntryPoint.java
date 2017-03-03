@@ -322,7 +322,7 @@ public class NamedEntryPoint
                        final Object object) {
         update( (InternalFactHandle) factHandle,
                 object,
-                allSetButTraitBitMask(),
+                allSetBitMask(),
                 Object.class,
                 null );
     }

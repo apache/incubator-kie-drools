@@ -38,6 +38,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
@@ -49,6 +50,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
@@ -97,8 +99,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "   Person()\n" +
                       "then\n" +
                       "end\n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        
+        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent(rule, ResourceType.DRL).build();
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Person" );
         assertNotNull( otn );
@@ -119,8 +121,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "   Person( name == 'bobba')\n" +
                       "then\n" +
                       "end\n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        
+        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent(rule, ResourceType.DRL).build();
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Person" );
         assertNotNull( otn );
@@ -148,8 +150,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "   Cheese()\n" +
                       "then\n" +
                       "end\n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        
+        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent(rule, ResourceType.DRL).build();
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Cheese" );
         assertNotNull( otn );
@@ -171,8 +173,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "   Cheese( type == 'brie' )\n" +
                       "then\n" +
                       "end\n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        
+        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent(rule, ResourceType.DRL).build();
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Cheese" );
         assertNotNull( otn );
@@ -223,8 +225,10 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "   exists(eval(1==1))\n" +
                       "then\n" +
                       "end\n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+
+        // assumption is this test was intended to be for the case
+        // property reactivity is NOT enabled by default.
+        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent(rule, ResourceType.DRL).build();
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Person" );
         assertNotNull( otn );
@@ -255,8 +259,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "   Cheese( type == 'brie', price == 2.5 )\n" +
                       "then\n" +
                       "end\n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        
+        KieBase kbase = new KieHelper(PropertySpecificOption.ALLOWED).addContent(rule, ResourceType.DRL).build();
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "Cheese" );
         assertNotNull( otn );
@@ -1221,7 +1225,12 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    modify($b) { setOn(true) }\n" +
                 "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        // The compilation of the above ^ would turn error under the assumption Property Reactivity is NOT enabled by default. 
+        
+        KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        conf.setOption(PropertySpecificOption.ALLOWED);
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
         kbuilder.add( ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL );
         assertTrue(kbuilder.hasErrors());
     }
@@ -1836,7 +1845,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         return list;
     }
 
-    public ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, String nodeName) {
+    public ObjectTypeNode getObjectTypeNode(KieBase kbase, String nodeName) {
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType().getSimpleName().equals( nodeName ) ) {
@@ -1845,7 +1854,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         }
         return null;
     }
-
+    
     @Test(timeout = 5000)
     public void testNoConstraint2() throws Exception {
         String rule = "package org.drools.compiler.integrationtests\n" +

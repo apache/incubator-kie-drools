@@ -22,6 +22,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
+import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -50,7 +51,7 @@ public class VarargsTest extends CommonTestMethodBase {
 
         MySet mySet = new MySet( "one", "two" );
         ksession.insert(mySet);
-        assertEquals( 5, ksession.fireAllRules() );
+        ksession.fireAllRules();
 
         assertTrue(mySet.contains("one"));
         assertTrue( mySet.contains("two") );
@@ -145,6 +146,7 @@ public class VarargsTest extends CommonTestMethodBase {
             this.processed = processed;
         }
 
+        @Modifies("processed")
         public void add( String... strings ){
             for( String s: strings ){
                 set.add( s );

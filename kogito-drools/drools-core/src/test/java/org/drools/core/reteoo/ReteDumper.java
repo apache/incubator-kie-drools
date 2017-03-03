@@ -21,6 +21,7 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,7 +52,29 @@ public class ReteDumper {
     }
 
     private static void dumpNode(BaseNode node, String ident, Set<BaseNode> visitedNodes ) {
-        System.out.println(ident + node + " on " + node.getPartitionId());
+        System.out.print(ident + node + " on " + node.getPartitionId());
+        try {
+            Object declaredMask = node.getClass().getMethod("getDeclaredMask").invoke(node);
+            Object inferreddMask = node.getClass().getMethod("getInferredMask").invoke(node);
+            System.out.print(" d "+declaredMask + " i " + inferreddMask);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            // do nothing.
+        }
+        try {
+            Object declaredMask = node.getClass().getMethod("getLeftDeclaredMask").invoke(node);
+            Object inferreddMask = node.getClass().getMethod("getLeftInferredMask").invoke(node);
+            System.out.print(" Ld "+declaredMask + " Li " + inferreddMask);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            // do nothing.
+        }
+        try {
+            Object declaredMask = node.getClass().getMethod("getRightDeclaredMask").invoke(node);
+            Object inferreddMask = node.getClass().getMethod("getRightInferredMask").invoke(node);
+            System.out.print(" Rd "+declaredMask + " Ri " + inferreddMask);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            // do nothing.
+        }
+        System.out.print("\n");
         if (!visitedNodes.add( node )) {
             return;
         }

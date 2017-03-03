@@ -75,7 +75,7 @@ public class AllSetButLastBitMask extends SingleLongBitMask implements BitMask, 
             return true;
         }
         if (mask instanceof EmptyMask) {
-            return false;
+            return true;
         }
         return mask instanceof LongBitMask ?
                (Long.MAX_VALUE & ((LongBitMask)mask).asLong()) != 0 :
