@@ -144,15 +144,19 @@ public class UnaryTestNode
     private UnaryTest createNotUnaryTest() {
         return (c, o) -> {
             Object val = value.evaluate( c );
-            if( o == null || val == null ) {
+            if( val == null ) {
                 return null;
             }
             List<Object> tests = (List<Object>) val;
             for( Object test : tests ) {
-                if( test instanceof UnaryTest ) {
+                if( test == null ) {
+                    return o != null;
+                } else if( test instanceof UnaryTest ) {
                     if( ((UnaryTest)test).apply( c, o ) ) {
                         return false;
                     }
+                } else if( o == null ) {
+                    return test != null;
                 } else if( test instanceof Range ) {
                     if( ((Range)test).includes( (Comparable) o ) ) {
                         return false;

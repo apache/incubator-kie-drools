@@ -736,6 +736,31 @@ public class DMNRuntimeTest {
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is(4) );
     }
 
+    @Test
+    public void testNull() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "null_values.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "Null values model" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = runtime.newContext();
+        context.set( "Null Input", null );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Null value" ), is( "Input is null" ) );
+
+        context = runtime.newContext();
+        context.set( "Null Input", "foo" );
+
+        dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        result = dmnResult.getContext();
+        assertThat( result.get( "Null value" ), is( "Input is not null" ) );
+
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
