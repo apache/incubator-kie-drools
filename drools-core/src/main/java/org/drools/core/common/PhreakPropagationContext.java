@@ -61,9 +61,9 @@ public class PhreakPropagationContext
 
     private int                             originOffset;
 
-    private BitMask                         modificationMask = allSetButTraitBitMask();
+    private BitMask                         modificationMask = allSetBitMask();
 
-    private BitMask                         originalMask = allSetButTraitBitMask();
+    private BitMask                         originalMask = allSetBitMask();
 
     private Class<?>                        modifiedClass;
 
@@ -88,7 +88,7 @@ public class PhreakPropagationContext
               leftTuple,
               factHandle,
               EntryPointId.DEFAULT,
-              allSetButTraitBitMask(),
+              allSetBitMask(),
               Object.class,
               null );
         this.originOffset = -1;
@@ -106,7 +106,7 @@ public class PhreakPropagationContext
               leftTuple,
               factHandle,
               entryPoint,
-              allSetButTraitBitMask(),
+              allSetBitMask(),
               Object.class,
               null );
     }
@@ -144,7 +144,7 @@ public class PhreakPropagationContext
               leftTuple,
               factHandle,
               entryPoint,
-              allSetButTraitBitMask(),
+              allSetBitMask(),
               Object.class,
               readerContext );
     }

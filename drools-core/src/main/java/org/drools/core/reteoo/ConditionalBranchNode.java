@@ -22,6 +22,8 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.bitmask.AllSetBitMask;
+import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 
@@ -275,4 +277,15 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         }
     }
 
+    @Override
+    protected void initDeclaredMask(BuildContext context, LeftTupleSource leftInput) {
+        // See LeftTupleSource.initDeclaredMask() should result for the ConditionalBranch to result in ALLSET:
+        // at the moment if pattern is null (e.g. for eval node) we cannot calculate the mask, so we leave it to 0
+        // 
+        // In other words, a conditional branch is analogous to an eval() call - mask ALL SET
+        
+        // To achieve the result, we highjack the call:
+        super.initDeclaredMask(null, null);
+    }
+    
 }

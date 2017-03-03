@@ -404,10 +404,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
         for (String simpleExpression : simpleExpressions) {
             String propertyName = getPropertyNameFromSimpleExpression(simpleExpression);
-            if (propertyName.length() == 0) {
-                continue;
-            }
-            if (propertyName.equals("this")) {
+            if (propertyName == null || propertyName.equals("this") || propertyName.length() == 0) {
                 return allSetButTraitBitMask();
             }
             int pos = settableProperties.indexOf(propertyName);

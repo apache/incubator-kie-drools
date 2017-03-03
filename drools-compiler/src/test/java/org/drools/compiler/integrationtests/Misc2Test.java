@@ -86,6 +86,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteComparator;
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
@@ -641,7 +642,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( asList( 7, 6, 5, 4, 3, 2, 1 ), list );
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 10000)
     public void testPropertyReactiveOnAlphaNodeFollowedByAccumulate() {
         // DROOLS-16
         String str =
@@ -3700,6 +3701,7 @@ public class Misc2Test extends CommonTestMethodBase {
     public void testLockOnActive1() {
         // the modify changes the hashcode of TradeHeader
         // this forces the 'from' to think it's new. This results in an insert and a delete propagation from the 'from'
+        // With Property Reactivity enabled by default this also required adding a @watch(*) annotation
         String drl = "" +
                      "package org.drools.test; \n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.TradeBooking;\n" +
@@ -3707,7 +3709,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "rule \"Rule1\" \n" +
                      "salience 1 \n" +
                      "when\n" +
-                     "  $booking: TradeBooking()\n" +
+                     "  $booking: TradeBooking() @watch(*) \n" +
                      "  $trade: TradeHeader() from $booking.getTrade()\n" +
                      "  not String()\n" +
                      "then\n" +
@@ -3719,12 +3721,14 @@ public class Misc2Test extends CommonTestMethodBase {
                      "rule \"Rule2\"\n" +
                      "lock-on-active true\n" +
                      "when\n" +
-                     "  $booking: TradeBooking( )\n" +
+                     "  $booking: TradeBooking( ) @watch(*) \n" +
                      "  $trade: Object( ) from $booking.getTrade()\n" +
                      "then\n" +
                      "end";
         KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        
+        ReteDumper.dumpRete(kb);
 
         final List created = new ArrayList();
         final List cancelled = new ArrayList();
@@ -3770,6 +3774,7 @@ public class Misc2Test extends CommonTestMethodBase {
     public void testLockOnActive2() {
         // the modify changes the hashcode of TradeHeader
         // this forces the 'from' to think it's new. This results in an insert and a delete propagation from the 'from'
+        // With Property Reactivity enabled by default this also required adding a @watch(*) annotation
         String drl = "" +
                      "package org.drools.test; \n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.TradeBooking;\n" +
@@ -3778,7 +3783,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "lock-on-active true\n" +
                      "salience 1 \n" +
                      "when\n" +
-                     "  $booking: TradeBooking()\n" +
+                     "  $booking: TradeBooking() @watch(*) \n" +
                      "  $trade: TradeHeader() from $booking.getTrade()\n" +
                      "then\n" +
                      "  $trade.setAction(\"New\");\n" +
@@ -3787,7 +3792,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "\n" +
                      "rule \"Rule2\"\n" +
                      "when\n" +
-                     "  $booking: TradeBooking( )\n" +
+                     "  $booking: TradeBooking( ) @watch(*) \n" +
                      "  $trade: Object( ) from $booking.getTrade()\n" +
                      "then\n" +
                      "end";

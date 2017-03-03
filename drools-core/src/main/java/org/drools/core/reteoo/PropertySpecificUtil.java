@@ -52,6 +52,10 @@ public class PropertySpecificUtil {
         return EmptyButLastBitMask.get();
     }
 
+    public static BitMask allSetBitMask() {
+        return AllSetBitMask.get();
+    }
+
     public static BitMask allSetButTraitBitMask() {
         return AllSetButLastBitMask.get();
     }
