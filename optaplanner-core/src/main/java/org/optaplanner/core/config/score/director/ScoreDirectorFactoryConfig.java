@@ -33,8 +33,10 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
@@ -490,6 +492,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                     kieFileSystem.write(kieResources.newFileSystemResource(scoreDrlFile, "UTF-8"));
                 }
             }
+
+            KieModuleModel kmodel = kieServices.newKieModuleModel()
+                                               .setConfigurationProperty( PropertySpecificOption.PROPERTY_NAME,
+                                                                          PropertySpecificOption.ALLOWED.toString() );
+            kieFileSystem.writeKModuleXML( kmodel.toXML() );
+
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
             kieBuilder.buildAll();
             Results results = kieBuilder.getResults();
