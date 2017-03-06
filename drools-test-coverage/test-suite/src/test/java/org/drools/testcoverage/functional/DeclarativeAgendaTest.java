@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.listener.OrderListener;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -131,9 +132,9 @@ public class DeclarativeAgendaTest {
         listener = new OrderListener();
         ksession.addEventListener(listener);
         ksession.fireAllRules();
-        
+
         Assertions.assertThat(listener.size()).isEqualTo(1); // BZ 1038076
-        
+
         final String[] expected2 = { "sales2" };
         for (int i = 0; i < listener.size(); i++) {
             Assertions.assertThat(listener.get(i)).isEqualTo(expected2[i]);
@@ -270,7 +271,7 @@ public class DeclarativeAgendaTest {
         final KieServices kieServices = KieServices.Factory.get();
         final Resource resource = kieServices.getResources().newClassPathResource(drlFile, getClass());
 
-        final KieModule kieModule = KieBaseUtil.buildAndInstallKieModuleIntoRepo(TestConstants.PACKAGE_FUNCTIONAL,
+        final KieModule kieModule = KieBaseUtil.getKieModuleAndBuildInstallModule(TestConstants.PACKAGE_FUNCTIONAL,
                 KieBaseTestConfiguration.CLOUD_IDENTITY, resource);
 
         final KieBaseConfiguration kbconf = kieServices.newKieBaseConfiguration();
