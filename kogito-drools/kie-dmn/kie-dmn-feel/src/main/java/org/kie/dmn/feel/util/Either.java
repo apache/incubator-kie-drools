@@ -46,6 +46,6 @@ public class Either<L,R> {
     
     public <X> X cata(Function<L,X> left, Function<R,X> right) {
         // warning: left.invoke, because of FEEL specs, could return null. The below is the safest way to implement cata over this Either.
-        return isLeft() ? left.apply( this.left.get() ) : right.apply( this.right.get() );
+        return isLeft() ? left.apply( this.left.get() ) : right.apply( this.right.orElse( null ) );
     }
 }
