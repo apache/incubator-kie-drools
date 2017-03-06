@@ -48,7 +48,9 @@ public class DTInvokerFunction
             }
             return dt.evaluate( ctx, params );
         } catch ( Exception e ) {
-            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking decision table '"+getName()+"': "+e.getClass().getSimpleName(), e);
+            String message = "Error invoking decision table '" + getName() + "': " + e.getClass().getSimpleName();
+            capturedException = new FEELEventBase( Severity.ERROR, message, e);
+            logger.error( message, e );
         } finally {
             ctx.exitFrame();
         }
