@@ -846,7 +846,7 @@ public class DMNRuntimeTest {
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
         DMNContext result = dmnResult.getContext();
-        assertThat( result.get( "Loan Recommendation" ), is( "Declined" ) );
+        assertThat( result.get( "Loan Recommendation" ), is( "Decline" ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {
