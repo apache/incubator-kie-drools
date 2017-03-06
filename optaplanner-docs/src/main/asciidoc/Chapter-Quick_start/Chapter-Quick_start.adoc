@@ -268,10 +268,10 @@ public class CloudBalancingHelloWorld {
 
 The code example does the following:
 
-* Build the `Solver` based on a solver configuration (in this case an XML file from the classpath).
+. Build the `Solver` based on a solver configuration (in this case <<solverConfigurationByXML,an XML file>>, `cloudBalancingSolverConfig.xml`, from the classpath).
 + 
 Building the `Solver` is the most complicated part of this procedure. For more detail, see <<cloudBalancingSolverConfiguration, Solver Configuration>>.
-// I think the link here to the Solver configuration section in the Planner Configuration chapter is confusing for the user, especially as it deals with a different example.
+
 +
 
 [source,java,options="nowrap"]
@@ -280,7 +280,8 @@ Building the `Solver` is the most complicated part of this procedure. For more d
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver<CloudBalance> = solverFactory.buildSolver();
 ----
-* Load the problem. 
+
+. Load the problem. 
 +
 `CloudBalancingGenerator` generates a random problem: you will replace this with a class that loads a real problem, for example from a database.
 +
@@ -289,14 +290,16 @@ Building the `Solver` is the most complicated part of this procedure. For more d
 ----
         CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
 ----
-* Solve the problem.
+
+. Solve the problem.
 +
 
 [source,java,options="nowrap"]
 ----
         CloudBalance solvedCloudBalance = solver.solve(unsolvedCloudBalance);
 ----
-* Display the result.
+
+. Display the result.
 +
 
 [source,java,options="nowrap"]
@@ -336,16 +339,19 @@ Take a look at the solver configuration:
 
 This solver configuration consists of three parts:
 
-* **Domain model configuration**: What can Planner change? 
+. **Domain model configuration**
+
+What can Planner change?::
 +
-We need to make Planner aware of our domain classes. In this configuration, it will automatically scan all classes in your classpath (for an `@PlanningEntity` or `@PlanningSolution` annotation):
+We need to make Planner aware of our domain classes. In this configuration, it will automatically scan all classes in your classpath (for a `@PlanningEntity` or `@PlanningSolution` annotation):
 +
 
 [source,xml,options="nowrap"]
 ----
   <scanAnnotatedClasses/>
 ----
-* **Score configuration**: How should Planner optimize the planning variables? What is our goal? 
+. **Score configuration** 
+How should Planner optimize the planning variables? What is our goal?::
 +
 Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need to tell Planner how to calculate the score, depending on our business requirements. Further down, we will look into two alternatives to calculate the score: using an easy Java implementation, or using Drools DRL.
 +
@@ -357,7 +363,8 @@ Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need
     <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
   </scoreDirectorFactory>
 ----
-* **Optimization algorithms configuration**: How should Planner optimize it? 
+. **Optimization algorithms configuration** 
+How should Planner optimize it?::
 +
 In this case, we use the default <<optimizationAlgorithms,optimization algorithms>> (because no explicit optimization algorithms are configured) for 30 seconds:
 +
@@ -369,9 +376,7 @@ In this case, we use the default <<optimizationAlgorithms,optimization algorithm
   </termination>
 ----
 +
-Planner should get a good result in seconds (and even in less than 15 milliseconds with <<realTimePlanning,real-time planning>>),
-but the more time it has, the better the result will be.
-Advanced use cases might use a different <<termination,termination criteria>> than a hard time limit.
+Planner should get a good result in seconds (and even in less than 15 milliseconds with <<realTimePlanning,real-time planning>>), but the more time it has, the better the result will be. Advanced use cases might use a different <<termination,termination criteria>> than a hard time limit.
 + 
 The default algorithms will already easily surpass human planners and most in-house implementations.
 Use the <<benchmarker,Benchmarker>> to <<powerTweaking,power tweak>> to get even better results.
@@ -388,11 +393,9 @@ image::Chapter-Quick_start/cloudBalanceScoreCalculation.png[align="center"]
 Of course, Planner needs to be told about these domain-specific score constraints.
 There are several ways to implement such a score function:
 
-* Easy Java
+* <<cloudBalancingEasyJavaScoreConfiguration, Easy Java>>
 * Incremental Java
-* Drools
-
-Let's take a look at two different implementations:
+* <<cloudBalancingDroolsScoreConfiguration, Drools>>
 
 
 [[cloudBalancingEasyJavaScoreConfiguration]]
@@ -464,14 +467,18 @@ public class CloudBalancingEasyScoreCalculator implements EasyScoreCalculator<Cl
 ----
 ====
 
-Even if we optimize the code above to use ``Map``s to iterate through the `processList` only once, *it is still slow* because it does not do <<incrementalScoreCalculation,incremental score calculation>>.
+Even if we optimize the code above to use ``Map``s to iterate through the `processList` only once, it is still slow because it does not do <<incrementalScoreCalculation,incremental score calculation>>.
 To fix that, either use incremental Java score calculation or Drools score calculation.
-Let's take a look at the latter.
 
 
 [[cloudBalancingDroolsScoreConfiguration]]
 ==== Drools Score Configuration
 
+Drools score calculation uses incremental calculation, where every score constraint is written as one or more score rules. 
+
+If you use the Drools rule engine for score calculation, you can integrate with other Drools technologies, such as decision tables (XLS or web based), the KIE Workbench, ...
+
+Prerequisite::
 To use the Drools rule engine as a score function, simply add a `scoreDrl` resource in the classpath:
 
 [source,xml,options="nowrap"]
@@ -481,8 +488,8 @@ To use the Drools rule engine as a score function, simply add a `scoreDrl` resou
   </scoreDirectorFactory>
 ----
 
-First, we want to make sure that all computers have enough CPU, RAM and network bandwidth to support all their processes, so we make these hard constraints:
-
+. We want to make sure that all computers have enough CPU, RAM and network bandwidth to support all their processes, so we make these hard constraints:
++
 .cloudBalancingScoreRules.drl - Hard Constraints
 ====
 [source,options="nowrap"]
@@ -523,8 +530,8 @@ end
 ----
 ====
 
-Next, if those constraints are met, we want to minimize the maintenance cost, so we add that as a soft constraint:
-
+. If those constraints are met, we want to minimize the maintenance cost, so we add that as a soft constraint:
++
 .cloudBalancingScoreRules.drl - Soft Constraints
 ====
 [source,options="nowrap"]
@@ -542,8 +549,6 @@ rule "computerCost"
 end
 ----
 ====
-
-If you use the Drools rule engine for score calculation, you can integrate with other Drools technologies, such as decision tables (XLS or web based), the KIE Workbench, ...
 
 
 [[cloudBalancingBeyondThisTutorial]]
