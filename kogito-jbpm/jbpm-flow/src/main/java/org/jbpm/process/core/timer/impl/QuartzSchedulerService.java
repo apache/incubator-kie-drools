@@ -226,7 +226,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
         int current = timerServiceCounter.decrementAndGet();
         if (scheduler != null && current == 0) {
             try {
-                scheduler.shutdown();        
+                scheduler.shutdown(true);        
             } catch (SchedulerException e) {
                 logger.warn("Error encountered while shutting down the scheduler", e);
             }
