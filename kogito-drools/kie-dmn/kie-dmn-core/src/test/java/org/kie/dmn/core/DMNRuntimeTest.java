@@ -781,13 +781,72 @@ public class DMNRuntimeTest {
     @Test
     public void testInvalidModel() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Loan_Prequalification_Condensed_Invalid.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_ba68fb9d-7421-4f3a-a7ab-f785ea0bae6b",
-                                              "Loan Prequalification Condensed" );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_ba68fb9d-7421-4f3a-a7ab-f785ea0bae6b",
+                "Loan Prequalification Condensed" );
         assertThat( dmnModel, notNullValue() );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
         assertThat( dmnModel.getMessages().size(), is( 2 ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getSourceId(), is("_8b5cac9e-c8ca-4817-b05a-c70fa79a8d48" )  );
-        assertThat( dmnModel.getMessages().get( 1 ).getSourceId(), is("_ef09d90e-e1a4-4ec9-885b-482d1f4a1cee" )  );
+        assertThat( dmnModel.getMessages().get( 0 ).getSourceId(), is( "_8b5cac9e-c8ca-4817-b05a-c70fa79a8d48" ) );
+        assertThat( dmnModel.getMessages().get( 1 ).getSourceId(), is( "_ef09d90e-e1a4-4ec9-885b-482d1f4a1cee" ) );
+    }
+
+    @Test
+    public void testNullOnNumber() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Number_and_null_entry.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_a293b9f9-c912-41ee-8147-eae59ba86ac5", "Number and null entry" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = runtime.newContext();
+
+        context.set( "num", null );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Decision Logic 1" ), is( "Null" ) );
+
+        context = runtime.newContext();
+        context.set( "num", 4 );
+
+        dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        result = dmnResult.getContext();
+        assertThat( result.get( "Decision Logic 1" ), is( "Positive number" ) );
+    }
+
+    @Test
+    public void testLoan_Recommendation2() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Loan_Recommendation2.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_35c7339b-b868-43da-8f06-eb481708c73c", "Loan Recommendation2" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        Map<String,Object> loan = new HashMap<>(  );
+        loan.put( "Amount", 100000);
+        loan.put( "Rate", 2.39);
+        loan.put( "Term", 60);
+
+        Map<String,Object> borrower = new HashMap<>(  );
+        borrower.put( "Age", 39);
+        borrower.put( "EmploymentStatus", "Employed");
+        borrower.put( "YearsAtCurrentEmployer", 10);
+        borrower.put( "TotalAnnualIncome", 150000);
+        borrower.put( "NonSalaryIncome", 0);
+        borrower.put( "MonthlyDebtPmtAmt", 2000);
+        borrower.put( "LiquidAssetsAmt", 50000);
+
+        DMNContext context = runtime.newContext();
+        context.set( "Credit Score", null );
+        context.set( "Appraised Value", 200000 );
+        context.set( "Loan", loan );
+        context.set( "Borrower", borrower );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Loan Recommendation" ), is( "Declined" ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {

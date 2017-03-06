@@ -197,7 +197,10 @@ public class DMNEvaluatorCompiler {
                                                                        model,
                                                                        dr,
                                                                        createErrorMsg( node, node.getIdentifierString(), dr, index+1, ut.getText() ) );
-                rule.getInputEntry().add( (c, x) -> tests.stream().anyMatch( t -> t.apply( c, x ) ) );
+                rule.getInputEntry().add( (c, x) -> tests.stream().anyMatch( t -> {
+                    Boolean result = t.apply( c, x );
+                    return result != null && result == true;
+                } ) );
             }
             for ( LiteralExpression le : dr.getOutputEntry() ) {
                 // we might want to compile and save the compiled expression here
