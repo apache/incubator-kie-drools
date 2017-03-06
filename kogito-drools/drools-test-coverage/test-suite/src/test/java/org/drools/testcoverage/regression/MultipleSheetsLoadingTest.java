@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.drools.testcoverage.regression;
 import org.assertj.core.api.Assertions;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -75,8 +76,7 @@ public class MultipleSheetsLoadingTest {
     private KieBuilder buildResources() {
         final Resource resourceXlsFirst = this.createResourceWithConfig(WORKSHEET_1_NAME);
         final Resource resourceXlsSecond = this.createResourceWithConfig(WORKSHEET_2_NAME);
-
-        return KieBaseUtil.getKieBuilderFromResources(false, resourceXlsFirst, resourceXlsSecond);
+        return KieUtil.getKieBuilderFromResources(false, resourceXlsFirst, resourceXlsSecond);
     }
 
     private Resource createResourceWithConfig(final String worksheetName) {

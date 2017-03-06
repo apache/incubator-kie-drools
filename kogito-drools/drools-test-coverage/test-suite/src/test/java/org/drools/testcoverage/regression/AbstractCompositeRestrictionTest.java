@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -34,12 +35,8 @@ public class AbstractCompositeRestrictionTest {
     @Test
     public void test() {
 
-        final KieBuilder builder =
-                KieBaseUtil.getKieBuilderFromResources(
-                        false,
-                        KieServices.Factory.get().getResources().newClassPathResource(
-                                "abstractCompositeRestrictionTest.drl",
-                                getClass()));
+        final KieBuilder builder = KieUtil.getKieBuilderFromResources(false,
+                KieServices.Factory.get().getResources().newClassPathResource("abstractCompositeRestrictionTest.drl", getClass()));
 
         final List<Message> msgs = builder.getResults().getMessages();
         Assertions.assertThat(msgs.size()).isEqualTo(1);

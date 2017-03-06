@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.drools.testcoverage.regression;
 
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.After;
 import org.junit.Before;
@@ -52,7 +53,7 @@ public class GenericsWithModifyTest {
     public void initialize() throws IOException {
         final Resource resource = KieServices.Factory.get().getResources().newByteArrayResource(DRL.getBytes(Charset.forName("UTF-8")));
         resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBuilder kbuilder = KieBaseUtil.getKieBuilderFromResources(true, resource);
+        final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(true, resource);
 
         final KieContainer kieContainer = KieServices.Factory.get().newKieContainer(kbuilder.getKieModule().getReleaseId());
         this.kieSession = kieContainer.newKieSession();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
@@ -52,13 +53,13 @@ public class DslParserTest extends ParserTest {
     public void testParserDsl() {
         final Resource dslResource = KieServices.Factory.get().getResources().newFileSystemResource(dsl);
         final Resource dslrResource = KieServices.Factory.get().getResources().newFileSystemResource(file);
-        KieBaseUtil.getKieBuilderFromResources(true, dslResource, dslrResource);
+        KieUtil.getKieBuilderFromResources(true, dslResource, dslrResource);
     }
 
     @Test
     public void testParserDsl2() {
         final Resource dslResource = KieServices.Factory.get().getResources().newFileSystemResource(dsl);
         final Resource dslrResource = KieServices.Factory.get().getResources().newFileSystemResource(file);
-        KieBaseUtil.getKieBuilderFromResources(true, dslrResource, dslResource);
+        KieUtil.getKieBuilderFromResources(true, dslrResource, dslResource);
     }
 }

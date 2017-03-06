@@ -1,8 +1,25 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.testcoverage.functional;
 
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieBuilder;
@@ -18,14 +35,14 @@ public class QueryBadResultTest {
     @Test
     public void testQueriesWithSameNameInOneFile() {
         final KieBuilder kieBuilder =
-                KieBaseUtil.getKieBuilderFromClasspathResources(getClass(), false, "query-two-same-names.drl");
+                KieUtil.getKieBuilderFromClasspathResources(getClass(), false, "query-two-same-names.drl");
         Assertions.assertThat(kieBuilder.getResults().getMessages(Level.ERROR).isEmpty()).isFalse();
     }
 
     @Test
     public void testQueriesWithSameNameInTwoFiles() {
         final KieBuilder kieBuilder =
-                KieBaseUtil.getKieBuilderFromClasspathResources(
+                KieUtil.getKieBuilderFromClasspathResources(
                         getClass(),
                         false,
                         "query-same-name-1.drl",
@@ -37,7 +54,7 @@ public class QueryBadResultTest {
     @Test
     public void testQueryWithoutName() {
         final KieBuilder kieBuilder =
-                KieBaseUtil.getKieBuilderFromClasspathResources(getClass(), false, "query-without-name.drl");
+                KieUtil.getKieBuilderFromClasspathResources(getClass(), false, "query-without-name.drl");
         Assertions.assertThat(kieBuilder.getResults().getMessages(Level.ERROR).isEmpty()).isFalse();
     }
 
@@ -53,7 +70,7 @@ public class QueryBadResultTest {
     @Test
     public void testBadAccessToParameterWithoutType() {
         final KieBuilder kieBuilder =
-                KieBaseUtil.getKieBuilderFromClasspathResources(getClass(), false, "query-bad-parametr-access.drl");
+                KieUtil.getKieBuilderFromClasspathResources(getClass(), false, "query-bad-parametr-access.drl");
         Assertions.assertThat(kieBuilder.getResults().getMessages(Level.ERROR).isEmpty()).isFalse();
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.model.Sample;
 import org.drools.testcoverage.common.model.Subject;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.ResourceUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
@@ -473,14 +474,14 @@ public class DecisionTableTest {
     public void testEmptyConditionInXLS() {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("emptyCondition.xls", getClass(), DecisionTableInputType.XLS);
-        KieBaseUtil.getKieBuilderFromResources(true, decisionTable);
+        KieUtil.getKieBuilderFromResources(true, decisionTable);
     }
 
     @Test(expected = DecisionTableParseException.class)
     public void testEmptyActionInCSV() {
         final Resource decisionTable =
                 ResourceUtil.getDecisionTableResourceFromClasspath("emptyAction.csv", getClass(), DecisionTableInputType.CSV);
-        KieBaseUtil.getKieBuilderFromResources(true, decisionTable);
+        KieUtil.getKieBuilderFromResources(true, decisionTable);
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class OOPathSmokeTest {
     @Test
     public void testBuildTwoKieBases() throws Exception {
         final Resource drlResource = KIE_SERVICES.getResources().newUrlResource(this.getClass().getResource("oopath.drl"));
-        KieBaseUtil.buildAndInstallKieModuleIntoRepo(RELEASE_ID, KieBaseTestConfiguration.CLOUD_IDENTITY, drlResource);
+        KieBaseUtil.getKieModuleAndBuildInstallModule(RELEASE_ID, KieBaseTestConfiguration.CLOUD_IDENTITY, drlResource);
 
         // creating two KieContainers and KieBases may trigger deep cloning
         for (int i = 0; i < 2; i++) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -55,7 +56,7 @@ public class DeclarationWithOrTest {
 
         final Resource resource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
         resource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieBuilder kbuilder = KieBaseUtil.getKieBuilderFromResources(true, resource);
+        final KieBuilder kbuilder = KieUtil.getKieBuilderFromResources(true, resource);
 
         final KieContainer kcontainer = KieServices.Factory.get().newKieContainer(kbuilder.getKieModule().getReleaseId());
         final KieSession ksession = kcontainer.newKieSession();

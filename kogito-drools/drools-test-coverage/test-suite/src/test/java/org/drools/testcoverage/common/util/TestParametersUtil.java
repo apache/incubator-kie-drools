@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,33 @@ public final class TestParametersUtil {
         final Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY});
+        return parameters;
+    }
+
+    public static Collection<Object[]> getKieSessionConfigurations() {
+        final Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        parameters.add(new Object[]{KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieSessionTestConfiguration.STATELESS_REALTIME});
+        return parameters;
+    }
+
+    public static Collection<Object[]> getKieBaseAndKieSessionConfigurations() {
+        final Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, KieSessionTestConfiguration.STATELESS_REALTIME});
+
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY, KieSessionTestConfiguration.STATELESS_REALTIME});
+
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+
         return parameters;
     }
 

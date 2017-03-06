@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.drools.testcoverage.functional;
 
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
@@ -34,7 +35,7 @@ public class DuplicityTest {
         try {
             final Resource resource =
                     KieServices.Factory.get().getResources().newClassPathResource("rule-name.drl", getClass());
-            KieBaseUtil.getKieBuilderFromResources(true, resource);
+            KieUtil.getKieBuilderFromResources(true, resource);
             Assertions.fail("Builder should have had errors, two rules of the same name are not allowed in one file together!");
         } catch (AssertionError e) {
             // expected
