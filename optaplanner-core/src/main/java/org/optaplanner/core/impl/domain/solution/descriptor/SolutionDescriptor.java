@@ -65,6 +65,7 @@ import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.LookUpStrategyResolver;
@@ -775,14 +776,17 @@ public class SolutionDescriptor<Solution_> {
     public Collection<Object> getAllFacts(Solution_ solution) {
         Collection<Object> facts = new ArrayList<>();
         // Adds both entities and facts
-        Arrays.asList(entityMemberAccessorMap, problemFactMemberAccessorMap).forEach(map -> map.forEach((key, memberAccessor) -> {
+        Arrays.asList(entityMemberAccessorMap, problemFactMemberAccessorMap)
+                .forEach(map -> map.forEach((key, memberAccessor) -> {
             Object object = extractMemberObject(memberAccessor, solution);
             if (object != null) {
                 facts.add(object);
             }
         }));
-        Arrays.asList(entityCollectionMemberAccessorMap, problemFactCollectionMemberAccessorMap).forEach(map ->
-                map.forEach((key, memberAccessor) -> facts.addAll(extractMemberCollection(memberAccessor, solution))));
+        entityCollectionMemberAccessorMap.forEach(
+                (key, memberAccessor) -> facts.addAll(extractMemberCollection(memberAccessor, solution, false)));
+        problemFactCollectionMemberAccessorMap.forEach(
+                (key, memberAccessor) -> facts.addAll(extractMemberCollection(memberAccessor, solution, true)));
         return facts;
     }
 
@@ -799,7 +803,7 @@ public class SolutionDescriptor<Solution_> {
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution);
+            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution, false);
             entityCount += entityCollection.size();
         }
         return entityCount;
@@ -814,7 +818,7 @@ public class SolutionDescriptor<Solution_> {
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution);
+            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution, false);
             entityList.addAll(entityCollection);
         }
         return entityList;
@@ -832,7 +836,7 @@ public class SolutionDescriptor<Solution_> {
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
             // TODO if (entityCollectionPropertyAccessor.getPropertyType().getElementType().isAssignableFrom(entityClass)) {
-            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution);
+            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution, false);
             for (Object entity : entityCollection) {
                 if (entityClass.isInstance(entity)) {
                     entityList.add(entity);
@@ -924,7 +928,7 @@ public class SolutionDescriptor<Solution_> {
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution);
+            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution, false);
             iteratorList.add(entityCollection.iterator());
         }
         return Iterators.concat(iteratorList.iterator());
@@ -940,13 +944,12 @@ public class SolutionDescriptor<Solution_> {
         if (collection == null) {
             throw new IllegalArgumentException("The solutionClass (" + solutionClass
                     + ")'s " + (isFact ? "factCollectionProperty" : "entityCollectionProperty") + " ("
-                    + collectionMemberAccessor + ") should never return null.");
+                    + collectionMemberAccessor + ") should never return null.\n"
+                    + (collectionMemberAccessor instanceof FieldMemberAccessor ? ""
+                    : "Maybe the getter/method always returns null instead of the actual data.\n")
+                    + "Maybe the value is null instead of an empty collection.");
         }
         return collection;
-    }
-
-    private Collection<Object> extractMemberCollection(MemberAccessor collectionMemberAccessor, Solution_ solution) {
-        return extractMemberCollection(collectionMemberAccessor, solution, false);
     }
 
     /**
