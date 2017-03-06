@@ -32,7 +32,7 @@ public class FEELFnResult<T> extends Either<FEELEvent, T> {
     }
     
     public static <T> FEELFnResult<T> ofResult(T value) {
-        return new FEELFnResult<>(Optional.empty(), Optional.of(value));
+        return new FEELFnResult<>(Optional.empty(), Optional.ofNullable(value));
     }
     
 }
