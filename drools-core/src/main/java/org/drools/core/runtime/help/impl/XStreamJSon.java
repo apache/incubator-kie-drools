@@ -16,6 +16,17 @@
 
 package org.drools.core.runtime.help.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -28,8 +39,10 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.mapper.Mapper;
 import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.runtime.AdvanceSessionTimeCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
+import org.drools.core.command.runtime.GetSessionTimeCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
 import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
@@ -45,26 +58,16 @@ import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.util.StringUtils;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
+import org.drools.core.util.StringUtils;
 import org.kie.api.command.Command;
-import org.kie.internal.command.CommandFactory;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
+import org.kie.internal.command.CommandFactory;
 
 
 public class XStreamJSon {
@@ -109,6 +112,8 @@ public class XStreamJSon {
         xstream.registerConverter( new JSonSignalEventConverter( xstream ) );
         xstream.registerConverter( new JSonCompleteWorkItemConverter( xstream ) );
         xstream.registerConverter( new JSonAbortWorkItemConverter( xstream ) );
+        xstream.registerConverter( new JSonGetSessionTimeConverter( xstream ) );
+        xstream.registerConverter( new JSonAdvanceSessionTimeConverter( xstream ) );
 
         return xstream;
     }
@@ -1440,5 +1445,97 @@ public class XStreamJSon {
         public boolean canConvert(Class clazz) {
             return clazz.equals( AbortWorkItemCommand.class );
         }
+    }
+
+    public static class JSonGetSessionTimeConverter extends BaseConverter
+            implements
+            Converter {
+
+        public JSonGetSessionTimeConverter(XStream xstream) {
+            super( xstream );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            GetSessionTimeCommand cmd = (GetSessionTimeCommand) object;
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
+                writer.endNode();
+            }
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            GetSessionTimeCommand cmd = new GetSessionTimeCommand();
+            while ( reader.hasMoreChildren() ) {
+                reader.moveDown();
+                String nodeName = reader.getNodeName();
+                if ( "out-identifier".equals( nodeName ) ) {
+                    cmd.setOutIdentifier( reader.getValue() );
+                }
+                reader.moveUp();
+
+            }
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( GetSessionTimeCommand.class );
+        }
+
+    }
+
+    public static class JSonAdvanceSessionTimeConverter extends BaseConverter
+            implements
+            Converter {
+
+        public JSonAdvanceSessionTimeConverter(XStream xstream) {
+            super( xstream );
+        }
+
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
+            AdvanceSessionTimeCommand cmd = (AdvanceSessionTimeCommand) object;
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
+                writer.endNode();
+            }
+
+            writer.startNode( "amount" );
+            writer.setValue( "" + cmd.getAmount() );
+            writer.endNode();
+
+            writer.startNode( "unit" );
+            writer.setValue( "" + cmd.getUnit() );
+            writer.endNode();
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            AdvanceSessionTimeCommand cmd = new AdvanceSessionTimeCommand();
+            while ( reader.hasMoreChildren() ) {
+                reader.moveDown();
+                String nodeName = reader.getNodeName();
+                if ( "out-identifier".equals( nodeName ) ) {
+                    cmd.setOutIdentifier( reader.getValue() );
+                } else if ( "amount".equals( nodeName ) ) {
+                    cmd.setAmount( Long.parseLong( reader.getAttribute( "amount" ) ) );
+                } else if ( "unit".equals( nodeName ) ) {
+                    cmd.setUnit( TimeUnit.valueOf( reader.getAttribute( "unit" ).toUpperCase() ) );
+                }
+                reader.moveUp();
+
+            }
+            return cmd;
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( AdvanceSessionTimeCommand.class );
+        }
+
     }
 }
