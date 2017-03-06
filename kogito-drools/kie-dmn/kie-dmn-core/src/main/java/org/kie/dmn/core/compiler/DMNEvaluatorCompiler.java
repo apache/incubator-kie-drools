@@ -72,6 +72,7 @@ public class DMNEvaluatorCompiler {
         Relation relationDef = expression;
         DMNRelationEvaluator relationEval = new DMNRelationEvaluator( node.getName(), node.getSource(), relationDef );
         for ( InformationItem col : relationDef.getColumn() ) {
+            DMNCompilerHelper.checkVariableName( model, col, col.getName() );
             relationEval.addColumn( col.getName() );
         }
         for ( org.kie.dmn.model.v1_1.List row : relationDef.getRow() ) {
@@ -142,6 +143,7 @@ public class DMNEvaluatorCompiler {
         try {
             DMNExpressionEvaluatorInvokerFunction func = new DMNExpressionEvaluatorInvokerFunction( node.getName(), funcDef );
             for ( InformationItem p : funcDef.getFormalParameter() ) {
+                DMNCompilerHelper.checkVariableName( model, p, p.getName() );
                 DMNType dmnType = compiler.resolveTypeRef( model, node, p, p, p.getTypeRef() );
                 func.addParameter( p.getName(), dmnType );
                 ctx.setVariable( p.getName(), dmnType );

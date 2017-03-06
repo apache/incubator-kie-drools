@@ -264,8 +264,10 @@ public class DMNCompilerImpl
             }
         } else {
             // this is a composite type
+            DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
             CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
             for ( ItemDefinition fieldDef : itemDef.getItemComponent() ) {
+                DMNCompilerHelper.checkVariableName( dmnModel, fieldDef, fieldDef.getName() );
                 DMNType fieldType = buildTypeDef( ctx, feel, dmnModel, node, fieldDef, false );
                 compType.addField( fieldDef.getName(), fieldType );
             }
