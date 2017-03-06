@@ -226,9 +226,17 @@ public class DMNEvaluatorCompiler {
         DMNLiteralExpressionEvaluator evaluator = null;
         if ( expression.getExpressionLanguage() == null || expression.getExpressionLanguage().equals( DMNModelInstrumentedBase.URI_FEEL ) ) {
             String exprText = expression.getText();
-            CompiledExpression compiledExpression = feel.compileFeelExpression( ctx, exprText, model, expression,
-                                                                                createErrorMsg( node, exprName, expression, 0, exprText ) );
-            evaluator = new DMNLiteralExpressionEvaluator( compiledExpression );
+            if( exprText != null ) {
+                try {
+                    CompiledExpression compiledExpression = feel.compileFeelExpression( ctx, exprText, model, expression,
+                                                                                        createErrorMsg( node, exprName, expression, 0, exprText ) );
+                    evaluator = new DMNLiteralExpressionEvaluator( compiledExpression );
+                } catch ( Throwable e ) {
+                    model.addMessage( DMNMessage.Severity.ERROR, "Error compiling expression '" + exprName + "' on node '"+node.getIdentifierString()+"'", expression, e );
+                }
+            } else {
+                model.addMessage( DMNMessage.Severity.ERROR, "No expression defined for '" + exprName + "' on node '"+node.getIdentifierString()+"'", expression );
+            }
         }
         return evaluator;
     }
