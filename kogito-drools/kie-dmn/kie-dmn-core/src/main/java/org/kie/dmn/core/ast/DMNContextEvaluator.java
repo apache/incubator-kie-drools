@@ -25,7 +25,9 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNContextImpl;
+import org.kie.dmn.core.impl.DMNMessageTypeImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.model.v1_1.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,8 +82,8 @@ public class DMNContextEvaluator
                         results.put( ed.getName(), value );
                         dmnContext.set( ed.getName(), value );
                     } else {
-                        String message = "Error evaluating context extry '" + ed.getName() + "' on context '" + name + "'";
-                        logger.error( message );
+                        DMNMessageTypeImpl message = Msg.createMessage(Msg.ERR_EVAL_CTX_ENTRY_ON_CTX, ed.getName(), name); 
+                        logger.error( message.getMessage() );
                         result.addMessage(
                                 DMNMessage.Severity.ERROR,
                                 message,

@@ -54,10 +54,10 @@ public class Msg {
     public static String createMessage( Message2 message, Object p1, Object p2) {
         return Msg.buildMessage(message, p1, p2);
     }
-    public static String createMessage( Message2 message, Object p1, Object p2, Object p3) {
+    public static String createMessage( Message3 message, Object p1, Object p2, Object p3) {
         return Msg.buildMessage(message, p1, p2, p3);
     }
-    public static String createMessage( Message2 message, Object p1, Object p2, Object p3, Object p4) {
+    public static String createMessage( Message4 message, Object p1, Object p2, Object p3, Object p4) {
         return Msg.buildMessage(message, p1, p2, p3, p4);
     }
     

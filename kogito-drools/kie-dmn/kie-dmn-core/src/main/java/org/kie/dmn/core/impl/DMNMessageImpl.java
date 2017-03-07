@@ -23,7 +23,7 @@ import org.kie.dmn.model.v1_1.DMNElement;
 public class DMNMessageImpl
         implements DMNMessage {
     private Severity                 severity;
-    private String                   message;
+    private DMNMessageTypeImpl       message;
     private DMNElement source;
     private Throwable                exception;
     private FEELEvent                feelEvent;
@@ -31,18 +31,18 @@ public class DMNMessageImpl
     public DMNMessageImpl() {
     }
 
-    public DMNMessageImpl(Severity severity, String message, DMNElement source) {
+    public DMNMessageImpl(Severity severity, DMNMessageTypeImpl message, DMNElement source) {
         this( severity, message, source, (Throwable) null );
     }
 
-    public DMNMessageImpl(Severity severity, String message, DMNElement source, Throwable exception) {
+    public DMNMessageImpl(Severity severity, DMNMessageTypeImpl message, DMNElement source, Throwable exception) {
         this.severity = severity;
         this.message = message;
         this.source = source;
         this.exception = exception;
     }
 
-    public DMNMessageImpl(Severity severity, String message, DMNElement source, FEELEvent feelEvent) {
+    public DMNMessageImpl(Severity severity, DMNMessageTypeImpl message, DMNElement source, FEELEvent feelEvent) {
         this.severity = severity;
         this.message = message;
         this.source = source;
@@ -56,7 +56,11 @@ public class DMNMessageImpl
 
     @Override
     public String getMessage() {
-        return message;
+        return message.getMessage();
+    }
+    
+    public Object getMessageId() {
+        return this.message.getMessageTypeId();
     }
 
     @Override
