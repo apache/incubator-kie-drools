@@ -16,9 +16,7 @@
 package org.drools.games.adventures.model;
 
 import org.kie.api.definition.type.Position;
-import org.kie.api.definition.type.PropertyReactive;
 
-@PropertyReactive
 public class SearchCommand extends Command {
     @Position(1)
     private Thing     thing;

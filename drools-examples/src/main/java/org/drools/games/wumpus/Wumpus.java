@@ -15,10 +15,7 @@
 
 package org.drools.games.wumpus;
 
-import org.kie.api.definition.type.PropertyReactive;
-
-@PropertyReactive
-public class Wumpus extends Thing { 
+public class Wumpus extends Thing {
     private boolean alive;
 
     public Wumpus(int row,

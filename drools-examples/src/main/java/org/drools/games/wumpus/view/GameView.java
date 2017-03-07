@@ -17,12 +17,9 @@ package org.drools.games.wumpus.view;
 
 import org.drools.games.wumpus.Cell;
 import org.drools.games.wumpus.WumpusWorldMain;
-import org.kie.internal.KnowledgeBase;
-import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-@PropertyReactive
 public class GameView {
     private WumpusWorldMain          wumpusWorld;
 

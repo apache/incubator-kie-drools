@@ -15,9 +15,6 @@
 
 package org.drools.examples.fire;
 
-import org.kie.api.definition.type.PropertyReactive;
-
-@PropertyReactive
 public class Room {
     private String name;
 

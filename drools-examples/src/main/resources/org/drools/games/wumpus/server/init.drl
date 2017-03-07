@@ -96,7 +96,7 @@ rule "Invalid Wumpus" agenda-group "Init" when
     Init()
     $w : Wumpus( row == 0, col == 0 )    
 then
-    retract( $w ); // retraction triggers the "not" CE
+    delete( $w ); // retraction triggers the "not" CE
 end    
 
 rule "Create Gold" agenda-group "Init" when
@@ -114,7 +114,7 @@ rule "Invalid Gold" agenda-group "Init" when
     $g : Gold( row == 0, col == 0 )  
     not Hero( gold == true ) // gold can be in row first square, if hero is carrying it
 then
-    retract( $g ); // retraction triggers the "not" CE
+    delete( $g ); // retraction triggers the "not" CE
 end   
 
 rule "Create Hero" agenda-group "Init"  when
@@ -128,7 +128,7 @@ end
 rule "Trigger Play" agenda-group "Init" when
     $i : Init()
 then
-    retract( $i );
+    delete( $i );
     insert( new Play() );
     insert( new SensorArray() );    
 end

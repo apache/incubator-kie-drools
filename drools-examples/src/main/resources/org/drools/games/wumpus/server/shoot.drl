@@ -30,7 +30,7 @@ rule "Wumpus Killed" agenda-group "Shoot" when
     $w  : Wumpus(row == $a.row, col == $a.col, alive == true )
     $c  : Cell(row == $a.row, col == $a.col )
 then
-    retract( $a );
+    delete( $a );
     insert( new HearScream() );
     modify( $w ) { alive = false };
 end
@@ -39,7 +39,7 @@ rule "Cave Boundary, Remove Arrow" agenda-group "Shoot"  when
      $a : Arrow()
      not Cell(row == $a.row, col == $a.col )
 then
-    retract ( $a );
+    delete ( $a );
 end
 
 rule "Move Arrow Up" agenda-group "Shoot"  when

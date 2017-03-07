@@ -15,9 +15,6 @@
 
 package org.drools.examples.fire;
 
-import org.kie.api.definition.type.PropertyReactive;
-
-@PropertyReactive
 public class Sprinkler {
     private Room room;
     private boolean on;

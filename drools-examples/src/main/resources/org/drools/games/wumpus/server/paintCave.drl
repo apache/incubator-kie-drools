@@ -71,7 +71,7 @@ rule "Reset CompositeImage"  agenda-group "PaintCave" when
     $cin : CompositeImageName()
     not Cell( row == $cin.cell.row, col == $cin.cell.col)
 then
-    retract( $cin );
+    delete( $cin );
 end    
 
 rule "Base Paint"  agenda-group "PaintCave" when

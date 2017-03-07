@@ -16,10 +16,7 @@
 package org.drools.games.adventures.model;
 
 import org.kie.api.definition.type.Position;
-import org.drools.games.adventures.model.Character;
-import org.kie.api.definition.type.PropertyReactive;
 
-@PropertyReactive
 public class GiveCommand extends Command {
     @Position(1)
     private Character giver;

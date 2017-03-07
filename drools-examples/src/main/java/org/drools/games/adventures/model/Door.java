@@ -16,9 +16,7 @@
 package org.drools.games.adventures.model;
 
 import org.kie.api.definition.type.Position;
-import org.kie.api.definition.type.PropertyReactive;
 
-@PropertyReactive
 public class Door extends Thing {
     @Position(2)
     private Room fromRoom;

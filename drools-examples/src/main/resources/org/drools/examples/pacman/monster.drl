@@ -41,7 +41,7 @@ rule GoLeft dialect "mvel" salience (Math.abs( $df.colDiff ))  when
     not Direction(character == $df.fromChar, horizontal == Direction.LEFT )
 then
     System.out.println( "monster left" );
-    retract( $df );    
+    delete( $df );
     insert( new Direction($df.fromChar, Direction.LEFT, Direction.NONE ) ); 
 end
 
@@ -55,7 +55,7 @@ rule GoRight dialect "mvel"  salience (Math.abs( $df.colDiff ))  when
     not Direction(character == $df.fromChar, horizontal == Direction.RIGHT )      
 then
     System.out.println( "monster right" );
-    retract( $df ); 
+    delete( $df );
     insert( new Direction($df.fromChar, Direction.RIGHT, Direction.NONE ) );       
 end
 
@@ -69,7 +69,7 @@ rule GoDown dialect "mvel"  salience (Math.abs( $df.rowDiff ))  when
     not Direction(character == $df.fromChar, vertical == Direction.DOWN )
 then
     System.out.println( "monster down" + ":" + $df + " : " + $target + " : " + $contents);
-    retract( $df ); 
+    delete( $df );
     insert( new Direction($df.fromChar, Direction.NONE,  Direction.DOWN ) );
 end
 
@@ -84,13 +84,13 @@ rule GoUp dialect "mvel"  salience (Math.abs( $df.rowDiff ))  when
     not Direction(character == $df.fromChar, vertical == Direction.UP )
 then
     System.out.println( "monster up" );
-    retract( $df ); 
+    delete( $df );
     insert( new Direction($df.fromChar, Direction.NONE, Direction.UP ) );  
 end
 
 rule removeDirectionDiff salience -5 when
    $df : DirectionDiff()
 then
-    retract( $df );
+    delete( $df );
 end
 
