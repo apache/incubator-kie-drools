@@ -23,5 +23,5 @@ rule "Rule 01"
         not Cashflow( date < $date)
     then
         System.out.println("Cashflow: "+$date+" :: "+$amount);  
-        retract($cashflow);
+        delete($cashflow);
 end

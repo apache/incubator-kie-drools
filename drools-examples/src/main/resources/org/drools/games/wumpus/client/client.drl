@@ -28,8 +28,8 @@ rule "Rotate" timer(int: 500ms) when
     $i : Integer( this < 7 )
     $sa : SensorArray()
 then
-    retract( $sa );
-    retract( $i );   
+    delete( $sa );
+    delete( $i );
     insert( $i + 1 );
     channels["commands"].send( new MoveCommand( Move.TURN_LEFT ) );    
 end

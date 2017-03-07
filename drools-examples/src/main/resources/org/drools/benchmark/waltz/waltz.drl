@@ -36,7 +36,7 @@ rule "reverse edges"
         System.out.println("Draw "+$p1+" "+$p2);
         insert( new Edge ( $p1, $p2, false, Edge.NIL, false ) );
         insert( new Edge ( $p2, $p1, false, Edge.NIL, false ) );
-        retract( $line );
+        delete( $line );
 end
 
 //If the duplicating flag is set, and there are no more lines, then remove the

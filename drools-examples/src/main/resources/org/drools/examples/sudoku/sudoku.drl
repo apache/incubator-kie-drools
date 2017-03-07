@@ -91,7 +91,7 @@ when
 then
 //  System.out.println( "done setting cell " + $c.toString() ); 
     // Discard the Setter fact.
-    retract( $s );
+    delete( $s );
 //////    Sudoku.sudoku.consistencyCheck();
 end
 

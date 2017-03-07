@@ -43,7 +43,7 @@ rule "End Play" salience 100 agenda-group "Reset"  when
     Reset()
     $p : Play()
 then
-    retract( $p );
+    delete( $p );
 end
 
 rule "Reset View" when
@@ -57,21 +57,21 @@ rule "Reset Cells"  agenda-group "Reset" when
     Reset()
     $c : Cell()
 then
-    retract( $c );
+    delete( $c );
 end
 
 rule "Reset Pits"  agenda-group "Reset" when
     Reset()
     $p : Pit()
 then
-    retract( $p );
+    delete( $p );
 end
 
 rule "Reset Score"  agenda-group "Reset" when
     $r : Reset(resetScore == true)
     $s : Score()
 then
-    retract( $s );
+    delete( $s );
 end
 
 rule "Reset Wumpus, Gold and Hero"  agenda-group "Reset" when
@@ -85,11 +85,11 @@ rule "Reset Wumpus, Gold and Hero"  agenda-group "Reset" when
     $g : Gold()
     $h : Hero()
 then
-    retract( $w );
-    retract( $g );
-    retract( $h );
+    delete( $w );
+    delete( $g );
+    delete( $h );
     setFocus( "PaintCave" );
-    retract( $r );
+    delete( $r );
     insert( new Init() );
     setFocus( "Init" );
 end

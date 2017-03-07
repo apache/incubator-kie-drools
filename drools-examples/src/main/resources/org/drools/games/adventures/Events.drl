@@ -32,5 +32,5 @@ end
 rule removeGameEvent when
     $ge : GameEvent()
 then
-    retract ( $ge );
+    delete ( $ge );
 end

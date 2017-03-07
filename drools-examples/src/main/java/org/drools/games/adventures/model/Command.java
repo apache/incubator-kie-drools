@@ -17,9 +17,7 @@ package org.drools.games.adventures.model;
 
 import org.drools.games.adventures.UserSession;
 import org.kie.api.definition.type.Position;
-import org.kie.api.definition.type.PropertyReactive;
 
-@PropertyReactive
 public abstract class Command {
 
     @Position(0)
