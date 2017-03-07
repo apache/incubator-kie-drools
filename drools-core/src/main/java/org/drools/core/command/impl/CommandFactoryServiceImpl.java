@@ -20,10 +20,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.core.command.NewKnowledgeBuilderConfigurationCommand;
+import org.drools.core.command.runtime.AdvanceSessionTimeCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.GetGlobalCommand;
+import org.drools.core.command.runtime.GetSessionTimeCommand;
 import org.drools.core.command.runtime.KBuilderSetPropertyCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
 import org.drools.core.command.runtime.process.AbortWorkItemCommand;
@@ -47,7 +51,6 @@ import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.command.runtime.rule.GetObjectCommand;
 import org.drools.core.command.runtime.rule.GetObjectsCommand;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
-import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand.SetterImpl;
@@ -338,5 +341,23 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
         return new EnableAuditLogCommand( null, filename );
     }
 
+    @Override
+    public Command<Long> newGetSessionTime() {
+        return new GetSessionTimeCommand();
+    }
 
+    @Override
+    public Command<Long> newGetSessionTime(String outIdentifier) {
+        return new GetSessionTimeCommand(outIdentifier);
+    }
+
+    @Override
+    public Command<Long> newAdvanceSessionTime(long amount, TimeUnit unit) {
+        return new AdvanceSessionTimeCommand( amount, unit );
+    }
+
+    @Override
+    public Command<Long> newAdvanceSessionTime(long amount, TimeUnit unit, String outIdentifier) {
+        return new AdvanceSessionTimeCommand( outIdentifier, amount, unit );
+    }
 }

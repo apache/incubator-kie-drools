@@ -1,8 +1,5 @@
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +9,11 @@ import org.junit.After;
 import org.junit.Test;
 import org.kie.api.command.Command;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
+
+import static org.junit.Assert.assertTrue;
 
 public class EnableAuditLogCommandTest {
 
@@ -46,7 +41,8 @@ public class EnableAuditLogCommandTest {
         str += " System.out.println($c); \n";
         str += "end \n";
 
-        StatefulKnowledgeSession kSession = getSession( str );
+        KieSession kSession = new KieHelper().addContent( str, ResourceType.DRL )
+                                             .build().newKieSession();
 
         List<Command> commands = new ArrayList<Command>();
         commands.add( CommandFactory.newEnableAuditLog( auditFileDir, auditFileName ) );
@@ -59,21 +55,5 @@ public class EnableAuditLogCommandTest {
 
         assertTrue( file.exists() );
 
-    }
-
-    private StatefulKnowledgeSession getSession( String drl ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            System.err.println( kbuilder.getErrors() );
-        }
-        assertFalse( kbuilder.hasErrors() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        return kbase.newStatefulKnowledgeSession();
     }
 }
