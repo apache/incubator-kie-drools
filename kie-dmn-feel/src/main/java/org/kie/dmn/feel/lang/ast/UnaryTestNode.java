@@ -150,13 +150,17 @@ public class UnaryTestNode
             List<Object> tests = (List<Object>) val;
             for( Object test : tests ) {
                 if( test == null ) {
-                    return o != null;
+                    if( o == null ) {
+                        return false;
+                    }
                 } else if( test instanceof UnaryTest ) {
                     if( ((UnaryTest)test).apply( c, o ) ) {
                         return false;
                     }
                 } else if( o == null ) {
-                    return test != null;
+                    if( test == null ) {
+                        return false;
+                    }
                 } else if( test instanceof Range ) {
                     if( ((Range)test).includes( (Comparable) o ) ) {
                         return false;
@@ -171,6 +175,4 @@ public class UnaryTestNode
             return true;
         };
     }
-
-
 }
