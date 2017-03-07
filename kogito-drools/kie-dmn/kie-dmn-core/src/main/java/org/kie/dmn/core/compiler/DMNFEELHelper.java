@@ -69,10 +69,10 @@ public class DMNFEELHelper
             FEELEvent event = feelEvents.remove();
             if ( !isDuplicateEvent( model, event, msg ) ) {
                 if ( event instanceof SyntaxErrorEvent ) {
-                    DMNMessageTypeImpl errorMsg = Msg.createMessage(Msg.INVALID_SYNTAX, msg ); 
+                    DMNMessageTypeImpl errorMsg = Msg.createMessage(Msg.INVALID_SYNTAX, msg.getMessage() );
                     model.addMessage( DMNMessage.Severity.ERROR, errorMsg, element, event );
                 } else if ( event.getSeverity() == FEELEvent.Severity.ERROR ) {
-                    DMNMessageTypeImpl errorMsg = Msg.createMessage(Msg.INVALID_SYNTAX2, msg, event.getMessage() );
+                    DMNMessageTypeImpl errorMsg = Msg.createMessage(Msg.INVALID_SYNTAX2, msg.getMessage(), event.getMessage() );
                     model.addMessage( DMNMessage.Severity.ERROR, errorMsg, element );
                 }
             }
