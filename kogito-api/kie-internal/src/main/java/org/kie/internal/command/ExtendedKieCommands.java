@@ -5,15 +5,15 @@ import org.kie.api.command.KieCommands;
 
 public interface ExtendedKieCommands extends KieCommands {
 
-    public Command newEnableAuditLog( String directory, String filename );
+    Command newEnableAuditLog( String directory, String filename );
 
-    public Command newEnableAuditLog( String filename );
+    Command newEnableAuditLog( String filename );
 
-    public Command newClearActivationGroup(String name);
+    Command newClearActivationGroup(String name);
 
-    public Command newClearAgenda();
+    Command newClearAgenda();
 
-    public Command newClearAgendaGroup(String name);
+    Command newClearAgendaGroup(String name);
 
-    public Command newClearRuleFlowGroup(String name);
+    Command newClearRuleFlowGroup(String name);
 }

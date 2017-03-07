@@ -368,6 +368,26 @@
           "classSimpleName": "TimedRuleExectionOption",
           "elementKind": "class",
           "justification": "Class removed on major release 7.0.0 resolving DROOLS-1244 TimedRuleExectionOption typing mistake"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.command.Command<java.lang.Long> org.kie.api.command.KieCommands::newGetSessionTime()",
+          "justification": "Added command to get current session time"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.command.Command<java.lang.Long> org.kie.api.command.KieCommands::newGetSessionTime(java.lang.String)",
+          "justification": "Added command to get current session time"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.command.Command<java.lang.Long> org.kie.api.command.KieCommands::newAdvanceSessionTime(long, java.util.concurrent.TimeUnit)",
+          "justification": "Added command to advance session time"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method org.kie.api.command.Command<java.lang.Long> org.kie.api.command.KieCommands::newAdvanceSessionTime(long, java.util.concurrent.TimeUnit, java.lang.String)",
+          "justification": "Added command to advance session time"
         }
       ]
     }

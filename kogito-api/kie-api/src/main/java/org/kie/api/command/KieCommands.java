@@ -18,6 +18,7 @@ package org.kie.api.command;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -134,4 +135,9 @@ public interface KieCommands {
 
     Command newGetFactHandles(ObjectFilter filter, String outIdentifier);
 
+    Command<Long> newGetSessionTime();
+    Command<Long> newGetSessionTime(String outIdentifier);
+
+    Command<Long> newAdvanceSessionTime(long amount, TimeUnit unit);
+    Command<Long> newAdvanceSessionTime(long amount, TimeUnit unit, String outIdentifier);
 }
