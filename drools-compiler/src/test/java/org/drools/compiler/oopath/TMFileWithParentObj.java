@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
 public class TMFileWithParentObj extends TMFile {
 

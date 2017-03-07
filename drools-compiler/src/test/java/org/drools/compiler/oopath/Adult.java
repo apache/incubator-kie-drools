@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,25 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
-import java.util.Set;
+import org.drools.core.phreak.ReactiveList;
 
-import org.drools.core.phreak.AbstractReactiveObject;
-import org.drools.core.phreak.ReactiveSet;
+import java.util.List;
 
-public class TMFileSet extends AbstractReactiveObject {
-    private final String name;
-    private final Set<TMFile> members = new ReactiveSet<TMFile>();
+public class Adult extends Person {
 
-    public TMFileSet(String name) {
-        this.name = name;
+    private final List<Child> children = new ReactiveList<Child>();
+
+    public Adult(String name, int age) {
+        super(name, age);
     }
 
-    public String getName() {
-        return name;
+    public List<Child> getChildren() {
+        return children;
     }
 
-    public Set<TMFile> getFiles() {
-        return members;
+    public void addChild(Child child) {
+        children.add(child);
     }
 }

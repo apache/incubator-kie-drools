@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,32 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
 import org.drools.core.phreak.AbstractReactiveObject;
+import org.drools.core.phreak.ReactiveList;
 
-public class TMFile extends AbstractReactiveObject {
+import java.util.List;
+
+public class School extends AbstractReactiveObject {
+
     private final String name;
-    private int size;
 
-    public TMFile(String name, int size) {
+    private final List<Child> children = new ReactiveList<Child>();
+
+    public School(String name) {
         this.name = name;
-        this.size = size;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getSize() {
-        return size;
+    public List<Child> getChildren() {
+        return children;
     }
 
-    public void setSize(int size) {
-        this.size = size;
-        notifyModification();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("TMFile [name=").append(name).append(", size=").append(size).append("]");
-        return builder.toString();
+    public void addChild(Child child) {
+        children.add(child);
     }
 }

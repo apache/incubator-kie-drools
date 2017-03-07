@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
 import java.util.ArrayList;
 import java.util.List;

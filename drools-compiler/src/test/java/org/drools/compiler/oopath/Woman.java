@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
 public class Woman extends Adult {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,39 +13,36 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
 import org.drools.core.phreak.AbstractReactiveObject;
 
-public class Toy extends AbstractReactiveObject {
+public class TMFile extends AbstractReactiveObject {
+    private final String name;
+    private int size;
 
-    private String name;
-
-    private String owner;
-
-    public Toy(String name) {
+    public TMFile(String name, int size) {
         this.name = name;
+        this.size = size;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName( String name ) {
-        this.name = name;
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
         notifyModification();
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
     }
 
     @Override
     public String toString() {
-        return "Toy: " + name;
+        StringBuilder builder = new StringBuilder();
+        builder.append("TMFile [name=").append(name).append(", size=").append(size).append("]");
+        return builder.toString();
     }
 }

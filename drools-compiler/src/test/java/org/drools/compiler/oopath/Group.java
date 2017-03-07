@@ -1,4 +1,4 @@
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
 import java.util.List;
 

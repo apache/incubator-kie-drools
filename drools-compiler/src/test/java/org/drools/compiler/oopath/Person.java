@@ -13,22 +13,35 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
-public class BabyGirl extends Child {
+import org.drools.core.phreak.AbstractReactiveObject;
 
-    private final String favoriteDollName;
+public abstract class Person extends AbstractReactiveObject {
 
-    public BabyGirl(String name, int age) {
-        this(name, age, null);
+    private final String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
     }
 
-    public BabyGirl(String name, int age, String favoriteDollName) {
-        super(name, age);
-        this.favoriteDollName = favoriteDollName;
+    public String getName() {
+        return name;
     }
 
-    public String getFavoriteDollName() {
-        return favoriteDollName;
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+        notifyModification();
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

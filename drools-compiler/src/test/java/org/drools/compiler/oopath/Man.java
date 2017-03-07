@@ -13,11 +13,21 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
-public class BabyBoy extends Child {
+public class Man extends Adult {
 
-    public BabyBoy(String name, int age) {
+    private Woman wife;
+
+    public Man(String name, int age) {
         super(name, age);
+    }
+
+    public Woman getWife() {
+        return wife;
+    }
+
+    public void setWife(Woman wife) {
+        this.wife = wife;
     }
 }

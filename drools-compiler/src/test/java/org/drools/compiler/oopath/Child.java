@@ -13,35 +13,35 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
-import org.drools.core.phreak.AbstractReactiveObject;
+import org.drools.core.phreak.ReactiveList;
 
-public abstract class Person extends AbstractReactiveObject {
+import java.util.List;
 
-    private final String name;
-    private int age;
+public class Child extends Person {
 
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
+    private String mother;
+
+    private final List<Toy> toys = new ReactiveList<Toy>();
+
+    public Child(String name, int age) {
+        super(name, age);
     }
 
-    public String getName() {
-        return name;
+    public List<Toy> getToys() {
+        return toys;
     }
 
-    public int getAge() {
-        return age;
+    public void addToy(Toy toy) {
+        toys.add(toy);
     }
 
-    public void setAge(int age) {
-        this.age = age;
-        notifyModification();
+    public String getMother() {
+        return mother;
     }
 
-    @Override
-    public String toString() {
-        return name;
+    public void setMother(String mother) {
+        this.mother = mother;
     }
 }
