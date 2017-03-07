@@ -201,7 +201,8 @@ end
 
 rule NAME_INVALID
 when
-    $ne : NamedElement( FEELParser.isVariableNameValid( name ) == false )
+    $ne : NamedElement( parent != null, !(parent instanceof DRGElement),                       // << functional optimization to avoid double reporting as Decision name == variable name 
+                        FEELParser.isVariableNameValid( name ) == false )
 then
 //    java.util.List<FEELEvent> see = FEELParser.checkVariableName( $ne.getName() );
 //    String customMessage = see.isEmpty()? Msg.NAME_INVALID : see.get(0).getMessage()
