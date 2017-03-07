@@ -144,5 +144,5 @@ rule "Send SensorArray" agenda-group "Sensor" when
     $sa : SensorArray()
 then
     channels["sensors"].send( $sa );
-    retract( $sa );
+    delete( $sa );
 end

@@ -15,9 +15,6 @@
 
 package org.drools.games.wumpus;
 
-import org.kie.api.definition.type.PropertyReactive;
-
-@PropertyReactive
 public class Score {
     private int value;
 

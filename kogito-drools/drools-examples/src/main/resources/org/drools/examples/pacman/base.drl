@@ -38,7 +38,7 @@ rule RetractOldDirections dialect "mvel" salience 100 when
     $oldD     : Direction()   
     $newD     : Direction( this != $oldD, character == $oldD.character, this after $oldD )
 then
-    retract( $oldD );
+    delete( $oldD );
 end
 
 /**
@@ -53,7 +53,7 @@ rule InvalidDirection dialect "mvel" when
     Tick()        
 then
     exitPoints["ConsoleExitPoint"].insert( "retract " + $d + "\n" );
-    retract( $d );     
+    delete( $d );
 end
 
 /**
@@ -82,7 +82,7 @@ rule SetNewDirection dialect "mvel" when
 then
    exitPoints["ConsoleExitPoint"].insert( "set new Location " + $l + "\n"  );
    modify( $l ) { row = $s.row, col = $s.col };
-   retract( $s );
+   delete( $s );
 end
 
 /**
@@ -93,7 +93,7 @@ rule IsLevelFinished dialect "mvel" when
     not CellContents( cellType == CellType.POWER_PILL ) 
     $t : Tick()
 then
-    retract( $t );
+    delete( $t );
 end
 
 rule FinishedCompleted  dialect "mvel" when

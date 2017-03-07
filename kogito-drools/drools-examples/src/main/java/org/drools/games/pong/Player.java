@@ -15,9 +15,6 @@
 
 package org.drools.games.pong;
 
-import org.kie.api.definition.type.PropertyReactive;
-
-@PropertyReactive
 public class Player {
     private PlayerId id;
     private int      score;

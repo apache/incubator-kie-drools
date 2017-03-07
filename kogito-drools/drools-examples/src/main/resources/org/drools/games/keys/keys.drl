@@ -31,7 +31,7 @@ rule "Detect KeyPressed" agenda-group "Keys" when
 then
     kp = new KeyPressed( KeyEvent.getKeyText( ke.getKeyCode() ) );
     insert( kp );
-    retract( ke );
+    delete( ke );
 end
 
 
@@ -39,18 +39,18 @@ rule "Detect KeyReleased"  agenda-group "Keys" when
     ke : KeyEvent() from entry-point "KeyReleasedStream"
     kp : KeyPressed( keyText == KeyEvent.getKeyText( ke.getKeyCode() ) )    
 then
-    retract( ke );
-    retract( kp );
+    delete( ke );
+    delete( kp );
 end
 
 rule "Remove KeyPressed Event"  agenda-group "Keys" when
     ke : KeyEvent() from entry-point "KeyPressedStream"
 then
-    retract( ke );
+    delete( ke );
 end
 
 rule "Remove KeyReleased Event"  agenda-group "Keys" when
     ke : KeyEvent() from entry-point "KeyReleasedStream"
 then
-    retract( ke );
+    delete( ke );
 end

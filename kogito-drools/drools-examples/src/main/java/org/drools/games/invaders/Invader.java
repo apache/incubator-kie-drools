@@ -15,9 +15,6 @@
 
 package org.drools.games.invaders;
 
-import org.kie.api.definition.type.PropertyReactive;
-
-@PropertyReactive
 public class Invader extends Unit {
     private boolean alive = true;
 

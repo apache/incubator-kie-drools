@@ -89,7 +89,7 @@ then
    g = ui.getGraphics();
    g.setColor( Color.BLACK ); // background
    g.fillRect( b.x , b.y, b.width, b.height ); // restore the background
-   retract( b )
+   delete( b )
 end
 
 rule Repaint agenda-group "Draw"  salience -100 when

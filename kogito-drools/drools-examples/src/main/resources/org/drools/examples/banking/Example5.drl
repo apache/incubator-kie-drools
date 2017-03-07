@@ -25,5 +25,5 @@ rule "Rule 01"
                            type == TypedCashflow.CREDIT )
     then
         System.out.println("Credit: "+$date+" :: "+$amount);   
-        retract($cashflow);
+        delete($cashflow);
 end

@@ -53,7 +53,7 @@ rule "Wumpus Death View" agenda-group "EndGame" when
 then
 	JOptionPane.showMessageDialog( $ui.getParentJFrame(),
                                    "Oh No! You where killed by the Wumpus" );
-    retract( $wd );                                   
+    delete( $wd );
     insert( new Reset() );
     setFocus( "Reset" );
 end
@@ -65,7 +65,7 @@ rule "Pit Game View" agenda-group "EndGame" when
 then    
 	JOptionPane.showMessageDialog( $ui.getParentJFrame(),
                                    "Oh No! You where killed by a Pit" );
-    retract( $pd );                                   
+    delete( $pd );
     insert( new Reset() );
     setFocus( "Reset" );
 end
@@ -77,7 +77,7 @@ rule "Gold Win View" agenda-group "EndGame" when
 then
 	JOptionPane.showMessageDialog( $ui.getParentJFrame(),
                                    "Congratulations! You retreived the gold from the cave" );
-    retract( $gw );                                       
+    delete( $gw );
     insert( new Reset() );
     setFocus( "Reset" );
 end

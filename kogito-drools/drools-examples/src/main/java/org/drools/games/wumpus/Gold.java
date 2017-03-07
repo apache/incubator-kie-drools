@@ -15,10 +15,6 @@
 
 package org.drools.games.wumpus;
 
-import org.kie.api.definition.type.PropertyReactive;
-
-
-@PropertyReactive
 public class Gold extends Thing {
 
     public Gold(int row,

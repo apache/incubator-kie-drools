@@ -23,5 +23,5 @@ rule "Rule 01"
         not Number( intValue < $number.intValue )
     then
         System.out.println("Number found with value: " + $number.intValue() ); 
-        retract( $number );
+        delete( $number );
 end 

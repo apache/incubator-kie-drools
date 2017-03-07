@@ -123,5 +123,5 @@ rule "Retract Collision" agenda-group "Collision" when
           ball.y > pconf.boundedTop &&
           ball.y < pconf.boundedBottom - ball.width )
 then
-    retract( c );
+    delete( c );
 end

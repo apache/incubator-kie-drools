@@ -15,6 +15,9 @@
 
 package org.drools.games;
 
+import org.kie.api.definition.type.ClassReactive;
+
+@ClassReactive
 public class Run {
     private int cycle;
 

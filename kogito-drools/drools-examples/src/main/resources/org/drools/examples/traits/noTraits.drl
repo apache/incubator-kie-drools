@@ -51,7 +51,7 @@ no-loop
 when
     $p : Person( $name : name, $age : age < 25, $weight : weight )
 then
-    retract( $p );
+    delete( $p );
     insert( new Student( $name, $age, $weight, "SomeSchool" ) );
     insert( new Worker( $name, $age, $weight, 1200 ) );
 end

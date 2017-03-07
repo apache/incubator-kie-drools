@@ -16,10 +16,7 @@
 package org.drools.games.adventures.model;
 
 import org.kie.api.definition.type.Position;
-import org.drools.games.adventures.model.Character;
-import org.kie.api.definition.type.PropertyReactive;
 
-@PropertyReactive
 public class PickupEvent extends GameEvent{
     @Position(0)
     private Character character;
