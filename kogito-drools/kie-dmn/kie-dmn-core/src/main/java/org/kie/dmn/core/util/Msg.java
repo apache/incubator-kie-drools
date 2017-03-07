@@ -25,6 +25,7 @@ public class Msg {
     public static final Message2 UNABLE_TO_EVALUATE_DECISION_AS_IT_DEPS = new Message2(DMNMessageTypeId.MISSING_DEP, "Unable to evaluate decision '$s' as it depends on decision '$s'");
     public static final Message2 EXPR_TYPE_NOT_SUPPORTED_IN_NODE = new Message2(DMNMessageTypeId.EXPR_TYPE_NOT_SUPPORTED_IN_NODE, "Expression type '$s' not supported in node '$s'");
     public static final Message1 NO_EXPR_DEF_FOR_NODE = new Message1(DMNMessageTypeId.NO_EXPR_DEF_FOR_NODE, "No expression defined for node '$s'");
+    public static final Message2 NO_EXPR_DEF_FOR_NAME_ON_NODE = new Message2(DMNMessageTypeId.NO_EXPR_DEF_FOR_NODE, "No expression defined for name '$s' node '$s'");
     public static final Message3 ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX = new Message3(DMNMessageTypeId.ERR_COMPILING_FEEL, "Error compiling FEEL expression '$s' on decision table '$s', input clause #$s");
     public static final Message3 ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX = new Message3(DMNMessageTypeId.ERR_COMPILING_FEEL, "Error compiling FEEL expression '$s' on decision table '$s', output clause #$s");
     public static final Message3 ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX = new Message3(DMNMessageTypeId.ERR_COMPILING_FEEL, "Error compiling FEEL expression '$s' on decision table '$s', rule #$s");

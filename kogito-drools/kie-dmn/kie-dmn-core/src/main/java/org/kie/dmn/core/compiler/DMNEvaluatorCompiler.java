@@ -237,10 +237,10 @@ public class DMNEvaluatorCompiler {
                                                                                         createErrorMsg( node, exprName, expression, 0, exprText ) );
                     evaluator = new DMNLiteralExpressionEvaluator( compiledExpression );
                 } catch ( Throwable e ) {
-                    model.addMessage( DMNMessage.Severity.ERROR, "Error compiling expression '" + exprName + "' on node '"+node.getIdentifierString()+"'", expression, e );
+                    model.addMessage( DMNMessage.Severity.ERROR, Msg.createMessage(Msg.ERR_COMPILING_FEEL_EXPR_FOR_NAME_ON_NODE, exprName, expression, node.getIdentifierString()), expression, e );
                 }
             } else {
-                model.addMessage( DMNMessage.Severity.ERROR, "No expression defined for '" + exprName + "' on node '"+node.getIdentifierString()+"'", expression );
+                model.addMessage( DMNMessage.Severity.ERROR, Msg.createMessage(Msg.NO_EXPR_DEF_FOR_NAME_ON_NODE, exprName, node.getIdentifierString() ), expression );
             }
         }
         return evaluator;
