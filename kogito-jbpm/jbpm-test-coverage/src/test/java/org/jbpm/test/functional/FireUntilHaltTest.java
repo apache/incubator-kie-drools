@@ -93,7 +93,7 @@ public class FireUntilHaltTest extends JbpmTestCase {
         Assertions.assertThat(listener.ruleFiredCount("change unwanted person to wanted")).isEqualTo(unwantedPersonsNum);
         // 5 + 2 changed + 1 added
         Assertions.assertThat(listener.ruleFiredCount("person detector"))
-                .isEqualTo(wantedPersonsNum + 2 * unwantedPersonsNum + 1);
+                .isEqualTo(wantedPersonsNum * unwantedPersonsNum);
         Assertions.assertThat(listener.ruleFiredCount("closing actions")).isEqualTo(1);
         ksession.halt();
     }
