@@ -26,7 +26,7 @@ import org.drools.games.wumpus.HearScream;
 dialect "mvel"
 
 rule "Wumpus Killed" agenda-group "Shoot" when
-    $a  : Arrow()
+    $a  : Arrow() @watch(row,col)
     $w  : Wumpus(row == $a.row, col == $a.col, alive == true )
     $c  : Cell(row == $a.row, col == $a.col )
 then
@@ -43,25 +43,25 @@ then
 end
 
 rule "Move Arrow Up" agenda-group "Shoot"  when
-     $a :  Arrow( direction == Direction.UP)    
+     $a :  Arrow( direction == Direction.UP) @watch(row,col)
 then
     modify( $a ) { row = $a.row + 1 };
 end   
 
 rule "Move Arrow Down" agenda-group "Shoot"  when
-     $a :  Arrow( direction == Direction.DOWN)    
+     $a :  Arrow( direction == Direction.DOWN) @watch(row,col)
 then
     modify( $a ) { row = $a.row - 1 };
 end   
 
 rule "Move Arrow Left" agenda-group "Shoot"  when
-     $a :  Arrow( direction == Direction.LEFT)    
+     $a :  Arrow( direction == Direction.LEFT) @watch(row,col)
 then
     modify( $a ) { col = $a.col - 1 };
 end    
 
 rule "Move Arrow Right" agenda-group "Shoot" when
-     $a :  Arrow( direction == Direction.RIGHT)
+     $a :  Arrow( direction == Direction.RIGHT) @watch(row,col)
 then
     modify( $a ) { col = $a.col + 1 };
 end  
