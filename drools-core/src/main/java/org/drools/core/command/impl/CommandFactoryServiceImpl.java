@@ -357,7 +357,7 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
     }
 
     @Override
-    public Command<Long> newAdvanceSessionTime(String outIdentifier, long amount, TimeUnit unit) {
+    public Command<Long> newAdvanceSessionTime(long amount, TimeUnit unit, String outIdentifier) {
         return new AdvanceSessionTimeCommand( outIdentifier, amount, unit );
     }
 }
