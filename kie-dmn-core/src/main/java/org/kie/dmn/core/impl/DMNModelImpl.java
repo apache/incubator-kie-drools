@@ -249,17 +249,17 @@ public class DMNModelImpl
         this.messages.add( msg );
     }
 
-    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNElement source) {
+    public DMNMessage addMessage(DMNMessage.Severity severity, DMNMessageTypeImpl message, DMNElement source) {
         DMNMessageImpl msg = new DMNMessageImpl( severity, message, source );
         this.messages.add( msg );
         return msg;
     }
 
-    public void addMessage(DMNMessage.Severity severity, String message, DMNElement source, Throwable exception) {
+    public void addMessage(DMNMessage.Severity severity, DMNMessageTypeImpl message, DMNElement source, Throwable exception) {
         this.messages.add( new DMNMessageImpl( severity, message, source, exception ) );
     }
 
-    public void addMessage(DMNMessage.Severity severity, String message, DMNElement source, FEELEvent feelEvent) {
+    public void addMessage(DMNMessage.Severity severity, DMNMessageTypeImpl message, DMNElement source, FEELEvent feelEvent) {
         this.messages.add( new DMNMessageImpl( severity, message, source, feelEvent ) );
     }
 

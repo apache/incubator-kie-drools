@@ -7,7 +7,9 @@ import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.*;
+import org.kie.dmn.core.impl.DMNMessageTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
@@ -46,9 +48,9 @@ public class DMNEvaluatorCompiler {
             return compileInvocation( ctx, model, node, (Invocation) expression );
         } else {
             if ( expression != null ) {
-                model.addMessage( DMNMessage.Severity.ERROR, "Expression type '" + expression.getClass().getSimpleName() + "' not supported in node '" + node.getIdentifierString() + "'", node.getSource() );
+                model.addMessage( DMNMessage.Severity.ERROR, Msg.createMessage(Msg.EXPR_TYPE_NOT_SUPPORTED_IN_NODE, expression.getClass().getSimpleName(), node.getIdentifierString() ), node.getSource() );
             } else {
-                model.addMessage( DMNMessage.Severity.ERROR, "No expression defined for node '" + node.getIdentifierString() + "'", node.getSource() );
+                model.addMessage( DMNMessage.Severity.ERROR, Msg.createMessage(Msg.NO_EXPR_DEF_FOR_NODE, node.getIdentifierString() ), node.getSource() );
             }
         }
         return null;
@@ -244,27 +246,27 @@ public class DMNEvaluatorCompiler {
         return evaluator;
     }
 
-    private List<UnaryTest> textToUnaryTestList(DMNCompilerContext ctx, String text, DMNModelImpl model, DMNElement element, String errorMsg ) {
+    private List<UnaryTest> textToUnaryTestList(DMNCompilerContext ctx, String text, DMNModelImpl model, DMNElement element, DMNMessageTypeImpl errorMsg ) {
         if (text == null || text.isEmpty()) {
             return Collections.emptyList();
         }
         return feel.evaluateUnaryTests( ctx, text, model, element, errorMsg );
     }
 
-    public String createErrorMsg(DMNNode node, String elementName, DMNElement element, int index, String expression) {
-        String errorMsg;
+    public DMNMessageTypeImpl createErrorMsg(DMNNode node, String elementName, DMNElement element, int index, String expression) {
+        DMNMessageTypeImpl errorMsg;
         if ( element instanceof InputClause ) {
-            errorMsg = "Error compiling FEEL expression '" + expression + "' on decision table '" + elementName + "', input clause #" + index;
+            errorMsg = Msg.createMessage(Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX, expression, elementName, index); 
         } else if ( element instanceof OutputClause ) {
-            errorMsg = "Error compiling FEEL expression '" + expression + "' on decision table '" + elementName + "', output clause #" + index;
+            errorMsg = Msg.createMessage(Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX, expression, elementName, index); 
         } else if ( element instanceof ItemDefinition ) {
-            errorMsg = "Error compiling allowed values list '" + expression + "' on item definition '" + elementName + "'";
+            errorMsg = Msg.createMessage(Msg.ERR_COMPILING_ALLOWED_VALUES_LIST_ON_ITEM_DEF, expression, elementName);
         } else if ( element instanceof DecisionRule ) {
-            errorMsg = "Error compiling FEEL expression '" + expression + "' on decision table '" + elementName + "', rule #" + index;
+            errorMsg = Msg.createMessage(Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX, expression, elementName, index);
         } else if ( element instanceof LiteralExpression ) {
-            errorMsg = "Error compiling FEEL expression '" + expression + "' for name '" + elementName +"' on node '"+((DMNBaseNode)node).getIdentifierString()+"'";
+            errorMsg = Msg.createMessage(Msg.ERR_COMPILING_FEEL_EXPR_FOR_NAME_ON_NODE, expression, elementName, ((DMNBaseNode)node).getIdentifierString() );
         } else {
-            errorMsg = "Error compiling FEEL expression '" + expression + "' on decision table '" + elementName + "'";
+            errorMsg = Msg.createMessage(Msg.ERR_COMPILING_FEEL_EXPR_ON_DT, expression, elementName);
         }
         return errorMsg;
     }
