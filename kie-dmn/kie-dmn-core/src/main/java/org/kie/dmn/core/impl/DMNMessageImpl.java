@@ -59,7 +59,7 @@ public class DMNMessageImpl
         return message.getMessage();
     }
     
-    public Object getMessageId() {
+    public DMNMessageTypeId getMessageId() {
         return this.message.getMessageTypeId();
     }
 
@@ -87,7 +87,8 @@ public class DMNMessageImpl
     public String toString() {
         return "DMNMessage{" +
                " severity=" + severity +
-               ", message='" + message + '\'' +
+               ", type=" + (message!=null?message.getMessageTypeId():"") +
+               ", message='" + (message!=null?message.getMessage():"") + '\'' +
                ", sourceId='" + getSourceId() + '\'' +
                ", exception='" + (exception != null ? (exception.getClass().getSimpleName() + " : " + exception.getMessage()) : "") + "'" +
                ", feelEvent='" + (feelEvent != null ? (feelEvent.getClass().getSimpleName() + " : " + feelEvent.getMessage()) : "") + "'" +
