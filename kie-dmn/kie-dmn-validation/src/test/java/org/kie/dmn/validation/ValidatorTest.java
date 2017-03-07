@@ -315,6 +315,21 @@ public class ValidatorTest {
     }
     
     @Test
+    public void testNAME_INVALID_bis() {
+        Definitions definitions = utilDefinitions( "NAME_INVALID_bis.dmn", "code in list of codes" );
+        List<ValidationMsg> validate = validator.validateModel(definitions);
+        
+        assertTrue( validate.stream().anyMatch( p -> p.getMessage().equals( Msg.NAME_INVALID ) ) );
+        
+        /* in the file NAME_INVALID_bis.dmn there are 3 invalid "names" but only the one for the Decision node should be reported.
+         * <definitions id="NAME_INVALID" name="code in list of codes" ...
+            <decision name="code in list of codes" id="d_GreetingMessage">
+             <variable name="code in list of codes" typeRef="feel:string"/>
+         */
+        assertEquals("functional optimization of valid names to report ", 1, validate.stream().filter( p -> p.getMessage().equals( Msg.NAME_INVALID ) ).count() );
+    }
+    
+    @Test
     public void testRELATION_DUP_COLUMN() {
         Definitions definitions = utilDefinitions( "RELATION_DUP_COLUMN.dmn", "RELATION_DUP_COLUMN" );
         List<ValidationMsg> validate = validator.validateModel(definitions);
