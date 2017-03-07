@@ -65,6 +65,10 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"10 in ( not( 5, (5+5), (20+10) ) )", Boolean.FALSE},
                 {"10 in ( not( 5, (20+10) ) )", Boolean.TRUE},
                 {"10 in ( not( >5*20 ) )", Boolean.TRUE },
+                {"10 in ( not( 10 ), not( 20 ) )", Boolean.TRUE },
+                {"10 in ( not( null, 10 ) )", Boolean.FALSE },
+                {"10 in ( not( 5, 10 ) )", Boolean.FALSE },
+                {"null in ( not( 10, null ) )", Boolean.FALSE },
                 {"\"Boston\" in ( not( \"Toronto\", \"Montreal\" ) )", Boolean.TRUE },
                 {"\"Boston\" in ( not( \"Toronto\", \"Boston\" ) )", Boolean.FALSE },
 
