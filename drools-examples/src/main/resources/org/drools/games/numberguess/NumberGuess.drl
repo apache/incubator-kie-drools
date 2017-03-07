@@ -61,7 +61,7 @@ rule "Record the highest Guess" agenda-group "Guess"  no-loop when
     guess : Guess( value > r.value)
 then
     modify ( game ) { biggest = guess.value };
-    retract( guess );
+    delete( guess );
     System.out.println( "Your guess was too high" );
 end
 
@@ -71,7 +71,7 @@ rule "Record the lowest Guess" agenda-group "Guess" when
     guess :  Guess(value < r.value )
 then
     modify ( game ) { smallest = guess.value };
-    retract( guess );
+    delete( guess );
     System.out.println( "Your guess was too low" );
 end
 

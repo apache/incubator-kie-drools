@@ -43,7 +43,7 @@ rule "reverse_edges"
         System.out.println( "Edge " + $p2 + " " + $p1 );
         insert( new Edge( $p1, $p2, false ) );
         insert( new Edge( $p2, $p1, false ) );
-        retract( $line );
+        delete( $line );
 end
 // Reversing is done
 //(p done_reversing
@@ -843,10 +843,10 @@ rule "remove_label_3j"
     then
         modify( $stage ) {setValue( Stage.CHECKING )}
         System.out.println( "Stage.CHECKING" );
-        retract( $illegal );
-        retract( $edgeLabel1 );
-        retract( $edgeLabel2 );
-        retract( $edgeLabel3 );
+        delete( $illegal );
+        delete( $edgeLabel1 );
+        delete( $edgeLabel2 );
+        delete( $edgeLabel3 );
 end
 
 /*
@@ -874,9 +874,9 @@ rule "remove_edge_2j"
     then
         modify( $stage ) {setValue( Stage.CHECKING )}
         System.out.println( "Stage.CHECKING" );
-        retract( $illegal );
-        retract( $edgeLabel1 );
-        retract( $edgeLabel2 );
+        delete( $illegal );
+        delete( $edgeLabel1 );
+        delete( $edgeLabel2 );
 end
 
 /*

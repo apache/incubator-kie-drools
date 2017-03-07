@@ -87,13 +87,13 @@ rule UnlockingDoors agenda-group "commands"  when
 then
     modify(door){ lockStatus = LockStatus.UNLOCKED };
     uc.session.channels["output"].send(  "You have unlocked the " + r.name + " door\n" );
-    retract ( uc );
+    delete ( uc );
 then[wrongKey]
     uc.session.channels["output"].send(  "The selected key cannot open the " + r.name + " door\n" );
-    retract ( uc );
+    delete ( uc );
 then[alreadyUnlocked]
     uc.session.channels["output"].send(  "The " + r.name + " door is already unlocked\n" );
-    retract ( uc );
+    delete ( uc );
 end
 
 rule KillMonster agenda-group "commands"  when
@@ -139,7 +139,7 @@ rule Drop agenda-group "commands" when
     h  : Holding( c, t;)
 then
     modify( tl ) { target = cl.target };
-    retract ( h );
+    delete ( h );
     insert( new DropEvent( c, t ) );
 
     dc.session.channels["output"].send( "You have dropped the " + t.name + "\n" );

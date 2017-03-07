@@ -69,5 +69,5 @@ rule MonsterCollision dialect "mvel" no-loop when
     $monLoc : Location( character == $mon, col == $pacLoc.col, row == $pacLoc.row )
     $t : Tick()
 then
-    retract( $t );
+    delete( $t );
 end

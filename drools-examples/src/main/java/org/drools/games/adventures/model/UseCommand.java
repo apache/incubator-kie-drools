@@ -15,9 +15,6 @@
 
 package org.drools.games.adventures.model;
 
-import org.kie.api.definition.type.PropertyReactive;
-
-@PropertyReactive
 public class UseCommand extends Command {
     private Character character;
     private Thing thing;

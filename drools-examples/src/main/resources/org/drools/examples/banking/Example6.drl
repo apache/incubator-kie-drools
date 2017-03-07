@@ -27,7 +27,7 @@ rule "Rule 06 - Credit"
         $account.setBalance($account.getBalance()+$amount);
         System.out.println("Account: " + $account.getAccountNo() +
                            " - new balance: " + $account.getBalance());          
-        retract($cashflow);
+        delete($cashflow);
 end
 
 rule "Rule 06 - Debit"  
@@ -41,5 +41,5 @@ rule "Rule 06 - Debit"
         $account.setBalance($account.getBalance() - $amount);
         System.out.println("Account: " + $account.getAccountNo() +
                            " - new balance: " + $account.getBalance());           
-        retract($cashflow);
+        delete($cashflow);
 end
