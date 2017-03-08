@@ -193,6 +193,38 @@ public class RowPriorityResolverTest {
     }
 
     @Test
+    public void twoReverseOrders() throws Exception {
+
+        rowPriorityResolver.set(1,
+                                0);
+        rowPriorityResolver.set(2,
+                                1);
+        rowPriorityResolver.set(3,
+                                2);
+        rowPriorityResolver.set(4,
+                                0);
+        rowPriorityResolver.set(5,
+                                4);
+        rowPriorityResolver.set(6,
+                                5);
+
+        priorities = rowPriorityResolver.getPriorityRelations();
+
+        assertSalience(3,
+                       new RowNumber(1));
+        assertSalience(4,
+                       new RowNumber(2));
+        assertSalience(5,
+                       new RowNumber(3));
+        assertSalience(0,
+                       new RowNumber(4));
+        assertSalience(1,
+                       new RowNumber(5));
+        assertSalience(2,
+                       new RowNumber(6));
+    }
+
+    @Test
     public void complex3() throws
             Exception {
 
@@ -248,6 +280,86 @@ public class RowPriorityResolverTest {
                        new RowNumber(5));
         assertSalience(5,
                        new RowNumber(6));
+    }
+
+    @Test
+    public void testMultipleRowsHasPriorityOverTheSameRow() throws Exception {
+
+        rowPriorityResolver.set(1,
+                                0);
+        rowPriorityResolver.set(2,
+                                1);
+        rowPriorityResolver.set(3,
+                                1);
+        rowPriorityResolver.set(4,
+                                1);
+        rowPriorityResolver.set(5,
+                                2);
+        rowPriorityResolver.set(6,
+                                2);
+
+        priorities = rowPriorityResolver.getPriorityRelations();
+
+        assertSalience(0,
+                       new RowNumber(1));
+        assertSalience(3,
+                       new RowNumber(2));
+        assertSalience(2,
+                       new RowNumber(3));
+        assertSalience(1,
+                       new RowNumber(4));
+        assertSalience(5,
+                       new RowNumber(5));
+        assertSalience(4,
+                       new RowNumber(6));
+    }
+
+    @Test
+    public void testPriorityOverGroup() throws Exception {
+
+        rowPriorityResolver.set(1,
+                                0);
+        rowPriorityResolver.set(2,
+                                0);
+        rowPriorityResolver.set(3,
+                                0);
+        rowPriorityResolver.set(4,
+                                1);
+        rowPriorityResolver.set(5,
+                                3);
+        rowPriorityResolver.set(6,
+                                5);
+        rowPriorityResolver.set(7,
+                                1);
+        rowPriorityResolver.set(8,
+                                3);
+        rowPriorityResolver.set(9,
+                                3);
+        rowPriorityResolver.set(10,
+                                7);
+
+        priorities = rowPriorityResolver.getPriorityRelations();
+
+        assertSalience(6,
+                       new RowNumber(1));
+        assertSalience(5,
+                       new RowNumber(2));
+        assertSalience(0,
+                       new RowNumber(3));
+        assertSalience(9,
+                       new RowNumber(4));
+        assertSalience(3,
+                       new RowNumber(5));
+        assertSalience(4,
+                       new RowNumber(6));
+        assertSalience(7,
+                       new RowNumber(7));
+        assertSalience(2,
+                       new RowNumber(8));
+        assertSalience(1,
+                       new RowNumber(9));
+        assertSalience(8,
+                       new RowNumber(10));
     }
 
     @Test
