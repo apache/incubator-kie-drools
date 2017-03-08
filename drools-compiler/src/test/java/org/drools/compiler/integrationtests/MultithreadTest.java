@@ -60,6 +60,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class MultithreadTest extends CommonTestMethodBase {
 
+
     @Test(timeout = 10000)
     public void testConcurrentInsertionsFewObjectsManyThreads() {
         testConcurrentInsertions(1, 1000);
