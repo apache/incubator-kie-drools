@@ -15,14 +15,14 @@
 
 package org.kie.scanner;
 
+import java.io.InputStream;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.compiler.kproject.xml.PomModelGenerator;
 import org.kie.api.builder.ReleaseId;
-
-import java.io.InputStream;
 
 import static org.kie.scanner.embedder.MavenProjectLoader.parseMavenPom;
 
@@ -71,7 +71,7 @@ public class MavenPomModelGenerator implements PomModelGenerator {
         private void initDependencies(MavenProject mavenProject) {
             // use getArtifacts instead of getDependencies to load transitive dependencies as well
             for (Artifact dep : mavenProject.getArtifacts()) {
-                addDependency(new ReleaseIdImpl( dep.getGroupId(), dep.getArtifactId(), dep.getVersion() ), dep.getScope());
+                addDependency(new ReleaseIdImpl( dep.getGroupId(), dep.getArtifactId(), dep.getVersion(), dep.getType() ), dep.getScope());
             }
         }
     }

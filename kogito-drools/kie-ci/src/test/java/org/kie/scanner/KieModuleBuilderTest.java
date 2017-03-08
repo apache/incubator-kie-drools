@@ -15,24 +15,43 @@
 
 package org.kie.scanner;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.junit.Assert;
-import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieModuleModel;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.util.FileManager;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+
 import static org.junit.Assert.assertTrue;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 public class KieModuleBuilderTest extends AbstractKieCiTest {
+
+    private FileManager fileManager;
+
+    @Before
+    public void setUp() throws Exception {
+        this.fileManager = new FileManager();
+        this.fileManager.setUp();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        this.fileManager.tearDown();
+    }
 
     @Test
     public void testKieModuleUsingPOMMissingKBaseDefinition() throws Exception {
@@ -119,4 +138,74 @@ public class KieModuleBuilderTest extends AbstractKieCiTest {
                 "end\n";
     }
 
+    @Test
+    public void testPomTypeDependencies() throws Exception {
+        // RHBPMS-4634
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseIdNoDep = ks.newReleaseId( "org.kie", "test-no-dep", "1.0-SNAPSHOT" );
+        ReleaseId releaseIdWithDep = ks.newReleaseId( "org.kie", "test-with-dep", "1.0-SNAPSHOT" );
+
+        ReleaseId ejbReleaseId = ks.newReleaseId( "org.jboss.as", "jboss-as-ejb-client-bom", "7.1.1.Final" );
+        ReleaseId jmsReleaseId = ks.newReleaseId( "org.jboss.as", "jboss-as-jms-client-bom", "7.1.1.Final" );
+
+        String pom = getPomWithPomDependencies(releaseIdNoDep, ejbReleaseId, jmsReleaseId);
+        File pomFile = fileManager.newFile("pom.xml");
+        fileManager.write(pomFile, pom);
+
+        InternalKieModule kJar1 = createKieJarWithPomDependencies( ks, releaseIdNoDep, pom );
+        MavenRepository repository = getMavenRepository();
+        repository.installArtifact(releaseIdNoDep, kJar1, pomFile);
+
+        InternalKieModule kJar2 = createKieJarWithDependencies( ks, releaseIdWithDep, true, "rule1", releaseIdNoDep);
+        KieContainer kieContainer2 = ks.newKieContainer( releaseIdWithDep );
+        KieSession kieSession = kieContainer2.newKieSession();
+    }
+
+    private InternalKieModule createKieJarWithPomDependencies(KieServices ks, ReleaseId releaseId, String pom) throws IOException {
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks, false);
+        kfs.writePomXML(pom);
+
+        kfs.write("src/main/java/org/kie/test/Bean.java", createJavaSource(3));
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        return (InternalKieModule) kieBuilder.getKieModule();
+    }
+
+    private String getPomWithPomDependencies(ReleaseId releaseId, ReleaseId... dependencies) {
+        String pom =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+                "  <modelVersion>4.0.0</modelVersion>\n" +
+                "\n" +
+                "  <groupId>" + releaseId.getGroupId() + "</groupId>\n" +
+                "  <artifactId>" + releaseId.getArtifactId() + "</artifactId>\n" +
+                "  <version>" + releaseId.getVersion() + "</version>\n" +
+                "\n";
+        if (dependencies != null && dependencies.length > 0) {
+            pom += "<dependencies>\n";
+            for (ReleaseId dep : dependencies) {
+                pom += "<dependency>\n";
+                pom += "  <groupId>" + dep.getGroupId() + "</groupId>\n";
+                pom += "  <artifactId>" + dep.getArtifactId() + "</artifactId>\n";
+                pom += "  <version>" + dep.getVersion() + "</version>\n";
+                pom += "  <type>pom</type>\n";
+                pom += "</dependency>\n";
+            }
+            pom += "</dependencies>\n";
+        }
+        pom += "</project>";
+        return pom;
+    }
+
+    protected String createDRL(String ruleName) {
+        return "import org.kie.test.Bean\n" +
+               "rule " + ruleName + "\n" +
+               "when\n" +
+               "  $b: Bean()\n" +
+               "then\n" +
+               "  System.out.println($b);" +
+               "end\n";
+    }
 }
