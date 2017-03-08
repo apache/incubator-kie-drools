@@ -81,7 +81,7 @@ public class KieFileSystemImpl
         try {
             String target = resource.getTargetPath() != null ? resource.getTargetPath() : resource.getSourcePath();
             if( target != null ) {
-                String prefix = resource.getResourceType() == ResourceType.JAVA ? JAVA_ROOT : RESOURCES_ROOT;
+                String prefix = resource.getResourceType().getDefaultPath();
                 write( prefix + target, readBytesFromInputStream(resource.getInputStream()) );
                 ResourceConfiguration conf = resource.getConfiguration();
                 if( conf != null ) {
