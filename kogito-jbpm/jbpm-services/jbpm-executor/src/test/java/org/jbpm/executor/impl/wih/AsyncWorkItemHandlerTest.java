@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -34,6 +35,7 @@ import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.objects.IncrementService;
 import org.jbpm.executor.test.CountDownAsyncJobListener;
+import org.jbpm.process.core.async.AsyncExecutionMarker;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
@@ -58,6 +60,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
@@ -516,6 +519,68 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         
         assertEquals(1, IncrementService.get());
     }
+    
+    @Test(timeout=10000)
+    public void testRunProcessWithAsyncHandlerWthSecurityManager() throws Exception {
+        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new AsyncWorkItemHandler(executorService, "org.jbpm.executor.commands.PrintOutCommand"));
+                        return handlers;
+                    }
+                    @Override
+                    public List<ProcessEventListener> getProcessEventListeners( RuntimeEngine runtime) {
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(countDownListener);
+                        return listeners;
+                    }
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment); 
+        assertNotNull(manager);
+        final AtomicBoolean active = new AtomicBoolean(false);
+        ((InternalRuntimeManager) manager).setSecurityManager(new org.kie.internal.runtime.manager.SecurityManager() {
+            
+            @Override
+            public void checkPermission() throws SecurityException {
+                if (active.get() && !AsyncExecutionMarker.isAsync()) {
+                    throw new SecurityException("Only async allowed");
+                }
+            }
+            
+        });
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+        
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        manager.disposeRuntimeEngine(runtime);
+        // activate security manager to enforce checks for async only
+        active.set(true);
+        
+        countDownListener.waitTillCompleted();
+        // reset the security manager again...
+        active.set(false);
+        
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        ksession = runtime.getKieSession();
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
+        
+        manager.disposeRuntimeEngine(runtime);
+    }
+    
     
     
     private ExecutorService buildExecutorService() {        

@@ -26,6 +26,7 @@ import org.drools.persistence.TransactionManagerFactory;
 import org.drools.persistence.jpa.JDKCallableJobCommand;
 import org.drools.persistence.jpa.JpaTimerJobInstance;
 import org.jbpm.persistence.jta.ContainerManagedTransactionManager;
+import org.jbpm.process.core.async.AsyncExecutionMarker;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.DisposableCommandService;
@@ -59,6 +60,7 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
 
     @Override
     public Void call() throws Exception {
+        AsyncExecutionMarker.markAsync();
         ExecutableRunner runner = null;
         TransactionManager jtaTm = null;
         boolean success = false;
@@ -84,6 +86,7 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
         	success = false;
             throw e;
         } finally {
+            AsyncExecutionMarker.reset();
             if (runner != null && runner instanceof DisposableCommandService) {
             	if (allowedToDispose(((DisposableCommandService) runner).getEnvironment())) {
             		logger.debug("Allowed to dispose command service from global timer job instance");

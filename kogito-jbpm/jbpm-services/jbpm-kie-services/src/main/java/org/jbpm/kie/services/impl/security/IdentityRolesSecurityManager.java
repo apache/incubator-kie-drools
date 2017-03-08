@@ -18,6 +18,7 @@ package org.jbpm.kie.services.impl.security;
 
 import java.util.List;
 
+import org.jbpm.process.core.async.AsyncExecutionMarker;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.manager.SecurityManager;
 
@@ -52,6 +53,11 @@ public class IdentityRolesSecurityManager implements SecurityManager {
 				}
 			}
 		}
+		// bypass security check if it's an async execution and not role information is available
+		if (AsyncExecutionMarker.isAsync()) {
+            // all granted if roles are not defined
+            return;
+        }
 		throw new SecurityException("User " + identityProvider.getName() + " does not have permission to access this asset");
 		
 	}

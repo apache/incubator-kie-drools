@@ -31,6 +31,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.executor.impl.event.ExecutorEventSupport;
+import org.jbpm.process.core.async.AsyncExecutionMarker;
 import org.kie.api.executor.Command;
 import org.kie.api.executor.CommandCallback;
 import org.kie.api.executor.CommandContext;
@@ -84,6 +85,7 @@ public abstract class AbstractAvailableJobsExecutor {
     public void executeGivenJob(RequestInfo request) {
         Throwable exception = null;
         try {
+            AsyncExecutionMarker.markAsync();
             eventSupport.fireBeforeJobExecuted(request, null);
             if (request != null) {
             	boolean processReoccurring = false;
@@ -182,6 +184,7 @@ public abstract class AbstractAvailableJobsExecutor {
                 	processReoccurring = handleException(request, e, ctx, callbacks);
                 	
                 } finally {
+                    AsyncExecutionMarker.reset();
                 	handleCompletion(processReoccurring, cmd, ctx);
                 	eventSupport.fireAfterJobExecuted(request, exception);
                 }
