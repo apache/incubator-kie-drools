@@ -15,6 +15,8 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.concurrent.TimeUnit;
+
 import org.drools.core.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Before;
@@ -29,8 +31,6 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.io.ResourceFactory;
-
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -102,7 +102,7 @@ public class QueryCepTest {
         secondEntryPoint.insert(new TestEvent("three"));
         QueryResults results = ksession.getQueryResults("ZeroToNineteenSeconds");
         
-        assertEquals(3, results.size());
+        assertEquals(1, results.size());
     }
     
     @Test

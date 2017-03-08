@@ -119,7 +119,7 @@ public class BuildUtilsTest {
         
         assertEquals( 15, matrix.getExpirationOffset( a ) );
         assertEquals( 11, matrix.getExpirationOffset( d ) );
-        assertEquals( -1, matrix.getExpirationOffset( e ) );
+        assertEquals( 1, matrix.getExpirationOffset( e ) );
         
     }
 

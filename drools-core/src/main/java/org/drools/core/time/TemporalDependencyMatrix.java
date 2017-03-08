@@ -53,20 +53,20 @@ public class TemporalDependencyMatrix {
     }
 
     public long getExpirationOffset(Pattern pattern) {
-        long expiration = 0;
+        long expiration = -1;
         int index = events.indexOf( pattern );
-        for( Interval interval : matrix[index] ) {
-           expiration = Math.max( expiration, interval.getUpperBound() );
+
+        Interval[] intervals = matrix[index];
+        for (int i = 0; i < intervals.length; i++) {
+            if (i != index) { // skip values on the diagonal
+                expiration = Math.max( expiration, intervals[i].getUpperBound() );
+                if (expiration == Long.MAX_VALUE) {
+                    return expiration;
+                }
+            }
         }
-        if( expiration == 0 ) {
-            // no useful info based on the temporal distance calculation, so return -1
-            expiration = -1;
-        } else if( expiration != Long.MAX_VALUE ) {
-            // else, account for the actual expiration by adding one to whatever interval upper bound was found
-            expiration += 1;
-        } // otherwise, it means we must keep the infinite expiration offset 
-                
-        return expiration;
+
+        return expiration >= 0 ? expiration+1 : Long.MAX_VALUE;
     }
-    
+
 }
