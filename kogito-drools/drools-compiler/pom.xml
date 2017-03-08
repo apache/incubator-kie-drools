@@ -240,6 +240,7 @@
               org.eclipse.jdt.*;version="[0,1)";resolution:=optional,
               org.osgi.*;resolution:=optional,
               org.drools.cdi;resolution:=optional,
+              org.drools.template.parser;resolution:=optional,
               org.jbpm.process.instance.impl;resolution:=optional,
               org.kie.dmn.core.assembler;resolution:=optional,
               org.kie.dmn.core.runtime;resolution:=optional,
