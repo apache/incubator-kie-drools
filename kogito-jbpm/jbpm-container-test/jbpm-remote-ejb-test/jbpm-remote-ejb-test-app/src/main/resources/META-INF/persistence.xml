@@ -59,6 +59,8 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
 			<property name="hibernate.max_fetch_depth" value="3" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.show_sql" value="false" />
+			<!-- default schema must be specified for IBM DB2 -->
+			<property name="hibernate.default_schema" value="${org.jbpm.persistence.schema}" />
 			<property name="hibernate.transaction.jta.platform"
 				value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
 			<!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem 
