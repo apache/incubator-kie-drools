@@ -15,7 +15,6 @@
 
 package org.drools.compiler.oopath;
 
-import static java.util.Arrays.asList;
 import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.junit.Assert.*;
 
@@ -25,21 +24,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import org.drools.compiler.integrationtests.SerializationHelper;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
+import org.assertj.core.api.Assertions;
+import org.drools.compiler.oopath.model.Adult;
+import org.drools.compiler.oopath.model.Child;
+import org.drools.compiler.oopath.model.Group;
+import org.drools.compiler.oopath.model.Man;
+import org.drools.compiler.oopath.model.Person;
+import org.drools.compiler.oopath.model.TMDirectory;
+import org.drools.compiler.oopath.model.TMFile;
+import org.drools.compiler.oopath.model.TMFileSet;
+import org.drools.compiler.oopath.model.TMFileWithParentObj;
+import org.drools.compiler.oopath.model.Thing;
+import org.drools.compiler.oopath.model.Toy;
+import org.drools.compiler.oopath.model.Woman;
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveSet;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ReactiveFromNode;
-import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.util.Iterator;
 import org.junit.Test;
-import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
@@ -57,7 +57,7 @@ public class OOPathTest {
     @Test
     public void testInvalidOOPath() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -72,7 +72,7 @@ public class OOPathTest {
     @Test
     public void testInvalidOOPathProperty() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -94,7 +94,7 @@ public class OOPathTest {
     @Test
     public void testIndexedAccess() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
@@ -126,14 +126,13 @@ public class OOPathTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "ball" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("ball");
     }
 
     @Test
     public void testRecursiveOOPathQuery() {
         final String drl =
-                "import org.drools.compiler.oopath.Thing;\n" +
+                "import org.drools.compiler.oopath.model.Thing;\n" +
                 "global java.util.List list\n" +
                 "\n" +
                 "rule \"Print all things contained in the Office\" when\n" +
@@ -191,15 +190,13 @@ public class OOPathTest {
         ksession.insert(key);
 
         ksession.fireAllRules();
-        System.out.println(list);
-        assertEquals( 5, list.size() );
-        assertTrue( list.containsAll( asList( "desk", "chair", "key", "draw", "computer" ) ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("desk", "chair", "key", "draw", "computer");
     }
 
     @Test
     public void testBackReferenceConstraint() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
@@ -232,16 +229,14 @@ public class OOPathTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "ball" ) );
-        assertTrue( list.contains( "guitar" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
     }
 
     @Test
     public void testPrimitives() {
         // DROOLS-1266
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
@@ -264,14 +259,14 @@ public class OOPathTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
+        Assertions.assertThat(list).hasSize(2);
     }
     
     @Test   
     public void testDoubleAdd() {
         // DROOLS-1376
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
                 "  Group( $id: name, $p: /members{age >= 20} )\n" +
@@ -321,7 +316,7 @@ public class OOPathTest {
     public void testDoubleRemove() {
         // DROOLS-1376
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
                 "  Group( $id: name, $p: /members{age >= 20} )\n" +
@@ -364,7 +359,7 @@ public class OOPathTest {
     @Test
     public void testAddAllRemoveIdx() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
                 "  Group( $id: name, $p: /members{age >= 30} )\n" +
@@ -417,7 +412,7 @@ public class OOPathTest {
     @Test
     public void testMiscListMethods() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
                 "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
@@ -499,7 +494,7 @@ public class OOPathTest {
     @Test
     public void testCollectionIteratorRemove() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
                 "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
@@ -567,7 +562,7 @@ public class OOPathTest {
     @Test
     public void testListIteratorRemove() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
                 "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
@@ -673,7 +668,7 @@ public class OOPathTest {
     @Test
     public void testListIteratorMisc() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
                 "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
@@ -775,7 +770,7 @@ public class OOPathTest {
     @Test
     public void testRemoveIfSupport() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
                 "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
@@ -845,7 +840,7 @@ public class OOPathTest {
     @Test
     public void testMiscSetMethods() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
                 "  TMFileSet( $id: name, $p: /files{size >= 100} )\n" +
@@ -917,7 +912,7 @@ public class OOPathTest {
     public void testDeclarationOutsideOOPath() {
         // DROOLS-1411
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "global java.util.Set duplicateNames; \n" +
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
@@ -952,7 +947,7 @@ public class OOPathTest {
     public void testDereferencedDeclarationOutsideOOPath() {
         // DROOLS-1411
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "global java.util.Set duplicateNames; \n" +
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
@@ -987,7 +982,7 @@ public class OOPathTest {
     public void testDeclarationInsideOOPath() {
         // DROOLS-1411
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "global java.util.Set duplicateNames; \n" +
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
@@ -1022,7 +1017,7 @@ public class OOPathTest {
     public void testCompileErrorOnDoubleOOPathInPattern() {
         // DROOLS-1411
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "global java.util.Set duplicateNames; \n" +
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
@@ -1038,7 +1033,7 @@ public class OOPathTest {
     public void testOOPathWithLocalDeclaration() {
         // DROOLS-1411
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "global java.util.Set duplicateNames; \n" +
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
@@ -1090,7 +1085,7 @@ public class OOPathTest {
     public void testOOPathWithLocalInnerDeclaration() {
         // DROOLS-1411
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                 "import "+TMFileSetQuater.class.getCanonicalName()+";\n" +
                 "global java.util.Set duplicateNames; \n" +
                 "\n" +

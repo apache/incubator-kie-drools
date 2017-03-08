@@ -18,6 +18,9 @@ package org.drools.compiler.oopath;
 
 import java.util.Collection;
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.oopath.model.Adult;
+import org.drools.compiler.oopath.model.Child;
+import org.drools.compiler.oopath.model.Man;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -28,7 +31,7 @@ public class OOPathCollectTest {
     @Test
     public void testCollect() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List<Adult> globalVar\n" +
                         "rule R when\n" +
                         "  $collectResults : java.util.ArrayList() \n " +

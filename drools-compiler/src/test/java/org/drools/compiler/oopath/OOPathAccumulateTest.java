@@ -16,11 +16,10 @@
 
 package org.drools.compiler.oopath;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Collection;
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.oopath.model.Child;
+import org.drools.compiler.oopath.model.Man;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -66,7 +65,7 @@ public class OOPathAccumulateTest {
     private void testAccumulate(final String accumulateFunction, final Number expectedResult) {
         // DROOLS-1265
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.lang.Object globalVar\n" +
                         "\n" +
                         "rule R when\n" +
@@ -88,15 +87,15 @@ public class OOPathAccumulateTest {
 
         final Number result = (Number) ksession.getGlobal("globalVar");
         if (result instanceof Double) {
-            assertEquals(expectedResult.doubleValue(), result.doubleValue(), 0);
+            Assertions.assertThat(expectedResult.doubleValue()).isEqualTo(result.doubleValue());
         } else {
-            assertEquals(expectedResult.longValue(), result.longValue());
+            Assertions.assertThat(expectedResult.longValue()).isEqualTo(result.longValue());
         }
     }
 
     private void testAccumulateCollection(final String accumulateFunction, final Integer... expectedResults) {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.Collection<Integer> globalVar\n" +
                         "\n" +
                         "rule R when\n" +

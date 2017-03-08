@@ -16,11 +16,16 @@
 
 package org.drools.compiler.oopath;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.assertj.core.api.Assertions;
+import org.drools.compiler.oopath.model.BabyBoy;
+import org.drools.compiler.oopath.model.BabyGirl;
+import org.drools.compiler.oopath.model.Man;
+import org.drools.compiler.oopath.model.Toy;
+import org.drools.compiler.oopath.model.Woman;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -35,7 +40,7 @@ public class OOPathCastTest {
     @Test
     public void testInlineCast() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -67,14 +72,13 @@ public class OOPathCastTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "doll" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("doll");
     }
 
     @Test
     public void testInvalidCast() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -92,7 +96,7 @@ public class OOPathCastTest {
     @Test
     public void testInlineCastWithConstraint() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -124,8 +128,6 @@ public class OOPathCastTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "Debbie" ) );
-        assertTrue( list.contains( "Farrah" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Debbie", "Farrah");
     }
 }

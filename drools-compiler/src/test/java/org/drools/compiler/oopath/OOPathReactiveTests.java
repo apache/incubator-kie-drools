@@ -16,14 +16,19 @@
 
 package org.drools.compiler.oopath;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.compiler.oopath.model.Adult;
+import org.drools.compiler.oopath.model.Child;
+import org.drools.compiler.oopath.model.Group;
+import org.drools.compiler.oopath.model.Man;
+import org.drools.compiler.oopath.model.School;
+import org.drools.compiler.oopath.model.Toy;
+import org.drools.compiler.oopath.model.Woman;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.BetaMemory;
@@ -52,7 +57,7 @@ public class OOPathReactiveTests {
     @Test
     public void testReactiveOnLia() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -84,22 +89,19 @@ public class OOPathReactiveTests {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "car" ) );
-        assertTrue( list.contains( "ball" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         debbie.setAge( 11 );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "doll" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("doll");
     }
 
     @Test
     public void testReactiveDeleteOnLia() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -139,37 +141,33 @@ public class OOPathReactiveTests {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 3, list.size() );
-        assertTrue( list.contains( "car" ) );
-        assertTrue( list.contains( "ball" ) );
-        assertTrue( list.contains( "doll" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball", "doll");
 
         final TupleMemory tupleMemory = betaMemory.getLeftTupleMemory();
-        assertEquals( 2, betaMemory.getLeftTupleMemory().size() );
+        Assertions.assertThat(betaMemory.getLeftTupleMemory().size()).isEqualTo(2);
         Iterator<LeftTuple> it = tupleMemory.iterator();
         for ( LeftTuple next = it.next(); next != null; next = it.next() ) {
             final Object obj = next.getFactHandle().getObject();
-            assertTrue( obj == charlie || obj == debbie );
+            Assertions.assertThat(obj == charlie || obj == debbie).isTrue();
         }
 
         list.clear();
         debbie.setAge( 10 );
         ksession.fireAllRules();
 
-        assertEquals( 0, list.size() );
-
-        assertEquals( 1, betaMemory.getLeftTupleMemory().size() );
+        Assertions.assertThat(list).hasSize(0);;
+        Assertions.assertThat(betaMemory.getLeftTupleMemory().size()).isEqualTo(1);
         it = tupleMemory.iterator();
         for ( LeftTuple next = it.next(); next != null; next = it.next() ) {
             final Object obj = next.getFactHandle().getObject();
-            assertTrue( obj == charlie );
+            Assertions.assertThat(obj == charlie).isTrue();
         }
     }
 
     @Test
     public void testRemoveFromReactiveListBasic() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "\n" +
                         "rule R2 when\n" +
                         "  School( $child: /children{age >= 13 && age < 20} )\n" +
@@ -216,7 +214,7 @@ public class OOPathReactiveTests {
     @Test
     public void testRemoveFromReactiveListExtended() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "\n" +
                         "rule R2 when\n" +
                         "  Group( $id: name, $p: /members{age >= 20} )\n" +
@@ -268,7 +266,7 @@ public class OOPathReactiveTests {
     @Test
     public void testRemoveFromReactiveListExtendedWithSerialization() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "\n" +
                         "rule R2 when\n" +
                         "  Group( $id: name, $p: /members{age >= 20} )\n" +
@@ -324,7 +322,7 @@ public class OOPathReactiveTests {
     @Test
     public void testReactiveOnBeta() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -358,22 +356,19 @@ public class OOPathReactiveTests {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "car" ) );
-        assertTrue( list.contains( "ball" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         debbie.setAge( 11 );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "doll" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("doll");
     }
 
     @Test
     public void testReactive2Rules() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List toyList\n" +
                         "global java.util.List teenagers\n" +
                         "\n" +
@@ -420,29 +415,21 @@ public class OOPathReactiveTests {
         ksession.insert( school );
         ksession.fireAllRules();
 
-        assertEquals( 2, toyList.size() );
-        assertTrue( toyList.contains( "car" ) );
-        assertTrue( toyList.contains( "ball" ) );
-
-        assertEquals( 1, teenagers.size() );
-        assertTrue( teenagers.contains( "Charles" ) );
+        Assertions.assertThat(toyList).containsExactlyInAnyOrder("car", "ball");
+        Assertions.assertThat(teenagers).containsExactlyInAnyOrder("Charles");
 
         toyList.clear();
         debbie.setAge( 13 );
         ksession.fireAllRules();
 
-        assertEquals( 1, toyList.size() );
-        assertTrue( toyList.contains( "doll" ) );
-
-        assertEquals( 2, teenagers.size() );
-        assertTrue( teenagers.contains( "Charles" ) );
-        assertTrue( teenagers.contains( "Debbie" ) );
+        Assertions.assertThat(toyList).containsExactlyInAnyOrder("doll");
+        Assertions.assertThat(teenagers).containsExactlyInAnyOrder("Charles", "Debbie");
     }
 
     @Test
     public void testReactiveList() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -474,22 +461,19 @@ public class OOPathReactiveTests {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "car" ) );
-        assertTrue( list.contains( "ball" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         charlie.addToy( new Toy( "gun" ) );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertTrue( list.contains( "gun" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("gun");
     }
 
     @Test
     public void testNonReactivePart() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -521,21 +505,19 @@ public class OOPathReactiveTests {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "car" ) );
-        assertTrue( list.contains( "ball" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         charlie.addToy( new Toy( "robot" ) );
         ksession.fireAllRules();
 
-        assertEquals( 0, list.size() );
+        Assertions.assertThat(list).isEmpty();
     }
 
     @Test
     public void testAllNonReactiveAfterNonReactivePart() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -567,21 +549,19 @@ public class OOPathReactiveTests {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "car" ) );
-        assertTrue( list.contains( "ball" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
 
         list.clear();
         charlie.addToy( new Toy( "robot" ) );
         ksession.fireAllRules();
 
-        assertEquals( 0, list.size() );
+        Assertions.assertThat(list).isEmpty();
     }
 
     @Test
     public void testInvalidDoubleNonReactivePart() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -600,7 +580,7 @@ public class OOPathReactiveTests {
     public void testSingleFireOnReactiveChange() {
         // DROOLS-1302
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -630,15 +610,14 @@ public class OOPathReactiveTests {
         eleonor.setAge(11);
 
         ksession.fireAllRules();
-        System.out.println(list);
-        assertEquals( 1, list.size() );
+
+        Assertions.assertThat(list).hasSize(1);
 
         list.clear();
 
         toy.setName( "eleonor toy 2" );
         ksession.fireAllRules();
-        System.out.println(list);
-        assertEquals( 1, list.size() );
+        Assertions.assertThat(list).hasSize(1);
     }
 
     private List<?> factsCollection(KieSession ksession) {

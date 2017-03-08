@@ -16,11 +16,16 @@
 
 package org.drools.compiler.oopath;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.oopath.model.Child;
+import org.drools.compiler.oopath.model.Man;
+import org.drools.compiler.oopath.model.Toy;
+import org.drools.compiler.oopath.model.Woman;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -29,18 +34,18 @@ import org.kie.internal.utils.KieHelper;
 public class OOPathBindTest {
 
     @Test
-    public void testBindIntegerFireAllRules() throws InterruptedException {
+    public void testBindIntegerFireAllRules() throws InterruptedException, ExecutionException {
         testBindInteger(false);
     }
 
     @Test(timeout = 1000)
-    public void testBindIntegerFireUntilHalt() throws InterruptedException {
+    public void testBindIntegerFireUntilHalt() throws InterruptedException, ExecutionException {
         testBindInteger(true);
     }
 
-    public void testBindInteger(final boolean fireUntilHalt) throws InterruptedException {
+    public void testBindInteger(final boolean fireUntilHalt) throws InterruptedException, ExecutionException {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -53,35 +58,46 @@ public class OOPathBindTest {
                 .build()
                 .newKieSession();
 
+        Future fireUntilHaltFuture = null;
         if (fireUntilHalt) {
-            new Thread(ksession::fireUntilHalt).start();
+            fireUntilHaltFuture = startFireUntilHaltThread(ksession);
         }
 
-        final List<String> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
         ksession.setGlobal( "list", list );
 
         final Man bob = new Man( "Bob", 40 );
 
         ksession.insert(bob);
         if (fireUntilHalt) {
-            try {
-                while (list.size() < 1) {
-                    Thread.sleep(100);
-                }
-            } finally {
-                ksession.halt();
-            }
+            waitForResultAndStopFireUntilHalt(list, ksession, fireUntilHaltFuture);
         } else {
             ksession.fireAllRules();
-            assertEquals( 1, list.size() );
+            Assertions.assertThat(list).hasSize(1);
         }
-        assertTrue( list.contains( 40 ) );
+        Assertions.assertThat(list).contains(40);
+    }
+
+    private Future startFireUntilHaltThread(final KieSession kieSession) {
+        return Executors.newSingleThreadExecutor().submit((Runnable) kieSession::fireUntilHalt);
+    }
+
+    private void waitForResultAndStopFireUntilHalt(final List<Integer> resultList, final KieSession kieSession,
+            final Future fireUntilHaltFuture) throws InterruptedException, ExecutionException {
+        try {
+            while (resultList.size() < 1) {
+                Thread.sleep(100);
+            }
+        } finally {
+            kieSession.halt();
+            fireUntilHaltFuture.get();
+        }
     }
 
     @Test
     public void testBindString() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -96,7 +112,7 @@ public class OOPathBindTest {
     @Test
     public void testBindStringWithConstraint() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -111,7 +127,7 @@ public class OOPathBindTest {
     @Test
     public void testBindStringWithAlphaConstraint() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -126,7 +142,7 @@ public class OOPathBindTest {
     @Test
     public void testBindStringWithBetaConstraint() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -154,14 +170,13 @@ public class OOPathBindTest {
         ksession.insert(alice);
         ksession.fireAllRules();
 
-        assertEquals( expectedResults.length, list.size() );
         Assertions.assertThat(list).containsExactlyInAnyOrder(expectedResults);
     }
 
     @Test
     public void testBindObjectFromList() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -184,15 +199,13 @@ public class OOPathBindTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "Charles" ) );
-        assertTrue( list.contains( "Debbie" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Charles", "Debbie");
     }
 
     @Test
     public void testBindList() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -224,15 +237,13 @@ public class OOPathBindTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( 1 ) );
-        assertTrue( list.contains( 2 ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder(1, 2);
     }
 
     @Test
     public void testBindListWithConstraint() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -264,7 +275,6 @@ public class OOPathBindTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 1, list.size() );
-        assertEquals( 2, (int) list.get( 0 ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder(2);
     }
 }

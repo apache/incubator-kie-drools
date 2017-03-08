@@ -14,32 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.oopath;
+package org.drools.compiler.oopath.model;
 
-public class TMFileWithParentObj extends TMFile {
+public class BabyGirl extends Child {
 
-    private long id;
-    private Object parent;
+    private final String favoriteDollName;
 
-    public TMFileWithParentObj(long id, String name, int size, Object parent) {
-        super(name, size);
-        this.id = id;
-        this.parent = parent;
+    public BabyGirl(String name, int age) {
+        this(name, age, null);
     }
 
-    public long getId() {
-        return id;
+    public BabyGirl(String name, int age, String favoriteDollName) {
+        super(name, age);
+        this.favoriteDollName = favoriteDollName;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Object getParent() {
-        return parent;
-    }
-
-    public void setParent(Object parent) {
-        this.parent = parent;
+    public String getFavoriteDollName() {
+        return favoriteDollName;
     }
 }

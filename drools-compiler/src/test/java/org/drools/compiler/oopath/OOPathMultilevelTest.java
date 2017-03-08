@@ -16,10 +16,13 @@
 
 package org.drools.compiler.oopath;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.assertj.core.api.Assertions;
+import org.drools.compiler.oopath.model.Child;
+import org.drools.compiler.oopath.model.Man;
+import org.drools.compiler.oopath.model.Toy;
+import org.drools.compiler.oopath.model.Woman;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -30,7 +33,7 @@ public class OOPathMultilevelTest {
     @Test
     public void testClassTwoLevelPath() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -62,16 +65,13 @@ public class OOPathMultilevelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 3, list.size() );
-        assertTrue( list.contains( "car" ) );
-        assertTrue( list.contains( "ball" ) );
-        assertTrue( list.contains( "doll" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball", "doll");
     }
 
     @Test
     public void testClassThreeLevelPath() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -100,15 +100,13 @@ public class OOPathMultilevelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "car" ) );
-        assertTrue( list.contains( "ball" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
     }
 
     @Test
     public void testClassTwoLevelPathWithAlphaConstraint() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -123,7 +121,7 @@ public class OOPathMultilevelTest {
     @Test
     public void testClassTwoLevelPathWithBetaConstraint() {
         final String drl =
-                "import org.drools.compiler.oopath.*;\n" +
+                "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
@@ -163,8 +161,6 @@ public class OOPathMultilevelTest {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "car" ) );
-        assertTrue( list.contains( "ball" ) );
+        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
     }
 }
