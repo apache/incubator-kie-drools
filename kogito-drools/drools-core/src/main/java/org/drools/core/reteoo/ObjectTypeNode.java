@@ -62,6 +62,8 @@ import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
+import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
  * fact assertions propagated from the <code>Rete</code> node using <code>ObjectType</code> interface.
@@ -572,6 +574,12 @@ public class ObjectTypeNode extends ObjectSource
                 this.setObjectMemoryEnabled(false);
             }
         }
+    }
+
+    public void mergeExpirationOffset(ObjectTypeNode other) {
+        setExpirationOffset( expirationOffset == NEVER_EXPIRES || other.expirationOffset == NEVER_EXPIRES ?
+                             NEVER_EXPIRES :
+                             Math.max(expirationOffset, other.expirationOffset) );
     }
 
     public static class ExpireJob

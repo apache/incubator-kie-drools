@@ -16,6 +16,10 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.mvel.ActivationPropertyHandler;
@@ -48,12 +52,9 @@ import org.kie.api.conf.EventProcessingOption;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildJoinNode;
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildTupleSource;
+import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 
 /**
  * A builder for patterns
@@ -289,18 +290,16 @@ public class PatternBuilder
 
     private static long getExpiratioOffsetForType(BuildContext context,
                                                   ObjectType objectType) {
-        long expirationOffset = -1;
-        for ( TypeDeclaration type : context.getKnowledgeBase().getTypeDeclarations() ) {
-            if ( type.getObjectType().isAssignableFrom( objectType ) ) {
-                expirationOffset = Math.max( type.getExpirationOffset(),
-                                             expirationOffset );
-            }
-        }
+        long expirationOffset = context.getKnowledgeBase().getTypeDeclarations().stream()
+                                       .filter( t -> t.getObjectType().isAssignableFrom( objectType ) )
+                                       .mapToLong( TypeDeclaration::getExpirationOffset )
+                                       .max().orElse( NEVER_EXPIRES );
+
         // if none of the type declarations have an @expires annotation
         // we return -1 (no-expiration) value, otherwise we return the
         // set expiration value+1 to enable the fact to match events with
         // the same timestamp
-        return expirationOffset == -1 ? -1 : expirationOffset+1;
+        return expirationOffset == NEVER_EXPIRES ? NEVER_EXPIRES : expirationOffset+1;
     }
 
     public void attachAlphaNodes(final BuildContext context,
@@ -352,19 +351,19 @@ public class PatternBuilder
         if ( objectType.isEvent() && EventProcessingOption.STREAM.equals( context.getKnowledgeBase().getConfiguration().getEventProcessingMode() ) ) {
             long expirationOffset = getExpiratioOffsetForType( context,
                                                                objectType );
-            if( expirationOffset != -1 ) {
+            if( expirationOffset != NEVER_EXPIRES ) {
                 // expiration policy is set, so use it
                 otn.setExpirationOffset( expirationOffset );
             } else {
                 // otherwise calculate it based on behaviours and temporal constraints
                 for ( Behavior behavior : pattern.getBehaviors() ) {
-                    if ( behavior.getExpirationOffset() != -1 ) {
+                    if ( behavior.getExpirationOffset() != NEVER_EXPIRES ) {
                         expirationOffset = Math.max( behavior.getExpirationOffset(),
                                                      expirationOffset );
                     }
                 }
-                long distance = context.getTemporalDistance() != null ? context.getTemporalDistance().getExpirationOffset( pattern ) : -1;
-                if( distance == -1 ) {
+                long distance = context.getExpirationOffset( pattern );
+                if( distance == NEVER_EXPIRES ) {
                     // it means the rules have no temporal constraints, or
                     // the constraints require events to be hold forever. In this 
                     // case, we allow type declarations to override the implicit 

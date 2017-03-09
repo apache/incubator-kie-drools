@@ -46,6 +46,8 @@ public class TypeDeclaration
     Externalizable,
     Comparable<TypeDeclaration> {
 
+    public static final long NEVER_EXPIRES = -1;
+
     public static final int ROLE_BIT                    = 1;
     public static final int TYPESAFE_BIT                = 2;
     public static final int FORMAT_BIT                  = 4;
@@ -112,7 +114,7 @@ public class TypeDeclaration
     private transient List<String> accessibleProperties;
 
     private transient ObjectType   objectType;
-    private long                   expirationOffset = -1;
+    private long                   expirationOffset = NEVER_EXPIRES;
 
     private int                    order;
 

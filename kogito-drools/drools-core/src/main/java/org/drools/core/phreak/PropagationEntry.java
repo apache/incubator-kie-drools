@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import java.util.concurrent.CountDownLatch;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -32,7 +34,7 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
 
-import java.util.concurrent.CountDownLatch;
+import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 
 public interface PropagationEntry {
 
@@ -167,7 +169,7 @@ public interface PropagationEntry {
         }
 
         private static void scheduleExpiration( InternalWorkingMemory wm, InternalFactHandle handle, PropagationContext context, ObjectTypeNode otn, long insertionTime, long expirationOffset ) {
-            if ( expirationOffset < 0 || expirationOffset == Long.MAX_VALUE || context.getReaderContext() != null ) {
+            if ( expirationOffset == NEVER_EXPIRES || expirationOffset == Long.MAX_VALUE || context.getReaderContext() != null ) {
                 return;
             }
 
