@@ -302,7 +302,7 @@
             </includes>
             <argLine>${failsafe.arg.line}</argLine>
             <additionalClasspathElements>
-              <additionalClasspathElement>${project.build.directory}/jdbc_driver.jar</additionalClasspathElement>
+              <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
             </additionalClasspathElements>
             <systemPropertyVariables>
               <project.version>${project.version}</project.version>
