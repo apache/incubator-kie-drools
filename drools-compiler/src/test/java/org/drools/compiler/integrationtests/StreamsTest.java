@@ -58,6 +58,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mockito.ArgumentCaptor;
 
+import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -567,7 +568,7 @@ public class StreamsTest extends CommonTestMethodBase {
         ObjectType stot = new ClassObjectType( StockTick.class );
         for (ObjectTypeNode otn : otns) {
             if (otn.getObjectType().isAssignableFrom( stot )) {
-                assertEquals( Long.MAX_VALUE,
+                assertEquals( NEVER_EXPIRES,
                               otn.getExpirationOffset() );
             }
         }

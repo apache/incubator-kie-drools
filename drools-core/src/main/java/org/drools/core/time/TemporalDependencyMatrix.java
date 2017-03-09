@@ -17,8 +17,11 @@
 package org.drools.core.time;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.drools.core.rule.Pattern;
+
+import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 
 /**
  * A class to abstract the management of temporal
@@ -53,20 +56,14 @@ public class TemporalDependencyMatrix {
     }
 
     public long getExpirationOffset(Pattern pattern) {
-        long expiration = -1;
         int index = events.indexOf( pattern );
-
         Interval[] intervals = matrix[index];
-        for (int i = 0; i < intervals.length; i++) {
-            if (i != index) { // skip values on the diagonal
-                expiration = Math.max( expiration, intervals[i].getUpperBound() );
-                if (expiration == Long.MAX_VALUE) {
-                    return expiration;
-                }
-            }
-        }
 
-        return expiration >= 0 ? expiration+1 : Long.MAX_VALUE;
+        long expiration = IntStream.range( 0, intervals.length )
+                                   .filter( i -> i != index ) // skip values on the diagonal
+                                   .mapToLong( i -> intervals[i].getUpperBound() )
+                                   .max().orElse( NEVER_EXPIRES );
+
+        return expiration >= 0 && expiration != Long.MAX_VALUE ? expiration+1 : NEVER_EXPIRES;
     }
-
 }
