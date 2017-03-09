@@ -14,7 +14,7 @@
  *
  */
 
-package org.drools.compiler.xpath.graph;
+package org.drools.compiler.oopath.graph;
 
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveList;

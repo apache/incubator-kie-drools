@@ -13,23 +13,25 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.assertj.core.api.Assertions;
+import org.drools.compiler.oopath.model.Child;
+import org.drools.compiler.oopath.model.Man;
+import org.drools.compiler.oopath.model.Toy;
+import org.drools.compiler.oopath.model.Woman;
 import org.drools.core.common.InternalFactHandle;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-
-public class XpathBenchmarkTest {
+public class OOPathBenchmarkTest {
 
     private static final String RELATIONAL_DRL =
-            "import org.drools.compiler.xpath.*;\n" +
+            "import org.drools.compiler.oopath.model.*;\n" +
             "global java.util.List list\n" +
             "\n" +
             "rule R when\n" +
@@ -42,7 +44,7 @@ public class XpathBenchmarkTest {
             "end\n";
 
     private static final String FROM_DRL =
-            "import org.drools.compiler.xpath.*;\n" +
+            "import org.drools.compiler.oopath.model.*;\n" +
             "global java.util.List list\n" +
             "\n" +
             "rule R when\n" +
@@ -53,12 +55,12 @@ public class XpathBenchmarkTest {
             "    list.add( $toy.getName() );\n" +
             "end\n";
 
-    private static final String XPATH_DRL =
-            "import org.drools.compiler.xpath.*;\n" +
+    private static final String OOPATH_DRL =
+            "import org.drools.compiler.oopath.model.*;\n" +
             "global java.util.List list\n" +
             "\n" +
             "rule R when\n" +
-            "  Man( $toy: /wife/children[age > 10]/toys )\n" +
+            "  Man( $toy: /wife/children{age > 10}/toys )\n" +
             "then\n" +
             "  list.add( $toy.getName() );\n" +
             "end\n";
@@ -72,12 +74,12 @@ public class XpathBenchmarkTest {
         System.out.println("From version");
         runTest(new FromTest(), n);
         System.out.println("-------------------------------------");
-        System.out.println("Xpath version");
-        runTest(new XpathTest(), n);
+        System.out.println("OOPath version");
+        runTest(new OOPathTest(), n);
     }
 
     private static void runTest(Test test, int n) {
-        KieBase kbase = getKieBase(test.getDrl());
+        final KieBase kbase = getKieBase(test.getDrl());
 
         // warmup
         for (int i = 0; i < 3; i++) {
@@ -85,8 +87,8 @@ public class XpathBenchmarkTest {
             System.gc();
         }
 
-        BenchmarkResult batch = new BenchmarkResult("Batch");
-        BenchmarkResult incremental = new BenchmarkResult("Incremental");
+        final BenchmarkResult batch = new BenchmarkResult("Batch");
+        final BenchmarkResult incremental = new BenchmarkResult("Incremental");
         for (int i = 0; i < 10; i++) {
             long[] result = test.runTest(kbase, n);
             batch.accumulate(result[0]);
@@ -127,30 +129,30 @@ public class XpathBenchmarkTest {
         }
     }
 
-    private static class XpathTest implements Test {
+    private static class OOPathTest implements Test {
         @Override
         public long[] runTest(KieBase kbase, int n) {
-            return testXPath(kbase, n);
+            return testOOPath(kbase, n);
         }
 
         @Override
         public String getDrl() {
-            return XPATH_DRL;
+            return OOPATH_DRL;
         }
     }
 
     public static long[] testRelational(KieBase kbase, int n) {
-        long[] result = new long[2];
+        final long[] result = new long[2];
 
-        KieSession ksession = kbase.newKieSession();
-        List<String> list = new ArrayList<String>();
+        final KieSession ksession = kbase.newKieSession();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
-        List<Man> model = generateModel(n);
-        List<Child> toBeModified = getChildToBeModified(model);
+        final List<Man> model = generateModel(n);
+        final List<Child> toBeModified = getChildToBeModified(model);
 
         long start = System.nanoTime();
-        List<InternalFactHandle> fhs = insertFullModel(ksession, model);
+        final List<InternalFactHandle> fhs = insertFullModel(ksession, model);
         ksession.fireAllRules();
         result[0] = System.nanoTime() - start;
 
@@ -166,24 +168,24 @@ public class XpathBenchmarkTest {
         ksession.fireAllRules();
         result[1] = System.nanoTime() - start;
 
-        assertEquals(n, list.size());
+        Assertions.assertThat(n).isEqualTo(list.size());
         ksession.dispose();
 
         return result;
     }
 
     public static long[] testFrom(KieBase kbase, int n) {
-        long[] result = new long[2];
+        final long[] result = new long[2];
 
-        KieSession ksession = kbase.newKieSession();
-        List<String> list = new ArrayList<String>();
+        final KieSession ksession = kbase.newKieSession();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
-        List<Man> model = generateModel(n);
-        List<Child> toBeModified = getChildToBeModified(model);
+        final List<Man> model = generateModel(n);
+        final List<Child> toBeModified = getChildToBeModified(model);
 
         long start = System.nanoTime();
-        List<InternalFactHandle> fhs = insertModel(ksession, model);
+        final List<InternalFactHandle> fhs = insertModel(ksession, model);
         ksession.fireAllRules();
         result[0] = System.nanoTime() - start;
 
@@ -199,21 +201,21 @@ public class XpathBenchmarkTest {
         ksession.fireAllRules();
         result[1] = System.nanoTime() - start;
 
-        assertEquals(n * 3, list.size());
+        Assertions.assertThat(n * 3).isEqualTo(list.size());
         ksession.dispose();
 
         return result;
     }
 
-    public static long[] testXPath(KieBase kbase, int n) {
-        long[] result = new long[2];
+    public static long[] testOOPath(KieBase kbase, int n) {
+        final long[] result = new long[2];
 
-        KieSession ksession = kbase.newKieSession();
-        List<String> list = new ArrayList<String>();
+        final KieSession ksession = kbase.newKieSession();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
-        List<Man> model = generateModel(n);
-        List<Child> toBeModified = getChildToBeModified(model);
+        final List<Man> model = generateModel(n);
+        final List<Child> toBeModified = getChildToBeModified(model);
 
         long start = System.nanoTime();
         insertModel(ksession, model);
@@ -229,7 +231,7 @@ public class XpathBenchmarkTest {
         ksession.fireAllRules();
         result[1] = System.nanoTime() - start;
 
-        assertEquals(n, list.size());
+        Assertions.assertThat(n).isEqualTo(list.size());
         ksession.dispose();
 
         return result;
@@ -240,28 +242,28 @@ public class XpathBenchmarkTest {
     }
 
     private static List<Man> generateModel(int nr) {
-        List<Man> model = new ArrayList<Man>();
+        final List<Man> model = new ArrayList<Man>();
         for (int i = 0; i < nr; i++) {
-            Man man = new Man("m" + i, 40);
+            final Man man = new Man("m" + i, 40);
             model.add(man);
-            Woman woman = new Woman("w" + i, 35);
+            final Woman woman = new Woman("w" + i, 35);
             man.setWife(woman);
             woman.setHusband(man.getName());
 
-            Child childA = new Child("cA" + i, 12);
+            final Child childA = new Child("cA" + i, 12);
             woman.addChild(childA);
             childA.setMother(woman.getName());
-            Child childB = new Child("cB" + i, 10);
+            final Child childB = new Child("cB" + i, 10);
             woman.addChild(childB);
             childB.setMother(woman.getName());
 
-            Toy toyA = new Toy("tA" + i);
+            final Toy toyA = new Toy("tA" + i);
             toyA.setOwner(childA.getName());
             childA.addToy(toyA);
-            Toy toyB = new Toy("tB" + i);
+            final Toy toyB = new Toy("tB" + i);
             toyB.setOwner(childA.getName());
             childA.addToy(toyB);
-            Toy toyC = new Toy("tC" + i);
+            final Toy toyC = new Toy("tC" + i);
             toyC.setOwner(childB.getName());
             childB.addToy(toyC);
         }
@@ -269,7 +271,7 @@ public class XpathBenchmarkTest {
     }
 
     private static List<Child> getChildToBeModified(List<Man> model) {
-        List<Child> toBeModified = new ArrayList<Child>();
+        final List<Child> toBeModified = new ArrayList<Child>();
         for (Man man : model) {
             for (Child child : man.getWife().getChildren()) {
                 if (child.getAge() == 10) {
@@ -281,7 +283,7 @@ public class XpathBenchmarkTest {
     }
 
     private static List<InternalFactHandle> insertModel(KieSession ksession, List<Man> model) {
-        List<InternalFactHandle> fhs = new ArrayList<InternalFactHandle>();
+        final List<InternalFactHandle> fhs = new ArrayList<InternalFactHandle>();
         for (Man man : model) {
             fhs.add((InternalFactHandle)ksession.insert(man));
         }
@@ -289,12 +291,12 @@ public class XpathBenchmarkTest {
     }
 
     private static List<InternalFactHandle> insertFullModel(KieSession ksession, List<Man> model) {
-        List<InternalFactHandle> toBeModified = new ArrayList<InternalFactHandle>();
+        final List<InternalFactHandle> toBeModified = new ArrayList<InternalFactHandle>();
         for (Man man : model) {
             ksession.insert(man);
             ksession.insert(man.getWife());
             for (Child child : man.getWife().getChildren()) {
-                InternalFactHandle fh = (InternalFactHandle)ksession.insert(child);
+                final InternalFactHandle fh = (InternalFactHandle)ksession.insert(child);
                 if (child.getAge() == 10) {
                     toBeModified.add(fh);
                 }

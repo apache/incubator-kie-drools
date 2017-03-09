@@ -1,11 +1,11 @@
 /*
- * Copyright 2005 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.drools.core.phreak.AbstractReactiveObject;
 
-public class Thing {
+public abstract class Person extends AbstractReactiveObject {
+
     private final String name;
-    private final List<Thing> children = new ArrayList<Thing>();
+    private int age;
 
-    public Thing( String name ) {
+    public Person(String name, int age) {
         this.name = name;
+        this.age = age;
     }
 
     public String getName() {
         return name;
     }
 
-    public void addChild(Thing child) {
-        children.add(child);
+    public int getAge() {
+        return age;
     }
 
-    public List<Thing> getChildren() {
-        return children;
+    public void setAge(int age) {
+        this.age = age;
+        notifyModification();
     }
 
     @Override

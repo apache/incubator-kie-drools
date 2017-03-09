@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.xpath;
+package org.drools.compiler.oopath;
 
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;

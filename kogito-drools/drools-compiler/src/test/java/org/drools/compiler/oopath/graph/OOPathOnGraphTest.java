@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.xpath.graph;
+package org.drools.compiler.oopath.graph;
 
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.reteoo.ReteDumper;
@@ -29,12 +29,12 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class XpathOnGraphTest {
+public class OOPathOnGraphTest {
 
     @Test
-    public void testXpathOnGraph() {
+    public void testOOPathOnGraph() {
         String drl =
-                "import org.drools.compiler.xpath.graph.*;\n" +
+                "import org.drools.compiler.oopath.graph.*;\n" +
                 "import " + Library.class.getCanonicalName() + ";\n" +
                 "import " + Book.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -71,9 +71,9 @@ public class XpathOnGraphTest {
     }
 
     @Test
-    public void testXpathOnGraphWithReactiveContentModification() {
+    public void testOOPathOnGraphWithReactiveContentModification() {
         String drl =
-                "import org.drools.compiler.xpath.graph.*;\n" +
+                "import org.drools.compiler.oopath.graph.*;\n" +
                 "import " + Library.class.getCanonicalName() + ";\n" +
                 "import " + Book.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -110,9 +110,9 @@ public class XpathOnGraphTest {
     }
 
     @Test
-    public void testXpathOnGraphWithReactiveContentModificationInSubgraph() {
+    public void testOOPathOnGraphWithReactiveContentModificationInSubgraph() {
         String drl =
-                "import org.drools.compiler.xpath.graph.*;\n" +
+                "import org.drools.compiler.oopath.graph.*;\n" +
                 "import " + Library.class.getCanonicalName() + ";\n" +
                 "import " + Book.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
@@ -151,9 +151,9 @@ public class XpathOnGraphTest {
     }
 
     @Test
-    public void testXpathOnGraphWithNonReactiveContentModification() {
+    public void testOOPathOnGraphWithNonReactiveContentModification() {
         String drl =
-                "import org.drools.compiler.xpath.graph.*;\n" +
+                "import org.drools.compiler.oopath.graph.*;\n" +
                 "import " + Library.class.getCanonicalName() + ";\n" +
                 "import " + Book.class.getCanonicalName() + ";\n" +
                 "import " + Person.class.getCanonicalName() + ";\n" +
