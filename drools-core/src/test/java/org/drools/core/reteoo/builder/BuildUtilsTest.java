@@ -45,7 +45,7 @@ public class BuildUtilsTest {
     }
 
     /**
-     * Test method for {@link org.kie.reteoo.builder.BuildUtils#calculateTemporalDistance(org.kie.common.InternalRuleBase, org.kie.rule.GroupElement)}.
+     * Test method for {@link org.drools.core.reteoo.builder.BuildUtils#calculateTemporalDistance(org.drools.core.rule.GroupElement)}.
      */
     @Test
     public void testCalculateTemporalDistance() {
@@ -119,7 +119,7 @@ public class BuildUtilsTest {
         
         assertEquals( 15, matrix.getExpirationOffset( a ) );
         assertEquals( 11, matrix.getExpirationOffset( d ) );
-        assertEquals( -1, matrix.getExpirationOffset( e ) );
+        assertEquals( 1, matrix.getExpirationOffset( e ) );
         
     }
 

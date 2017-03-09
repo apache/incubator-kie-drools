@@ -105,8 +105,7 @@ public class BuildUtils {
                 ObjectTypeNode otn = map.get( ((ObjectTypeNode) candidate).getObjectType() );
                 if ( otn != null ) {
                     // adjusting expiration offset
-                    otn.setExpirationOffset( Math.max( otn.getExpirationOffset(),
-                                                       ((ObjectTypeNode) candidate).getExpirationOffset() ) );
+                    otn.mergeExpirationOffset( (ObjectTypeNode) candidate );
                     node = otn;
                 }
             }

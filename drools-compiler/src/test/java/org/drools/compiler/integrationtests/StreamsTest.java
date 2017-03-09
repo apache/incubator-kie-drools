@@ -17,6 +17,12 @@
  */
 package org.drools.compiler.integrationtests;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
@@ -52,12 +58,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mockito.ArgumentCaptor;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -567,7 +568,7 @@ public class StreamsTest extends CommonTestMethodBase {
         ObjectType stot = new ClassObjectType( StockTick.class );
         for (ObjectTypeNode otn : otns) {
             if (otn.getObjectType().isAssignableFrom( stot )) {
-                assertEquals( -1,
+                assertEquals( NEVER_EXPIRES,
                               otn.getExpirationOffset() );
             }
         }

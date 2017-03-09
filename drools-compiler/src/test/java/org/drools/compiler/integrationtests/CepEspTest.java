@@ -15,6 +15,27 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.OrderEvent;
 import org.drools.compiler.Sensor;
@@ -81,27 +102,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
@@ -3778,15 +3778,15 @@ public class CepEspTest extends CommonTestMethodBase {
 
         QueryResults results = ksession.getQueryResults("EventsBeforeNineSeconds");
 
-        assertEquals( 1, results.size());
+        assertEquals( 0, results.size());
 
         results = ksession.getQueryResults("EventsBeforeNineteenSeconds");
 
-        assertEquals( 2, results.size() );
+        assertEquals( 0, results.size() );
 
         results = ksession.getQueryResults("EventsBeforeHundredSeconds");
 
-        assertEquals( 3, results.size() );
+        assertEquals( 1, results.size() );
 
         ksession.dispose();
     }
@@ -6541,5 +6541,74 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertEquals( 1, list.size() );
         assertEquals( "R2", list.get(0) );
+    }
+
+    @Test
+    public void testExpirationOnAfter() {
+        // DROOLS-1227
+        String drl = "declare String @role( event ) end\n" +
+                     "declare Integer @role( event ) end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "    $s: String()\n" +
+                     "    $i: Integer(this after[0,10s] $s)\n" +
+                     "then\n" +
+                     "    System.out.println(\"fired\");\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+
+        ksession.insert("test");
+        ksession.insert(1);
+
+        assertEquals(2, ksession.getFactCount());
+
+        ksession.fireAllRules();
+        sessionClock.advanceTime(11, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+
+        assertEquals(0, ksession.getFactCount());
+    }
+
+    @Test
+    public void testExpirationOnBefore() {
+        // DROOLS-1227
+        String drl = "declare String @role( event ) end\n" +
+                     "declare Integer @role( event ) end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "    $s: String()\n" +
+                     "    $i: Integer(this before[0,10s] $s)\n" +
+                     "then\n" +
+                     "    System.out.println(\"fired\");\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+
+        ksession.insert(1);
+
+        assertEquals(1, ksession.getFactCount());
+
+        ksession.fireAllRules();
+        sessionClock.advanceTime(11, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+
+        assertEquals(0, ksession.getFactCount());
     }
 }

@@ -43,6 +43,8 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.RuleComponent;
 import org.drools.core.time.TemporalDependencyMatrix;
 
+import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
+
 /**
  * A build context for Reteoo Builder
  */
@@ -405,8 +407,8 @@ public class BuildContext {
         return this.temporal != null && !rule.isEager();
     }
 
-    TemporalDependencyMatrix getTemporalDistance() {
-        return this.temporal;
+    public long getExpirationOffset(Pattern pattern) {
+        return temporal != null ? temporal.getExpirationOffset( pattern ) : NEVER_EXPIRES;
     }
 
     void setTemporalDistance(TemporalDependencyMatrix temporal) {
