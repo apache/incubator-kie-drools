@@ -1,7 +1,7 @@
 
 [[quickStart]]
 = Getting Started: A Cloud Balancing Demonstration
-//Christy suggested that this isn't really a "quickstart". I don't know how you feel about renaming a chapter?
+
 :doctype: book
 :sectnums:
 :toc: left
@@ -69,17 +69,21 @@ image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
 [[cloudBalancingDomainModelDesign]]
 === Domain Model Design
 
-
-Using a <<domainModelingGuide,domain model>> helps determine which classes are planning entities and which of their properties are planning variables. Using a domain model helps to simplify contraints, improve performance, and increase flexibility for future needs. 
-
-//procedure from chapter 17 - Design Patterns
+Using a <<domainModelingGuide,domain model>> helps determine which classes are planning entities and which of their properties are planning variables. It also helps to simplify contraints, improve performance, and increase flexibility for future needs. 
 
 . Draw a class diagram of your domain model. 
 . Normalize it to remove duplicate data.
-. Write down some sample instances for each class.
-* ``Computer``: represents a computer with certain hardware (CPU power, RAM memory, network bandwidth) and maintenance cost.
-* ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by Planner.
-* ``CloudBalance``: represents a problem. Contains every `Computer` and `Process` for a certain data set.
+. Write down some sample instances for each class. 
+
+* ``Computer``: represents a computer with certain hardware and maintenance costs. 
++
+In this example, the sample instances for the `Computer` class are: `cpuPower`, `memory`, `networkBandwidth`, `cost`. 
+* ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by Planner. 
++
+Sample instances for ``Process`` are: `requiredCpuPower`, `requiredMemory`, and `requiredNetworkBandwidth`.
+* ``CloudBalance``: represents a problem. Contains every `Computer` and `Process` for a certain data set. 
++
+The sample instance for `CloudBalance` is `score`.
 
 . Determine which relationships (or fields) change during planning.
 
@@ -341,7 +345,7 @@ This solver configuration consists of three parts:
 
 . **Domain model configuration**
 
-What can Planner change?::
+*What can Planner change?*
 +
 We need to make Planner aware of our domain classes. In this configuration, it will automatically scan all classes in your classpath (for a `@PlanningEntity` or `@PlanningSolution` annotation):
 +
@@ -351,7 +355,8 @@ We need to make Planner aware of our domain classes. In this configuration, it w
   <scanAnnotatedClasses/>
 ----
 . **Score configuration** 
-How should Planner optimize the planning variables? What is our goal?::
+
+*How should Planner optimize the planning variables? What is our goal?*
 +
 Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need to tell Planner how to calculate the score, depending on our business requirements. Further down, we will look into two alternatives to calculate the score: using an easy Java implementation, or using Drools DRL.
 +
@@ -364,7 +369,8 @@ Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need
   </scoreDirectorFactory>
 ----
 . **Optimization algorithms configuration** 
-How should Planner optimize it?::
+
+*How should Planner optimize it?*
 +
 In this case, we use the default <<optimizationAlgorithms,optimization algorithms>> (because no explicit optimization algorithms are configured) for 30 seconds:
 +
@@ -467,7 +473,7 @@ public class CloudBalancingEasyScoreCalculator implements EasyScoreCalculator<Cl
 ----
 ====
 
-Even if we optimize the code above to use ``Map``s to iterate through the `processList` only once, it is still slow because it does not do <<incrementalScoreCalculation,incremental score calculation>>.
+Even if we optimize the code above to use ``Map``s to iterate through the `processList` only once, _it is still slow_ because it does not do <<incrementalScoreCalculation,incremental score calculation>>.
 To fix that, either use incremental Java score calculation or Drools score calculation.
 
 
@@ -476,9 +482,9 @@ To fix that, either use incremental Java score calculation or Drools score calcu
 
 Drools score calculation uses incremental calculation, where every score constraint is written as one or more score rules. 
 
-If you use the Drools rule engine for score calculation, you can integrate with other Drools technologies, such as decision tables (XLS or web based), the KIE Workbench, ...
+Using the Drools rule engine for score calculation, allows you to integrate with other Drools technologies, such as decision tables (XLS or web based), the KIE Workbench, ...
 
-Prerequisite::
+*Prerequisite*
 To use the Drools rule engine as a score function, simply add a `scoreDrl` resource in the classpath:
 
 [source,xml,options="nowrap"]
