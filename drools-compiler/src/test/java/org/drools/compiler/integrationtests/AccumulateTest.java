@@ -3312,43 +3312,22 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "rule R when\n" +
                 "  accumulate(\n" +
                 "    Cheese($price : price);\n" +
-                "    $result : variance((double) $price)\n" +
+                "    $result : variance($price)\n" +
                 "  )\n" +
                 "then\n" +
                 "  list.add($result);\n" +
                 "end";
 
         KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
-        Function<int[], Double> cheeseInsertsFunction = (prices) -> {
-            KieSession ksession = kieBase.newKieSession();
-            List<Double> list = new ArrayList<>();
-            ksession.setGlobal("list", list);
-            for (int price : prices) {
-                ksession.insert(new Cheese("stilton", price));
-            }
-            ksession.fireAllRules();
-            assertEquals(1, list.size());
-            double result = list.get(0);
-            FactHandle triggerReverseHandle = ksession.insert(new Cheese("triggerReverse", 7));
-            ksession.fireAllRules();
-            ksession.delete(triggerReverseHandle);
-            list.clear();
-            ksession.fireAllRules();
-            assertEquals(1, list.size());
-            // Check that the reserse() does the opposite of the accumulate()
-            assertEquals(result, list.get(0), 0.001);
-            ksession.dispose();
-            return list.get(0);
-        };
 
-        assertEquals(0.00, cheeseInsertsFunction.apply(new int[] {3, 3, 3, 3, 3}), 0.01);
-        assertEquals(0.80, cheeseInsertsFunction.apply(new int[] {4, 4, 3, 2, 2}), 0.01);
-        assertEquals(1.20, cheeseInsertsFunction.apply(new int[] {5, 3, 3, 2, 2}), 0.01);
-        assertEquals(2.80, cheeseInsertsFunction.apply(new int[] {5, 5, 2, 2, 1}), 0.01);
-        assertEquals(2.80, cheeseInsertsFunction.apply(new int[] {6, 3, 3, 2, 1}), 0.01);
-        assertEquals(4.40, cheeseInsertsFunction.apply(new int[] {6, 5, 2, 1, 1}), 0.01);
-        assertEquals(16.00, cheeseInsertsFunction.apply(new int[] {11, 1, 1, 1, 1}), 0.01);
-        assertEquals(36.00, cheeseInsertsFunction.apply(new int[] {15, 0, 0, 0, 0}), 0.01);
+        assertEquals(0.00, cheeseInsertsFunction(kieBase, 3, 3, 3, 3, 3), 0.01);
+        assertEquals(0.80, cheeseInsertsFunction(kieBase, 4, 4, 3, 2, 2), 0.01);
+        assertEquals(1.20, cheeseInsertsFunction(kieBase, 5, 3, 3, 2, 2), 0.01);
+        assertEquals(2.80, cheeseInsertsFunction(kieBase, 5, 5, 2, 2, 1), 0.01);
+        assertEquals(2.80, cheeseInsertsFunction(kieBase, 6, 3, 3, 2, 1), 0.01);
+        assertEquals(4.40, cheeseInsertsFunction(kieBase, 6, 5, 2, 1, 1), 0.01);
+        assertEquals(16.00, cheeseInsertsFunction(kieBase, 11, 1, 1, 1, 1), 0.01);
+        assertEquals(36.00, cheeseInsertsFunction(kieBase, 15, 0, 0, 0, 0), 0.01);
     }
 
     @Test
@@ -3359,43 +3338,44 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "rule R when\n" +
                 "  accumulate(\n" +
                 "    Cheese($price : price);\n" +
-                "    $result : standardDeviation((double) $price)\n" +
+                "    $result : standardDeviation($price)\n" +
                 "  )\n" +
                 "then\n" +
                 "  list.add($result);\n" +
                 "end";
 
         KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
-        Function<int[], Double> cheeseInsertsFunction = (prices) -> {
-            KieSession ksession = kieBase.newKieSession();
-            List<Double> list = new ArrayList<>();
-            ksession.setGlobal("list", list);
-            for (int price : prices) {
-                ksession.insert(new Cheese("stilton", price));
-            }
-            ksession.fireAllRules();
-            assertEquals(1, list.size());
-            double result = list.get(0);
-            FactHandle triggerReverseHandle = ksession.insert(new Cheese("triggerReverse", 7));
-            ksession.fireAllRules();
-            ksession.delete(triggerReverseHandle);
-            list.clear();
-            ksession.fireAllRules();
-            assertEquals(1, list.size());
-            // Check that the reserse() does the opposite of the accumulate()
-            assertEquals(result, list.get(0), 0.001);
-            ksession.dispose();
-            return list.get(0);
-        };
 
-        assertEquals(0.00, cheeseInsertsFunction.apply(new int[] {3, 3, 3, 3, 3}), 0.01);
-        assertEquals(0.89, cheeseInsertsFunction.apply(new int[] {4, 4, 3, 2, 2}), 0.01);
-        assertEquals(1.10, cheeseInsertsFunction.apply(new int[] {5, 3, 3, 2, 2}), 0.01);
-        assertEquals(1.67, cheeseInsertsFunction.apply(new int[] {5, 5, 2, 2, 1}), 0.01);
-        assertEquals(1.67, cheeseInsertsFunction.apply(new int[] {6, 3, 3, 2, 1}), 0.01);
-        assertEquals(2.10, cheeseInsertsFunction.apply(new int[] {6, 5, 2, 1, 1}), 0.01);
-        assertEquals(4.00, cheeseInsertsFunction.apply(new int[] {11, 1, 1, 1, 1}), 0.01);
-        assertEquals(6.00, cheeseInsertsFunction.apply(new int[] {15, 0, 0, 0, 0}), 0.01);
+        assertEquals(0.00, cheeseInsertsFunction(kieBase, 3, 3, 3, 3, 3), 0.01);
+        assertEquals(0.89, cheeseInsertsFunction(kieBase, 4, 4, 3, 2, 2), 0.01);
+        assertEquals(1.10, cheeseInsertsFunction(kieBase, 5, 3, 3, 2, 2), 0.01);
+        assertEquals(1.67, cheeseInsertsFunction(kieBase, 5, 5, 2, 2, 1), 0.01);
+        assertEquals(1.67, cheeseInsertsFunction(kieBase, 6, 3, 3, 2, 1), 0.01);
+        assertEquals(2.10, cheeseInsertsFunction(kieBase, 6, 5, 2, 1, 1), 0.01);
+        assertEquals(4.00, cheeseInsertsFunction(kieBase, 11, 1, 1, 1, 1), 0.01);
+        assertEquals(6.00, cheeseInsertsFunction(kieBase, 15, 0, 0, 0, 0), 0.01);
+    }
+    
+    private double cheeseInsertsFunction(KieBase kieBase, int... prices) {
+        KieSession ksession = kieBase.newKieSession();
+        List<Double> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+        for (int price : prices) {
+            ksession.insert(new Cheese("stilton", price));
+        }
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        double result = list.get(0);
+        FactHandle triggerReverseHandle = ksession.insert(new Cheese("triggerReverse", 7));
+        ksession.fireAllRules();
+        ksession.delete(triggerReverseHandle);
+        list.clear();
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        // Check that the reserse() does the opposite of the accumulate()
+        assertEquals(result, list.get(0), 0.001);
+        ksession.dispose();
+        return list.get(0);
     }
 
 }

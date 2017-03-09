@@ -79,8 +79,8 @@ public class VarianceAccumulateFunction extends AbstractAccumulateFunction<Varia
     }
 
     @Override
-    public Object getResult(VarianceData data) {
-        return new Double(data.squaredSum / data.count);
+    public Double getResult(VarianceData data) {
+        return data.squaredSum / data.count;
     }
 
     @Override

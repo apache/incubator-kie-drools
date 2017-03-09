@@ -27,8 +27,8 @@ import java.io.Serializable;
 public class StandardDeviationAccumulateFunction extends VarianceAccumulateFunction {
 
     @Override
-    public Object getResult(VarianceData data) {
-        return new Double(Math.sqrt(data.squaredSum / data.count));
+    public Double getResult(VarianceData data) {
+        return Math.sqrt(super.getResult(data));
     }
 
 }
