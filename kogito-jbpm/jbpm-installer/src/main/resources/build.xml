@@ -177,15 +177,15 @@
     <echo message="Checking Eclipse download ..." />
     <condition property="eclipse.not.available">
       <not>
-        <available file="${install.home}/lib/eclipse-java-neon-R-${download.type}.${download.extension}" />
+        <available file="${install.home}/lib/eclipse-java-neon-2-${download.type}.${download.extension}" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse" depends="download.eclipse.check" if="eclipse.not.available">
     <echo message="Getting Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/technology/epp/downloads/release/neon/R/eclipse-java-neon-R-${download.type}.${download.extension}"
-         dest="${install.home}/lib/eclipse-java-neon-R-${download.type}.${download.extension}"  />
+    <get src="http://download.eclipse.org/technology/epp/downloads/release/neon/2/eclipse-java-neon-2-${download.type}.${download.extension}"
+         dest="${install.home}/lib/eclipse-java-neon-2-${download.type}.${download.extension}"  />
   </target>
   <target name="download.eclipse.gef.check">
     <echo message="Checking Eclipse GEF download ..." />
@@ -340,12 +340,12 @@
   
   <target name="unzipEclipse" if="expandTypeZip">
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/eclipse-java-neon-R-${download.type}.zip" />  
+           src="${install.home}/lib/eclipse-java-neon-2-${download.type}.zip" />  
   </target>
 
   <target name="untarEclipse" if="expandTypeTarGz">
-    <gunzip src="${install.home}/lib/eclipse-java-neon-R-${download.type}.tar.gz"/>
-    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-neon-R-${download.type}.tar" />
+    <gunzip src="${install.home}/lib/eclipse-java-neon-2-${download.type}.tar.gz"/>
+    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-neon-2-${download.type}.tar" />
     <chmod perm="a+x" file="${install.home}/eclipse/eclipse" os="Linux"/>
     <chmod perm="a+x" file="${install.home}/Eclipse.app/Contents/MacOS/eclipse" os="Mac OS X"/>
   </target>
@@ -378,7 +378,7 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/neon/1.3.1,http://download.eclipse.org/releases/neon,http://download.eclipse.org/modeling/mdt/bpmn2/updates/neon/1.3.0" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/neon/1.3.3,http://download.eclipse.org/releases/neon,http://download.eclipse.org/modeling/mdt/bpmn2/updates/neon/1.3.0" />
       <arg value="-destination" />
       <arg value="${eclipse.home}" />
       <arg value="-installIU" />
@@ -391,7 +391,7 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/neon/1.3.1,http://download.eclipse.org/releases/neon,http://download.eclipse.org/modeling/mdt/bpmn2/updates/neon/1.3.0" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/neon/1.3.3,http://download.eclipse.org/releases/neon,http://download.eclipse.org/modeling/mdt/bpmn2/updates/neon/1.3.0" />
       <arg value="-destination" />
       <arg value="${eclipse.home}" />
       <arg value="-installIU" />
@@ -404,7 +404,7 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/neon/1.3.1,http://download.eclipse.org/releases/neon,http://download.eclipse.org/modeling/mdt/bpmn2/updates/neon/1.3.0" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/neon/1.3.3,http://download.eclipse.org/releases/neon,http://download.eclipse.org/modeling/mdt/bpmn2/updates/neon/1.3.0" />
       <arg value="-installIU" />
       <arg value="org.eclipse.bpmn2.modeler.feature.group" />
       <arg value="-installIU" />
