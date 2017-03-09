@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
@@ -80,9 +81,8 @@ import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.CoreMatchers.*;
+import static org.mockito.Mockito.*;
 
 public class AccumulateTest extends CommonTestMethodBase {
 
@@ -3303,4 +3303,79 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertEquals( "hello".length(), (int)list.get(0) );
     }
+
+    @Test
+    public void testVarianceDouble() {
+        String drl =
+                "import org.drools.compiler.Cheese\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  accumulate(\n" +
+                "    Cheese($price : price);\n" +
+                "    $result : variance($price)\n" +
+                "  )\n" +
+                "then\n" +
+                "  list.add($result);\n" +
+                "end";
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+
+        assertEquals(0.00, cheeseInsertsFunction(kieBase, 3, 3, 3, 3, 3), 0.01);
+        assertEquals(0.80, cheeseInsertsFunction(kieBase, 4, 4, 3, 2, 2), 0.01);
+        assertEquals(1.20, cheeseInsertsFunction(kieBase, 5, 3, 3, 2, 2), 0.01);
+        assertEquals(2.80, cheeseInsertsFunction(kieBase, 5, 5, 2, 2, 1), 0.01);
+        assertEquals(2.80, cheeseInsertsFunction(kieBase, 6, 3, 3, 2, 1), 0.01);
+        assertEquals(4.40, cheeseInsertsFunction(kieBase, 6, 5, 2, 1, 1), 0.01);
+        assertEquals(16.00, cheeseInsertsFunction(kieBase, 11, 1, 1, 1, 1), 0.01);
+        assertEquals(36.00, cheeseInsertsFunction(kieBase, 15, 0, 0, 0, 0), 0.01);
+    }
+
+    @Test
+    public void testStandardDeviationDouble() {
+        String drl =
+                "import org.drools.compiler.Cheese\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  accumulate(\n" +
+                "    Cheese($price : price);\n" +
+                "    $result : standardDeviation($price)\n" +
+                "  )\n" +
+                "then\n" +
+                "  list.add($result);\n" +
+                "end";
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+
+        assertEquals(0.00, cheeseInsertsFunction(kieBase, 3, 3, 3, 3, 3), 0.01);
+        assertEquals(0.89, cheeseInsertsFunction(kieBase, 4, 4, 3, 2, 2), 0.01);
+        assertEquals(1.10, cheeseInsertsFunction(kieBase, 5, 3, 3, 2, 2), 0.01);
+        assertEquals(1.67, cheeseInsertsFunction(kieBase, 5, 5, 2, 2, 1), 0.01);
+        assertEquals(1.67, cheeseInsertsFunction(kieBase, 6, 3, 3, 2, 1), 0.01);
+        assertEquals(2.10, cheeseInsertsFunction(kieBase, 6, 5, 2, 1, 1), 0.01);
+        assertEquals(4.00, cheeseInsertsFunction(kieBase, 11, 1, 1, 1, 1), 0.01);
+        assertEquals(6.00, cheeseInsertsFunction(kieBase, 15, 0, 0, 0, 0), 0.01);
+    }
+    
+    private double cheeseInsertsFunction(KieBase kieBase, int... prices) {
+        KieSession ksession = kieBase.newKieSession();
+        List<Double> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+        for (int price : prices) {
+            ksession.insert(new Cheese("stilton", price));
+        }
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        double result = list.get(0);
+        FactHandle triggerReverseHandle = ksession.insert(new Cheese("triggerReverse", 7));
+        ksession.fireAllRules();
+        ksession.delete(triggerReverseHandle);
+        list.clear();
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        // Check that the reserse() does the opposite of the accumulate()
+        assertEquals(result, list.get(0), 0.001);
+        ksession.dispose();
+        return list.get(0);
+    }
+
 }
