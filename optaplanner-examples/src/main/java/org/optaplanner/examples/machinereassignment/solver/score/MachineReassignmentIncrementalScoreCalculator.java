@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.core.impl.score.director.incremental.ConstraintMatchAwareIncrementalScoreCalculator;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
@@ -559,6 +560,11 @@ public class MachineReassignmentIncrementalScoreCalculator
         constraintMatchTotalList.add(serviceMoveCostMatchTotal);
         constraintMatchTotalList.add(machineMoveCostMatchTotal);
         return constraintMatchTotalList;
+    }
+
+    @Override
+    public Map<Object, Indictment> getIndictmentMap() {
+        return null; // Calculate it non-incrementally from getConstraintMatchTotals()
     }
 
 }

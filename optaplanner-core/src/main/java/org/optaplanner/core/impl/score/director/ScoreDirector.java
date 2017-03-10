@@ -17,12 +17,15 @@
 package org.optaplanner.core.impl.score.director;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -70,20 +73,31 @@ public interface ScoreDirector<Solution_> {
     boolean isConstraintMatchEnabled();
 
     /**
-     * Explains the {@link Score} of {@link #calculateScore()}.
+     * Explains the {@link Score} of {@link #calculateScore()} by splitting it up per constraint type
+     * (which is usually a score rule).
+     * <p>
+     * The sum of {@link ConstraintMatchTotal#getScoreTotal()} equals {@link #calculateScore()}.
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      */
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
-//    /**
-//     * Returns an aggregation of all the inverses of {@link ConstraintMatch#getJustificationList()}.
-//     * <p>
-//     * TODO Experimental method because it's calculated from scratch, without delta's. It will probably be renamed at some point.
-//     * @return never null, each key is an element from {@link ConstraintMatch#getJustificationList()} and the value is its {@link ConstraintMatch}
-//     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
-//     */
-//    Map<Object, List<ConstraintMatch>> extractIndictmentMap();
+    /**
+     * Explains the impact of each planning entity or problem fact on the {@link Score}.
+     * An indictment is basically the inverse of {@link #getConstraintMatchTotals()}:
+     * it is a {@link Score} total for each justification {@link Object}
+     * in {@link ConstraintMatch#getJustificationList()}.
+     * <p>
+     * Warning: In practice, it often doesn't include the full impact on the {@link Score},
+     * for example in DRL score rules with accumulate, the accumulate elements won't be indicted.
+     * <p>
+     * The sum of {@link ConstraintMatchTotal#getScoreTotal()} differs from {@link #calculateScore()}
+     * because each {@link ConstraintMatch#getScore()} is counted
+     * for each justification in {@link ConstraintMatch#getJustificationList()}.
+     * @return never null
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     */
+    Map<Object, Indictment> getIndictmentMap();
 
     void beforeEntityAdded(Object entity);
 

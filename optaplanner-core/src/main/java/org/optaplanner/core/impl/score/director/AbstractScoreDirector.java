@@ -28,8 +28,10 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.LookUpManager;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -231,21 +233,6 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         getSolutionDescriptor().setScore(workingSolution, score);
         calculationCount++;
     }
-
-//    @Override
-//    public Map<Object, List<ConstraintMatch>> extractIndictmentMap() {
-//        Map<Object, List<ConstraintMatch>> indictmentMap = new HashMap<>();
-//        for (ConstraintMatchTotal constraintMatchTotal : getConstraintMatchTotals()) {
-//            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-//                for (Object justification : constraintMatch.getJustificationList()) {
-//                    List<ConstraintMatch> indictment = indictmentMap.computeIfAbsent(justification,
-//                            k -> new ArrayList<>());
-//                    indictment.add(constraintMatch);
-//                }
-//            }
-//        }
-//        return indictmentMap;
-//    }
 
     @Override
     public AbstractScoreDirector<Solution_, Factory_> clone() {

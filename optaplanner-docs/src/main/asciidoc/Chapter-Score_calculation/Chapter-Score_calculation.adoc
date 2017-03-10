@@ -651,9 +651,13 @@ A piece of incremental score calculator code can be difficult to write and to re
 Assert its correctness by using <<invalidScoreDetection,an ``EasyScoreCalculator`` to do the assertions triggered by the ``environmentMode``>>.
 ====
 
-Optionally, to explain a score with `ScoreDirector.getConstraintMatchTotals()`
-or to get better output when the `IncrementalScoreCalculator` is corrupted in `FAST_ASSERT` or `FULL_ASSERT` `environmentMode`,
-implement also the `ConstraintMatchAwareIncrementalScoreCalculator` interface:
+==== `ConstraintMatchAwareIncrementalScoreCalculator`
+
+Optionally, also implement the `ConstraintMatchAwareIncrementalScoreCalculator` interface to:
+
+* Explain a score by splitting it up per score constraint with `ScoreDirector.getConstraintMatchTotals()`.
+* Visualize or sort planning entities by how many constraints each one breaks with `ScoreDirector.getIndictmentMap()`.
+* Receive a detailed analysis if the `IncrementalScoreCalculator` is corrupted in `FAST_ASSERT` or `FULL_ASSERT` `environmentMode`,
 
 [source,java,options="nowrap"]
 ----
@@ -662,10 +666,57 @@ public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_> {
     void resetWorkingSolution(Solution_ workingSolution, boolean constraintMatchEnabled);
 
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
-    
+
+    Map<Object, Indictment> getIndictmentMap();
 }
 ----
 
+For example in machine reassignment, create one ConstraintMatchTotal per constraint type
+and call `addConstraintMatch()` for each constraint match:
+
+[source,java,options="nowrap"]
+----
+public class MachineReassignmentIncrementalScoreCalculator
+        implements ConstraintMatchAwareIncrementalScoreCalculator<MachineReassignment> {
+    ...
+
+    @Override
+    public void resetWorkingSolution(MachineReassignment workingSolution, boolean constraintMatchEnabled) {
+        resetWorkingSolution(workingSolution);
+        // ignore constraintMatchEnabled, it is always presumed enabled
+    }
+
+    @Override
+    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+        ConstraintMatchTotal maximumCapacityMatchTotal = new ConstraintMatchTotal(
+                CONSTRAINT_PACKAGE, "maximumCapacity", HardSoftLongScore.ZERO);
+        ...
+        for (MrMachineScorePart machineScorePart : machineScorePartMap.values()) {
+            for (MrMachineCapacityScorePart machineCapacityScorePart : machineScorePart.machineCapacityScorePartList) {
+                if (machineCapacityScorePart.maximumAvailable < 0L) {
+                    maximumCapacityMatchTotal.addConstraintMatch(
+                            Arrays.asList(machineCapacityScorePart.machineCapacity),
+                            HardSoftLongScore.valueOf(machineCapacityScorePart.maximumAvailable, 0));
+                }
+            }
+        }
+        ...
+        List<ConstraintMatchTotal> constraintMatchTotalList = new ArrayList<>(4);
+        constraintMatchTotalList.add(maximumCapacityMatchTotal);
+        ...
+        return constraintMatchTotalList;
+    }
+
+    @Override
+    public Map<Object, Indictment> getIndictmentMap() {
+        return null; // Calculate it non-incrementally from getConstraintMatchTotals()
+    }
+}
+----
+
+That `getConstraintMatchTotals()` code often duplicates some of the logic of the normal `IncrementalScoreCalculator` methods.
+Drools Score Calculation doesn't have this disadvantage, because it is constraint match aware automatically when needed,
+without any extra domain-specific code.
 
 [[droolsScoreCalculation]]
 === Drools Score Calculation
@@ -1203,7 +1254,9 @@ but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requi
 
 It's recommended to write a unit test for each score constraint individually to check that it behaves correctly.
 
-Add a test scoped dependency to the `optaplanner-test` jar to take advantage of the JUnit integration and use the `ScoreVerifier` classes to test score rules in DRL (or a constraint match aware incremental score calculator). For example, suppose we want to test these score rules:
+Add a test scoped dependency to the `optaplanner-test` jar to take advantage of the JUnit integration
+and use the `ScoreVerifier` classes to test score rules in DRL (or a constraint match aware incremental score calculator).
+For example, suppose we want to test these score rules:
 
 [source,options="nowrap"]
 ----

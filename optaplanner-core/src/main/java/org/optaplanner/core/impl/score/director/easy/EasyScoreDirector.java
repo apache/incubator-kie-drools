@@ -17,10 +17,13 @@
 package org.optaplanner.core.impl.score.director.easy;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -68,13 +71,25 @@ public class EasyScoreDirector<Solution_>
     }
 
     /**
-     * {@link ConstraintMatchTotal}s are not supported by this {@link ScoreDirector} implementation.
+     * {@link ConstraintMatch}s are not supported by this {@link ScoreDirector} implementation.
      * @throws IllegalStateException always
-     * @return throws exception
+     * @return throws {@link IllegalStateException}
      */
     @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        throw new IllegalStateException("ConstraintMatchTotals are not supported by EasyScoreDirector.");
+        throw new IllegalStateException(ConstraintMatch.class.getSimpleName()
+                + " is not supported by " + EasyScoreDirector.class.getSimpleName() + ".");
+    }
+
+    /**
+     * {@link ConstraintMatch}s are not supported by this {@link ScoreDirector} implementation.
+     * @throws IllegalStateException always
+     * @return throws {@link IllegalStateException}
+     */
+    @Override
+    public Map<Object, Indictment> getIndictmentMap() {
+        throw new IllegalStateException(ConstraintMatch.class.getSimpleName()
+                + " is not supported by " + EasyScoreDirector.class.getSimpleName() + ".");
     }
 
 }

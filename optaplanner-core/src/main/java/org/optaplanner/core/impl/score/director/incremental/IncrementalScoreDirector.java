@@ -17,10 +17,14 @@
 package org.optaplanner.core.impl.score.director.incremental;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
@@ -89,6 +93,31 @@ public class IncrementalScoreDirector<Solution_>
         }
         return ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
                 .getConstraintMatchTotals();
+    }
+
+    @Override
+    public Map<Object, Indictment> getIndictmentMap() {
+        if (!isConstraintMatchEnabled()) {
+            throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
+                    + ") is disabled in the constructor, this method should not be called.");
+        }
+        Map<Object, Indictment> indictmentMap
+                = ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
+                .getIndictmentMap();
+        if (indictmentMap == null) {
+            Score zeroScore = getScoreDefinition().getZeroScore();
+            indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
+            for (ConstraintMatchTotal constraintMatchTotal : getConstraintMatchTotals()) {
+                for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+                    for (Object justification : constraintMatch.getJustificationList()) {
+                        Indictment indictment = indictmentMap.computeIfAbsent(justification,
+                                k -> new Indictment(justification, zeroScore));
+                        indictment.addConstraintMatch(constraintMatch);
+                    }
+                }
+            }
+        }
+        return indictmentMap;
     }
 
     // ************************************************************************
