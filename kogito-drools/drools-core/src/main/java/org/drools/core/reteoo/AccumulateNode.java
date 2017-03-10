@@ -319,7 +319,7 @@ public class AccumulateNode extends BetaNode {
 
     public static class AccumulateContext
         implements
-        Externalizable {
+        ContextOwner, Externalizable {
         public  Object              context;
         public  RightTuple          result;
         public  InternalFactHandle  resultFactHandle;
@@ -373,6 +373,13 @@ public class AccumulateNode extends BetaNode {
 
         public void setPropagationContext(PropagationContext propagationContext) {
             this.propagationContext = propagationContext;
+        }
+
+        public <T> T getContext(Class<T> contextClass) {
+            if (contextClass.isInstance( context )) {
+                return (T) context;
+            }
+            return null;
         }
     }
 

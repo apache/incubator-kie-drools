@@ -16,6 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
@@ -35,10 +39,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends BaseLeftTuple implements
                                                                     AgendaItem<T> {
@@ -366,6 +366,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
         return "[ " + this.getRule().getName() + " active=" + this.queued + " ]";
     }
 
+    @Override
     public List<Object> getObjects() {
         FactHandle[] factHandles = toFactHandles();
         List<Object> list = new ArrayList<Object>(factHandles.length);
@@ -376,6 +377,23 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
             }
         }
         return Collections.unmodifiableList(list);
+    }
+
+    @Override
+    public List<Object> getObjectsDeep() {
+        List<Object> list = new ArrayList<Object>();
+        LeftTuple entry = this;
+        while ( entry != null ) {
+            if ( entry.getFactHandle() != null ) {
+                Object o = ((InternalFactHandle) entry.getFactHandle()).getObject();
+                if (!(o instanceof QueryElementFactHandle)) {
+                    list.add(o);
+                    list.addAll( entry.getAccumulatedObjects() );
+                }
+            }
+            entry = entry.getParent();
+        }
+        return list;
     }
 
     public Object getDeclarationValue(String variableName) {
