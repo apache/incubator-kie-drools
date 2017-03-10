@@ -110,19 +110,12 @@ public class DroolsScoreDirector<Solution_>
 
     @Override
     public Map<Object, Indictment> getIndictmentMap() {
-        // TODO do this incrementally
-        Score zeroScore = getScoreDefinition().getZeroScore();
-        Map<Object, Indictment> indictmentMap = new LinkedHashMap<>(); // TODO use entitySize
-        for (ConstraintMatchTotal constraintMatchTotal : getConstraintMatchTotals()) {
-            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                for (Object justification : constraintMatch.getJustificationList()) {
-                    Indictment indictment = indictmentMap.computeIfAbsent(justification,
-                            k -> new Indictment(justification, zeroScore));
-                    indictment.addConstraintMatch(constraintMatch);
-                }
-            }
+        if (workingSolution == null) {
+            throw new IllegalStateException(
+                    "The method setWorkingSolution() must be called before the method getConstraintMatchTotals().");
         }
-        return indictmentMap;
+        kieSession.fireAllRules();
+        return workingScoreHolder.getIndictmentMap();
     }
 
     @Override

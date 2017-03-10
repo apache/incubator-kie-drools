@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.buildin.bendablelong;
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
 import static org.junit.Assert.*;
@@ -52,7 +53,7 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(medium1, 0, -10L);
         scoreHolder.addSoftConstraintMatch(medium1, 0, -20L); // Overwrite existing
 
-        RuleContext soft1 = mockRuleContext("soft1");
+        RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, 1, -100L);
         scoreHolder.addSoftConstraintMatch(soft1, 1, -300L); // Overwrite existing
 
@@ -64,7 +65,7 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addHardConstraintMatch(hard3, 0, -1000000L);
         scoreHolder.addHardConstraintMatch(hard3, 0, -7000000L); // Overwrite existing
 
-        RuleContext soft2Undo = mockRuleContext("soft2Undo");
+        RuleContext soft2Undo = mockRuleContext("soft2Undo", UNDO_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft2Undo, 1, -99L);
         callUnMatch(soft2Undo);
 
@@ -79,7 +80,9 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(BendableLongScore.valueOf(new long[]{-7004001L}, new long[]{-50020L, -600300L}), scoreHolder.extractScore(0));
         assertEquals(BendableLongScore.valueOfUninitialized(-7, new long[]{-7004001L}, new long[]{-50020L, -600300L}), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(9, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(BendableLongScore.valueOf(new long[]{-1L}, new long[]{0L, 0L}), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
+            assertEquals(BendableLongScore.valueOf(new long[]{0L}, new long[]{0L, -300L}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }
 

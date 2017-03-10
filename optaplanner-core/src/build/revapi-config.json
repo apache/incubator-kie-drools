@@ -1126,6 +1126,24 @@
           "methodName": "toShortString",
           "elementKind": "method",
           "justification": "Useful method when explaining a score through ConstraintMatch(Total)s"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method java.util.List<java.lang.Object> org.optaplanner.core.api.score.constraint.ConstraintMatchTotal::extractJustificationList(org.kie.api.runtime.rule.RuleContext)",
+          "package": "org.optaplanner.core.api.score.constraint",
+          "classSimpleName": "ConstraintMatchTotal",
+          "methodName": "extractJustificationList",
+          "elementKind": "method",
+          "justification": "Add Indictment support."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Map<java.lang.Object, org.optaplanner.core.api.score.constraint.Indictment> org.optaplanner.core.api.score.holder.ScoreHolder::getIndictmentMap()",
+          "package": "org.optaplanner.core.api.score.holder",
+          "classSimpleName": "ScoreHolder",
+          "methodName": "getIndictmentMap",
+          "elementKind": "method",
+          "justification": "Add Indictment support."
         }
       ]
     }

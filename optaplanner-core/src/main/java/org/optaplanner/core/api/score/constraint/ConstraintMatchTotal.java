@@ -21,9 +21,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -89,11 +87,6 @@ public class ConstraintMatchTotal implements Serializable, Comparable<Constraint
     // Worker methods
     // ************************************************************************
 
-    public ConstraintMatch addConstraintMatch(RuleContext kcontext, Score score) {
-        List<Object> justificationList = extractJustificationList(kcontext);
-        return addConstraintMatch(justificationList, score);
-    }
-
     public ConstraintMatch addConstraintMatch(List<Object> justificationList, Score score) {
         scoreTotal = scoreTotal.add(score);
         ConstraintMatch constraintMatch = new ConstraintMatch(constraintPackage, constraintName,
@@ -115,13 +108,6 @@ public class ConstraintMatchTotal implements Serializable, Comparable<Constraint
                     + ") could not remove constraintMatch (" + constraintMatch
                     + ") from its constraintMatchSet (" + constraintMatchSet + ").");
         }
-    }
-
-    protected List<Object> extractJustificationList(RuleContext kcontext) {
-        List<Object> droolsMatchObjects = kcontext.getMatch().getObjects();
-        // Drools always returns the rule matches in reverse order
-        // Return a reversed view on the list for performance
-        return Lists.reverse(droolsMatchObjects);
     }
 
     // ************************************************************************

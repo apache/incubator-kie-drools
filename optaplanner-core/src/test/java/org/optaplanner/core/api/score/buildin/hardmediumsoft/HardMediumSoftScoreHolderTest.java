@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -52,7 +53,7 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addMediumConstraintMatch(medium1, -10);
         scoreHolder.addMediumConstraintMatch(medium1, -20); // Overwrite existing
 
-        RuleContext soft1 = mockRuleContext("soft1");
+        RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, -100);
         scoreHolder.addSoftConstraintMatch(soft1, -300); // Overwrite existing
 
@@ -64,7 +65,7 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addHardConstraintMatch(hard3, -1000000);
         scoreHolder.addHardConstraintMatch(hard3, -7000000); // Overwrite existing
 
-        RuleContext soft2Undo = mockRuleContext("soft2Undo");
+        RuleContext soft2Undo = mockRuleContext("soft2Undo", UNDO_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft2Undo, -99);
         callUnMatch(soft2Undo);
 
@@ -79,7 +80,9 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(HardMediumSoftScore.valueOf(-7004001, -50020, -600300), scoreHolder.extractScore(0));
         assertEquals(HardMediumSoftScore.valueOfUninitialized(-7, -7004001, -50020, -600300), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(9, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(HardMediumSoftScore.valueOf(-1, 0, 0), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
+            assertEquals(HardMediumSoftScore.valueOf(0, 0, -300), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }
 

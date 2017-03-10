@@ -51,7 +51,7 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         callUnMatch(hard2Undo);
         assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
 
-        RuleContext soft1 = mockRuleContext("soft1");
+        RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, new BigDecimal("-0.10"));
         scoreHolder.addSoftConstraintMatch(soft1, new BigDecimal("-0.20")); // Overwrite existing
 
@@ -63,7 +63,7 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addHardConstraintMatch(hard3, new BigDecimal("-100.00"));
         scoreHolder.addHardConstraintMatch(hard3, new BigDecimal("-500.00")); // Overwrite existing
 
-        RuleContext soft2Undo = mockRuleContext("soft2Undo");
+        RuleContext soft2Undo = mockRuleContext("soft2Undo", UNDO_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft2Undo, new BigDecimal("-0.99"));
         callUnMatch(soft2Undo);
 
@@ -74,7 +74,9 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-503.01"), new BigDecimal("-40.20")), scoreHolder.extractScore(0));
         assertEquals(HardSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-503.01"), new BigDecimal("-40.20")), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(7, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), BigDecimal.ZERO), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
+            assertEquals(HardSoftBigDecimalScore.valueOf(BigDecimal.ZERO, new BigDecimal("-0.20")), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }
 

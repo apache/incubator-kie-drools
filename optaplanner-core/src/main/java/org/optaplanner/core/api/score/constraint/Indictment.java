@@ -76,11 +76,21 @@ public class Indictment implements Serializable, Comparable<Indictment> {
     // Worker methods
     // ************************************************************************
 
-    public void addConstraintMatch(ConstraintMatch constraintMatch) {
-        constraintMatchSet.add(constraintMatch);
-        // TODO HACK remove this
-        scoreTotal = scoreTotal == null ? constraintMatch.getScore(): scoreTotal.add(constraintMatch.getScore());
-//        scoreTotal = scoreTotal.add(constraintMatch.getScore());
+    public boolean addConstraintMatch(ConstraintMatch constraintMatch) {
+        boolean added = constraintMatchSet.add(constraintMatch);
+        if (added) {
+            scoreTotal = scoreTotal.add(constraintMatch.getScore());
+        }
+        return added;
+    }
+
+    public void removeConstraintMatch(ConstraintMatch constraintMatch) {
+        boolean removed = constraintMatchSet.remove(constraintMatch);
+        if (!removed) {
+            throw new IllegalStateException("The indictment (" + this
+                    + ") could not remove constraintMatch (" + constraintMatch
+                    + ") from its constraintMatchSet (" + constraintMatchSet + ").");
+        }
     }
 
     // ************************************************************************

@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.simpledouble;
 
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
 import static org.junit.Assert.*;
@@ -51,7 +52,7 @@ public class SimpleDoubleScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(SimpleDoubleScore.valueOfUninitialized(0, -10.03), scoreHolder.extractScore(0));
         assertEquals(SimpleDoubleScore.valueOfUninitialized(-7, -10.03), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(3, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(SimpleDoubleScore.valueOf(-10.00), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScoreTotal());
         }
     }
 

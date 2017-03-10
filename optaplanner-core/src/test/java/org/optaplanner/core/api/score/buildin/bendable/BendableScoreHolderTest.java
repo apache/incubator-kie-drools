@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.bendable;
 
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
@@ -52,7 +53,7 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(medium1, 0, -10);
         scoreHolder.addSoftConstraintMatch(medium1, 0, -20); // Overwrite existing
 
-        RuleContext soft1 = mockRuleContext("soft1");
+        RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, 1, -100);
         scoreHolder.addSoftConstraintMatch(soft1, 1, -300); // Overwrite existing
 
@@ -64,7 +65,7 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addHardConstraintMatch(hard3, 0, -1000000);
         scoreHolder.addHardConstraintMatch(hard3, 0, -7000000); // Overwrite existing
 
-        RuleContext soft2Undo = mockRuleContext("soft2Undo");
+        RuleContext soft2Undo = mockRuleContext("soft2Undo", UNDO_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft2Undo, 1, -99);
         callUnMatch(soft2Undo);
 
@@ -79,7 +80,9 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(BendableScore.valueOf(new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(0));
         assertEquals(BendableScore.valueOfUninitialized(-7, new int[]{-7004001}, new int[]{-50020, -600300}), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(9, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(BendableScore.valueOf(new int[]{-1}, new int[]{0, 0}), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
+            assertEquals(BendableScore.valueOf(new int[]{0}, new int[]{0, -300}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }
 

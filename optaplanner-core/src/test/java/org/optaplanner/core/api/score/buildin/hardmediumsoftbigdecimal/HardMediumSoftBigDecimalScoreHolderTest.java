@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
 import static org.junit.Assert.*;
@@ -53,7 +54,7 @@ public class HardMediumSoftBigDecimalScoreHolderTest extends AbstractScoreHolder
         scoreHolder.addMediumConstraintMatch(medium1, new BigDecimal("-0.10"));
         scoreHolder.addMediumConstraintMatch(medium1, new BigDecimal("-0.20")); // Overwrite existing
 
-        RuleContext soft1 = mockRuleContext("soft1");
+        RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, new BigDecimal("-1.00"));
         scoreHolder.addSoftConstraintMatch(soft1, new BigDecimal("-3.00")); // Overwrite existing
 
@@ -65,7 +66,7 @@ public class HardMediumSoftBigDecimalScoreHolderTest extends AbstractScoreHolder
         scoreHolder.addHardConstraintMatch(hard3, new BigDecimal("-10000.00"));
         scoreHolder.addHardConstraintMatch(hard3, new BigDecimal("-70000.00")); // Overwrite existing
 
-        RuleContext soft2Undo = mockRuleContext("soft2Undo");
+        RuleContext soft2Undo = mockRuleContext("soft2Undo", UNDO_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft2Undo, new BigDecimal("-0.99"));
         callUnMatch(soft2Undo);
 
@@ -80,7 +81,9 @@ public class HardMediumSoftBigDecimalScoreHolderTest extends AbstractScoreHolder
         assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-70040.01"), new BigDecimal("-500.20"), new BigDecimal("-6003.00")), scoreHolder.extractScore(0));
         assertEquals(HardMediumSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-70040.01"), new BigDecimal("-500.20"), new BigDecimal("-6003.00")), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(9, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), new BigDecimal("0.00"), new BigDecimal("0.00")), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
+            assertEquals(HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("0.00"), new BigDecimal("0.00"), new BigDecimal("-3.00")), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }
 

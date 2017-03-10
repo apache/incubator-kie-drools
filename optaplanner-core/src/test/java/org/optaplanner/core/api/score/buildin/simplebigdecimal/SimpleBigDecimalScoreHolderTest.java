@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
+import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
 import static org.junit.Assert.*;
@@ -53,7 +54,7 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(SimpleBigDecimalScore.valueOfUninitialized(0, new BigDecimal("-10.03")), scoreHolder.extractScore(0));
         assertEquals(SimpleBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-10.03")), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(3, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("-10.00")), findConstraintMatchTotal(scoreHolder, "scoreRule1").getScoreTotal());
         }
     }
 

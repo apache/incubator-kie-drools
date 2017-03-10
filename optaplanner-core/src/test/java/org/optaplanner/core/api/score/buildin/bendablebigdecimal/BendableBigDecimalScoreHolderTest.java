@@ -54,7 +54,7 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addSoftConstraintMatch(medium1, 0, new BigDecimal("-0.10"));
         scoreHolder.addSoftConstraintMatch(medium1, 0, new BigDecimal("-0.20")); // Overwrite existing
 
-        RuleContext soft1 = mockRuleContext("soft1");
+        RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, 1, new BigDecimal("-1.00"));
         scoreHolder.addSoftConstraintMatch(soft1, 1, new BigDecimal("-3.00")); // Overwrite existing
 
@@ -66,7 +66,7 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         scoreHolder.addHardConstraintMatch(hard3, 0, new BigDecimal("-10000.00"));
         scoreHolder.addHardConstraintMatch(hard3, 0, new BigDecimal("-70000.00")); // Overwrite existing
 
-        RuleContext soft2Undo = mockRuleContext("soft2Undo");
+        RuleContext soft2Undo = mockRuleContext("soft2Undo", UNDO_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft2Undo, 1, new BigDecimal("-0.99"));
         callUnMatch(soft2Undo);
 
@@ -81,7 +81,9 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{new BigDecimal("-70040.01")}, new BigDecimal[]{new BigDecimal("-500.20"), new BigDecimal("-6003.00")}), scoreHolder.extractScore(0));
         assertEquals(BendableBigDecimalScore.valueOfUninitialized(-7, new BigDecimal[]{new BigDecimal("-70040.01")}, new BigDecimal[]{new BigDecimal("-500.20"), new BigDecimal("-6003.00")}), scoreHolder.extractScore(-7));
         if (constraintMatchEnabled) {
-            assertEquals(9, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{new BigDecimal("-0.01")}, new BigDecimal[]{new BigDecimal("0.00"), new BigDecimal("0.00")}), findConstraintMatchTotal(scoreHolder, "hard1").getScoreTotal());
+            assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{new BigDecimal("0.00")}, new BigDecimal[]{new BigDecimal("0.00"), new BigDecimal("-3.00")}), scoreHolder.getIndictmentMap().get(OTHER_JUSTIFICATION).getScoreTotal());
+            assertNull(scoreHolder.getIndictmentMap().get(UNDO_JUSTIFICATION));
         }
     }
 

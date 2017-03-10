@@ -17,12 +17,14 @@
 package org.optaplanner.core.api.score.holder;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 
@@ -62,7 +64,18 @@ public interface ScoreHolder {
      * Should not be called directly, use {@link ScoreDirector#getConstraintMatchTotals()} instead.
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} is false
+     * @see ScoreDirector#getConstraintMatchTotals()
      */
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
+
+    /**
+     * Explains the impact of each planning entity or problem fact on the {@link Score}.
+     * <p>
+     * Should not be called directly, use {@link ScoreDirector#getIndictmentMap()} instead.
+     * @return never null
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     * @see ScoreDirector#getIndictmentMap()
+     */
+    Map<Object, Indictment> getIndictmentMap();
 
 }
