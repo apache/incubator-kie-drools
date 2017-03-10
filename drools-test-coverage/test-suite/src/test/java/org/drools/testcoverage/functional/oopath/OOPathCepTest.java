@@ -45,7 +45,7 @@ public class OOPathCepTest {
     private static final String MODULE_GROUP_ID = "oopath-cep-test";
     private static final String ENTRY_POINT_NAME = "test-entry-point";
 
-    private static final long DEFAULT_DURATION = 2000;
+    private static final long DEFAULT_DURATION_IN_SECS = 2000;
 
     private KieSession kieSession;
     private List<MessageEvent> events;
@@ -139,13 +139,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 1);
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -172,13 +172,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 1);
-        final Message pongMessage = insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 1);
+        final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -205,13 +205,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -239,13 +239,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION));
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION), clock, 1);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION - 1500));
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1500));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -273,13 +273,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION), clock, 1);
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS), clock, 1);
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION - 1000));
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1000));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -307,13 +307,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION), clock, 1);
-        final Message pongMessage = insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS), clock, 1);
+        final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION - 1000));
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS - 1000));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -341,13 +341,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        final Message pongMessage = insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION), clock, 1);
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION - 1500));
+        final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1500));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION - 1500));
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS - 1500));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -374,13 +374,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -407,13 +407,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -441,14 +441,14 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), 1), clock, 2);
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), 1), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), 1), clock, 2);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), 1), clock, 1);
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION), clock, 1);
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION));
+        final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -476,13 +476,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION), clock, 1);
-        insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS), clock, 1);
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION));
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -510,13 +510,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION));
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION));
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS));
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION - 1000));
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1000));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -544,13 +544,13 @@ public class OOPathCepTest {
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         this.initKieSessionWithPseudoClock(kieBase);
 
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION));
-        insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION));
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS));
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION + 1000));
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS + 1000));
 
         this.kieSession.fireAllRules();
         Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
@@ -623,7 +623,7 @@ public class OOPathCepTest {
                 "  events.add( $messageEvent );\n" +
                 "end\n";
 
-        assertDrlHasCompilationError( drl, 2 );
+        assertDrlHasCompilationError(drl, 2);
     }
 
     private void populateAndVerifyLengthWindowCase(final KieBase kieBase) {
@@ -731,6 +731,40 @@ public class OOPathCepTest {
         Assertions.assertThat(this.events).as("The rule should have fired for ping event only").contains(ping4Event);
     }
 
+    @Test
+    public void testEventExplicitExpirationWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "  @expires( 2s )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  MessageEvent( $message: /msg{ message == 'Pong' } )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 3);
+        final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
     private SessionPseudoClock initKieSessionWithPseudoClock(final KieBase kieBase) {
         final KieSessionConfiguration sessionConfiguration = KieSessionUtil.getKieSessionConfigurationWithClock(ClockTypeOption.get("pseudo"), null);
         this.initKieSession(kieBase, sessionConfiguration);
@@ -751,7 +785,7 @@ public class OOPathCepTest {
     }
 
     private Message insertEventAndAdvanceClock(final MessageEvent messageEvent, final SessionPseudoClock clock, final long timeInSeconds) {
-        final Message result = insertEvent(messageEvent);
+        final Message result = this.insertEvent(messageEvent);
         clock.advanceTime(timeInSeconds, TimeUnit.SECONDS);
         return result;
     }
