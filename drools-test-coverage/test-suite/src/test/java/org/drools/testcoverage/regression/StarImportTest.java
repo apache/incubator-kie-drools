@@ -16,9 +16,9 @@
 
 package org.drools.testcoverage.regression;
 
+import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.KieSessionTest;
-import org.drools.testcoverage.common.model.Cheese;
-import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.model.TestEvent;
 import org.drools.testcoverage.common.util.*;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
@@ -26,40 +26,27 @@ import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.io.Resource;
+import org.mockito.exceptions.verification.WantedButNotInvoked;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-public class ActivationTest extends KieSessionTest {
+/**
+ * Test suite for processing of facts imported using a "star" import and
+ * declared in DRL at the same time.
+ */
+public class StarImportTest extends KieSessionTest {
 
-    private static final String DRL =
-            "package org.drools;\n" +
-            "import org.drools.testcoverage.common.model.Cheese;\n" +
-            "import org.drools.testcoverage.common.model.Person;\n" +
-            " rule R1\n" +
-            "    salience 10\n" +
-            "    when\n" +
-            "        $c : Cheese( price == 10 )\n" +
-            "        $p : Person( )\n" +
-            "    then\n" +
-            "        modify($c) { setPrice( 5 ) }\n" +
-            "        modify($p) { setAge( 20 ) }\n" +
-            "end\n" +
-            "rule R2\n" +
-            "    when\n" +
-            "        $p : Person( )\n" +
-            "    then \n" +
-            "        // noop\n" +
-            "end\n";
+    private static final String DRL_FILE = "star_import.drl";
 
-    public ActivationTest(final KieBaseTestConfiguration kieBaseTestConfiguration,
+    public StarImportTest(final KieBaseTestConfiguration kieBaseTestConfiguration,
                           final KieSessionTestConfiguration kieSessionTestConfiguration) {
         super(kieBaseTestConfiguration, kieSessionTestConfiguration);
     }
@@ -70,30 +57,31 @@ public class ActivationTest extends KieSessionTest {
     }
 
     /**
-     * Tests improper deactivation of already activated rule on the agenda. See
-     * BZ 862325.
+     * Tests that rule fires if supplied with a fact that is imported using
+     * "star" import.
+     *
+     * See BZ 973264.
      */
     @Test
-    public void noDormantCheckOnModifies() throws Exception {
+    public void starImportedFactAlsoDeclaredInDRL() throws Exception {
         AgendaEventListener ael = mock(AgendaEventListener.class);
         session.addEventListener(ael);
         List<Command<?>> commands = new ArrayList<Command<?>>();
-        commands.add(KieServices.Factory.get().getCommands().newInsert(new Person("Bob", 19)));
-        commands.add(KieServices.Factory.get().getCommands().newInsert(new Cheese("brie", 10)));
+        commands.add(KieServices.Factory.get().getCommands().newInsert(new TestEvent(1, "event 1", 0)));
         commands.add(KieServices.Factory.get().getCommands().newFireAllRules());
 
         session.execute(KieServices.Factory.get().getCommands().newBatchExecution(commands, null));
 
-        // both rules should fire exactly once
-        verify(ael, times(2)).afterMatchFired(any(AfterMatchFiredEvent.class));
-        // no cancellations should have happened
-        verify(ael, never()).matchCancelled(any(MatchCancelledEvent.class));
+        // the rule should have fired exactly once
+        try {
+            verify(ael, times(1)).afterMatchFired(any(AfterMatchFiredEvent.class));
+        } catch (WantedButNotInvoked e) {
+            Assertions.fail("BZ 973264", e);
+        }
     }
 
     @Override
     protected Resource[] createResources() {
-        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
-        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return new Resource[] { drlResource };
+        return new Resource[] { KieServices.Factory.get().getResources().newClassPathResource(DRL_FILE, StarImportTest.class) };
     }
 }
