@@ -181,7 +181,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             }
             if (assertTabuHashCodeCorrectness) {
                 for (Object tabu : tabuSequenceDeque) {
-                    if (tabu.equals(checkingTabu)) {
+                    // tabu and checkingTabu can be null with a nullable planning variable
+                    if (tabu != null && tabu.equals(checkingTabu)) {
                         if (tabu.hashCode() != checkingTabu.hashCode()) {
                             throw new IllegalStateException("HashCode/equals contract violation: tabu (" + tabu
                                     + ") of class (" + tabu.getClass()
