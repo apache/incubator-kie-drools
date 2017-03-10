@@ -21,7 +21,6 @@
   </description>
 
   <properties>
-    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <surefire.forkCount>1</surefire.forkCount>
   </properties>
 
