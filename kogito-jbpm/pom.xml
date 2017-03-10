@@ -20,7 +20,6 @@
   <url>http://www.jboss.org/jbpm/</url>
 
   <properties>
-    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <!--
      These properties are used in the database profiles. Some of them must be initialized as empty strings
      so that Maven applies them via filtering.
