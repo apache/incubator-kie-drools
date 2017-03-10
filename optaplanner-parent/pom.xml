@@ -26,10 +26,6 @@
   <url>https://www.optaplanner.org</url>
   <inceptionYear>2006</inceptionYear>
 
-  <properties>
-    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
-  </properties>
-
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
