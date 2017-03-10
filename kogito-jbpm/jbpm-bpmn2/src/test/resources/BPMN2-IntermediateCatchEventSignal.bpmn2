@@ -13,11 +13,13 @@
              xmlns:tns="http://www.jboss.org/drools">
 
   <itemDefinition id="_xItem" structureRef="String" />
+  <itemDefinition id="_nameItem" structureRef="String" />
 
   <process processType="Private" isExecutable="true" id="IntermediateCatchEvent" name="IntermediateCatchEvent Process" >
 
     <!-- process variables -->
     <property id="x" itemSubjectRef="_xItem"/>
+    <property id="name" itemSubjectRef="_nameItem"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess"  isInterrupting="true"/>

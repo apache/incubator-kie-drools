@@ -15,6 +15,18 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
@@ -64,17 +76,6 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @RunWith(Parameterized.class)
 public class IntermediateEventTest extends JbpmBpmn2TestCase {
@@ -2682,5 +2683,36 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.signalEvent("signalling", null, processInstance.getId());        
   
         assertProcessInstanceFinished(processInstance, ksession);
+    }
+    
+    @Test
+    public void testConditionalProcessFactInsertedBefore() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventConditionPI.bpmn2", "BPMN2-IntermediateCatchEventSignal.bpmn2");        
+        ksession = createKnowledgeSession(kbase);
+        
+        Person person0 = new Person("john");
+        ksession.insert(person0);
+        
+        Map<String, Object> params0 = new HashMap<String, Object>();
+        params0.put("name", "john");
+        ProcessInstance pi0 = ksession.startProcess("IntermediateCatchEvent", params0);
+        ksession.insert(pi0);
+
+        Person person = new Person("Jack");
+        ksession.insert(person);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("name", "Poul");
+        ProcessInstance pi = ksession.startProcess("IntermediateCatchEventPI", params);
+        ksession.insert(pi);
+        pi = ksession.getProcessInstance(pi.getId());
+        assertNotNull(pi);
+        
+        Person person2 = new Person("Poul");
+        ksession.insert(person2);
+        
+        pi = ksession.getProcessInstance(pi.getId());
+        assertNull(pi);
+        
     }
 }

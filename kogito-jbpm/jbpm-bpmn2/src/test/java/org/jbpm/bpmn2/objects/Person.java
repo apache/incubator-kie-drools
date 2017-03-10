@@ -27,6 +27,13 @@ public class Person implements Serializable {
 	private Long id;
 	private String name;
 
+    public Person() {
+    }
+    
+    public Person(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

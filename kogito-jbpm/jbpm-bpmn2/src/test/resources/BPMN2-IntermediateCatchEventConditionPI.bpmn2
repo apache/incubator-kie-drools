@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_xItem" structureRef="String" />
+
+  <process processType="Private" isExecutable="true" id="IntermediateCatchEventPI" name="IntermediateCatchEvent Process" >
+
+    <!-- process variables -->
+    <property id="name" itemSubjectRef="_xItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <intermediateCatchEvent id="_3" name="timer" >
+      <conditionalEventDefinition>
+        <condition xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule">
+        $processInstance : org.kie.api.runtime.process.WorkflowProcessInstance() 
+        $name : String() from (String)$processInstance.getVariable("name");
+        org.jbpm.bpmn2.objects.Person(name == $name)</condition>
+      </conditionalEventDefinition>
+    </intermediateCatchEvent>
+    <scriptTask id="_4" name="Event" >
+      <script>System.out.println("Condition triggered");</script>
+    </scriptTask>
+    <endEvent id="_5" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_3" sourceRef="_1" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="IntermediateCatchEventPI" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="96" y="16" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="208" y="16" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="320" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_3" >
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="136" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_4" >
+        <di:waypoint x="136" y="40" />
+        <di:waypoint x="248" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_5" >
+        <di:waypoint x="248" y="40" />
+        <di:waypoint x="344" y="40" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>
