@@ -19,7 +19,6 @@
 
   <properties>
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
-    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
   </properties>
 
   <repositories>
