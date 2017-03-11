@@ -58,6 +58,12 @@ public abstract class AbstractScoreHolderTest {
             public List<Object> getObjects() {
                 return justificationList;
             }
+
+            @Override
+            public List<Object> getObjectsDeep() {
+                return justificationList;
+            }
+
         };
         when(kcontext.getMatch()).thenReturn(agendaItem);
         Rule rule = mock(Rule.class);
