@@ -16,10 +16,10 @@
   -->
 
 <definitions id="_0003-input-data-string-allowed-values" name="0003-input-data-string-allowed-values"
-	namespace="https://github.com/droolsjbpm/kie-dmn"
+	namespace="https://github.com/kiegroup/kie-dmn"
 	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
 	xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-	xmlns:kie="https://github.com/droolsjbpm/kie-dmn">
+	xmlns:kie="https://github.com/kiegroup/kie-dmn">
 	<itemDefinition name="tEmploymentStatus">
 		<typeRef>feel:string</typeRef>
 		<allowedValues>

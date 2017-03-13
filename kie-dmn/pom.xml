@@ -34,9 +34,9 @@
   </repositories>
 
   <scm>
-    <connection>scm:git:https://github.com/droolsjbpm/kie-dmn.git</connection>
-    <developerConnection>scm:git:git@github.com:droolsjbpm/kie-dmn.git</developerConnection>
-    <url>https://github.com/droolsjbpm/kie-dmn</url>
+    <connection>scm:git:https://github.com/kiegroup/kie-dmn.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/kie-dmn.git</developerConnection>
+    <url>https://github.com/kiegroup/kie-dmn</url>
   </scm>
 
   <modules>
