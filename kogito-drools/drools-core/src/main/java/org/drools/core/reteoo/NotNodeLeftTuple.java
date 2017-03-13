@@ -16,8 +16,17 @@
 
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.MemoryFactory;
+import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.FastIterator;
 
 public class NotNodeLeftTuple extends BaseLeftTuple {
     private static final long serialVersionUID = 540l;
@@ -153,4 +162,31 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
         this.blockedNext = blockerNext;
     }
 
+    @Override
+    public Collection<Object> getAccumulatedObjects() {
+        if (NodeTypeEnums.ExistsNode != getTupleSink().getType()) {
+            return Collections.emptyList();
+        }
+
+        BetaNode betaNode = ( (BetaNode) getTupleSink() );
+        BetaConstraints constraints = betaNode.getRawConstraints();
+        InternalWorkingMemory wm = getFactHandle().getEntryPoint().getInternalWorkingMemory();
+        BetaMemory bm = (BetaMemory) wm.getNodeMemory( (MemoryFactory) getTupleSink() );
+        TupleMemory rtm = bm.getRightTupleMemory();
+        FastIterator it = betaNode.getRightIterator( rtm );
+
+        ContextEntry[] contextEntry = bm.getContext();
+        constraints.updateFromTuple( contextEntry, wm, this );
+
+        Collection<Object> result = new ArrayList<>();
+        for (RightTuple rightTuple = betaNode.getFirstRightTuple(this, rtm, null, it); rightTuple != null; ) {
+            RightTuple nextRight = (RightTuple) it.next(rightTuple);
+            InternalFactHandle fh = rightTuple.getFactHandleForEvaluation();
+            if (constraints.isAllowedCachedLeft(contextEntry, fh)) {
+                result.add(fh.getObject());
+            }
+            rightTuple = nextRight;
+        }
+        return result;
+    }
 }
