@@ -52,7 +52,7 @@ public class DMNDecisionTableRuntimeTest {
     @Test
     public void testSimpleDecisionTableUniqueHitPolicy() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0004-simpletable-U.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0004-simpletable-U" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0004-simpletable-U" );
         assertThat( dmnModel, notNullValue() );
 
         DMNContext context = DMNFactory.newContext();
@@ -70,7 +70,7 @@ public class DMNDecisionTableRuntimeTest {
     @Test
     public void testSimpleDecisionTableUniqueHitPolicySatisfies() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0004-simpletable-U.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0004-simpletable-U" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0004-simpletable-U" );
         assertThat( dmnModel, notNullValue() );
 
         DMNContext context = DMNFactory.newContext();
@@ -89,7 +89,7 @@ public class DMNDecisionTableRuntimeTest {
     @Test
     public void testSimpleDecisionTableUniqueHitPolicyNullWarn() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0004-simpletable-U-noinputvalues.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0004-simpletable-U-noinputvalues" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0004-simpletable-U-noinputvalues" );
         assertThat( dmnModel, notNullValue() );
 
         DMNContext context = DMNFactory.newContext();
@@ -217,7 +217,7 @@ public class DMNDecisionTableRuntimeTest {
         DMNRuntimeEventListener listener = Mockito.mock( DMNRuntimeEventListener.class );
         runtime.addListener( listener );
 
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "decisiontable-default-value" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "decisiontable-default-value" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false) );
 

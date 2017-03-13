@@ -15,11 +15,11 @@
 
 <definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
 						 xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-						 xmlns:tns="https://github.com/droolsjbpm/kie-dmn"
+						 xmlns:tns="https://github.com/kiegroup/kie-dmn"
 						 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 						 id="_0008-LX-arithmetic"
 						 name="0008-LX-arithmetic"
-						 namespace="https://github.com/droolsjbpm/kie-dmn"
+						 namespace="https://github.com/kiegroup/kie-dmn"
 						 xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
 						 expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
 						 typeLanguage="http://www.omg.org/spec/FEEL/20140401">
