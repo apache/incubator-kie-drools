@@ -16,7 +16,7 @@
   -->
 
 <definitions id="_0002-input-data-number" name="0002-input-data-number"
-	namespace="https://github.com/droolsjbpm/kie-dmn"
+	namespace="https://github.com/kiegroup/kie-dmn"
 	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
 	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
 	<decision name="Yearly Salary" id="d_YearlySalary">

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="TYPEREF_NOT_FEEL_NOT_DEF_valid" name="TYPEREF_NOT_FEEL_NOT_DEF_valid"
-    namespace="https://github.com/droolsjbpm/kie-dmn" 
+    namespace="https://github.com/kiegroup/kie-dmn"
     xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
     xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:tns="https://github.com/droolsjbpm/kie-dmn"
+    xmlns:tns="https://github.com/kiegroup/kie-dmn"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
   <itemDefinition name="tEligibility" isCollection="false">

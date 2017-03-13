@@ -54,7 +54,7 @@ public class DMNRuntimeTest {
     @Test
     public void testCompositeItemDefinition() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0008-LX-arithmetic.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0008-LX-arithmetic" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0008-LX-arithmetic" );
         assertThat( dmnModel, notNullValue() );
 
         DMNContext context = DMNFactory.newContext();
@@ -269,7 +269,7 @@ public class DMNRuntimeTest {
     @Test
     public void testNotificationsApproved2() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "NotificationsTest2.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "building-structure-rules" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "building-structure-rules" );
         assertThat( dmnModel, notNullValue() );
 
         DMNContext context = DMNFactory.newContext();
@@ -375,7 +375,7 @@ public class DMNRuntimeTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "list-expression.dmn", getClass() );
 //        runtime.addListener( DMNRuntimeUtil.createListener() );
 
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "list-expression" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "list-expression" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
 
@@ -390,7 +390,7 @@ public class DMNRuntimeTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "relation-expression.dmn", getClass() );
 //        runtime.addListener( DMNRuntimeUtil.createListener() );
 
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "relation-expression" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "relation-expression" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
 
@@ -588,7 +588,7 @@ public class DMNRuntimeTest {
     @Test
     public void testAlternativeNSDecl() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "alternative_feel_ns_declaration.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0001-input-data-string" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
         DMNContext context = DMNFactory.newContext();
@@ -731,7 +731,7 @@ public class DMNRuntimeTest {
     @Test
     public void testInvalidVariableNames() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "invalid-variable-names.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0001-input-data-string" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.hasErrors(), is(true) );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is(10) );
@@ -740,7 +740,7 @@ public class DMNRuntimeTest {
     @Test
     public void testNull() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "null_values.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "Null values model" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "Null values model" );
         assertThat( dmnModel, notNullValue() );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 

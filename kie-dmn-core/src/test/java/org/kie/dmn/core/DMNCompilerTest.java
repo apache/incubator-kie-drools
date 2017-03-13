@@ -39,7 +39,7 @@ public class DMNCompilerTest {
     @Test
     public void testItemDefAllowedValuesString() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0003-input-data-string-allowed-values.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0003-input-data-string-allowed-values" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat( dmnModel, notNullValue() );
 
         ItemDefNode itemDef = dmnModel.getItemDefinitionByName( "tEmploymentStatus" );
@@ -68,7 +68,7 @@ public class DMNCompilerTest {
     @Test
     public void testCompositeItemDefinition() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0008-LX-arithmetic.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0008-LX-arithmetic" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0008-LX-arithmetic" );
         assertThat( dmnModel, notNullValue() );
 
         ItemDefNode itemDef = dmnModel.getItemDefinitionByName( "tLoan" );
