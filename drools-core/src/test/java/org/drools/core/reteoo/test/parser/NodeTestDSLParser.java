@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g 2011-06-27 02:28:08
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g 2011-06-27 02:28:08
 
     package org.drools.core.reteoo.test.parser;
 
@@ -93,7 +93,7 @@ public class NodeTestDSLParser extends Parser {
     }
 
     public String[] getTokenNames() { return NodeTestDSLParser.tokenNames; }
-    public String getGrammarFileName() { return "C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g"; }
+    public String getGrammarFileName() { return "C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g"; }
 
 
         private Stack<Map<DroolsParaphraseTypes, String>> paraphrases = new Stack<Map<DroolsParaphraseTypes, String>>();
@@ -174,7 +174,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "compilation_unit"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:110:1: compilation_unit : test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* EOF -> ^( VT_TEST_CASE test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* ) ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:110:1: compilation_unit : test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* EOF -> ^( VT_TEST_CASE test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* ) ;
     public final NodeTestDSLParser.compilation_unit_return compilation_unit() throws RecognitionException {
         NodeTestDSLParser.compilation_unit_return retval = new NodeTestDSLParser.compilation_unit_return();
         retval.start = input.LT(1);
@@ -201,8 +201,8 @@ public class NodeTestDSLParser extends Parser {
         RewriteRuleSubtreeStream stream_test_case_statement=new RewriteRuleSubtreeStream(adaptor,"rule test_case_statement");
         RewriteRuleSubtreeStream stream_teardown=new RewriteRuleSubtreeStream(adaptor,"rule teardown");
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:111:5: ( test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* EOF -> ^( VT_TEST_CASE test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* ) )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:111:7: test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* EOF
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:111:5: ( test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* EOF -> ^( VT_TEST_CASE test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* ) )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:111:7: test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* EOF
             {
             pushFollow(FOLLOW_test_case_statement_in_compilation_unit142);
             test_case_statement1=test_case_statement();
@@ -210,14 +210,14 @@ public class NodeTestDSLParser extends Parser {
             state._fsp--;
 
             stream_test_case_statement.add(test_case_statement1.getTree());
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:112:9: ( import_statement )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:112:9: ( import_statement )*
             loop1:
             do {
                 int alt1=2;
                 alt1 = dfa1.predict(input);
                 switch (alt1) {
             	case 1 :
-            	    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:112:9: import_statement
+            	    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:112:9: import_statement
             	    {
             	    pushFollow(FOLLOW_import_statement_in_compilation_unit152);
             	    import_statement2=import_statement();
@@ -234,7 +234,7 @@ public class NodeTestDSLParser extends Parser {
                 }
             } while (true);
 
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:113:9: ( setup )?
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:113:9: ( setup )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -247,7 +247,7 @@ public class NodeTestDSLParser extends Parser {
             }
             switch (alt2) {
                 case 1 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:113:9: setup
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:113:9: setup
                     {
                     pushFollow(FOLLOW_setup_in_compilation_unit163);
                     setup3=setup();
@@ -261,7 +261,7 @@ public class NodeTestDSLParser extends Parser {
 
             }
 
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:114:9: ( teardown )?
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:114:9: ( teardown )?
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -274,7 +274,7 @@ public class NodeTestDSLParser extends Parser {
             }
             switch (alt3) {
                 case 1 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:114:9: teardown
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:114:9: teardown
                     {
                     pushFollow(FOLLOW_teardown_in_compilation_unit174);
                     teardown4=teardown();
@@ -288,7 +288,7 @@ public class NodeTestDSLParser extends Parser {
 
             }
 
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:115:9: ( test )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:115:9: ( test )*
             loop4:
             do {
                 int alt4=2;
@@ -301,7 +301,7 @@ public class NodeTestDSLParser extends Parser {
 
                 switch (alt4) {
             	case 1 :
-            	    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:115:9: test
+            	    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:115:9: test
             	    {
             	    pushFollow(FOLLOW_test_in_compilation_unit185);
             	    test5=test();
@@ -336,31 +336,31 @@ public class NodeTestDSLParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 117:9: -> ^( VT_TEST_CASE test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* )
             {
-                // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:117:12: ^( VT_TEST_CASE test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* )
+                // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:117:12: ^( VT_TEST_CASE test_case_statement ( import_statement )* ( setup )? ( teardown )? ( test )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_TEST_CASE, "VT_TEST_CASE"), root_1);
 
                 adaptor.addChild(root_1, stream_test_case_statement.nextTree());
-                // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:117:47: ( import_statement )*
+                // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:117:47: ( import_statement )*
                 while ( stream_import_statement.hasNext() ) {
                     adaptor.addChild(root_1, stream_import_statement.nextTree());
 
                 }
                 stream_import_statement.reset();
-                // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:117:65: ( setup )?
+                // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:117:65: ( setup )?
                 if ( stream_setup.hasNext() ) {
                     adaptor.addChild(root_1, stream_setup.nextTree());
 
                 }
                 stream_setup.reset();
-                // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:117:72: ( teardown )?
+                // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:117:72: ( teardown )?
                 if ( stream_teardown.hasNext() ) {
                     adaptor.addChild(root_1, stream_teardown.nextTree());
 
                 }
                 stream_teardown.reset();
-                // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:117:82: ( test )*
+                // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:117:82: ( test )*
                 while ( stream_test.hasNext() ) {
                     adaptor.addChild(root_1, stream_test.nextTree());
 
@@ -398,7 +398,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "test_case_statement"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:123:1: test_case_statement : test_case_key name= STRING ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:123:1: test_case_statement : test_case_key name= STRING ;
     public final NodeTestDSLParser.test_case_statement_return test_case_statement() throws RecognitionException {
         NodeTestDSLParser.test_case_statement_return retval = new NodeTestDSLParser.test_case_statement_return();
         retval.start = input.LT(1);
@@ -412,8 +412,8 @@ public class NodeTestDSLParser extends Parser {
         Object name_tree=null;
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:124:5: ( test_case_key name= STRING )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:124:8: test_case_key name= STRING
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:124:5: ( test_case_key name= STRING )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:124:8: test_case_key name= STRING
             {
             root_0 = (Object)adaptor.nil();
 
@@ -454,7 +454,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "import_statement"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:127:1: import_statement : import_key import_target SEMI_COLON ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:127:1: import_statement : import_key import_target SEMI_COLON ;
     public final NodeTestDSLParser.import_statement_return import_statement() throws RecognitionException {
         NodeTestDSLParser.import_statement_return retval = new NodeTestDSLParser.import_statement_return();
         retval.start = input.LT(1);
@@ -470,8 +470,8 @@ public class NodeTestDSLParser extends Parser {
         Object SEMI_COLON10_tree=null;
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:128:5: ( import_key import_target SEMI_COLON )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:128:7: import_key import_target SEMI_COLON
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:128:5: ( import_key import_target SEMI_COLON )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:128:7: import_key import_target SEMI_COLON
             {
             root_0 = (Object)adaptor.nil();
 
@@ -515,7 +515,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "setup"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:131:1: setup : setup_key ( step )* ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:131:1: setup : setup_key ( step )* ;
     public final NodeTestDSLParser.setup_return setup() throws RecognitionException {
         NodeTestDSLParser.setup_return retval = new NodeTestDSLParser.setup_return();
         retval.start = input.LT(1);
@@ -529,8 +529,8 @@ public class NodeTestDSLParser extends Parser {
 
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:132:5: ( setup_key ( step )* )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:132:7: setup_key ( step )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:132:5: ( setup_key ( step )* )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:132:7: setup_key ( step )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -540,7 +540,7 @@ public class NodeTestDSLParser extends Parser {
             state._fsp--;
 
             root_0 = (Object)adaptor.becomeRoot(setup_key11.getTree(), root_0);
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:132:18: ( step )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:132:18: ( step )*
             loop5:
             do {
                 int alt5=2;
@@ -559,7 +559,7 @@ public class NodeTestDSLParser extends Parser {
 
                 switch (alt5) {
             	case 1 :
-            	    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:132:18: step
+            	    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:132:18: step
             	    {
             	    pushFollow(FOLLOW_step_in_setup299);
             	    step12=step();
@@ -603,7 +603,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "teardown"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:135:1: teardown : teardown_key ( step )* ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:135:1: teardown : teardown_key ( step )* ;
     public final NodeTestDSLParser.teardown_return teardown() throws RecognitionException {
         NodeTestDSLParser.teardown_return retval = new NodeTestDSLParser.teardown_return();
         retval.start = input.LT(1);
@@ -617,8 +617,8 @@ public class NodeTestDSLParser extends Parser {
 
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:136:5: ( teardown_key ( step )* )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:136:7: teardown_key ( step )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:136:5: ( teardown_key ( step )* )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:136:7: teardown_key ( step )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -628,7 +628,7 @@ public class NodeTestDSLParser extends Parser {
             state._fsp--;
 
             root_0 = (Object)adaptor.becomeRoot(teardown_key13.getTree(), root_0);
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:136:21: ( step )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:136:21: ( step )*
             loop6:
             do {
                 int alt6=2;
@@ -647,7 +647,7 @@ public class NodeTestDSLParser extends Parser {
 
                 switch (alt6) {
             	case 1 :
-            	    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:136:21: step
+            	    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:136:21: step
             	    {
             	    pushFollow(FOLLOW_step_in_teardown320);
             	    step14=step();
@@ -691,7 +691,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "test"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:139:1: test : test_key name= STRING ( step )* ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:139:1: test : test_key name= STRING ( step )* ;
     public final NodeTestDSLParser.test_return test() throws RecognitionException {
         NodeTestDSLParser.test_return retval = new NodeTestDSLParser.test_return();
         retval.start = input.LT(1);
@@ -707,8 +707,8 @@ public class NodeTestDSLParser extends Parser {
         Object name_tree=null;
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:140:5: ( test_key name= STRING ( step )* )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:140:7: test_key name= STRING ( step )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:140:5: ( test_key name= STRING ( step )* )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:140:7: test_key name= STRING ( step )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -722,7 +722,7 @@ public class NodeTestDSLParser extends Parser {
             name_tree = (Object)adaptor.create(name);
             adaptor.addChild(root_0, name_tree);
 
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:140:29: ( step )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:140:29: ( step )*
             loop7:
             do {
                 int alt7=2;
@@ -741,7 +741,7 @@ public class NodeTestDSLParser extends Parser {
 
                 switch (alt7) {
             	case 1 :
-            	    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:140:29: step
+            	    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:140:29: step
             	    {
             	    pushFollow(FOLLOW_step_in_test346);
             	    step16=step();
@@ -785,7 +785,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "step"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:143:1: step : ID COLON ( params SEMI_COLON )+ ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:143:1: step : ID COLON ( params SEMI_COLON )+ ;
     public final NodeTestDSLParser.step_return step() throws RecognitionException {
         NodeTestDSLParser.step_return retval = new NodeTestDSLParser.step_return();
         retval.start = input.LT(1);
@@ -803,8 +803,8 @@ public class NodeTestDSLParser extends Parser {
         Object SEMI_COLON20_tree=null;
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:144:5: ( ID COLON ( params SEMI_COLON )+ )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:144:7: ID COLON ( params SEMI_COLON )+
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:144:5: ( ID COLON ( params SEMI_COLON )+ )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:144:7: ID COLON ( params SEMI_COLON )+
             {
             root_0 = (Object)adaptor.nil();
 
@@ -813,7 +813,7 @@ public class NodeTestDSLParser extends Parser {
             root_0 = (Object)adaptor.becomeRoot(ID17_tree, root_0);
 
             COLON18=(Token)match(input,COLON,FOLLOW_COLON_in_step367); 
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:144:18: ( params SEMI_COLON )+
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:144:18: ( params SEMI_COLON )+
             int cnt8=0;
             loop8:
             do {
@@ -821,7 +821,7 @@ public class NodeTestDSLParser extends Parser {
                 alt8 = dfa8.predict(input);
                 switch (alt8) {
             	case 1 :
-            	    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:144:20: params SEMI_COLON
+            	    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:144:20: params SEMI_COLON
             	    {
             	    pushFollow(FOLLOW_params_in_step372);
             	    params19=params();
@@ -870,7 +870,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "params"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:147:1: params : param_chunk ( COMMA param_chunk )* -> ^( VT_PARAMS ( param_chunk )+ ) ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:147:1: params : param_chunk ( COMMA param_chunk )* -> ^( VT_PARAMS ( param_chunk )+ ) ;
     public final NodeTestDSLParser.params_return params() throws RecognitionException {
         NodeTestDSLParser.params_return retval = new NodeTestDSLParser.params_return();
         retval.start = input.LT(1);
@@ -887,8 +887,8 @@ public class NodeTestDSLParser extends Parser {
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleSubtreeStream stream_param_chunk=new RewriteRuleSubtreeStream(adaptor,"rule param_chunk");
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:148:5: ( param_chunk ( COMMA param_chunk )* -> ^( VT_PARAMS ( param_chunk )+ ) )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:148:7: param_chunk ( COMMA param_chunk )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:148:5: ( param_chunk ( COMMA param_chunk )* -> ^( VT_PARAMS ( param_chunk )+ ) )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:148:7: param_chunk ( COMMA param_chunk )*
             {
             pushFollow(FOLLOW_param_chunk_in_params395);
             param_chunk21=param_chunk();
@@ -896,7 +896,7 @@ public class NodeTestDSLParser extends Parser {
             state._fsp--;
 
             stream_param_chunk.add(param_chunk21.getTree());
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:148:19: ( COMMA param_chunk )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:148:19: ( COMMA param_chunk )*
             loop9:
             do {
                 int alt9=2;
@@ -909,7 +909,7 @@ public class NodeTestDSLParser extends Parser {
 
                 switch (alt9) {
             	case 1 :
-            	    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:148:20: COMMA param_chunk
+            	    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:148:20: COMMA param_chunk
             	    {
             	    COMMA22=(Token)match(input,COMMA,FOLLOW_COMMA_in_params398);  
             	    stream_COMMA.add(COMMA22);
@@ -944,7 +944,7 @@ public class NodeTestDSLParser extends Parser {
             root_0 = (Object)adaptor.nil();
             // 149:5: -> ^( VT_PARAMS ( param_chunk )+ )
             {
-                // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:149:9: ^( VT_PARAMS ( param_chunk )+ )
+                // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:149:9: ^( VT_PARAMS ( param_chunk )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_PARAMS, "VT_PARAMS"), root_1);
@@ -990,7 +990,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "param_chunk"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:152:1: param_chunk : c= param_sequence -> VT_CHUNK[$c.text] ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:152:1: param_chunk : c= param_sequence -> VT_CHUNK[$c.text] ;
     public final NodeTestDSLParser.param_chunk_return param_chunk() throws RecognitionException {
         NodeTestDSLParser.param_chunk_return retval = new NodeTestDSLParser.param_chunk_return();
         retval.start = input.LT(1);
@@ -1002,8 +1002,8 @@ public class NodeTestDSLParser extends Parser {
 
         RewriteRuleSubtreeStream stream_param_sequence=new RewriteRuleSubtreeStream(adaptor,"rule param_sequence");
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:153:5: (c= param_sequence -> VT_CHUNK[$c.text] )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:153:7: c= param_sequence
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:153:5: (c= param_sequence -> VT_CHUNK[$c.text] )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:153:7: c= param_sequence
             {
             pushFollow(FOLLOW_param_sequence_in_param_chunk436);
             c=param_sequence();
@@ -1057,7 +1057,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "param_sequence"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:157:1: param_sequence : ( param )+ ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:157:1: param_sequence : ( param )+ ;
     public final NodeTestDSLParser.param_sequence_return param_sequence() throws RecognitionException {
         NodeTestDSLParser.param_sequence_return retval = new NodeTestDSLParser.param_sequence_return();
         retval.start = input.LT(1);
@@ -1069,12 +1069,12 @@ public class NodeTestDSLParser extends Parser {
 
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:158:5: ( ( param )+ )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:158:7: ( param )+
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:158:5: ( ( param )+ )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:158:7: ( param )+
             {
             root_0 = (Object)adaptor.nil();
 
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:158:7: ( param )+
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:158:7: ( param )+
             int cnt10=0;
             loop10:
             do {
@@ -1088,7 +1088,7 @@ public class NodeTestDSLParser extends Parser {
 
                 switch (alt10) {
             	case 1 :
-            	    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:158:7: param
+            	    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:158:7: param
             	    {
             	    pushFollow(FOLLOW_param_in_param_sequence462);
             	    param24=param();
@@ -1136,7 +1136,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "param"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:161:1: param : ( ID | STRING | INT | FLOAT | MISC | STAR | square_chunk | paren_chunk | DOT ) ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:161:1: param : ( ID | STRING | INT | FLOAT | MISC | STAR | square_chunk | paren_chunk | DOT ) ;
     public final NodeTestDSLParser.param_return param() throws RecognitionException {
         NodeTestDSLParser.param_return retval = new NodeTestDSLParser.param_return();
         retval.start = input.LT(1);
@@ -1164,12 +1164,12 @@ public class NodeTestDSLParser extends Parser {
         Object DOT33_tree=null;
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:162:5: ( ( ID | STRING | INT | FLOAT | MISC | STAR | square_chunk | paren_chunk | DOT ) )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:162:7: ( ID | STRING | INT | FLOAT | MISC | STAR | square_chunk | paren_chunk | DOT )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:162:5: ( ( ID | STRING | INT | FLOAT | MISC | STAR | square_chunk | paren_chunk | DOT ) )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:162:7: ( ID | STRING | INT | FLOAT | MISC | STAR | square_chunk | paren_chunk | DOT )
             {
             root_0 = (Object)adaptor.nil();
 
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:162:7: ( ID | STRING | INT | FLOAT | MISC | STAR | square_chunk | paren_chunk | DOT )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:162:7: ( ID | STRING | INT | FLOAT | MISC | STAR | square_chunk | paren_chunk | DOT )
             int alt11=9;
             switch ( input.LA(1) ) {
             case ID:
@@ -1226,7 +1226,7 @@ public class NodeTestDSLParser extends Parser {
 
             switch (alt11) {
                 case 1 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:162:9: ID
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:162:9: ID
                     {
                     ID25=(Token)match(input,ID,FOLLOW_ID_in_param482); 
                     ID25_tree = (Object)adaptor.create(ID25);
@@ -1236,7 +1236,7 @@ public class NodeTestDSLParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:163:11: STRING
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:163:11: STRING
                     {
                     STRING26=(Token)match(input,STRING,FOLLOW_STRING_in_param494); 
                     STRING26_tree = (Object)adaptor.create(STRING26);
@@ -1246,7 +1246,7 @@ public class NodeTestDSLParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:164:11: INT
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:164:11: INT
                     {
                     INT27=(Token)match(input,INT,FOLLOW_INT_in_param506); 
                     INT27_tree = (Object)adaptor.create(INT27);
@@ -1256,7 +1256,7 @@ public class NodeTestDSLParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:165:11: FLOAT
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:165:11: FLOAT
                     {
                     FLOAT28=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_param518); 
                     FLOAT28_tree = (Object)adaptor.create(FLOAT28);
@@ -1266,7 +1266,7 @@ public class NodeTestDSLParser extends Parser {
                     }
                     break;
                 case 5 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:166:11: MISC
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:166:11: MISC
                     {
                     MISC29=(Token)match(input,MISC,FOLLOW_MISC_in_param530); 
                     MISC29_tree = (Object)adaptor.create(MISC29);
@@ -1276,7 +1276,7 @@ public class NodeTestDSLParser extends Parser {
                     }
                     break;
                 case 6 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:167:11: STAR
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:167:11: STAR
                     {
                     STAR30=(Token)match(input,STAR,FOLLOW_STAR_in_param542); 
                     STAR30_tree = (Object)adaptor.create(STAR30);
@@ -1286,7 +1286,7 @@ public class NodeTestDSLParser extends Parser {
                     }
                     break;
                 case 7 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:168:11: square_chunk
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:168:11: square_chunk
                     {
                     pushFollow(FOLLOW_square_chunk_in_param554);
                     square_chunk31=square_chunk();
@@ -1298,7 +1298,7 @@ public class NodeTestDSLParser extends Parser {
                     }
                     break;
                 case 8 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:169:11: paren_chunk
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:169:11: paren_chunk
                     {
                     pushFollow(FOLLOW_paren_chunk_in_param566);
                     paren_chunk32=paren_chunk();
@@ -1310,7 +1310,7 @@ public class NodeTestDSLParser extends Parser {
                     }
                     break;
                 case 9 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:170:11: DOT
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:170:11: DOT
                     {
                     DOT33=(Token)match(input,DOT,FOLLOW_DOT_in_param578); 
                     DOT33_tree = (Object)adaptor.create(DOT33);
@@ -1349,7 +1349,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "import_target"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:174:1: import_target : itm= import_target_matcher -> VT_QUALIFIED_ID[$itm.text] ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:174:1: import_target : itm= import_target_matcher -> VT_QUALIFIED_ID[$itm.text] ;
     public final NodeTestDSLParser.import_target_return import_target() throws RecognitionException {
         NodeTestDSLParser.import_target_return retval = new NodeTestDSLParser.import_target_return();
         retval.start = input.LT(1);
@@ -1361,8 +1361,8 @@ public class NodeTestDSLParser extends Parser {
 
         RewriteRuleSubtreeStream stream_import_target_matcher=new RewriteRuleSubtreeStream(adaptor,"rule import_target_matcher");
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:175:5: (itm= import_target_matcher -> VT_QUALIFIED_ID[$itm.text] )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:175:7: itm= import_target_matcher
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:175:5: (itm= import_target_matcher -> VT_QUALIFIED_ID[$itm.text] )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:175:7: itm= import_target_matcher
             {
             pushFollow(FOLLOW_import_target_matcher_in_import_target607);
             itm=import_target_matcher();
@@ -1416,7 +1416,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "import_target_matcher"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:179:1: import_target_matcher : qualified_id_matcher ( DOT STAR )? ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:179:1: import_target_matcher : qualified_id_matcher ( DOT STAR )? ;
     public final NodeTestDSLParser.import_target_matcher_return import_target_matcher() throws RecognitionException {
         NodeTestDSLParser.import_target_matcher_return retval = new NodeTestDSLParser.import_target_matcher_return();
         retval.start = input.LT(1);
@@ -1432,8 +1432,8 @@ public class NodeTestDSLParser extends Parser {
         Object STAR36_tree=null;
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:180:5: ( qualified_id_matcher ( DOT STAR )? )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:180:7: qualified_id_matcher ( DOT STAR )?
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:180:5: ( qualified_id_matcher ( DOT STAR )? )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:180:7: qualified_id_matcher ( DOT STAR )?
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1443,7 +1443,7 @@ public class NodeTestDSLParser extends Parser {
             state._fsp--;
 
             adaptor.addChild(root_0, qualified_id_matcher34.getTree());
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:180:28: ( DOT STAR )?
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:180:28: ( DOT STAR )?
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -1452,7 +1452,7 @@ public class NodeTestDSLParser extends Parser {
             }
             switch (alt12) {
                 case 1 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:180:29: DOT STAR
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:180:29: DOT STAR
                     {
                     DOT35=(Token)match(input,DOT,FOLLOW_DOT_in_import_target_matcher636); 
                     DOT35_tree = (Object)adaptor.create(DOT35);
@@ -1495,7 +1495,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "qualified_id"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:183:1: qualified_id : qim= qualified_id_matcher -> VT_QUALIFIED_ID[$qim.text] ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:183:1: qualified_id : qim= qualified_id_matcher -> VT_QUALIFIED_ID[$qim.text] ;
     public final NodeTestDSLParser.qualified_id_return qualified_id() throws RecognitionException {
         NodeTestDSLParser.qualified_id_return retval = new NodeTestDSLParser.qualified_id_return();
         retval.start = input.LT(1);
@@ -1507,8 +1507,8 @@ public class NodeTestDSLParser extends Parser {
 
         RewriteRuleSubtreeStream stream_qualified_id_matcher=new RewriteRuleSubtreeStream(adaptor,"rule qualified_id_matcher");
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:184:5: (qim= qualified_id_matcher -> VT_QUALIFIED_ID[$qim.text] )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:184:7: qim= qualified_id_matcher
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:184:5: (qim= qualified_id_matcher -> VT_QUALIFIED_ID[$qim.text] )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:184:7: qim= qualified_id_matcher
             {
             pushFollow(FOLLOW_qualified_id_matcher_in_qualified_id660);
             qim=qualified_id_matcher();
@@ -1562,7 +1562,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "qualified_id_matcher"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:188:1: qualified_id_matcher : ID ( DOT ID )* ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:188:1: qualified_id_matcher : ID ( DOT ID )* ;
     public final NodeTestDSLParser.qualified_id_matcher_return qualified_id_matcher() throws RecognitionException {
         NodeTestDSLParser.qualified_id_matcher_return retval = new NodeTestDSLParser.qualified_id_matcher_return();
         retval.start = input.LT(1);
@@ -1578,8 +1578,8 @@ public class NodeTestDSLParser extends Parser {
         Object ID39_tree=null;
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:189:5: ( ID ( DOT ID )* )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:189:7: ID ( DOT ID )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:189:5: ( ID ( DOT ID )* )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:189:7: ID ( DOT ID )*
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1587,7 +1587,7 @@ public class NodeTestDSLParser extends Parser {
             ID37_tree = (Object)adaptor.create(ID37);
             adaptor.addChild(root_0, ID37_tree);
 
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:189:10: ( DOT ID )*
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:189:10: ( DOT ID )*
             loop13:
             do {
                 int alt13=2;
@@ -1606,7 +1606,7 @@ public class NodeTestDSLParser extends Parser {
 
                 switch (alt13) {
             	case 1 :
-            	    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:189:11: DOT ID
+            	    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:189:11: DOT ID
             	    {
             	    DOT38=(Token)match(input,DOT,FOLLOW_DOT_in_qualified_id_matcher689); 
             	    DOT38_tree = (Object)adaptor.create(DOT38);
@@ -1652,7 +1652,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "square_chunk"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:192:1: square_chunk : cm= collection_matcher ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:192:1: square_chunk : cm= collection_matcher ;
     public final NodeTestDSLParser.square_chunk_return square_chunk() throws RecognitionException {
         NodeTestDSLParser.square_chunk_return retval = new NodeTestDSLParser.square_chunk_return();
         retval.start = input.LT(1);
@@ -1664,8 +1664,8 @@ public class NodeTestDSLParser extends Parser {
 
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:193:5: (cm= collection_matcher )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:193:7: cm= collection_matcher
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:193:5: (cm= collection_matcher )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:193:7: cm= collection_matcher
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1702,7 +1702,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "collection_matcher"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:196:1: collection_matcher : LEFT_SQUARE ( params )? RIGHT_SQUARE ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:196:1: collection_matcher : LEFT_SQUARE ( params )? RIGHT_SQUARE ;
     public final NodeTestDSLParser.collection_matcher_return collection_matcher() throws RecognitionException {
         NodeTestDSLParser.collection_matcher_return retval = new NodeTestDSLParser.collection_matcher_return();
         retval.start = input.LT(1);
@@ -1718,8 +1718,8 @@ public class NodeTestDSLParser extends Parser {
         Object RIGHT_SQUARE42_tree=null;
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:197:5: ( LEFT_SQUARE ( params )? RIGHT_SQUARE )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:197:7: LEFT_SQUARE ( params )? RIGHT_SQUARE
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:197:5: ( LEFT_SQUARE ( params )? RIGHT_SQUARE )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:197:7: LEFT_SQUARE ( params )? RIGHT_SQUARE
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1727,7 +1727,7 @@ public class NodeTestDSLParser extends Parser {
             LEFT_SQUARE40_tree = (Object)adaptor.create(LEFT_SQUARE40);
             adaptor.addChild(root_0, LEFT_SQUARE40_tree);
 
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:197:19: ( params )?
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:197:19: ( params )?
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -1736,7 +1736,7 @@ public class NodeTestDSLParser extends Parser {
             }
             switch (alt14) {
                 case 1 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:197:19: params
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:197:19: params
                     {
                     pushFollow(FOLLOW_params_in_collection_matcher731);
                     params41=params();
@@ -1781,7 +1781,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "paren_chunk"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:200:1: paren_chunk : cm= paren_matcher ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:200:1: paren_chunk : cm= paren_matcher ;
     public final NodeTestDSLParser.paren_chunk_return paren_chunk() throws RecognitionException {
         NodeTestDSLParser.paren_chunk_return retval = new NodeTestDSLParser.paren_chunk_return();
         retval.start = input.LT(1);
@@ -1793,8 +1793,8 @@ public class NodeTestDSLParser extends Parser {
 
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:201:5: (cm= paren_matcher )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:201:7: cm= paren_matcher
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:201:5: (cm= paren_matcher )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:201:7: cm= paren_matcher
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1831,7 +1831,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "paren_matcher"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:204:1: paren_matcher : LEFT_PAREN ( params )? RIGHT_PAREN ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:204:1: paren_matcher : LEFT_PAREN ( params )? RIGHT_PAREN ;
     public final NodeTestDSLParser.paren_matcher_return paren_matcher() throws RecognitionException {
         NodeTestDSLParser.paren_matcher_return retval = new NodeTestDSLParser.paren_matcher_return();
         retval.start = input.LT(1);
@@ -1847,8 +1847,8 @@ public class NodeTestDSLParser extends Parser {
         Object RIGHT_PAREN45_tree=null;
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:205:5: ( LEFT_PAREN ( params )? RIGHT_PAREN )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:205:7: LEFT_PAREN ( params )? RIGHT_PAREN
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:205:5: ( LEFT_PAREN ( params )? RIGHT_PAREN )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:205:7: LEFT_PAREN ( params )? RIGHT_PAREN
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1856,7 +1856,7 @@ public class NodeTestDSLParser extends Parser {
             LEFT_PAREN43_tree = (Object)adaptor.create(LEFT_PAREN43);
             adaptor.addChild(root_0, LEFT_PAREN43_tree);
 
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:205:18: ( params )?
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:205:18: ( params )?
             int alt15=2;
             int LA15_0 = input.LA(1);
 
@@ -1865,7 +1865,7 @@ public class NodeTestDSLParser extends Parser {
             }
             switch (alt15) {
                 case 1 :
-                    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:205:18: params
+                    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:205:18: params
                     {
                     pushFollow(FOLLOW_params_in_paren_matcher772);
                     params44=params();
@@ -1910,7 +1910,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "test_case_key"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:208:1: test_case_key : {...}? =>id= ID -> VK_TEST_CASE[$id] ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:208:1: test_case_key : {...}? =>id= ID -> VK_TEST_CASE[$id] ;
     public final NodeTestDSLParser.test_case_key_return test_case_key() throws RecognitionException {
         NodeTestDSLParser.test_case_key_return retval = new NodeTestDSLParser.test_case_key_return();
         retval.start = input.LT(1);
@@ -1923,8 +1923,8 @@ public class NodeTestDSLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:209:5: ({...}? =>id= ID -> VK_TEST_CASE[$id] )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:209:7: {...}? =>id= ID
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:209:5: ({...}? =>id= ID -> VK_TEST_CASE[$id] )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:209:7: {...}? =>id= ID
             {
             if ( !(((validateIdentifierKey("TestCase")))) ) {
                 throw new FailedPredicateException(input, "test_case_key", "(validateIdentifierKey(\"TestCase\"))");
@@ -1978,7 +1978,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "import_key"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:213:1: import_key : {...}? =>id= ID -> VK_IMPORT[$id] ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:213:1: import_key : {...}? =>id= ID -> VK_IMPORT[$id] ;
     public final NodeTestDSLParser.import_key_return import_key() throws RecognitionException {
         NodeTestDSLParser.import_key_return retval = new NodeTestDSLParser.import_key_return();
         retval.start = input.LT(1);
@@ -1991,8 +1991,8 @@ public class NodeTestDSLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:214:5: ({...}? =>id= ID -> VK_IMPORT[$id] )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:214:7: {...}? =>id= ID
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:214:5: ({...}? =>id= ID -> VK_IMPORT[$id] )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:214:7: {...}? =>id= ID
             {
             if ( !(((validateIdentifierKey("import")))) ) {
                 throw new FailedPredicateException(input, "import_key", "(validateIdentifierKey(\"import\"))");
@@ -2046,7 +2046,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "setup_key"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:218:1: setup_key : {...}? =>id= ID -> VK_SETUP[$id] ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:218:1: setup_key : {...}? =>id= ID -> VK_SETUP[$id] ;
     public final NodeTestDSLParser.setup_key_return setup_key() throws RecognitionException {
         NodeTestDSLParser.setup_key_return retval = new NodeTestDSLParser.setup_key_return();
         retval.start = input.LT(1);
@@ -2059,8 +2059,8 @@ public class NodeTestDSLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:219:5: ({...}? =>id= ID -> VK_SETUP[$id] )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:219:7: {...}? =>id= ID
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:219:5: ({...}? =>id= ID -> VK_SETUP[$id] )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:219:7: {...}? =>id= ID
             {
             if ( !(((validateIdentifierKey("Setup")))) ) {
                 throw new FailedPredicateException(input, "setup_key", "(validateIdentifierKey(\"Setup\"))");
@@ -2114,7 +2114,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "teardown_key"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:223:1: teardown_key : {...}? =>id= ID -> VK_TEARDOWN[$id] ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:223:1: teardown_key : {...}? =>id= ID -> VK_TEARDOWN[$id] ;
     public final NodeTestDSLParser.teardown_key_return teardown_key() throws RecognitionException {
         NodeTestDSLParser.teardown_key_return retval = new NodeTestDSLParser.teardown_key_return();
         retval.start = input.LT(1);
@@ -2127,8 +2127,8 @@ public class NodeTestDSLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:224:5: ({...}? =>id= ID -> VK_TEARDOWN[$id] )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:224:7: {...}? =>id= ID
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:224:5: ({...}? =>id= ID -> VK_TEARDOWN[$id] )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:224:7: {...}? =>id= ID
             {
             if ( !(((validateIdentifierKey("TearDown")))) ) {
                 throw new FailedPredicateException(input, "teardown_key", "(validateIdentifierKey(\"TearDown\"))");
@@ -2182,7 +2182,7 @@ public class NodeTestDSLParser extends Parser {
     };
 
     // $ANTLR start "test_key"
-    // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:228:1: test_key : {...}? =>id= ID -> VK_TEST[$id] ;
+    // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:228:1: test_key : {...}? =>id= ID -> VK_TEST[$id] ;
     public final NodeTestDSLParser.test_key_return test_key() throws RecognitionException {
         NodeTestDSLParser.test_key_return retval = new NodeTestDSLParser.test_key_return();
         retval.start = input.LT(1);
@@ -2195,8 +2195,8 @@ public class NodeTestDSLParser extends Parser {
         RewriteRuleTokenStream stream_ID=new RewriteRuleTokenStream(adaptor,"token ID");
 
         try {
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:229:5: ({...}? =>id= ID -> VK_TEST[$id] )
-            // C:\\dev\\droolsjbpm\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:229:7: {...}? =>id= ID
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:229:5: ({...}? =>id= ID -> VK_TEST[$id] )
+            // C:\\dev\\kiegroup\\drools\\drools-core\\src\\test\\resources\\org\\drools\\reteoo\\test\\parser\\NodeTestDSL.g:229:7: {...}? =>id= ID
             {
             if ( !(((validateIdentifierKey("Test")))) ) {
                 throw new FailedPredicateException(input, "test_key", "(validateIdentifierKey(\"Test\"))");
