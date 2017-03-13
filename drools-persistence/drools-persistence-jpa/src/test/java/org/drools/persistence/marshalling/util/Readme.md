@@ -100,7 +100,7 @@ done, posted after the descriptions.
 As an example, we're going to take the following test and modify it so 
 that it uses the marshalling test framework. 
 
- *   [TimerAndCalendarTest](https://github.com/droolsjbpm/drools/blob/b869611e377e9fc5e036c64c296eeaba75a5cd0e/drools-persistence-jpa/src/test/java/org/drools/timer/integrationtests/TimerAndCalendarTest.java)
+ *   [TimerAndCalendarTest](https://github.com/kiegroup/drools/blob/b869611e377e9fc5e036c64c296eeaba75a5cd0e/drools-persistence-jpa/src/test/java/org/drools/timer/integrationtests/TimerAndCalendarTest.java)
 
 <h4>Before using the framework</h4>
 
@@ -112,7 +112,7 @@ to use the marshalling test framework:
         private PoolingDataSource    ds1;
         private EntityManagerFactory emf;
 ```
-and also [here](https://github.com/droolsjbpm/drools/blob/b869611e377e9fc5e036c64c296eeaba75a5cd0e/drools-persistence-jpa/src/test/java/org/drools/timer/integrationtests/TimerAndCalendarTest.java#L245): 
+and also [here](https://github.com/kiegroup/drools/blob/b869611e377e9fc5e036c64c296eeaba75a5cd0e/drools-persistence-jpa/src/test/java/org/drools/timer/integrationtests/TimerAndCalendarTest.java#L245): 
 
 ```java
         @Before
@@ -153,7 +153,7 @@ and also [here](https://github.com/droolsjbpm/drools/blob/b869611e377e9fc5e036c6
             return ksession;
         }
 ```
-and lastly, the following method ([here](https://github.com/droolsjbpm/drools/blob/b869611e377e9fc5e036c64c296eeaba75a5cd0e/drools-persistence-jpa/src/test/java/org/drools/timer/integrationtests/TimerAndCalendarTest.java#L296)) 
+and lastly, the following method ([here](https://github.com/kiegroup/drools/blob/b869611e377e9fc5e036c64c296eeaba75a5cd0e/drools-persistence-jpa/src/test/java/org/drools/timer/integrationtests/TimerAndCalendarTest.java#L296)) 
 will be removed.  
 
 ```java
