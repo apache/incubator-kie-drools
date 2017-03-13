@@ -59,9 +59,9 @@
   </repositories>
 
   <scm>
-    <connection>scm:git:https://github.com:droolsjbpm/jbpm.git</connection>
-    <developerConnection>scm:git:git@github.com:droolsjbpm/jbpm.git</developerConnection>
-    <url>https://github.com/droolsjbpm/jbpm</url>
+    <connection>scm:git:https://github.com:kiegroup/jbpm.git</connection>
+    <developerConnection>scm:git:git@github.com:kiegroup/jbpm.git</developerConnection>
+    <url>https://github.com/kiegroup/jbpm</url>
   </scm>
   <issueManagement>
     <system>jira</system>
