@@ -29,15 +29,23 @@ public abstract class TransactionManagerFactory {
     private static final Logger logger = LoggerFactory.getLogger(TransactionManagerFactory.class);
     private static TransactionManagerFactory INSTANCE;
 
-    private static void initTransactionManagerFactory() {
+    static {
+       setInstance();
+    }
+
+    private static void setInstance() {
         String factoryClassName = System.getProperty("org.kie.txm.factory.class", "org.drools.persistence.jta.JtaTransactionManagerFactory");
-        try {            
+        try {
             TransactionManagerFactory factory = Class.forName(factoryClassName).asSubclass(TransactionManagerFactory.class).newInstance();
             INSTANCE = factory;
             logger.info("Using "+factory);
         } catch (Exception e) {
             logger.error("Unable to instantiate "+factoryClassName, e);
         }
+    }
+
+    public static void resetInstance() {
+        setInstance();
     }
     
     /**
@@ -46,7 +54,6 @@ public abstract class TransactionManagerFactory {
      * @return
      */
     public static final TransactionManagerFactory get() {
-    	initTransactionManagerFactory();
         return INSTANCE;
     }
 
