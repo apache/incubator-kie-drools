@@ -43,9 +43,9 @@
   </repositories>
 
   <scm>
-    <connection>scm:git:https://github.com:droolsjbpm/drools.git</connection>
-    <developerConnection>scm:git:git@github.com:droolsjbpm/drools.git</developerConnection>
-    <url>https://github.com/droolsjbpm/drools</url>
+    <connection>scm:git:https://github.com:kiegroup/drools.git</connection>
+    <developerConnection>scm:git:git@github.com:kirgroup/drools.git</developerConnection>
+    <url>https://github.com/kiegroup/drools</url>
   </scm>
 
   <modules>
