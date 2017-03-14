@@ -960,7 +960,8 @@ public class DefaultAgenda
                                          long processInstanceId) {
         final Map<String, Declaration> declarations = activation.getSubRule().getOuterDeclarations();
         for ( Declaration declaration : declarations.values() ) {
-            if ( "processInstance".equals( declaration.getIdentifier() ) ) {
+            if ( "processInstance".equals( declaration.getIdentifier() )
+                    || "org.kie.api.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
                 Object value = declaration.getValue( workingMemory,
                                                      activation.getTuple().get( declaration ).getObject() );
                 if ( value instanceof ProcessInstance ) {
