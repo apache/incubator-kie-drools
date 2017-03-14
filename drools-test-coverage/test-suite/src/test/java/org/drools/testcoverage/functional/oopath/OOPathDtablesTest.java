@@ -129,15 +129,10 @@ public class OOPathDtablesTest {
         final QueryResultsRow resultsRow = results.iterator().next();
         assertThat(resultsRow.get("$cities")).isInstanceOf(List.class);
         final List<String> cities = (List<String>) resultsRow.get("$cities");
-        assertThat(cities).hasSize(2)
-                .hasOnlyElementsOfType(String.class)
-                .containsAll(Arrays.asList("Nice City", "Big City"))
-                .doesNotContain("Small City", "Local City");
+        assertThat(cities).containsExactlyInAnyOrder("Nice City", "Big City");
     }
 
     private void verifyRuleFireResults(List<String> list) {
-        assertThat(list).hasSize(2)
-                .containsOnly("SafeDriver", "Risky Driver")
-                .containsAll(Arrays.asList("SafeDriver", "Risky Driver"));
+        assertThat(list).containsExactlyInAnyOrder("SafeDriver", "Risky Driver");
     }
 }
