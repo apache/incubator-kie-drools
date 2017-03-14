@@ -52,6 +52,24 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 public class DMNRuntimeTest {
 
     @Test
+    public void testSimpleItemDefinition() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "simple-item-def.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn/itemdef", "simple-item-def" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Monthly Salary", 1000 );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( result.get( "Yearly Salary" ), is( new BigDecimal( "12000" ) ) );
+    }
+
+    @Test
     public void testCompositeItemDefinition() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0008-LX-arithmetic.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0008-LX-arithmetic" );
