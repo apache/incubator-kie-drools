@@ -45,6 +45,8 @@ public class OOPathCepTest {
     private static final String MODULE_GROUP_ID = "oopath-cep-test";
     private static final String ENTRY_POINT_NAME = "test-entry-point";
 
+    private static final long DEFAULT_DURATION_IN_SECS = 2000;
+
     private KieSession kieSession;
     private List<MessageEvent> events;
     private List<Message> messages;
@@ -77,7 +79,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_EQUALITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         this.initKieSession(kieBase);
         this.populateAndVerifyEventCase(this.kieSession);
     }
@@ -99,7 +101,7 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_EQUALITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         this.initKieSession(kieBase);
         this.populateAndVerifyEventCase(this.kieSession.getEntryPoint(ENTRY_POINT_NAME));
     }
@@ -117,7 +119,7 @@ public class OOPathCepTest {
     }
 
     @Test
-    public void testTemporalOperatorWithOOPath() {
+    public void testTemporalOperatorAfterWithOOPath() {
         final String drl =
                 "import org.drools.testcoverage.common.model.Message;\n" +
                 "import org.drools.testcoverage.common.model.MessageEvent;\n" +
@@ -134,24 +136,424 @@ public class OOPathCepTest {
                 "  messages.add( $message );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_EQUALITY, drl);
-        this.initKieSession(kieBase);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
 
-        final MessageEvent pongEvent = new MessageEvent(MessageEvent.Type.sent, new Message("Pong"));
-        this.kieSession.insert(pongEvent);
-
-        final MessageEvent pingEvent = new MessageEvent(MessageEvent.Type.sent, new Message("Ping"));
-        this.kieSession.insert(pingEvent);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 1);
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("Pong event before Ping event should NOT make the rule fire").isEmpty();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
 
-        final Message pongMessage = new Message("Pong");
-        final MessageEvent secondPongEvent = new MessageEvent(MessageEvent.Type.sent, pongMessage);
-        this.kieSession.insert(secondPongEvent);
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
 
         this.kieSession.fireAllRules();
-        Assertions.assertThat(this.messages).as("Pong event after Ping event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorBeforeWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this before ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 1);
+        final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorCoincidesWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this coincides[1s] ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorDuringWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "  @duration( duration )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this during ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1500));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorFinishesWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "  @duration( duration )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this finishes ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS), clock, 1);
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1000));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorFinishedByWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "  @duration( duration )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this finishedby ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS), clock, 1);
+        final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS - 1000));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorIncludesWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "  @duration( duration )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this includes ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1500));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS - 1500));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorMeetsWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this meets[ 1s ] ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorMetByWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this metby[ 1s ] ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 2);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorOverlapsWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "  @duration( duration )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this overlaps[ 1s ] ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), 1), clock, 2);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), 1), clock, 1);
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorOverlappedByWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "  @duration( duration )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this overlappedby[ 1s ] ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS), clock, 1);
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS), clock, 1);
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorStartsWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "  @duration( duration )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this starts[ 1s ] ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS));
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS - 1000));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    @Test
+    public void testTemporalOperatorStartedByWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "  @duration( duration )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this startedby[ 1s ] ev1 )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS));
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping"), DEFAULT_DURATION_IN_SECS));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        final Message pongMessage = this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Pong"), DEFAULT_DURATION_IN_SECS + 1000));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
     }
 
     @Test
@@ -221,7 +623,7 @@ public class OOPathCepTest {
                 "  events.add( $messageEvent );\n" +
                 "end\n";
 
-        assertDrlHasCompilationError( drl, 2 );
+        assertDrlHasCompilationError(drl, 2);
     }
 
     private void populateAndVerifyLengthWindowCase(final KieBase kieBase) {
@@ -267,7 +669,7 @@ public class OOPathCepTest {
                 "  events.add( $messageEvent );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_EQUALITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         this.populateAndVerifyTimeWindowCase(kieBase);
     }
 
@@ -292,7 +694,7 @@ public class OOPathCepTest {
                 "  events.add( $messageEvent );\n" +
                 "end\n";
 
-        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_EQUALITY, drl);
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
         this.populateAndVerifyTimeWindowCase(kieBase);
     }
 
@@ -329,6 +731,46 @@ public class OOPathCepTest {
         Assertions.assertThat(this.events).as("The rule should have fired for ping event only").contains(ping4Event);
     }
 
+    @Test
+    public void testEventExplicitExpirationWithOOPath() {
+        final String drl =
+                "import org.drools.testcoverage.common.model.Message;\n" +
+                "import org.drools.testcoverage.common.model.MessageEvent;\n" +
+                "global java.util.List events\n" +
+                "global java.util.List messages\n" +
+                "\n" +
+                "declare org.drools.testcoverage.common.model.MessageEvent\n" +
+                "  @role( event )\n" +
+                "  @expires( 2s )\n" +
+                "end\n" +
+                "rule R when\n" +
+                "  MessageEvent( /msg{ message == 'Ping' } )\n" +
+                "  MessageEvent( $message: /msg{ message == 'Pong' } )\n" +
+                "then\n" +
+                "  messages.add( $message );\n" +
+                "end\n";
+
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(MODULE_GROUP_ID, KieBaseTestConfiguration.STREAM_IDENTITY, drl);
+        final SessionPseudoClock clock = this.initKieSessionWithPseudoClock(kieBase);
+
+        this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")), clock, 3);
+        final Message pongMessage = this.insertEventAndAdvanceClock(new MessageEvent(MessageEvent.Type.sent, new Message("Pong")), clock, 1);
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The first sequence of events should NOT make the rule fire").isEmpty();
+
+        this.insertEvent(new MessageEvent(MessageEvent.Type.sent, new Message("Ping")));
+
+        this.kieSession.fireAllRules();
+        Assertions.assertThat(this.messages).as("The last event should make the rule fire").containsExactlyInAnyOrder(pongMessage);
+    }
+
+    private SessionPseudoClock initKieSessionWithPseudoClock(final KieBase kieBase) {
+        final KieSessionConfiguration sessionConfiguration = KieSessionUtil.getKieSessionConfigurationWithClock(ClockTypeOption.get("pseudo"), null);
+        this.initKieSession(kieBase, sessionConfiguration);
+        return this.kieSession.getSessionClock();
+    }
+
     private void initKieSession(final KieBase kieBase) {
         this.initKieSession(kieBase, null);
     }
@@ -340,6 +782,17 @@ public class OOPathCepTest {
 
         this.events = new ArrayList<>();
         this.kieSession.setGlobal("events", events);
+    }
+
+    private Message insertEventAndAdvanceClock(final MessageEvent messageEvent, final SessionPseudoClock clock, final long timeInSeconds) {
+        final Message result = this.insertEvent(messageEvent);
+        clock.advanceTime(timeInSeconds, TimeUnit.SECONDS);
+        return result;
+    }
+
+    private Message insertEvent(final MessageEvent messageEvent) {
+        this.kieSession.insert(messageEvent);
+        return messageEvent.getMsg();
     }
 
 }
