@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.google.common.collect.Lists;
 import org.drools.core.common.AgendaItem;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.Match;
@@ -129,11 +128,8 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     }
 
     protected List<Object> extractJustificationList(RuleContext kcontext) {
-        // Unlike kcontext.getMatch().getObjects(), this includes those of accumulate
-        List<Object> droolsMatchObjects = ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();
-        // Drools always returns the rule matches in reverse order
-        // Return a reversed view on the list for performance
-        return Lists.reverse(droolsMatchObjects);
+        // Unlike kcontext.getMatch().getObjects(), this includes the matches of accumulate and exists
+        return ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();
     }
 
     private class ConstraintActivationUnMatchListener implements ActivationUnMatchListener {

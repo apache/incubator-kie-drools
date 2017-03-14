@@ -192,8 +192,10 @@ public class EmployeePanel extends JPanel {
                 shiftAssignmentButton.setForeground(TangoColorFactory.SCARLET_1);
             }
         }
-        int colorIndex = shift.getShiftType().getIndex() % TangoColorFactory.SEQUENCE_1.length;
-        shiftAssignmentButton.setBackground(TangoColorFactory.SEQUENCE_1[colorIndex]);
+        Color color = nurseRosteringPanel.determinePlanningEntityColor(shiftAssignment, shift.getShiftType());
+        shiftAssignmentButton.setBackground(color);
+        String toolTip = nurseRosteringPanel.determinePlanningEntityTooltip(shiftAssignment);
+        shiftAssignmentButton.setToolTipText(toolTip);
         shiftPanel.add(shiftAssignmentButton);
         shiftPanel.repaint();
         shiftAssignmentButtonMap.put(shiftAssignment, shiftAssignmentButton);

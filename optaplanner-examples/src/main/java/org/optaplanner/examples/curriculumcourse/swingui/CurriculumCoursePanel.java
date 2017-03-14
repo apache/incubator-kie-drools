@@ -20,7 +20,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,6 +38,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
@@ -187,16 +195,17 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
     }
 
     private void fillLectureCells(CourseSchedule courseSchedule) {
-        TangoColorFactory tangoColorFactory = new TangoColorFactory();
+        preparePlanningEntityColors(courseSchedule.getLectureList());
         for (Lecture lecture : courseSchedule.getLectureList()) {
-            Color lectureColor = tangoColorFactory.pickColor(lecture.getCourse());
+            Color color = determinePlanningEntityColor(lecture, lecture.getCourse());
+            String toolTip = determinePlanningEntityTooltip(lecture);
             roomsPanel.addCell(lecture.getRoom(), lecture.getPeriod(),
-                    createButton(lecture, lectureColor));
+                    createButton(lecture, color, toolTip));
             teachersPanel.addCell(lecture.getTeacher(), lecture.getPeriod(),
-                    createButton(lecture, lectureColor));
+                    createButton(lecture, color, toolTip));
             for (Curriculum curriculum : lecture.getCurriculumList()) {
                 curriculaPanel.addCell(curriculum, lecture.getPeriod(),
-                        createButton(lecture, lectureColor));
+                        createButton(lecture, color, toolTip));
             }
         }
     }
@@ -210,13 +219,19 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
         return headerPanel;
     }
 
-    private JButton createButton(Lecture lecture, Color color) {
+    private JButton createButton(Lecture lecture, Color color, String toolTip) {
         JButton button = SwingUtils.makeSmallButton(new JButton(new LectureAction(lecture)));
         button.setBackground(color);
         if (lecture.isLocked()) {
             button.setIcon(CommonIcons.LOCKED_ICON);
         }
+        button.setToolTipText(toolTip);
         return button;
+    }
+
+    @Override
+    public boolean isIndictmentHeatMapEnabled() {
+        return true;
     }
 
     private class LectureAction extends AbstractAction {

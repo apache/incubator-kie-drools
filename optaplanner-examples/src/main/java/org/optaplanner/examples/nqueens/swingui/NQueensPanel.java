@@ -71,12 +71,12 @@ public class NQueensPanel extends SolutionPanel<NQueens> {
                 if (queen.getColumn().getIndex() != column) {
                     throw new IllegalStateException("The queenList is not in the expected order.");
                 }
-                String toolTipText = "<html>Row " + row + "<br/>Column " + column + "</html>";
+                String toolTip = "<html>Row " + row + "<br/>Column " + column + "</html>";
                 if (queen.getRow() != null && queen.getRow().getIndex() == row) {
                     JButton button = new JButton(new QueenAction(queen));
                     button.setMinimumSize(new Dimension(20, 20));
                     button.setPreferredSize(new Dimension(20, 20));
-                    button.setToolTipText(toolTipText);
+                    button.setToolTipText(toolTip);
                     add(button);
                 } else {
                     JPanel panel = new JPanel();
@@ -85,7 +85,7 @@ public class NQueensPanel extends SolutionPanel<NQueens> {
                             BorderFactory.createEmptyBorder(5, 5, 5, 5)));
                     Color background = (((row + column) % 2) == 0) ? Color.WHITE : TangoColorFactory.ALUMINIUM_3;
                     panel.setBackground(background);
-                    panel.setToolTipText(toolTipText);
+                    panel.setToolTipText(toolTip);
                     add(panel);
                 }
             }

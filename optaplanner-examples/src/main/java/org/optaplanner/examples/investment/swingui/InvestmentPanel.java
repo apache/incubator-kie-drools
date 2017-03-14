@@ -279,9 +279,9 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
         }
     }
 
-    private JPanel createTableHeader(JLabel label, String toolTipText) {
-        if (toolTipText != null) {
-            label.setToolTipText(toolTipText);
+    private JPanel createTableHeader(JLabel label, String toolTip) {
+        if (toolTip != null) {
+            label.setToolTipText(toolTip);
         }
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.add(label, BorderLayout.NORTH);

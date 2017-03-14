@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -73,6 +74,8 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
             SolverAndPersistenceFrame.class.getResource("optaPlannerIcon.png"));
 
     private final SolutionBusiness<Solution_> solutionBusiness;
+    private final ImageIcon indictmentHeatMapTrueIcon;
+    private final ImageIcon indictmentHeatMapFalseIcon;
     private final ImageIcon refreshScreenDuringSolvingTrueIcon;
     private final ImageIcon refreshScreenDuringSolvingFalseIcon;
 
@@ -88,6 +91,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     private Action importAction;
     private Action exportAction;
     private JToggleButton refreshScreenDuringSolvingToggleButton;
+    private JToggleButton indictmentHeatMapToggleButton;
     private Action solveAction;
     private JButton solveButton;
     private Action terminateSolvingEarlyAction;
@@ -105,6 +109,8 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         setIconImage(OPTA_PLANNER_ICON.getImage());
         solutionPanel.setSolutionBusiness(solutionBusiness);
         solutionPanel.setSolverAndPersistenceFrame(this);
+        indictmentHeatMapTrueIcon = new ImageIcon(getClass().getResource("indictmentHeatMapTrueIcon.png"));
+        indictmentHeatMapFalseIcon = new ImageIcon(getClass().getResource("indictmentHeatMapFalseIcon.png"));
         refreshScreenDuringSolvingTrueIcon = new ImageIcon(getClass().getResource("refreshScreenDuringSolvingTrueIcon.png"));
         refreshScreenDuringSolvingFalseIcon = new ImageIcon(getClass().getResource("refreshScreenDuringSolvingFalseIcon.png"));
         registerListeners();
@@ -573,10 +579,24 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
     private JPanel createScorePanel() {
         JPanel scorePanel = new JPanel(new BorderLayout(5, 0));
-        scorePanel.setBorder(BorderFactory.createEtchedBorder());
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         showConstraintMatchesDialogAction = new ShowConstraintMatchesDialogAction();
         showConstraintMatchesDialogAction.setEnabled(false);
-        scorePanel.add(new JButton(showConstraintMatchesDialogAction), BorderLayout.WEST);
+        buttonPanel.add(new JButton(showConstraintMatchesDialogAction));
+        indictmentHeatMapToggleButton = new JToggleButton(
+                solutionPanel.isUseIndictmentColor() ? indictmentHeatMapTrueIcon : indictmentHeatMapFalseIcon,
+                solutionPanel.isUseIndictmentColor());
+        indictmentHeatMapToggleButton.setEnabled(false);
+        indictmentHeatMapToggleButton.setToolTipText("Show indictment heat map");
+        indictmentHeatMapToggleButton.addActionListener(e -> {
+            boolean selected = indictmentHeatMapToggleButton.isSelected();
+            indictmentHeatMapToggleButton.setIcon(selected ?
+                    indictmentHeatMapTrueIcon : indictmentHeatMapFalseIcon);
+            solutionPanel.setUseIndictmentColor(selected);
+            resetScreen();
+        });
+        buttonPanel.add(indictmentHeatMapToggleButton);
+        scorePanel.add(buttonPanel, BorderLayout.WEST);
         scoreField = new JTextField("Score:");
         scoreField.setEditable(false);
         scoreField.setForeground(Color.BLACK);
@@ -637,6 +657,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         progressBar.setIndeterminate(solving);
         progressBar.setStringPainted(solving);
         progressBar.setString(solving ? "Solving..." : null);
+        indictmentHeatMapToggleButton.setEnabled(solutionPanel.isIndictmentHeatMapEnabled() && !solving);
         showConstraintMatchesDialogAction.setEnabled(!solving);
     }
 

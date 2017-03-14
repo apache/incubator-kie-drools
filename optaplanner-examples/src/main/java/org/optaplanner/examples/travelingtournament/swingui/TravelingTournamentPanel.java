@@ -119,13 +119,15 @@ public class TravelingTournamentPanel extends SolutionPanel<TravelingTournament>
     }
 
     private void fillMatchCells(TravelingTournament travelingTournament) {
+        preparePlanningEntityColors(travelingTournament.getMatchList());
         for (Match match : travelingTournament.getMatchList()) {
             Team homeTeam = match.getHomeTeam();
             Team awayTeam = match.getAwayTeam();
+            String toolTip = determinePlanningEntityTooltip(match);
             teamsPanel.addCell(homeTeam, match.getDay(),
-                    createButton(match, tangoColorFactory.pickColor(awayTeam), awayTeam.getLabel()));
+                    createButton(match, determinePlanningEntityColor(match, awayTeam), awayTeam.getLabel(), toolTip));
             teamsPanel.addCell(awayTeam, match.getDay(),
-                    createButton(match, tangoColorFactory.pickColor(homeTeam), homeTeam.getLabel()));
+                    createButton(match, determinePlanningEntityColor(match, homeTeam), homeTeam.getLabel(), toolTip));
         }
     }
 
@@ -138,10 +140,16 @@ public class TravelingTournamentPanel extends SolutionPanel<TravelingTournament>
         return headerPanel;
     }
 
-    private JButton createButton(Match match, Color color, String label) {
+    private JButton createButton(Match match, Color color, String label, String toolTip) {
         JButton button = SwingUtils.makeSmallButton(new JButton(new MatchAction(match, label)));
         button.setBackground(color);
+        button.setToolTipText(toolTip);
         return button;
+    }
+
+    @Override
+    public boolean isIndictmentHeatMapEnabled() {
+        return true;
     }
 
     private class MatchAction extends AbstractAction {

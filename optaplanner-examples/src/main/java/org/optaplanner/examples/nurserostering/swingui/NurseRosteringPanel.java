@@ -123,6 +123,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
         employeeToPanelMap.clear();
         employeeToPanelMap.put(null, unassignedPanel);
         unassignedPanel.clearShiftAssignments();
+        preparePlanningEntityColors(nurseRoster.getShiftAssignmentList());
         List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
         List<Shift> shiftList = nurseRoster.getShiftList();
         unassignedPanel.setShiftDateListAndShiftList(shiftDateList, shiftList);
@@ -133,6 +134,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
 
     @Override
     public void updatePanel(NurseRoster nurseRoster) {
+        preparePlanningEntityColors(nurseRoster.getShiftAssignmentList());
         List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
         List<Shift> shiftList = nurseRoster.getShiftList();
         Set<Employee> deadEmployeeSet = new LinkedHashSet<>(employeeToPanelMap.keySet());
@@ -160,6 +162,11 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
         for (EmployeePanel employeePanel : employeeToPanelMap.values()) {
             employeePanel.update();
         }
+    }
+
+    @Override
+    public boolean isIndictmentHeatMapEnabled() {
+        return true;
     }
 
     private void advancePlanningWindowStart() {

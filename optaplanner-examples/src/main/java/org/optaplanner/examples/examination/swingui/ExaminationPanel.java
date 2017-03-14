@@ -179,17 +179,18 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
     }
 
     private void fillExamCells(Examination examination) {
-        TangoColorFactory tangoColorFactory = new TangoColorFactory();
+        preparePlanningEntityColors(examination.getExamList());
         for (Exam exam : examination.getExamList()) {
-            Color examColor = tangoColorFactory.pickColor(exam);
+            Color color = determinePlanningEntityColor(exam, exam);
+            String toolTip = determinePlanningEntityTooltip(exam);
             roomsPanel.addCell(exam.getRoom(), exam.getPeriod(),
-                    createButton(exam, examColor));
+                    createButton(exam, color, toolTip));
         }
     }
 
-    private JPanel createTableHeader(JLabel label, String toolTipText) {
-        if (toolTipText != null) {
-            label.setToolTipText(toolTipText);
+    private JPanel createTableHeader(JLabel label, String toolTip) {
+        if (toolTip != null) {
+            label.setToolTipText(toolTip);
         }
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.add(label, BorderLayout.NORTH);
@@ -199,13 +200,19 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
         return headerPanel;
     }
 
-    private JButton createButton(Exam exam, Color color) {
+    private JButton createButton(Exam exam, Color color, String toolTip) {
         JButton button = SwingUtils.makeSmallButton(new JButton(new ExamAction(exam)));
         button.setBackground(color);
+        button.setToolTipText(toolTip);
         if (exam instanceof FollowingExam) {
             button.setForeground(TangoColorFactory.ALUMINIUM_5);
         }
         return button;
+    }
+
+    @Override
+    public boolean isIndictmentHeatMapEnabled() {
+        return true;
     }
 
     private class ExamAction extends AbstractAction {

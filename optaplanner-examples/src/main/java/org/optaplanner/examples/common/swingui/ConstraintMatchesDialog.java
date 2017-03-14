@@ -123,7 +123,7 @@ public class ConstraintMatchesDialog extends JDialog {
         Set<? extends ConstraintMatch> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
         StringBuilder text = new StringBuilder(constraintMatchSet.size() * 80);
         for (ConstraintMatch constraintMatch : constraintMatchSet) {
-            text.append(constraintMatch.getJustificationList()).append("=")
+            text.append(constraintMatch.getJustificationList()).append(" = ")
                     .append(constraintMatch.getScore().toShortString()).append("\n");
         }
         return text.toString();
