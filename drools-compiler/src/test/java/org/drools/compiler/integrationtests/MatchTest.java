@@ -165,6 +165,30 @@ public class MatchTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testGetObjectsAccumulateWithNoMatchingFacts() {
+        String drl =
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "  accumulate(\n" +
+                "    Object(false);\n" +
+                "    $total : count()\n" +
+                "  )\n" +
+                "then\n" +
+                "  list.addAll(((org.drools.core.spi.Activation)kcontext.getMatch()).getObjectsDeep());\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        List<Object> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertTrue(list.isEmpty());
+
+        ksession.dispose();
+    }
+
+    @Test
     public void testGetObjectsExists() {
         // DROOLS-1474
         String str =
