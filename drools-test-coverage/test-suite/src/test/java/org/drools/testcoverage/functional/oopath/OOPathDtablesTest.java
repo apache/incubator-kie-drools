@@ -46,7 +46,9 @@ public class OOPathDtablesTest {
         List<String> list = new ArrayList<>();
         populateKieSession(kieSession, list);
 
-        assertThat(kieSession.fireAllRules()).isEqualTo(2);
+        int rulesFired = kieSession.fireAllRules();
+
+        assertThat(rulesFired).isEqualTo(2);
         verifyRuleFireResults(list);
         verifyQueryResults(kieSession.getQueryResults("listSafeCities"));
     }
@@ -57,7 +59,9 @@ public class OOPathDtablesTest {
         List<String> list = new ArrayList<>();
         populateKieSession(kieSession, list);
 
-        assertThat(kieSession.fireAllRules()).isEqualTo(2);
+        int rulesFired = kieSession.fireAllRules();
+
+        assertThat(rulesFired).isEqualTo(2);
         verifyRuleFireResults(list);
         verifyQueryResults(kieSession.getQueryResults("listSafeCities"));
     }
@@ -68,7 +72,9 @@ public class OOPathDtablesTest {
         List<String> list = new ArrayList<>();
         populateKieSession(kieSession, list);
 
-        assertThat(kieSession.fireAllRules()).isEqualTo(2);
+        int rulesFired = kieSession.fireAllRules();
+
+        assertThat(rulesFired).isEqualTo(2);
         verifyRuleFireResults(list);
         verifyQueryResults(kieSession.getQueryResults("listSafeCities"));
     }
@@ -103,20 +109,19 @@ public class OOPathDtablesTest {
     }
 
     private Person[] prepareData() {
-        Person[] persons = new Person[4];
-        persons[0] = new Person("Bruno", 25);
-        persons[0].setAddress(new InternationalAddress("Some Street", 10, "Nice City", "Safecountry"));
+        Person bruno = new Person("Bruno", 25);
+        bruno.setAddress(new InternationalAddress("Some Street", 10, "Nice City", "Safecountry"));
 
-        persons[1] = new Person("Robert", 17);
-        persons[1].setAddress(new InternationalAddress("Some Street", 12, "Small City", "Riskyland"));
+        Person robert = new Person("Robert", 17);
+        robert.setAddress(new InternationalAddress("Some Street", 12, "Small City", "Riskyland"));
 
-        persons[2] = new Person("Joe", 11);
-        persons[2].setAddress(new InternationalAddress("Some Street", 13, "Big City", "Safecountry"));
+        Person joe = new Person("Joe", 11);
+        joe.setAddress(new InternationalAddress("Some Street", 13, "Big City", "Safecountry"));
 
-        persons[3] = new Person("Mike", 25);
-        persons[3].setAddress(new Address("Some Street", 14, "Local City"));
+        Person mike = new Person("Mike", 25);
+        mike.setAddress(new Address("Some Street", 14, "Local City"));
 
-        return persons;
+        return new Person[]{bruno, robert, joe, mike};
     }
 
     private void verifyQueryResults(QueryResults results) {
@@ -124,15 +129,15 @@ public class OOPathDtablesTest {
         final QueryResultsRow resultsRow = results.iterator().next();
         assertThat(resultsRow.get("$cities")).isInstanceOf(List.class);
         final List<String> cities = (List<String>) resultsRow.get("$cities");
-        assertThat(cities).hasSize(2);
-        assertThat(cities).hasOnlyElementsOfType(String.class);
-        assertThat(cities).containsAll(Arrays.asList("Nice City", "Big City"));
-        assertThat(cities).doesNotContainAnyElementsOf(Arrays.asList("Small City", "Local City"));
+        assertThat(cities).hasSize(2)
+                .hasOnlyElementsOfType(String.class)
+                .containsAll(Arrays.asList("Nice City", "Big City"))
+                .doesNotContain("Small City", "Local City");
     }
 
     private void verifyRuleFireResults(List<String> list) {
-        assertThat(list.size()).isEqualTo(2);
-        assertThat(list).containsOnly("SafeDriver", "Risky Driver");
-        assertThat(list).containsAll(Arrays.asList("SafeDriver", "Risky Driver"));
+        assertThat(list).hasSize(2)
+                .containsOnly("SafeDriver", "Risky Driver")
+                .containsAll(Arrays.asList("SafeDriver", "Risky Driver"));
     }
 }
