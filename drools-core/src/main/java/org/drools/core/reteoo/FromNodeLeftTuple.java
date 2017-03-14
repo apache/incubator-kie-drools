@@ -93,7 +93,7 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
             if (accContext != null) {
                 result.addAll( accContext.getAccumulatedObjects() );
             }
-            if (getFirstChild().getRightParent() instanceof SubnetworkTuple) {
+            if (getFirstChild() != null && getFirstChild().getRightParent() instanceof SubnetworkTuple) {
                 LeftTuple leftParent = ( (SubnetworkTuple) getFirstChild().getRightParent() ).getLeftParent();
                 result.addAll( leftParent.getAccumulatedObjects() );
             }
