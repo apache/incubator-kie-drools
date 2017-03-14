@@ -236,28 +236,26 @@ public class DMNCompilerImpl
             type = (BaseDMNTypeImpl) resolveTypeRef( dmnModel, node, itemDef, itemDef, itemDef.getTypeRef() );
             if ( type != null ) {
                 UnaryTests allowedValuesStr = itemDef.getAllowedValues();
-                if( allowedValuesStr != null || itemDef.isIsCollection() != type.isCollection() ) {
-                    // we have to clone this type definition into a new one
-                    type = type.clone();
+                // we have to clone this type definition into a new one
+                type = type.clone();
 
-                    if ( allowedValuesStr != null ) {
-                        List<UnaryTest> av = feel.evaluateUnaryTests(
-                                ctx,
-                                allowedValuesStr.getText(),
-                                dmnModel,
-                                itemDef,
-                                evaluatorCompiler.createErrorMsg( node, itemDef.getName(), itemDef, 0, allowedValuesStr.getText() )
-                        );
-                        type.setAllowedValues( av );
-                    }
-                    if ( itemDef.isIsCollection() ) {
-                        type.setCollection( itemDef.isIsCollection() );
-                    }
-                    type.setNamespace( dmnModel.getNamespace() );
-                    type.setName( itemDef.getName() );
-                    if( topLevel ) {
-                        types.registerType( type );
-                    }
+                if ( allowedValuesStr != null ) {
+                    List<UnaryTest> av = feel.evaluateUnaryTests(
+                            ctx,
+                            allowedValuesStr.getText(),
+                            dmnModel,
+                            itemDef,
+                            evaluatorCompiler.createErrorMsg( node, itemDef.getName(), itemDef, 0, allowedValuesStr.getText() )
+                    );
+                    type.setAllowedValues( av );
+                }
+                if ( itemDef.isIsCollection() ) {
+                    type.setCollection( itemDef.isIsCollection() );
+                }
+                type.setNamespace( dmnModel.getNamespace() );
+                type.setName( itemDef.getName() );
+                if( topLevel ) {
+                    types.registerType( type );
                 }
             } else {
                 DMNMessageTypeImpl message = Msg.createMessage(Msg.UNKNOWN_TYPE_REF_ON_NODE, itemDef.getTypeRef(),node.getName());
