@@ -20,18 +20,24 @@ import java.io.Serializable;
 
 public class MessageEvent implements Serializable {
 
-    private static final long serialVersionUID = 5700427692523132352L;
+    private static final long serialVersionUID = 5700427692523132353L;
 
     private final Message msg;
     private final Type type;
+    private final long duration;
 
     public enum Type {
         received, sent
     }
 
-    public MessageEvent(Type type, Message msg) {
+    public MessageEvent(final Type type, final Message msg) {
+        this(type, msg, 0);
+    }
+
+    public MessageEvent(final Type type, final Message msg, final long duration) {
         this.type = type;
         this.msg = msg;
+        this.duration = duration;
     }
 
     public Message getMsg() {
@@ -42,8 +48,12 @@ public class MessageEvent implements Serializable {
         return type;
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
     @Override
     public String toString() {
-        return String.format("MessageEvent[type=%s, message=%s]", type.toString(), msg.toString());
+        return String.format("MessageEvent[type=%s, message=%s, duration=%d]", type.toString(), msg.toString(), duration);
     }
 }
