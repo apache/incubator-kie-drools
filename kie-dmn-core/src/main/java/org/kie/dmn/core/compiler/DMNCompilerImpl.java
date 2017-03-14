@@ -236,24 +236,30 @@ public class DMNCompilerImpl
             type = (BaseDMNTypeImpl) resolveTypeRef( dmnModel, node, itemDef, itemDef, itemDef.getTypeRef() );
             if ( type != null ) {
                 UnaryTests allowedValuesStr = itemDef.getAllowedValues();
-                // we have to clone this type definition into a new one
-                type = type.clone();
 
-                if ( allowedValuesStr != null ) {
-                    List<UnaryTest> av = feel.evaluateUnaryTests(
-                            ctx,
-                            allowedValuesStr.getText(),
-                            dmnModel,
-                            itemDef,
-                            evaluatorCompiler.createErrorMsg( node, itemDef.getName(), itemDef, 0, allowedValuesStr.getText() )
-                    );
-                    type.setAllowedValues( av );
+                // we only want to clone the type definition if it is a top level type (not a field in a composite type)
+                // or if it changes the metadata for the base type
+                if( topLevel || allowedValuesStr != null || itemDef.isIsCollection() != type.isCollection() ) {
+
+                    // we have to clone this type definition into a new one
+                    type = type.clone();
+
+                    type.setNamespace( dmnModel.getNamespace() );
+                    type.setName( itemDef.getName() );
+                    if ( allowedValuesStr != null ) {
+                        List<UnaryTest> av = feel.evaluateUnaryTests(
+                                ctx,
+                                allowedValuesStr.getText(),
+                                dmnModel,
+                                itemDef,
+                                evaluatorCompiler.createErrorMsg( node, itemDef.getName(), itemDef, 0, allowedValuesStr.getText() )
+                        );
+                        type.setAllowedValues( av );
+                    }
+                    if ( itemDef.isIsCollection() ) {
+                        type.setCollection( itemDef.isIsCollection() );
+                    }
                 }
-                if ( itemDef.isIsCollection() ) {
-                    type.setCollection( itemDef.isIsCollection() );
-                }
-                type.setNamespace( dmnModel.getNamespace() );
-                type.setName( itemDef.getName() );
                 if( topLevel ) {
                     types.registerType( type );
                 }
