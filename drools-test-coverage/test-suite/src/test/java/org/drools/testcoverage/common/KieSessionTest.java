@@ -18,11 +18,9 @@ package org.drools.testcoverage.common;
 
 import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.util.*;
-import org.drools.testcoverage.regression.MultipleFactUpdateSalienceTest;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 
 @RunWith(Parameterized.class)
