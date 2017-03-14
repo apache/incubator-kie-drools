@@ -188,8 +188,27 @@
             <excludeFilterFile>${project.basedir}/src/main/findbugs/findbugs-exclude.xml</excludeFilterFile>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-instrument</id>
+              <goals>
+                <goal>instrument</goal>
+              </goals>
+              <configuration>
+                <excludes>
+                  <exclude>**/DRL5Lexer.class</exclude>
+                  <exclude>**/DRL6Lexer.class</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
+    
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
