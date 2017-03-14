@@ -192,14 +192,14 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
     public String determinePlanningEntityTooltip(Object planningEntity) {
         Indictment indictment = solutionBusiness.getIndictmentMap().get(planningEntity);
         if (indictment == null) {
-            return "No indictment.";
+            return "<html>No indictment</html>";
         }
         StringBuilder s = new StringBuilder("<html>Indictment: ").append(indictment.getScoreTotal().toShortString());
         for (ConstraintMatch constraintMatch : indictment.getConstraintMatchSet()) {
             s.append("<br/>&nbsp;&nbsp;").append(constraintMatch.getConstraintName())
                     .append(" = ").append(constraintMatch.getScore().toShortString());
         }
-        s.append("<html>");
+        s.append("</html>");
         return s.toString();
     }
 

@@ -80,13 +80,12 @@ public class ConstraintMatchesDialog extends JDialog {
             JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
             final JTable table = new JTable(new ConstraintMatchTotalTableModel(constraintMatchTotalList));
             TableColumnModel columnModel = table.getColumnModel();
-            columnModel.getColumn(0).setPreferredWidth(160);
-            columnModel.getColumn(1).setPreferredWidth(300);
-            columnModel.getColumn(2).setPreferredWidth(80);
-            columnModel.getColumn(3).setPreferredWidth(160);
+            columnModel.getColumn(0).setPreferredWidth(300);
+            columnModel.getColumn(1).setPreferredWidth(80);
+            columnModel.getColumn(2).setPreferredWidth(160);
             DefaultTableCellRenderer rightCellRenderer = new DefaultTableCellRenderer();
             rightCellRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-            columnModel.getColumn(3).setCellRenderer(rightCellRenderer);
+            columnModel.getColumn(2).setCellRenderer(rightCellRenderer);
             JScrollPane tableScrollPane = new JScrollPane(table);
             tableScrollPane.setPreferredSize(new Dimension(700, 300));
             splitPane.setTopComponent(tableScrollPane);
@@ -144,19 +143,17 @@ public class ConstraintMatchesDialog extends JDialog {
 
         @Override
         public int getColumnCount() {
-            return 4;
+            return 3;
         }
 
         @Override
         public String getColumnName(int columnIndex) {
             switch (columnIndex) {
                 case 0:
-                    return "Constraint package";
-                case 1:
                     return "Constraint name";
-                case 2:
+                case 1:
                     return "Match count";
-                case 3:
+                case 2:
                     return "Score total";
                 default:
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
@@ -169,10 +166,8 @@ public class ConstraintMatchesDialog extends JDialog {
                 case 0:
                     return String.class;
                 case 1:
-                    return String.class;
-                case 2:
                     return Integer.class;
-                case 3:
+                case 2:
                     return String.class;
                 default:
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
@@ -184,12 +179,10 @@ public class ConstraintMatchesDialog extends JDialog {
             ConstraintMatchTotal constraintMatchTotal = constraintMatchTotalList.get(rowIndex);
             switch (columnIndex) {
                 case 0:
-                    return constraintMatchTotal.getConstraintPackage();
-                case 1:
                     return constraintMatchTotal.getConstraintName();
-                case 2:
+                case 1:
                     return constraintMatchTotal.getConstraintMatchCount();
-                case 3:
+                case 2:
                     return constraintMatchTotal.getScoreTotal().toShortString();
                 default:
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
