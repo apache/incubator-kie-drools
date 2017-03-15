@@ -16,6 +16,12 @@
 
 package org.drools.core.base.mvel;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
@@ -29,12 +35,6 @@ import org.drools.core.time.TimeUtils;
 import org.kie.api.definition.rule.Rule;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
 
 public class MVELSalienceExpression
     implements
@@ -102,6 +102,10 @@ public class MVELSalienceExpression
             value = TimeUtils.parseTimeString( (String)value );
         }
         return ((Number)value).intValue();
+    }
+
+    public boolean isDefault() {
+        return false;
     }
 
     public int getValue() {

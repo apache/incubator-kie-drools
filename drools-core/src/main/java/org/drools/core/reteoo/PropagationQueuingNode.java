@@ -16,6 +16,14 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -30,14 +38,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A node that will add the propagation to the working memory actions queue,
@@ -178,17 +178,17 @@ public class PropagationQueuingNode extends ObjectSource
 
         for ( ObjectSink s : this.sink.getSinks() ) {
             BetaNode betaNode = (BetaNode) s;
-            RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+            RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
             while ( rightTuple != null &&
                     rightTuple.getInputOtnId().before( betaNode.getRightInputOtnId() ) ) {
-                modifyPreviousTuples.removeRightTuple();
+                modifyPreviousTuples.removeRightTuple(partitionId);
                 // we skipped this node, due to alpha hashing, so retract now
                 rightTuple.retractTuple( context, workingMemory );
-                rightTuple = modifyPreviousTuples.peekRightTuple();
+                rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
             }
 
             if ( rightTuple != null && rightTuple.getInputOtnId().equals( betaNode.getRightInputOtnId() ) ) {
-                modifyPreviousTuples.removeRightTuple();
+                modifyPreviousTuples.removeRightTuple(partitionId);
                 rightTuple.reAdd();
                 if ( context.getModificationMask().intersects( betaNode.getRightInferredMask() ) ) {
                     // RightTuple previously existed, so continue as modify

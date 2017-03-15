@@ -382,7 +382,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         if ( leftTuple != null && leftTuple.getInputOtnId().equals( otnId ) ) {
-            modifyPreviousTuples.removeLeftTuple();
+            modifyPreviousTuples.removeLeftTuple(partitionId);
             leftTuple.reAdd();
             LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
             BitMask mask = sink.getLeftInferredMask();
@@ -404,17 +404,17 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    private static LeftTuple processDeletesFromModify(ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory, Id otnId) {
-        LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
+    private LeftTuple processDeletesFromModify(ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory, Id otnId) {
+        LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple(partitionId);
         while ( leftTuple != null && leftTuple.getInputOtnId().before( otnId ) ) {
-            modifyPreviousTuples.removeLeftTuple();
+            modifyPreviousTuples.removeLeftTuple(partitionId);
 
             LeftInputAdapterNode prevLiaNode = (LeftInputAdapterNode) leftTuple.getTupleSource();
             LiaNodeMemory prevLm = workingMemory.getNodeMemory( prevLiaNode );
             SegmentMemory prevSm = prevLm.getSegmentMemory();
             doDeleteObject( leftTuple, context, prevSm, workingMemory, prevLiaNode, true, prevLm );
 
-            leftTuple = modifyPreviousTuples.peekLeftTuple();
+            leftTuple = modifyPreviousTuples.peekLeftTuple(partitionId);
         }
         return leftTuple;
     }

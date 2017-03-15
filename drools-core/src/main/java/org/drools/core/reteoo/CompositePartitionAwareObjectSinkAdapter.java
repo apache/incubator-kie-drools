@@ -16,22 +16,23 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropagator {
 
@@ -228,6 +229,9 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
 
     @Override
     public void writeExternal( ObjectOutput out ) throws IOException {
+        out.writeBoolean( hashed );
+        out.writeObject( fieldIndex );
+        out.writeObject( hashedSinkMap );
         for ( ObjectSinkPropagator partitionedPropagator : partitionedPropagators ) {
             out.writeObject( partitionedPropagator );
         }
@@ -235,6 +239,9 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
 
     @Override
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+        hashed = in.readBoolean();
+        fieldIndex = (FieldIndex) in.readObject();
+        hashedSinkMap = (ObjectHashMap) in.readObject();
         for (int i = 0; i < partitionedPropagators.length; i++) {
             partitionedPropagators[i] = (ObjectSinkPropagator) in.readObject();
         }
