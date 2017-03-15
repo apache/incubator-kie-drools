@@ -28,7 +28,8 @@ image::Chapter-Integration/integrationOverview.png[align="center"]
 [[integrationWithJpaAndHibernate]]
 === Database: JPA and Hibernate
 
-Enrich the domain POJO's (solution, entities and problem facts) with JPA annotations to store them in a database.
+Enrich the domain POJO's (solution, entities and problem facts) with JPA annotations
+to store them in a database by calling `EntityManager.persist()`.
 
 [NOTE]
 ====
