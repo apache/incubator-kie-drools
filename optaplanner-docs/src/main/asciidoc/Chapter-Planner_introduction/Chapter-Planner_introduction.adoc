@@ -7,12 +7,12 @@
 :experimental:
 :sourcedir: .
 
-include::Section-whatIsOptaPlanner.adoc[leveloffset=+2]
+include::Section-What_is_OptaPlanner.adoc[leveloffset=+2]
 
-include::Section-whatIsAPlanningProblem.adoc[leveloffset=+2]
+include::Section-Section-What_is_a_planning_problem.adoc[leveloffset=+2]
 
-include::Section-requirements.adoc[leveloffset=+2]
+include::Section-Requirements.adoc[leveloffset=+2]
 
-include::Section-governance.adoc[leveloffset=+2]
+include::Section-Governance.adoc[leveloffset=+2]
 
-include::Section-downloadandruntheexamples.adoc[leveloffset=+2]
+include::Section-Download_and_run_the_examples.adoc[leveloffset=+2]
