@@ -16,6 +16,15 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.EventFactHandle;
@@ -30,15 +39,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A node that is an entry point into the Rete network.
@@ -250,27 +250,27 @@ public class EntryPointNode extends ObjectSource
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
             cachedNodes[i].modifyObject( handle, modifyPreviousTuples, pctx, wm );
             if (i < cachedNodes.length - 1) {
-                removeRightTuplesMatchingOTN( pctx, wm, modifyPreviousTuples, cachedNodes[i] );
+                removeRightTuplesMatchingOTN( pctx, wm, modifyPreviousTuples, cachedNodes[i], 0 );
             }
         }
         modifyPreviousTuples.retractTuples(pctx, wm);
     }
 
-    public static void removeRightTuplesMatchingOTN( PropagationContext pctx, InternalWorkingMemory wm, ModifyPreviousTuples modifyPreviousTuples, ObjectTypeNode node ) {
+    public static void removeRightTuplesMatchingOTN( PropagationContext pctx, InternalWorkingMemory wm, ModifyPreviousTuples modifyPreviousTuples, ObjectTypeNode node, int partition ) {
         // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
-        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(partition);
         while ( rightTuple != null &&
                 ((BetaNode) rightTuple.getTupleSink()).getObjectTypeNode() == node ) {
-            modifyPreviousTuples.removeRightTuple();
+            modifyPreviousTuples.removeRightTuple(partition);
 
             modifyPreviousTuples.doRightDelete(pctx, wm, rightTuple);
 
-            rightTuple = modifyPreviousTuples.peekRightTuple();
+            rightTuple = modifyPreviousTuples.peekRightTuple(partition);
         }
 
 
         while ( true ) {
-            LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
+            LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple(partition);
             ObjectTypeNode otn = null;
             if (leftTuple != null) {
                 LeftTupleSink leftTupleSink = leftTuple.getTupleSink();
@@ -282,7 +282,7 @@ public class EntryPointNode extends ObjectSource
             }
 
             if ( otn == node ) {
-                modifyPreviousTuples.removeLeftTuple();
+                modifyPreviousTuples.removeLeftTuple(partition);
                 modifyPreviousTuples.doDeleteObject( pctx, wm, leftTuple );
             } else {
                 break;

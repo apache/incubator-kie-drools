@@ -16,6 +16,7 @@
 
 package org.drools.core.common;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -715,22 +716,34 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             return null;
         }
 
-        public LeftTuple getFirstLeftTuple() {
+        public LeftTuple getFirstLeftTuple(int partition) {
+            return getFirstLeftTuple();
+        }
+
+        LeftTuple getFirstLeftTuple() {
             return firstLeftTuple;
         }
 
-        public void setFirstLeftTuple( LeftTuple firstLeftTuple ) {
+        public void setFirstLeftTuple( LeftTuple firstLeftTuple, int partition ) {
+            setFirstLeftTuple( firstLeftTuple );
+        }
+
+        void setFirstLeftTuple( LeftTuple firstLeftTuple ) {
             this.firstLeftTuple = firstLeftTuple;
         }
 
-        public RightTuple getFirstRightTuple() {
+        public RightTuple getFirstRightTuple(int partition) {
+            return getFirstRightTuple();
+        }
+
+        RightTuple getFirstRightTuple() {
             return firstRightTuple;
         }
     }
 
     public static class CompositeLinkedTuples implements LinkedTuples {
 
-        private final LinkedTuples[] partitionedTuples = new LinkedTuples[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
+        private final SingleLinkedTuples[] partitionedTuples = new SingleLinkedTuples[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
 
         public CompositeLinkedTuples() {
             for (int i = 0; i < partitionedTuples.length; i++) {
@@ -783,7 +796,9 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
         @Override
         public void removeRightTuple( RightTuple rightTuple ) {
-            getPartitionTuples(rightTuple).removeRightTuple( rightTuple );
+            if (rightTuple.getTupleSink() != null) {
+                getPartitionTuples( rightTuple ).removeRightTuple( rightTuple );
+            }
         }
 
         @Override
@@ -823,7 +838,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         public RightTuple findFirstRightTuple( Predicate<RightTuple> rightTuplePredicate ) {
             return Stream.of( partitionedTuples )
                          .map( t -> t.findFirstRightTuple( rightTuplePredicate ) )
-                         .filter( rt -> rt != null )
+                         .filter( Objects::nonNull )
                          .findFirst()
                          .orElse( null );
         }
@@ -843,24 +858,24 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         public LeftTuple findFirstLeftTuple( Predicate<LeftTuple> lefttTuplePredicate ) {
             return Stream.of( partitionedTuples )
                          .map( t -> t.findFirstLeftTuple( lefttTuplePredicate ) )
-                         .filter( lt -> lt != null )
+                         .filter( Objects::nonNull )
                          .findFirst()
                          .orElse( null );
         }
 
         @Override
-        public LeftTuple getFirstLeftTuple() {
-            throw new UnsupportedOperationException( );
+        public LeftTuple getFirstLeftTuple(int partition) {
+            return partitionedTuples[partition].getFirstLeftTuple();
         }
 
         @Override
-        public void setFirstLeftTuple( LeftTuple firstLeftTuple ) {
-            throw new UnsupportedOperationException( );
+        public void setFirstLeftTuple( LeftTuple firstLeftTuple, int partition ) {
+            partitionedTuples[partition].setFirstLeftTuple(firstLeftTuple);
         }
 
         @Override
-        public RightTuple getFirstRightTuple() {
-            throw new UnsupportedOperationException( );
+        public RightTuple getFirstRightTuple(int partition) {
+            return partitionedTuples[partition].getFirstRightTuple();
         }
     }
 
@@ -886,17 +901,27 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     @Override
     public LeftTuple getFirstLeftTuple() {
-        return linkedTuples.getFirstLeftTuple();
+        if (linkedTuples instanceof SingleLinkedTuples) {
+            return ( (SingleLinkedTuples) linkedTuples ).getFirstLeftTuple();
+        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setFirstLeftTuple( LeftTuple firstLeftTuple ) {
-        linkedTuples.setFirstLeftTuple( firstLeftTuple );
+        if (linkedTuples instanceof SingleLinkedTuples) {
+            ( (SingleLinkedTuples) linkedTuples ).setFirstLeftTuple( firstLeftTuple );
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
     public RightTuple getFirstRightTuple() {
-        return linkedTuples.getFirstRightTuple();
+        if (linkedTuples instanceof SingleLinkedTuples) {
+            return ( (SingleLinkedTuples) linkedTuples ).getFirstRightTuple();
+        }
+        throw new UnsupportedOperationException();
     }
 
     @Override

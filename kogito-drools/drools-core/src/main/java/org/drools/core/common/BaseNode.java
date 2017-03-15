@@ -180,6 +180,10 @@ public abstract class BaseNode
         this.partitionId = partitionId;
     }
 
+    public void setPartitionsEnabled( boolean partitionsEnabled ) {
+        this.partitionsEnabled = partitionsEnabled;
+    }
+
     /**
      * Associates this node with the give rule
      */

@@ -315,21 +315,21 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory wm) {
-        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
         while ( rightTuple != null && rightTuple.getInputOtnId().before( getRightInputOtnId() ) ) {
-            modifyPreviousTuples.removeRightTuple();
+            modifyPreviousTuples.removeRightTuple(partitionId);
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
             BetaMemory bm  = getBetaMemory( rightTuple.getTupleSink(), wm );
             (( BetaNode ) rightTuple.getTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
-            rightTuple = modifyPreviousTuples.peekRightTuple();
+            rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
 
         if ( rightTuple != null && rightTuple.getInputOtnId().equals( getRightInputOtnId()) ) {
-            modifyPreviousTuples.removeRightTuple();
+            modifyPreviousTuples.removeRightTuple(partitionId);
             rightTuple.reAdd();
             if ( context.getModificationMask().intersects(getRightInferredMask()) ) {
                 // RightTuple previously existed, so continue as modify

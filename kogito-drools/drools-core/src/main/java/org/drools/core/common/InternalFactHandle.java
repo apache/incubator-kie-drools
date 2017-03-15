@@ -149,10 +149,21 @@ public interface InternalFactHandle
         void forEachLeftTuple(Consumer<LeftTuple> leftTupleConsumer);
         LeftTuple findFirstLeftTuple(Predicate<LeftTuple> leftTuplePredicate );
 
-        LeftTuple getFirstLeftTuple();
-        void setFirstLeftTuple( LeftTuple firstLeftTuple );
+        LeftTuple getFirstLeftTuple( int partition);
+        void setFirstLeftTuple( LeftTuple firstLeftTuple, int partition );
 
-        RightTuple getFirstRightTuple();
+        default LeftTuple getFirstLeftTuple(RuleBasePartitionId partitionId) {
+            return getFirstLeftTuple( partitionId.getParallelEvaluationSlot() );
+        }
+        default void setFirstLeftTuple( LeftTuple firstLeftTuple, RuleBasePartitionId partitionId ) {
+            setFirstLeftTuple( firstLeftTuple, partitionId.getParallelEvaluationSlot() );
+        }
+
+        RightTuple getFirstRightTuple(int partition);
+
+        default RightTuple getFirstRightTuple(RuleBasePartitionId partitionId) {
+            return getFirstRightTuple( partitionId.getParallelEvaluationSlot() );
+        }
     }
 
     default InternalDataSource<?> getDataSource() {

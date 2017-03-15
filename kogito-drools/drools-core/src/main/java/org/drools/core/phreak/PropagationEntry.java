@@ -255,7 +255,7 @@ public interface PropagationEntry {
                                                             context.adaptModificationMaskForObjectType(otn.getObjectType(), wm),
                                                             wm, partition );
                 if (i < cachedNodes.length - 1) {
-                    EntryPointNode.removeRightTuplesMatchingOTN( context, wm, modifyPreviousTuples, otn );
+                    EntryPointNode.removeRightTuplesMatchingOTN( context, wm, modifyPreviousTuples, otn, partition );
                 }
             }
             modifyPreviousTuples.retractTuples(context, wm);

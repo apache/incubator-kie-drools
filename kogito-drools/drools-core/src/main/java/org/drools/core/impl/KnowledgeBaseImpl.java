@@ -993,8 +993,12 @@ public class KnowledgeBaseImpl
         if (config.isMultithreadEvaluation()) {
             if (!rule.isMainAgendaGroup()) {
                 disableMultithreadEvaluation( "Agenda-groups are not supported with multithread evaluation: disabling it" );
+            } else if (rule.getActivationGroup() != null) {
+                disableMultithreadEvaluation( "Activation-groups are not supported with multithread evaluation: disabling it" );
             } else if (!rule.getSalience().isDefault()) {
                 disableMultithreadEvaluation( "Salience is not supported with multithread evaluation: disabling it" );
+            } else if (rule.isQuery()) {
+                disableMultithreadEvaluation( "Queries are not supported with multithread evaluation: disabling it" );
             }
         }
     }
@@ -1015,6 +1019,7 @@ public class KnowledgeBaseImpl
         config.enforceSingleThreadEvaluation();
         logger.warn( warningMessage );
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
+            entryPointNode.setPartitionsEnabled( false );
             for (ObjectTypeNode otn : entryPointNode.getObjectTypeNodes().values()) {
                 ObjectSinkPropagator sink = otn.getObjectSinkPropagator();
                 if (sink instanceof CompositePartitionAwareObjectSinkAdapter) {

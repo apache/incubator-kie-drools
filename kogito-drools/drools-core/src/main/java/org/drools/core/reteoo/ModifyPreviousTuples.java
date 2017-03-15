@@ -19,6 +19,7 @@ package org.drools.core.reteoo;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.spi.PropagationContext;
 
 public class ModifyPreviousTuples {
@@ -28,22 +29,38 @@ public class ModifyPreviousTuples {
         this.linkedTuples = linkedTuples;
     }
     
-    public LeftTuple peekLeftTuple() {
-        return linkedTuples.getFirstLeftTuple();
-    }
-    
-    public RightTuple peekRightTuple() {
-        return linkedTuples.getFirstRightTuple();
+    public LeftTuple peekLeftTuple(int partition) {
+        return linkedTuples.getFirstLeftTuple(partition);
     }
 
-    public void removeLeftTuple() {
-        linkedTuples.removeLeftTuple( peekLeftTuple() );
+    public LeftTuple peekLeftTuple(RuleBasePartitionId partitionId) {
+        return linkedTuples.getFirstLeftTuple(partitionId);
     }
-    
-    public void removeRightTuple() {
-        linkedTuples.removeRightTuple( peekRightTuple() );
+
+    public RightTuple peekRightTuple(int partition) {
+        return linkedTuples.getFirstRightTuple(partition);
     }
-    
+
+    public RightTuple peekRightTuple(RuleBasePartitionId partitionId) {
+        return linkedTuples.getFirstRightTuple(partitionId);
+    }
+
+    public void removeLeftTuple(int partition) {
+        linkedTuples.removeLeftTuple( peekLeftTuple(partition) );
+    }
+
+    public void removeLeftTuple(RuleBasePartitionId partitionId) {
+        linkedTuples.removeLeftTuple( peekLeftTuple(partitionId) );
+    }
+
+    public void removeRightTuple(int partition) {
+        linkedTuples.removeRightTuple( peekRightTuple(partition) );
+    }
+
+    public void removeRightTuple(RuleBasePartitionId partitionId) {
+        linkedTuples.removeRightTuple( peekRightTuple(partitionId) );
+    }
+
     public void retractTuples(PropagationContext pctx,
                               InternalWorkingMemory wm) {
         linkedTuples.forEachLeftTuple( lt -> doDeleteObject(pctx, wm, lt) );
