@@ -16,14 +16,12 @@
 
 package org.optaplanner.core.impl.domain.lookup;
 
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -32,8 +30,6 @@ import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-
-import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.FIELD_OR_READ_METHOD;
 
 /**
  * This class is thread-safe.
@@ -72,13 +68,13 @@ public class LookUpStrategyResolver {
         return decisionCache.computeIfAbsent(objectClass, key -> {
             switch (lookUpStrategyType) {
                 case PLANNING_ID_OR_NONE:
-                    MemberAccessor memberAccessor1 = findPlanningIdMemberAccessor(objectClass);
+                    MemberAccessor memberAccessor1 = ConfigUtils.findPlanningIdMemberAccessor(objectClass);
                     if (memberAccessor1 == null) {
                         return new NoneLookUpStrategy();
                     }
                     return new PlanningIdLookUpStrategy(memberAccessor1);
                 case PLANNING_ID_OR_FAIL_FAST:
-                    MemberAccessor memberAccessor2 = findPlanningIdMemberAccessor(objectClass);
+                    MemberAccessor memberAccessor2 = ConfigUtils.findPlanningIdMemberAccessor(objectClass);
                     if (memberAccessor2 == null) {
                         throw new IllegalArgumentException("The class (" + objectClass
                                 + ") does not have a " + PlanningId.class.getSimpleName() + " annotation,"
@@ -115,20 +111,6 @@ public class LookUpStrategyResolver {
                             + ") is not implemented.");
             }
         });
-    }
-
-    protected <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz) {
-        List<Member> memberList = ConfigUtils.getAllMembers(clazz, PlanningId.class);
-        if (memberList.isEmpty()) {
-            return null;
-        }
-        if (memberList.size() > 1) {
-            throw new IllegalArgumentException("The class (" + clazz
-                    + ") has " + memberList.size() + " members (" + memberList + ") with a "
-                    + PlanningId.class.getSimpleName() + " annotation.");
-        }
-        Member member = memberList.get(0);
-        return ConfigUtils.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class);
     }
 
 }

@@ -28,12 +28,11 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.LookUpManager;
+import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -514,6 +513,19 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         Collection<ConstraintMatchTotal> corruptedConstraintMatchTotals = getConstraintMatchTotals();
         Collection<ConstraintMatchTotal> uncorruptedConstraintMatchTotals
                 = uncorruptedScoreDirector.getConstraintMatchTotals();
+
+        // The order of justificationLists for score rules that include accumulates isn't stable, so we make it stable.
+        ClassAndPlanningIdComparator comparator = new ClassAndPlanningIdComparator(false);
+        for (ConstraintMatchTotal constraintMatchTotal : corruptedConstraintMatchTotals) {
+            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+                constraintMatch.getJustificationList().sort(comparator);
+            }
+        }
+        for (ConstraintMatchTotal constraintMatchTotal : uncorruptedConstraintMatchTotals) {
+            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+                constraintMatch.getJustificationList().sort(comparator);
+            }
+        }
 
         Map<List<Object>, ConstraintMatch> corruptedMap = createConstraintMatchMap(corruptedConstraintMatchTotals);
         Map<List<Object>, ConstraintMatch> excessMap = new LinkedHashMap<>(corruptedMap);

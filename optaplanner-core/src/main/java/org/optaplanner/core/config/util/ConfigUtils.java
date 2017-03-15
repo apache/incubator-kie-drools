@@ -37,6 +37,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -44,6 +45,8 @@ import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccess
 import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MethodMemberAccessor;
+
+import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.FIELD_OR_READ_METHOD;
 
 public class ConfigUtils {
 
@@ -373,6 +376,29 @@ public class ConfigUtils {
             throw new IllegalStateException("Impossible state: the member (" + member + ")'s type is not a "
                     + Field.class.getSimpleName() + " or a " + Method.class.getSimpleName() + ".");
         }
+    }
+
+    public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz) {
+        List<Member> memberList = getAllMembers(clazz, PlanningId.class);
+        if (memberList.isEmpty()) {
+            return null;
+        }
+        if (memberList.size() > 1) {
+            throw new IllegalArgumentException("The class (" + clazz
+                    + ") has " + memberList.size() + " members (" + memberList + ") with a "
+                    + PlanningId.class.getSimpleName() + " annotation.");
+        }
+        Member member = memberList.get(0);
+        MemberAccessor memberAccessor = buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class);
+        if (!Comparable.class.isAssignableFrom(memberAccessor.getType())) {
+            throw new IllegalArgumentException("The class (" + clazz
+                    + ") has a member (" + member + ") with a " + PlanningId.class.getSimpleName()
+                    + " annotation that returns a type (" + memberAccessor.getType()
+                    + ") that does not implement " + Comparable.class.getSimpleName() + ".\n"
+                    + "Maybe use an " + Integer.class.getSimpleName()
+                    + " or " + String.class.getSimpleName() + " type instead.");
+        }
+        return memberAccessor;
     }
 
     public enum MemberAccessorType {
