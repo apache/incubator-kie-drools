@@ -493,10 +493,11 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 }
             }
 
+            // Can be overwritten by kieBaseConfigurationProperties
             KieModuleModel kmodel = kieServices.newKieModuleModel()
-                                               .setConfigurationProperty( PropertySpecificOption.PROPERTY_NAME,
-                                                                          PropertySpecificOption.ALLOWED.toString() );
-            kieFileSystem.writeKModuleXML( kmodel.toXML() );
+                    .setConfigurationProperty(PropertySpecificOption.PROPERTY_NAME,
+                            PropertySpecificOption.ALLOWED.toString());
+            kieFileSystem.writeKModuleXML(kmodel.toXML());
 
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
             kieBuilder.buildAll();
