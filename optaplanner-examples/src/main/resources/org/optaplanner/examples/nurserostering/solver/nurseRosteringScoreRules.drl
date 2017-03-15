@@ -46,7 +46,6 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
-import org.optaplanner.examples.nurserostering.solver.drools.EmployeeAssignmentTotal;
 import org.optaplanner.examples.nurserostering.solver.drools.EmployeeConsecutiveAssignmentEnd;
 import org.optaplanner.examples.nurserostering.solver.drools.EmployeeConsecutiveAssignmentStart;
 import org.optaplanner.examples.nurserostering.solver.drools.EmployeeConsecutiveWeekendAssignmentEnd;
@@ -74,46 +73,29 @@ end
 // Soft constraints
 // ############################################################################
 
-rule "insertEmployeeAssignmentTotal"
+rule "Minimum and maximum number of assignments"
         salience 1 // Do these rules first (optional, for performance)
     when
-        MinMaxContractLine(contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, enabled == true,
+        $contractLine : MinMaxContractLine(contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, enabled == true,
             $contract : contract)
         $employee : Employee(contract == $contract)
         accumulate(
             $assignment : ShiftAssignment(employee == $employee);
-            $assignmentTotal : count($assignment)
+            $total : count($assignment)
         )
     then
-        insertLogical(new EmployeeAssignmentTotal($employee, $assignmentTotal.intValue()));
+        int totalInt = $total.intValue();
+        if ($contractLine.isMinimumEnabled() && totalInt < $contractLine.getMinimumValue()) {
+            scoreHolder.addSoftConstraintMatch(kcontext,
+                    (totalInt - $contractLine.getMinimumValue()) * $contractLine.getMinimumWeight());
+        } else if ($contractLine.isMaximumEnabled() && totalInt > $contractLine.getMaximumValue()) {
+            scoreHolder.addSoftConstraintMatch(kcontext,
+                    ($contractLine.getMaximumValue() - totalInt) * $contractLine.getMaximumWeight());
+        } else {
+            // Workaround for https://issues.jboss.org/browse/PLANNER-761
+            scoreHolder.addSoftConstraintMatch(kcontext, 0);
+        }
 end
-
-// Minimum number of assignments
-rule "minimumTotalAssignments"
-    when
-        $contractLine : MinMaxContractLine(
-            contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, minimumEnabled == true,
-            $contract : contract, $minimumValue : minimumValue
-        )
-        EmployeeAssignmentTotal(employeeContract == $contract, total < $minimumValue,
-            $employee : employee, $total : total)
-    then
-        scoreHolder.addSoftConstraintMatch(kcontext, ($total - $minimumValue) * $contractLine.getMinimumWeight());
-end
-
-// Maximum number of assignments
-rule "maximumTotalAssignments"
-    when
-        $contractLine : MinMaxContractLine(
-            contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, maximumEnabled == true,
-            $contract : contract, $maximumValue : maximumValue
-        )
-        EmployeeAssignmentTotal(employeeContract == $contract, total > $maximumValue,
-            $employee : employee, $total : total)
-    then
-        scoreHolder.addSoftConstraintMatch(kcontext, ($maximumValue - $total) * $contractLine.getMaximumWeight());
-end
-
 
 rule "insertEmployeeConsecutiveAssignmentStart"
         salience 2 // Do these rules first (optional, for performance)
