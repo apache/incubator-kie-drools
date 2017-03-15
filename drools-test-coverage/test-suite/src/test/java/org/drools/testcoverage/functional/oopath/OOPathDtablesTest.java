@@ -17,7 +17,6 @@
 package org.drools.testcoverage.functional.oopath;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.drools.testcoverage.common.model.Address;
@@ -42,89 +41,79 @@ public class OOPathDtablesTest {
 
     @Test
     public void xlsWithOOPathTest() {
-        KieSession kieSession = getKieSessionFromXls("oopath.xls");
-        List<String> list = new ArrayList<>();
-        populateKieSession(kieSession, list);
-
-        int rulesFired = kieSession.fireAllRules();
-
-        assertThat(rulesFired).isEqualTo(2);
-        verifyRuleFireResults(list);
-        verifyQueryResults(kieSession.getQueryResults("listSafeCities"));
+        final KieSession kieSession = getKieSessionFromXls("oopath.xls");
+        testOOPathWithDTable(kieSession);
     }
 
     @Test
     public void xlsxWithOOPathTest() {
-        KieSession kieSession = getKieSessionFromXlsx("oopath.xlsx");
-        List<String> list = new ArrayList<>();
-        populateKieSession(kieSession, list);
-
-        int rulesFired = kieSession.fireAllRules();
-
-        assertThat(rulesFired).isEqualTo(2);
-        verifyRuleFireResults(list);
-        verifyQueryResults(kieSession.getQueryResults("listSafeCities"));
+        final KieSession kieSession = getKieSessionFromXlsx("oopath.xlsx");
+        testOOPathWithDTable(kieSession);
     }
 
     @Test
     public void csvWithOOPathTest() {
-        KieSession kieSession = getKieSessionFromCsv("oopath.csv");
-        List<String> list = new ArrayList<>();
+        final KieSession kieSession = getKieSessionFromCsv("oopath.csv");
+        testOOPathWithDTable(kieSession);
+    }
+
+    private void testOOPathWithDTable(final KieSession kieSession) {
+        final List<String> list = new ArrayList<>();
         populateKieSession(kieSession, list);
 
-        int rulesFired = kieSession.fireAllRules();
+        final int rulesFired = kieSession.fireAllRules();
 
         assertThat(rulesFired).isEqualTo(2);
         verifyRuleFireResults(list);
         verifyQueryResults(kieSession.getQueryResults("listSafeCities"));
     }
 
-    private KieSession getKieSessionFromCsv(String csvFile) {
+    private KieSession getKieSessionFromCsv(final String csvFile) {
         final Resource resource =
                 ResourceUtil.getDecisionTableResourceFromClasspath(csvFile, getClass(), DecisionTableInputType.CSV);
 
         return KieBaseUtil.getKieBaseFromResources(true, resource).newKieSession();
     }
 
-    private KieSession getKieSessionFromXls(String xlsFile) {
+    private KieSession getKieSessionFromXls(final String xlsFile) {
         return getKieSessionFromExcel(xlsFile, DecisionTableInputType.XLS);
     }
 
-    private KieSession getKieSessionFromXlsx(String xlsxFile) {
+    private KieSession getKieSessionFromXlsx(final String xlsxFile) {
         return getKieSessionFromExcel(xlsxFile, DecisionTableInputType.XLSX);
     }
 
-    private KieSession getKieSessionFromExcel(String file, DecisionTableInputType fileType) {
+    private KieSession getKieSessionFromExcel(final String file, final DecisionTableInputType fileType) {
         final Resource resource = ResourceUtil.getDecisionTableResourceFromClasspath(file, getClass(), fileType);
 
         return KieBaseUtil.getKieBaseFromResources(true, resource).newKieSession();
     }
 
-    private void populateKieSession(KieSession kieSession, List<String> list) {
+    private void populateKieSession(final KieSession kieSession, final List<String> list) {
         kieSession.setGlobal("list", list);
-        Person[] persons = prepareData();
-        for (Person p : persons) {
+        final Person[] persons = prepareData();
+        for (final Person p : persons) {
             kieSession.insert(p);
         }
     }
 
     private Person[] prepareData() {
-        Person bruno = new Person("Bruno", 25);
+        final Person bruno = new Person("Bruno", 25);
         bruno.setAddress(new InternationalAddress("Some Street", 10, "Nice City", "Safecountry"));
 
-        Person robert = new Person("Robert", 17);
+        final Person robert = new Person("Robert", 17);
         robert.setAddress(new InternationalAddress("Some Street", 12, "Small City", "Riskyland"));
 
-        Person joe = new Person("Joe", 11);
+        final Person joe = new Person("Joe", 11);
         joe.setAddress(new InternationalAddress("Some Street", 13, "Big City", "Safecountry"));
 
-        Person mike = new Person("Mike", 25);
+        final Person mike = new Person("Mike", 25);
         mike.setAddress(new Address("Some Street", 14, "Local City"));
 
         return new Person[]{bruno, robert, joe, mike};
     }
 
-    private void verifyQueryResults(QueryResults results) {
+    private void verifyQueryResults(final QueryResults results) {
         assertThat(results).isNotEmpty();
         final QueryResultsRow resultsRow = results.iterator().next();
         assertThat(resultsRow.get("$cities")).isInstanceOf(List.class);
@@ -132,7 +121,7 @@ public class OOPathDtablesTest {
         assertThat(cities).containsExactlyInAnyOrder("Nice City", "Big City");
     }
 
-    private void verifyRuleFireResults(List<String> list) {
+    private void verifyRuleFireResults(final List<String> list) {
         assertThat(list).containsExactlyInAnyOrder("SafeDriver", "Risky Driver");
     }
 }
