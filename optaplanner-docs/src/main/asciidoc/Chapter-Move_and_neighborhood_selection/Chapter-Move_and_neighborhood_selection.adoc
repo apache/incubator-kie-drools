@@ -1304,7 +1304,7 @@ Try to figure out if there's a move that could get out of that local optima fast
 If you find one, implement that coarse-grained move, mix it with the existing moves and benchmark it against the previous configurations to see if you want to keep it.
 
 
-[[_custommovesintroduction]]
+[[customMovesIntroduction]]
 === Custom Moves Introduction
 
 Instead of using the generic ``Move``s (such as ``ChangeMove``) you can also implement your own ``Move``.

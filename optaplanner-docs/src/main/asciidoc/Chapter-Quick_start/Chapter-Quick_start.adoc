@@ -358,7 +358,7 @@ public class CloudBalance ... {
 Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so the computers are known to it.
 
 
-[[_cloudbalancingscoreconfiguration]]
+[[cloudBalancingScoreConfiguration]]
 === Score Configuration
 
 Planner will search for the `Solution` with the highest ``Score``.

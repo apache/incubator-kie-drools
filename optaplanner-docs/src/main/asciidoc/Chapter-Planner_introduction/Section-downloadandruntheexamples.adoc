@@ -1,4 +1,4 @@
-[[_downloadandruntheexamples]]
+[[downloadAndRunTheExamples]]
 == Download and Run the Examples
 
 
