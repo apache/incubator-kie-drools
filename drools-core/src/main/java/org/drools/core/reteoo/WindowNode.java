@@ -210,20 +210,20 @@ public class WindowNode extends ObjectSource
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory wm) {
-        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
         while ( rightTuple != null && rightTuple.getInputOtnId().before( getRightInputOtnId() ) ) {
-            modifyPreviousTuples.removeRightTuple();
+            modifyPreviousTuples.removeRightTuple(partitionId);
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
             rightTuple.retractTuple( context, wm );
-            rightTuple = modifyPreviousTuples.peekRightTuple();
+            rightTuple = modifyPreviousTuples.peekRightTuple(partitionId);
         }
 
         if ( rightTuple != null && rightTuple.getInputOtnId().equals( getRightInputOtnId()) ) {
-            modifyPreviousTuples.removeRightTuple();
+            modifyPreviousTuples.removeRightTuple(partitionId);
             rightTuple.reAdd();
             modifyRightTuple( rightTuple, context, wm );
         } else {

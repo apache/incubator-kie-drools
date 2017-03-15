@@ -16,17 +16,17 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.spi.PropagationContext;
-import org.kie.api.definition.rule.Rule;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.spi.PropagationContext;
+import org.kie.api.definition.rule.Rule;
 
 public class MockObjectSink
     implements
@@ -129,10 +129,10 @@ public class MockObjectSink
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(RuleBasePartitionId.MAIN_PARTITION);
         while ( rightTuple != null ) {
-            modifyPreviousTuples.removeRightTuple();
-            rightTuple = modifyPreviousTuples.peekRightTuple();
+            modifyPreviousTuples.removeRightTuple(RuleBasePartitionId.MAIN_PARTITION);
+            rightTuple = modifyPreviousTuples.peekRightTuple(RuleBasePartitionId.MAIN_PARTITION);
         }
         this.updated.add( new Object[]{factHandle, context, workingMemory} );
         

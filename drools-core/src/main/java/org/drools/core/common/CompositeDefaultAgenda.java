@@ -16,6 +16,16 @@
 
 package org.drools.core.common;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.stream.Stream;
+
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
@@ -36,16 +46,6 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.stream.Stream;
 
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -118,11 +118,13 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
             log.trace("Starting Fire All Rules");
         }
 
-        int iterationFireCount = 1;
         int fireCount = 0;
-        boolean limitReached = false;
 
         try {
+            int iterationFireCount = parallelFire( agendaFilter, fireLimit );
+            fireCount += iterationFireCount;
+            boolean limitReached = ( fireLimit > 0 && fireCount >= fireLimit );
+
             while ( iterationFireCount > 0 && !limitReached && hasPendingPropagations() ) {
                 iterationFireCount = parallelFire( agendaFilter, fireLimit - fireCount );
                 fireCount += iterationFireCount;
