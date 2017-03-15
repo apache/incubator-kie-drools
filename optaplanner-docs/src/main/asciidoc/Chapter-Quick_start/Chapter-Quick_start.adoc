@@ -41,9 +41,10 @@ The simple algorithm used here is the _First Fit Decreasing_ algorithm, which as
 As you can see, it is not optimal, as it does not leave enough room to assign the yellow process ``D``.
 
 Planner does find the more optimal solution by using additional, smarter algorithms.
-It also scales: both in data (more processes, more computers) and constraints (more hardware requirements, other constraints). So let's see how Planner can be used in this scenario.
+It also scales: both in data (more processes, more computers) and constraints (more hardware requirements, other constraints).
+So let's see how Planner can be used in this scenario.
 
-Here's executive summary of this example and <<machineReassignment,a more advanced implementation with more constraints>>:
+Here's an executive summary of this example and <<machineReassignment,an advanced implementation with more constraints>>:
 
 image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
 
