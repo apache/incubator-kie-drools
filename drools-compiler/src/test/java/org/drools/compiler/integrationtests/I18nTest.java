@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.I18nPerson;
 import org.drools.compiler.Person;
+import org.drools.compiler.住所;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
@@ -30,6 +31,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
@@ -245,6 +247,68 @@ public class I18nTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertTrue(list.contains("名称は山田花子です"));
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testUnicodeClassSameNameProperty() {
+        // DROOLS-1015
+        String drl = "package org.drools.compiler.i18ntest;\n" +
+                "import org.drools.compiler.I18nPerson;\n" +
+                "import org.drools.compiler.住所;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "rule \"住所 is not null\"\n" +
+                "    when\n" +
+                "        p : I18nPerson( 住所 != null )\n" +
+                "    then\n" +
+                "        list.add( \"住所 != null\" );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        I18nPerson i18nPerson = new I18nPerson();
+        i18nPerson.set住所(null);
+
+        ksession.insert(i18nPerson);
+        ksession.fireAllRules();
+
+        assertEquals(0, list.size());
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testCapitalizedProperty() {
+        // DROOLS-1015
+        String drl = "package org.drools.compiler.i18ntest;\n" +
+                "import org.drools.compiler.Person;\n" +
+                "import org.drools.compiler.Address;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "rule \"Address is not null\"\n" +
+                "    when\n" +
+                "        p : Person( Address != null )\n" +
+                "    then\n" +
+                "        list.add( \"address != null\" );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Person person = new Person();
+        person.setAddress(null);
+
+        ksession.insert(person);
+        ksession.fireAllRules();
+
+        assertEquals(0, list.size());
 
         ksession.dispose();
     }
