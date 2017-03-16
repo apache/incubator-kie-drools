@@ -39,6 +39,10 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-persistence-jpa</artifactId>
     </dependency>
     <dependency>
@@ -263,10 +267,12 @@
               org.drools.core.time.impl,
               org.drools.core.util,
               org.drools.persistence,
+              org.drools.persistence.api,
               org.drools.persistence.jpa,
               org.drools.persistence.jta,
               org.jboss.solder.core;resolution:=optional,
               org.jbpm.marshalling.impl,
+              org.jbpm.persistence.api,
               org.jbpm.persistence.timer,
               org.jbpm.process.audit,
               org.jbpm.process.audit.event,

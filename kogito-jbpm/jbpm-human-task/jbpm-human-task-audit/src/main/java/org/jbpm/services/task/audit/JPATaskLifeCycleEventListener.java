@@ -21,6 +21,7 @@ package org.jbpm.services.task.audit;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -761,7 +762,10 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
         Task task = event.getTask();        
         TaskPersistenceContext persistenceContext = getPersistenceContext(((TaskContext)event.getTaskContext()).getPersistenceContext());
         // first cleanup previous values if any
-        int removed = persistenceContext.executeUpdateString("delete TaskVariableImpl where type = " + VariableType.OUTPUT.ordinal() +" and taskId = " + task.getId());
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("type", VariableType.OUTPUT);
+        params.put("taskId", task.getId());
+        int removed = persistenceContext.executeUpdate("DeleteTaskVariableForTask", params);
         logger.debug("Deleted {} output variables logs for task id {}", removed, task.getId());
         
         if (variables == null || variables.isEmpty()) {

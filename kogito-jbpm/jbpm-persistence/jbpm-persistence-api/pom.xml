@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-persistence</artifactId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>jbpm-persistence-api</artifactId>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+
+  <name>jBPM :: Persistence API</name>
+  <description>jBPM Persistence API</description>
+
+  <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.persistence.api</osgi.Bundle-SymbolicName>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
+    <!-- Following 2 dependencies needed for making the build work with JDK5 -->
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow-builder</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Import-Package>
+              javassist.util.proxy;resolution:=optional,
+              javax.naming,
+              javax.transaction.*;resolution:=optional,
+              com.google.protobuf;resolution:=optional,
+              org.jbpm.persistence;resolution:=optional,
+              org.jbpm.persistence.correlation;resolution:=optional,
+              org.jbpm.persistence.jta;resolution:=optional,
+              org.jbpm.persistence.settings;resolution:=optional,
+              org.jbpm.persistene.jpa;resolution:=optional,
+              org.jbpm.persistene.jpa.hibernate;resolution:=optional,
+              org.jbpm.persistence.processinstance;resolution:=optional,
+              org.jbpm.persistence.timer;resolution:=optional,
+              org.drools.core.command,
+              org.drools.core.command.impl,
+              org.drools.core.common,
+              org.drools.core.impl,
+              org.drools.core.marshalling.impl,
+              org.drools.core.runtime.process,
+              org.drools.core.time,
+              org.drools.core.time.impl,
+              org.drools.persistence,
+              org.drools.persistence.api,
+              org.drools.persistence.jta,
+              org.drools.persistence.map,
+              org.jbpm.marshalling.impl,
+              org.jbpm.process.core.async,
+              org.jbpm.process.core.timer,
+              org.jbpm.process.core.timer.impl,
+              org.jbpm.process.instance,
+              org.jbpm.process.instance.event,
+              org.jbpm.process.instance.impl,
+              org.jbpm.process.instance.timer,
+              org.jbpm.workflow.instance.impl,
+              org.jbpm.workflow.instance.node,
+              org.kie.api,
+              org.kie.api.command,
+              org.kie.api.definition.process,
+              org.kie.api.executor,
+              org.kie.api.marshalling,
+              org.kie.api.runtime,
+              org.kie.api.runtime.manager,
+              org.kie.api.runtime.process,
+              org.kie.internal.command,
+              org.kie.internal.jaxb,
+              org.kie.internal.process,              
+              org.kie.internal.runtime.manager,
+              org.kie.internal.runtime.manager.context,
+              org.slf4j
+            </Import-Package>
+            <Export-Package>
+              org.jbpm.persistence.api.*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

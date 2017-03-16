@@ -15,7 +15,7 @@
  */
 package org.jbpm.runtime.manager.impl.tx;
 
-import org.drools.persistence.OrderedTransactionSynchronization;
+import org.drools.persistence.api.OrderedTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.kie.api.runtime.manager.RuntimeEngine;

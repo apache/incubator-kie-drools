@@ -35,6 +35,10 @@
       <artifactId>drools-persistence-jpa</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-query-jpa</artifactId>
     </dependency>

@@ -23,11 +23,11 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.core.time.TimerService;
-import org.drools.persistence.OrderedTransactionSynchronization;
-import org.drools.persistence.TransactionManager;
-import org.drools.persistence.TransactionManagerFactory;
-import org.drools.persistence.TransactionManagerHelper;
-import org.drools.persistence.TransactionSynchronization;
+import org.drools.persistence.api.OrderedTransactionSynchronization;
+import org.drools.persistence.api.TransactionManager;
+import org.drools.persistence.api.TransactionManagerFactory;
+import org.drools.persistence.api.TransactionManagerHelper;
+import org.drools.persistence.api.TransactionSynchronization;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;

@@ -33,6 +33,8 @@ public class JaxbFaultData implements FaultData {
     @XmlSchemaType(name="base64Binary")
     private byte[] content = null;
     
+    private Object contentObject;
+    
     @XmlElement(name="fault-name")
     @XmlSchemaType(name="string")
     private String faultName;
@@ -86,6 +88,16 @@ public class JaxbFaultData implements FaultData {
     @Override
     public void setFaultName( String faultName ) {
         this.faultName = faultName;
+    }
+    
+    @Override
+    public Object getContentObject() {
+    	return contentObject;
+    }
+    
+    @Override
+    public void setContentObject(Object object) {
+    	this.contentObject = object;
     }
 
     @Override

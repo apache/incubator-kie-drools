@@ -3,6 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
   version="2.0">
+  
   <named-query name="getAllTasksEvents">
     <query>select t from TaskEventImpl t where t.taskId = :taskId
     </query>
@@ -12,6 +13,19 @@
     <query>select t from TaskEventImpl t where t.processInstanceId = :processInstanceId</query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
+  <named-query name="deleteAllTaskEvents">
+    <query>delete from TaskEventImpl t
+    </query>
+  </named-query>
+  <named-query name="deleteTaskEventsForTask">
+    <query>delete from TaskEventImpl t where t.taskId = :taskId
+    </query>
+  </named-query>
+
+  <named-query name="DeleteTaskVariableForTask">
+    <query>delete TaskVariableImpl where type = :type and taskId = :taskId
+    </query>
+  </named-query>    
 
   <named-query name="getAllBAMTaskSummaries">
     <query>select b from BAMTaskSummaryImpl b where b.taskId = :taskId

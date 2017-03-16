@@ -16,9 +16,12 @@
 
 package org.jbpm.services.task.impl.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.kie.internal.task.api.model.AccessType;
 
@@ -50,6 +53,13 @@ public class ContentDataImpl implements org.kie.internal.task.api.model.ContentD
 
 	public void setContent(byte[] content) {
 		this.content = content;
+	}
+	
+	public Object getContentObject() {
+		return null;
+	}
+	
+	public void setContentObject(Object object) {
 	}
 
 	public void writeExternal(ObjectOutput out) throws IOException {

@@ -113,7 +113,7 @@ public abstract class AbstractTaskSerializationTest {
 
         // fill task
         task.setFormName("Bruno's Form");
-        task.setId(23);
+        task.setId(23L);
         task.setSubTaskStrategy(SubTasksStrategy.EndParentOnAllSubTasksEnd);
 
         for( I18NText text : task.getNames() ) {

@@ -3,9 +3,9 @@ package org.jbpm.test.util;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.persistence.TransactionManager;
-import org.drools.persistence.TransactionManagerFactory;
-import org.drools.persistence.TransactionSynchronization;
+import org.drools.persistence.api.TransactionManager;
+import org.drools.persistence.api.TransactionManagerFactory;
+import org.drools.persistence.api.TransactionSynchronization;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.slf4j.Logger;

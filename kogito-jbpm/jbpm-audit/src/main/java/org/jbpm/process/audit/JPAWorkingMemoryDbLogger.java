@@ -32,7 +32,7 @@ import javax.transaction.UserTransaction;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.drools.persistence.TransactionManager;
+import org.drools.persistence.api.TransactionManager;
 import org.jbpm.process.audit.variable.ProcessIndexerManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;

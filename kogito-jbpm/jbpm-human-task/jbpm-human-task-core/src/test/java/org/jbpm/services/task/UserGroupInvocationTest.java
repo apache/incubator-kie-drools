@@ -46,7 +46,7 @@ public class UserGroupInvocationTest extends HumanTaskServicesBaseTest {
 
 	private PoolingDataSource pds;
 	private EntityManagerFactory emf;
-	private CountInvokeUserGroupCallback callback;
+	protected CountInvokeUserGroupCallback callback;
 	
 	@Before
 	public void setup() {
@@ -179,7 +179,7 @@ public class UserGroupInvocationTest extends HumanTaskServicesBaseTest {
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
     
-    private class CountInvokeUserGroupCallback implements UserGroupCallback {
+    protected class CountInvokeUserGroupCallback implements UserGroupCallback {
 
     	private int existsUserCounter = 0;
     	private int existsGroupCounter = 0;

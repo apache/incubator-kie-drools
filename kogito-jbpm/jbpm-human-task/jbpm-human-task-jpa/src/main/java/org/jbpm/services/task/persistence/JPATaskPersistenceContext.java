@@ -65,7 +65,11 @@ import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskPersistenceContext;
+import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.Deadline;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.InternalContent;
+import org.kie.internal.task.api.model.InternalTaskData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -290,6 +294,37 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		em.remove( content );
 		return content;
 	}
+	
+	@Override
+	public Task setDocumentToTask(Content content, ContentData contentData, Task task) {
+		Long id = 0L;
+		if (content != null) {
+			id = content.getId();
+		}
+		((InternalTaskData) task.getTaskData()).setDocument(id, contentData);
+		return task;
+	}
+	
+	@Override
+	public Task setFaultToTask(Content content, FaultData faultData, Task task) {
+		Long id = 0L;
+		if (content != null) {
+			id = content.getId();
+		}
+		((InternalTaskData) task.getTaskData()).setFault(id, faultData);
+		return task;
+	}
+	
+	@Override
+	public Task setOutputToTask(Content content, ContentData contentData,
+			Task task) {
+		Long id = 0L;
+		if (content != null) {
+			id = content.getId();
+		}
+		((InternalTaskData) task.getTaskData()).setOutput(id, contentData);
+		return task;
+	}
 
 	@Override
 	public Attachment findAttachment(Long attachmentId) {
@@ -323,6 +358,17 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		em.remove( attachment );
 		return attachment;
 	}
+	
+	@Override
+	public Attachment removeAttachmentFromTask(Task task, long attachmentId) {
+		return ((InternalTaskData) task.getTaskData()).removeAttachment(attachmentId);
+	}
+	
+	@Override
+	public Attachment addAttachmentToTask(Attachment attachment, Task task) {
+		((InternalTaskData) task.getTaskData()).addAttachment(attachment);
+		return attachment;
+	}
 
 	@Override
 	public Comment findComment(Long commentId) {
@@ -354,6 +400,18 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Comment removeComment(Comment comment) {
 		check();
 		em.remove( comment );
+		return comment;
+	}
+	
+	@Override
+	public Comment removeCommentFromTask(Comment comment, Task task) {
+		((InternalTaskData) task.getTaskData()).removeComment(comment.getId());
+		return comment;
+	}
+	
+	@Override
+	public Comment addCommentToTask(Comment comment, Task task) {
+		((InternalTaskData) task.getTaskData()).addComment(comment);
 		return comment;
 	}
 
@@ -479,6 +537,17 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		return query.executeUpdate();
 	}
 
+	@Override
+	public int executeUpdate(String queryName, Map<String, Object> params) {
+		check();
+		Query query = this.em.createNamedQuery(queryName);
+		if (params != null) {
+			for (Map.Entry<String, Object> paramEntry : params.entrySet()) {
+				query.setParameter(paramEntry.getKey(), paramEntry.getValue());
+			}
+		}
+		return query.executeUpdate();
+	}
 
 
 	@Override

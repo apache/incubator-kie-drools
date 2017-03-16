@@ -17,10 +17,10 @@ package org.jbpm.services.task.persistence;
 
 import org.drools.core.command.impl.AbstractInterceptor;
 import org.drools.core.runtime.ChainableRunner;
-import org.drools.persistence.OrderedTransactionSynchronization;
-import org.drools.persistence.TransactionManager;
-import org.drools.persistence.TransactionManagerFactory;
-import org.drools.persistence.TransactionManagerHelper;
+import org.drools.persistence.api.OrderedTransactionSynchronization;
+import org.drools.persistence.api.TransactionManager;
+import org.drools.persistence.api.TransactionManagerFactory;
+import org.drools.persistence.api.TransactionManagerHelper;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Environment;

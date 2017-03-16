@@ -15,6 +15,8 @@
 
 package org.jbpm.services.task.audit.commands;
 
+import java.util.HashMap;
+
 import org.jbpm.services.task.commands.TaskCommand;
 import org.kie.api.runtime.Context;
 import org.kie.internal.task.api.TaskContext;
@@ -42,9 +44,11 @@ public class DeleteBAMTaskSummariesCommand extends TaskCommand<Void> {
     public Void execute(Context context) {
         TaskPersistenceContext persistenceContext = ((TaskContext) context).getPersistenceContext();
         if( this.taskId != null ) { 
-            persistenceContext.executeUpdateString("delete from BAMTaskSummaryImpl b where b.taskId = "+ this.taskId);
-        } else { 
-            persistenceContext.executeUpdateString("delete from BAMTaskSummaryImpl b");
+        	HashMap<String, Object> params = new HashMap<String, Object>();
+        	params.put("taskId", this.taskId);
+        	persistenceContext.executeUpdate("deleteBAMTaskSummariesForTask", params);
+        } else {
+        	persistenceContext.executeUpdate("deleteAllBAMTaskSummaries", null);
         }
         return null;
     }

@@ -16,8 +16,8 @@
 package org.jbpm.shared.services.impl;
 
 import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.persistence.TransactionManager;
-import org.drools.persistence.TransactionManagerFactory;
+import org.drools.persistence.api.TransactionManager;
+import org.drools.persistence.api.TransactionManagerFactory;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.Context;

@@ -15,6 +15,8 @@
 
 package org.jbpm.services.task.audit.commands;
 
+import java.util.HashMap;
+
 import org.jbpm.services.task.commands.TaskCommand;
 import org.kie.api.runtime.Context;
 import org.kie.internal.task.api.TaskContext;
@@ -41,9 +43,11 @@ public class DeleteAuditEventsCommand extends TaskCommand<Void> {
 	public Void execute(Context context) {
 		TaskPersistenceContext persistenceContext = ((TaskContext) context).getPersistenceContext();
         if( this.taskId != null ) { 
-            persistenceContext.executeUpdateString("delete from TaskEventImpl t where t.taskId = " + this.taskId);
+        	HashMap<String, Object> params = new HashMap<String, Object>();
+        	params.put("taskId", this.taskId);
+            persistenceContext.executeUpdate("deleteTaskEventsForTask", params);
         } else { 
-            persistenceContext.executeUpdateString("delete from TaskEventImpl");
+            persistenceContext.executeUpdate("deleteAllTaskEvents", null);
         }
 		return null;
 	}

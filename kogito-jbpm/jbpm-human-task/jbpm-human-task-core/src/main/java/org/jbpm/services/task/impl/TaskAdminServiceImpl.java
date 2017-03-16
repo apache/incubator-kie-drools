@@ -105,7 +105,7 @@ public class TaskAdminServiceImpl implements TaskAdminService {
             Task task = persistenceContext.findTask(taskId);
             if (task != null) {
 	            ((InternalTask) task).setArchived(true);
-	            persistenceContext.merge(task);
+	            persistenceContext.updateTask(task);
 	            archivedTasks++;
             }
         }
@@ -147,7 +147,7 @@ public class TaskAdminServiceImpl implements TaskAdminService {
     }
 
     public int removeAllTasks() {
-        List<Task> tasks = persistenceContext.queryStringInTransaction("select t from TaskImpl t",
+        List<Task> tasks = persistenceContext.queryInTransaction("GetAllTasks", 
                 ClassUtil.<List<Task>>castClass(List.class));
         int count = 0;
         for (Task t : tasks) {

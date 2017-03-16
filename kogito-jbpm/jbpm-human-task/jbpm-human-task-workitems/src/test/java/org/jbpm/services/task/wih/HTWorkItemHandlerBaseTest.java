@@ -273,7 +273,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         
         task = taskService.getTaskByWorkItemId(workItem.getId());
         assertEquals("TaskName", task.getNames().get(0).getText());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals("Comment", task.getDescriptions().get(0).getText());
         assertEquals(Status.Exited, task.getTaskData().getStatus());
         
@@ -839,7 +839,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
 
     private void testTaskWithExpectedDescription(final Task task, final String expectedDescription) {
         assertEquals("TaskName " + task.getTaskData().getProcessInstanceId(), task.getName());
-        assertEquals(10, task.getPriority());
+        assertEquals(10, task.getPriority().intValue());
         assertEquals(expectedDescription, task.getDescription());
         assertEquals(Status.Reserved, task.getTaskData().getStatus());
         assertEquals("Darth Vader", task.getTaskData().getActualOwner().getId());

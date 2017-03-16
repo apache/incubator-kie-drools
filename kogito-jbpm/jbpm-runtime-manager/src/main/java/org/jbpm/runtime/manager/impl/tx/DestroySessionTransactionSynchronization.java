@@ -18,7 +18,7 @@ package org.jbpm.runtime.manager.impl.tx;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.persistence.OrderedTransactionSynchronization;
+import org.drools.persistence.api.OrderedTransactionSynchronization;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.Context;

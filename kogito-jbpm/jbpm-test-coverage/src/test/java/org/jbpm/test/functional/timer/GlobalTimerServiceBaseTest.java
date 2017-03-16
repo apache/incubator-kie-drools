@@ -35,7 +35,7 @@ import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobInstance;
-import org.drools.persistence.TransactionManager;
+import org.drools.persistence.api.TransactionManager;
 import org.jbpm.persistence.JpaProcessPersistenceContextManager;
 import org.jbpm.persistence.jta.ContainerManagedTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;

@@ -117,7 +117,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 			Content content = TaskModelProvider.getFactory().newContent();
 			((InternalContent) content).setContent(contentData.getContent());
 			persistenceContext.persistContent(content);
-			((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
+			persistenceContext.setDocumentToTask(content, contentData, task);
 			
 			taskEventSupport.fireAfterTaskInputVariablesChanged(task, context, params);
 		}
@@ -138,7 +138,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
             Content content = TaskModelProvider.getFactory().newContent();
             ((InternalContent) content).setContent(contentData.getContent());
             persistenceContext.persistContent(content);
-            ((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
+            persistenceContext.setDocumentToTask(content, contentData, task);
         }
         
         
@@ -200,7 +200,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         FaultData data = TaskModelProvider.getFactory().newFaultData();
         persistenceContext.removeContent(content);
         
-        ((InternalTaskData) task.getTaskData()).setFault(0, data);
+        persistenceContext.setFaultToTask(null, data, task);
     }
 
     public void deleteOutput(long taskId, String userId) {
@@ -210,9 +210,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         Content content = persistenceContext.findContent(contentId);
         ContentData data = TaskModelProvider.getFactory().newContentData();
         persistenceContext.removeContent(content);
-        
-        ((InternalTaskData) task.getTaskData()).setOutput(0, data);
-        
+        persistenceContext.setOutputToTask(null, data, task);
         taskEventSupport.fireAfterTaskOutputVariablesChanged(task, context, null);
     }
 
@@ -252,7 +250,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     	Content content = TaskModelProvider.getFactory().newContent();
 		((InternalContent) content).setContent(fault.getContent());
 		persistenceContext.persistContent(content);
-		((InternalTaskData) task.getTaskData()).setFault(content.getId(), fault);
+		persistenceContext.setFaultToTask(content, fault, task);
     }
 
     public void setOutput(long taskId, String userId, Object outputContentData) {
@@ -262,7 +260,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 		Content content = TaskModelProvider.getFactory().newContent();
 		((InternalContent) content).setContent(contentData.getContent());
 		persistenceContext.persistContent(content);
-		((InternalTaskData) task.getTaskData()).setOutput(content.getId(), contentData);
+		persistenceContext.setOutputToTask(content, contentData, task);
     }
 
     public void setPriority(long taskId, int priority) {

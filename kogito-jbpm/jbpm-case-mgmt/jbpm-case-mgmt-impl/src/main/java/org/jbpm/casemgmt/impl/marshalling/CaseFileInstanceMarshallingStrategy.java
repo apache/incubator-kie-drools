@@ -29,8 +29,8 @@ import java.util.Map.Entry;
 
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
-import org.drools.persistence.TransactionAware;
-import org.drools.persistence.TransactionManager;
+import org.drools.persistence.api.TransactionAware;
+import org.drools.persistence.api.TransactionManager;
 import org.jbpm.casemgmt.api.model.instance.CaseRoleInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;

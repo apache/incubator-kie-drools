@@ -58,7 +58,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @XmlRootElement(name="task")
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonIgnoreProperties({"archived","deadlines"})
+@JsonIgnoreProperties({"deadlines"})
 @JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE, setterVisibility=JsonAutoDetect.Visibility.NONE, fieldVisibility=JsonAutoDetect.Visibility.ANY)
 public class JaxbTask implements InternalTask {
 
@@ -133,6 +133,8 @@ public class JaxbTask implements InternalTask {
         }
         this.id = task.getId();
         this.priority = task.getPriority();
+        this.version = task.getVersion();
+        this.archived = task.isArchived();
         this.subTasksStrategy = ((InternalTask) task).getSubTaskStrategy();
         this.peopleAssignments = new JaxbPeopleAssignments(task.getPeopleAssignments());
 
@@ -349,17 +351,17 @@ public class JaxbTask implements InternalTask {
     }
 
     @Override
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     @Override
-    public int getPriority() {
+    public Integer getPriority() {
         return whenNull(priority, 0);
     }
 
     @Override
-    public void setPriority(int priority) {
+    public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
@@ -465,12 +467,12 @@ public class JaxbTask implements InternalTask {
     }
 
     public void setVersion(Integer version) {
-        unsupported(Void.class);
+    	this.version = version;
     }
 
     @Override
-    public int getVersion() {
-        return unsupported(int.class);
+    public Integer getVersion() {
+    	return version;
     }
 
     @Override

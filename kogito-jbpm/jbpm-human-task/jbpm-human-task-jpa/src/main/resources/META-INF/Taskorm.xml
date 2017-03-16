@@ -3,6 +3,7 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
                  version="2.0">
+    
     <named-query name="TasksAssignedAsBusinessAdministrator">
         <query>
             select distinct 
@@ -1399,5 +1400,11 @@
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
-    
+    <named-query name="GetAllTasks">
+       <query>
+          select t from TaskImpl t
+       </query>
+       <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+
 </entity-mappings>

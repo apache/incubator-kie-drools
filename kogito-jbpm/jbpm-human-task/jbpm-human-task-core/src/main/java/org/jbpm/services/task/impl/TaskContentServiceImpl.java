@@ -72,8 +72,7 @@ public class TaskContentServiceImpl implements TaskContentService {
             Content content = TaskModelProvider.getFactory().newContent();
             ((InternalContent) content).setContent(outputContentData.getContent());
             persistenceContext.persistContent(content);
-            
-            ((InternalTaskData) task.getTaskData()).setOutput(content.getId(), outputContentData);
+            persistenceContext.setOutputToTask(content, outputContentData, task);
             contentId = content.getId();
         } else {
             // I need to merge it if it already exist

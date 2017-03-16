@@ -22,7 +22,6 @@ import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskCommentService;
 import org.kie.internal.task.api.TaskPersistenceContext;
-import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  *
@@ -49,7 +48,7 @@ public class TaskCommentServiceImpl implements TaskCommentService {
             persistenceContext.persistUser(comment.getAddedBy());
         }
         persistenceContext.persistComment(comment);
-        ((InternalTaskData) task.getTaskData()).addComment(comment);
+        persistenceContext.addCommentToTask(comment, task);
         return comment.getId();
        
     }
@@ -57,7 +56,7 @@ public class TaskCommentServiceImpl implements TaskCommentService {
     public void deleteComment(long taskId, long commentId) {
         Task task = persistenceContext.findTask(taskId);
         Comment comment = persistenceContext.findComment(commentId);
-        ((InternalTaskData) task.getTaskData()).removeComment(commentId);
+        persistenceContext.removeCommentFromTask(comment, task);
         persistenceContext.removeComment(comment);
     }
 
