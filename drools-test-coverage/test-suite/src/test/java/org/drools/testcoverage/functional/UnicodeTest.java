@@ -239,6 +239,24 @@ public class UnicodeTest {
         Assertions.assertThat(l.contains("klíč")).isTrue();
     }
 
+    @Test
+    public void testMutibyteJavaDialect() {
+        // DROOLS-1200
+        String drl =
+                "rule R dialect \"java\" when\n" +
+                "  Ｄ: String( )\n" +
+                "then\n" +
+                "  System.out.println( Ｄ.toString() );\n" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( "Hello" );
+        int fired = kieSession.fireAllRules();
+        Assertions.assertThat( fired ).isEqualTo( 1 );
+    }
+
     // japanese person
     public static class 人 {
 
