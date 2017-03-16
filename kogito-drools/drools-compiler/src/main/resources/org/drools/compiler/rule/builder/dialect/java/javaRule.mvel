@@ -10,14 +10,16 @@ public static org.drools.core.spi.FieldValue @{methodName}(@foreach{declr : decl
 public static boolean @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
                                                       @foreach{declr : localDeclarations } @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
                                                       @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws java.lang.Exception {
-    return ( @{text} );
+    Boolean $predicate$result$ = ( @{text} );
+    return $predicate$result$ == null ? false : $predicate$result$.booleanValue();
 }
 @end{}
 
 @declare{"evalMethod"}
 public static boolean @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && declarations != empty},@end{}
                                     @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws java.lang.Exception {
-    return ( @{text} );
+    Boolean $eval$result$ = ( @{text} );
+    return $eval$result$ == null ? false : $eval$result$.booleanValue();
 }
 @end{}
 
