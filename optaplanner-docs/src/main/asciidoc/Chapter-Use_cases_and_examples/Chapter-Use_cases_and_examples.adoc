@@ -563,7 +563,7 @@ Soft constraints:
 * Room capacity: A room's capacity should not be less than the number of students in its lecture.
 * Minimum working days: Lectures of the same course should be spread out into a minimum number of days.
 * Curriculum compactness: Lectures belonging to the same curriculum should be adjacent to each other (so in consecutive periods).
-* Room stability: Lectures of the same course should be assigned the same room.
+* Room stability: Lectures of the same course should be assigned to the same room.
 
 The problem is defined by http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm[the International Timetabling Competition 2007 track 3].
 
