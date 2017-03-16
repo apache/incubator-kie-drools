@@ -31,4 +31,8 @@ public interface ContentData extends Externalizable {
     byte[] getContent();
 
     void setContent(byte[] content);
+    
+    Object getContentObject();
+    
+    void setContentObject(Object object);
 }

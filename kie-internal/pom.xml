@@ -55,6 +55,7 @@
               org.drools.core.util,
               org.drools.decisiontable;resolution:=optional,
               org.drools.workbench.models.guided.dtable.backend;resolution:=optional,
+              org.drools.persistence.api;resolution:=optional,
               org.drools.persistence.jpa;resolution:=optional,
               org.jbpm.bpmn2;resolution:=optional,
               org.jbpm.marshalling.impl;resolution:=optional,

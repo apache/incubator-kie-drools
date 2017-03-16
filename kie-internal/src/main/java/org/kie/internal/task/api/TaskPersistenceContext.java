@@ -28,7 +28,10 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.Deadline;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 public interface TaskPersistenceContext {
 
@@ -81,6 +84,10 @@ public interface TaskPersistenceContext {
     Attachment updateAttachment(Attachment attachment);
 
     Attachment removeAttachment(Attachment attachment);
+    
+    Attachment removeAttachmentFromTask(Task task, long attachmentId);
+    
+    Attachment addAttachmentToTask(Attachment attachment, Task task);
 
     Comment findComment(Long commentId);
 
@@ -89,6 +96,10 @@ public interface TaskPersistenceContext {
     Comment updateComment(Comment comment);
 
     Comment removeComment(Comment comment);
+    
+    Comment removeCommentFromTask(Comment comment, Task task);
+    
+    Comment addCommentToTask(Comment comment, Task task);
 
     Deadline findDeadline(Long deadlineId);
 
@@ -98,6 +109,13 @@ public interface TaskPersistenceContext {
 
     Deadline removeDeadline(Deadline deadline);
 
+    Task setDocumentToTask(Content content, ContentData contentData, Task task);
+    
+    Task setFaultToTask(Content content, FaultData faultData, Task task);
+    
+    Task setOutputToTask(Content content, ContentData contentData, Task task);
+    
+    
     /*
      * Query related methods
      */
@@ -119,6 +137,8 @@ public interface TaskPersistenceContext {
     <T> T queryAndLockStringWithParametersInTransaction(String queryName, Map<String, Object> params, boolean singleResult, Class<T> clazz);
 
     int executeUpdateString(String updateString);
+    
+    int executeUpdate(String queryName, Map<String, Object> params);
 
     HashMap<String, Object> addParametersToMap(Object ... parameterValues);
 
@@ -148,4 +168,5 @@ public interface TaskPersistenceContext {
      */
 
     List<TaskSummary> doTaskSummaryCriteriaQuery(String userId, UserGroupCallback userGroupCallback, Object queryWhere);
+
 }

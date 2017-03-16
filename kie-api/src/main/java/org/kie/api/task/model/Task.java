@@ -23,7 +23,7 @@ public interface Task extends Externalizable {
 
     Long getId();
 
-    int getPriority();
+    Integer getPriority();
 
     List<I18NText> getNames();
 
@@ -42,5 +42,11 @@ public interface Task extends Externalizable {
     TaskData getTaskData();
 
     String getTaskType();
+
+    Boolean isArchived();
+
+    Integer getVersion();
+
+    String getFormName();
 
 }
