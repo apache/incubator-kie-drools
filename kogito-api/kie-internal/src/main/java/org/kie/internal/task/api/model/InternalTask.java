@@ -25,21 +25,15 @@ import org.kie.api.task.model.TaskData;
 
 public interface InternalTask extends Task {
 
-    void setId(long id);
-
-    Boolean isArchived();
+    void setId(Long id);
 
     void setArchived(Boolean archived);
 
-    int getVersion();
-
-    void setPriority(int priority);
+    void setPriority(Integer priority);
 
     void setNames(List<I18NText> names);
 
     void setFormName(String formName);
-
-    String getFormName();
 
     void setSubjects(List<I18NText> subjects);
 
@@ -63,9 +57,10 @@ public interface InternalTask extends Task {
 
     void setSubTaskStrategy(SubTasksStrategy subTaskStrategy);
 
-
     void setName(String name);
+
     void setSubject(String subject);
+    
     void setDescription(String description);
 
 }

@@ -362,6 +362,32 @@
           "justification": "DROOLS-1419 Generify AccumulateFunction to make it less verbose to implement. This is backwards compatible."
         },
         {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.String org.kie.api.task.model.Task::getFormName()",
+          "justification": "Moved from InternalTask to tidy up interfaces"
+        },
+        {
+          "code": "java.method.returnTypeChanged",
+          "old": "method int org.kie.api.task.model.Task::getPriority()",
+          "new": "method java.lang.Integer org.kie.api.task.model.Task::getPriority()",
+          "justification": "Changed so that Task and TaskSummary interfaces match, and we can implement them with the same type if desired"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.Integer org.kie.api.task.model.Task::getVersion()",
+          "justification": "Changed from int to Integer to make all types alligned (either primitives everywhere, or wrappers)"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.Boolean org.kie.api.task.model.Task::isArchived()",
+          "justification": "Moved from InternalTask to tidy up interfaces"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method <T> T org.kie.api.runtime.KieSession::getKieRuntime(java.lang.Class<T>)",
+          "justification": "Promoting internal method getKieRuntime() to the public API"
+        },
+        {
           "code": "java.class.removed",
           "old": "class org.kie.api.runtime.conf.TimedRuleExectionOption",
           "package": "org.kie.api.runtime.conf",
@@ -393,3 +419,4 @@
     }
   }
 }
+
