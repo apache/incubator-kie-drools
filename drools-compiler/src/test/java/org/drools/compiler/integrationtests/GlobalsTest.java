@@ -16,10 +16,13 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.core.impl.StatelessKnowledgeSessionImpl;
-import org.kie.api.io.ResourceType;
+import java.util.Map;
+
 import org.drools.core.base.MapGlobalResolver;
+import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -27,8 +30,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-
-import java.util.Map;
+import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -108,5 +110,22 @@ public class GlobalsTest {
         assertTrue( session4.getGlobals().getGlobalKeys().contains("myGlobal") );
 
         session4.dispose();
+    }
+
+    @Test
+    public void testEvalNullGlobal() {
+        // RHBPMS-4649
+        String str =
+                "import org.drools.compiler.Cheese\n" +
+                "global Boolean b\n" +
+                "rule R when\n" +
+                "  eval(b)\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build().newKieSession();
+
+        ksession.setGlobal( "b", null );
+        assertEquals( 0, ksession.fireAllRules() );
     }
 }
