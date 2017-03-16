@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-persistence</artifactId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-persistence-jpa</artifactId>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+
+  <name>Drools :: Persistence :: JPA</name>
+  <description>JPA implementation for Drools</description>
+
+  <properties>
+    <osgi.Bundle-SymbolicName>org.drools.persistence.jpa</osgi.Bundle-SymbolicName>
+
+    <!-- These are properties used in the database profiles. Some of them must be initialized
+         to be empty so that Maven applies their values via filtering to the resources. -->
+    <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
+    <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
+    <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
+    <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
+    <maven.jdbc.db.name/>
+    <maven.jdbc.db.port/>
+    <maven.jdbc.db.server/>
+    <maven.jdbc.driver.jar/>
+    <maven.jdbc.username/>
+    <maven.jdbc.password/>
+    <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
+    <maven.jdbc.schema>public</maven.jdbc.schema>
+  </properties>
+
+  <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+      </testResource>
+      <testResource>
+        <directory>src/test/filtered-resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Import-Package>
+              javassist.util.proxy;resolution:=optional,
+              javax.transaction;resolution:=optional,
+              javax.naming;resolution:=optional,
+              org.drools.container.spring.beans.persistence;resolution:=optional,
+              org.drools.core.marshalling.impl;resolution:=optional,
+              org.jbpm.persistence;resolution:=optional,
+              org.hibernate.proxy;resolution:=optional,
+              org.kie.spring.persistence;resolution:=optional,
+              org.hibernate;resolution:=optional,
+              org.hibernate.exception;resolution:=optional,
+              org.drools.persistence.api,
+              org.drools.persistence.osgi,
+              org.drools.persistence.jta,
+              org.drools.persistence.processinstance,
+              *
+            </Import-Package>
+            <Export-Package>
+              org.drools.persistence.*
+            </Export-Package>
+            <Private-Package/>
+            <Bundle-Activator>org.drools.persistence.osgi.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <additionalClasspathElements>
+            <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
+          </additionalClasspathElements>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-cdi</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+    </dependency>
+
+    <!-- Testing deps-->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Hibernate -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+    <scope>test</scope>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency><!-- For test logging: configure in src/test/resources/logback-test.xml -->
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.btm</groupId>
+      <artifactId>btm</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jdt.core.compiler</groupId>
+      <artifactId>ecj</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.el</groupId>
+          <artifactId>javax.el-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.interceptor</groupId>
+          <artifactId>javax.interceptor-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+</project>
