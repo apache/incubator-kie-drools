@@ -32,6 +32,7 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 { "every price in [ 80, 11, 90 ] satisfies price > 10", Boolean.TRUE },
                 { "every price in [ 80, 11, 90 ] satisfies price > 70", Boolean.FALSE },
                 { "some x in [ 5, 6, 7 ], y in [ 10, 11, 12 ] satisfies x < y", Boolean.TRUE },
+                { "some price in [ 80, 11, 110 ] satisfies price > max(100, 50, 10)", Boolean.TRUE },
 
                 // path expressions
                 {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.last name", "Doe" },
