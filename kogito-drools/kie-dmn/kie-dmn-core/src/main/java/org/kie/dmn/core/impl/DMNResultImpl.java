@@ -16,17 +16,15 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNDecisionResult;
-import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.*;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.model.v1_1.DMNElement;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DMNResultImpl implements DMNResult {
+public class DMNResultImpl implements DMNResult, DMNMessageManager {
     private DMNContext context;
     private List<DMNMessage> messages;
     private Map<String, DMNDecisionResult> decisionResults;
@@ -61,28 +59,33 @@ public class DMNResultImpl implements DMNResult {
         return messages.stream().anyMatch( m -> DMNMessage.Severity.ERROR.equals( m.getSeverity() ) );
     }
 
-    public void addMessage( DMNMessage msg ) {
-        this.messages.add( msg );
-    }
-
-    public DMNMessage addMessage( DMNMessage.Severity severity, DMNMessageTypeImpl message, DMNElement source ) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, source );
-        this.messages.add( msg );
-        return msg;
-    }
-
-    public DMNMessage addMessage( DMNMessage.Severity severity, DMNMessageTypeImpl message, DMNElement source, Throwable exception ) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, source, exception );
-        if( this.messages.contains( msg ) ) {
-            return this.messages.get( this.messages.indexOf( msg ) );
+    @Override
+    public DMNMessage addMessage(DMNMessage msg) {
+        if( messages.contains( msg ) ) {
+            return this.messages.get( messages.indexOf( msg ) );
         }
         this.messages.add( msg );
         return msg;
     }
 
-    public void addMessage( DMNMessage.Severity severity, DMNMessageTypeImpl message, DMNElement source, FEELEvent feelEvent ) {
-        this.messages.add( new DMNMessageImpl( severity, message, source, feelEvent ) );
+    @Override
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNElement source) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source );
+        return addMessage( msg );
     }
+
+    @Override
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNElement source, Throwable exception) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, exception );
+        return addMessage( msg );
+    }
+
+    @Override
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNElement source, FEELEvent feelEvent) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, feelEvent );
+        return addMessage( msg );
+    }
+
 
     public List<DMNDecisionResult> getDecisionResults() {
         return new ArrayList<>( decisionResults.values() );

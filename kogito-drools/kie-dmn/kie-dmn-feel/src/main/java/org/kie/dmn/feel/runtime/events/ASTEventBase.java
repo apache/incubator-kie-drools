@@ -56,6 +56,21 @@ public class ASTEventBase implements FEELEvent {
     }
 
     @Override
+    public int getLine() {
+        return -1;
+    }
+
+    @Override
+    public int getColumn() {
+        return -1;
+    }
+
+    @Override
+    public Object getOffendingSymbol() {
+        return null;
+    }
+
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("ASTEventBase [severity=").append(severity)

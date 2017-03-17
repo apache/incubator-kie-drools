@@ -2,13 +2,12 @@ package org.kie.dmn.core.compiler;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
-import org.kie.dmn.core.impl.DMNMessageTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
@@ -17,11 +16,15 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.model.v1_1.DMNElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class DMNFEELHelper
         implements FEELEventListener {
+
+    private static final Logger logger = LoggerFactory.getLogger( DMNFEELHelper.class );
 
     private final FEEL             feel;
     private final Queue<FEELEvent> feelEvents;
@@ -42,46 +45,68 @@ public class DMNFEELHelper
         feelEvents.add( event );
     }
 
-    public CompiledExpression compileFeelExpression(DMNCompilerContext ctx, String expression, DMNModelImpl model, DMNElement element, DMNMessageTypeImpl errorMsg) {
+    public CompiledExpression compileFeelExpression(DMNCompilerContext ctx, String expression, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
         CompilerContext feelctx = feel.newCompilerContext();
 
-        for( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
-            feelctx.addInputVariableType( entry.getKey(), ((BaseDMNTypeImpl)entry.getValue()).getFeelType() );
+        for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
+            feelctx.addInputVariableType( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
         }
         CompiledExpression ce = feel.compile( expression, feelctx );
-        processEvents( model, element, errorMsg );
+        processEvents( model, element, errorMsg, msgParams );
         return ce;
     }
 
-    public List<UnaryTest> evaluateUnaryTests(DMNCompilerContext ctx, String unaryTests, DMNModelImpl model, DMNElement element, DMNMessageTypeImpl errorMsg) {
-        Map<String, Type> variableTypes = new HashMap<>(  );
-        for( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
+    public List<UnaryTest> evaluateUnaryTests(DMNCompilerContext ctx, String unaryTests, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
+        Map<String, Type> variableTypes = new HashMap<>();
+        for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
             // TODO: need to properly resolve types here
             variableTypes.put( entry.getKey(), BuiltInType.UNKNOWN );
         }
         List<UnaryTest> result = feel.evaluateUnaryTests( unaryTests, variableTypes );
-        processEvents( model, element, errorMsg );
+        processEvents( model, element, errorMsg, msgParams );
         return result;
     }
 
-    public void processEvents(DMNModelImpl model, DMNElement element, DMNMessageTypeImpl msg) {
+    public void processEvents(DMNModelImpl model, DMNElement element, Msg.Message msg, Object... msgParams) {
         while ( !feelEvents.isEmpty() ) {
             FEELEvent event = feelEvents.remove();
-            if ( !isDuplicateEvent( model, event, msg ) ) {
-                if ( event instanceof SyntaxErrorEvent ) {
-                    DMNMessageTypeImpl errorMsg = Msg.createMessage(Msg.INVALID_SYNTAX, msg.getMessage() );
-                    model.addMessage( DMNMessage.Severity.ERROR, errorMsg, element, event );
-                } else if ( event.getSeverity() == FEELEvent.Severity.ERROR ) {
-                    DMNMessageTypeImpl errorMsg = Msg.createMessage(Msg.INVALID_SYNTAX2, msg.getMessage(), event.getMessage() );
-                    model.addMessage( DMNMessage.Severity.ERROR, errorMsg, element );
+            if ( !isDuplicateEvent( model, msg, element ) ) {
+                if ( event instanceof SyntaxErrorEvent || event.getSeverity() == FEELEvent.Severity.ERROR ) {
+                    if ( msg instanceof Msg.Message2 ) {
+                        MsgUtil.reportMessage(
+                                logger,
+                                DMNMessage.Severity.ERROR,
+                                element,
+                                model,
+                                null,
+                                event,
+                                (Msg.Message2) msg,
+                                msgParams[0],
+                                msgParams[1] );
+                    } else if ( msg instanceof Msg.Message3 ) {
+                        MsgUtil.reportMessage(
+                                logger,
+                                DMNMessage.Severity.ERROR,
+                                element,
+                                model,
+                                null,
+                                event,
+                                (Msg.Message3) msg,
+                                msgParams[0],
+                                msgParams[1],
+                                msgParams[2] );
+                    }
                 }
             }
         }
     }
 
-    private boolean isDuplicateEvent(DMNModelImpl model, FEELEvent event, DMNMessageTypeImpl errorMsg) {
-        // TODO when also FEEL will receive support for Msg type ID, the comparison shall be made with the ID itself.
-        return model.getMessages().stream().anyMatch( msg -> msg.getMessage().startsWith( errorMsg.getMessage() ) );
+    private boolean isDuplicateEvent(DMNModelImpl model, Msg.Message error, DMNElement element) {
+        return model.getMessages().stream().anyMatch( msg -> msg.getMessageType() == error.getType() &&
+                                                             (msg.getSourceId() == element.getId() ||
+                                                              (msg.getSourceId() != null &&
+                                                               element.getId() != null &&
+                                                               msg.getSourceId().equals( element.getId() ))) );
     }
 
 }

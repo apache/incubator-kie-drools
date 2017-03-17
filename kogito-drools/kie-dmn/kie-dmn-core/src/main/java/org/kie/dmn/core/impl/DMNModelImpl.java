@@ -17,6 +17,7 @@
 package org.kie.dmn.core.impl;
 
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -24,6 +25,7 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.ast.*;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.kie.dmn.model.v1_1.Definitions;
@@ -32,7 +34,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DMNModelImpl
-        implements DMNModel {
+        implements DMNModel, DMNMessageManager {
 
     private Definitions definitions;
     private Map<String, InputDataNode>              inputs       = new HashMap<>();
@@ -245,22 +247,27 @@ public class DMNModelImpl
         return messages.stream().anyMatch( m -> DMNMessage.Severity.ERROR.equals( m.getSeverity() ) );
     }
 
-    public void addMessage(DMNMessage msg) {
-        this.messages.add( msg );
-    }
-
-    public DMNMessage addMessage(DMNMessage.Severity severity, DMNMessageTypeImpl message, DMNElement source) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, source );
+    public DMNMessage addMessage(DMNMessage msg) {
+        if( messages.contains( msg ) ) {
+            return this.messages.get( messages.indexOf( msg ) );
+        }
         this.messages.add( msg );
         return msg;
     }
 
-    public void addMessage(DMNMessage.Severity severity, DMNMessageTypeImpl message, DMNElement source, Throwable exception) {
-        this.messages.add( new DMNMessageImpl( severity, message, source, exception ) );
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNElement source) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source );
+        return addMessage( msg );
     }
 
-    public void addMessage(DMNMessage.Severity severity, DMNMessageTypeImpl message, DMNElement source, FEELEvent feelEvent) {
-        this.messages.add( new DMNMessageImpl( severity, message, source, feelEvent ) );
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNElement source, Throwable exception) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, exception );
+        return addMessage( msg );
+    }
+
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNElement source, FEELEvent feelEvent) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, feelEvent );
+        return addMessage( msg );
     }
 
 }

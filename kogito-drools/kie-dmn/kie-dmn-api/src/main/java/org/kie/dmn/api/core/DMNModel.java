@@ -26,7 +26,7 @@ import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Set;
 
-public interface DMNModel {
+public interface DMNModel extends DMNMessageContainer {
 
     String getNamespace();
 
@@ -66,9 +66,4 @@ public interface DMNModel {
 
     Set<ItemDefNode> getItemDefinitions();
 
-    List<DMNMessage> getMessages();
-
-    List<DMNMessage> getMessages(DMNMessage.Severity... sevs);
-
-    boolean hasErrors();
 }

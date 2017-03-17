@@ -27,7 +27,6 @@ import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
-import org.kie.dmn.core.KieHelper;
 import org.kie.dmn.core.api.event.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -19,6 +19,7 @@ package org.kie.dmn.validation;
 import java.io.File;
 import java.util.List;
 
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.model.v1_1.Definitions;
 
 public interface DMNValidator {
@@ -26,12 +27,12 @@ public interface DMNValidator {
     /**
      * Performs validation of the DMN model against DMN specifications.
      */
-    List<ValidationMsg> validateModel(Definitions dmnModel);
+    List<DMNMessage> validateModel(Definitions dmnModel);
 
     /**
      * Performs validation of the xml file against the DMN's XSD Schema.
      */
-    List<ValidationMsg> validateSchema(File xmlFile);
+    List<DMNMessage> validateSchema(File xmlFile);
 
     /**
      * Release all resources associated with this DMNValidator.
