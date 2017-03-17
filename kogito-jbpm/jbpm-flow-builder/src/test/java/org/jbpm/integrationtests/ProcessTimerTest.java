@@ -20,7 +20,7 @@ import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;

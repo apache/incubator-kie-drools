@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;

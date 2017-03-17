@@ -19,7 +19,7 @@ package org.jbpm.test.functional.gateway;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.jbpm.test.JbpmTestCase;
 import org.jbpm.test.listener.TrackingProcessEventListener;
 import org.jbpm.test.tools.TrackingListenerAssert;
