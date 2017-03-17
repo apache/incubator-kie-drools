@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.FEELType;
 
-import test.Person;
+import org.kie.dmn.feel.model.Person;
 
 public class JavaBackedTypeTest {
 

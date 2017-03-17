@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,6 +40,9 @@ public class FEELRangesTest extends BaseFEELTest {
                 {"[\"a\"..\"z\")", new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN)},
                 {"(\"a\"..\"z\"]", new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.CLOSED)},
                 {"(\"a\"..\"z\")", new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.OPEN)},
+                {"(\"ab\"..\"yz\")", new RangeImpl(Range.RangeBoundary.OPEN, "ab", "yz", Range.RangeBoundary.OPEN)},
+                {"[\"ab\"+\"cd\"..\"yz\")", new RangeImpl(Range.RangeBoundary.CLOSED, "abcd", "yz", Range.RangeBoundary.OPEN)},
+                {"[(\"ab\"+\"cd\")..\"yz\"]", new RangeImpl(Range.RangeBoundary.CLOSED, "abcd", "yz", Range.RangeBoundary.CLOSED)},
 
                 {"[date(\"1978-09-12\")..date(\"1978-10-13\")]",
                         new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED)},
@@ -48,6 +52,14 @@ public class FEELRangesTest extends BaseFEELTest {
                         new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED)},
                 {"(date(\"1978-09-12\")..date(\"1978-10-13\"))",
                         new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN)},
+                {"[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]",
+                        new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED)},
+                {"[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))",
+                        new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN)},
+                {"(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]",
+                        new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED)},
+                {"(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))",
+                        new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN)},
 
                 {"[1+2..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
                 {"[1+2..8)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.OPEN)},

@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.runtime;
 
+import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -69,9 +70,32 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P1Y6M\" ) = null", Boolean.FALSE },
                 { "duration( \"P1Y6M\" ) != null", Boolean.TRUE },
                 { "duration( \"P1Y6M\" ) > null", null },
-                { "duration( \"P1Y6M\" ) < null", null }
+                { "duration( \"P1Y6M\" ) < null", null },
 
-                // TODO: test properties as per page 126 of the spec
+                { "date( 2016, 8, 2 ).year", BigDecimal.valueOf( 2016 ) },
+                { "date( 2016, 8, 2 ).month", BigDecimal.valueOf( 8 ) },
+                { "date( 2016, 8, 2 ).day", BigDecimal.valueOf( 2 ) },
+                { "date and time(\"2016-07-29T05:48:23.765-05:00\").year", BigDecimal.valueOf( 2016 ) },
+                { "date and time(\"2016-07-29T05:48:23.765-05:00\").month", BigDecimal.valueOf( 7 ) },
+                { "date and time(\"2016-07-29T05:48:23.765-05:00\").day", BigDecimal.valueOf( 29 ) },
+                { "date and time(\"2016-07-29T05:48:23.765-05:00\").hour", BigDecimal.valueOf( 5 ) },
+                { "date and time(\"2016-07-29T05:48:23.765-05:00\").minute", BigDecimal.valueOf( 48 ) },
+                { "date and time(\"2016-07-29T05:48:23.765-05:00\").second", BigDecimal.valueOf( 23 ) },
+                { "date and time(\"2016-07-29T05:48:23.765-05:00\").time offset", Duration.parse( "PT-5H" )},
+                // TODO When we have timezones solved out, this test case should be modified and uncommented
+                // { "date and time(\"2016-07-29T05:48:23.765@SomeTimeZoneFormat\").timezone", someTimezoneResult},
+                { "time(\"13:20:00-05:00\").hour", BigDecimal.valueOf( 13 )},
+                { "time(\"13:20:00-05:00\").minute", BigDecimal.valueOf( 20 )},
+                { "time(\"13:20:00-05:00\").second", BigDecimal.valueOf( 0 )},
+                { "time(\"13:20:00-05:00\").time offset", Duration.parse( "PT-5H" )},
+                // TODO When we have timezones solved out, this test case should be modified and uncommented
+//                { "time(\"13:20:00@SomeTimeZoneFormat\").timezone", someTimeZoneResult },
+                { "duration( \"P2DT20H14M\" ).days", BigDecimal.valueOf(2) },
+                { "duration( \"P2DT20H14M\" ).hours", BigDecimal.valueOf(20) },
+                { "duration( \"P2DT20H14M\" ).minutes", BigDecimal.valueOf(14) },
+                { "duration( \"P2DT20H14M5S\" ).seconds", BigDecimal.valueOf(5) },
+                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).years", BigDecimal.valueOf(1) },
+                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).months", BigDecimal.valueOf(8) }
         };
         return Arrays.asList( cases );
     }

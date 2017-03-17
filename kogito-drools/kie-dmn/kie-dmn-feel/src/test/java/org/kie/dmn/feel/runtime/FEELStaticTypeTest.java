@@ -21,13 +21,11 @@ import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
-import test.Address;
-import test.Person;
+import org.kie.dmn.feel.model.Address;
+import org.kie.dmn.feel.model.Person;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;

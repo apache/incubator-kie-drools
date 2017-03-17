@@ -94,7 +94,9 @@ public class FEELListsTest extends BaseFEELTest {
                 {"[ [ duration(\"P1D\") .. duration(\"P10D\") [ ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
                                                                                                   Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) ) },
                 {"[ [ duration(\"P1D\") .. duration(\"P10D\") ] ]", Arrays.asList( new RangeImpl( Range.RangeBoundary.CLOSED, Duration.parse("P1D"),
-                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.CLOSED ) ) }
+                                                                                                  Duration.parse( "P10D" ), Range.RangeBoundary.CLOSED ) ) },
+                {"[ ( duration(\"P1D\") .. duration(\"P10D\") ), ( duration(\"P2D\") .. duration(\"P10D\") )][1]",
+                        new RangeImpl( Range.RangeBoundary.OPEN, Duration.parse("P1D"), Duration.parse( "P10D" ), Range.RangeBoundary.OPEN ) }
         };
         return Arrays.asList( cases );
     }

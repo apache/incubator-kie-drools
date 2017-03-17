@@ -31,6 +31,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "string(1.1)", "1.1" },
                 { "string(null)", null },
                 { "string(date(\"2016-08-14\"))", "2016-08-14" },
+                { "number(null, \",\", \".\")", null },
                 { "number(\"1,000.05\", \",\", \".\")", new BigDecimal( "1000.05" ) },
                 { "number(\"1.000,05\", \".\", \",\")", new BigDecimal( "1000.05" ) },
                 { "number(\"1000,05\", null, \",\")", new BigDecimal( "1000.05" ) },
