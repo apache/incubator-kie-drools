@@ -22,7 +22,7 @@ import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.Trigger;
 import org.slf4j.Logger;

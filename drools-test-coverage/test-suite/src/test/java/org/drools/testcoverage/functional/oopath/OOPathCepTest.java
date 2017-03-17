@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.MessageEvent;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;

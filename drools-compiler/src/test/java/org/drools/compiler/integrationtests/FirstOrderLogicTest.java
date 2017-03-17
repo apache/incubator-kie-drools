@@ -44,7 +44,7 @@ import org.drools.compiler.State;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.Triangle;
 import org.drools.core.audit.WorkingMemoryConsoleLogger;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;

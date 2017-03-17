@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.time.SessionPseudoClock;
-import org.junit.Before;
+import org.kie.api.time.SessionPseudoClock;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;

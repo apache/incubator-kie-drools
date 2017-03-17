@@ -15,11 +15,10 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.StockTick;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.api.KieServices;
