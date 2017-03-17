@@ -16,6 +16,7 @@
   <logger name="org.jbpm.services.task.jaxb" level="info"/>
   <logger name="org.jbpm.services.task.impl" level="info"/>
   
+  <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="error" />
   <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>

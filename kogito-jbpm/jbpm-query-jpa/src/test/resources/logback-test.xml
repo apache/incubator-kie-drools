@@ -12,6 +12,7 @@
   <!-- set to debug to see test output --> 
   <logger name="org.jbpm.query.jpa" level="info"/>
   
+  <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="error" />
   <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>

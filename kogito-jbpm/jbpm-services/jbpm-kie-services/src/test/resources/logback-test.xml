@@ -24,6 +24,7 @@
   
   <logger name="org.drools.persistence.SingleSessionCommandService" level="off" />
   
+  <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="error" />
   <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>

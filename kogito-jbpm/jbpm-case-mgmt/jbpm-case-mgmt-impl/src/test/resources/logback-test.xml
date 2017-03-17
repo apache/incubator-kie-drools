@@ -22,6 +22,7 @@
   <logger name="org.jbpm.kie.services.impl.store" level="info"/>
   <logger name="org.dashbuilder.dataprovider.sql.SQLDataSetProvider" level="info"/>
   
+  <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="error" />
   
   <root level="info">
     <appender-ref ref="consoleAppender" />

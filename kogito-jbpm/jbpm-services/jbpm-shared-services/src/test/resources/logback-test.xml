@@ -11,6 +11,7 @@
 
   <logger name="org.jbpm" level="info"/>
 
+  <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="error" />
   <root level="warn">
     <appender-ref ref="consoleAppender" />
   </root>

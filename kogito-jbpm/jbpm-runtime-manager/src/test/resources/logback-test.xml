@@ -15,6 +15,7 @@
   <logger name="org.hibernate.tool.hbm2ddl.SchemaExport" level="off"/>
   <logger name="org.hibernate.hql.internal.ast.HqlSqlWalker" level="error"/>
   
+  <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="error" />
   <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>
