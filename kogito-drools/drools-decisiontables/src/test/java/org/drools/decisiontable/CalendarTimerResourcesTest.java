@@ -20,10 +20,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;

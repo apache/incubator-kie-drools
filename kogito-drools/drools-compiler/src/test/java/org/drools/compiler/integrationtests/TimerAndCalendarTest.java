@@ -23,7 +23,7 @@ import org.drools.compiler.Foo;
 import org.drools.compiler.Pet;
 import org.drools.compiler.StockTick;
 import org.drools.core.base.UndefinedCalendarExcption;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
 import org.junit.Ignore;

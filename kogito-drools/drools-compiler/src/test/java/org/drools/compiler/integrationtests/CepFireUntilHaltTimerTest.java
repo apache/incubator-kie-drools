@@ -15,7 +15,7 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;

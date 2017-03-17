@@ -19,7 +19,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Test;
 import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.io.Resource;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.api.KieBase;

@@ -16,7 +16,7 @@
 package org.drools.persistence.timer.integrationtests;
 
 import org.drools.core.ClockType;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

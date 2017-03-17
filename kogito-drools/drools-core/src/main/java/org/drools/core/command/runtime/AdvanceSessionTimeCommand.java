@@ -26,7 +26,7 @@ import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 
