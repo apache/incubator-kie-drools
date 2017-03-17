@@ -16,18 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.time.InternalSchedulerService;
-import org.drools.core.time.Job;
-import org.drools.core.time.JobContext;
-import org.drools.core.time.JobHandle;
-import org.kie.api.time.SessionPseudoClock;
-import org.drools.core.time.TimerService;
-import org.drools.core.time.Trigger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -38,6 +26,18 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.time.InternalSchedulerService;
+import org.drools.core.time.Job;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.JobHandle;
+import org.drools.core.time.SessionPseudoClock;
+import org.drools.core.time.TimerService;
+import org.drools.core.time.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A PseudoClockScheduler is a scheduler based on a user controlled clock 
