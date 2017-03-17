@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core;
+package org.kie.dmn.core.util;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.api.KieServices;
