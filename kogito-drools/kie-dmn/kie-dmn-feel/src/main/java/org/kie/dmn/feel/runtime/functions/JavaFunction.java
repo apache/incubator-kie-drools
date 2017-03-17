@@ -75,6 +75,7 @@ public class JavaFunction
     private Object[] prepareParams(Object[] params) {
         Object[] actual = new Object[ params.length ];
         Class[] paramTypes = method.getParameterTypes();
+        params = adjustForVariableParameters( paramTypes, params );
         for( int i = 0; i < paramTypes.length; i++ ) {
             if( paramTypes[i].isAssignableFrom( params[i].getClass() ) ) {
                 actual[i] = params[i];
@@ -104,6 +105,21 @@ public class JavaFunction
             }
         }
         return actual;
+    }
+
+    private Object[] adjustForVariableParameters(Class[] paramTypes, Object[] params) {
+        if ( paramTypes.length > 0 && paramTypes[paramTypes.length - 1].isArray() && params.length >= paramTypes.length ) {
+            // then it is a variable parameters function call
+            Object[] newParams = new Object[paramTypes.length];
+            if ( newParams.length > 1 ) {
+                System.arraycopy( params, 0, newParams, 0, newParams.length - 1 );
+            }
+            Object[] remaining = new Object[params.length - paramTypes.length + 1];
+            newParams[newParams.length - 1] = remaining;
+            System.arraycopy( params, paramTypes.length - 1, remaining, 0, remaining.length );
+            return newParams;
+        }
+        return params;
     }
 
     private String getSignature() {
