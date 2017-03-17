@@ -50,12 +50,53 @@ public interface ExecutorQueryService {
      * @return requests identified by the business key
      */
     List<RequestInfo> getRequestByBusinessKey(String businessKey, QueryContext queryContext);
+    
+    /**
+     * Returns requests identified by <code>businessKey</code> usually it should be only one with given
+     * business key but it does not have to as same business key requests can be processed sequentially and
+     * thus might be in different statuses.
+     *
+     * @param businessKey business key of the request
+     * @param statuses filter by job status
+     * @param queryContext paging and sorting controls
+     * @return requests identified by the business key
+     */
+    List<RequestInfo> getRequestsByBusinessKey(String businessKey, List<STATUS> statuses, QueryContext queryContext);
 
     /**
+     * Returns requests that are scheduled to run given command
      * @param command command configured in the request
+     * @param queryContext paging and sorting controls
      * @return requests configured with given <code>command</code>
      */
     List<RequestInfo> getRequestByCommand(String command, QueryContext queryContext);
+    
+    /**
+     * Returns requests that are scheduled to run given command
+     * @param command command configured in the request
+     * @param statuses filter by job status
+     * @param queryContext paging and sorting controls
+     * @return requests configured with given <code>command</code>
+     */
+    List<RequestInfo> getRequestsByCommand(String command, List<STATUS> statuses, QueryContext queryContext);
+    
+    /**
+     * Returns requests by deployment id
+     * @param deploymentId deployment id from process execution context
+     * @param statuses filter by job status
+     * @param queryContext paging and sorting controls
+     * @return requests scheduled for given deployment
+     */
+    List<RequestInfo> getRequestsByDeployment(String deploymentId, List<STATUS> statuses, QueryContext queryContext);
+    
+    /**
+     * Returns requests by process instance id
+     * @param processInstanceId process instance id from process execution context
+     * @param statuses filter by job status
+     * @param queryContext paging and sorting controls
+     * @return requests scheduled for given deployment
+     */
+    List<RequestInfo> getRequestsByProcessInstance(Long processInstanceId, List<STATUS> statuses, QueryContext queryContext);
 
     /**
      * @param id unique id of the request

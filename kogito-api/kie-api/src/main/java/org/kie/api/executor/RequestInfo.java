@@ -85,4 +85,14 @@ public interface RequestInfo {
      * @return serialized bytes of the response data
      */
     byte[] getResponseData();
+    
+    /**
+     * @return optional deployment id in case this job is scheduled from within process context
+     */
+    String getDeploymentId();
+    
+    /**
+     * @return optional process instance id in case this job is scheduled from within process context
+     */
+    Long getProcessInstanceId();
 }
