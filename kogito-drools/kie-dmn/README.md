@@ -91,6 +91,8 @@ according to the FEEL grammar, these are not valid function names, as `and` and 
   * `today()` : returns the current local date
   * `decision table()` : returns a decision table function. Although the spec mentions a decision table 
   function on page 114, it is not implementable as defined. 
+  * `string( mask, p... )` : returns a string formatted as per the mask. See Java String.format() for 
+  details on the mask syntax.
 
 # DMN engine implementation notes
 
