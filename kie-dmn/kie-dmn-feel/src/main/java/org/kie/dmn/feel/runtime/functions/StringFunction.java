@@ -16,10 +16,8 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class StringFunction
         extends BaseFEELFunction {
@@ -35,4 +33,13 @@ public class StringFunction
             return FEELFnResult.ofResult( val.toString() );
         }
     }
+
+    public FEELFnResult<String> invoke(@ParameterName( "mask" ) String mask, @ParameterName("p") Object[] params) {
+        if ( mask == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "mask", "cannot be null"));
+        } else {
+            return FEELFnResult.ofResult( String.format( mask, params ) );
+        }
+    }
+
 }
