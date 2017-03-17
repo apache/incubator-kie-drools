@@ -30,6 +30,6 @@ public interface SessionClock {
      * @return The current time. The unit of the time, depends on
      * the actual clock implementation.
      */
-    public long getCurrentTime();
+    long getCurrentTime();
 
 }
