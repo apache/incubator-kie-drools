@@ -52,7 +52,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MapBackedClassLoader;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.KeyStoreHelper;

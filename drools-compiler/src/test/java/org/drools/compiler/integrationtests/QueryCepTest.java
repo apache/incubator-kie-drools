@@ -17,7 +17,7 @@ package org.drools.compiler.integrationtests;
 
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

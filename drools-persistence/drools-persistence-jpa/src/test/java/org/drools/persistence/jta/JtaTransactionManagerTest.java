@@ -15,8 +15,16 @@
  */
 package org.drools.persistence.jta;
 
-import bitronix.tm.internal.BitronixRollbackException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.UserTransaction;
 
+import bitronix.tm.internal.BitronixRollbackException;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.api.TransactionManager;
@@ -26,36 +34,22 @@ import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.test.util.db.PersistenceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.UserTransaction;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.drools.persistence.util.DroolsPersistenceUtil.setupWithPoolingDataSource;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.drools.persistence.util.DroolsPersistenceUtil.*;
+import static org.junit.Assert.*;
 
 public class JtaTransactionManagerTest {
 
@@ -259,7 +253,8 @@ public class JtaTransactionManagerTest {
         // Initialize drools environment stuff
         Environment env = createEnvironment(context);
         KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
-        StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        KieSession commandKSession = KieServices.get().getStoreServices().newKieSession( kbase, null, env );
+//        StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         commandKSession.getIdentifier(); // initialize CSEM
         PersistableRunner commandService = (PersistableRunner) ((CommandBasedStatefulKnowledgeSession) commandKSession).getRunner();
         JpaPersistenceContextManager jpm = (JpaPersistenceContextManager) getValueOfField("jpm", commandService);

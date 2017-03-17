@@ -59,7 +59,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
@@ -3270,7 +3270,7 @@ public class CepEspTest extends CommonTestMethodBase {
         String drl = "\n" +
                      "import org.drools.compiler.integrationtests.CepEspTest.Event; \n" +
                      "global java.util.List list; \n" +
-                     "global org.drools.core.time.SessionPseudoClock clock; \n" +
+                     "global org.kie.api.time.SessionPseudoClock clock; \n" +
                      "" +
                      "declare Event \n" +
                      " @role( event )\n" +
@@ -3349,7 +3349,7 @@ public class CepEspTest extends CommonTestMethodBase {
         String drl = "\n" +
                      "import org.drools.compiler.integrationtests.CepEspTest.Event; \n" +
                      "global java.util.List list; \n" +
-                     "global org.drools.core.time.SessionPseudoClock clock; \n" +
+                     "global org.kie.api.time.SessionPseudoClock clock; \n" +
                      "" +
                      "declare Event \n" +
                      " @role( event )\n" +

@@ -20,7 +20,7 @@ import org.drools.core.command.ConversationContextManager;
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.runtime.InternalLocalRunner;
-import org.drools.core.time.SessionPseudoClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.drools.core.world.impl.ContextManagerImpl;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.Context;
