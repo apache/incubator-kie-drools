@@ -200,7 +200,16 @@ public class JtaTransactionManager
     }
 
     public boolean begin() {
-        if ( getStatus() == TransactionManager.STATUS_NO_TRANSACTION ) {
+        // RHBPMS-4621 - transaction can be marked as rollback
+        // and still be associated with current thread
+        // See WFLY-4327
+        int status = getStatus();
+        if ( status == TransactionManager.STATUS_ROLLEDBACK ) {
+            logger.debug("Cleanup of transaction that has been rolled back previously");
+            rollback(true);
+            status = getStatus();
+        }
+        if ( status == TransactionManager.STATUS_NO_TRANSACTION ) {
             try {
                 getUt().begin();
                 return true;
@@ -281,6 +290,7 @@ public class JtaTransactionManager
             case Status.STATUS_COMMITTED :
                 return TransactionManager.STATUS_COMMITTED;
             case Status.STATUS_ROLLEDBACK :
+            case Status.STATUS_MARKED_ROLLBACK :
                 return TransactionManager.STATUS_ROLLEDBACK;
             case Status.STATUS_NO_TRANSACTION :
                 return TransactionManager.STATUS_NO_TRANSACTION;
