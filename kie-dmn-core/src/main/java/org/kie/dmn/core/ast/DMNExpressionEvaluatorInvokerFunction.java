@@ -17,6 +17,7 @@
 package org.kie.dmn.core.ast;
 
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -25,6 +26,8 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.kie.dmn.model.v1_1.FunctionDefinition;
@@ -71,7 +74,7 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         DMNResultImpl result = (DMNResultImpl) dmnr;
         // when this evaluator is executed, it should return a "FEEL function" to register in the context
-        DMNExpressionEvaluatorFunction function = new DMNExpressionEvaluatorFunction( name, parameters, evaluator, eventManager, result );
+        DMNExpressionEvaluatorFunction function = new DMNExpressionEvaluatorFunction( name, parameters, functionDefinition, evaluator, eventManager, result );
         return new EvaluatorResultImpl( function, ResultType.SUCCESS );
     }
 
@@ -90,9 +93,11 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
         private final DMNExpressionEvaluator evaluator;
         private final DMNRuntimeEventManager eventManager;
         private final DMNResultImpl resultContext;
+        private final FunctionDefinition functionDefinition;
 
-        public DMNExpressionEvaluatorFunction(String name, List<FormalParameter> parameters, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
+        public DMNExpressionEvaluatorFunction(String name, List<FormalParameter> parameters, FunctionDefinition functionDefinition, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
             super( name );
+            this.functionDefinition = functionDefinition;
             this.parameters = parameters;
             this.evaluator = evaluator;
             this.eventManager = eventManager;
@@ -113,11 +118,18 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
                 if( result.getResultType() == ResultType.SUCCESS ) {
                     return result.getResult();
                 }
-                // TODO: are errors reported in the resultContext already or do we need additional treatment?
                 return null;
             } catch ( Exception e ) {
-                logger.error( "Error invoking expression for node '" + getName() + "'.", e );
-                throw e;
+                MsgUtil.reportMessage( logger,
+                                       DMNMessage.Severity.ERROR,
+                                       functionDefinition,
+                                       resultContext,
+                                       e,
+                                       null,
+                                       Msg.ERR_INVOKING_FUNCTION_ON_NODE,
+                                       getName(),
+                                       getName() );
+                return null;
             } finally {
                 resultContext.setContext( previousContext );
             }

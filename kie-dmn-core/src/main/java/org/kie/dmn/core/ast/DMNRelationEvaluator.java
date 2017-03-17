@@ -24,9 +24,9 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNContextImpl;
-import org.kie.dmn.core.impl.DMNMessageTypeImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.kie.dmn.model.v1_1.Relation;
 import org.slf4j.Logger;
@@ -85,22 +85,29 @@ public class DMNRelationEvaluator
                         if ( er.getResultType() == ResultType.SUCCESS ) {
                             element.put( columns.get( i ), er.getResult() );
                         } else {
-                            DMNMessageTypeImpl message = Msg.createMessage(Msg.ERR_EVAL_ROW_ELEMENT_ON_POSITION_ON_ROW_OF_RELATION, (i + 1), (rowIndex+1), name);
-                            logger.error( message.getMessage() );
-                            result.addMessage(
-                                    DMNMessage.Severity.ERROR,
-                                    message,
-                                    node );
+                            MsgUtil.reportMessage( logger,
+                                                   DMNMessage.Severity.ERROR,
+                                                   node,
+                                                   result,
+                                                   null,
+                                                   null,
+                                                   Msg.ERR_EVAL_ROW_ELEMENT_ON_POSITION_ON_ROW_OF_RELATION,
+                                                   i + 1,
+                                                   rowIndex + 1,
+                                                   name );
                             return new EvaluatorResultImpl( results, ResultType.FAILURE );
                         }
                     } catch ( Exception e ) {
-                        DMNMessageTypeImpl message = Msg.createMessage(Msg.ERR_EVAL_ROW_ELEMENT_ON_POSITION_ON_ROW_OF_RELATION, (i + 1), (rowIndex+1), name);
-                        logger.error( message.getMessage() );
-                        result.addMessage(
-                                DMNMessage.Severity.ERROR,
-                                message,
-                                node,
-                                e );
+                        MsgUtil.reportMessage( logger,
+                                               DMNMessage.Severity.ERROR,
+                                               node,
+                                               result,
+                                               e,
+                                               null,
+                                               Msg.ERR_EVAL_ROW_ELEMENT_ON_POSITION_ON_ROW_OF_RELATION,
+                                               i + 1,
+                                               rowIndex + 1,
+                                               name );
                         return new EvaluatorResultImpl( results, ResultType.FAILURE );
                     }
                 }

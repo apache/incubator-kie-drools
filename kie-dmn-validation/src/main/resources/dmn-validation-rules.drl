@@ -16,17 +16,21 @@
 package org.kie.dmn.validation;
 
 import org.kie.dmn.model.v1_1.*;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.core.impl.DMNMessageImpl;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.validation.ValidationMsg.Severity;
-import org.kie.dmn.feel.parser.feel11.FEELParser
-import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent
+import org.kie.dmn.feel.parser.feel11.FEELParser;
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+
+global org.kie.dmn.validation.MessageReporter reporter;
 
 rule BKM_MISSING_EXPR
 when
     $d : BusinessKnowledgeModel( encapsulatedLogic == null || encapsulatedLogic.expression == null )
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.BKM_MISSING_EXPR, $d ) );
+    reporter.report( DMNMessage.Severity.ERROR, $d, Msg.BKM_MISSING_EXPR );
 end
 
 rule BKM_MISSING_VAR
@@ -34,7 +38,7 @@ when
     $d : BusinessKnowledgeModel()
     not( BusinessKnowledgeModel( /variable{name == $d.name}, this == $d ) )
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.BKM_MISSING_VAR, $d ) );
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.BKM_MISSING_VAR );
 end
 
 rule CONTEXT_DUP_ENTRY
@@ -42,14 +46,14 @@ when
   $ce1 : ContextEntry( parent instanceof Context )
   $ce2 : ContextEntry( variable!.name == $ce1.variable!.name, parent == $ce1.parent, this != $ce1 )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.CONTEXT_DUP_ENTRY, $ce1 ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $ce1 , Msg.CONTEXT_DUP_ENTRY );
 end
 
 rule CONTEXT_ENTRY_NOTYPEREF
 when
   $ce1 : ContextEntry( variable != null, variable.typeRef == null )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.CONTEXT_ENTRY_NOTYPEREF, $ce1 ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $ce1 , Msg.CONTEXT_ENTRY_NOTYPEREF );
 end
 
 rule DRGELEM_NOT_UNIQUE
@@ -57,14 +61,14 @@ when
   $x : DRGElement()
   $y : DRGElement( name == $x.name, this != $x )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DRGELEM_NOT_UNIQUE, $x ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.DRGELEM_NOT_UNIQUE );
 end
 
 rule DECISION_MISSING_EXPR
 when
     $d : Decision( expression == null )
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DECISION_MISSING_EXPR, $d ) );
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.DECISION_MISSING_EXPR );
 end
 
 rule DECISION_MISSING_VAR
@@ -72,56 +76,56 @@ when
     $d : Decision()
     not( Decision( /variable{name == $d.name}, this == $d ) )
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DECISION_MISSING_VAR, $d ) );
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.DECISION_MISSING_VAR );
 end
 
 rule DTABLE_MULTIPLEOUT_NAME
 when
   $oc : OutputClause( parent instanceof DecisionTable, parent.output.size > 1, this.name == null )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DTABLE_MULTIPLEOUT_NAME, $oc ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.DTABLE_MULTIPLEOUT_NAME );
 end
 
 rule DTABLE_MULTIPLEOUT_TYPEREF
 when
   $oc : OutputClause( parent instanceof DecisionTable, parent.output.size > 1, this.typeRef == null )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DTABLE_MULTIPLEOUT_TYPEREF, $oc ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.DTABLE_MULTIPLEOUT_TYPEREF );
 end
 
 rule DTABLE_PRIORITY_MISSING_OUTVALS
 when
   $oc : OutputClause( parent instanceof DecisionTable, parent#DecisionTable.hitPolicy == HitPolicy.PRIORITY, outputValues == null )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DTABLE_PRIORITY_MISSING_OUTVALS, $oc ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.DTABLE_PRIORITY_MISSING_OUTVALS );
 end
 
 rule DTABLE_SINGLEOUT_NONAME
 when
   $oc : OutputClause( parent instanceof DecisionTable, parent.output.size == 1, this.name != null )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DTABLE_SINGLEOUT_NONAME, $oc ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.DTABLE_SINGLEOUT_NONAME );
 end
 
 rule DTABLE_SINGLEOUT_TYPEREF
 when
   $oc : OutputClause( parent instanceof DecisionTable, parent.output.size == 1, this.typeRef != null )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.DTABLE_SINGLEOUT_NOTYPEREF, $oc ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.DTABLE_SINGLEOUT_NOTYPEREF );
 end
 
 rule ELEMREF_NOHASH_p1
 when
   $oc : DMNElementReference( !href.startsWith("#"), !( href contains ":" ) ) 
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ELEMREF_NOHASH, $oc ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH );
 end
 
 rule ELEMREF_NOHASH_p2
 when
   $oc : DMNElementReference( href contains ":", !href.substring(href.indexOf(":")+1).startsWith('#') )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ELEMREF_NOHASH, $oc ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH );
 end
 
 function String rightOfHash(String input) {
@@ -133,7 +137,7 @@ when
   $oc : DMNElementReference( $targetId : rightOfHash( href ) )
   not ( DMNElement( id == $targetId ) ) 
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ELEMREF_MISSING_TARGET, $oc ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_MISSING_TARGET );
 end
 
 rule FORMAL_PARAM_DUPLICATED
@@ -141,7 +145,7 @@ when
     $fp1 : InformationItem( parent instanceof FunctionDefinition )
     $fp2 : InformationItem( name == $fp1.name, parent == $fp1.parent, this != $fp1 )
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.FORMAL_PARAM_DUPLICATED, $fp1 ) );
+    reporter.report( DMNMessage.Severity.ERROR,  $fp1 , Msg.FORMAL_PARAM_DUPLICATED );
 end
 
 rule INPUTDATA_MISSING_VAR
@@ -149,7 +153,7 @@ when
     $id : InputData()
     not( InputData( /variable{name == $id.name}, this == $id ) )
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INPUTDATA_MISSING_VAR, $id ) );
+    reporter.report( DMNMessage.Severity.ERROR,  $id , Msg.INPUTDATA_MISSING_VAR );
 end
 
 // The parameter names in the Binding elements SHALL be a subset of the formalParameters of the calledFunction.
@@ -163,7 +167,7 @@ when
                  $targetNames : collectSet($ts) ;
                  ! $targetNames.containsAll($names) ) 
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INVOCATION_INCONSISTENT_PARAM_NAMES, $inv ) );
+    reporter.report( DMNMessage.Severity.ERROR,  $inv , Msg.INVOCATION_INCONSISTENT_PARAM_NAMES );
 end
 
 rule INVOCATION_MISSING_TARGET
@@ -171,7 +175,7 @@ when
     $inv : Invocation( $targetName : expression#LiteralExpression.text )
     not( DRGElement( name == $targetName ) )  
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INVOCATION_MISSING_TARGET, $inv ) );
+    reporter.report( DMNMessage.Severity.ERROR,  $inv , Msg.INVOCATION_MISSING_TARGET );
 end
 
 rule INVOCATION_WRONG_PARAM_COUNT
@@ -179,7 +183,7 @@ when
     $inv : Invocation( $targetName : expression#LiteralExpression.text )
     BusinessKnowledgeModel( name == $targetName, encapsulatedLogic.formalParameter.size != $inv.binding.size ) 
 then
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.INVOCATION_WRONG_PARAM_COUNT, $inv ) );
+    reporter.report( DMNMessage.Severity.ERROR,  $inv , Msg.INVOCATION_WRONG_PARAM_COUNT );
 end
 
 // This is a lower level complement of ITEMDEF_NOT_UNIQUE below, for detecting duplicate attribute names inside the same ItemDefinition 
@@ -188,7 +192,7 @@ when
   $ic1 : ItemDefinition( parent instanceof ItemDefinition )
   $ic2 : ItemDefinition( name == $ic1.name, parent == $ic1.parent, this != $ic1 )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ITEMCOMP_DUPLICATED, $ic1 ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $ic1 , Msg.ITEMCOMP_DUPLICATED );
 end
 
 rule ITEMDEF_NOT_UNIQUE
@@ -196,7 +200,7 @@ when
   $x : ItemDefinition( !(parent instanceof ItemDefinition) )
   $y : ItemDefinition( !(parent instanceof ItemDefinition), name == $x.name, this != $x )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.ITEMDEF_NOT_UNIQUE, $x ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.ITEMDEF_NOT_UNIQUE );
 end
 
 rule NAME_INVALID
@@ -206,7 +210,7 @@ when
 then
 //    java.util.List<FEELEvent> see = FEELParser.checkVariableName( $ne.getName() );
 //    String customMessage = see.isEmpty()? Msg.NAME_INVALID : see.get(0).getMessage()
-    entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.NAME_INVALID, $ne ) );
+    reporter.report( DMNMessage.Severity.ERROR,  $ne , Msg.NAME_INVALID );
 end
 
 rule RELATION_DUP_COLUMN
@@ -214,21 +218,21 @@ when
   $c1 : InformationItem( parent instanceof Relation )
   $c2 : InformationItem( name == $c1.name, parent == $c1.parent, this != $c1 )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.RELATION_DUP_COLUMN, $c1 ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $c1 , Msg.RELATION_DUP_COLUMN );
 end
 
 rule RELATION_ROW_CELL_NOTLITERAL
 when
   $e : Expression( parent instanceof org.kie.dmn.model.v1_1.List, parent.parent instanceof Relation, ! (this instanceof LiteralExpression) )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.RELATION_ROW_CELL_NOTLITERAL, $e ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $e , Msg.RELATION_ROW_CELL_NOTLITERAL );
 end
 
 rule RELATION_ROW_CELLCOUNTMISMATCH
 when
   $row : org.kie.dmn.model.v1_1.List( parent instanceof Relation, expression.size != parent.column.size )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.RELATION_ROW_CELLCOUNTMISMATCH, $row ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $row , Msg.RELATION_ROW_CELLCOUNTMISMATCH );
 end
 
 rule REQAUTH_NOT_KNOWLEDGESOURCE
@@ -236,35 +240,35 @@ when
   AuthorityRequirement( requiredAuthority != null, $oc: requiredAuthority )
   DMNElement( id == rightOfHash( $oc.href ) , !(this instanceof KnowledgeSource) ) 
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.REQAUTH_NOT_KNOWLEDGESOURCE, $oc ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQAUTH_NOT_KNOWLEDGESOURCE );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p1
 when
   $o: Expression( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NO_FEEL_TYPE );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p2
 when
   $o: InformationItem( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  $o: entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o ) );
+  $o: reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NO_FEEL_TYPE );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p3
 when
   $o: ItemDefinition( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NO_FEEL_TYPE );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p4
 when
   $o: OutputClause( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NO_FEEL_TYPE, $o ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NO_FEEL_TYPE );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p1
@@ -272,7 +276,7 @@ when
   $o: Expression( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NOT_FEEL_NOT_DEF );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p2
@@ -280,7 +284,7 @@ when
   $o: InformationItem( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NOT_FEEL_NOT_DEF );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p3
@@ -288,7 +292,7 @@ when
   $o: ItemDefinition( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NOT_FEEL_NOT_DEF );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p4
@@ -296,13 +300,5 @@ when
   $o: OutputClause( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  entryPoints["PROBLEMS"].insert( new ValidationMsg( Severity.ERROR, Msg.TYPEREF_NOT_FEEL_NOT_DEF, $o ) );
-end
-
-
-rule problems
-when
-  $p: Object() from entry-point "PROBLEMS"
-then
-  // do nothing, but keep this rule for entry point definition // System.err.println($p);
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NOT_FEEL_NOT_DEF );
 end

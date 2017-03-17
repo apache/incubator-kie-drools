@@ -37,6 +37,7 @@ public class DMNLiteralExpressionEvaluator
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult result) {
+        // in case an exception is thrown, the parent node will report it
         Object val = FEEL.newInstance().evaluate( expression, result.getContext().getAll() );
         return new EvaluatorResultImpl( val, ResultType.SUCCESS );
     }

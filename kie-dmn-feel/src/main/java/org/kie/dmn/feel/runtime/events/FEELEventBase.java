@@ -48,6 +48,21 @@ public class FEELEventBase implements FEELEvent {
     }
 
     @Override
+    public int getLine() {
+        return -1;
+    }
+
+    @Override
+    public int getColumn() {
+        return -1;
+    }
+
+    @Override
+    public Object getOffendingSymbol() {
+        return null;
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "{" +
                "severity=" + severity +
