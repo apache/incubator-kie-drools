@@ -21,10 +21,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +39,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ErrorInfo;
-import org.kie.api.executor.ExecutionResults;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.RequestInfo;
 import org.kie.api.executor.STATUS;
@@ -653,6 +649,138 @@ public abstract class BasicExecutorBaseTest {
         executed = executedRequests.get(0);
         assertNotNull(executed);
         assertEquals("low priority", executed.getKey());
+    }
+    
+    @Test
+    public void testProcessContextJobsExecution() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(1);        
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", "low priority");
+        ctxCMD.setData("deploymentId", "not-deployed-here");
+        ctxCMD.setData("processInstanceId", 2L);
+
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", ctxCMD);
+        
+        List<STATUS> statuses = Arrays.asList(STATUS.QUEUED);
+        
+        List<RequestInfo> byDeploymentRequests = executorService.getRequestsByDeployment("not-deployed-here", statuses, new QueryContext());
+        assertEquals(1, byDeploymentRequests.size());
+        
+        List<RequestInfo> byProcessInstanceRequests = executorService.getRequestsByProcessInstance(2L, statuses, new QueryContext());
+        assertEquals(1, byProcessInstanceRequests.size());
+               
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
+        assertEquals(0, inErrorRequests.size());
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
+        assertEquals(1, queuedRequests.size());
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
+        assertEquals(0, executedRequests.size());
+        
+        countDownListener.waitTillCompleted(5000);
+        
+        inErrorRequests = executorService.getInErrorRequests(new QueryContext());
+        assertEquals(0, inErrorRequests.size());
+        queuedRequests = executorService.getQueuedRequests(new QueryContext());
+        assertEquals(1, queuedRequests.size());
+        executedRequests = executorService.getCompletedRequests(new QueryContext());
+        assertEquals(0, executedRequests.size());
+        
+        executorService.cancelRequest(requestId);
+    }
+    
+    @Test
+    public void testJobsQueryWithStatus() throws InterruptedException {
+               
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", "low priority");
+        ctxCMD.setData("deploymentId", "not-deployed-here");
+        ctxCMD.setData("processInstanceId", 2L);
+
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", ctxCMD);
+        
+        List<STATUS> statuses = Arrays.asList(STATUS.QUEUED);
+        
+        List<RequestInfo> byDeploymentRequests = executorService.getRequestsByDeployment("not-deployed-here", statuses, new QueryContext());
+        assertEquals(1, byDeploymentRequests.size());
+        
+        List<RequestInfo> byProcessInstanceRequests = executorService.getRequestsByProcessInstance(2L, statuses, new QueryContext());
+        assertEquals(1, byProcessInstanceRequests.size());
+        
+        List<RequestInfo> byKeyRequests = executorService.getRequestsByBusinessKey("low priority", statuses, new QueryContext());
+        assertEquals(1, byKeyRequests.size());
+        
+        List<RequestInfo> byCommandRequests = executorService.getRequestsByCommand("org.jbpm.executor.commands.PrintOutCommand", statuses, new QueryContext());
+        assertEquals(1, byCommandRequests.size());
+               
+        
+        statuses = Arrays.asList(STATUS.DONE);
+        
+        byDeploymentRequests = executorService.getRequestsByDeployment("not-deployed-here", statuses, new QueryContext());
+        assertEquals(0, byDeploymentRequests.size());
+        
+        byProcessInstanceRequests = executorService.getRequestsByProcessInstance(2L, statuses, new QueryContext());
+        assertEquals(0, byProcessInstanceRequests.size());
+        
+        byKeyRequests = executorService.getRequestsByBusinessKey("low priority", statuses, new QueryContext());
+        assertEquals(0, byKeyRequests.size());
+        
+        byCommandRequests = executorService.getRequestsByCommand("org.jbpm.executor.commands.PrintOutCommand", statuses, new QueryContext());
+        assertEquals(0, byCommandRequests.size());
+        
+        executorService.cancelRequest(requestId);
+    }
+    
+    @Test
+    public void testUpdateRequestData() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(2);
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());        
+
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.test.MissingDataCommand", ctxCMD);
+
+        countDownListener.waitTillCompleted();
+        
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
+        assertEquals(0, executedRequests.size());
+        
+        Map<String, Object> fixedData = new HashMap<>();
+        fixedData.put("amount", 200);
+        
+        executorService.updateRequestData(requestId, fixedData);
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        executedRequests = executorService.getCompletedRequests(new QueryContext());
+        assertEquals(1, executedRequests.size());
+    }
+    
+    @Test
+    public void testUpdateRequestDataFromErrorState() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(1);
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+        ctxCMD.setData("retries", 0);
+
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.test.MissingDataCommand", ctxCMD);
+
+        countDownListener.waitTillCompleted();
+        
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
+        assertEquals(1, inErrorRequests.size());
+        
+        Map<String, Object> fixedData = new HashMap<>();
+        fixedData.put("amount", 200);
+        
+        executorService.updateRequestData(requestId, fixedData);
+        
+        ((RequeueAware)executorService).requeueById(requestId);
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
+        assertEquals(1, executedRequests.size());
     }
 
     private void compareRequestsAreNotSame(RequestInfo firstRequest, RequestInfo secondRequest) {

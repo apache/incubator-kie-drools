@@ -334,6 +334,7 @@
         message varchar(255) null,
         owner varchar(255) null,
         priority int not null,
+        processInstanceId numeric(19,0),
         requestData image null,
         responseData image null,
         retries int not null,

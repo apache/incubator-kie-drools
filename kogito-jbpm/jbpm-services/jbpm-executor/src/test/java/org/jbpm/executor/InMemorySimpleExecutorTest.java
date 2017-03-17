@@ -84,5 +84,17 @@ public class InMemorySimpleExecutorTest extends BasicExecutorBaseTest{
     public void testPrioritizedJobsExecutionInvalidProrities() throws InterruptedException {
         super.testPrioritizedJobsExecutionInvalidProrities();
     }
+
+    @Test
+    @Ignore("It's only for JPA based as it in memory does not care about deployments")
+    public void testProcessContextJobsExecution() throws InterruptedException {
+        super.testProcessContextJobsExecution();
+    }
+
+    @Test
+    @Ignore("It's only for JPA based as it in memory does not support retries")
+    public void testUpdateRequestDataFromErrorState() throws InterruptedException {
+        super.testUpdateRequestDataFromErrorState();
+    }
     
 }

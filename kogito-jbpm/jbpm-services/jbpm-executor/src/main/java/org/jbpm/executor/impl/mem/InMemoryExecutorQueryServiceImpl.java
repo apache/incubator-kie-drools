@@ -235,6 +235,46 @@ public class InMemoryExecutorQueryServiceImpl implements ExecutorQueryService {
         }
         
     }
+    
+    private class GetRequestsByDeploymentId implements Predicate {
+        
+        private String deploymentId;
+        
+        GetRequestsByDeploymentId(String deploymentId) {
+            this.deploymentId = deploymentId;
+        }
+
+        @Override
+        public boolean evaluate(Object object) {
+            if (object instanceof RequestInfo) {
+                if (deploymentId.equals(((RequestInfo)object).getDeploymentId())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+    }
+    
+    private class GetRequestsByProcessInstanceId implements Predicate {
+        
+        private Long processInstanceId;
+        
+        GetRequestsByProcessInstanceId(Long processInstanceId) {
+            this.processInstanceId = processInstanceId;
+        }
+
+        @Override
+        public boolean evaluate(Object object) {
+            if (object instanceof RequestInfo) {
+                if (processInstanceId.equals(((RequestInfo)object).getProcessInstanceId())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+    }    
 
     @Override
     public List<RequestInfo> getPendingRequests(QueryContext queryContext) {
@@ -308,6 +348,38 @@ public class InMemoryExecutorQueryServiceImpl implements ExecutorQueryService {
     @Override
     public RequestInfo getRequestForProcessing(Long requestId) {        
         return storeService.removeRequest(requestId);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByBusinessKey(String businessKey, List<STATUS> statuses, QueryContext queryContext) {
+        Map<Long, RequestInfo> requests = storeService.getRequests();
+        List<RequestInfo> requestsByKey = (List<RequestInfo>) CollectionUtils.select(requests.values(), new GetRequestsByKey(businessKey));
+        requestsByKey = (List<RequestInfo>) CollectionUtils.select(requestsByKey, new GetRequestsByStatus(statuses));
+        return applyPaginition(requestsByKey, queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByCommand(String command, List<STATUS> statuses, QueryContext queryContext) {
+        Map<Long, RequestInfo> requests = storeService.getRequests();
+        List<RequestInfo> requestsByCommand = (List<RequestInfo>) CollectionUtils.select(requests.values(), new GetRequestsByCommand(command));
+        requestsByCommand = (List<RequestInfo>) CollectionUtils.select(requestsByCommand, new GetRequestsByStatus(statuses));
+        return applyPaginition(requestsByCommand, queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByDeployment(String deploymentId, List<STATUS> statuses, QueryContext queryContext) {
+        Map<Long, RequestInfo> requests = storeService.getRequests();
+        List<RequestInfo> requestsByDeployment = (List<RequestInfo>) CollectionUtils.select(requests.values(), new GetRequestsByDeploymentId(deploymentId));
+        requestsByDeployment = (List<RequestInfo>) CollectionUtils.select(requestsByDeployment, new GetRequestsByStatus(statuses));
+        return applyPaginition(requestsByDeployment, queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByProcessInstance(Long processInstanceId, List<STATUS> statuses, QueryContext queryContext) {
+        Map<Long, RequestInfo> requests = storeService.getRequests();
+        List<RequestInfo> requestsByProcessInstance = (List<RequestInfo>) CollectionUtils.select(requests.values(), new GetRequestsByProcessInstanceId(processInstanceId));
+        requestsByProcessInstance = (List<RequestInfo>) CollectionUtils.select(requestsByProcessInstance, new GetRequestsByStatus(statuses));
+        return applyPaginition(requestsByProcessInstance, queryContext);
     }
 
 }

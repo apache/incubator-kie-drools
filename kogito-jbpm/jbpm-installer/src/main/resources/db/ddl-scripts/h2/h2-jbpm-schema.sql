@@ -301,6 +301,7 @@
         message varchar(255),
         owner varchar(255),
         priority integer not null,
+        processInstanceId bigint,
         requestData blob,
         responseData blob,
         retries integer not null,

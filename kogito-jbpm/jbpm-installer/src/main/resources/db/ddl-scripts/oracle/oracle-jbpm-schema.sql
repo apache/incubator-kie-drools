@@ -301,6 +301,7 @@
         message varchar2(255 char),
         owner varchar2(255 char),
         priority number(10,0) not null,
+        processInstanceId number(19,0),
         requestData blob,
         responseData blob,
         retries number(10,0) not null,

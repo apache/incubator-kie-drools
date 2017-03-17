@@ -76,23 +76,47 @@
         </query>
     </named-query>
     
+    <named-query name="GetRequestsByBusinessKeyAndStatus">
+        <query>
+            Select r from RequestInfo as r where r.key = :businessKey and r.status in (:statuses) ORDER BY r.id
+        </query>
+    </named-query>
+    
     <named-query name="GetRequestsByCommand">
         <query>
             Select r from RequestInfo as r where r.commandName = :command ORDER BY r.id
         </query>
     </named-query>
     
+    <named-query name="GetRequestsByCommandAndStatus">
+        <query>
+            Select r from RequestInfo as r where r.commandName = :command and r.status in (:statuses) ORDER BY r.id
+        </query>
+    </named-query>
+    
+    <named-query name="GetRequestsByDeploymentAndStatus">
+        <query>
+            Select r from RequestInfo as r where r.deploymentId = :deploymentId and r.status in (:statuses) ORDER BY r.id
+        </query>
+    </named-query>
+    
+    <named-query name="GetRequestsByProcessInstanceAndStatus">
+        <query>
+            Select r from RequestInfo as r where r.processInstanceId = :processInstanceId and r.status in (:statuses) ORDER BY r.id
+        </query>
+    </named-query>        
+    
     <named-query name="PendingRequestsForProcessing">
         <query>
             Select r from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') 
-            and r.time &lt; :now and (r.owner = :owner or r.owner is null) order by r.priority desc
+            and r.time &lt; :now and (r.owner = :owner or r.owner is null) and (r.deploymentId in (:deploymentId) or r.deploymentId is null) order by r.priority desc
         </query>
     </named-query>
     
         <named-query name="PendingRequestByIdForProcessing">
         <query>
             Select r from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') 
-            and r.id = :requestId
+            and r.id = :requestId and (r.deploymentId in (:deploymentId) or r.deploymentId is null)
         </query>
     </named-query>
     

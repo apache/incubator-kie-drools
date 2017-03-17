@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -581,7 +582,64 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         manager.disposeRuntimeEngine(runtime);
     }
     
-    
+    @Test(timeout=20000)
+    public void testRunProcessWithAsyncHandlerCallbackErrorRetryUpdateJobData() throws Exception {
+        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new AsyncWorkItemHandler(executorService, "org.jbpm.executor.test.MissingDataCommand"));
+                        return handlers;
+                    }
+                    @Override
+                    public List<ProcessEventListener> getProcessEventListeners( RuntimeEngine runtime) {
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(countDownListener);
+                        return listeners;
+                    }
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+        
+        Map<String, Object> params = new HashMap<String, Object>();        
+        
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask", params);
+        Long processInstanceId = processInstance.getId();
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        countDownListener.waitTillCompleted(4000);
+        
+        processInstance = ksession.getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        
+        List<RequestInfo> requests = executorService.getRequestsByProcessInstance(processInstanceId, Arrays.asList(STATUS.RETRYING), new QueryContext());
+        assertEquals(1, requests.size());
+        
+        Long requestId = requests.get(0).getId();
+        
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("amount", 200);
+        executorService.updateRequestData(requestId, variables);
+        
+        countDownListener.waitTillCompleted();
+        processInstance = ksession.getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
+        
+        requests = executorService.getRequestsByProcessInstance(processInstanceId, Arrays.asList(STATUS.DONE), new QueryContext());
+        assertEquals(1, requests.size());
+    }
     
     private ExecutorService buildExecutorService() {        
         emf = Persistence.createEntityManagerFactory("org.jbpm.executor");

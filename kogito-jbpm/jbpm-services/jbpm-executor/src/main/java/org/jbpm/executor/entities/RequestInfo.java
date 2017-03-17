@@ -67,6 +67,7 @@ public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, S
     // owning component of this request, meaning when set only same component can execute it 
     private String owner;
     private int priority = 0;
+    private Long processInstanceId;
     
     @Lob
     @Column(length=2147483647)
@@ -192,6 +193,15 @@ public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, S
     public void setPriority(int priority) {
         this.priority = priority;
     }
+    
+    public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
     @Override
     public String toString() {
@@ -234,6 +244,9 @@ public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, S
         if ((this.deploymentId == null) ? (other.deploymentId != null) : !this.deploymentId.equals(other.deploymentId)) {
             return false;
         }
+        if ((this.processInstanceId == null) ? (other.processInstanceId != null) : !this.processInstanceId.equals(other.processInstanceId)) {
+            return false;
+        }
         if (!Arrays.equals(this.requestData, other.requestData)) {
             return false;
         }
@@ -257,6 +270,7 @@ public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, S
         hash = 79 * hash + (this.key != null ? this.key.hashCode() : 0);
         hash = 79 * hash + (this.owner != null ? this.owner.hashCode() : 0);
         hash = 79 * hash + (this.deploymentId != null ? this.deploymentId.hashCode() : 0);
+        hash = 79 * hash + (this.processInstanceId != null ? this.processInstanceId.hashCode() : 0);
         hash = 79 * hash + Arrays.hashCode(this.requestData);
         hash = 79 * hash + Arrays.hashCode(this.responseData);
         hash = 79 * hash + (this.errorInfo != null ? this.errorInfo.hashCode() : 0);

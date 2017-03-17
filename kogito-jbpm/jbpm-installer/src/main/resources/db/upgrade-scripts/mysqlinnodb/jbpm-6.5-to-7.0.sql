@@ -25,4 +25,6 @@ alter table CaseIdInfo
         add constraint UK_CaseIdInfo_1 unique (caseIdPrefix);
         
 ALTER TABLE NodeInstanceLog ADD COLUMN referenceId bigint;
-ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar(255);        
+ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar(255); 
+
+ALTER TABLE RequestInfo ADD COLUMN processInstanceId bigint;       

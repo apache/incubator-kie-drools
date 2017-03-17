@@ -192,6 +192,30 @@ public class JmsAvaiableJobExecutorTest  {
  
     }
     
+    @Test
+    public void testAsyncAuditProducerNotExistingDeployment() throws Exception {
+        
+        CountDownAsyncJobListener countDownListener = configureListener(1);
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+        ctxCMD.setData("deploymentId", "not-existing");
+        
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", ctxCMD);
+        ut.commit();
+        MessageReceiver receiver = new MessageReceiver();
+        receiver.receiveAndProcess(queue, countDownListener, 3000);
+
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
+        assertEquals(0, inErrorRequests.size());
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
+        assertEquals(1, queuedRequests.size());
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
+        assertEquals(0, executedRequests.size());
+ 
+    }
+    
     private void startHornetQServer() throws Exception {
         jmsServer = new EmbeddedJMS();
         jmsServer.start();
@@ -223,6 +247,12 @@ public class JmsAvaiableJobExecutorTest  {
         
         void receiveAndProcess(Queue queue, CountDownAsyncJobListener countDownListener) throws Exception {
             
+            receiveAndProcess(queue, countDownListener, 100000);
+
+        }
+        
+        void receiveAndProcess(Queue queue, CountDownAsyncJobListener countDownListener, long waitTill) throws Exception {
+            
             Connection qconnetion = factory.createConnection();
             Session qsession = qconnetion.createSession(true, QueueSession.AUTO_ACKNOWLEDGE);
             MessageConsumer consumer = qsession.createConsumer(queue);
@@ -234,7 +264,7 @@ public class JmsAvaiableJobExecutorTest  {
             jmsExecutor.setEventSupport(((ExecutorServiceImpl)executorService).getEventSupport());
             consumer.setMessageListener(jmsExecutor);
             // since we use message listener allow it to complete the async processing
-            countDownListener.waitTillCompleted();
+            countDownListener.waitTillCompleted(waitTill);
             
             consumer.close();            
             qsession.close();            

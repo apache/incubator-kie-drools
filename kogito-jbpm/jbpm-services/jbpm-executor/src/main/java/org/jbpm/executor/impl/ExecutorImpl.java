@@ -16,12 +16,16 @@
 
 package org.jbpm.executor.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -37,6 +41,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.naming.InitialContext;
 
+import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.drools.core.time.TimeUtils;
 import org.jbpm.executor.ExecutorNotStartedException;
 import org.jbpm.executor.entities.RequestInfo;
@@ -44,7 +49,10 @@ import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ExecutorStoreService;
 import org.kie.api.executor.STATUS;
+import org.drools.core.process.instance.WorkItem;
 import org.kie.internal.executor.api.Executor;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -314,6 +322,9 @@ public class ExecutorImpl implements Executor {
         requestInfo.setTime(date);
         requestInfo.setMessage("Ready to execute");
         requestInfo.setDeploymentId((String)ctx.getData("deploymentId"));
+        if (ctx.getData("processInstanceId") != null) {
+            requestInfo.setProcessInstanceId(((Number)ctx.getData("processInstanceId")).longValue());
+        }
         requestInfo.setOwner((String)ctx.getData("owner"));
         if (ctx.getData("retries") != null) {
             requestInfo.setRetries(Integer.valueOf(String.valueOf(ctx.getData("retries"))));
@@ -444,6 +455,83 @@ public class ExecutorImpl implements Executor {
                 }
             }
         }
+    }
+
+    @Override
+    public void updateRequestData(Long requestId, Map<String, Object> data) {
+        logger.debug("About to update request {} data with following {}", requestId, data);
+        
+        RequestInfo request = (RequestInfo) executorStoreService.findRequest(requestId);
+        if (request.getStatus().equals(STATUS.CANCELLED) || request.getStatus().equals(STATUS.DONE) || request.getStatus().equals(STATUS.RUNNING)) {
+            throw new IllegalStateException("Request data can't be updated when request is in status " + request.getStatus());
+        }
+        
+        CommandContext ctx = null;
+        ClassLoader cl = getClassLoader(request.getDeploymentId());
+        try {
+
+            logger.debug("Processing Request Id: {}, status {} command {}", request.getId(), request.getStatus(), request.getCommandName());
+            byte[] reqData = request.getRequestData();
+            if (reqData != null) {
+                ObjectInputStream in = null;
+                try {
+                    in = new ClassLoaderObjectInputStream(cl, new ByteArrayInputStream(reqData));
+                    ctx = (CommandContext) in.readObject();
+                } catch (IOException e) {                        
+                    logger.warn("Exception while serializing context data", e);
+                } finally {
+                    if (in != null) {
+                        in.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Unexpected error when reading request data", e);
+            throw new RuntimeException(e);
+        }
+        
+        if (ctx == null) {
+            ctx = new CommandContext();
+        }
+        
+        WorkItem workItem = (WorkItem) ctx.getData("workItem");
+        if (workItem != null) {
+            logger.debug("Updating work item {} parameters with data {}", workItem, data);
+            for (Entry<String, Object> entry : data.entrySet()) {
+                workItem.setParameter(entry.getKey(), entry.getValue());
+            }
+        } else {
+            logger.debug("Updating request context with data {}", data);
+            for (Entry<String, Object> entry : data.entrySet()) {
+                ctx.setData(entry.getKey(), entry.getValue());
+            }
+        }
+        
+        try {
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            ObjectOutputStream oout = new ObjectOutputStream(bout);
+            oout.writeObject(ctx);
+            request.setRequestData(bout.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to save updated request data", e);
+        }
+        
+        executorStoreService.updateRequest(request);
+        logger.debug("Request {} data updated successfully", requestId);
+    }
+    
+    protected ClassLoader getClassLoader(String deploymentId) {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (deploymentId == null) {
+            return cl;
+        }
+        
+        InternalRuntimeManager manager = ((InternalRuntimeManager)RuntimeManagerRegistry.get().getManager(deploymentId));
+        if (manager != null && manager.getEnvironment().getClassLoader() != null) {            
+            cl = manager.getEnvironment().getClassLoader();
+        }
+        
+        return cl;
     }
 
 

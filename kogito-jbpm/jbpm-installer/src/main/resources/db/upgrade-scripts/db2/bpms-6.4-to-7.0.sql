@@ -25,3 +25,5 @@ create unique index UK_CaseIdInfo_1 on CaseIdInfo (caseIdPrefix);
 
 ALTER TABLE NodeInstanceLog ADD COLUMN referenceId bigint;
 ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar(255);
+
+ALTER TABLE RequestInfo ADD COLUMN processInstanceId bigint;

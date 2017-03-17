@@ -27,8 +27,13 @@ import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.executor.api.ExecutorQueryService;
+import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 
 import javax.persistence.NoResultException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +49,8 @@ import java.util.Map;
 public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 
     private CommandExecutor commandService;
+    
+    private List<STATUS> waitingForExecutionOnly = Arrays.asList(STATUS.QUEUED, STATUS.RETRYING);
    
     public ExecutorQueryServiceImpl(boolean active) {
         QueryManager.get().addNamedQueries("META-INF/Executor-orm.xml");
@@ -231,6 +238,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 	    	params.put("firstResult", 0);
 	    	params.put("maxResults", 1);
 	    	params.put("owner", ExecutorService.EXECUTOR_ID);
+	    	params.put("deploymentId", getDeploymentIds());
 	    	RequestInfo request = null;
 	    	try {
 	    		org.jbpm.shared.services.impl.JpaPersistenceContext ctx = (org.jbpm.shared.services.impl.JpaPersistenceContext) context;
@@ -247,6 +255,8 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 	    	}
 			return request;
 		}
+
+        
     	
     }
     
@@ -264,6 +274,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
         public RequestInfo execute(Context context) {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("requestId", requestId);
+            params.put("deploymentId", getDeploymentIds());
             RequestInfo request = null;
             org.jbpm.shared.services.impl.JpaPersistenceContext ctx = (org.jbpm.shared.services.impl.JpaPersistenceContext) context;
             List<RequestInfo> foundInstance = ctx.queryAndLockWithParametersInTransaction("PendingRequestByIdForProcessing",params, false, List.class);
@@ -380,5 +391,57 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
                 }
             }
         }
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByBusinessKey(String businessKey, List<STATUS> statuses, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("businessKey", businessKey);
+        params.put("statuses", adjust(statuses));
+        applyQueryContext(params, queryContext);
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetRequestsByBusinessKeyAndStatus", params));
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByCommand(String command, List<STATUS> statuses, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("command", command);
+        params.put("statuses", adjust(statuses));
+        applyQueryContext(params, queryContext);
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetRequestsByCommandAndStatus", params));
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByDeployment(String deploymentId, List<STATUS> statuses, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("deploymentId", deploymentId);
+        params.put("statuses", adjust(statuses));
+        applyQueryContext(params, queryContext);
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetRequestsByDeploymentAndStatus", params));
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByProcessInstance(Long processInstanceId, List<STATUS> statuses, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processInstanceId", processInstanceId);
+        params.put("statuses", adjust(statuses));
+        applyQueryContext(params, queryContext);
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetRequestsByProcessInstanceAndStatus", params));
+    }
+    
+    protected List<STATUS> adjust(List<STATUS> statuses) {
+        if (statuses == null || statuses.isEmpty()) {
+            return waitingForExecutionOnly;
+        }
+        
+        return statuses;
+    }
+    
+    protected List<String> getDeploymentIds() {
+        List<String> deployed = new ArrayList<>(RuntimeManagerRegistry.get().getRegisteredIdentifiers());
+        if (deployed.isEmpty()) {
+            deployed.add("");
+        }
+        return deployed;
     }
 }

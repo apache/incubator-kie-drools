@@ -18,6 +18,7 @@ package org.jbpm.executor.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.jbpm.executor.AsynchronousJobListener;
@@ -317,5 +318,31 @@ public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
     
     public List<AsynchronousJobListener> getAsyncJobListeners() {
         return this.eventSupport.getEventListeners();
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByBusinessKey(String businessKey, List<STATUS> statuses, QueryContext queryContext) {
+        return queryService.getRequestsByBusinessKey(businessKey, statuses, queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByCommand(String command, List<STATUS> statuses, QueryContext queryContext) {
+        return queryService.getRequestsByCommand(command, statuses, queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByDeployment(String deploymentId, List<STATUS> statuses, QueryContext queryContext) {
+        return queryService.getRequestsByDeployment(deploymentId, statuses, queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByProcessInstance(Long processInstanceId, List<STATUS> statuses, QueryContext queryContext) {
+        return queryService.getRequestsByProcessInstance(processInstanceId, statuses, queryContext);
+    }
+
+    @Override
+    public void updateRequestData(Long requestId, Map<String, Object> data) {
+        executor.updateRequestData(requestId, data);
+        
     }
 }

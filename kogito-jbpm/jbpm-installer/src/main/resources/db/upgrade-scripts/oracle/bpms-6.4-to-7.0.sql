@@ -30,3 +30,5 @@ create sequence CASE_ROLE_ASSIGN_LOG_ID_SEQ;
 
 ALTER TABLE NodeInstanceLog ADD COLUMN referenceId number(19,0);
 ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar2(255 char);
+
+ALTER TABLE RequestInfo ADD COLUMN processInstanceId number(19,0);
