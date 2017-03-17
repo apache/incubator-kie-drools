@@ -29,8 +29,8 @@
   <taskTypeList id="9">
     <TaTaskType id="10">
       <id>0</id>
-      <code>ISS</code>
-      <title>Improve Sales Software</title>
+      <code>IS</code>
+      <title>Improve Sales</title>
       <baseDuration>52</baseDuration>
       <requiredSkillList id="11">
         <TaSkill reference="4"/>
@@ -38,8 +38,8 @@
     </TaTaskType>
     <TaTaskType id="12">
       <id>1</id>
-      <code>ETD</code>
-      <title>Expand Tax Development</title>
+      <code>ET</code>
+      <title>Expand Tax</title>
       <baseDuration>31</baseDuration>
       <requiredSkillList id="13">
         <TaSkill reference="7"/>
@@ -47,8 +47,8 @@
     </TaTaskType>
     <TaTaskType id="14">
       <id>2</id>
-      <code>SVA</code>
-      <title>Shrink VAT Accounting</title>
+      <code>SV</code>
+      <title>Shrink VAT</title>
       <baseDuration>86</baseDuration>
       <requiredSkillList id="15">
         <TaSkill reference="6"/>
@@ -56,8 +56,8 @@
     </TaTaskType>
     <TaTaskType id="16">
       <id>3</id>
-      <code>ALM</code>
-      <title>Approve Legal Management</title>
+      <code>AL</code>
+      <title>Approve Legal</title>
       <baseDuration>84</baseDuration>
       <requiredSkillList id="17">
         <TaSkill reference="3"/>
@@ -66,8 +66,8 @@
     </TaTaskType>
     <TaTaskType id="18">
       <id>4</id>
-      <code>LCF</code>
-      <title>Localize Cloud Facilities</title>
+      <code>LC</code>
+      <title>Localize Cloud</title>
       <baseDuration>32</baseDuration>
       <requiredSkillList id="19">
         <TaSkill reference="5"/>
@@ -76,8 +76,8 @@
     </TaTaskType>
     <TaTaskType id="20">
       <id>5</id>
-      <code>RMW</code>
-      <title>Review Marketing Writing</title>
+      <code>RM</code>
+      <title>Review Marketing</title>
       <baseDuration>64</baseDuration>
       <requiredSkillList id="21">
         <TaSkill reference="5"/>
@@ -85,8 +85,8 @@
     </TaTaskType>
     <TaTaskType id="22">
       <id>6</id>
-      <code>CIP</code>
-      <title>Clean IT Productization</title>
+      <code>CI</code>
+      <title>Clean IT</title>
       <baseDuration>62</baseDuration>
       <requiredSkillList id="23">
         <TaSkill reference="8"/>
@@ -94,8 +94,8 @@
     </TaTaskType>
     <TaTaskType id="24">
       <id>7</id>
-      <code>MCL</code>
-      <title>Merge Contract Lobbying</title>
+      <code>MC</code>
+      <title>Merge Contract</title>
       <baseDuration>78</baseDuration>
       <requiredSkillList id="25">
         <TaSkill reference="6"/>
@@ -104,8 +104,8 @@
     </TaTaskType>
     <TaTaskType id="26">
       <id>8</id>
-      <code>DFE</code>
-      <title>Double Financial Engineering</title>
+      <code>DF</code>
+      <title>Double Financial</title>
       <baseDuration>33</baseDuration>
       <requiredSkillList id="27">
         <TaSkill reference="5"/>
@@ -113,8 +113,8 @@
     </TaTaskType>
     <TaTaskType id="28">
       <id>9</id>
-      <code>OAR</code>
-      <title>Optimize Advertisement Research</title>
+      <code>OA</code>
+      <title>Optimize Advertisement</title>
       <baseDuration>43</baseDuration>
       <requiredSkillList id="29">
         <TaSkill reference="7"/>
@@ -122,8 +122,8 @@
     </TaTaskType>
     <TaTaskType id="30">
       <id>10</id>
-      <code>ISD</code>
-      <title>Improve Sales Development</title>
+      <code>IT</code>
+      <title>Improve Tax</title>
       <baseDuration>80</baseDuration>
       <requiredSkillList id="31">
         <TaSkill reference="4"/>
@@ -131,8 +131,8 @@
     </TaTaskType>
     <TaTaskType id="32">
       <id>11</id>
-      <code>ETA</code>
-      <title>Expand Tax Accounting</title>
+      <code>EV</code>
+      <title>Expand VAT</title>
       <baseDuration>37</baseDuration>
       <requiredSkillList id="33">
         <TaSkill reference="4"/>
@@ -140,8 +140,8 @@
     </TaTaskType>
     <TaTaskType id="34">
       <id>12</id>
-      <code>SVM</code>
-      <title>Shrink VAT Management</title>
+      <code>SL</code>
+      <title>Shrink Legal</title>
       <baseDuration>48</baseDuration>
       <requiredSkillList id="35">
         <TaSkill reference="5"/>
@@ -150,8 +150,8 @@
     </TaTaskType>
     <TaTaskType id="36">
       <id>13</id>
-      <code>ALF</code>
-      <title>Approve Legal Facilities</title>
+      <code>AC</code>
+      <title>Approve Cloud</title>
       <baseDuration>89</baseDuration>
       <requiredSkillList id="37">
         <TaSkill reference="6"/>
@@ -159,8 +159,8 @@
     </TaTaskType>
     <TaTaskType id="38">
       <id>14</id>
-      <code>LCW</code>
-      <title>Localize Cloud Writing</title>
+      <code>LM</code>
+      <title>Localize Marketing</title>
       <baseDuration>41</baseDuration>
       <requiredSkillList id="39">
         <TaSkill reference="5"/>
@@ -169,8 +169,8 @@
     </TaTaskType>
     <TaTaskType id="40">
       <id>15</id>
-      <code>RMP</code>
-      <title>Review Marketing Productization</title>
+      <code>RI</code>
+      <title>Review IT</title>
       <baseDuration>68</baseDuration>
       <requiredSkillList id="41">
         <TaSkill reference="5"/>
@@ -178,8 +178,8 @@
     </TaTaskType>
     <TaTaskType id="42">
       <id>16</id>
-      <code>CIL</code>
-      <title>Clean IT Lobbying</title>
+      <code>CC</code>
+      <title>Clean Contract</title>
       <baseDuration>34</baseDuration>
       <requiredSkillList id="43">
         <TaSkill reference="6"/>
@@ -188,8 +188,8 @@
     </TaTaskType>
     <TaTaskType id="44">
       <id>17</id>
-      <code>MCE</code>
-      <title>Merge Contract Engineering</title>
+      <code>MF</code>
+      <title>Merge Financial</title>
       <baseDuration>77</baseDuration>
       <requiredSkillList id="45">
         <TaSkill reference="6"/>
@@ -198,8 +198,8 @@
     </TaTaskType>
     <TaTaskType id="46">
       <id>18</id>
-      <code>DFR</code>
-      <title>Double Financial Research</title>
+      <code>DA</code>
+      <title>Double Advertisement</title>
       <baseDuration>83</baseDuration>
       <requiredSkillList id="47">
         <TaSkill reference="7"/>
@@ -207,8 +207,8 @@
     </TaTaskType>
     <TaTaskType id="48">
       <id>19</id>
-      <code>OAS</code>
-      <title>Optimize Advertisement Software</title>
+      <code>OS</code>
+      <title>Optimize Sales</title>
       <baseDuration>81</baseDuration>
       <requiredSkillList id="49">
         <TaSkill reference="6"/>
@@ -217,8 +217,8 @@
     </TaTaskType>
     <TaTaskType id="50">
       <id>20</id>
-      <code>ISA</code>
-      <title>Improve Sales Accounting</title>
+      <code>IV</code>
+      <title>Improve VAT</title>
       <baseDuration>49</baseDuration>
       <requiredSkillList id="51">
         <TaSkill reference="7"/>
@@ -227,8 +227,8 @@
     </TaTaskType>
     <TaTaskType id="52">
       <id>21</id>
-      <code>ETM</code>
-      <title>Expand Tax Management</title>
+      <code>EL</code>
+      <title>Expand Legal</title>
       <baseDuration>71</baseDuration>
       <requiredSkillList id="53">
         <TaSkill reference="6"/>
@@ -237,8 +237,8 @@
     </TaTaskType>
     <TaTaskType id="54">
       <id>22</id>
-      <code>SVF</code>
-      <title>Shrink VAT Facilities</title>
+      <code>SC</code>
+      <title>Shrink Cloud</title>
       <baseDuration>34</baseDuration>
       <requiredSkillList id="55">
         <TaSkill reference="4"/>
@@ -246,8 +246,8 @@
     </TaTaskType>
     <TaTaskType id="56">
       <id>23</id>
-      <code>ALW</code>
-      <title>Approve Legal Writing</title>
+      <code>AM</code>
+      <title>Approve Marketing</title>
       <baseDuration>74</baseDuration>
       <requiredSkillList id="57">
         <TaSkill reference="4"/>
@@ -255,8 +255,8 @@
     </TaTaskType>
     <TaTaskType id="58">
       <id>24</id>
-      <code>LCP</code>
-      <title>Localize Cloud Productization</title>
+      <code>LI</code>
+      <title>Localize IT</title>
       <baseDuration>48</baseDuration>
       <requiredSkillList id="59">
         <TaSkill reference="6"/>
@@ -264,8 +264,8 @@
     </TaTaskType>
     <TaTaskType id="60">
       <id>25</id>
-      <code>RML</code>
-      <title>Review Marketing Lobbying</title>
+      <code>RC</code>
+      <title>Review Contract</title>
       <baseDuration>48</baseDuration>
       <requiredSkillList id="61">
         <TaSkill reference="4"/>
@@ -273,8 +273,8 @@
     </TaTaskType>
     <TaTaskType id="62">
       <id>26</id>
-      <code>CIE</code>
-      <title>Clean IT Engineering</title>
+      <code>CF</code>
+      <title>Clean Financial</title>
       <baseDuration>62</baseDuration>
       <requiredSkillList id="63">
         <TaSkill reference="7"/>
@@ -282,8 +282,8 @@
     </TaTaskType>
     <TaTaskType id="64">
       <id>27</id>
-      <code>MCR</code>
-      <title>Merge Contract Research</title>
+      <code>MA</code>
+      <title>Merge Advertisement</title>
       <baseDuration>81</baseDuration>
       <requiredSkillList id="65">
         <TaSkill reference="5"/>
@@ -291,8 +291,8 @@
     </TaTaskType>
     <TaTaskType id="66">
       <id>28</id>
-      <code>DFS</code>
-      <title>Double Financial Software</title>
+      <code>DS</code>
+      <title>Double Sales</title>
       <baseDuration>65</baseDuration>
       <requiredSkillList id="67">
         <TaSkill reference="4"/>
@@ -300,8 +300,8 @@
     </TaTaskType>
     <TaTaskType id="68">
       <id>29</id>
-      <code>OAD</code>
-      <title>Optimize Advertisement Development</title>
+      <code>OT</code>
+      <title>Optimize Tax</title>
       <baseDuration>59</baseDuration>
       <requiredSkillList id="69">
         <TaSkill reference="8"/>
@@ -309,8 +309,8 @@
     </TaTaskType>
     <TaTaskType id="70">
       <id>30</id>
-      <code>ISM</code>
-      <title>Improve Sales Management</title>
+      <code>IL</code>
+      <title>Improve Legal</title>
       <baseDuration>73</baseDuration>
       <requiredSkillList id="71">
         <TaSkill reference="4"/>
@@ -318,8 +318,8 @@
     </TaTaskType>
     <TaTaskType id="72">
       <id>31</id>
-      <code>ETF</code>
-      <title>Expand Tax Facilities</title>
+      <code>EC</code>
+      <title>Expand Cloud</title>
       <baseDuration>61</baseDuration>
       <requiredSkillList id="73">
         <TaSkill reference="3"/>
@@ -327,8 +327,8 @@
     </TaTaskType>
     <TaTaskType id="74">
       <id>32</id>
-      <code>SVW</code>
-      <title>Shrink VAT Writing</title>
+      <code>SM</code>
+      <title>Shrink Marketing</title>
       <baseDuration>89</baseDuration>
       <requiredSkillList id="75">
         <TaSkill reference="5"/>
@@ -336,8 +336,8 @@
     </TaTaskType>
     <TaTaskType id="76">
       <id>33</id>
-      <code>ALP</code>
-      <title>Approve Legal Productization</title>
+      <code>AI</code>
+      <title>Approve IT</title>
       <baseDuration>82</baseDuration>
       <requiredSkillList id="77">
         <TaSkill reference="5"/>
@@ -345,8 +345,8 @@
     </TaTaskType>
     <TaTaskType id="78">
       <id>34</id>
-      <code>LCL</code>
-      <title>Localize Cloud Lobbying</title>
+      <code>LC1</code>
+      <title>Localize Contract</title>
       <baseDuration>59</baseDuration>
       <requiredSkillList id="79">
         <TaSkill reference="3"/>
@@ -354,8 +354,8 @@
     </TaTaskType>
     <TaTaskType id="80">
       <id>35</id>
-      <code>RME</code>
-      <title>Review Marketing Engineering</title>
+      <code>RF</code>
+      <title>Review Financial</title>
       <baseDuration>42</baseDuration>
       <requiredSkillList id="81">
         <TaSkill reference="6"/>
@@ -364,8 +364,8 @@
     </TaTaskType>
     <TaTaskType id="82">
       <id>36</id>
-      <code>CIR</code>
-      <title>Clean IT Research</title>
+      <code>CA</code>
+      <title>Clean Advertisement</title>
       <baseDuration>39</baseDuration>
       <requiredSkillList id="83">
         <TaSkill reference="7"/>
@@ -373,8 +373,8 @@
     </TaTaskType>
     <TaTaskType id="84">
       <id>37</id>
-      <code>MCS</code>
-      <title>Merge Contract Software</title>
+      <code>MS</code>
+      <title>Merge Sales</title>
       <baseDuration>38</baseDuration>
       <requiredSkillList id="85">
         <TaSkill reference="6"/>
@@ -382,8 +382,8 @@
     </TaTaskType>
     <TaTaskType id="86">
       <id>38</id>
-      <code>DFD</code>
-      <title>Double Financial Development</title>
+      <code>DT</code>
+      <title>Double Tax</title>
       <baseDuration>54</baseDuration>
       <requiredSkillList id="87">
         <TaSkill reference="6"/>
@@ -391,8 +391,8 @@
     </TaTaskType>
     <TaTaskType id="88">
       <id>39</id>
-      <code>OAA</code>
-      <title>Optimize Advertisement Accounting</title>
+      <code>OV</code>
+      <title>Optimize VAT</title>
       <baseDuration>52</baseDuration>
       <requiredSkillList id="89">
         <TaSkill reference="5"/>
@@ -400,8 +400,8 @@
     </TaTaskType>
     <TaTaskType id="90">
       <id>40</id>
-      <code>ISF</code>
-      <title>Improve Sales Facilities</title>
+      <code>IC</code>
+      <title>Improve Cloud</title>
       <baseDuration>84</baseDuration>
       <requiredSkillList id="91">
         <TaSkill reference="4"/>
@@ -410,8 +410,8 @@
     </TaTaskType>
     <TaTaskType id="92">
       <id>41</id>
-      <code>ETW</code>
-      <title>Expand Tax Writing</title>
+      <code>EM</code>
+      <title>Expand Marketing</title>
       <baseDuration>67</baseDuration>
       <requiredSkillList id="93">
         <TaSkill reference="3"/>
@@ -420,8 +420,8 @@
     </TaTaskType>
     <TaTaskType id="94">
       <id>42</id>
-      <code>SVP</code>
-      <title>Shrink VAT Productization</title>
+      <code>SI</code>
+      <title>Shrink IT</title>
       <baseDuration>60</baseDuration>
       <requiredSkillList id="95">
         <TaSkill reference="4"/>
@@ -429,8 +429,8 @@
     </TaTaskType>
     <TaTaskType id="96">
       <id>43</id>
-      <code>ALL</code>
-      <title>Approve Legal Lobbying</title>
+      <code>AC1</code>
+      <title>Approve Contract</title>
       <baseDuration>87</baseDuration>
       <requiredSkillList id="97">
         <TaSkill reference="6"/>
@@ -438,8 +438,8 @@
     </TaTaskType>
     <TaTaskType id="98">
       <id>44</id>
-      <code>LCE</code>
-      <title>Localize Cloud Engineering</title>
+      <code>LF</code>
+      <title>Localize Financial</title>
       <baseDuration>52</baseDuration>
       <requiredSkillList id="99">
         <TaSkill reference="4"/>
@@ -448,8 +448,8 @@
     </TaTaskType>
     <TaTaskType id="100">
       <id>45</id>
-      <code>RMR</code>
-      <title>Review Marketing Research</title>
+      <code>RA</code>
+      <title>Review Advertisement</title>
       <baseDuration>36</baseDuration>
       <requiredSkillList id="101">
         <TaSkill reference="8"/>
@@ -457,8 +457,8 @@
     </TaTaskType>
     <TaTaskType id="102">
       <id>46</id>
-      <code>CIS</code>
-      <title>Clean IT Software</title>
+      <code>CS</code>
+      <title>Clean Sales</title>
       <baseDuration>57</baseDuration>
       <requiredSkillList id="103">
         <TaSkill reference="6"/>
@@ -466,8 +466,8 @@
     </TaTaskType>
     <TaTaskType id="104">
       <id>47</id>
-      <code>MCD</code>
-      <title>Merge Contract Development</title>
+      <code>MT</code>
+      <title>Merge Tax</title>
       <baseDuration>58</baseDuration>
       <requiredSkillList id="105">
         <TaSkill reference="3"/>
@@ -475,8 +475,8 @@
     </TaTaskType>
     <TaTaskType id="106">
       <id>48</id>
-      <code>DFA</code>
-      <title>Double Financial Accounting</title>
+      <code>DV</code>
+      <title>Double VAT</title>
       <baseDuration>55</baseDuration>
       <requiredSkillList id="107">
         <TaSkill reference="5"/>
@@ -484,8 +484,8 @@
     </TaTaskType>
     <TaTaskType id="108">
       <id>49</id>
-      <code>OAM</code>
-      <title>Optimize Advertisement Management</title>
+      <code>OL</code>
+      <title>Optimize Legal</title>
       <baseDuration>38</baseDuration>
       <requiredSkillList id="109">
         <TaSkill reference="4"/>
@@ -494,8 +494,8 @@
     </TaTaskType>
     <TaTaskType id="110">
       <id>50</id>
-      <code>ISW</code>
-      <title>Improve Sales Writing</title>
+      <code>IM</code>
+      <title>Improve Marketing</title>
       <baseDuration>38</baseDuration>
       <requiredSkillList id="111">
         <TaSkill reference="4"/>
@@ -503,8 +503,8 @@
     </TaTaskType>
     <TaTaskType id="112">
       <id>51</id>
-      <code>ETP</code>
-      <title>Expand Tax Productization</title>
+      <code>EI</code>
+      <title>Expand IT</title>
       <baseDuration>57</baseDuration>
       <requiredSkillList id="113">
         <TaSkill reference="8"/>
@@ -512,8 +512,8 @@
     </TaTaskType>
     <TaTaskType id="114">
       <id>52</id>
-      <code>SVL</code>
-      <title>Shrink VAT Lobbying</title>
+      <code>SC1</code>
+      <title>Shrink Contract</title>
       <baseDuration>55</baseDuration>
       <requiredSkillList id="115">
         <TaSkill reference="8"/>
@@ -522,8 +522,8 @@
     </TaTaskType>
     <TaTaskType id="116">
       <id>53</id>
-      <code>ALE</code>
-      <title>Approve Legal Engineering</title>
+      <code>AF</code>
+      <title>Approve Financial</title>
       <baseDuration>66</baseDuration>
       <requiredSkillList id="117">
         <TaSkill reference="3"/>
@@ -531,8 +531,8 @@
     </TaTaskType>
     <TaTaskType id="118">
       <id>54</id>
-      <code>LCR</code>
-      <title>Localize Cloud Research</title>
+      <code>LA</code>
+      <title>Localize Advertisement</title>
       <baseDuration>70</baseDuration>
       <requiredSkillList id="119">
         <TaSkill reference="7"/>
@@ -540,8 +540,8 @@
     </TaTaskType>
     <TaTaskType id="120">
       <id>55</id>
-      <code>RMS</code>
-      <title>Review Marketing Software</title>
+      <code>RS</code>
+      <title>Review Sales</title>
       <baseDuration>59</baseDuration>
       <requiredSkillList id="121">
         <TaSkill reference="8"/>
@@ -549,8 +549,8 @@
     </TaTaskType>
     <TaTaskType id="122">
       <id>56</id>
-      <code>CID</code>
-      <title>Clean IT Development</title>
+      <code>CT</code>
+      <title>Clean Tax</title>
       <baseDuration>53</baseDuration>
       <requiredSkillList id="123">
         <TaSkill reference="8"/>
@@ -559,8 +559,8 @@
     </TaTaskType>
     <TaTaskType id="124">
       <id>57</id>
-      <code>MCA</code>
-      <title>Merge Contract Accounting</title>
+      <code>MV</code>
+      <title>Merge VAT</title>
       <baseDuration>55</baseDuration>
       <requiredSkillList id="125">
         <TaSkill reference="8"/>
@@ -568,8 +568,8 @@
     </TaTaskType>
     <TaTaskType id="126">
       <id>58</id>
-      <code>DFM</code>
-      <title>Double Financial Management</title>
+      <code>DL</code>
+      <title>Double Legal</title>
       <baseDuration>79</baseDuration>
       <requiredSkillList id="127">
         <TaSkill reference="3"/>
@@ -578,8 +578,8 @@
     </TaTaskType>
     <TaTaskType id="128">
       <id>59</id>
-      <code>OAF</code>
-      <title>Optimize Advertisement Facilities</title>
+      <code>OC</code>
+      <title>Optimize Cloud</title>
       <baseDuration>41</baseDuration>
       <requiredSkillList id="129">
         <TaSkill reference="8"/>
@@ -588,8 +588,8 @@
     </TaTaskType>
     <TaTaskType id="130">
       <id>60</id>
-      <code>ISP</code>
-      <title>Improve Sales Productization</title>
+      <code>II</code>
+      <title>Improve IT</title>
       <baseDuration>81</baseDuration>
       <requiredSkillList id="131">
         <TaSkill reference="3"/>
@@ -597,8 +597,8 @@
     </TaTaskType>
     <TaTaskType id="132">
       <id>61</id>
-      <code>ETL</code>
-      <title>Expand Tax Lobbying</title>
+      <code>EC1</code>
+      <title>Expand Contract</title>
       <baseDuration>46</baseDuration>
       <requiredSkillList id="133">
         <TaSkill reference="5"/>
@@ -606,8 +606,8 @@
     </TaTaskType>
     <TaTaskType id="134">
       <id>62</id>
-      <code>SVE</code>
-      <title>Shrink VAT Engineering</title>
+      <code>SF</code>
+      <title>Shrink Financial</title>
       <baseDuration>35</baseDuration>
       <requiredSkillList id="135">
         <TaSkill reference="5"/>
@@ -615,8 +615,8 @@
     </TaTaskType>
     <TaTaskType id="136">
       <id>63</id>
-      <code>ALR</code>
-      <title>Approve Legal Research</title>
+      <code>AA</code>
+      <title>Approve Advertisement</title>
       <baseDuration>88</baseDuration>
       <requiredSkillList id="137">
         <TaSkill reference="4"/>
@@ -625,8 +625,8 @@
     </TaTaskType>
     <TaTaskType id="138">
       <id>64</id>
-      <code>LCS</code>
-      <title>Localize Cloud Software</title>
+      <code>LS</code>
+      <title>Localize Sales</title>
       <baseDuration>72</baseDuration>
       <requiredSkillList id="139">
         <TaSkill reference="7"/>
@@ -634,8 +634,8 @@
     </TaTaskType>
     <TaTaskType id="140">
       <id>65</id>
-      <code>RMD</code>
-      <title>Review Marketing Development</title>
+      <code>RT</code>
+      <title>Review Tax</title>
       <baseDuration>61</baseDuration>
       <requiredSkillList id="141">
         <TaSkill reference="8"/>
@@ -643,8 +643,8 @@
     </TaTaskType>
     <TaTaskType id="142">
       <id>66</id>
-      <code>CIA</code>
-      <title>Clean IT Accounting</title>
+      <code>CV</code>
+      <title>Clean VAT</title>
       <baseDuration>64</baseDuration>
       <requiredSkillList id="143">
         <TaSkill reference="4"/>
@@ -653,8 +653,8 @@
     </TaTaskType>
     <TaTaskType id="144">
       <id>67</id>
-      <code>MCM</code>
-      <title>Merge Contract Management</title>
+      <code>ML</code>
+      <title>Merge Legal</title>
       <baseDuration>71</baseDuration>
       <requiredSkillList id="145">
         <TaSkill reference="4"/>
@@ -662,8 +662,8 @@
     </TaTaskType>
     <TaTaskType id="146">
       <id>68</id>
-      <code>DFF</code>
-      <title>Double Financial Facilities</title>
+      <code>DC</code>
+      <title>Double Cloud</title>
       <baseDuration>84</baseDuration>
       <requiredSkillList id="147">
         <TaSkill reference="8"/>
@@ -671,8 +671,8 @@
     </TaTaskType>
     <TaTaskType id="148">
       <id>69</id>
-      <code>OAW</code>
-      <title>Optimize Advertisement Writing</title>
+      <code>OM</code>
+      <title>Optimize Marketing</title>
       <baseDuration>58</baseDuration>
       <requiredSkillList id="149">
         <TaSkill reference="3"/>
@@ -680,8 +680,8 @@
     </TaTaskType>
     <TaTaskType id="150">
       <id>70</id>
-      <code>ISL</code>
-      <title>Improve Sales Lobbying</title>
+      <code>IC1</code>
+      <title>Improve Contract</title>
       <baseDuration>30</baseDuration>
       <requiredSkillList id="151">
         <TaSkill reference="5"/>
@@ -689,8 +689,8 @@
     </TaTaskType>
     <TaTaskType id="152">
       <id>71</id>
-      <code>ETE</code>
-      <title>Expand Tax Engineering</title>
+      <code>EF</code>
+      <title>Expand Financial</title>
       <baseDuration>79</baseDuration>
       <requiredSkillList id="153">
         <TaSkill reference="3"/>
@@ -698,8 +698,8 @@
     </TaTaskType>
     <TaTaskType id="154">
       <id>72</id>
-      <code>SVR</code>
-      <title>Shrink VAT Research</title>
+      <code>SA</code>
+      <title>Shrink Advertisement</title>
       <baseDuration>69</baseDuration>
       <requiredSkillList id="155">
         <TaSkill reference="5"/>
@@ -707,8 +707,8 @@
     </TaTaskType>
     <TaTaskType id="156">
       <id>73</id>
-      <code>ALS</code>
-      <title>Approve Legal Software</title>
+      <code>AS</code>
+      <title>Approve Sales</title>
       <baseDuration>33</baseDuration>
       <requiredSkillList id="157">
         <TaSkill reference="3"/>
@@ -716,8 +716,8 @@
     </TaTaskType>
     <TaTaskType id="158">
       <id>74</id>
-      <code>LCD</code>
-      <title>Localize Cloud Development</title>
+      <code>LT</code>
+      <title>Localize Tax</title>
       <baseDuration>63</baseDuration>
       <requiredSkillList id="159">
         <TaSkill reference="4"/>
@@ -725,8 +725,8 @@
     </TaTaskType>
     <TaTaskType id="160">
       <id>75</id>
-      <code>RMA</code>
-      <title>Review Marketing Accounting</title>
+      <code>RV</code>
+      <title>Review VAT</title>
       <baseDuration>32</baseDuration>
       <requiredSkillList id="161">
         <TaSkill reference="4"/>
@@ -735,8 +735,8 @@
     </TaTaskType>
     <TaTaskType id="162">
       <id>76</id>
-      <code>CIM</code>
-      <title>Clean IT Management</title>
+      <code>CL</code>
+      <title>Clean Legal</title>
       <baseDuration>34</baseDuration>
       <requiredSkillList id="163">
         <TaSkill reference="6"/>
@@ -745,8 +745,8 @@
     </TaTaskType>
     <TaTaskType id="164">
       <id>77</id>
-      <code>MCF</code>
-      <title>Merge Contract Facilities</title>
+      <code>MC1</code>
+      <title>Merge Cloud</title>
       <baseDuration>66</baseDuration>
       <requiredSkillList id="165">
         <TaSkill reference="6"/>
@@ -754,8 +754,8 @@
     </TaTaskType>
     <TaTaskType id="166">
       <id>78</id>
-      <code>DFW</code>
-      <title>Double Financial Writing</title>
+      <code>DM</code>
+      <title>Double Marketing</title>
       <baseDuration>42</baseDuration>
       <requiredSkillList id="167">
         <TaSkill reference="7"/>
@@ -763,8 +763,8 @@
     </TaTaskType>
     <TaTaskType id="168">
       <id>79</id>
-      <code>OAP</code>
-      <title>Optimize Advertisement Productization</title>
+      <code>OI</code>
+      <title>Optimize IT</title>
       <baseDuration>34</baseDuration>
       <requiredSkillList id="169">
         <TaSkill reference="4"/>
@@ -772,8 +772,8 @@
     </TaTaskType>
     <TaTaskType id="170">
       <id>80</id>
-      <code>ISE</code>
-      <title>Improve Sales Engineering</title>
+      <code>IF</code>
+      <title>Improve Financial</title>
       <baseDuration>51</baseDuration>
       <requiredSkillList id="171">
         <TaSkill reference="8"/>
@@ -782,8 +782,8 @@
     </TaTaskType>
     <TaTaskType id="172">
       <id>81</id>
-      <code>ETR</code>
-      <title>Expand Tax Research</title>
+      <code>EA</code>
+      <title>Expand Advertisement</title>
       <baseDuration>63</baseDuration>
       <requiredSkillList id="173">
         <TaSkill reference="4"/>
@@ -791,8 +791,8 @@
     </TaTaskType>
     <TaTaskType id="174">
       <id>82</id>
-      <code>SVS</code>
-      <title>Shrink VAT Software</title>
+      <code>SS</code>
+      <title>Shrink Sales</title>
       <baseDuration>30</baseDuration>
       <requiredSkillList id="175">
         <TaSkill reference="5"/>
@@ -801,8 +801,8 @@
     </TaTaskType>
     <TaTaskType id="176">
       <id>83</id>
-      <code>ALD</code>
-      <title>Approve Legal Development</title>
+      <code>AT</code>
+      <title>Approve Tax</title>
       <baseDuration>52</baseDuration>
       <requiredSkillList id="177">
         <TaSkill reference="5"/>
@@ -810,8 +810,8 @@
     </TaTaskType>
     <TaTaskType id="178">
       <id>84</id>
-      <code>LCA</code>
-      <title>Localize Cloud Accounting</title>
+      <code>LV</code>
+      <title>Localize VAT</title>
       <baseDuration>87</baseDuration>
       <requiredSkillList id="179">
         <TaSkill reference="4"/>
@@ -819,8 +819,8 @@
     </TaTaskType>
     <TaTaskType id="180">
       <id>85</id>
-      <code>RMM</code>
-      <title>Review Marketing Management</title>
+      <code>RL</code>
+      <title>Review Legal</title>
       <baseDuration>36</baseDuration>
       <requiredSkillList id="181">
         <TaSkill reference="4"/>
@@ -828,8 +828,8 @@
     </TaTaskType>
     <TaTaskType id="182">
       <id>86</id>
-      <code>CIF</code>
-      <title>Clean IT Facilities</title>
+      <code>CC1</code>
+      <title>Clean Cloud</title>
       <baseDuration>36</baseDuration>
       <requiredSkillList id="183">
         <TaSkill reference="8"/>
@@ -837,8 +837,8 @@
     </TaTaskType>
     <TaTaskType id="184">
       <id>87</id>
-      <code>MCW</code>
-      <title>Merge Contract Writing</title>
+      <code>MM</code>
+      <title>Merge Marketing</title>
       <baseDuration>65</baseDuration>
       <requiredSkillList id="185">
         <TaSkill reference="5"/>
@@ -846,8 +846,8 @@
     </TaTaskType>
     <TaTaskType id="186">
       <id>88</id>
-      <code>DFP</code>
-      <title>Double Financial Productization</title>
+      <code>DI</code>
+      <title>Double IT</title>
       <baseDuration>52</baseDuration>
       <requiredSkillList id="187">
         <TaSkill reference="8"/>
@@ -855,8 +855,8 @@
     </TaTaskType>
     <TaTaskType id="188">
       <id>89</id>
-      <code>OAL</code>
-      <title>Optimize Advertisement Lobbying</title>
+      <code>OC1</code>
+      <title>Optimize Contract</title>
       <baseDuration>61</baseDuration>
       <requiredSkillList id="189">
         <TaSkill reference="5"/>
@@ -864,8 +864,8 @@
     </TaTaskType>
     <TaTaskType id="190">
       <id>90</id>
-      <code>ISR</code>
-      <title>Improve Sales Research</title>
+      <code>IA</code>
+      <title>Improve Advertisement</title>
       <baseDuration>59</baseDuration>
       <requiredSkillList id="191">
         <TaSkill reference="7"/>
@@ -873,8 +873,8 @@
     </TaTaskType>
     <TaTaskType id="192">
       <id>91</id>
-      <code>ETS</code>
-      <title>Expand Tax Software</title>
+      <code>ES</code>
+      <title>Expand Sales</title>
       <baseDuration>56</baseDuration>
       <requiredSkillList id="193">
         <TaSkill reference="4"/>
@@ -882,8 +882,8 @@
     </TaTaskType>
     <TaTaskType id="194">
       <id>92</id>
-      <code>SVD</code>
-      <title>Shrink VAT Development</title>
+      <code>ST</code>
+      <title>Shrink Tax</title>
       <baseDuration>41</baseDuration>
       <requiredSkillList id="195">
         <TaSkill reference="4"/>
@@ -891,8 +891,8 @@
     </TaTaskType>
     <TaTaskType id="196">
       <id>93</id>
-      <code>ALA</code>
-      <title>Approve Legal Accounting</title>
+      <code>AV</code>
+      <title>Approve VAT</title>
       <baseDuration>52</baseDuration>
       <requiredSkillList id="197">
         <TaSkill reference="4"/>
@@ -900,8 +900,8 @@
     </TaTaskType>
     <TaTaskType id="198">
       <id>94</id>
-      <code>LCM</code>
-      <title>Localize Cloud Management</title>
+      <code>LL</code>
+      <title>Localize Legal</title>
       <baseDuration>39</baseDuration>
       <requiredSkillList id="199">
         <TaSkill reference="6"/>
@@ -909,8 +909,8 @@
     </TaTaskType>
     <TaTaskType id="200">
       <id>95</id>
-      <code>RMF</code>
-      <title>Review Marketing Facilities</title>
+      <code>RC1</code>
+      <title>Review Cloud</title>
       <baseDuration>68</baseDuration>
       <requiredSkillList id="201">
         <TaSkill reference="4"/>
@@ -918,8 +918,8 @@
     </TaTaskType>
     <TaTaskType id="202">
       <id>96</id>
-      <code>CIW</code>
-      <title>Clean IT Writing</title>
+      <code>CM</code>
+      <title>Clean Marketing</title>
       <baseDuration>79</baseDuration>
       <requiredSkillList id="203">
         <TaSkill reference="7"/>
@@ -927,8 +927,8 @@
     </TaTaskType>
     <TaTaskType id="204">
       <id>97</id>
-      <code>MCP</code>
-      <title>Merge Contract Productization</title>
+      <code>MI</code>
+      <title>Merge IT</title>
       <baseDuration>44</baseDuration>
       <requiredSkillList id="205">
         <TaSkill reference="7"/>
@@ -937,8 +937,8 @@
     </TaTaskType>
     <TaTaskType id="206">
       <id>98</id>
-      <code>DFL</code>
-      <title>Double Financial Lobbying</title>
+      <code>DC1</code>
+      <title>Double Contract</title>
       <baseDuration>49</baseDuration>
       <requiredSkillList id="207">
         <TaSkill reference="6"/>
@@ -946,8 +946,8 @@
     </TaTaskType>
     <TaTaskType id="208">
       <id>99</id>
-      <code>OAE</code>
-      <title>Optimize Advertisement Engineering</title>
+      <code>OF</code>
+      <title>Optimize Financial</title>
       <baseDuration>33</baseDuration>
       <requiredSkillList id="209">
         <TaSkill reference="8"/>
@@ -957,249 +957,249 @@
   <customerList id="210">
     <TaCustomer id="211">
       <id>0</id>
-      <name>Steel Inc US</name>
+      <name>Steel Inc</name>
     </TaCustomer>
     <TaCustomer id="212">
       <id>1</id>
-      <name>Paper Corp UK</name>
+      <name>Paper Corp</name>
     </TaCustomer>
     <TaCustomer id="213">
       <id>2</id>
-      <name>Stone Limited JP</name>
+      <name>Stone Limited</name>
     </TaCustomer>
     <TaCustomer id="214">
       <id>3</id>
-      <name>Wood Express DE</name>
+      <name>Wood Express</name>
     </TaCustomer>
     <TaCustomer id="215">
       <id>4</id>
-      <name>Water Telco FR</name>
+      <name>Water Telco</name>
     </TaCustomer>
     <TaCustomer id="216">
       <id>5</id>
-      <name>Food Mobile BE</name>
+      <name>Food Mobile</name>
     </TaCustomer>
     <TaCustomer id="217">
       <id>6</id>
-      <name>Oil Soft NL</name>
+      <name>Oil Soft</name>
     </TaCustomer>
     <TaCustomer id="218">
       <id>7</id>
-      <name>Car Mart BR</name>
+      <name>Car Mart</name>
     </TaCustomer>
     <TaCustomer id="219">
       <id>8</id>
-      <name>Power Bank IN</name>
+      <name>Power Bank</name>
     </TaCustomer>
     <TaCustomer id="220">
       <id>9</id>
-      <name>Computer Labs ES</name>
+      <name>Computer Labs</name>
     </TaCustomer>
     <TaCustomer id="221">
       <id>10</id>
-      <name>Steel Inc UK</name>
+      <name>Steel Corp</name>
     </TaCustomer>
     <TaCustomer id="222">
       <id>11</id>
-      <name>Paper Corp JP</name>
+      <name>Paper Limited</name>
     </TaCustomer>
     <TaCustomer id="223">
       <id>12</id>
-      <name>Stone Limited DE</name>
+      <name>Stone Express</name>
     </TaCustomer>
     <TaCustomer id="224">
       <id>13</id>
-      <name>Wood Express FR</name>
+      <name>Wood Telco</name>
     </TaCustomer>
     <TaCustomer id="225">
       <id>14</id>
-      <name>Water Telco BE</name>
+      <name>Water Mobile</name>
     </TaCustomer>
     <TaCustomer id="226">
       <id>15</id>
-      <name>Food Mobile NL</name>
+      <name>Food Soft</name>
     </TaCustomer>
     <TaCustomer id="227">
       <id>16</id>
-      <name>Oil Soft BR</name>
+      <name>Oil Mart</name>
     </TaCustomer>
     <TaCustomer id="228">
       <id>17</id>
-      <name>Car Mart IN</name>
+      <name>Car Bank</name>
     </TaCustomer>
     <TaCustomer id="229">
       <id>18</id>
-      <name>Power Bank ES</name>
+      <name>Power Labs</name>
     </TaCustomer>
     <TaCustomer id="230">
       <id>19</id>
-      <name>Computer Labs US</name>
+      <name>Computer Inc</name>
     </TaCustomer>
     <TaCustomer id="231">
       <id>20</id>
-      <name>Steel Inc JP</name>
+      <name>Steel Limited</name>
     </TaCustomer>
     <TaCustomer id="232">
       <id>21</id>
-      <name>Paper Corp DE</name>
+      <name>Paper Express</name>
     </TaCustomer>
     <TaCustomer id="233">
       <id>22</id>
-      <name>Stone Limited FR</name>
+      <name>Stone Telco</name>
     </TaCustomer>
     <TaCustomer id="234">
       <id>23</id>
-      <name>Wood Express BE</name>
+      <name>Wood Mobile</name>
     </TaCustomer>
     <TaCustomer id="235">
       <id>24</id>
-      <name>Water Telco NL</name>
+      <name>Water Soft</name>
     </TaCustomer>
     <TaCustomer id="236">
       <id>25</id>
-      <name>Food Mobile BR</name>
+      <name>Food Mart</name>
     </TaCustomer>
     <TaCustomer id="237">
       <id>26</id>
-      <name>Oil Soft IN</name>
+      <name>Oil Bank</name>
     </TaCustomer>
     <TaCustomer id="238">
       <id>27</id>
-      <name>Car Mart ES</name>
+      <name>Car Labs</name>
     </TaCustomer>
     <TaCustomer id="239">
       <id>28</id>
-      <name>Power Bank US</name>
+      <name>Power Inc</name>
     </TaCustomer>
     <TaCustomer id="240">
       <id>29</id>
-      <name>Computer Labs UK</name>
+      <name>Computer Corp</name>
     </TaCustomer>
     <TaCustomer id="241">
       <id>30</id>
-      <name>Steel Inc DE</name>
+      <name>Steel Express</name>
     </TaCustomer>
     <TaCustomer id="242">
       <id>31</id>
-      <name>Paper Corp FR</name>
+      <name>Paper Telco</name>
     </TaCustomer>
     <TaCustomer id="243">
       <id>32</id>
-      <name>Stone Limited BE</name>
+      <name>Stone Mobile</name>
     </TaCustomer>
     <TaCustomer id="244">
       <id>33</id>
-      <name>Wood Express NL</name>
+      <name>Wood Soft</name>
     </TaCustomer>
     <TaCustomer id="245">
       <id>34</id>
-      <name>Water Telco BR</name>
+      <name>Water Mart</name>
     </TaCustomer>
     <TaCustomer id="246">
       <id>35</id>
-      <name>Food Mobile IN</name>
+      <name>Food Bank</name>
     </TaCustomer>
     <TaCustomer id="247">
       <id>36</id>
-      <name>Oil Soft ES</name>
+      <name>Oil Labs</name>
     </TaCustomer>
     <TaCustomer id="248">
       <id>37</id>
-      <name>Car Mart US</name>
+      <name>Car Inc</name>
     </TaCustomer>
     <TaCustomer id="249">
       <id>38</id>
-      <name>Power Bank UK</name>
+      <name>Power Corp</name>
     </TaCustomer>
     <TaCustomer id="250">
       <id>39</id>
-      <name>Computer Labs JP</name>
+      <name>Computer Limited</name>
     </TaCustomer>
     <TaCustomer id="251">
       <id>40</id>
-      <name>Steel Inc FR</name>
+      <name>Steel Telco</name>
     </TaCustomer>
     <TaCustomer id="252">
       <id>41</id>
-      <name>Paper Corp BE</name>
+      <name>Paper Mobile</name>
     </TaCustomer>
     <TaCustomer id="253">
       <id>42</id>
-      <name>Stone Limited NL</name>
+      <name>Stone Soft</name>
     </TaCustomer>
     <TaCustomer id="254">
       <id>43</id>
-      <name>Wood Express BR</name>
+      <name>Wood Mart</name>
     </TaCustomer>
     <TaCustomer id="255">
       <id>44</id>
-      <name>Water Telco IN</name>
+      <name>Water Bank</name>
     </TaCustomer>
     <TaCustomer id="256">
       <id>45</id>
-      <name>Food Mobile ES</name>
+      <name>Food Labs</name>
     </TaCustomer>
     <TaCustomer id="257">
       <id>46</id>
-      <name>Oil Soft US</name>
+      <name>Oil Inc</name>
     </TaCustomer>
     <TaCustomer id="258">
       <id>47</id>
-      <name>Car Mart UK</name>
+      <name>Car Corp</name>
     </TaCustomer>
     <TaCustomer id="259">
       <id>48</id>
-      <name>Power Bank JP</name>
+      <name>Power Limited</name>
     </TaCustomer>
     <TaCustomer id="260">
       <id>49</id>
-      <name>Computer Labs DE</name>
+      <name>Computer Express</name>
     </TaCustomer>
     <TaCustomer id="261">
       <id>50</id>
-      <name>Steel Inc BE</name>
+      <name>Steel Mobile</name>
     </TaCustomer>
     <TaCustomer id="262">
       <id>51</id>
-      <name>Paper Corp NL</name>
+      <name>Paper Soft</name>
     </TaCustomer>
     <TaCustomer id="263">
       <id>52</id>
-      <name>Stone Limited BR</name>
+      <name>Stone Mart</name>
     </TaCustomer>
     <TaCustomer id="264">
       <id>53</id>
-      <name>Wood Express IN</name>
+      <name>Wood Bank</name>
     </TaCustomer>
     <TaCustomer id="265">
       <id>54</id>
-      <name>Water Telco ES</name>
+      <name>Water Labs</name>
     </TaCustomer>
     <TaCustomer id="266">
       <id>55</id>
-      <name>Food Mobile US</name>
+      <name>Food Inc</name>
     </TaCustomer>
     <TaCustomer id="267">
       <id>56</id>
-      <name>Oil Soft UK</name>
+      <name>Oil Corp</name>
     </TaCustomer>
     <TaCustomer id="268">
       <id>57</id>
-      <name>Car Mart JP</name>
+      <name>Car Limited</name>
     </TaCustomer>
     <TaCustomer id="269">
       <id>58</id>
-      <name>Power Bank DE</name>
+      <name>Power Express</name>
     </TaCustomer>
     <TaCustomer id="270">
       <id>59</id>
-      <name>Computer Labs FR</name>
+      <name>Computer Telco</name>
     </TaCustomer>
   </customerList>
   <employeeList id="271">
     <TaEmployee id="272">
       <id>0</id>
-      <fullName>Amy A. O. Cole</fullName>
+      <fullName>Amy Cole</fullName>
       <skillSet class="linked-hash-set" id="273">
         <TaSkill reference="3"/>
         <TaSkill reference="4"/>
@@ -1450,7 +1450,7 @@
     </TaEmployee>
     <TaEmployee id="275">
       <id>1</id>
-      <fullName>Beth B. P. Fox</fullName>
+      <fullName>Beth Fox</fullName>
       <skillSet class="linked-hash-set" id="276">
         <TaSkill reference="6"/>
         <TaSkill reference="7"/>
@@ -1701,7 +1701,7 @@
     </TaEmployee>
     <TaEmployee id="278">
       <id>2</id>
-      <fullName>Chad C. Q. Green</fullName>
+      <fullName>Chad Green</fullName>
       <skillSet class="linked-hash-set" id="279">
         <TaSkill reference="3"/>
         <TaSkill reference="4"/>
@@ -1951,7 +1951,7 @@
     </TaEmployee>
     <TaEmployee id="281">
       <id>3</id>
-      <fullName>Dan D. R. Jones</fullName>
+      <fullName>Dan Jones</fullName>
       <skillSet class="linked-hash-set" id="282">
         <TaSkill reference="5"/>
         <TaSkill reference="6"/>
@@ -2201,7 +2201,7 @@
     </TaEmployee>
     <TaEmployee id="284">
       <id>4</id>
-      <fullName>Elsa E. S. King</fullName>
+      <fullName>Elsa King</fullName>
       <skillSet class="linked-hash-set" id="285">
         <TaSkill reference="7"/>
         <TaSkill reference="8"/>
@@ -2451,7 +2451,7 @@
     </TaEmployee>
     <TaEmployee id="287">
       <id>5</id>
-      <fullName>Flo F. T. Li</fullName>
+      <fullName>Flo Li</fullName>
       <skillSet class="linked-hash-set" id="288">
         <TaSkill reference="3"/>
         <TaSkill reference="4"/>
@@ -2702,7 +2702,7 @@
     </TaEmployee>
     <TaEmployee id="290">
       <id>6</id>
-      <fullName>Gus G. U. Poe</fullName>
+      <fullName>Gus Poe</fullName>
       <skillSet class="linked-hash-set" id="291">
         <TaSkill reference="6"/>
         <TaSkill reference="7"/>
@@ -2953,7 +2953,7 @@
     </TaEmployee>
     <TaEmployee id="293">
       <id>7</id>
-      <fullName>Hugo H. V. Rye</fullName>
+      <fullName>Hugo Rye</fullName>
       <skillSet class="linked-hash-set" id="294">
         <TaSkill reference="3"/>
         <TaSkill reference="4"/>
@@ -3203,7 +3203,7 @@
     </TaEmployee>
     <TaEmployee id="296">
       <id>8</id>
-      <fullName>Ivy I. W. Smith</fullName>
+      <fullName>Ivy Smith</fullName>
       <skillSet class="linked-hash-set" id="297">
         <TaSkill reference="5"/>
         <TaSkill reference="6"/>
@@ -3453,7 +3453,7 @@
     </TaEmployee>
     <TaEmployee id="299">
       <id>9</id>
-      <fullName>Jay J. X. Watt</fullName>
+      <fullName>Jay Watt</fullName>
       <skillSet class="linked-hash-set" id="300">
         <TaSkill reference="7"/>
         <TaSkill reference="8"/>
@@ -3704,7 +3704,7 @@
     </TaEmployee>
     <TaEmployee id="302">
       <id>10</id>
-      <fullName>Amy A. P. Fox</fullName>
+      <fullName>Amy Fox</fullName>
       <skillSet class="linked-hash-set" id="303">
         <TaSkill reference="4"/>
         <TaSkill reference="5"/>
@@ -3955,7 +3955,7 @@
     </TaEmployee>
     <TaEmployee id="305">
       <id>11</id>
-      <fullName>Beth B. Q. Green</fullName>
+      <fullName>Beth Green</fullName>
       <skillSet class="linked-hash-set" id="306">
         <TaSkill reference="7"/>
         <TaSkill reference="8"/>
@@ -4205,7 +4205,7 @@
     </TaEmployee>
     <TaEmployee id="308">
       <id>12</id>
-      <fullName>Chad C. R. Jones</fullName>
+      <fullName>Chad Jones</fullName>
       <skillSet class="linked-hash-set" id="309">
         <TaSkill reference="3"/>
         <TaSkill reference="4"/>
@@ -4455,7 +4455,7 @@
     </TaEmployee>
     <TaEmployee id="311">
       <id>13</id>
-      <fullName>Dan D. S. King</fullName>
+      <fullName>Dan King</fullName>
       <skillSet class="linked-hash-set" id="312">
         <TaSkill reference="5"/>
         <TaSkill reference="6"/>
@@ -4705,7 +4705,7 @@
     </TaEmployee>
     <TaEmployee id="314">
       <id>14</id>
-      <fullName>Elsa E. T. Li</fullName>
+      <fullName>Elsa Li</fullName>
       <skillSet class="linked-hash-set" id="315">
         <TaSkill reference="7"/>
         <TaSkill reference="8"/>
@@ -4956,7 +4956,7 @@
     </TaEmployee>
     <TaEmployee id="317">
       <id>15</id>
-      <fullName>Flo F. U. Poe</fullName>
+      <fullName>Flo Poe</fullName>
       <skillSet class="linked-hash-set" id="318">
         <TaSkill reference="4"/>
         <TaSkill reference="5"/>
@@ -5206,7 +5206,7 @@
     </TaEmployee>
     <TaEmployee id="320">
       <id>16</id>
-      <fullName>Gus G. V. Rye</fullName>
+      <fullName>Gus Rye</fullName>
       <skillSet class="linked-hash-set" id="321">
         <TaSkill reference="6"/>
         <TaSkill reference="7"/>
@@ -5457,7 +5457,7 @@
     </TaEmployee>
     <TaEmployee id="323">
       <id>17</id>
-      <fullName>Hugo H. W. Smith</fullName>
+      <fullName>Hugo Smith</fullName>
       <skillSet class="linked-hash-set" id="324">
         <TaSkill reference="3"/>
         <TaSkill reference="4"/>
@@ -5708,7 +5708,7 @@
     </TaEmployee>
     <TaEmployee id="326">
       <id>18</id>
-      <fullName>Ivy I. X. Watt</fullName>
+      <fullName>Ivy Watt</fullName>
       <skillSet class="linked-hash-set" id="327">
         <TaSkill reference="6"/>
         <TaSkill reference="7"/>
@@ -5958,7 +5958,7 @@
     </TaEmployee>
     <TaEmployee id="329">
       <id>19</id>
-      <fullName>Jay J. O. Cole</fullName>
+      <fullName>Jay Cole</fullName>
       <skillSet class="linked-hash-set" id="330">
         <TaSkill reference="8"/>
         <TaSkill reference="3"/>

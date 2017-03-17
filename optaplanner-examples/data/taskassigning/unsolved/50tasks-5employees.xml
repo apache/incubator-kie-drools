@@ -25,8 +25,8 @@
   <taskTypeList id="8">
     <TaTaskType id="9">
       <id>0</id>
-      <code>ISS</code>
-      <title>Improve Sales Software</title>
+      <code>IS</code>
+      <title>Improve Sales</title>
       <baseDuration>83</baseDuration>
       <requiredSkillList id="10">
         <TaSkill reference="3"/>
@@ -34,8 +34,8 @@
     </TaTaskType>
     <TaTaskType id="11">
       <id>1</id>
-      <code>ETD</code>
-      <title>Expand Tax Development</title>
+      <code>ET</code>
+      <title>Expand Tax</title>
       <baseDuration>56</baseDuration>
       <requiredSkillList id="12">
         <TaSkill reference="3"/>
@@ -43,8 +43,8 @@
     </TaTaskType>
     <TaTaskType id="13">
       <id>2</id>
-      <code>SVA</code>
-      <title>Shrink VAT Accounting</title>
+      <code>SV</code>
+      <title>Shrink VAT</title>
       <baseDuration>46</baseDuration>
       <requiredSkillList id="14">
         <TaSkill reference="4"/>
@@ -52,8 +52,8 @@
     </TaTaskType>
     <TaTaskType id="15">
       <id>3</id>
-      <code>ALM</code>
-      <title>Approve Legal Management</title>
+      <code>AL</code>
+      <title>Approve Legal</title>
       <baseDuration>53</baseDuration>
       <requiredSkillList id="16">
         <TaSkill reference="5"/>
@@ -61,8 +61,8 @@
     </TaTaskType>
     <TaTaskType id="17">
       <id>4</id>
-      <code>LCF</code>
-      <title>Localize Cloud Facilities</title>
+      <code>LC</code>
+      <title>Localize Cloud</title>
       <baseDuration>47</baseDuration>
       <requiredSkillList id="18">
         <TaSkill reference="4"/>
@@ -70,8 +70,8 @@
     </TaTaskType>
     <TaTaskType id="19">
       <id>5</id>
-      <code>RMW</code>
-      <title>Review Marketing Writing</title>
+      <code>RM</code>
+      <title>Review Marketing</title>
       <baseDuration>48</baseDuration>
       <requiredSkillList id="20">
         <TaSkill reference="5"/>
@@ -79,8 +79,8 @@
     </TaTaskType>
     <TaTaskType id="21">
       <id>6</id>
-      <code>CIP</code>
-      <title>Clean IT Productization</title>
+      <code>CI</code>
+      <title>Clean IT</title>
       <baseDuration>79</baseDuration>
       <requiredSkillList id="22">
         <TaSkill reference="5"/>
@@ -88,8 +88,8 @@
     </TaTaskType>
     <TaTaskType id="23">
       <id>7</id>
-      <code>MCL</code>
-      <title>Merge Contract Lobbying</title>
+      <code>MC</code>
+      <title>Merge Contract</title>
       <baseDuration>33</baseDuration>
       <requiredSkillList id="24">
         <TaSkill reference="5"/>
@@ -98,8 +98,8 @@
     </TaTaskType>
     <TaTaskType id="25">
       <id>8</id>
-      <code>DFE</code>
-      <title>Double Financial Engineering</title>
+      <code>DF</code>
+      <title>Double Financial</title>
       <baseDuration>71</baseDuration>
       <requiredSkillList id="26">
         <TaSkill reference="4"/>
@@ -107,8 +107,8 @@
     </TaTaskType>
     <TaTaskType id="27">
       <id>9</id>
-      <code>OAR</code>
-      <title>Optimize Advertisement Research</title>
+      <code>OA</code>
+      <title>Optimize Advertisement</title>
       <baseDuration>67</baseDuration>
       <requiredSkillList id="28">
         <TaSkill reference="4"/>
@@ -118,49 +118,49 @@
   <customerList id="29">
     <TaCustomer id="30">
       <id>0</id>
-      <name>Steel Inc US</name>
+      <name>Steel Inc</name>
     </TaCustomer>
     <TaCustomer id="31">
       <id>1</id>
-      <name>Paper Corp UK</name>
+      <name>Paper Corp</name>
     </TaCustomer>
     <TaCustomer id="32">
       <id>2</id>
-      <name>Stone Limited JP</name>
+      <name>Stone Limited</name>
     </TaCustomer>
     <TaCustomer id="33">
       <id>3</id>
-      <name>Wood Express DE</name>
+      <name>Wood Express</name>
     </TaCustomer>
     <TaCustomer id="34">
       <id>4</id>
-      <name>Water Telco FR</name>
+      <name>Water Telco</name>
     </TaCustomer>
     <TaCustomer id="35">
       <id>5</id>
-      <name>Food Mobile BE</name>
+      <name>Food Mobile</name>
     </TaCustomer>
     <TaCustomer id="36">
       <id>6</id>
-      <name>Oil Soft NL</name>
+      <name>Oil Soft</name>
     </TaCustomer>
     <TaCustomer id="37">
       <id>7</id>
-      <name>Car Mart BR</name>
+      <name>Car Mart</name>
     </TaCustomer>
     <TaCustomer id="38">
       <id>8</id>
-      <name>Power Bank IN</name>
+      <name>Power Bank</name>
     </TaCustomer>
     <TaCustomer id="39">
       <id>9</id>
-      <name>Computer Labs ES</name>
+      <name>Computer Labs</name>
     </TaCustomer>
   </customerList>
   <employeeList id="40">
     <TaEmployee id="41">
       <id>0</id>
-      <fullName>Amy A. O. Cole</fullName>
+      <fullName>Amy</fullName>
       <skillSet class="linked-hash-set" id="42">
         <TaSkill reference="3"/>
         <TaSkill reference="4"/>
@@ -211,7 +211,7 @@
     </TaEmployee>
     <TaEmployee id="44">
       <id>1</id>
-      <fullName>Beth B. P. Fox</fullName>
+      <fullName>Beth</fullName>
       <skillSet class="linked-hash-set" id="45">
         <TaSkill reference="6"/>
         <TaSkill reference="7"/>
@@ -262,7 +262,7 @@
     </TaEmployee>
     <TaEmployee id="47">
       <id>2</id>
-      <fullName>Chad C. Q. Green</fullName>
+      <fullName>Chad</fullName>
       <skillSet class="linked-hash-set" id="48">
         <TaSkill reference="4"/>
         <TaSkill reference="5"/>
@@ -312,7 +312,7 @@
     </TaEmployee>
     <TaEmployee id="50">
       <id>3</id>
-      <fullName>Dan D. R. Jones</fullName>
+      <fullName>Dan</fullName>
       <skillSet class="linked-hash-set" id="51">
         <TaSkill reference="6"/>
         <TaSkill reference="7"/>
@@ -362,7 +362,7 @@
     </TaEmployee>
     <TaEmployee id="53">
       <id>4</id>
-      <fullName>Elsa E. S. King</fullName>
+      <fullName>Elsa</fullName>
       <skillSet class="linked-hash-set" id="54">
         <TaSkill reference="3"/>
         <TaSkill reference="4"/>

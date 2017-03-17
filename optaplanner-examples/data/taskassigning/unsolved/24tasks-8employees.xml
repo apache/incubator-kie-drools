@@ -29,8 +29,8 @@
   <taskTypeList id="9">
     <TaTaskType id="10">
       <id>0</id>
-      <code>ISS</code>
-      <title>Improve Sales Software</title>
+      <code>IS</code>
+      <title>Improve Sales</title>
       <baseDuration>46</baseDuration>
       <requiredSkillList id="11">
         <TaSkill reference="8"/>
@@ -38,8 +38,8 @@
     </TaTaskType>
     <TaTaskType id="12">
       <id>1</id>
-      <code>ETD</code>
-      <title>Expand Tax Development</title>
+      <code>ET</code>
+      <title>Expand Tax</title>
       <baseDuration>63</baseDuration>
       <requiredSkillList id="13">
         <TaSkill reference="3"/>
@@ -48,8 +48,8 @@
     </TaTaskType>
     <TaTaskType id="14">
       <id>2</id>
-      <code>SVA</code>
-      <title>Shrink VAT Accounting</title>
+      <code>SV</code>
+      <title>Shrink VAT</title>
       <baseDuration>63</baseDuration>
       <requiredSkillList id="15">
         <TaSkill reference="8"/>
@@ -57,8 +57,8 @@
     </TaTaskType>
     <TaTaskType id="16">
       <id>3</id>
-      <code>ALM</code>
-      <title>Approve Legal Management</title>
+      <code>AL</code>
+      <title>Approve Legal</title>
       <baseDuration>40</baseDuration>
       <requiredSkillList id="17">
         <TaSkill reference="6"/>
@@ -68,25 +68,25 @@
   <customerList id="18">
     <TaCustomer id="19">
       <id>0</id>
-      <name>Steel Inc US</name>
+      <name>Steel Inc</name>
     </TaCustomer>
     <TaCustomer id="20">
       <id>1</id>
-      <name>Paper Corp UK</name>
+      <name>Paper Corp</name>
     </TaCustomer>
     <TaCustomer id="21">
       <id>2</id>
-      <name>Stone Limited JP</name>
+      <name>Stone Limited</name>
     </TaCustomer>
     <TaCustomer id="22">
       <id>3</id>
-      <name>Wood Express DE</name>
+      <name>Wood Express</name>
     </TaCustomer>
   </customerList>
   <employeeList id="23">
     <TaEmployee id="24">
       <id>0</id>
-      <fullName>Amy A. O. Cole</fullName>
+      <fullName>Amy</fullName>
       <skillSet class="linked-hash-set" id="25">
         <TaSkill reference="3"/>
         <TaSkill reference="4"/>
@@ -113,7 +113,7 @@
     </TaEmployee>
     <TaEmployee id="27">
       <id>1</id>
-      <fullName>Beth B. P. Fox</fullName>
+      <fullName>Beth</fullName>
       <skillSet class="linked-hash-set" id="28">
         <TaSkill reference="6"/>
         <TaSkill reference="7"/>
@@ -139,7 +139,7 @@
     </TaEmployee>
     <TaEmployee id="30">
       <id>2</id>
-      <fullName>Chad C. Q. Green</fullName>
+      <fullName>Chad</fullName>
       <skillSet class="linked-hash-set" id="31">
         <TaSkill reference="8"/>
         <TaSkill reference="3"/>
@@ -165,7 +165,7 @@
     </TaEmployee>
     <TaEmployee id="33">
       <id>3</id>
-      <fullName>Dan D. R. Jones</fullName>
+      <fullName>Dan</fullName>
       <skillSet class="linked-hash-set" id="34">
         <TaSkill reference="4"/>
         <TaSkill reference="5"/>
@@ -191,7 +191,7 @@
     </TaEmployee>
     <TaEmployee id="36">
       <id>4</id>
-      <fullName>Elsa E. S. King</fullName>
+      <fullName>Elsa</fullName>
       <skillSet class="linked-hash-set" id="37">
         <TaSkill reference="6"/>
         <TaSkill reference="7"/>
@@ -218,7 +218,7 @@
     </TaEmployee>
     <TaEmployee id="39">
       <id>5</id>
-      <fullName>Flo F. T. Li</fullName>
+      <fullName>Flo</fullName>
       <skillSet class="linked-hash-set" id="40">
         <TaSkill reference="3"/>
         <TaSkill reference="4"/>
@@ -244,7 +244,7 @@
     </TaEmployee>
     <TaEmployee id="42">
       <id>6</id>
-      <fullName>Gus G. U. Poe</fullName>
+      <fullName>Gus</fullName>
       <skillSet class="linked-hash-set" id="43">
         <TaSkill reference="5"/>
         <TaSkill reference="6"/>
@@ -271,7 +271,7 @@
     </TaEmployee>
     <TaEmployee id="45">
       <id>7</id>
-      <fullName>Hugo H. V. Rye</fullName>
+      <fullName>Hugo</fullName>
       <skillSet class="linked-hash-set" id="46">
         <TaSkill reference="8"/>
         <TaSkill reference="3"/>

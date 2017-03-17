@@ -78,4 +78,40 @@ public class StringDataGeneratorTest {
         assertEquals("d k p w", generator.generateNextValue());
     }
 
+    @Test
+    public void with4PartsMaximumSizeFor2() {
+        StringDataGenerator generator = new StringDataGenerator();
+        generator.addPart("a", "b", "c", "d");
+        generator.addPart("h", "i", "j", "k");
+        generator.addPart("o", "p", "q", "r");
+        generator.addPart("v", "w", "x", "y");
+        generator.predictMaximumSizeAndReset(9);
+        assertEquals("a v", generator.generateNextValue());
+        assertEquals("b w", generator.generateNextValue());
+        assertEquals("c x", generator.generateNextValue());
+        assertEquals("d y", generator.generateNextValue());
+        assertEquals("a w", generator.generateNextValue());
+        assertEquals("b x", generator.generateNextValue());
+        assertEquals("c y", generator.generateNextValue());
+        assertEquals("d v", generator.generateNextValue());
+    }
+
+    @Test
+    public void with4PartsMaximumSizeFor3() {
+        StringDataGenerator generator = new StringDataGenerator();
+        generator.addPart("a", "b", "c", "d");
+        generator.addPart("h", "i", "j", "k");
+        generator.addPart("o", "p", "q", "r");
+        generator.addPart("v", "w", "x", "y");
+        generator.predictMaximumSizeAndReset((4 * 4) + 3);
+        assertEquals("a o v", generator.generateNextValue());
+        assertEquals("b p w", generator.generateNextValue());
+        assertEquals("c q x", generator.generateNextValue());
+        assertEquals("d r y", generator.generateNextValue());
+        assertEquals("a o w", generator.generateNextValue());
+        assertEquals("b p x", generator.generateNextValue());
+        assertEquals("c q y", generator.generateNextValue());
+        assertEquals("d r v", generator.generateNextValue());
+    }
+
 }

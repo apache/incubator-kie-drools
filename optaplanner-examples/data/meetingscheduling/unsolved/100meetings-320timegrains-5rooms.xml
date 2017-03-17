@@ -3,14 +3,14 @@
   <meetingList id="2">
     <MsMeeting id="3">
       <id>0</id>
-      <topic>Strategize data driven B2B in a nutshell</topic>
+      <topic>Strategize B2B</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="4">
         <MsRequiredAttendance id="5">
           <id>0</id>
           <person id="6">
             <id>9</id>
-            <fullName>Jay J. X. Watt</fullName>
+            <fullName>Jay Watt</fullName>
           </person>
           <meeting reference="3"/>
         </MsRequiredAttendance>
@@ -18,7 +18,7 @@
           <id>1</id>
           <person id="8">
             <id>20</id>
-            <fullName>Amy A. Q. Green</fullName>
+            <fullName>Amy Green</fullName>
           </person>
           <meeting reference="3"/>
         </MsRequiredAttendance>
@@ -28,7 +28,7 @@
           <id>2</id>
           <person id="11">
             <id>5</id>
-            <fullName>Flo F. T. Li</fullName>
+            <fullName>Flo Li</fullName>
           </person>
           <meeting reference="3"/>
         </MsPreferredAttendance>
@@ -36,7 +36,7 @@
           <id>3</id>
           <person id="13">
             <id>8</id>
-            <fullName>Ivy I. W. Smith</fullName>
+            <fullName>Ivy Smith</fullName>
           </person>
           <meeting reference="3"/>
         </MsPreferredAttendance>
@@ -44,7 +44,7 @@
           <id>4</id>
           <person id="15">
             <id>11</id>
-            <fullName>Beth B. Q. Green</fullName>
+            <fullName>Beth Green</fullName>
           </person>
           <meeting reference="3"/>
         </MsPreferredAttendance>
@@ -52,14 +52,14 @@
     </MsMeeting>
     <MsMeeting id="16">
       <id>1</id>
-      <topic>Fast track sales driven e-business in practice</topic>
+      <topic>Fast track e-business</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="17">
         <MsRequiredAttendance id="18">
           <id>5</id>
           <person id="19">
             <id>30</id>
-            <fullName>Amy A. R. Jones</fullName>
+            <fullName>Amy Jones</fullName>
           </person>
           <meeting reference="16"/>
         </MsRequiredAttendance>
@@ -67,7 +67,7 @@
           <id>6</id>
           <person id="21">
             <id>0</id>
-            <fullName>Amy A. O. Cole</fullName>
+            <fullName>Amy Cole</fullName>
           </person>
           <meeting reference="16"/>
         </MsRequiredAttendance>
@@ -77,7 +77,7 @@
           <id>7</id>
           <person id="24">
             <id>22</id>
-            <fullName>Chad C. S. King</fullName>
+            <fullName>Chad King</fullName>
           </person>
           <meeting reference="16"/>
         </MsPreferredAttendance>
@@ -85,7 +85,7 @@
           <id>8</id>
           <person id="26">
             <id>25</id>
-            <fullName>Flo F. V. Rye</fullName>
+            <fullName>Flo Rye</fullName>
           </person>
           <meeting reference="16"/>
         </MsPreferredAttendance>
@@ -93,14 +93,14 @@
     </MsMeeting>
     <MsMeeting id="27">
       <id>2</id>
-      <topic>Cross sell compelling virtualization for dummies</topic>
+      <topic>Cross sell virtualization</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="28">
         <MsRequiredAttendance id="29">
           <id>9</id>
           <person id="30">
             <id>12</id>
-            <fullName>Chad C. R. Jones</fullName>
+            <fullName>Chad Jones</fullName>
           </person>
           <meeting reference="27"/>
         </MsRequiredAttendance>
@@ -108,7 +108,7 @@
           <id>10</id>
           <person id="32">
             <id>2</id>
-            <fullName>Chad C. Q. Green</fullName>
+            <fullName>Chad Green</fullName>
           </person>
           <meeting reference="27"/>
         </MsRequiredAttendance>
@@ -118,7 +118,7 @@
           <id>11</id>
           <person id="35">
             <id>24</id>
-            <fullName>Elsa E. U. Poe</fullName>
+            <fullName>Elsa Poe</fullName>
           </person>
           <meeting reference="27"/>
         </MsPreferredAttendance>
@@ -126,14 +126,14 @@
     </MsMeeting>
     <MsMeeting id="36">
       <id>3</id>
-      <topic>Profitize reusable multitasking in action</topic>
+      <topic>Profitize multitasking</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="37">
         <MsRequiredAttendance id="38">
           <id>12</id>
           <person id="39">
             <id>32</id>
-            <fullName>Chad C. T. Li</fullName>
+            <fullName>Chad Li</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -141,7 +141,7 @@
           <id>13</id>
           <person id="41">
             <id>17</id>
-            <fullName>Hugo H. W. Smith</fullName>
+            <fullName>Hugo Smith</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -149,7 +149,7 @@
           <id>14</id>
           <person id="43">
             <id>33</id>
-            <fullName>Dan D. U. Poe</fullName>
+            <fullName>Dan Poe</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -162,7 +162,7 @@
           <id>16</id>
           <person id="46">
             <id>28</id>
-            <fullName>Ivy I. O. Cole</fullName>
+            <fullName>Ivy Cole</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -175,7 +175,7 @@
           <id>18</id>
           <person id="49">
             <id>29</id>
-            <fullName>Jay J. P. Fox</fullName>
+            <fullName>Jay Fox</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -183,7 +183,7 @@
           <id>19</id>
           <person id="51">
             <id>19</id>
-            <fullName>Jay J. O. Cole</fullName>
+            <fullName>Jay Cole</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -201,7 +201,7 @@
           <id>22</id>
           <person id="55">
             <id>21</id>
-            <fullName>Beth B. R. Jones</fullName>
+            <fullName>Beth Jones</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -209,7 +209,7 @@
           <id>23</id>
           <person id="57">
             <id>7</id>
-            <fullName>Hugo H. V. Rye</fullName>
+            <fullName>Hugo Rye</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -222,7 +222,7 @@
           <id>25</id>
           <person id="60">
             <id>10</id>
-            <fullName>Amy A. P. Fox</fullName>
+            <fullName>Amy Fox</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -240,7 +240,7 @@
           <id>28</id>
           <person id="64">
             <id>26</id>
-            <fullName>Gus G. W. Smith</fullName>
+            <fullName>Gus Smith</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -248,7 +248,7 @@
           <id>29</id>
           <person id="66">
             <id>16</id>
-            <fullName>Gus G. V. Rye</fullName>
+            <fullName>Gus Rye</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -256,7 +256,7 @@
           <id>30</id>
           <person id="68">
             <id>34</id>
-            <fullName>Elsa E. V. Rye</fullName>
+            <fullName>Elsa Rye</fullName>
           </person>
           <meeting reference="36"/>
         </MsRequiredAttendance>
@@ -266,7 +266,7 @@
           <id>31</id>
           <person id="71">
             <id>13</id>
-            <fullName>Dan D. S. King</fullName>
+            <fullName>Dan King</fullName>
           </person>
           <meeting reference="36"/>
         </MsPreferredAttendance>
@@ -274,7 +274,7 @@
           <id>32</id>
           <person id="73">
             <id>3</id>
-            <fullName>Dan D. R. Jones</fullName>
+            <fullName>Dan Jones</fullName>
           </person>
           <meeting reference="36"/>
         </MsPreferredAttendance>
@@ -282,7 +282,7 @@
           <id>33</id>
           <person id="75">
             <id>6</id>
-            <fullName>Gus G. U. Poe</fullName>
+            <fullName>Gus Poe</fullName>
           </person>
           <meeting reference="36"/>
         </MsPreferredAttendance>
@@ -290,7 +290,7 @@
           <id>34</id>
           <person id="77">
             <id>15</id>
-            <fullName>Flo F. U. Poe</fullName>
+            <fullName>Flo Poe</fullName>
           </person>
           <meeting reference="36"/>
         </MsPreferredAttendance>
@@ -298,7 +298,7 @@
           <id>35</id>
           <person id="79">
             <id>18</id>
-            <fullName>Ivy I. X. Watt</fullName>
+            <fullName>Ivy Watt</fullName>
           </person>
           <meeting reference="36"/>
         </MsPreferredAttendance>
@@ -311,7 +311,7 @@
           <id>37</id>
           <person id="82">
             <id>27</id>
-            <fullName>Hugo H. X. Watt</fullName>
+            <fullName>Hugo Watt</fullName>
           </person>
           <meeting reference="36"/>
         </MsPreferredAttendance>
@@ -324,7 +324,7 @@
           <id>39</id>
           <person id="85">
             <id>31</id>
-            <fullName>Beth B. S. King</fullName>
+            <fullName>Beth King</fullName>
           </person>
           <meeting reference="36"/>
         </MsPreferredAttendance>
@@ -342,7 +342,7 @@
     </MsMeeting>
     <MsMeeting id="88">
       <id>4</id>
-      <topic>Transform negotiated one stop shop recipes</topic>
+      <topic>Transform one stop shop</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="89">
         <MsRequiredAttendance id="90">
@@ -410,7 +410,7 @@
     </MsMeeting>
     <MsMeeting id="103">
       <id>5</id>
-      <topic>Engage sustainable braindumps on the web</topic>
+      <topic>Engage braindumps</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="104">
         <MsRequiredAttendance id="105">
@@ -437,7 +437,7 @@
           <id>58</id>
           <person id="110">
             <id>1</id>
-            <fullName>Beth B. P. Fox</fullName>
+            <fullName>Beth Fox</fullName>
           </person>
           <meeting reference="103"/>
         </MsRequiredAttendance>
@@ -455,7 +455,7 @@
           <id>61</id>
           <person id="114">
             <id>23</id>
-            <fullName>Dan D. T. Li</fullName>
+            <fullName>Dan Li</fullName>
           </person>
           <meeting reference="103"/>
         </MsRequiredAttendance>
@@ -495,7 +495,7 @@
     </MsMeeting>
     <MsMeeting id="122">
       <id>6</id>
-      <topic>Downsize laser-focused data mining for decision makers</topic>
+      <topic>Downsize data mining</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="123">
         <MsRequiredAttendance id="124">
@@ -512,7 +512,7 @@
           <id>70</id>
           <person id="127">
             <id>14</id>
-            <fullName>Elsa E. T. Li</fullName>
+            <fullName>Elsa Li</fullName>
           </person>
           <meeting reference="122"/>
         </MsRequiredAttendance>
@@ -572,7 +572,7 @@
           <id>81</id>
           <person id="140">
             <id>4</id>
-            <fullName>Elsa E. S. King</fullName>
+            <fullName>Elsa King</fullName>
           </person>
           <meeting reference="122"/>
         </MsPreferredAttendance>
@@ -580,7 +580,7 @@
     </MsMeeting>
     <MsMeeting id="141">
       <id>7</id>
-      <topic>Ramp up flexible policies on the whiteboard</topic>
+      <topic>Ramp up policies</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="142">
         <MsRequiredAttendance id="143">
@@ -598,7 +598,7 @@
     </MsMeeting>
     <MsMeeting id="146">
       <id>8</id>
-      <topic>On board real-time synergies out of the box</topic>
+      <topic>On board synergies</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="147">
         <MsRequiredAttendance id="148">
@@ -657,7 +657,7 @@
     </MsMeeting>
     <MsMeeting id="159">
       <id>9</id>
-      <topic>Reinvigorate targeted user experience in the new economy</topic>
+      <topic>Reinvigorate user experience</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="160">
         <MsRequiredAttendance id="161">
@@ -746,7 +746,7 @@
     </MsMeeting>
     <MsMeeting id="178">
       <id>10</id>
-      <topic>Strategize data driven e-business in practice</topic>
+      <topic>Strategize e-business</topic>
       <durationInGrains>2</durationInGrains>
       <requiredAttendanceList id="179">
         <MsRequiredAttendance id="180">
@@ -814,7 +814,7 @@
     </MsMeeting>
     <MsMeeting id="193">
       <id>11</id>
-      <topic>Fast track sales driven virtualization for dummies</topic>
+      <topic>Fast track virtualization</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="194">
         <MsRequiredAttendance id="195">
@@ -973,7 +973,7 @@
     </MsMeeting>
     <MsMeeting id="226">
       <id>12</id>
-      <topic>Cross sell compelling multitasking in action</topic>
+      <topic>Cross sell multitasking</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="227">
         <MsRequiredAttendance id="228">
@@ -1002,7 +1002,7 @@
     </MsMeeting>
     <MsMeeting id="233">
       <id>13</id>
-      <topic>Profitize reusable one stop shop recipes</topic>
+      <topic>Profitize one stop shop</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="234">
         <MsRequiredAttendance id="235">
@@ -1041,7 +1041,7 @@
     </MsMeeting>
     <MsMeeting id="242">
       <id>14</id>
-      <topic>Transform negotiated braindumps on the web</topic>
+      <topic>Transform braindumps</topic>
       <durationInGrains>6</durationInGrains>
       <requiredAttendanceList id="243">
         <MsRequiredAttendance id="244">
@@ -1090,7 +1090,7 @@
     </MsMeeting>
     <MsMeeting id="253">
       <id>15</id>
-      <topic>Engage sustainable data mining for decision makers</topic>
+      <topic>Engage data mining</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="254">
         <MsRequiredAttendance id="255">
@@ -1139,7 +1139,7 @@
     </MsMeeting>
     <MsMeeting id="264">
       <id>16</id>
-      <topic>Downsize laser-focused policies on the whiteboard</topic>
+      <topic>Downsize policies</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="265">
         <MsRequiredAttendance id="266">
@@ -1173,7 +1173,7 @@
     </MsMeeting>
     <MsMeeting id="272">
       <id>17</id>
-      <topic>Ramp up flexible synergies out of the box</topic>
+      <topic>Ramp up synergies</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="273">
         <MsRequiredAttendance id="274">
@@ -1207,7 +1207,7 @@
     </MsMeeting>
     <MsMeeting id="280">
       <id>18</id>
-      <topic>On board real-time user experience in the new economy</topic>
+      <topic>On board user experience</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="281">
         <MsRequiredAttendance id="282">
@@ -1256,7 +1256,7 @@
     </MsMeeting>
     <MsMeeting id="291">
       <id>19</id>
-      <topic>Reinvigorate targeted B2B in a nutshell</topic>
+      <topic>Reinvigorate B2B</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="292">
         <MsRequiredAttendance id="293">
@@ -1295,7 +1295,7 @@
     </MsMeeting>
     <MsMeeting id="300">
       <id>20</id>
-      <topic>Strategize data driven virtualization for dummies</topic>
+      <topic>Strategize virtualization</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="301">
         <MsRequiredAttendance id="302">
@@ -1384,7 +1384,7 @@
     </MsMeeting>
     <MsMeeting id="319">
       <id>21</id>
-      <topic>Fast track sales driven multitasking in action</topic>
+      <topic>Fast track multitasking</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="320">
         <MsRequiredAttendance id="321">
@@ -1473,7 +1473,7 @@
     </MsMeeting>
     <MsMeeting id="338">
       <id>22</id>
-      <topic>Cross sell compelling one stop shop recipes</topic>
+      <topic>Cross sell one stop shop</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="339">
         <MsRequiredAttendance id="340">
@@ -1632,7 +1632,7 @@
     </MsMeeting>
     <MsMeeting id="371">
       <id>23</id>
-      <topic>Profitize reusable braindumps on the web</topic>
+      <topic>Profitize braindumps</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="372">
         <MsRequiredAttendance id="373">
@@ -1650,7 +1650,7 @@
     </MsMeeting>
     <MsMeeting id="376">
       <id>24</id>
-      <topic>Transform negotiated data mining for decision makers</topic>
+      <topic>Transform data mining</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="377">
         <MsRequiredAttendance id="378">
@@ -1679,7 +1679,7 @@
     </MsMeeting>
     <MsMeeting id="383">
       <id>25</id>
-      <topic>Engage sustainable policies on the whiteboard</topic>
+      <topic>Engage policies</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="384">
         <MsRequiredAttendance id="385">
@@ -1758,7 +1758,7 @@
     </MsMeeting>
     <MsMeeting id="400">
       <id>26</id>
-      <topic>Downsize laser-focused synergies out of the box</topic>
+      <topic>Downsize synergies</topic>
       <durationInGrains>6</durationInGrains>
       <requiredAttendanceList id="401">
         <MsRequiredAttendance id="402">
@@ -1782,7 +1782,7 @@
     </MsMeeting>
     <MsMeeting id="406">
       <id>27</id>
-      <topic>Ramp up flexible user experience in the new economy</topic>
+      <topic>Ramp up user experience</topic>
       <durationInGrains>6</durationInGrains>
       <requiredAttendanceList id="407">
         <MsRequiredAttendance id="408">
@@ -1841,7 +1841,7 @@
     </MsMeeting>
     <MsMeeting id="419">
       <id>28</id>
-      <topic>On board real-time B2B in a nutshell</topic>
+      <topic>On board B2B</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="420">
         <MsRequiredAttendance id="421">
@@ -1859,7 +1859,7 @@
     </MsMeeting>
     <MsMeeting id="424">
       <id>29</id>
-      <topic>Reinvigorate targeted e-business in practice</topic>
+      <topic>Reinvigorate e-business</topic>
       <durationInGrains>2</durationInGrains>
       <requiredAttendanceList id="425">
         <MsRequiredAttendance id="426">
@@ -1908,7 +1908,7 @@
     </MsMeeting>
     <MsMeeting id="435">
       <id>30</id>
-      <topic>Strategize data driven multitasking in action</topic>
+      <topic>Strategize multitasking</topic>
       <durationInGrains>6</durationInGrains>
       <requiredAttendanceList id="436">
         <MsRequiredAttendance id="437">
@@ -1997,7 +1997,7 @@
     </MsMeeting>
     <MsMeeting id="454">
       <id>31</id>
-      <topic>Fast track sales driven one stop shop recipes</topic>
+      <topic>Fast track one stop shop</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="455">
         <MsRequiredAttendance id="456">
@@ -2026,7 +2026,7 @@
     </MsMeeting>
     <MsMeeting id="461">
       <id>32</id>
-      <topic>Cross sell compelling braindumps on the web</topic>
+      <topic>Cross sell braindumps</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="462">
         <MsRequiredAttendance id="463">
@@ -2075,7 +2075,7 @@
     </MsMeeting>
     <MsMeeting id="472">
       <id>33</id>
-      <topic>Profitize reusable data mining for decision makers</topic>
+      <topic>Profitize data mining</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="473">
         <MsRequiredAttendance id="474">
@@ -2164,7 +2164,7 @@
     </MsMeeting>
     <MsMeeting id="491">
       <id>34</id>
-      <topic>Transform negotiated policies on the whiteboard</topic>
+      <topic>Transform policies</topic>
       <durationInGrains>6</durationInGrains>
       <requiredAttendanceList id="492">
         <MsRequiredAttendance id="493">
@@ -2323,7 +2323,7 @@
     </MsMeeting>
     <MsMeeting id="524">
       <id>35</id>
-      <topic>Engage sustainable synergies out of the box</topic>
+      <topic>Engage synergies</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="525">
         <MsRequiredAttendance id="526">
@@ -2392,7 +2392,7 @@
     </MsMeeting>
     <MsMeeting id="539">
       <id>36</id>
-      <topic>Downsize laser-focused user experience in the new economy</topic>
+      <topic>Downsize user experience</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="540">
         <MsRequiredAttendance id="541">
@@ -2420,7 +2420,7 @@
     </MsMeeting>
     <MsMeeting id="546">
       <id>37</id>
-      <topic>Ramp up flexible B2B in a nutshell</topic>
+      <topic>Ramp up B2B</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="547">
         <MsRequiredAttendance id="548">
@@ -2438,7 +2438,7 @@
     </MsMeeting>
     <MsMeeting id="551">
       <id>38</id>
-      <topic>On board real-time e-business in practice</topic>
+      <topic>On board e-business</topic>
       <durationInGrains>6</durationInGrains>
       <requiredAttendanceList id="552">
         <MsRequiredAttendance id="553">
@@ -2527,7 +2527,7 @@
     </MsMeeting>
     <MsMeeting id="570">
       <id>39</id>
-      <topic>Reinvigorate targeted virtualization for dummies</topic>
+      <topic>Reinvigorate virtualization</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="571">
         <MsRequiredAttendance id="572">
@@ -2636,7 +2636,7 @@
     </MsMeeting>
     <MsMeeting id="593">
       <id>40</id>
-      <topic>Strategize data driven one stop shop recipes</topic>
+      <topic>Strategize one stop shop</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="594">
         <MsRequiredAttendance id="595">
@@ -2670,7 +2670,7 @@
     </MsMeeting>
     <MsMeeting id="601">
       <id>41</id>
-      <topic>Fast track sales driven braindumps on the web</topic>
+      <topic>Fast track braindumps</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="602">
         <MsRequiredAttendance id="603">
@@ -2719,7 +2719,7 @@
     </MsMeeting>
     <MsMeeting id="612">
       <id>42</id>
-      <topic>Cross sell compelling data mining for decision makers</topic>
+      <topic>Cross sell data mining</topic>
       <durationInGrains>6</durationInGrains>
       <requiredAttendanceList id="613">
         <MsRequiredAttendance id="614">
@@ -2828,7 +2828,7 @@
     </MsMeeting>
     <MsMeeting id="635">
       <id>43</id>
-      <topic>Profitize reusable policies on the whiteboard</topic>
+      <topic>Profitize policies</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="636">
         <MsRequiredAttendance id="637">
@@ -2907,7 +2907,7 @@
     </MsMeeting>
     <MsMeeting id="652">
       <id>44</id>
-      <topic>Transform negotiated synergies out of the box</topic>
+      <topic>Transform synergies</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="653">
         <MsRequiredAttendance id="654">
@@ -2985,7 +2985,7 @@
     </MsMeeting>
     <MsMeeting id="669">
       <id>45</id>
-      <topic>Engage sustainable user experience in the new economy</topic>
+      <topic>Engage user experience</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="670">
         <MsRequiredAttendance id="671">
@@ -3094,7 +3094,7 @@
     </MsMeeting>
     <MsMeeting id="692">
       <id>46</id>
-      <topic>Downsize laser-focused B2B in a nutshell</topic>
+      <topic>Downsize B2B</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="693">
         <MsRequiredAttendance id="694">
@@ -3112,7 +3112,7 @@
     </MsMeeting>
     <MsMeeting id="697">
       <id>47</id>
-      <topic>Ramp up flexible e-business in practice</topic>
+      <topic>Ramp up e-business</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="698">
         <MsRequiredAttendance id="699">
@@ -3151,7 +3151,7 @@
     </MsMeeting>
     <MsMeeting id="706">
       <id>48</id>
-      <topic>On board real-time virtualization for dummies</topic>
+      <topic>On board virtualization</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="707">
         <MsRequiredAttendance id="708">
@@ -3210,7 +3210,7 @@
     </MsMeeting>
     <MsMeeting id="719">
       <id>49</id>
-      <topic>Reinvigorate targeted multitasking in action</topic>
+      <topic>Reinvigorate multitasking</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="720">
         <MsRequiredAttendance id="721">
@@ -3243,7 +3243,7 @@
     </MsMeeting>
     <MsMeeting id="727">
       <id>50</id>
-      <topic>Strategize data driven braindumps on the web</topic>
+      <topic>Strategize braindumps</topic>
       <durationInGrains>2</durationInGrains>
       <requiredAttendanceList id="728">
         <MsRequiredAttendance id="729">
@@ -3272,7 +3272,7 @@
     </MsMeeting>
     <MsMeeting id="734">
       <id>51</id>
-      <topic>Fast track sales driven data mining for decision makers</topic>
+      <topic>Fast track data mining</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="735">
         <MsRequiredAttendance id="736">
@@ -3321,7 +3321,7 @@
     </MsMeeting>
     <MsMeeting id="745">
       <id>52</id>
-      <topic>Cross sell compelling policies on the whiteboard</topic>
+      <topic>Cross sell policies</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="746">
         <MsRequiredAttendance id="747">
@@ -3410,7 +3410,7 @@
     </MsMeeting>
     <MsMeeting id="764">
       <id>53</id>
-      <topic>Profitize reusable synergies out of the box</topic>
+      <topic>Profitize synergies</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="765">
         <MsRequiredAttendance id="766">
@@ -3439,7 +3439,7 @@
     </MsMeeting>
     <MsMeeting id="771">
       <id>54</id>
-      <topic>Transform negotiated user experience in the new economy</topic>
+      <topic>Transform user experience</topic>
       <durationInGrains>6</durationInGrains>
       <requiredAttendanceList id="772">
         <MsRequiredAttendance id="773">
@@ -3498,7 +3498,7 @@
     </MsMeeting>
     <MsMeeting id="784">
       <id>55</id>
-      <topic>Engage sustainable B2B in a nutshell</topic>
+      <topic>Engage B2B</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="785">
         <MsRequiredAttendance id="786">
@@ -3516,7 +3516,7 @@
     </MsMeeting>
     <MsMeeting id="789">
       <id>56</id>
-      <topic>Downsize laser-focused e-business in practice</topic>
+      <topic>Downsize e-business</topic>
       <durationInGrains>2</durationInGrains>
       <requiredAttendanceList id="790">
         <MsRequiredAttendance id="791">
@@ -3574,7 +3574,7 @@
     </MsMeeting>
     <MsMeeting id="802">
       <id>57</id>
-      <topic>Ramp up flexible virtualization for dummies</topic>
+      <topic>Ramp up virtualization</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="803">
         <MsRequiredAttendance id="804">
@@ -3623,7 +3623,7 @@
     </MsMeeting>
     <MsMeeting id="813">
       <id>58</id>
-      <topic>On board real-time multitasking in action</topic>
+      <topic>On board multitasking</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="814">
         <MsRequiredAttendance id="815">
@@ -3641,7 +3641,7 @@
     </MsMeeting>
     <MsMeeting id="818">
       <id>59</id>
-      <topic>Reinvigorate targeted one stop shop recipes</topic>
+      <topic>Reinvigorate one stop shop</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="819">
         <MsRequiredAttendance id="820">
@@ -3710,7 +3710,7 @@
     </MsMeeting>
     <MsMeeting id="833">
       <id>60</id>
-      <topic>Strategize data driven data mining for decision makers</topic>
+      <topic>Strategize data mining</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="834">
         <MsRequiredAttendance id="835">
@@ -3738,7 +3738,7 @@
     </MsMeeting>
     <MsMeeting id="840">
       <id>61</id>
-      <topic>Fast track sales driven policies on the whiteboard</topic>
+      <topic>Fast track policies</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="841">
         <MsRequiredAttendance id="842">
@@ -3756,7 +3756,7 @@
     </MsMeeting>
     <MsMeeting id="845">
       <id>62</id>
-      <topic>Cross sell compelling synergies out of the box</topic>
+      <topic>Cross sell synergies</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="846">
         <MsRequiredAttendance id="847">
@@ -3774,7 +3774,7 @@
     </MsMeeting>
     <MsMeeting id="850">
       <id>63</id>
-      <topic>Profitize reusable user experience in the new economy</topic>
+      <topic>Profitize user experience</topic>
       <durationInGrains>2</durationInGrains>
       <requiredAttendanceList id="851">
         <MsRequiredAttendance id="852">
@@ -3843,7 +3843,7 @@
     </MsMeeting>
     <MsMeeting id="865">
       <id>64</id>
-      <topic>Transform negotiated B2B in a nutshell</topic>
+      <topic>Transform B2B</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="866">
         <MsRequiredAttendance id="867">
@@ -3892,7 +3892,7 @@
     </MsMeeting>
     <MsMeeting id="876">
       <id>65</id>
-      <topic>Engage sustainable e-business in practice</topic>
+      <topic>Engage e-business</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="877">
         <MsRequiredAttendance id="878">
@@ -3910,7 +3910,7 @@
     </MsMeeting>
     <MsMeeting id="881">
       <id>66</id>
-      <topic>Downsize laser-focused virtualization for dummies</topic>
+      <topic>Downsize virtualization</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="882">
         <MsRequiredAttendance id="883">
@@ -3969,7 +3969,7 @@
     </MsMeeting>
     <MsMeeting id="894">
       <id>67</id>
-      <topic>Ramp up flexible multitasking in action</topic>
+      <topic>Ramp up multitasking</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="895">
         <MsRequiredAttendance id="896">
@@ -4008,7 +4008,7 @@
     </MsMeeting>
     <MsMeeting id="903">
       <id>68</id>
-      <topic>On board real-time one stop shop recipes</topic>
+      <topic>On board one stop shop</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="904">
         <MsRequiredAttendance id="905">
@@ -4026,7 +4026,7 @@
     </MsMeeting>
     <MsMeeting id="908">
       <id>69</id>
-      <topic>Reinvigorate targeted braindumps on the web</topic>
+      <topic>Reinvigorate braindumps</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="909">
         <MsRequiredAttendance id="910">
@@ -4115,7 +4115,7 @@
     </MsMeeting>
     <MsMeeting id="927">
       <id>70</id>
-      <topic>Strategize data driven policies on the whiteboard</topic>
+      <topic>Strategize policies</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="928">
         <MsRequiredAttendance id="929">
@@ -4133,7 +4133,7 @@
     </MsMeeting>
     <MsMeeting id="932">
       <id>71</id>
-      <topic>Fast track sales driven synergies out of the box</topic>
+      <topic>Fast track synergies</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="933">
         <MsRequiredAttendance id="934">
@@ -4167,7 +4167,7 @@
     </MsMeeting>
     <MsMeeting id="940">
       <id>72</id>
-      <topic>Cross sell compelling user experience in the new economy</topic>
+      <topic>Cross sell user experience</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="941">
         <MsRequiredAttendance id="942">
@@ -4256,7 +4256,7 @@
     </MsMeeting>
     <MsMeeting id="959">
       <id>73</id>
-      <topic>Profitize reusable B2B in a nutshell</topic>
+      <topic>Profitize B2B</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="960">
         <MsRequiredAttendance id="961">
@@ -4279,7 +4279,7 @@
     </MsMeeting>
     <MsMeeting id="965">
       <id>74</id>
-      <topic>Transform negotiated e-business in practice</topic>
+      <topic>Transform e-business</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="966">
         <MsRequiredAttendance id="967">
@@ -4302,7 +4302,7 @@
     </MsMeeting>
     <MsMeeting id="971">
       <id>75</id>
-      <topic>Engage sustainable virtualization for dummies</topic>
+      <topic>Engage virtualization</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="972">
         <MsRequiredAttendance id="973">
@@ -4341,7 +4341,7 @@
     </MsMeeting>
     <MsMeeting id="980">
       <id>76</id>
-      <topic>Downsize laser-focused multitasking in action</topic>
+      <topic>Downsize multitasking</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="981">
         <MsRequiredAttendance id="982">
@@ -4390,7 +4390,7 @@
     </MsMeeting>
     <MsMeeting id="991">
       <id>77</id>
-      <topic>Ramp up flexible one stop shop recipes</topic>
+      <topic>Ramp up one stop shop</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="992">
         <MsRequiredAttendance id="993">
@@ -4408,7 +4408,7 @@
     </MsMeeting>
     <MsMeeting id="996">
       <id>78</id>
-      <topic>On board real-time braindumps on the web</topic>
+      <topic>On board braindumps</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="997">
         <MsRequiredAttendance id="998">
@@ -4432,7 +4432,7 @@
     </MsMeeting>
     <MsMeeting id="1002">
       <id>79</id>
-      <topic>Reinvigorate targeted data mining for decision makers</topic>
+      <topic>Reinvigorate data mining</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="1003">
         <MsRequiredAttendance id="1004">
@@ -4541,7 +4541,7 @@
     </MsMeeting>
     <MsMeeting id="1025">
       <id>80</id>
-      <topic>Strategize data driven synergies out of the box</topic>
+      <topic>Strategize synergies</topic>
       <durationInGrains>2</durationInGrains>
       <requiredAttendanceList id="1026">
         <MsRequiredAttendance id="1027">
@@ -4630,7 +4630,7 @@
     </MsMeeting>
     <MsMeeting id="1044">
       <id>81</id>
-      <topic>Fast track sales driven user experience in the new economy</topic>
+      <topic>Fast track user experience</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="1045">
         <MsRequiredAttendance id="1046">
@@ -4679,7 +4679,7 @@
     </MsMeeting>
     <MsMeeting id="1055">
       <id>82</id>
-      <topic>Cross sell compelling B2B in a nutshell</topic>
+      <topic>Cross sell B2B</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="1056">
         <MsRequiredAttendance id="1057">
@@ -4707,7 +4707,7 @@
     </MsMeeting>
     <MsMeeting id="1062">
       <id>83</id>
-      <topic>Profitize reusable e-business in practice</topic>
+      <topic>Profitize e-business</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="1063">
         <MsRequiredAttendance id="1064">
@@ -4725,7 +4725,7 @@
     </MsMeeting>
     <MsMeeting id="1067">
       <id>84</id>
-      <topic>Transform negotiated virtualization for dummies</topic>
+      <topic>Transform virtualization</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="1068">
         <MsRequiredAttendance id="1069">
@@ -4759,7 +4759,7 @@
     </MsMeeting>
     <MsMeeting id="1075">
       <id>85</id>
-      <topic>Engage sustainable multitasking in action</topic>
+      <topic>Engage multitasking</topic>
       <durationInGrains>6</durationInGrains>
       <requiredAttendanceList id="1076">
         <MsRequiredAttendance id="1077">
@@ -4868,7 +4868,7 @@
     </MsMeeting>
     <MsMeeting id="1098">
       <id>86</id>
-      <topic>Downsize laser-focused one stop shop recipes</topic>
+      <topic>Downsize one stop shop</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="1099">
         <MsRequiredAttendance id="1100">
@@ -4957,7 +4957,7 @@
     </MsMeeting>
     <MsMeeting id="1117">
       <id>87</id>
-      <topic>Ramp up flexible braindumps on the web</topic>
+      <topic>Ramp up braindumps</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="1118">
         <MsRequiredAttendance id="1119">
@@ -4986,7 +4986,7 @@
     </MsMeeting>
     <MsMeeting id="1124">
       <id>88</id>
-      <topic>On board real-time data mining for decision makers</topic>
+      <topic>On board data mining</topic>
       <durationInGrains>8</durationInGrains>
       <requiredAttendanceList id="1125">
         <MsRequiredAttendance id="1126">
@@ -5010,7 +5010,7 @@
     </MsMeeting>
     <MsMeeting id="1130">
       <id>89</id>
-      <topic>Reinvigorate targeted policies on the whiteboard</topic>
+      <topic>Reinvigorate policies</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="1131">
         <MsRequiredAttendance id="1132">
@@ -5044,7 +5044,7 @@
     </MsMeeting>
     <MsMeeting id="1138">
       <id>90</id>
-      <topic>Strategize data driven user experience in the new economy</topic>
+      <topic>Strategize user experience</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="1139">
         <MsRequiredAttendance id="1140">
@@ -5103,7 +5103,7 @@
     </MsMeeting>
     <MsMeeting id="1151">
       <id>91</id>
-      <topic>Fast track sales driven B2B in a nutshell</topic>
+      <topic>Fast track B2B</topic>
       <durationInGrains>6</durationInGrains>
       <requiredAttendanceList id="1152">
         <MsRequiredAttendance id="1153">
@@ -5192,7 +5192,7 @@
     </MsMeeting>
     <MsMeeting id="1170">
       <id>92</id>
-      <topic>Cross sell compelling e-business in practice</topic>
+      <topic>Cross sell e-business</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="1171">
         <MsRequiredAttendance id="1172">
@@ -5226,7 +5226,7 @@
     </MsMeeting>
     <MsMeeting id="1178">
       <id>93</id>
-      <topic>Profitize reusable virtualization for dummies</topic>
+      <topic>Profitize virtualization</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="1179">
         <MsRequiredAttendance id="1180">
@@ -5265,7 +5265,7 @@
     </MsMeeting>
     <MsMeeting id="1187">
       <id>94</id>
-      <topic>Transform negotiated multitasking in action</topic>
+      <topic>Transform multitasking</topic>
       <durationInGrains>2</durationInGrains>
       <requiredAttendanceList id="1188">
         <MsRequiredAttendance id="1189">
@@ -5294,7 +5294,7 @@
     </MsMeeting>
     <MsMeeting id="1194">
       <id>95</id>
-      <topic>Engage sustainable one stop shop recipes</topic>
+      <topic>Engage one stop shop</topic>
       <durationInGrains>1</durationInGrains>
       <requiredAttendanceList id="1195">
         <MsRequiredAttendance id="1196">
@@ -5312,7 +5312,7 @@
     </MsMeeting>
     <MsMeeting id="1199">
       <id>96</id>
-      <topic>Downsize laser-focused braindumps on the web</topic>
+      <topic>Downsize braindumps</topic>
       <durationInGrains>16</durationInGrains>
       <requiredAttendanceList id="1200">
         <MsRequiredAttendance id="1201">
@@ -5421,7 +5421,7 @@
     </MsMeeting>
     <MsMeeting id="1222">
       <id>97</id>
-      <topic>Ramp up flexible data mining for decision makers</topic>
+      <topic>Ramp up data mining</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="1223">
         <MsRequiredAttendance id="1224">
@@ -5510,7 +5510,7 @@
     </MsMeeting>
     <MsMeeting id="1241">
       <id>98</id>
-      <topic>On board real-time policies on the whiteboard</topic>
+      <topic>On board policies</topic>
       <durationInGrains>4</durationInGrains>
       <requiredAttendanceList id="1242">
         <MsRequiredAttendance id="1243">
@@ -5569,7 +5569,7 @@
     </MsMeeting>
     <MsMeeting id="1254">
       <id>99</id>
-      <topic>Reinvigorate targeted synergies out of the box</topic>
+      <topic>Reinvigorate synergies</topic>
       <durationInGrains>3</durationInGrains>
       <requiredAttendanceList id="1255">
         <MsRequiredAttendance id="1256">

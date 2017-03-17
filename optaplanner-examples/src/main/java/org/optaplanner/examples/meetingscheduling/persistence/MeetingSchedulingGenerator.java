@@ -49,7 +49,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     }
 
     private final StringDataGenerator topicGenerator = new StringDataGenerator()
-            .addPart(
+            .addPart(true, 0,
                     "Strategize",
                     "Fast track",
                     "Cross sell",
@@ -60,7 +60,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "Ramp up",
                     "On board",
                     "Reinvigorate")
-            .addPart(
+            .addPart(false, 1,
                     "data driven",
                     "sales driven",
                     "compelling",
@@ -71,7 +71,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "flexible",
                     "real-time",
                     "targeted")
-            .addPart(
+            .addPart(true, 1,
                     "B2B",
                     "e-business",
                     "virtualization",
@@ -82,7 +82,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "policies",
                     "synergies",
                     "user experience")
-            .addPart(
+            .addPart(false, 3,
                     "in a nutshell",
                     "in practice",
                     "for dummies",
@@ -158,7 +158,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             17 * 60 + 45, // 17:45
     };
 
-    private final StringDataGenerator fullNameGenerator = StringDataGenerator.build10kFullNames();
+    private final StringDataGenerator fullNameGenerator = StringDataGenerator.buildFullNames();
 
     protected final SolutionDao solutionDao;
     protected final File outputDir;
@@ -183,8 +183,6 @@ public class MeetingSchedulingGenerator extends LoggingMain {
 
     public MeetingSchedule createMeetingSchedule(String fileName, int meetingListSize, int timeGrainListSize, int roomListSize) {
         random = new Random(37);
-        topicGenerator.reset();
-        fullNameGenerator.reset();
         MeetingSchedule meetingSchedule = new MeetingSchedule();
         meetingSchedule.setId(0L);
 
@@ -210,6 +208,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         List<Meeting> meetingList = new ArrayList<>(meetingListSize);
         List<Attendance> globalAttendanceList = new ArrayList<>();
         long attendanceId = 0L;
+        topicGenerator.predictMaximumSizeAndReset(meetingListSize);
         for (int i = 0; i < meetingListSize; i++) {
             Meeting meeting = new Meeting();
             meeting.setId((long) i);
@@ -310,6 +309,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         int personListSize = attendanceListSize * meetingSchedule.getRoomList().size() * 3
                 / (4 * meetingSchedule.getMeetingList().size());
         List<Person> personList = new ArrayList<>(personListSize);
+        fullNameGenerator.predictMaximumSizeAndReset(personListSize);
         for (int i = 0; i < personListSize; i++) {
             Person person = new Person();
             person.setId((long) i);

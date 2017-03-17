@@ -58,7 +58,7 @@ public class TaskAssigningGenerator extends LoggingMain {
     }
 
     private final StringDataGenerator skillNameGenerator = new StringDataGenerator()
-            .addPart(
+            .addPart(true, 0,
                     "Problem",
                     "Team",
                     "Business",
@@ -69,7 +69,7 @@ public class TaskAssigningGenerator extends LoggingMain {
                     "Conflict",
                     "IT",
                     "Academic")
-            .addPart(
+            .addPart(true, 1,
                     "Solving",
                     "Building",
                     "Storytelling",
@@ -81,7 +81,7 @@ public class TaskAssigningGenerator extends LoggingMain {
                     "Engineering",
                     "Research");
     private final StringDataGenerator taskTypeNameGenerator = new StringDataGenerator()
-            .addPart(
+            .addPart(true, 0,
                     "Improve",
                     "Expand",
                     "Shrink",
@@ -92,7 +92,7 @@ public class TaskAssigningGenerator extends LoggingMain {
                     "Merge",
                     "Double",
                     "Optimize")
-            .addPart(
+            .addPart(true, 1,
                     "Sales",
                     "Tax",
                     "VAT",
@@ -103,7 +103,7 @@ public class TaskAssigningGenerator extends LoggingMain {
                     "Contract",
                     "Financial",
                     "Advertisement")
-            .addPart(
+            .addPart(false, 2,
                     "Software",
                     "Development",
                     "Accounting",
@@ -114,8 +114,8 @@ public class TaskAssigningGenerator extends LoggingMain {
                     "Lobbying",
                     "Engineering",
                     "Research");
-    private final StringDataGenerator customerNameGenerator = StringDataGenerator.build1kCompanyNames();
-    private final StringDataGenerator employeeNameGenerator = StringDataGenerator.build10kFullNames();
+    private final StringDataGenerator customerNameGenerator = StringDataGenerator.buildCompanyNames();
+    private final StringDataGenerator employeeNameGenerator = StringDataGenerator.buildFullNames();
 
     protected final SolutionDao solutionDao;
     protected final File outputDir;
@@ -144,10 +144,6 @@ public class TaskAssigningGenerator extends LoggingMain {
     public TaskAssigningSolution createTaskAssigningSolution(String fileName, int taskListSize, int skillListSize,
             int employeeListSize, int taskTypeListSize, int customerListSize) {
         random = new Random(37);
-        skillNameGenerator.reset();
-        taskTypeNameGenerator.reset();
-        customerNameGenerator.reset();
-        employeeNameGenerator.reset();
         TaskAssigningSolution solution = new TaskAssigningSolution();
         solution.setId(0L);
 
@@ -173,6 +169,7 @@ public class TaskAssigningGenerator extends LoggingMain {
 
     private void createSkillList(TaskAssigningSolution solution, int skillListSize) {
         List<Skill> skillList = new ArrayList<>(skillListSize);
+        skillNameGenerator.predictMaximumSizeAndReset(skillListSize);
         for (int i = 0; i < skillListSize; i++) {
             Skill skill = new Skill();
             skill.setId((long) i);
@@ -186,6 +183,7 @@ public class TaskAssigningGenerator extends LoggingMain {
 
     private void createCustomerList(TaskAssigningSolution solution, int customerListSize) {
         List<Customer> customerList = new ArrayList<>(customerListSize);
+        customerNameGenerator.predictMaximumSizeAndReset(customerListSize);
         for (int i = 0; i < customerListSize; i++) {
             Customer customer = new Customer();
             customer.setId((long) i);
@@ -203,6 +201,7 @@ public class TaskAssigningGenerator extends LoggingMain {
         Affinity[] affinities = Affinity.values();
         List<Employee> employeeList = new ArrayList<>(employeeListSize);
         int skillListIndex = 0;
+        employeeNameGenerator.predictMaximumSizeAndReset(employeeListSize);
         for (int i = 0; i < employeeListSize; i++) {
             Employee employee = new Employee();
             employee.setId((long) i);
@@ -233,12 +232,26 @@ public class TaskAssigningGenerator extends LoggingMain {
         List<Employee> employeeList = solution.getEmployeeList();
         List<TaskType> taskTypeList = new ArrayList<>(taskTypeListSize);
         Set<String> codeSet = new LinkedHashSet<>(taskTypeListSize);
+        taskTypeNameGenerator.predictMaximumSizeAndReset(taskTypeListSize);
         for (int i = 0; i < taskTypeListSize; i++) {
             TaskType taskType = new TaskType();
             taskType.setId((long) i);
             String title = taskTypeNameGenerator.generateNextValue();
             taskType.setTitle(title);
-            String code = title.replaceAll("(\\w)\\w* (\\w)\\w* (\\w)\\w*", "$1$2$3");
+            String code;
+            switch (title.replaceAll("[^ ]", "").length() + 1) {
+                case 3:
+                    code = title.replaceAll("(\\w)\\w* (\\w)\\w* (\\w)\\w*", "$1$2$3");
+                    break;
+                case 2:
+                    code = title.replaceAll("(\\w)\\w* (\\w)\\w*", "$1$2");
+                    break;
+                case 1:
+                    code = title.replaceAll("(\\w)\\w*", "$1");
+                    break;
+                default:
+                    throw new IllegalStateException("Cannot convert title (" + title + ") into a code.");
+            }
             if (codeSet.contains(code)) {
                 int codeSuffixNumber = 1;
                 while (codeSet.contains(code + codeSuffixNumber)) {

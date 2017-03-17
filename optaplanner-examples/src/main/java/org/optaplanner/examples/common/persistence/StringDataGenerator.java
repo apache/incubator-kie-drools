@@ -21,9 +21,9 @@ import java.util.List;
 
 public class StringDataGenerator {
 
-    public static StringDataGenerator build10kFullNames() {
+    public static StringDataGenerator buildFullNames() {
         return new StringDataGenerator()
-                .addPart(
+                .addPart(true, 0,
                         "Amy",
                         "Beth",
                         "Chad",
@@ -34,7 +34,7 @@ public class StringDataGenerator {
                         "Hugo",
                         "Ivy",
                         "Jay")
-                .addPart(
+                .addPart(false, 1,
                         "A.",
                         "B.",
                         "C.",
@@ -45,7 +45,7 @@ public class StringDataGenerator {
                         "H.",
                         "I.",
                         "J.")
-                .addPart(
+                .addPart(false, 1,
                         "O.",
                         "P.",
                         "Q.",
@@ -56,7 +56,7 @@ public class StringDataGenerator {
                         "V.",
                         "W.",
                         "X.")
-                .addPart(
+                .addPart(false, 1,
                         "Cole",
                         "Fox",
                         "Green",
@@ -69,9 +69,9 @@ public class StringDataGenerator {
                         "Watt");
     }
 
-    public static StringDataGenerator build1kCompanyNames() {
+    public static StringDataGenerator buildCompanyNames() {
         return new StringDataGenerator()
-                .addPart(
+                .addPart(true, 0,
                         "Steel",
                         "Paper",
                         "Stone",
@@ -82,7 +82,7 @@ public class StringDataGenerator {
                         "Car",
                         "Power",
                         "Computer")
-                .addPart(
+                .addPart(true, 1,
                         "Inc",
                         "Corp",
                         "Limited",
@@ -93,7 +93,7 @@ public class StringDataGenerator {
                         "Mart",
                         "Bank",
                         "Labs")
-                .addPart(
+                .addPart(false, 2,
                         "US",
                         "UK",
                         "JP",
@@ -108,7 +108,7 @@ public class StringDataGenerator {
 
     public static StringDataGenerator build10kLocationNames() {
         return new StringDataGenerator()
-                .addPart(
+                .addPart(true, 0,
                         "Los",
                         "San",
                         "Las",
@@ -119,7 +119,7 @@ public class StringDataGenerator {
                         "Saint",
                         "Little",
                         "El")
-                .addPart(
+                .addPart(true, 1,
                         "Angeles",
                         "Francisco",
                         "Vegas",
@@ -130,7 +130,7 @@ public class StringDataGenerator {
                         "Peter",
                         "Rock",
                         "Paso")
-                .addPart(
+                .addPart(false, 2,
                         "Town",
                         "City",
                         "Falls",
@@ -141,7 +141,7 @@ public class StringDataGenerator {
                         "Berg",
                         "Borough",
                         "Island")
-                .addPart(
+                .addPart(false, 3,
                         "AL",
                         "CA",
                         "DE",
@@ -154,9 +154,24 @@ public class StringDataGenerator {
                         "ME");
     }
 
+    /**
+     * Determines how to go through the unique combinations to maximize uniqueness, even on small subsets.
+     * It does not scroll per digit (0000, 1111, 2222, 0001, 1112, 2220, 0002, 1110, 2221, ...).
+     * Instead, it scrolls per half (0000, 1111, 2222, 0011, 1122, 2200, 0022, 1100, 2211, ...).
+     */
+    private final static int[][] HALF_SEQUENCE_MAP = new int[][]{{}, {0}, {0, 1}, {0, 2, 1}, {0, 2, 1, 3}};
+    /**
+     * Determines which parts to eliminate first if maximumSize prediction doesn't need all parts.
+     */
+    private final static int[] DEFAULT_ELIMINATION_INDEX_MAP = new int[]{0, 1, 1, 1};
+
     private final String delimiter;
     private List<String[]> partValuesList = new ArrayList<>();
     private int partValuesLength;
+    private List<Integer> eliminationIndexMap = new ArrayList<>();
+    private int requiredSize = 0;
+
+    private List<String[]> filteredPartValuesList = partValuesList;
     private int index = 0;
     private int indexLimit;
 
@@ -169,6 +184,10 @@ public class StringDataGenerator {
     }
 
     public StringDataGenerator addPart(String... partValues) {
+        return addPart(false, DEFAULT_ELIMINATION_INDEX_MAP[partValuesList.size()], partValues);
+    }
+
+    public StringDataGenerator addPart(boolean required, int eliminationIndex, String... partValues) {
         if (partValuesList.isEmpty()) {
             partValuesLength = partValues.length;
         } else {
@@ -177,29 +196,50 @@ public class StringDataGenerator {
                         + ") is not the same as the partValuesLength (" + partValuesLength + ") of the others.");
             }
         }
+        if (required) {
+            requiredSize++;
+        }
         partValuesList.add(partValues);
+        eliminationIndexMap.add(eliminationIndex);
         indexLimit = (int) Math.pow(partValuesLength, partValuesList.size());
+        filteredPartValuesList = partValuesList;
         return this;
     }
 
-    /**
-     * Determines how to go through the unique combinations to maximize uniqueness, even on small subsets.
-     * It does not scroll per digit (0000, 1111, 2222, 0001, 1112, 2220, 0002, 1110, 2221, ...).
-     * Instead, it scrolls per half (0000, 1111, 2222, 0011, 1122, 2200, 0022, 1100, 2211, ...).
-     */
-    private int[][] halfSequenceMap = new int[][]{{}, {0}, {0, 1}, {0, 2, 1}, {0, 2, 1, 3}};
+    public void reset() {
+        filteredPartValuesList = partValuesList;
+        index = 0;
+    }
+
+    public void predictMaximumSizeAndReset(int maximumSize) {
+        for (int i = 1; i < partValuesList.size(); i++) {
+            int proposedIndexLimit = (int) Math.pow(partValuesLength, i);
+            if (maximumSize <= proposedIndexLimit) {
+                filteredPartValuesList = new ArrayList<>(partValuesList);
+                while (i < filteredPartValuesList.size() && filteredPartValuesList.size() > requiredSize) {
+                    int eliminationIndex = eliminationIndexMap.get(filteredPartValuesList.size() - 1);
+                    filteredPartValuesList.remove(eliminationIndex);
+                }
+                indexLimit = proposedIndexLimit;
+                break;
+            }
+        }
+        index = 0;
+    }
 
     public String generateNextValue() {
         if (index >= indexLimit) {
-            throw new IllegalStateException("No more elements: the index (" + index + ") is too high.");
+            throw new IllegalStateException("No more elements: the index (" + index
+                    + ") is higher than the indexLimit (" + indexLimit + ").\n"
+                    + "Maybe predictMaximumSizeAndReset() was called with a too low maximumSize.");
         }
-        int listSize = partValuesList.size();
+        int listSize = filteredPartValuesList.size();
         StringBuilder result = new StringBuilder(listSize * 80);
         // Make sure we have a unique combination
-        if (listSize >= halfSequenceMap.length) {
+        if (listSize >= HALF_SEQUENCE_MAP.length) {
             throw new IllegalStateException("A listSize (" + listSize + ") is not yet supported.");
         }
-        int[] halfSequence = halfSequenceMap[listSize];
+        int[] halfSequence = HALF_SEQUENCE_MAP[listSize];
         int[] chosens = new int[listSize];
         int previousChosen = 0;
         for (int i = 0; i < listSize; i++) {
@@ -214,15 +254,11 @@ public class StringDataGenerator {
             if (i > 0) {
                 result.append(delimiter);
             }
-            String[] partValues = partValuesList.get(i);
+            String[] partValues = filteredPartValuesList.get(i);
             result.append(partValues[chosens[i]]);
         }
         index++;
         return result.toString();
-    }
-
-    public void reset() {
-        index = 0;
     }
 
 }
