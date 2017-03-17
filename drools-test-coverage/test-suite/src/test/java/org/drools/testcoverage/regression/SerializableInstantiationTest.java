@@ -20,26 +20,31 @@ import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.util.*;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
-import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.drools.testcoverage.common.util.KieUtil.getCommands;
+
 public class SerializableInstantiationTest extends KieSessionTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SerializableInstantiationTest.class);
 
     private static final String DRL =
             "package org.drools.testcoverage.regression;\n" +
             "import org.drools.testcoverage.regression.SerializableInstantiationTest.SerializableWrapper;\n" +
+            "global org.slf4j.Logger LOGGER;\n" +
             "rule serializable\n" +
             "    when\n" +
             "        $holder : SerializableWrapper( original == \"hello\" )\n" +
             "    then\n" +
-            "//        System.out.println(\"Works like a charm!\");\n" +
+            "//        LOGGER.info(\"Works like a charm!\");\n" +
             "end\n";
 
     public SerializableInstantiationTest(final KieBaseTestConfiguration kieBaseTestConfiguration,
@@ -54,12 +59,13 @@ public class SerializableInstantiationTest extends KieSessionTest {
 
     @Test
     public void testSerializableInstantiation() {
+        session.setGlobal("LOGGER", LOGGER);
         List<Command<?>> commands = new LinkedList<Command<?>>();
-        commands.add(KieServices.Factory.get().getCommands().newInsert(new SerializableWrapper("hello")));
-        commands.add(KieServices.Factory.get().getCommands().newFireAllRules());
+        commands.add(getCommands().newInsert(new SerializableWrapper("hello")));
+        commands.add(getCommands().newFireAllRules());
 
         for (int i = 0; i < 500; i++) {
-            session.execute(KieServices.Factory.get().getCommands().newBatchExecution(commands));
+            session.execute(getCommands().newBatchExecution(commands));
         }
     }
 
@@ -76,8 +82,6 @@ public class SerializableInstantiationTest extends KieSessionTest {
 
     @Override
     protected Resource[] createResources() {
-        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
-        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return new Resource[] { drlResource };
+        return KieUtil.createResources(DRL);
     }
 }

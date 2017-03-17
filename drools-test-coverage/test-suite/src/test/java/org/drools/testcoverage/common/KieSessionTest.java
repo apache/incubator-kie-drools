@@ -18,6 +18,7 @@ package org.drools.testcoverage.common;
 
 import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.util.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -50,6 +51,13 @@ public abstract class KieSessionTest {
         }
         firedRules = new TrackingAgendaEventListener();
         session.addEventListener(firedRules);
+    }
+
+    @After
+    public void disposeKieSession() {
+        if (session != null) {
+            session.dispose();
+        }
     }
 
     protected abstract Resource[] createResources();

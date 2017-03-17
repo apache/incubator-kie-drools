@@ -25,13 +25,14 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieSession;
 
 import java.io.*;
 import java.util.Collection;
+
+import static org.drools.testcoverage.common.util.KieUtil.getServices;
 
 public class LogicalInsertionsSerializationTest extends KieSessionTest {
 
@@ -53,32 +54,18 @@ public class LogicalInsertionsSerializationTest extends KieSessionTest {
     @Test
     public void testSerializeAndDeserializeSession() throws Exception {
         KieSession ksession = session.getStateful();
-        File tempFile = createTempFile(name.getMethodName(), "");
+        File tempFile = File.createTempFile(name.getMethodName(), null);
 
         ksession.fireAllRules();
 
-        OutputStream fos = null;
-        try {
-            fos = new FileOutputStream(tempFile);
-
-            Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(getKbase());
+        try (OutputStream fos = new FileOutputStream(tempFile)) {
+            Marshaller marshaller = getServices().getMarshallers().newMarshaller(getKbase());
             marshaller.marshall(fos, ksession);
-        } finally {
-            if (fos != null) {
-                fos.close();
-            }
         }
 
-        InputStream fis = null;
-        try {
-            fis = new FileInputStream(tempFile);
-
-            Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(getKbase());
+        try (InputStream fis = new FileInputStream(tempFile)) {
+            Marshaller marshaller = getServices().getMarshallers().newMarshaller(getKbase());
             marshaller.unmarshall(fis, ksession);
-        } finally {
-            if (fis != null) {
-                fis.close();
-            }
         }
 
         ksession.insert(new Promotion("Claire", "Scientist"));
@@ -87,24 +74,12 @@ public class LogicalInsertionsSerializationTest extends KieSessionTest {
         Assertions.assertThat(firedRules).isEqualTo(1);
     }
 
-    private final File createTempFile(String name, String extension) {
-        File dir = new File(PropertiesUtil.getTempDir(), name);
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-        int i = 0;
-        File temp;
-        while ((temp = new File(dir, String.format("%s_%03d.%s", name, i++, extension))).exists()) {
-        }
-        return temp;
-    }
-
     private KieBase getKbase() {
         return session.isStateful() ? session.getStateful().getKieBase() : session.getStateless().getKieBase();
     }
 
     @Override
     protected Resource[] createResources() {
-        return new Resource[] { KieServices.Factory.get().getResources().newClassPathResource(DRL_FILE, LogicalInsertionsSerializationTest.class) };
+        return KieUtil.createResources(DRL_FILE, LogicalInsertionsSerializationTest.class);
     }
 }

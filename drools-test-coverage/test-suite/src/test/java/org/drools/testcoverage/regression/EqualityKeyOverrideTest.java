@@ -21,15 +21,15 @@ import org.drools.testcoverage.common.KieSessionTest;
 import org.drools.testcoverage.common.util.*;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
-import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-import java.io.StringReader;
 import java.util.Collection;
 
 public class EqualityKeyOverrideTest extends KieSessionTest {
+
+    private static final int ANY_NUMBER = 42;
 
     private static final String DRL =
             "package org.drools.testcoverage.regression;\n" +
@@ -69,7 +69,7 @@ public class EqualityKeyOverrideTest extends KieSessionTest {
 
         Assertions.assertThat(ksession.getObjects().size()).isEqualTo(2);
 
-        ksession.insert(42);
+        ksession.insert(ANY_NUMBER);
         ksession.fireAllRules();
 
         Assertions.assertThat(ksession.getObjects().size()).isEqualTo(4);
@@ -81,8 +81,6 @@ public class EqualityKeyOverrideTest extends KieSessionTest {
 
     @Override
     protected Resource[] createResources() {
-        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
-        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return new Resource[] { drlResource };
+        return KieUtil.createResources(DRL);
     }
 }

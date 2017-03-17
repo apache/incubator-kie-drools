@@ -22,12 +22,10 @@ import org.drools.testcoverage.common.model.Overloaded;
 import org.drools.testcoverage.common.util.*;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
-import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 import org.kie.internal.command.CommandFactory;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -49,7 +47,7 @@ public class MvelOverloadedMethodsUsageTest extends KieSessionTest {
             "        eval (o.method(5, 9, \"x\") == 15)\n" +
             "        eval (o.method(\"x\", 5, 9) == -13)\n" +
             "        eval (o.method(5, \"x\", 9) == -3)\n" +
-            "    then\n" + "        //consequences\n" +
+            "    then\n" +
             "end\n" +
             "rule MvelOverloadedMethods2\n" +
             "    dialect \"mvel\"" +
@@ -58,7 +56,6 @@ public class MvelOverloadedMethodsUsageTest extends KieSessionTest {
             "        eval (\"helloworld150.32\".equals(o.method2(\"hello\", \"world\", 15L, 0.32)))\n" +
             "        eval (\"32hello0.53world\".equals(o.method2(32L, \"hello\", 0.53, \"world\")))\n" +
             "    then\n" +
-            "        //consequences\n" +
             "end\n";
 
     public MvelOverloadedMethodsUsageTest(final KieBaseTestConfiguration kieBaseTestConfiguration,
@@ -84,8 +81,6 @@ public class MvelOverloadedMethodsUsageTest extends KieSessionTest {
 
     @Override
     protected Resource[] createResources() {
-        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(DRL));
-        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        return new Resource[] { drlResource };
+        return KieUtil.createResources(DRL);
     }
 }

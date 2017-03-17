@@ -21,10 +21,10 @@ import java.io.Serializable;
 public class Customer implements Serializable {
 
     private static final long serialVersionUID = -1247190303439997770L;
-    int custid;
-    String name;
-    int sales;
-    boolean tenthSaleFree;
+    private int custid;
+    private String name;
+    private int sales;
+    private boolean tenthSaleFree;
 
     public Customer(int custid, String name) {
         super();

@@ -22,13 +22,14 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.*;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
-import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static org.drools.testcoverage.common.util.KieUtil.getCommands;
 
 /**
  * Test to verify BRMS-364 (multi-restriction pattern throws UnsupportedOpEx) is
@@ -51,10 +52,10 @@ public class MultiRestrictionPatternTest extends KieSessionTest {
     @Test
     public void multiRestriction1() throws Exception {
         List<Command<?>> commands = new ArrayList<Command<?>>();
-        commands.add(KieServices.Factory.get().getCommands().newInsert(new Person("multi")));
-        commands.add(KieServices.Factory.get().getCommands().newFireAllRules());
+        commands.add(getCommands().newInsert(new Person("multi")));
+        commands.add(getCommands().newFireAllRules());
 
-        session.execute(KieServices.Factory.get().getCommands().newBatchExecution(commands, null));
+        session.execute(getCommands().newBatchExecution(commands, null));
 
         Assertions.assertThat(firedRules.isRuleFired("or1")).isTrue();
     }
@@ -62,10 +63,10 @@ public class MultiRestrictionPatternTest extends KieSessionTest {
     @Test
     public void multiRestriction2() throws Exception {
         List<Command<?>> commands = new ArrayList<Command<?>>();
-        commands.add(KieServices.Factory.get().getCommands().newInsert(new Person("MULTIRESTRICTION")));
-        commands.add(KieServices.Factory.get().getCommands().newFireAllRules());
+        commands.add(getCommands().newInsert(new Person("MULTIRESTRICTION")));
+        commands.add(getCommands().newFireAllRules());
 
-        session.execute(KieServices.Factory.get().getCommands().newBatchExecution(commands, null));
+        session.execute(getCommands().newBatchExecution(commands, null));
 
         Assertions.assertThat(firedRules.isRuleFired("or2")).isTrue();
     }
@@ -75,16 +76,16 @@ public class MultiRestrictionPatternTest extends KieSessionTest {
         List<Command<?>> commands = new ArrayList<Command<?>>();
         Person p = new Person();
         p.setId(3);
-        commands.add(KieServices.Factory.get().getCommands().newInsert(p));
-        commands.add(KieServices.Factory.get().getCommands().newFireAllRules());
+        commands.add(getCommands().newInsert(p));
+        commands.add(getCommands().newFireAllRules());
 
-        session.execute(KieServices.Factory.get().getCommands().newBatchExecution(commands, null));
+        session.execute(getCommands().newBatchExecution(commands, null));
 
         Assertions.assertThat(firedRules.isRuleFired("and")).isTrue();
     }
 
     @Override
     protected Resource[] createResources() {
-        return new Resource[] { KieServices.Factory.get().getResources().newClassPathResource(DRL_FILE, MultiRestrictionPatternTest.class) };
+        return KieUtil.createResources(DRL_FILE, MultiRestrictionPatternTest.class);
     }
 }

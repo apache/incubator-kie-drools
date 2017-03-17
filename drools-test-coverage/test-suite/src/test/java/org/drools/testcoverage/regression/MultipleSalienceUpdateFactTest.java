@@ -23,19 +23,25 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.util.*;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
-import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.io.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static org.drools.testcoverage.common.util.KieUtil.getCommands;
 
 /**
  * Test to verify that BRMS-580 is fixed. NPE when trying to update fact with
  * rules with different saliences.
  */
 public class MultipleSalienceUpdateFactTest extends KieSessionTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MultipleSalienceUpdateFactTest.class);
 
     private static final String DRL_FILE = "BRMS-580.drl";
 
@@ -51,22 +57,20 @@ public class MultipleSalienceUpdateFactTest extends KieSessionTest {
 
     @Test
     public void test() {
+        session.setGlobal("LOGGER", LOGGER);
         List<Command<?>> commands = new ArrayList<Command<?>>();
 
         Person person = new Person("PAUL");
 
         ListHolder listHolder = new ListHolder();
-        List<String> list = new ArrayList<String>();
-        list.add("eins");
-        list.add("zwei");
-        list.add("drei");
+        List<String> list = Arrays.asList("eins", "zwei", "drei");
         listHolder.setList(list);
 
-        commands.add(KieServices.Factory.get().getCommands().newInsert(person));
-        commands.add(KieServices.Factory.get().getCommands().newInsert(listHolder));
-        commands.add(KieServices.Factory.get().getCommands().newFireAllRules());
+        commands.add(getCommands().newInsert(person));
+        commands.add(getCommands().newInsert(listHolder));
+        commands.add(getCommands().newFireAllRules());
 
-        session.execute(KieServices.Factory.get().getCommands().newBatchExecution(commands, null));
+        session.execute(getCommands().newBatchExecution(commands, null));
 
         Assertions.assertThat(firedRules.isRuleFired("PERSON_PAUL")).isTrue();
         Assertions.assertThat(firedRules.isRuleFired("PERSON_PETER")).isTrue();
@@ -74,6 +78,6 @@ public class MultipleSalienceUpdateFactTest extends KieSessionTest {
 
     @Override
     protected Resource[] createResources() {
-        return new Resource[] { KieServices.Factory.get().getResources().newClassPathResource(DRL_FILE, MultipleSalienceUpdateFactTest.class) };
+        return KieUtil.createResources(DRL_FILE, MultipleSalienceUpdateFactTest.class);
     }
 }

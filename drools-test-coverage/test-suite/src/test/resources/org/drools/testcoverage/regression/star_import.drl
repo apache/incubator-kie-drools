@@ -18,6 +18,8 @@ package org.drools.testcoverage.regression;
 
 import org.drools.testcoverage.common.model.*;
 
+global org.slf4j.Logger LOGGER;
+
 declare TestEvent
     @role(event)
 end
@@ -26,5 +28,5 @@ rule "SendEvent"
 	when
 		$event : TestEvent()
 	then
-        // rule fired
+        LOGGER.debug("rule fired");
 end

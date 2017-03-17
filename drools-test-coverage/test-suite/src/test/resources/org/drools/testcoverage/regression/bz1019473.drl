@@ -18,12 +18,13 @@ package org.drools.testcoverage.regression;
 
 import org.drools.testcoverage.common.model.Message;
 
-global java.util.List context
+global java.util.List context;
+global org.slf4j.Logger LOGGER;
 
 rule B
   when
     Message( message == "b" )
     $s : String() from context
   then
-    System.out.println($s);
+    LOGGER.info($s);
 end

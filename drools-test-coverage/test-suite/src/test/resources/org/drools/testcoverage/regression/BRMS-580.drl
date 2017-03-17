@@ -20,6 +20,8 @@ import org.drools.testcoverage.common.model.Person;
 import java.util.ArrayList;
 import org.drools.testcoverage.common.model.ListHolder;
 
+global org.slf4j.Logger LOGGER;
+
 rule "PERSON_PAUL"
 	salience 2
 	when
@@ -30,7 +32,7 @@ rule "PERSON_PAUL"
 		$coll2:ArrayList()
 		from collect(Object() from $listHolder.getList())
 	then
-		//System.out.println("Executing rule");
+		LOGGER.info("Executing rule");
 end
 
 rule "PERSON_PETER"
@@ -40,5 +42,5 @@ rule "PERSON_PETER"
 	then
 		person.setName("PETER");
 		update(person);
-		//System.out.println("Person: "+person.getName());
+		LOGGER.info("Person: "+person.getName());
 end

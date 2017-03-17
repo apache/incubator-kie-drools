@@ -128,28 +128,20 @@ public class PropertiesUtil {
      * @return properties from build.properties
      */
     public static synchronized Properties getProperties() {
-        if (properties == null) {
-            // lazy initialization of properties
-            File propFile = getPropertiesFile(getBasedir().getAbsoluteFile(), BUILD_PROPS_SEARCH_PARENT_DIR_LIMIT);
-            Validate.isTrue(propFile.exists(), "Couldn't find build.properties at '%s'!", propFile.getAbsolutePath());
-            properties = new Properties();
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream(propFile);
-                properties.load(fis);
-            } catch (FileNotFoundException e) {
-                throw new IllegalStateException("Properties file not found. At this point, this is impossible.", e);
-            } catch (IOException e) {
-                throw new IllegalStateException("Properties file cannot be read!", e);
-            } finally {
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    } catch (IOException ex) {
-                        LOGGER.warn("Failed to close input stream", ex);
-                    }
-                }
-            }
+        return (properties==null) ? createProperties() : (Properties) properties.clone();
+    }
+
+    private static synchronized Properties createProperties() {
+        // lazy initialization of properties
+        File propFile = getPropertiesFile(getBasedir().getAbsoluteFile(), BUILD_PROPS_SEARCH_PARENT_DIR_LIMIT);
+        Validate.isTrue(propFile.exists(), "Couldn't find build.properties at '%s'!", propFile.getAbsolutePath());
+        properties = new Properties();
+        try (FileInputStream fis = new FileInputStream(propFile)) {
+            properties.load(fis);
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException("Properties file not found. At this point, this is impossible.", e);
+        } catch (IOException e) {
+            throw new IllegalStateException("Properties file cannot be read!", e);
         }
         return (Properties) properties.clone();
     }

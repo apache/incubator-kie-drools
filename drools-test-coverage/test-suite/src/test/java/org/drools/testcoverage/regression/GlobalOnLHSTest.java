@@ -22,16 +22,19 @@ import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.util.*;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
-import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class GlobalOnLHSTest extends KieSessionTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalOnLHSTest.class);
 
     private static final String DRL_FILE = "bz1019473.drl";
 
@@ -52,18 +55,18 @@ public class GlobalOnLHSTest extends KieSessionTest {
 
         List<String> context = new ArrayList<String>();
         ksession.setGlobal("context", context);
+        ksession.setGlobal("LOGGER", LOGGER);
 
         FactHandle b = ksession.insert( new Message( "b" ) );
         ksession.delete(b);
         int fired = ksession.fireAllRules(1);
 
-        Assertions.assertThat(0).isEqualTo(fired);
-
+        Assertions.assertThat(fired).isEqualTo(0);
         ksession.dispose();
     }
 
     @Override
     protected Resource[] createResources() {
-        return new Resource[] { KieServices.Factory.get().getResources().newClassPathResource(DRL_FILE, GlobalOnLHSTest.class) };
+        return KieUtil.createResources(DRL_FILE, GlobalOnLHSTest.class);
     }
 }
