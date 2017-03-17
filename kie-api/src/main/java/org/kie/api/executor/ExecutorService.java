@@ -19,6 +19,7 @@ package org.kie.api.executor;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -63,8 +64,16 @@ public interface ExecutorService {
     List<RequestInfo> getRequestsByStatus(List<STATUS> statuses, QueryContext queryContext);
 
     List<RequestInfo> getRequestsByBusinessKey(String businessKey, QueryContext queryContext);
+    
+    List<RequestInfo> getRequestsByBusinessKey(String businessKey, List<STATUS> statuses, QueryContext queryContext);
 
     List<RequestInfo> getRequestsByCommand(String command, QueryContext queryContext);
+    
+    List<RequestInfo> getRequestsByCommand(String command, List<STATUS> statuses, QueryContext queryContext);
+    
+    List<RequestInfo> getRequestsByDeployment(String deploymentId, List<STATUS> statuses, QueryContext queryContext);
+    
+    List<RequestInfo> getRequestsByProcessInstance(Long processInstanceId, List<STATUS> statuses, QueryContext queryContext);
 
     int clearAllRequests();
 
@@ -73,6 +82,8 @@ public interface ExecutorService {
     Long scheduleRequest(String commandName, CommandContext ctx);
 
     void cancelRequest(Long requestId);
+    
+    void updateRequestData(Long requestId, Map<String, Object> data);
 
     void init();
 

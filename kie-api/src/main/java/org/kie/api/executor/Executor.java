@@ -17,6 +17,7 @@
 package org.kie.api.executor;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -104,4 +105,11 @@ public interface Executor {
      * Destroys executor
      */
     void destroy();
+    
+    /**
+     * Updates request data by merging existing (if any) with given. Only allowed for not completed requests (including those in error state).
+     * @param requestId unique id of the request to be updated
+     * @param data data to be set on the job
+     */
+    void updateRequestData(Long requestId, Map<String, Object> data);
 }

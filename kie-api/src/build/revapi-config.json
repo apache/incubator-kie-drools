@@ -414,6 +414,114 @@
           "code": "java.method.addedToInterface",
           "new": "method org.kie.api.command.Command<java.lang.Long> org.kie.api.command.KieCommands::newAdvanceSessionTime(long, java.util.concurrent.TimeUnit, java.lang.String)",
           "justification": "Added command to advance session time"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.executor.Executor::updateRequestData(java.lang.Long, java.util.Map<java.lang.String, java.lang.Object>)",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "Executor",
+          "methodName": "updateRequestData",
+          "elementKind": "method",
+          "justification": "Added support for request data update"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.List<org.kie.api.executor.RequestInfo> org.kie.api.executor.ExecutorQueryService::getRequestsByBusinessKey(java.lang.String, java.util.List<org.kie.api.executor.STATUS>, org.kie.api.runtime.query.QueryContext)",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "ExecutorQueryService",
+          "methodName": "getRequestsByBusinessKey",
+          "elementKind": "method",
+          "justification": "Additional query methods for improved searchability"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.List<org.kie.api.executor.RequestInfo> org.kie.api.executor.ExecutorQueryService::getRequestsByCommand(java.lang.String, java.util.List<org.kie.api.executor.STATUS>, org.kie.api.runtime.query.QueryContext)",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "ExecutorQueryService",
+          "methodName": "getRequestsByCommand",
+          "elementKind": "method",
+          "justification": "Additional query methods for improved searchability"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.List<org.kie.api.executor.RequestInfo> org.kie.api.executor.ExecutorQueryService::getRequestsByDeployment(java.lang.String, java.util.List<org.kie.api.executor.STATUS>, org.kie.api.runtime.query.QueryContext)",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "ExecutorQueryService",
+          "methodName": "getRequestsByDeployment",
+          "elementKind": "method",
+          "justification": "Additional query methods for improved searchability"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.List<org.kie.api.executor.RequestInfo> org.kie.api.executor.ExecutorQueryService::getRequestsByProcessInstance(java.lang.Long, java.util.List<org.kie.api.executor.STATUS>, org.kie.api.runtime.query.QueryContext)",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "ExecutorQueryService",
+          "methodName": "getRequestsByProcessInstance",
+          "elementKind": "method",
+          "justification": "Additional query methods for improved searchability"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.List<org.kie.api.executor.RequestInfo> org.kie.api.executor.ExecutorService::getRequestsByBusinessKey(java.lang.String, java.util.List<org.kie.api.executor.STATUS>, org.kie.api.runtime.query.QueryContext)",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "ExecutorService",
+          "methodName": "getRequestsByBusinessKey",
+          "elementKind": "method",
+          "justification": "Additional query methods for improved searchability"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.List<org.kie.api.executor.RequestInfo> org.kie.api.executor.ExecutorService::getRequestsByCommand(java.lang.String, java.util.List<org.kie.api.executor.STATUS>, org.kie.api.runtime.query.QueryContext)",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "ExecutorService",
+          "methodName": "getRequestsByCommand",
+          "elementKind": "method",
+          "justification": "Additional query methods for improved searchability"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.List<org.kie.api.executor.RequestInfo> org.kie.api.executor.ExecutorService::getRequestsByDeployment(java.lang.String, java.util.List<org.kie.api.executor.STATUS>, org.kie.api.runtime.query.QueryContext)",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "ExecutorService",
+          "methodName": "getRequestsByDeployment",
+          "elementKind": "method",
+          "justification": "Additional query methods for improved searchability"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.List<org.kie.api.executor.RequestInfo> org.kie.api.executor.ExecutorService::getRequestsByProcessInstance(java.lang.Long, java.util.List<org.kie.api.executor.STATUS>, org.kie.api.runtime.query.QueryContext)",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "ExecutorService",
+          "methodName": "getRequestsByProcessInstance",
+          "elementKind": "method",
+          "justification": "Additional query methods for improved searchability"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.executor.ExecutorService::updateRequestData(java.lang.Long, java.util.Map<java.lang.String, java.lang.Object>)",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "ExecutorService",
+          "methodName": "updateRequestData",
+          "elementKind": "method",
+          "justification": "Added support for request data update"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.String org.kie.api.executor.RequestInfo::getDeploymentId()",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "RequestInfo",
+          "methodName": "getDeploymentId",
+          "elementKind": "method",
+          "justification": "Aded deployment id to the RequestInfo for more customization options"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.Long org.kie.api.executor.RequestInfo::getProcessInstanceId()",
+          "package": "org.kie.api.executor",
+          "classSimpleName": "RequestInfo",
+          "methodName": "getProcessInstanceId",
+          "elementKind": "method",
+          "justification": "Aded process instance id to the RequestInfo for more customization options"
         }
       ]
     }
