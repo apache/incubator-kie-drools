@@ -106,7 +106,7 @@ public class StringDataGenerator {
                         "ES");
     }
 
-    public static StringDataGenerator build10kLocationNames() {
+    public static StringDataGenerator buildLocationNames() {
         return new StringDataGenerator()
                 .addPart(true, 0,
                         "Los",
