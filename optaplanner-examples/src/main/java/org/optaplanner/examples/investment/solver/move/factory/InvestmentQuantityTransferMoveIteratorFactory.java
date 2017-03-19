@@ -43,12 +43,14 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
     }
 
     @Override
-    public Iterator<Move> createOriginalMoveIterator(ScoreDirector<InvestmentSolution> scoreDirector) {
+    public Iterator<Move<InvestmentSolution>> createOriginalMoveIterator(
+            ScoreDirector<InvestmentSolution> scoreDirector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Iterator<Move> createRandomMoveIterator(ScoreDirector<InvestmentSolution> scoreDirector, Random workingRandom) {
+    public RandomInvestmentQuantityTransferMoveIterator createRandomMoveIterator(
+            ScoreDirector<InvestmentSolution> scoreDirector, Random workingRandom) {
         InvestmentSolution solution = scoreDirector.getWorkingSolution();
         List<AssetClassAllocation> allocationList = solution.getAssetClassAllocationList();
         NavigableMap<Long, AssetClassAllocation> quantityMillisIncrementToAllocationMap = new TreeMap<>();
@@ -69,7 +71,8 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
                 quantityMillisIncrementToAllocationMap, workingRandom);
     }
 
-    private class RandomInvestmentQuantityTransferMoveIterator implements Iterator<Move> {
+    public static class RandomInvestmentQuantityTransferMoveIterator
+            implements Iterator<InvestmentQuantityTransferMove> {
 
         private final List<AssetClassAllocation> allocationList;
         private final NavigableMap<Long, AssetClassAllocation> quantityMillisIncrementToAllocationMap;
@@ -88,7 +91,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
         }
 
         @Override
-        public Move next() {
+        public InvestmentQuantityTransferMove next() {
             long transferMillis
                     = RandomUtils.nextLong(workingRandom, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
             Map.Entry<Long, AssetClassAllocation> lowerEntry

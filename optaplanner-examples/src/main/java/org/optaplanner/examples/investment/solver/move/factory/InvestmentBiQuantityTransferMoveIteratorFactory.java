@@ -44,12 +44,14 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIter
     }
 
     @Override
-    public Iterator<Move> createOriginalMoveIterator(ScoreDirector<InvestmentSolution> scoreDirector) {
+    public Iterator<Move<InvestmentSolution>> createOriginalMoveIterator(
+            ScoreDirector<InvestmentSolution> scoreDirector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Iterator<Move> createRandomMoveIterator(ScoreDirector<InvestmentSolution> scoreDirector, Random workingRandom) {
+    public Iterator<Move<InvestmentSolution>> createRandomMoveIterator(
+            ScoreDirector<InvestmentSolution> scoreDirector, Random workingRandom) {
         InvestmentSolution solution = scoreDirector.getWorkingSolution();
         List<AssetClassAllocation> allocationList = solution.getAssetClassAllocationList();
         List<AssetClassAllocation> nonEmptyAllocationList = new ArrayList<>(allocationList);
@@ -63,7 +65,7 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIter
                 nonEmptyAllocationList, workingRandom);
     }
 
-    private class RandomInvestmentBiQuantityTransferMoveIterator implements Iterator<Move> {
+    private static class RandomInvestmentBiQuantityTransferMoveIterator implements Iterator<Move<InvestmentSolution>> {
 
         private final List<AssetClassAllocation> allocationList;
         private final List<AssetClassAllocation> nonEmptyAllocationList;
@@ -82,7 +84,7 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIter
         }
 
         @Override
-        public Move next() {
+        public Move<InvestmentSolution> next() {
             AssetClassAllocation firstFrom;
             AssetClassAllocation secondFrom;
             int nonEmptyAllocationListSize = nonEmptyAllocationList.size();
