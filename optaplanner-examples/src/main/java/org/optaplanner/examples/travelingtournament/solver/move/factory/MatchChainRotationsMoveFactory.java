@@ -35,8 +35,8 @@ import org.optaplanner.examples.travelingtournament.solver.move.MatchChainRotati
 public class MatchChainRotationsMoveFactory implements MoveListFactory<TravelingTournament> {
 
     @Override
-    public List<Move> createMoveList(TravelingTournament travelingTournament) {
-        List<Move> moveList = new ArrayList<>();
+    public List<Move<TravelingTournament>> createMoveList(TravelingTournament travelingTournament) {
+        List<Move<TravelingTournament>> moveList = new ArrayList<>();
         RotationMovesFactory rotationMovesFactory = new RotationMovesFactory(travelingTournament);
         rotationMovesFactory.addDayRotation(moveList);
         rotationMovesFactory.addTeamRotation(moveList);
@@ -89,7 +89,7 @@ public class MatchChainRotationsMoveFactory implements MoveListFactory<Traveling
         /**
          * @TODO clean up this code
          */
-        private void addDayRotation(List<Move> moveList) {
+        private void addDayRotation(List<Move<TravelingTournament>> moveList) {
             for (ListIterator<Day> firstDayIt = dayList.listIterator(); firstDayIt.hasNext();) {
                 Day firstDay = firstDayIt.next();
                 Map<Team, Match> firstDayTeamMap = dayTeamMap.get(firstDay);
@@ -118,7 +118,7 @@ public class MatchChainRotationsMoveFactory implements MoveListFactory<Traveling
                         // if size is 2 then addCachedHomeAwaySwapMoves will have done it
                         if (rotateList.size() > 2) {
                             List<Match> emptyList = Collections.emptyList();
-                            Move rotateMove = new MatchChainRotationsMove(rotateList, emptyList);
+                            MatchChainRotationsMove rotateMove = new MatchChainRotationsMove(rotateList, emptyList);
                             moveList.add(rotateMove);
                         }
                     }
@@ -129,7 +129,7 @@ public class MatchChainRotationsMoveFactory implements MoveListFactory<Traveling
         /**
          * @TODO clean up this code
          */
-        private void addTeamRotation(List<Move> moveList) {
+        private void addTeamRotation(List<Move<TravelingTournament>> moveList) {
             for (ListIterator<Team> firstTeamIt = teamList.listIterator(); firstTeamIt.hasNext();) {
                 Team firstTeam = firstTeamIt.next();
                 Map<Day, Match> firstTeamDayMap = teamDayMap.get(firstTeam);
@@ -206,12 +206,13 @@ public class MatchChainRotationsMoveFactory implements MoveListFactory<Traveling
 
         }
 
-        private void addTeamRotateMove(List<Move> moveList, List<Match> firstRotateList, List<Match> secondRotateList) {
+        private void addTeamRotateMove(List<Move<TravelingTournament>> moveList,
+                List<Match> firstRotateList, List<Match> secondRotateList) {
             assert (firstRotateList.size() == secondRotateList.size());
             // if size is 1 then addCachedHomeAwaySwapMoves will have done it
             // if size is 2 then addDayRotation will have done it by 1 list of size 4
             if (firstRotateList.size() > 2) {
-                Move rotateMove = new MatchChainRotationsMove(firstRotateList, secondRotateList);
+                MatchChainRotationsMove rotateMove = new MatchChainRotationsMove(firstRotateList, secondRotateList);
                 moveList.add(rotateMove);
             }
         }

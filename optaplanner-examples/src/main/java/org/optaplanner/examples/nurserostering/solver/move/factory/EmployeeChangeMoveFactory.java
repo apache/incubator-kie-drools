@@ -19,7 +19,6 @@ package org.optaplanner.examples.nurserostering.solver.move.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
@@ -32,8 +31,8 @@ public class EmployeeChangeMoveFactory implements MoveListFactory<NurseRoster> {
     private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
 
     @Override
-    public List<Move> createMoveList(NurseRoster nurseRoster) {
-        List<Move> moveList = new ArrayList<>();
+    public List<EmployeeChangeMove> createMoveList(NurseRoster nurseRoster) {
+        List<EmployeeChangeMove> moveList = new ArrayList<>();
         List<Employee> employeeList = nurseRoster.getEmployeeList();
         for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
             if (filter.accept(nurseRoster, shiftAssignment)) {

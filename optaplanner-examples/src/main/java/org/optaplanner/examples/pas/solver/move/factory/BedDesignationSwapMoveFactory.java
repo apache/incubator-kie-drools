@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
@@ -29,9 +28,9 @@ import org.optaplanner.examples.pas.solver.move.BedDesignationSwapMove;
 public class BedDesignationSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
 
     @Override
-    public List<Move> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
+    public List<BedDesignationSwapMove> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
         List<BedDesignation> bedDesignationList = patientAdmissionSchedule.getBedDesignationList();
-        List<Move> moveList = new ArrayList<>();
+        List<BedDesignationSwapMove> moveList = new ArrayList<>();
         for (ListIterator<BedDesignation> leftIt = bedDesignationList.listIterator(); leftIt.hasNext();) {
             BedDesignation leftBedDesignation = leftIt.next();
             for (ListIterator<BedDesignation> rightIt = bedDesignationList.listIterator(leftIt.nextIndex());

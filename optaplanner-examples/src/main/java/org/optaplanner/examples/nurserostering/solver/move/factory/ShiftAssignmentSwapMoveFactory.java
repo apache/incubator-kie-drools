@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
@@ -33,7 +32,7 @@ public class ShiftAssignmentSwapMoveFactory implements MoveListFactory<NurseRost
     private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
 
     @Override
-    public List<Move> createMoveList(NurseRoster nurseRoster) {
+    public List<ShiftAssignmentSwapMove> createMoveList(NurseRoster nurseRoster) {
         // Filter out every immovable ShiftAssignment
         List<ShiftAssignment> shiftAssignmentList = new ArrayList<>(
                 nurseRoster.getShiftAssignmentList());
@@ -43,7 +42,7 @@ public class ShiftAssignmentSwapMoveFactory implements MoveListFactory<NurseRost
                 it.remove();
             }
         }
-        List<Move> moveList = new ArrayList<>();
+        List<ShiftAssignmentSwapMove> moveList = new ArrayList<>();
         for (ListIterator<ShiftAssignment> leftIt = shiftAssignmentList.listIterator(); leftIt.hasNext();) {
             ShiftAssignment leftShiftAssignment = leftIt.next();
             for (ListIterator<ShiftAssignment> rightIt = shiftAssignmentList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {

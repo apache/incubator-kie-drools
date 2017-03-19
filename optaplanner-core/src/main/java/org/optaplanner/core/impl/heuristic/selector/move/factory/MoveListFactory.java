@@ -39,6 +39,6 @@ public interface MoveListFactory<Solution_> {
      * @param solution never null, the {@link PlanningSolution} of which the {@link Move}s need to be generated
      * @return never null
      */
-    List<? extends Move> createMoveList(Solution_ solution);
+    List<? extends Move<Solution_>> createMoveList(Solution_ solution);
 
 }

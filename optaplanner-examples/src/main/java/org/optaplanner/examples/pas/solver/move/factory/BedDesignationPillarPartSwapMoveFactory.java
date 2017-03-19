@@ -38,7 +38,7 @@ import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
 
     @Override
-    public List<Move> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
+    public List<Move<PatientAdmissionSchedule>> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
         Map<Bed, List<BedDesignation>> bedToBedDesignationList = new HashMap<>(
                 patientAdmissionSchedule.getBedList().size());
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
@@ -63,7 +63,7 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
         }
 
         List<Bed> bedList = patientAdmissionSchedule.getBedList();
-        List<Move> moveList = new ArrayList<>();
+        List<Move<PatientAdmissionSchedule>> moveList = new ArrayList<>();
 
         // For every 2 distinct beds
         for (ListIterator<Bed> leftBedIt = bedList.listIterator(); leftBedIt.hasNext();) {
