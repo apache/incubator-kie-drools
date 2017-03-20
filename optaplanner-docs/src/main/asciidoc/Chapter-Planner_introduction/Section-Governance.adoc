@@ -1,21 +1,21 @@
 [[governance]]
-== Governance
+= Governance
 
 
 [[statusOfOptaPlanner]]
-=== Status of OptaPlanner
+== Status of OptaPlanner
 
 OptaPlanner is stable, reliable and scaleable. It has been heavily tested with unit, integration, and stress tests, and is used in production throughout the world. One example handles over 50 000 variables with 5000 variables each, multiple constraint types and billions of possible constraint matches. 
 
 
 [[releaseNotes]]
-=== Release Notes
+== Release Notes
 
 We release a `Beta` or `CR` version every few weeks and a `Final` version every few months. https://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
 
 
 [[backwardsCompatibility]]
-=== Backwards Compatibility
+== Backwards Compatibility
 
 OptaPlanner separates its API and implementation:
 
@@ -32,7 +32,7 @@ Those documented `impl` classes are reliable and safe to use (unless explicitly 
 
 
 [[communityAndSupport]]
-=== Community and Support
+== Community and Support
 
 For news and articles, check https://www.optaplanner.org/blog/[our blog], Google+ (https://plus.google.com/+OptaPlannerOrg[OptaPlanner], https://plus.google.com/+GeoffreyDeSmet[Geoffrey De Smet]) and twitter (https://twitter.com/OptaPlanner[OptaPlanner], https://twitter.com/GeoffreyDeSmet[Geoffrey De Smet]).
 *If OptaPlanner helps you, help us by blogging or tweeting about it!*
@@ -46,7 +46,7 @@ For enterprise support and consulting, take a look at https://www.optaplanner.or
 
 
 [[relationshipWithKie]]
-=== Relationship with Drools and jBPM
+== Relationship with Drools and jBPM
 
 OptaPlanner is part of the http://www.kiegroup.org[KIE group of projects].
 It releases regularly (often once or twice per month) together with the http://www.drools.org/[Drools] rule engine and the http://www.jbpm.org/[jBPM] workflow engine.

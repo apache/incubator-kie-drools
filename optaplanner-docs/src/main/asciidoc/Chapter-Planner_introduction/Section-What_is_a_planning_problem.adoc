@@ -1,5 +1,5 @@
 [[whatIsAPlanningProblem]]
-== What is a Planning Problem?
+= What is a Planning Problem?
 image::Chapter-Planner_introduction/whatIsAPlanningProblem.png[align="center"]
 
 A planning problem has an optimal goal, based on limited resources and under specific constraints. Optimal goals can be any number of things, such as:
@@ -21,7 +21,7 @@ OptaPlanner helps Java^TM^ programmers solve constraint satisfaction problems ef
 
 
 [[aPlanningProblemIsNPCompleteOrNPHard]]
-=== A Planning Problem is NP-complete or NP-hard
+== A Planning Problem is NP-complete or NP-hard
 
 All the use cases above are _probably_ http://en.wikipedia.org/wiki/NP-complete[NP-complete] or harder.
 In layman's terms, NP-complete means:
@@ -47,7 +47,7 @@ By using advanced optimization algorithms, *OptaPlanner does find a good solutio
 
 
 [[aPlanningProblemHasConstraints]]
-=== A Planning Problem Has (Hard and Soft) Constraints
+== A Planning Problem Has (Hard and Soft) Constraints
 
 Usually, a planning problem has at least two levels of constraints:
 
@@ -67,7 +67,7 @@ Such code is easy, flexible and scalable.
 
 
 [[aPlanningProblemHasAHugeSearchSpace]]
-=== A Planning Problem Has a Huge Search Space
+== A Planning Problem Has a Huge Search Space
 
 A planning problem has a number of __solutions__.
 There are several categories of solutions:
