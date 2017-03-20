@@ -61,9 +61,6 @@ public class BasicPlumbingTermination extends AbstractTermination {
      */
     public synchronized boolean terminateEarly() {
         boolean terminationEarlySuccessful = !terminatedEarly;
-        if (terminationEarlySuccessful) {
-            logger.info("Terminating solver early.");
-        }
         terminatedEarly = true;
         notifyAll();
         return terminationEarlySuccessful;

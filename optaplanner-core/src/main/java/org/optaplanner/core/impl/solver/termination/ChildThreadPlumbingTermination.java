@@ -38,9 +38,6 @@ public class ChildThreadPlumbingTermination extends AbstractTermination {
      */
     public synchronized boolean terminateChildren() {
         boolean terminationEarlySuccessful = !terminateChildren;
-        if (terminationEarlySuccessful) {
-            logger.debug("Terminating child solvers early.");
-        }
         terminateChildren = true;
         return terminationEarlySuccessful;
     }

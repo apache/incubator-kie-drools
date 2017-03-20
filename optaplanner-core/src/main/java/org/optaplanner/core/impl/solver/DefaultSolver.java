@@ -124,7 +124,11 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public boolean terminateEarly() {
-        return basicPlumbingTermination.terminateEarly();
+        boolean terminationEarlySuccessful = basicPlumbingTermination.terminateEarly();
+        if (terminationEarlySuccessful) {
+            logger.info("Terminating solver early.");
+        }
+        return terminationEarlySuccessful;
     }
 
     @Override
