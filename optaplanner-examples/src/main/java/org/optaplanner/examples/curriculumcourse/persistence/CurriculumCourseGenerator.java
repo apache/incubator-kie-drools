@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.StringDataGenerator;
 import org.optaplanner.examples.curriculumcourse.domain.Course;
@@ -39,18 +38,20 @@ import org.optaplanner.examples.curriculumcourse.domain.Period;
 import org.optaplanner.examples.curriculumcourse.domain.Room;
 import org.optaplanner.examples.curriculumcourse.domain.Teacher;
 import org.optaplanner.examples.curriculumcourse.domain.Timeslot;
+import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
 import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.getFlooredPossibleSolutionSize;
 
 public class CurriculumCourseGenerator extends LoggingMain {
 
-    public static final int DAY_LIST_SIZE = 5;
-    public static final int TIMESLOT_LIST_SIZE = 7;
+    private static final int DAY_LIST_SIZE = 5;
+    private static final int TIMESLOT_LIST_SIZE = 7;
+    private static final int PERIOD_LIST_SIZE = DAY_LIST_SIZE * TIMESLOT_LIST_SIZE - TIMESLOT_LIST_SIZE + 4;
 
     public static void main(String[] args) {
         CurriculumCourseGenerator generator = new CurriculumCourseGenerator();
-        generator.writeCourseSchedule(100, 4);
-        generator.writeCourseSchedule(160, 5);
+        generator.writeCourseSchedule(200, 8);
+        generator.writeCourseSchedule(400, 16);
     }
 
     private final int[] roomCapacityOptions = {
@@ -92,16 +93,15 @@ public class CurriculumCourseGenerator extends LoggingMain {
     private void writeCourseSchedule(int lectureListSize, int curriculumListSize) {
         int courseListSize = lectureListSize * 2 / 9 + 1;
         int teacherListSize = courseListSize / 3 + 1;
-        int periodListSize = DAY_LIST_SIZE * TIMESLOT_LIST_SIZE - TIMESLOT_LIST_SIZE + 4;
-        int roomListSize = curriculumListSize * 2 / 5 + 1;
-        String fileName = determineFileName(lectureListSize, periodListSize, roomListSize);
+        int roomListSize = lectureListSize * 2 / PERIOD_LIST_SIZE;
+        String fileName = determineFileName(lectureListSize, PERIOD_LIST_SIZE, roomListSize);
         File outputFile = new File(outputDir, fileName + ".xml");
         CourseSchedule schedule = createCourseSchedule(fileName, teacherListSize, curriculumListSize, courseListSize, lectureListSize, roomListSize);
         solutionDao.writeSolution(schedule, outputFile);
     }
 
     private String determineFileName(int lectureListSize, int periodListSize, int roomListSize) {
-        return lectureListSize + "lectures-" + periodListSize + "periods" + roomListSize + "rooms";
+        return lectureListSize + "lectures-" + periodListSize + "periods-" + roomListSize + "rooms";
     }
 
     public CourseSchedule createCourseSchedule(String fileName, int teacherListSize, int curriculumListSize, int courseListSize, int lectureListSize, int roomListSize) {
@@ -117,6 +117,7 @@ public class CurriculumCourseGenerator extends LoggingMain {
         createLectureList(schedule, lectureListSize);
         createRoomList(schedule, roomListSize);
         createCurriculumList(schedule, curriculumListSize);
+        createUnavailablePeriodPenaltyList(schedule);
 
         int possibleForOneLectureSize = schedule.getPeriodList().size() * schedule.getRoomList().size();
         BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneLectureSize).pow(
@@ -198,18 +199,17 @@ public class CurriculumCourseGenerator extends LoggingMain {
         for (int i = 0; i < courseListSize; i++) {
             Course course = new Course();
             course.setId((long) i);
-            if (i < courseCodes.length * 2) {
-
-            }
             String code = (i < courseCodes.length * 2)
                     ? courseCodes[i % courseCodes.length]
                     : courseCodes[random.nextInt(courseCodes.length)];
+            StringDataGenerator codeSuffixGenerator = new StringDataGenerator("")
+                    .addAToZPart(true, 0);
             if (courseListSize >= courseCodes.length) {
-                int codeSuffixNumber = 1;
-                while (codeSet.contains(code + codeSuffixNumber)) {
-                    codeSuffixNumber++;
+                String codeSuffix = codeSuffixGenerator.generateNextValue();
+                while (codeSet.contains(code + codeSuffix)) {
+                    codeSuffix = codeSuffixGenerator.generateNextValue();
                 }
-                code = code + codeSuffixNumber;
+                code = code + codeSuffix;
                 codeSet.add(code);
             }
             course.setCode(code);
@@ -261,20 +261,50 @@ public class CurriculumCourseGenerator extends LoggingMain {
         int maximumCapacity = schedule.getRoomList().stream().mapToInt(Room::getCapacity).max().getAsInt();
         List<Course> courseList = schedule.getCourseList();
         List<Curriculum> curriculumList = new ArrayList<>(curriculumListSize);
+        StringDataGenerator codeGenerator = new StringDataGenerator("")
+                .addAToZPart(true, 0).addAToZPart(false, 1).addAToZPart(false, 1).addAToZPart(false, 1);
+        codeGenerator.predictMaximumSizeAndReset(curriculumListSize);
         for (int i = 0; i < curriculumListSize; i++) {
             Curriculum curriculum = new Curriculum();
             curriculum.setId((long) i);
-            int studentSize = 5 + random.nextInt(20);
+            curriculum.setCode("Group " + codeGenerator.generateNextValue());
+            // The studentSize is more likely to be 15 than 5 or 25
+            int studentSize = 5 + random.nextInt(10) + random.nextInt(10);
 
-//            List<Course> courseSubList = courseList.stream()
-//                    .filter(course -> course.getStudentSize() + studentSize < maximumCapacity)
-//                    .collect(Collectors.toList());
-//            Collections.shuffle(courseSubList);
-//            courseSubList.stream().limit(ggg);
+            List<Course> courseSubList = courseList.stream()
+                    .filter(course -> course.getStudentSize() + studentSize < maximumCapacity)
+                    .collect(Collectors.toList());
+            Collections.shuffle(courseSubList, random);
+
+            int lectureCount = 0;
+            for (Course course : courseSubList) {
+                lectureCount += course.getLectureSize();
+                if (lectureCount > PERIOD_LIST_SIZE) {
+                    break;
+                }
+                course.getCurriculumList().add(curriculum);
+                course.setStudentSize(course.getStudentSize() + studentSize);
+            }
 
             curriculumList.add(curriculum);
         }
         schedule.setCurriculumList(curriculumList);
+    }
+
+    private void createUnavailablePeriodPenaltyList(CourseSchedule schedule) {
+        List<Course> courseList = schedule.getCourseList();
+        List<Period> periodList = schedule.getPeriodList();
+        List<UnavailablePeriodPenalty> unavailablePeriodPenaltyList = new ArrayList<>(courseList.size());
+        long penaltyId = 0L;
+        for (Course course : courseList) {
+            UnavailablePeriodPenalty penalty = new UnavailablePeriodPenalty();
+            penalty.setId(penaltyId);
+            penaltyId++;
+            penalty.setCourse(course);
+            penalty.setPeriod(periodList.get(random.nextInt(periodList.size())));
+            unavailablePeriodPenaltyList.add(penalty);
+        }
+        schedule.setUnavailablePeriodPenaltyList(unavailablePeriodPenaltyList);
     }
 
 }

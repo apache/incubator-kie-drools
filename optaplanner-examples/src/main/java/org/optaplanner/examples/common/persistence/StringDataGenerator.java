@@ -187,6 +187,23 @@ public class StringDataGenerator {
         return addPart(false, DEFAULT_ELIMINATION_INDEX_MAP[partValuesList.size()], partValues);
     }
 
+    public StringDataGenerator addAToZPart() {
+        return addAToZPart(false, DEFAULT_ELIMINATION_INDEX_MAP[partValuesList.size()]);
+    }
+
+    public StringDataGenerator addAToZPart(boolean required, int eliminationIndex) {
+        return addPart(required, eliminationIndex,
+                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
+    }
+
+    public StringDataGenerator addNumericPart(boolean required, int eliminationIndex, int from, int to) {
+        String[] partValues = new String[to - from];
+        for (int i = from; i < to; i++) {
+            partValues[i - from] = Integer.toString(i);
+        }
+        return addPart(required, eliminationIndex, partValues);
+    }
+
     public StringDataGenerator addPart(boolean required, int eliminationIndex, String... partValues) {
         if (partValuesList.isEmpty()) {
             partValuesLength = partValues.length;
