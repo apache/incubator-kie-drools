@@ -106,7 +106,7 @@ public class TangoColorFactory {
         if (shadeIndex == 0) {
             color = SEQUENCE_1[colorIndex];
         } else if (shadeIndex == 1) {
-            color = SEQUENCE_2[colorIndex]; // TODO
+            color = SEQUENCE_2[colorIndex];
         } else if (shadeIndex == 2) {
             color = SEQUENCE_3[colorIndex];
         } else {

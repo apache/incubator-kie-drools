@@ -173,8 +173,9 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
             return solutionPartitioner;
         } else {
             if (solutionPartitionerCustomProperties != null) {
-                // TODO
-                throw new IllegalStateException();
+                throw new IllegalStateException("If there is no solutionPartitionerClass (" + solutionPartitionerClass
+                        + "), then there can be no solutionPartitionerCustomProperties ("
+                        + solutionPartitionerCustomProperties + ") either.");
             }
             // TODO
             throw new UnsupportedOperationException();
