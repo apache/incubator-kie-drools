@@ -23,6 +23,7 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.core.util.Msg;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
@@ -30,114 +31,201 @@ rule BKM_MISSING_EXPR
 when
     $d : BusinessKnowledgeModel( encapsulatedLogic == null || encapsulatedLogic.expression == null )
 then
-    reporter.report( DMNMessage.Severity.ERROR, $d, Msg.BKM_MISSING_EXPR );
-end
-
-rule BKM_MISSING_VAR
-when
-    $d : BusinessKnowledgeModel()
-    not( BusinessKnowledgeModel( /variable{name == $d.name}, this == $d ) )
-then
-    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.BKM_MISSING_VAR );
-end
-
-rule CONTEXT_DUP_ENTRY
-when
-  $ce1 : ContextEntry( parent instanceof Context )
-  $ce2 : ContextEntry( variable!.name == $ce1.variable!.name, parent == $ce1.parent, this != $ce1 )
-then
-  reporter.report( DMNMessage.Severity.ERROR,  $ce1 , Msg.CONTEXT_DUP_ENTRY );
-end
-
-rule CONTEXT_ENTRY_NOTYPEREF
-when
-  $ce1 : ContextEntry( variable != null, variable.typeRef == null )
-then
-  reporter.report( DMNMessage.Severity.ERROR,  $ce1 , Msg.CONTEXT_ENTRY_NOTYPEREF );
-end
-
-rule DRGELEM_NOT_UNIQUE
-when
-  $x : DRGElement()
-  $y : DRGElement( name == $x.name, this != $x )
-then
-  reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.DRGELEM_NOT_UNIQUE );
+    reporter.report( DMNMessage.Severity.ERROR, $d, Msg.MISSING_EXPRESSION_FOR_BKM, $d.getIdentifierString() );
 end
 
 rule DECISION_MISSING_EXPR
 when
     $d : Decision( expression == null )
 then
-    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.DECISION_MISSING_EXPR );
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.MISSING_EXPRESSION_FOR_DECISION, $d.getIdentifierString() );
+end
+
+rule INVOCATION_MISSING_EXPR
+when
+    $b : Binding( expression == null )
+then
+    reporter.report( DMNMessage.Severity.ERROR, $b, Msg.MISSING_EXPRESSION_FOR_INVOCATION,
+                     $b.getParameter() != null ? $b.getParameter().getIdentifierString() : "[unnamed]",
+                     $b.getParentDRGElement().getIdentifierString() );
+end
+
+rule BKM_MISSING_VAR
+when
+    $d : BusinessKnowledgeModel( variable == null )
+then
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.MISSING_VARIABLE_FOR_BKM, $d.getIdentifierString() );
 end
 
 rule DECISION_MISSING_VAR
 when
-    $d : Decision()
-    not( Decision( /variable{name == $d.name}, this == $d ) )
+    $d : Decision( variable == null )
 then
-    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.DECISION_MISSING_VAR );
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.MISSING_VARIABLE_FOR_DECISION, $d.getIdentifierString() );
+end
+
+rule INPUT_MISSING_VAR
+when
+    $d : InputData( variable == null )
+then
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.MISSING_VARIABLE_FOR_INPUT, $d.getIdentifierString() );
+end
+
+rule BKM_VAR_MISMATCH
+when
+    $d : BusinessKnowledgeModel( variable != null, name != variable.name )
+then
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.VARIABLE_NAME_MISMATCH_FOR_BKM, $d.getVariable().getName(), $d.getName() );
+end
+
+rule DECISION_VAR_MISMATCH
+when
+    $d : Decision( variable != null, name != variable.name )
+then
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.VARIABLE_NAME_MISMATCH_FOR_DECISION, $d.getVariable().getName(), $d.getName() );
+end
+
+rule INPUT_VAR_MISMATCH
+when
+    $d : InputData( variable != null, name != variable.name )
+then
+    reporter.report( DMNMessage.Severity.ERROR,  $d , Msg.VARIABLE_NAME_MISMATCH_FOR_INPUT, $d.getVariable().getName(), $d.getName() );
+end
+
+rule NAME_INVALID
+when
+    $ne : NamedElement( parent != null,
+                        // the following constraint prevents duplicate reporting due to variables having the same name as their enclosing nodes
+                        !( parent instanceof NamedElement ) || (((NamedElement)parent).name != name ),
+                        !FEELParser.isVariableNameValid( name ) )
+then
+    java.util.List<FEELEvent> errors = FEELParser.checkVariableName( $ne.getName() );
+    if ( ! errors.isEmpty() ) {
+        reporter.report( DMNMessage.Severity.ERROR,  $ne , Msg.INVALID_NAME, $ne.getName(), errors.get( 0 ).getMessage() );
+    }
+end
+
+rule CONTEXT_DUP_ENTRY
+when
+  $ce1 : ContextEntry( parent instanceof Context, variable != null )
+  $ce2 : ContextEntry( variable != null, variable!.name == $ce1.variable!.name, parent == $ce1.parent,
+                       this != $ce1 )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $ce1 , Msg.DUPLICATE_CONTEXT_ENTRY, $ce1.getVariable().getName() );
+end
+
+rule VARIABLE_NOTYPEREF
+when
+  $ce1 : InformationItem( typeRef == null, !(parent instanceof Binding || parent instanceof FunctionDefinition || parent instanceof Relation ) )
+then
+  reporter.report( DMNMessage.Severity.WARN,  $ce1 , Msg.MISSING_TYPEREF_FOR_VARIABLE, $ce1.getName(), $ce1.getParentDRGElement().getName() );
+end
+
+rule PARAMETER_NOTYPEREF
+when
+  $ce1 : InformationItem( typeRef == null, parent instanceof FunctionDefinition )
+then
+  reporter.report( DMNMessage.Severity.WARN,  $ce1 , Msg.MISSING_TYPEREF_FOR_PARAMETER, $ce1.getName(), $ce1.getParentDRGElement().getName() );
+end
+
+rule COLUMN_NOTYPEREF
+when
+  $ce1 : InformationItem( typeRef == null, parent instanceof Relation )
+then
+  reporter.report( DMNMessage.Severity.WARN,  $ce1 , Msg.MISSING_TYPEREF_FOR_COLUMN, $ce1.getName(), $ce1.getParentDRGElement().getName() );
+end
+
+rule DRGELEM_NOT_UNIQUE
+when
+  $x : DRGElement( parent instanceof Definitions )
+  $y : DRGElement( name == $x.name, parent instanceof Definitions,
+                   parent == $x.parent,
+                   this != $x )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.DUPLICATE_DRG_ELEMENT, $x.getName() );
 end
 
 rule DTABLE_MULTIPLEOUT_NAME
 when
   $oc : OutputClause( parent instanceof DecisionTable, parent.output.size > 1, this.name == null )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.DTABLE_MULTIPLEOUT_NAME );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.MISSING_NAME_FOR_DT_OUTPUT, $oc.getParentDRGElement().getName() );
 end
 
 rule DTABLE_MULTIPLEOUT_TYPEREF
 when
   $oc : OutputClause( parent instanceof DecisionTable, parent.output.size > 1, this.typeRef == null )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.DTABLE_MULTIPLEOUT_TYPEREF );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.MISSING_TYPEREF_FOR_DT_OUTPUT, $oc.getParentDRGElement().getName() );
 end
 
 rule DTABLE_PRIORITY_MISSING_OUTVALS
 when
   $oc : OutputClause( parent instanceof DecisionTable, parent#DecisionTable.hitPolicy == HitPolicy.PRIORITY, outputValues == null )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.DTABLE_PRIORITY_MISSING_OUTVALS );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.MISSING_OUTPUT_VALUES, $oc.getParentDRGElement().getName() );
 end
 
 rule DTABLE_SINGLEOUT_NONAME
 when
   $oc : OutputClause( parent instanceof DecisionTable, parent.output.size == 1, this.name != null )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.DTABLE_SINGLEOUT_NONAME );
+  reporter.report( DMNMessage.Severity.WARN,  $oc , Msg.DTABLE_SINGLEOUT_NONAME, $oc.getParentDRGElement().getName() );
 end
 
 rule DTABLE_SINGLEOUT_TYPEREF
 when
   $oc : OutputClause( parent instanceof DecisionTable, parent.output.size == 1, this.typeRef != null )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.DTABLE_SINGLEOUT_NOTYPEREF );
+  reporter.report( DMNMessage.Severity.WARN,  $oc , Msg.DTABLE_SINGLEOUT_NOTYPEREF, $oc.getParentDRGElement().getName() );
 end
 
 rule ELEMREF_NOHASH_p1
 when
   $oc : DMNElementReference( !href.startsWith("#"), !( href contains ":" ) ) 
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH, $oc.getParentDRGElement().getName() );
 end
 
 rule ELEMREF_NOHASH_p2
 when
   $oc : DMNElementReference( href contains ":", !href.substring(href.indexOf(":")+1).startsWith('#') )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH, $oc.getParentDRGElement().getName() );
 end
 
 function String rightOfHash(String input) {
     return input.substring(input.indexOf("#")+1);
 }
 
-rule ELEMREF_MISSING_TARGET
+rule ELEMREF_MISSING_INPUT
 when
-  $oc : DMNElementReference( $targetId : rightOfHash( href ) )
-  not ( DMNElement( id == $targetId ) ) 
+  $oc : DMNElementReference( $targetId : rightOfHash( href ),
+                             parent instanceof InformationRequirement,
+                             this == ((InformationRequirement)parent).requiredInput )
+  not ( InputData( id == $targetId ) )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_MISSING_TARGET );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQ_INPUT_NOT_FOUND_FOR_NODE, $targetId, $oc.getParentDRGElement().getName() );
+end
+
+rule ELEMREF_MISSING_DECISION
+when
+  $oc : DMNElementReference( $targetId : rightOfHash( href ),
+                             parent instanceof InformationRequirement,
+                             this == ((InformationRequirement)parent).requiredDecision )
+  not ( Decision( id == $targetId ) )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQ_DECISION_NOT_FOUND_FOR_NODE, $targetId, $oc.getParentDRGElement().getName() );
+end
+
+rule ELEMREF_MISSING_BKM
+when
+  $oc : DMNElementReference( $targetId : rightOfHash( href ),
+                             parent instanceof KnowledgeRequirement,
+                             this == ((KnowledgeRequirement)parent).requiredKnowledge )
+  not ( BusinessKnowledgeModel( id == $targetId ) )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQ_BKM_NOT_FOUND_FOR_NODE, $targetId, $oc.getParentDRGElement().getName() );
 end
 
 rule FORMAL_PARAM_DUPLICATED
@@ -145,15 +233,7 @@ when
     $fp1 : InformationItem( parent instanceof FunctionDefinition )
     $fp2 : InformationItem( name == $fp1.name, parent == $fp1.parent, this != $fp1 )
 then
-    reporter.report( DMNMessage.Severity.ERROR,  $fp1 , Msg.FORMAL_PARAM_DUPLICATED );
-end
-
-rule INPUTDATA_MISSING_VAR
-when
-    $id : InputData()
-    not( InputData( /variable{name == $id.name}, this == $id ) )
-then
-    reporter.report( DMNMessage.Severity.ERROR,  $id , Msg.INPUTDATA_MISSING_VAR );
+    reporter.report( DMNMessage.Severity.ERROR,  $fp1 , Msg.DUPLICATE_FORMAL_PARAM, $fp1.getName(), $fp1.getParentDRGElement().getName() );
 end
 
 // The parameter names in the Binding elements SHALL be a subset of the formalParameters of the calledFunction.
@@ -161,30 +241,37 @@ rule INVOCATION_INCONSISTENT_PARAM_NAMES
 when
     $inv : Invocation( $targetName : expression#LiteralExpression.text )
     $target : BusinessKnowledgeModel( name == $targetName )
-    accumulate ( Binding($s : parameter.name) from $inv.binding ; 
-                 $names : collectSet($s)  ) 
-    accumulate ( InformationItem($ts : name) from $target.encapsulatedLogic.formalParameter ; 
-                 $targetNames : collectSet($ts) ;
-                 ! $targetNames.containsAll($names) ) 
+    $b : Binding($s : parameter.name) from $inv.binding
+    not( InformationItem( name == $s ) from $target.encapsulatedLogic.formalParameter )
 then
-    reporter.report( DMNMessage.Severity.ERROR,  $inv , Msg.INVOCATION_INCONSISTENT_PARAM_NAMES );
+    reporter.report( DMNMessage.Severity.ERROR,  $b.getParameter() , Msg.UNKNOWN_PARAMETER, $s, $targetName, $inv.getParentDRGElement().getName() );
 end
 
-rule INVOCATION_MISSING_TARGET
-when
-    $inv : Invocation( $targetName : expression#LiteralExpression.text )
-    not( DRGElement( name == $targetName ) )  
-then
-    reporter.report( DMNMessage.Severity.ERROR,  $inv , Msg.INVOCATION_MISSING_TARGET );
-end
+// the following rule needs to be improved as an invocation element can be used to invoke
+// functions not defined in DRGelements
+//rule INVOCATION_MISSING_TARGET
+//when
+//    $inv : Invocation( $targetName : expression#LiteralExpression.text )
+//    not( DRGElement( name == $targetName ) )
+//then
+//    reporter.report( DMNMessage.Severity.ERROR,  $inv , Msg.INVOCATION_MISSING_TARGET );
+//end
 
 rule INVOCATION_WRONG_PARAM_COUNT
 when
     $inv : Invocation( $targetName : expression#LiteralExpression.text )
     BusinessKnowledgeModel( name == $targetName, encapsulatedLogic.formalParameter.size != $inv.binding.size ) 
 then
-    reporter.report( DMNMessage.Severity.ERROR,  $inv , Msg.INVOCATION_WRONG_PARAM_COUNT );
+    reporter.report( DMNMessage.Severity.ERROR,  $inv , Msg.PARAMETER_COUNT_MISMATCH, $targetName, $inv.getParentDRGElement().getName() );
 end
+
+function ItemDefinition getRootItemDef( ItemDefinition id ) {
+    ItemDefinition root = id;
+    while( !( root.getParent() instanceof Definitions ) ) {
+        root = (ItemDefinition) root.getParent();
+    }
+    return root;
+}
 
 // This is a lower level complement of ITEMDEF_NOT_UNIQUE below, for detecting duplicate attribute names inside the same ItemDefinition 
 rule ITEMCOMP_DUPLICATED
@@ -192,25 +279,15 @@ when
   $ic1 : ItemDefinition( parent instanceof ItemDefinition )
   $ic2 : ItemDefinition( name == $ic1.name, parent == $ic1.parent, this != $ic1 )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $ic1 , Msg.ITEMCOMP_DUPLICATED );
+  reporter.report( DMNMessage.Severity.ERROR,  $ic1 , Msg.DUPLICATED_ITEM_COMPONENT, $ic1.getName(), getRootItemDef( $ic1 ).getName() );
 end
 
 rule ITEMDEF_NOT_UNIQUE
 when
-  $x : ItemDefinition( !(parent instanceof ItemDefinition) )
-  $y : ItemDefinition( !(parent instanceof ItemDefinition), name == $x.name, this != $x )
+  $x : ItemDefinition( parent instanceof Definitions )
+  $y : ItemDefinition( parent instanceof Definitions, parent == $x.parent, name == $x.name, this != $x )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.ITEMDEF_NOT_UNIQUE );
-end
-
-rule NAME_INVALID
-when
-    $ne : NamedElement( parent != null, !(parent instanceof DRGElement),                       // << functional optimization to avoid double reporting as Decision name == variable name 
-                        FEELParser.isVariableNameValid( name ) == false )
-then
-//    java.util.List<FEELEvent> see = FEELParser.checkVariableName( $ne.getName() );
-//    String customMessage = see.isEmpty()? Msg.NAME_INVALID : see.get(0).getMessage()
-    reporter.report( DMNMessage.Severity.ERROR,  $ne , Msg.NAME_INVALID );
+  reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.DUPLICATED_ITEM_DEFINITION, $x.getName() );
 end
 
 rule RELATION_DUP_COLUMN
@@ -276,7 +353,7 @@ when
   $o: Expression( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NOT_FEEL_NOT_DEF );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRGElement().getIdentifierString() );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p2
@@ -284,7 +361,7 @@ when
   $o: InformationItem( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NOT_FEEL_NOT_DEF );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRGElement().getIdentifierString() );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p3
@@ -292,7 +369,7 @@ when
   $o: ItemDefinition( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NOT_FEEL_NOT_DEF );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRGElement().getIdentifierString() );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p4
@@ -300,5 +377,5 @@ when
   $o: OutputClause( typeRef != null, typeRef.prefix == null || getNamespaceURI( typeRef.prefix ) != DMNModelInstrumentedBase.URI_FEEL, $typeRef : typeRef )
   not( ItemDefinition( name == $typeRef ) )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NOT_FEEL_NOT_DEF );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_TYPE_REF_ON_NODE, $typeRef, $o.getParentDRGElement().getIdentifierString() );
 end

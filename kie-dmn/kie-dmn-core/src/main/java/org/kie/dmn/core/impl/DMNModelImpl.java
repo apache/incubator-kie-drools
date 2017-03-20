@@ -27,7 +27,9 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.ast.*;
+import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.model.v1_1.DMNElement;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Definitions;
 
 import java.util.*;
@@ -43,7 +45,7 @@ public class DMNModelImpl
     private Map<String, ItemDefNode>                itemDefs     = new HashMap<>();
 
     // these are messages created at loading/compilation time
-    private List<DMNMessage> messages = new ArrayList<>();
+    private DMNMessageManager messages = new DefaultDMNMessagesManager();
 
     public DMNModelImpl() {
     }
@@ -233,41 +235,42 @@ public class DMNModelImpl
 
     @Override
     public List<DMNMessage> getMessages() {
-        return messages;
+        return messages.getMessages();
     }
 
     @Override
     public List<DMNMessage> getMessages(DMNMessage.Severity... sevs) {
-        List<DMNMessage.Severity> severities = Arrays.asList( sevs );
-        return messages.stream().filter( m -> severities.contains( m.getSeverity() ) ).collect( Collectors.toList() );
+        return messages.getMessages( sevs );
     }
 
     @Override
     public boolean hasErrors() {
-        return messages.stream().anyMatch( m -> DMNMessage.Severity.ERROR.equals( m.getSeverity() ) );
+        return messages.hasErrors();
     }
 
+    @Override
+    public void addAll(List<DMNMessage> messages) {
+        this.messages.addAll( messages );
+    }
+
+    @Override
     public DMNMessage addMessage(DMNMessage msg) {
-        if( messages.contains( msg ) ) {
-            return this.messages.get( messages.indexOf( msg ) );
-        }
-        this.messages.add( msg );
-        return msg;
+        return messages.addMessage( msg );
     }
 
-    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNElement source) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source );
-        return addMessage( msg );
+    @Override
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source) {
+        return messages.addMessage( severity, message, messageType, source );
     }
 
-    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNElement source, Throwable exception) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, exception );
-        return addMessage( msg );
+    @Override
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source, Throwable exception) {
+        return messages.addMessage( severity, message, messageType, source, exception );
     }
 
-    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNElement source, FEELEvent feelEvent) {
-        DMNMessageImpl msg = new DMNMessageImpl( severity, message, messageType, source, feelEvent );
-        return addMessage( msg );
+    @Override
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source, FEELEvent feelEvent) {
+        return messages.addMessage( severity, message, messageType, source, feelEvent );
     }
 
 }

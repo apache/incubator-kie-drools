@@ -39,7 +39,7 @@ public class DMNCompilerHelper {
                                    model,
                                    null,
                                    errors.get( 0 ),
-                                   Msg.INVALID_NAME_VARIABLENAME,
+                                   Msg.INVALID_NAME,
                                    variableName,
                                    errors.get( 0 ).getMessage() );
             return false;

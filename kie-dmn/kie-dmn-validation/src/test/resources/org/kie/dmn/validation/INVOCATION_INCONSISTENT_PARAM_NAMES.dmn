@@ -21,7 +21,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
     <decision id="d1" name="Decision1">
-        <variable name="Decision1"/>
+        <variable name="Decision1" typeRef="feel:string"/>
         <invocation>
             <literalExpression>
                 <text>Decision2</text>

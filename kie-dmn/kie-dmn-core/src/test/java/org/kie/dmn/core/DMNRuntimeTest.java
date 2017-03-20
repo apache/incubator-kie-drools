@@ -752,7 +752,6 @@ public class DMNRuntimeTest {
         DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.hasErrors(), is(true) );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is(10) );
     }
 
     @Test

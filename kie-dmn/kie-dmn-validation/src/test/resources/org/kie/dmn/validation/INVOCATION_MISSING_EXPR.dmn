@@ -14,27 +14,34 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<definitions id="CONTEXT_DUP_ENTRY" name="CONTEXT_DUP_ENTRY"
+<definitions id="_INVOCATION_MISSING_EXPR" name="INVOCATION_MISSING_EXPR"
     namespace="https://github.com/kiegroup/kie-dmn"
     xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
     xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
     <decision id="d1" name="Decision1">
-        <variable name="Decision1" typeRef="feel:context"/>
-        <context>
-            <contextEntry>
-                <variable name="var1" typeRef="feel:string" />
-                <literalExpression>
-                    <text>"Hello World"</text>
-                </literalExpression>
-            </contextEntry>
-            <contextEntry>
-                <variable name="var1" typeRef="feel:string" /> <!-- DUP NAME -->
-                <literalExpression>
-                    <text>"Salve Mondo"</text>
-                </literalExpression>
-            </contextEntry>
-        </context>
+        <variable name="Decision1" typeRef="feel:string"/>
+        <invocation>
+            <literalExpression>
+                <text>Decision2</text>
+            </literalExpression>
+            <binding>
+                <parameter id="p1" name="Parameter1" typeRef="feel:string"/>
+            </binding>
+        </invocation>
     </decision>
+    <businessKnowledgeModel id="bkm1" name="Decision2">
+        <encapsulatedLogic>
+            <formalParameter name="Parameter1" typeRef="feel:string"/>
+            <context>
+                <contextEntry>
+                    <literalExpression>
+                        <text>"Hello "+Parameter1</text>
+                    </literalExpression>
+                </contextEntry>
+            </context>
+        </encapsulatedLogic>
+        <variable name="Decision2" typeRef="feel:string"/>
+    </businessKnowledgeModel>
 </definitions>

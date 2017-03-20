@@ -31,6 +31,5 @@
         </literalExpression>
     </decision>
     <inputData name="Full Name" id="i_FullName">
-        <variable name="aaaaaaFull Name" typeRef="feel:string"/>
     </inputData>
 </definitions>
