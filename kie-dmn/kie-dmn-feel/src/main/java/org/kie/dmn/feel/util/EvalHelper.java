@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 
 public class EvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger( EvalHelper.class );
-    private static final Pattern SPACES_PATTERN = Pattern.compile( "\\s+" );
+    private static final Pattern SPACES_PATTERN = Pattern.compile( "[\\s\u00A0]+" );
 
     public static String normalizeVariableName(String name) {
         return SPACES_PATTERN.matcher( name ).replaceAll( " " );

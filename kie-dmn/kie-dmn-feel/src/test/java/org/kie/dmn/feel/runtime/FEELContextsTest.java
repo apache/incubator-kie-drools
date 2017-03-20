@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.runtime;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,7 +51,16 @@ public class FEELContextsTest extends BaseFEELTest {
                             put( "startdate", LocalDate.of(1978, 9, 12) );
                             put( "enddate", LocalDate.of(1978, 10, 13) );
                             put( "rangedates", new RangeImpl( Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED ) );
-                }} }
+                }} },
+
+                // testing the non-breakable space character
+                {"5\u00A0+\u00A03", BigDecimal.valueOf( 8 ) },
+                {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first\u00A0\u00A0name+\"!\"}.salutation", "Hello Bob!" },
+                {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!" },
+                {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first  name+\"!\"}.salutation", "Hello Bob!" },
+                {"{ first name : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!" }
+
+
         };
         return Arrays.asList( cases );
     }
