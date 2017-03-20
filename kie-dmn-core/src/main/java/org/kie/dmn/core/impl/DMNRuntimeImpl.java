@@ -33,7 +33,6 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
-import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -71,6 +70,9 @@ public class DMNRuntimeImpl
     @Override
     public DMNModel getModel(String namespace, String modelName) {
         InternalKnowledgePackage kpkg = (InternalKnowledgePackage) runtime.getKieBase().getKiePackage( namespace );
+        if( kpkg == null ) {
+            return null;
+        }
         Map<ResourceType, ResourceTypePackage> map = kpkg.getResourceTypePackages();
         DMNPackage dmnpkg = (DMNPackage) map.get( ResourceType.DMN );
         return dmnpkg != null ? dmnpkg.getModel( modelName ) : null;
@@ -169,7 +171,7 @@ public class DMNRuntimeImpl
                                    result,
                                    null,
                                    null,
-                                   Msg.MISSING_EXPRESSION_FOR_BKM_NODE_SKIP_EVAL,
+                                   Msg.MISSING_EXPRESSION_FOR_BKM,
                                    getIdentifier( bkm ) );
             return;
         }
@@ -273,7 +275,7 @@ public class DMNRuntimeImpl
                                                             result,
                                                             null,
                                                             null,
-                                                            Msg.MISSING_EXPRESSION_FOR_DECISION_NODE_SKIP_EVAL,
+                                                            Msg.MISSING_EXPRESSION_FOR_DECISION,
                                                             getIdentifier( decision ) );
 
                 reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );

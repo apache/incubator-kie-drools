@@ -36,7 +36,37 @@ public class DMNEvaluatorCompiler {
     }
 
     public DMNExpressionEvaluator compileExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Expression expression) {
-        if ( expression instanceof LiteralExpression ) {
+        if ( expression == null ) {
+            if( node instanceof DecisionNode ) {
+                MsgUtil.reportMessage( logger,
+                                       DMNMessage.Severity.ERROR,
+                                       node.getSource(),
+                                       model,
+                                       null,
+                                       null,
+                                       Msg.MISSING_EXPRESSION_FOR_DECISION,
+                                       node.getIdentifierString() );
+            } else if( node instanceof BusinessKnowledgeModelNode ) {
+                MsgUtil.reportMessage( logger,
+                                       DMNMessage.Severity.ERROR,
+                                       node.getSource(),
+                                       model,
+                                       null,
+                                       null,
+                                       Msg.MISSING_EXPRESSION_FOR_BKM,
+                                       node.getIdentifierString() );
+            } else {
+                MsgUtil.reportMessage( logger,
+                                       DMNMessage.Severity.ERROR,
+                                       node.getSource(),
+                                       model,
+                                       null,
+                                       null,
+                                       Msg.MISSING_EXPRESSION_FOR_NODE,
+                                       node.getIdentifierString() );
+            }
+
+        } else if ( expression instanceof LiteralExpression ) {
             return compileLiteralExpression( ctx, model, node, exprName, (LiteralExpression) expression );
         } else if ( expression instanceof DecisionTable ) {
             return compileDecisionTable( ctx, model, node, exprName, (DecisionTable) expression );
@@ -51,26 +81,15 @@ public class DMNEvaluatorCompiler {
         } else if ( expression instanceof Invocation ) {
             return compileInvocation( ctx, model, node, (Invocation) expression );
         } else {
-            if ( expression != null ) {
-                MsgUtil.reportMessage( logger,
-                                       DMNMessage.Severity.ERROR,
-                                       node.getSource(),
-                                       model,
-                                       null,
-                                       null,
-                                       Msg.EXPR_TYPE_NOT_SUPPORTED_IN_NODE,
-                                       expression.getClass().getSimpleName(),
-                                       node.getIdentifierString() );
-            } else {
-                MsgUtil.reportMessage( logger,
-                                       DMNMessage.Severity.ERROR,
-                                       node.getSource(),
-                                       model,
-                                       null,
-                                       null,
-                                       Msg.NO_EXPR_DEF_FOR_NODE,
-                                       node.getIdentifierString() );
-            }
+            MsgUtil.reportMessage( logger,
+                                   DMNMessage.Severity.ERROR,
+                                   node.getSource(),
+                                   model,
+                                   null,
+                                   null,
+                                   Msg.EXPR_TYPE_NOT_SUPPORTED_IN_NODE,
+                                   expression.getClass().getSimpleName(),
+                                   node.getIdentifierString() );
         }
         return null;
     }
@@ -81,6 +100,29 @@ public class DMNEvaluatorCompiler {
         String functionName = ((LiteralExpression) invocation.getExpression()).getText();
         DMNInvocationEvaluator invEval = new DMNInvocationEvaluator( node.getName(), node.getSource(), functionName, invocation );
         for ( Binding binding : invocation.getBinding() ) {
+            if( binding.getParameter() == null ) {
+                // error, missing binding parameter
+                MsgUtil.reportMessage( logger,
+                                       DMNMessage.Severity.ERROR,
+                                       binding,
+                                       model,
+                                       null,
+                                       null,
+                                       Msg.MISSING_PARAMETER_FOR_INVOCATION,
+                                       node.getIdentifierString() );
+                return null;
+            }
+            if( binding.getExpression() == null ) {
+                MsgUtil.reportMessage( logger,
+                                       DMNMessage.Severity.ERROR,
+                                       binding,
+                                       model,
+                                       null,
+                                       null,
+                                       Msg.MISSING_PARAMETER_FOR_INVOCATION,
+                                       node.getIdentifierString() );
+                return null;
+            }
             invEval.addParameter(
                     binding.getParameter().getName(),
                     compiler.resolveTypeRef( model, node, binding.getParameter(), binding.getParameter(), binding.getParameter().getTypeRef() ),
@@ -289,7 +331,7 @@ public class DMNEvaluatorCompiler {
                                        model,
                                        null,
                                        null,
-                                       Msg.NO_EXPR_DEF_FOR_NAME_ON_NODE,
+                                       Msg.MISSING_EXPRESSION_FOR_NAME,
                                        exprName,
                                        node.getIdentifierString() );
             }

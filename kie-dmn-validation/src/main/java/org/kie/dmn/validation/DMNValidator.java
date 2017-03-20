@@ -17,6 +17,7 @@
 package org.kie.dmn.validation;
 
 import java.io.File;
+import java.io.Reader;
 import java.util.List;
 
 import org.kie.dmn.api.core.DMNMessage;
@@ -24,15 +25,98 @@ import org.kie.dmn.model.v1_1.Definitions;
 
 public interface DMNValidator {
 
-    /**
-     * Performs validation of the DMN model against DMN specifications.
-     */
-    List<DMNMessage> validateModel(Definitions dmnModel);
+    enum Validation {
+        VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION
+    }
 
     /**
-     * Performs validation of the xml file against the DMN's XSD Schema.
+     * Validate the model and return the results. This
+     * is the same as invoking method
+     * @{link #validate( Definitions dmnModel, Validation... options ) }
+     * with option <code>Validation.VALIDATE_MODEL</code>
+     *
+     * @param dmnModel the model to validate
+     *
+     * @return returns a list of messages from the validation, or an empty
+     *         list otherwise.
      */
-    List<DMNMessage> validateSchema(File xmlFile);
+    List<DMNMessage> validate( Definitions dmnModel );
+
+    /**
+     * Validate the model and return the results. The options field
+     * defines which validations to apply. E.g.:
+     *
+     * <code>validate( dmnModel, VALIDATE_MODEL, VALIDATE_COMPILATION )</code>
+     *
+     * <b>IMPORTANT:</b> this method does not support VALIDATE_SCHEMA. In
+     * order to validate the schema, please use one of the other signatures
+     * of this method, like @{link #validate(Reader reader, Validation... options)}.
+     *
+     * @param dmnModel the model to validate
+     * @param options selects which validations to apply
+     *
+     * @return returns a list of messages from the validation, or an empty
+     *         list otherwise.
+     *
+     * @throws IllegalArgumentException if VALIDATE_SCHEMA is set
+     */
+    List<DMNMessage> validate( Definitions dmnModel, Validation... options );
+
+    /**
+     * Validate the model and return the results. This
+     * is the same as invoking method
+     * @{link #validate( File xmlFile, Validation... options )}
+     * with option <code>Validation.VALIDATE_MODEL</code>
+     *
+     * @param xmlFile the file to validate
+     *
+     * @return returns a list of messages from the validation, or an empty
+     *         list otherwise.
+     */
+    List<DMNMessage> validate( File xmlFile );
+
+    /**
+     * Validate the model and return the results. The options field
+     * defines which validations to apply. E.g.:
+     *
+     * <code>validate( xmlFile, VALIDATE_MODEL, VALIDATE_COMPILATION )</code>
+     *
+     * @param xmlFile the model to validate
+     * @param options selects which validations to apply
+     *
+     * @return returns a list of messages from the validation, or an empty
+     *         list otherwise.
+     *
+     * @throws IllegalArgumentException if the file can't be read
+     */
+    List<DMNMessage> validate( File xmlFile, Validation... options );
+
+    /**
+     * Validate the model and return the results. This
+     * is the same as invoking method
+     * @{link #validate( Reader reader, Validation... options )}
+     * with option <code>Validation.VALIDATE_MODEL</code>
+     *
+     * @param reader a reader for the model to validate
+     *
+     * @return returns a list of messages from the validation, or an empty
+     *         list otherwise.
+     */
+    List<DMNMessage> validate( Reader reader );
+
+    /**
+     * Validate the model and return the results. The options field
+     * defines which validations to apply. E.g.:
+     *
+     * <code>validate( reader, VALIDATE_MODEL, VALIDATE_COMPILATION )</code>
+     *
+     * @param reader the model to validate
+     * @param options selects which validations to apply
+     *
+     * @return returns a list of messages from the validation, or an empty
+     *         list otherwise.
+     */
+    List<DMNMessage> validate( Reader reader, Validation... options );
 
     /**
      * Release all resources associated with this DMNValidator.

@@ -15,20 +15,22 @@
   ~ limitations under the License.
   -->
 
-<definitions id="BKM_MISSING_VAR" name="BKM_MISSING_VAR"
+<definitions id="INPUTDATA_MISSING_VAR" name="INPUTDATA_MISSING_VAR"
     namespace="https://github.com/kiegroup/kie-dmn"
     xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
     xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
-    <businessKnowledgeModel name="Greeting Message" id="d_GreetingMessage">
-        <encapsulatedLogic>
-          <formalParameter name="Post-bureauAffordability" typeRef="feel:boolean"/>
-          <formalParameter name="Bankrupt" typeRef="feel:boolean"/>
-          <formalParameter name="CreditScore" typeRef="feel:number"/>
-          <literalExpression>
-              <text>CreditScore * 10</text>
-          </literalExpression>
-        </encapsulatedLogic>
-    </businessKnowledgeModel>
+    <decision name="Greeting Message" id="d_GreetingMessage">
+        <variable name="Greeting Message" typeRef="feel:string"/>
+        <informationRequirement>
+            <requiredInput href="#i_FullName"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>"Hello " + Full Name</text>
+        </literalExpression>
+    </decision>
+    <inputData name="Full Name" id="i_FullName">
+        <variable name="aaaaaaFull Name" typeRef="feel:string"/>
+    </inputData>
 </definitions>
