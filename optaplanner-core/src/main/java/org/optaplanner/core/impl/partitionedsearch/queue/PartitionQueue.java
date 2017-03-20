@@ -122,8 +122,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<S
                     triggerEvent = queue.take();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    // TODO
-                    throw new IllegalStateException("TODO was interrupted.", e);
+                    throw new IllegalStateException("Solver thread was interrupted in Partitioned Search.", e);
                 }
                 switch (triggerEvent.getType()) {
                     case MOVE:
