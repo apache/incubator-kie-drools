@@ -14,13 +14,17 @@ public class DMNTypeRegistry {
 
     private Map<String, Map<String, DMNType>> types = new HashMap<>(  );
 
+    public static final DMNType UNKNOWN = new SimpleTypeImpl( DMNModelInstrumentedBase.URI_FEEL,
+                                                              BuiltInType.UNKNOWN.getName(),
+                                                              null, true, null, null,
+                                                              BuiltInType.UNKNOWN );
+
     public DMNTypeRegistry() {
         String feelNamespace = DMNModelInstrumentedBase.URI_FEEL;
         Map<String, DMNType> feelTypes = new HashMap<>(  );
         types.put( feelNamespace, feelTypes );
 
-        DMNType unknown = new SimpleTypeImpl( feelNamespace, BuiltInType.UNKNOWN.getName(), null, true, null, null, BuiltInType.UNKNOWN );
-        feelTypes.put( unknown.getName(), unknown );
+        feelTypes.put( UNKNOWN.getName(), UNKNOWN );
 
         for( BuiltInType type : BuiltInType.values() ) {
             for( String name : type.getNames() ) {
@@ -29,7 +33,7 @@ public class DMNTypeRegistry {
                     // already added, skip it
                     continue;
                 } else if( type == BuiltInType.LIST ) {
-                    feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, true, null, unknown, type );
+                    feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, true, null, UNKNOWN, type );
                 } else if( type == BuiltInType.CONTEXT ) {
                     feelPrimitiveType = new CompositeTypeImpl( feelNamespace, name, null, false, Collections.emptyMap(), null, type );
                 } else {
@@ -40,7 +44,7 @@ public class DMNTypeRegistry {
         }
     }
 
-    public void registerType( DMNType type ) {
+    public DMNType registerType( DMNType type ) {
         if( type.getNamespace() == null && type.getName() == null ) {
             throw new IllegalArgumentException( "Unknown namespace or name. Unable to register type "+type );
         }
@@ -51,9 +55,10 @@ public class DMNTypeRegistry {
             this.types.put( type.getNamespace(), typesMap );
         }
         if( typesMap.containsKey( type.getName() ) ) {
-            throw new IllegalArgumentException( "Type name already registered. Existing type: "+types.get( type.getName() )+" - new type: "+type );
+            return typesMap.get( type.getName() );
         }
         typesMap.put( type.getName(), type );
+        return type;
     }
 
     public DMNType resolveType( String namespace, String name ) {

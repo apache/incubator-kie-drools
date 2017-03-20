@@ -19,8 +19,8 @@
     xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
-  <decision id="_0004-simpletable-U" name="0004-simpletable-U">
-    <variable name="0004-simpletable-U" typeRef="feel:string"/>
+  <decision id="_0004-simpletable-U" name="simpletable-U">
+    <variable name="simpletable-U" typeRef="feel:string"/>
     <informationRequirement>
       <requiredInput href="#___Age"/> <!-- TEST -->
     </informationRequirement>

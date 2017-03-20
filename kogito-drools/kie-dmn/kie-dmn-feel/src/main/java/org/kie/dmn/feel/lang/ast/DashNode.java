@@ -30,6 +30,23 @@ public class DashNode
     @Override
     public UnaryTest evaluate(EvaluationContext ctx) {
         // a dash is a unary test that always evaluates to true
-        return (c, o) -> Boolean.TRUE;
+        return DashUnaryTest.INSTANCE;
+    }
+
+    public static class DashUnaryTest implements UnaryTest {
+        public static DashUnaryTest INSTANCE = new DashUnaryTest();
+
+        private DashUnaryTest() {
+        }
+
+        @Override
+        public Boolean apply(EvaluationContext evaluationContext, Object o) {
+            return Boolean.TRUE;
+        }
+
+        @Override
+        public String toString() {
+            return "UnaryTest{-}";
+        }
     }
 }

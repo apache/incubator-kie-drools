@@ -34,6 +34,26 @@ public abstract class DMNModelInstrumentedBase {
     private final java.util.List<DMNModelInstrumentedBase> children = new ArrayList<>();
     private Location location;
 
+    public String getIdentifierString() {
+        if( this instanceof NamedElement && ((NamedElement)this).getName() != null ) {
+            return ((NamedElement)this).getName();
+        } else if( this instanceof DMNElement && ((DMNElement)this).getId() != null ) {
+            return ((DMNElement)this).getId();
+        } else {
+            return "[unnamed "+getClass().getSimpleName()+"]";
+        }
+    }
+
+    public DRGElement getParentDRGElement() {
+        if( this instanceof DRGElement ) {
+            return (DRGElement) this;
+        } else if( parent != null ) {
+            return parent.getParentDRGElement();
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Namespace context map as defined at the level of the given element.
      * Please notice it support also default namespace (no prefix) as "" as defined in {@link XMLConstants#DEFAULT_NS_PREFIX} .

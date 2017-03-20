@@ -17,6 +17,7 @@
 package org.kie.dmn.core.compiler;
 
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.rule.Variable;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
@@ -73,18 +74,26 @@ public class DMNCompilerImpl
     public DMNModel compile(Reader source) {
         try {
             Definitions dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( source );
-            if ( dmndefs != null ) {
-                DMNModelImpl model = new DMNModelImpl( dmndefs );
-                DMNCompilerContext ctx = new DMNCompilerContext();
-
-                processItemDefinitions( ctx, feel, model, dmndefs );
-                processDrgElements( ctx, feel, model, dmndefs );
-                return model;
-            }
+            DMNModel model = compile( dmndefs );
+            return model;
         } catch ( Exception e ) {
             logger.error( "Error compiling model from source.", e );
         }
         return null;
+    }
+
+    @Override
+    public DMNModel compile(Definitions dmndefs) {
+        DMNModelImpl model = null;
+        if ( dmndefs != null ) {
+            model = new DMNModelImpl( dmndefs );
+            DMNCompilerContext ctx = new DMNCompilerContext();
+
+            processItemDefinitions( ctx, feel, model, dmndefs );
+            processDrgElements( ctx, feel, model, dmndefs );
+            return model;
+        }
+        return model;
     }
 
     private void processItemDefinitions(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
@@ -100,17 +109,25 @@ public class DMNCompilerImpl
         for ( DRGElement e : dmndefs.getDrgElement() ) {
             if ( e instanceof InputData ) {
                 InputData input = (InputData) e;
-                String variableName = input.getVariable() != null ? input.getVariable().getName() : null;
-                DMNCompilerHelper.checkVariableName( model, input, variableName );
                 InputDataNodeImpl idn = new InputDataNodeImpl( input );
-                DMNType type = resolveTypeRef( model, idn, e, input.getVariable(), input.getVariable().getTypeRef() );
-                idn.setType( type );
+                if ( input.getVariable() != null ) {
+                    DMNCompilerHelper.checkVariableName( model, input, input.getName() );
+                    DMNType type = resolveTypeRef( model, idn, e, input.getVariable(), input.getVariable().getTypeRef() );
+                    idn.setType( type );
+                } else {
+                    idn.setType( DMNTypeRegistry.UNKNOWN );
+                    reportMissingVariable( model, e, input, Msg.MISSING_VARIABLE_FOR_INPUT );
+                }
                 model.addInput( idn );
             } else if ( e instanceof Decision ) {
                 Decision decision = (Decision) e;
                 DecisionNodeImpl dn = new DecisionNodeImpl( decision );
                 DMNType type = null;
-                DMNCompilerHelper.checkVariableName( model, decision, decision.getVariable() != null ? decision.getVariable().getName() : null );
+                if ( decision.getVariable() == null ) {
+                    reportMissingVariable( model, e, decision, Msg.MISSING_VARIABLE_FOR_DECISION );
+                    continue;
+                }
+                DMNCompilerHelper.checkVariableName( model, decision, decision.getName() );
                 if ( decision.getVariable() != null && decision.getVariable().getTypeRef() != null ) {
                     type = resolveTypeRef( model, dn, decision, decision.getVariable(), decision.getVariable().getTypeRef() );
                 } else {
@@ -122,7 +139,11 @@ public class DMNCompilerImpl
                 BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) e;
                 BusinessKnowledgeModelNodeImpl bkmn = new BusinessKnowledgeModelNodeImpl( bkm );
                 DMNType type = null;
-                DMNCompilerHelper.checkVariableName( model, bkm, bkm.getVariable() != null ? bkm.getVariable().getName() : null );
+                if ( bkm.getVariable() == null ) {
+                    reportMissingVariable( model, e, bkm, Msg.MISSING_VARIABLE_FOR_BKM );
+                    continue;
+                }
+                DMNCompilerHelper.checkVariableName( model, bkm, bkm.getName() );
                 if ( bkm.getVariable() != null && bkm.getVariable().getTypeRef() != null ) {
                     type = resolveTypeRef( model, bkmn, bkm, bkm.getVariable(), bkm.getVariable().getTypeRef() );
                 } else {
@@ -191,6 +212,17 @@ public class DMNCompilerImpl
         }
     }
 
+    private void reportMissingVariable(DMNModelImpl model, DRGElement node, DMNModelInstrumentedBase source, Msg.Message1 message ) {
+        MsgUtil.reportMessage( logger,
+                               DMNMessage.Severity.ERROR,
+                               source,
+                               model,
+                               null,
+                               null,
+                               message,
+                               node.getIdentifierString() );
+    }
+
     private void linkRequirements(DMNModelImpl model, DMNBaseNode node) {
         for ( InformationRequirement ir : node.getInformationRequirement() ) {
             if ( ir.getRequiredInput() != null ) {
@@ -201,7 +233,7 @@ public class DMNCompilerImpl
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
-                                           node.getSource(),
+                                           ir.getRequiredInput(),
                                            model,
                                            null,
                                            null,
@@ -217,7 +249,7 @@ public class DMNCompilerImpl
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
-                                           node.getSource(),
+                                           ir.getRequiredDecision(),
                                            model,
                                            null,
                                            null,
@@ -236,7 +268,7 @@ public class DMNCompilerImpl
                 } else {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
-                                           node.getSource(),
+                                           kr.getRequiredKnowledge(),
                                            model,
                                            null,
                                            null,
@@ -285,7 +317,17 @@ public class DMNCompilerImpl
                     }
                 }
                 if( topLevel ) {
-                    types.registerType( type );
+                    DMNType registered = types.registerType( type );
+                    if( registered != type ) {
+                        MsgUtil.reportMessage( logger,
+                                               DMNMessage.Severity.ERROR,
+                                               itemDef,
+                                               dmnModel,
+                                               null,
+                                               null,
+                                               Msg.DUPLICATED_ITEM_DEFINITION,
+                                               itemDef.getName() );
+                    }
                 }
             } else {
                 MsgUtil.reportMessage( logger,
@@ -309,7 +351,17 @@ public class DMNCompilerImpl
             }
             type = compType;
             if( topLevel ) {
-                types.registerType( type );
+                DMNType registered = types.registerType( type );
+                if( registered != type ) {
+                    MsgUtil.reportMessage( logger,
+                                           DMNMessage.Severity.ERROR,
+                                           itemDef,
+                                           dmnModel,
+                                           null,
+                                           null,
+                                           Msg.DUPLICATED_ITEM_DEFINITION,
+                                           itemDef.getName() );
+                }
             }
         }
         return type;
@@ -337,28 +389,15 @@ public class DMNCompilerImpl
                     }
                 }
             } else if( type == null ) {
-                if ( model.getName() != null && node.getName() != null && model.getName().equals( node.getName() ) ) {
-                    MsgUtil.reportMessage( logger,
-                                           DMNMessage.Severity.ERROR,
-                                           ((DMNBaseNode)node).getSource(),
-                                           dmnModel,
-                                           null,
-                                           null,
-                                           Msg.NO_TYPE_DEF_FOUND_FOR_NODE,
-                                           typeRef.toString(),
-                                           node.getName() );
-                } else {
-                    MsgUtil.reportMessage( logger,
-                                           DMNMessage.Severity.ERROR,
-                                           ((DMNBaseNode)node).getSource(),
-                                           dmnModel,
-                                           null,
-                                           null,
-                                           Msg.NO_TYPE_DEF_FOUND_FOR_ELEMENT_ON_NODE,
-                                           typeRef.toString(),
-                                           model.getName(),
-                                           node.getName() );
-                }
+                MsgUtil.reportMessage( logger,
+                                       DMNMessage.Severity.ERROR,
+                                       localElement,
+                                       dmnModel,
+                                       null,
+                                       null,
+                                       Msg.UNKNOWN_TYPE_REF_ON_NODE,
+                                       typeRef.toString(),
+                                       localElement.getParentDRGElement().getIdentifierString() );
             }
             return type;
         }

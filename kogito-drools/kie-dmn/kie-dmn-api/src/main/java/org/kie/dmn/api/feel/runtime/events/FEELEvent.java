@@ -63,7 +63,7 @@ public interface FEELEvent {
      * In case the event refers to the source code, returns
      * the character in the line of the the source code where
      * the event was generated or -1 if it does not refer to a
-     * source code line.
+     * source code character.
      *
      * The column is 0-based. I.e. the first character in the
      * line is 0, the second is 1, and so on.

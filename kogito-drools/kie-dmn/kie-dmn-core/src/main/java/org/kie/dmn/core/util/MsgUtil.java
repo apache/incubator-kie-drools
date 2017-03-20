@@ -12,6 +12,7 @@ import org.kie.dmn.core.util.Msg.Message3;
 import org.kie.dmn.core.util.Msg.Message4;
 import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.model.v1_1.DMNElement;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.slf4j.Logger;
 
 public class MsgUtil {
@@ -36,32 +37,32 @@ public class MsgUtil {
         return String.format( message.getMask(), params );
     }
 
-    public static DMNMessage reportMessage(Logger logger, Severity severity, DMNElement source, DMNMessageManager result, Throwable exception, FEELEvent event, Message0 template) {
+    public static DMNMessage reportMessage(Logger logger, Severity severity, DMNModelInstrumentedBase source, DMNMessageManager result, Throwable exception, FEELEvent event, Message0 template) {
         String message = createMessage( template );
         return logMessage( logger, severity, source, result, exception, event, template, message );
     }
 
-    public static DMNMessage reportMessage(Logger logger, Severity severity, DMNElement source, DMNMessageManager result, Throwable exception, FEELEvent event, Message1 template, Object p1) {
+    public static DMNMessage reportMessage(Logger logger, Severity severity, DMNModelInstrumentedBase source, DMNMessageManager result, Throwable exception, FEELEvent event, Message1 template, Object p1) {
         String message = createMessage( template, p1 );
         return logMessage( logger, severity, source, result, exception, event, template, message );
     }
 
-    public static DMNMessage reportMessage(Logger logger, Severity severity, DMNElement source, DMNMessageManager result, Throwable exception, FEELEvent event, Message2 template, Object p1, Object p2) {
+    public static DMNMessage reportMessage(Logger logger, Severity severity, DMNModelInstrumentedBase source, DMNMessageManager result, Throwable exception, FEELEvent event, Message2 template, Object p1, Object p2) {
         String message = createMessage( template, p1, p2);
         return logMessage( logger, severity, source, result, exception, event, template, message );
     }
 
-    public static DMNMessage reportMessage(Logger logger, Severity severity, DMNElement source, DMNMessageManager result, Throwable exception, FEELEvent event, Message3 template, Object p1, Object p2, Object p3) {
+    public static DMNMessage reportMessage(Logger logger, Severity severity, DMNModelInstrumentedBase source, DMNMessageManager result, Throwable exception, FEELEvent event, Message3 template, Object p1, Object p2, Object p3) {
         String message = createMessage( template, p1, p2, p3);
         return logMessage( logger, severity, source, result, exception, event, template, message );
     }
 
-    public static DMNMessage reportMessage(Logger logger, Severity severity, DMNElement source, DMNMessageManager result, Throwable exception, FEELEvent event, Message4 template, Object p1, Object p2, Object p3, Object p4) {
+    public static DMNMessage reportMessage(Logger logger, Severity severity, DMNModelInstrumentedBase source, DMNMessageManager result, Throwable exception, FEELEvent event, Message4 template, Object p1, Object p2, Object p3, Object p4) {
         String message = createMessage( template, p1, p2, p3, p4);
         return logMessage( logger, severity, source, result, exception, event, template, message );
     }
 
-    private static DMNMessage logMessage(Logger logger, Severity severity, DMNElement source, DMNMessageManager result, Throwable exception, FEELEvent event, Message template, String message) {
+    private static DMNMessage logMessage(Logger logger, Severity severity, DMNModelInstrumentedBase source, DMNMessageManager result, Throwable exception, FEELEvent event, Message template, String message) {
         switch ( severity ) {
             case ERROR: logger.error( message ); break;
             case WARN: logger.warn( message ); break;

@@ -17,6 +17,7 @@
 package org.kie.dmn.api.core;
 
 import org.kie.api.io.Resource;
+import org.kie.dmn.model.v1_1.Definitions;
 
 import java.io.Reader;
 
@@ -26,4 +27,5 @@ public interface DMNCompiler {
 
     DMNModel compile( Reader source );
 
+    DMNModel compile(Definitions dmndefs);
 }
