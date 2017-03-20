@@ -371,7 +371,8 @@ public class ProtobufOutputMarshaller {
                         _node = writeRIANodeMemory( baseNode.getId(), baseNode, memories );
                         break;
                     }
-                    case NodeTypeEnums.FromNode: {
+                    case NodeTypeEnums.FromNode:
+                    case NodeTypeEnums.ReactiveFromNode: {
                         _node = writeFromNodeMemory( baseNode.getId(), memory );
                         break;
                     }
