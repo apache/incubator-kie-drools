@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
-import java.util.Collections;
 import java.util.Comparator;
 
 import org.junit.Test;

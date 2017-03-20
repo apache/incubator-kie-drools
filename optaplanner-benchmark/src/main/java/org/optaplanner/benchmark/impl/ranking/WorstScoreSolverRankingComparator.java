@@ -17,7 +17,6 @@
 package org.optaplanner.benchmark.impl.ranking;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 

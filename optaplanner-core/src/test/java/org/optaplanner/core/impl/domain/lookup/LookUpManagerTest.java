@@ -25,7 +25,7 @@ import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.impl.testdata.domain.lookup.TestdataObjectId;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class LookUpManagerTest {
 

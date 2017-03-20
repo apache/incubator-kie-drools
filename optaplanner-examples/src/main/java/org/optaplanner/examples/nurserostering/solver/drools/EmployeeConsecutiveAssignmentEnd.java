@@ -18,7 +18,6 @@ package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
 import java.time.DayOfWeek;
-import java.time.temporal.TemporalAdjusters;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -27,8 +26,6 @@ import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
-
-import static java.time.temporal.ChronoUnit.DAYS;
 
 public class EmployeeConsecutiveAssignmentEnd implements Comparable<EmployeeConsecutiveAssignmentEnd>, Serializable {
 

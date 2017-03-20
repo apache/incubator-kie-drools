@@ -16,7 +16,6 @@
 
 package org.optaplanner.persistence.jaxb.api.score.buildin.hardsoftbigdecimal;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapter;
 

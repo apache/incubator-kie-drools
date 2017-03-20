@@ -31,8 +31,8 @@ import org.optaplanner.core.impl.solver.termination.AbstractCompositeTermination
 import org.optaplanner.core.impl.solver.termination.AndCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.BestScoreFeasibleTermination;
 import org.optaplanner.core.impl.solver.termination.BestScoreTermination;
-import org.optaplanner.core.impl.solver.termination.ScoreCalculationCountTermination;
 import org.optaplanner.core.impl.solver.termination.OrCompositeTermination;
+import org.optaplanner.core.impl.solver.termination.ScoreCalculationCountTermination;
 import org.optaplanner.core.impl.solver.termination.StepCountTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.termination.TimeMillisSpentTermination;

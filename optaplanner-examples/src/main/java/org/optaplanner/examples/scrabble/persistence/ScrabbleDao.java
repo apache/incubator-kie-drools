@@ -18,7 +18,6 @@ package org.optaplanner.examples.scrabble.persistence;
 
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
-import org.optaplanner.examples.tsp.domain.TspSolution;
 
 public class ScrabbleDao extends XStreamSolutionDao<ScrabbleSolution> {
 

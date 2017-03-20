@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.solver.recaller;
 
-import java.util.function.Supplier;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;

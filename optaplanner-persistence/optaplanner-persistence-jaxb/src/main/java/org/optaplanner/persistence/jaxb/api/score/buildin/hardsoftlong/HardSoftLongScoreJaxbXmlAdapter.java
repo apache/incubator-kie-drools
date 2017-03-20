@@ -16,7 +16,6 @@
 
 package org.optaplanner.persistence.jaxb.api.score.buildin.hardsoftlong;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapter;
 

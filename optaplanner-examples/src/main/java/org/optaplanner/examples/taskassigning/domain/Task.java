@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.taskassigning.domain;
 
-import javax.swing.Icon;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;

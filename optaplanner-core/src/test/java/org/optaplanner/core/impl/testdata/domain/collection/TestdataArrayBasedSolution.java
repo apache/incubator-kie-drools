@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.testdata.domain.collection;
 
-import java.util.List;
-import java.util.Set;
-
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;

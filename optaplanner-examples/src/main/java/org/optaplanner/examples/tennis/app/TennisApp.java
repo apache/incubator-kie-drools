@@ -18,7 +18,6 @@ package org.optaplanner.examples.tennis.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.persistence.TennisDao;
 import org.optaplanner.examples.tennis.swingui.TennisPanel;

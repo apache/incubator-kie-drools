@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;

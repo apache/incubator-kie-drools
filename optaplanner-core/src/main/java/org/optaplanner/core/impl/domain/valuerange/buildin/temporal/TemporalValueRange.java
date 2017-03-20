@@ -1,16 +1,15 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.temporal;
 
-import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
-import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
-import org.optaplanner.core.impl.solver.random.RandomUtils;
-
-import java.math.BigInteger;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalUnit;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
+
+import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
+import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
+import org.optaplanner.core.impl.solver.random.RandomUtils;
 
 public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super Temporal_>> extends AbstractCountableValueRange<Temporal_> {
 

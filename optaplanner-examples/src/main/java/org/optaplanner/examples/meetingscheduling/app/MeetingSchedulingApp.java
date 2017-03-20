@@ -18,7 +18,6 @@ package org.optaplanner.examples.meetingscheduling.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingDao;
 import org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel;

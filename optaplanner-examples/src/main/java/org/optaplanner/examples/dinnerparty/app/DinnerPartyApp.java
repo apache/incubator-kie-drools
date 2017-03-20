@@ -19,7 +19,6 @@ package org.optaplanner.examples.dinnerparty.app;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.persistence.DinnerPartyDao;
 import org.optaplanner.examples.dinnerparty.persistence.DinnerPartyImporter;

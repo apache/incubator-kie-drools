@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.tennis.solver.drools.functions;
 
-import java.io.Serializable;
-
 import org.junit.Test;
 
 import static org.junit.Assert.*;

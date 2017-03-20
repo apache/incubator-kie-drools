@@ -20,10 +20,10 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
-import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
 public class HardMediumSoftBigDecimalScoreTest extends AbstractScoreTest {
 

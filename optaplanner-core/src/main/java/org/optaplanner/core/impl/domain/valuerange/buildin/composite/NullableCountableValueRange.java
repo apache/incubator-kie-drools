@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;

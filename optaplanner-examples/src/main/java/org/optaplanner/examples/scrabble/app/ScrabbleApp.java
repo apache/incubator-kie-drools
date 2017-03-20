@@ -18,13 +18,9 @@ package org.optaplanner.examples.scrabble.app;
 
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
 import org.optaplanner.examples.scrabble.persistence.ScrabbleDao;
 import org.optaplanner.examples.scrabble.swingui.ScrabblePanel;
-import org.optaplanner.examples.tennis.domain.TennisSolution;
-import org.optaplanner.examples.tennis.persistence.TennisDao;
-import org.optaplanner.examples.tennis.swingui.TennisPanel;
 
 public class ScrabbleApp extends CommonApp<ScrabbleSolution> {
 

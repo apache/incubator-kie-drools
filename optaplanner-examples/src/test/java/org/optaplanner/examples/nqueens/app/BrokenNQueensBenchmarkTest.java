@@ -23,7 +23,6 @@ import org.optaplanner.benchmark.api.PlannerBenchmarkException;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
-import org.optaplanner.examples.nqueens.domain.Row;
 
 public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
 

@@ -30,8 +30,6 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecord
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ChildThreadType;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.impl.solver.termination.Termination;
 
 public class HeuristicConfigPolicy {
 

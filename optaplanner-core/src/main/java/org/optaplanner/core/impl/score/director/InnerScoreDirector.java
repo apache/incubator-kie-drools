@@ -24,10 +24,8 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.ChildThreadType;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

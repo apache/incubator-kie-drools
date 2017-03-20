@@ -21,8 +21,6 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.test.impl.score.AbstractScoreVerifier;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * To assert the constraints (including score rules) of a {@link SolverFactory}
  * that uses a {@link HardSoftScore}.

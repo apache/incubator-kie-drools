@@ -23,7 +23,7 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompareToOrder;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class TotalScoreSingleBenchmarkRankingComparatorTest {
 

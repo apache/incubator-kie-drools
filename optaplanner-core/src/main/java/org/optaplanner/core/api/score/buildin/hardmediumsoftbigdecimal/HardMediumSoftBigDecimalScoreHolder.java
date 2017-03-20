@@ -16,9 +16,9 @@
 package org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal;
 
 import java.math.BigDecimal;
+
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**

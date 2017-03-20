@@ -16,10 +16,7 @@
 
 package org.optaplanner.persistence.jaxb.impl.testdata.domain;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @XmlRootElement
 public class JaxbTestdataValue extends JaxbTestdataObject {

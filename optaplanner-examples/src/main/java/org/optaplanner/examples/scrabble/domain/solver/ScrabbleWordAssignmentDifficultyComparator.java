@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment;
 
 public class ScrabbleWordAssignmentDifficultyComparator implements Comparator<ScrabbleWordAssignment>, Serializable {

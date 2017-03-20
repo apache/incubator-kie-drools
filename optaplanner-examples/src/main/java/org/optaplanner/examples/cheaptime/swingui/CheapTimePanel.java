@@ -18,8 +18,6 @@ package org.optaplanner.examples.cheaptime.swingui;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;

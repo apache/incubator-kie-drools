@@ -28,8 +28,6 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 
-import static org.junit.Assume.*;
-
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */

@@ -17,7 +17,6 @@
 package org.optaplanner.benchmark.impl.aggregator;
 
 import java.io.File;
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,6 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

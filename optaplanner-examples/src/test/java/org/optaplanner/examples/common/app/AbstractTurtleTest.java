@@ -16,9 +16,7 @@
 
 package org.optaplanner.examples.common.app;
 
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-
-import static org.junit.Assume.assumeTrue;
+import static org.junit.Assume.*;
 
 /**
  * Turtle tests are not run by default. They are only run if {@code -DrunTurtleTests=true} because it takes days.

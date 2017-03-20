@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class EasyScoreDirectorTest {

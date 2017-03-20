@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.nearby;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;

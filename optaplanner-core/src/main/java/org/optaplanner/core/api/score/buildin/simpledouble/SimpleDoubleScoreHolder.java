@@ -18,7 +18,6 @@ package org.optaplanner.core.api.score.buildin.simpledouble;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**

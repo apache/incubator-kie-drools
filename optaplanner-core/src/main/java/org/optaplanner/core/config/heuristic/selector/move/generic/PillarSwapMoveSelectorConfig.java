@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
-import java.util.Collection;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;

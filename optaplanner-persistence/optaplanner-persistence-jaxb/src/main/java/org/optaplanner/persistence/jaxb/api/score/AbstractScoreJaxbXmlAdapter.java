@@ -16,28 +16,9 @@
 
 package org.optaplanner.persistence.jaxb.api.score;
 
-import java.util.Arrays;
-import java.util.List;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.persistence.jaxb.api.score.buildin.bendable.BendableScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.bendablelong.BendableLongScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.hardmediumsoft.HardMediumSoftScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.hardsoft.HardSoftScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.hardsoftlong.HardSoftLongScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.simple.SimpleScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.simpledouble.SimpleDoubleScoreJaxbXmlAdapter;
-import org.optaplanner.persistence.jaxb.api.score.buildin.simplelong.SimpleLongScoreJaxbXmlAdapter;
 
 /**
  * JAXB binding support for a {@link Score} type.

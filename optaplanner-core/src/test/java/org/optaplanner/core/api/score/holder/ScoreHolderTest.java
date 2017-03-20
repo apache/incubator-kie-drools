@@ -21,7 +21,7 @@ import org.junit.rules.ExpectedException;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class ScoreHolderTest {
 

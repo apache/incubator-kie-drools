@@ -19,7 +19,6 @@ package org.optaplanner.examples.investment.app;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.persistence.InvestmentDao;
 import org.optaplanner.examples.investment.persistence.InvestmentImporter;

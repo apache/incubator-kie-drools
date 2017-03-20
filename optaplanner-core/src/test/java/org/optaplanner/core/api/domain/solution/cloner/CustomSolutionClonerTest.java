@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataScoreNotCl
 import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataScoreNotEqualSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class CustomSolutionClonerTest {
 

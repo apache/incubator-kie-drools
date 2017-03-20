@@ -18,9 +18,7 @@ package org.optaplanner.core.api.score.holder;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.drools.core.beliefsystem.ModedAssertion;
@@ -29,11 +27,8 @@ import org.drools.core.common.AgendaItemImpl;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.RuleRuntime;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.Indictment;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public abstract class AbstractScoreHolderTest {

@@ -19,14 +19,12 @@ package org.optaplanner.persistence.jaxb.api.score;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.persistence.jaxb.api.score.buildin.hardsoft.HardSoftScoreJaxbXmlAdapter;
 
 import static org.junit.Assert.*;
 

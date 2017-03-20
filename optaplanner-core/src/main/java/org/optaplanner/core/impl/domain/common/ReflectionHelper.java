@@ -27,7 +27,6 @@ import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 /**
  * Avoids the usage of Introspector to work on Android too.

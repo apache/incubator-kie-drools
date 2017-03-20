@@ -25,7 +25,6 @@ import java.util.Collections;
 import com.google.common.io.Resources;
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;

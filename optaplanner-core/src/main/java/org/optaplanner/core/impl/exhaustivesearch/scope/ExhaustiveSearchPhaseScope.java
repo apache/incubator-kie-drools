@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.scope;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 

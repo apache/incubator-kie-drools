@@ -18,7 +18,6 @@ package org.optaplanner.core.config.solver.recaller;
 
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 
 // Currently not yet supported as being nested, so no XStreamAlias

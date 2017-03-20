@@ -16,7 +16,6 @@
 
 package org.optaplanner.benchmark.config;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class SolverBenchmarkConfigTest {

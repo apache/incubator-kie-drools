@@ -16,7 +16,6 @@
 
 package org.optaplanner.persistence.jaxb.api.score.buildin.simpledouble;
 
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapter;
 

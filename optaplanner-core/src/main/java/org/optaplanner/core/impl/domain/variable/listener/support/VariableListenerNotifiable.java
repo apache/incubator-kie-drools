@@ -17,9 +17,7 @@
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
 
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 

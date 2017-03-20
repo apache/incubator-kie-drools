@@ -40,7 +40,7 @@ import org.optaplanner.examples.curriculumcourse.domain.Teacher;
 import org.optaplanner.examples.curriculumcourse.domain.Timeslot;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
-import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.getFlooredPossibleSolutionSize;
+import static org.optaplanner.examples.common.persistence.AbstractSolutionImporter.*;
 
 public class CurriculumCourseGenerator extends LoggingMain {
 

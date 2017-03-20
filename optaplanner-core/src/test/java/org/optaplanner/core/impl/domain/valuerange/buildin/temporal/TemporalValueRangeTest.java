@@ -1,17 +1,15 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.temporal;
 
-import org.junit.Test;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class TemporalValueRangeTest {

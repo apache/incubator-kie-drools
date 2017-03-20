@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.config.util.ConfigUtils;
 
