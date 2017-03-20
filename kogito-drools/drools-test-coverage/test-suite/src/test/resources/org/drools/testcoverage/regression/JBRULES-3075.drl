@@ -1,0 +1,60 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.testcoverage.regression;
+
+declare BaseEvent
+  @role(event)
+end
+
+declare Event extends BaseEvent
+  @role(event)
+  property : String
+end
+
+declare NotEvent extends BaseEvent
+  @role(event)
+  property : String
+end
+
+rule "not equal"
+	when
+		not (
+		  ( and
+			    $e : BaseEvent( ) over window:length(3) from entry-point entryPoint
+			    NotEvent( this == $e, property == "value" ) from entry-point entryPoint
+			)
+		)
+	then
+
+end
+
+rule "not equal 2"
+	when
+		not (
+			$e : NotEvent( ) over window:length(3) and
+			NotEvent( this == $e, property == "value" )
+		)
+	then
+
+end
+
+rule "different"
+	when
+		NotEvent( property != "value" ) over window:length(3) from entry-point entryPoint
+	then
+
+end

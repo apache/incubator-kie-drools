@@ -24,6 +24,10 @@ import java.util.Collection;
  */
 public final class TestParametersUtil {
 
+    /**
+     * Prepares collection of KieBaseTestConfiguration.
+     * @return Collection of KieBaseTestConfiguration for parameterized tests.
+     */
     public static Collection<Object[]> getKieBaseConfigurations() {
         final Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY});
@@ -33,6 +37,10 @@ public final class TestParametersUtil {
         return parameters;
     }
 
+    /**
+     * Prepares collection of stream KieBaseTestConfiguration.
+     * @return Collection of KieBaseTestConfiguration for parameterized tests.
+     */
     public static Collection<Object[]> getKieBaseStreamConfigurations() {
         final Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY});
@@ -40,6 +48,10 @@ public final class TestParametersUtil {
         return parameters;
     }
 
+    /**
+     * Prepares collection of KieSessionTestConfiguration.
+     * @return Collection of KieSessionTestConfiguration for parameterized tests.
+     */
     public static Collection<Object[]> getKieSessionConfigurations() {
         final Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieSessionTestConfiguration.STATEFUL_PSEUDO});
@@ -48,6 +60,10 @@ public final class TestParametersUtil {
         return parameters;
     }
 
+    /**
+     * Prepares various combinations of KieBaseTestConfiguration and KieSessionTestConfiguration.
+     * @return Collection of combinations for parameterized tests.
+     */
     public static Collection<Object[]> getKieBaseAndKieSessionConfigurations() {
         final Collection<Object[]> parameters = new ArrayList<>();
         parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
@@ -64,6 +80,36 @@ public final class TestParametersUtil {
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
         parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
 
+        return parameters;
+    }
+
+    /**
+     * Prepares various combinations of KieBaseTestConfiguration and KieSessionTestConfiguration.
+     * Use only stateful kie sessions.
+     * @return Collection of combinations for parameterized tests.
+     */
+    public static Collection<Object[]> getKieBaseAndStatefulKieSessionConfigurations() {
+        final Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_IDENTITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieBaseTestConfiguration.CLOUD_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        return parameters;
+    }
+
+    /**
+     * Prepares various combinations of KieBaseTestConfiguration and KieSessionTestConfiguration.
+     * Use only stream kie bases and stateful kie sessions.
+     * @return Collection of combinations for parameterized tests.
+     */
+    public static Collection<Object[]> getStreamKieBaseAndStatefulKieSessionConfigurations() {
+        final Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_REALTIME});
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY, KieSessionTestConfiguration.STATEFUL_PSEUDO});
         return parameters;
     }
 

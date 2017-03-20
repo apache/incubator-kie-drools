@@ -20,10 +20,13 @@ import org.assertj.core.api.Assertions;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.command.KieCommands;
+import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -122,6 +125,28 @@ public final class KieUtil {
         }
 
         return getKieBuilderFromResources(failIfBuildError, result.toArray(new Resource[]{}));
+    }
+
+    public static Resource[] createResources(final String drlFile, final Class<?> clazz) {
+        return new Resource[] { getResources().newClassPathResource(drlFile, clazz)};
+    }
+
+    public static Resource[] createResources(final String drl) {
+        final Resource drlResource = getResources().newReaderResource(new StringReader(drl));
+        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
+        return new Resource[] { drlResource };
+    }
+
+    public static final KieCommands getCommands() {
+        return getServices().getCommands();
+    }
+
+    public static final KieResources getResources() {
+        return getServices().getResources();
+    }
+
+    public static final KieServices getServices() {
+        return KieServices.Factory.get();
     }
 
     private KieUtil() {
