@@ -1,7 +1,7 @@
 = OptaPlanner User Guide
 The OptaPlanner Team <https://www.optaplanner.org/community/team.html>
 :doctype: book
-:title-logo-image: image:Chapter-Planner_introduction/optaPlannerLogo.png[align="center"]
+:title-logo-image: image:PlannerIntroduction/optaPlannerLogo.png[align="center"]
 :toc: left
 :toclevels: 3
 :sectnums:
@@ -15,24 +15,24 @@ The OptaPlanner Team <https://www.optaplanner.org/community/team.html>
 
 // PDF uses :title-logo-image: on first page, no need to repeat image later on
 ifndef::backend-pdf[]
-image::Chapter-Planner_introduction/optaPlannerLogo.png[align="center"]
+image::PlannerIntroduction/optaPlannerLogo.png[align="center"]
 endif::[]
 
-include::Chapter-Planner_introduction/Chapter-Planner_introduction.adoc[leveloffset=+1]
-include::Chapter-Quick_start/Chapter-Quick_start.adoc[leveloffset=+1]
-include::Chapter-Use_cases_and_examples/Chapter-Use_cases_and_examples.adoc[leveloffset=+1]
-include::Chapter-Planner_configuration/Chapter-Planner_configuration.adoc[leveloffset=+1]
-include::Chapter-Score_calculation/Chapter-Score_calculation.adoc[leveloffset=+1]
-include::Chapter-Optimization_algorithms/Chapter-Optimization_algorithms.adoc[leveloffset=+1]
-include::Chapter-Move_and_neighborhood_selection/Chapter-Move_and_neighborhood_selection.adoc[leveloffset=+1]
-include::Chapter-Exhaustive_search/Chapter-Exhaustive_search.adoc[leveloffset=+1]
-include::Chapter-Construction_heuristics/Chapter-Construction_heuristics.adoc[leveloffset=+1]
-include::Chapter-Local_search/Chapter-Local_search.adoc[leveloffset=+1]
-include::Chapter-Evolutionary_algorithms/Chapter-Evolutionary_algorithms.adoc[leveloffset=+1]
-include::Chapter-Hyperheuristics/Chapter-Hyperheuristics.adoc[leveloffset=+1]
-include::Chapter-Partitioned_search/Chapter-Partitioned_search.adoc[leveloffset=+1]
-include::Chapter-Benchmarking_and_tweaking/Chapter-Benchmarking_and_tweaking.adoc[leveloffset=+1]
-include::Chapter-Repeated_planning/Chapter-Repeated_planning.adoc[leveloffset=+1]
-include::Chapter-Integration/Chapter-Integration.adoc[leveloffset=+1]
-include::Chapter-Design_patterns/Chapter-Design_patterns.adoc[leveloffset=+1]
-include::Chapter-Development/Chapter-Development.adoc[leveloffset=+1]
+include::PlannerIntroduction/PlannerIntroduction-chapter.adoc[leveloffset=+1]
+include::QuickStart/QuickStart-chapter.adoc[leveloffset=+1]
+include::UseCasesAndExamples/UseCasesAndExamples-chapter.adoc[leveloffset=+1]
+include::PlannerConfiguration/PlannerConfiguration-chapter.adoc[leveloffset=+1]
+include::ScoreCalculation/ScoreCalculation-chapter.adoc[leveloffset=+1]
+include::OptimizationAlgorithms/OptimizationAlgorithms-chapter.adoc[leveloffset=+1]
+include::MoveAndNeighborhoodSelection/MoveAndNeighborhoodSelection-chapter.adoc[leveloffset=+1]
+include::ExhaustiveSearch/ExhaustiveSearch-chapter.adoc[leveloffset=+1]
+include::ConstructionHeuristics/ConstructionHeuristics-chapter.adoc[leveloffset=+1]
+include::LocalSearch/LocalSearch-chapter.adoc[leveloffset=+1]
+include::EvolutionaryAlgorithms/EvolutionaryAlgorithms-chapter.adoc[leveloffset=+1]
+include::Hyperheuristics/Hyperheuristic-chapter.adoc[leveloffset=+1]
+include::PartitionedSearch/PartitionedSearch-chapter.adoc[leveloffset=+1]
+include::BenchmarkingAndTweaking/BenchmarkingAndTweaking-chapter.adoc[leveloffset=+1]
+include::RepeatedPlanning/RepeatedPlanning-chapter.adoc[leveloffset=+1]
+include::Integration/Integration-chapter.adoc[leveloffset=+1]
+include::DesignPatterns/DesignPatterns-chapter.adoc[leveloffset=+1]
+include::Development/Development-chapter.adoc[leveloffset=+1]
