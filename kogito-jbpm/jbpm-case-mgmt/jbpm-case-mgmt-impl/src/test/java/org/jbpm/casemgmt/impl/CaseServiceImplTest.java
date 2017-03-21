@@ -44,6 +44,7 @@ import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
 import org.jbpm.casemgmt.api.model.CaseStage;
+import org.jbpm.casemgmt.api.model.CaseStatus;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
@@ -1716,7 +1717,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertNotNull(instances);
             assertEquals(0, instances.size());
             
-            List<Integer> status = Arrays.asList(1);
+            List<CaseStatus> status = Arrays.asList(CaseStatus.OPEN);
                         
             identityProvider.setRoles(Arrays.asList("HR"));
             instances = caseRuntimeDataService.getCaseInstancesAnyRole(status, new QueryContext());

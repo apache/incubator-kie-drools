@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
+import org.jbpm.casemgmt.api.model.CaseStatus;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseStageInstance;
@@ -118,11 +119,11 @@ public interface CaseRuntimeDataService {
     /**
      * Returns process instances found for given case id.
      * @param caseId unique id of the case
-     * @param states states representing process instance (active, completed, aborted)
+     * @param processStates states representing process instance (active, completed, aborted)
      * @param queryContext control parameters for the result e.g. sorting, paging
      *
      */
-    Collection<ProcessInstanceDesc> getProcessInstancesForCase(String caseId, List<Integer> states, QueryContext queryContext);
+    Collection<ProcessInstanceDesc> getProcessInstancesForCase(String caseId, List<Integer> processStates, QueryContext queryContext);
     
     /**
      * Returns milestones for given case instance, identified by case id. 
@@ -189,30 +190,33 @@ public interface CaseRuntimeDataService {
      * @param queryContext control parameters for the result e.g. sorting, paging
      *
      */
-    Collection<CaseInstance> getCaseInstances(List<Integer> statuses, QueryContext queryContext);
+    Collection<CaseInstance> getCaseInstances(List<CaseStatus> statuses, QueryContext queryContext);
     
     /**
      * Returns all available case instances;
      * @param deploymentId deployment identifier that case instance is part of
+     * @param statuses list of statuses that case should be in to match
      * @param queryContext control parameters for the result e.g. sorting, paging
      *
      */
-    Collection<CaseInstance> getCaseInstancesByDeployment(String deploymentId, List<Integer> statuses, QueryContext queryContext);
+    Collection<CaseInstance> getCaseInstancesByDeployment(String deploymentId, List<CaseStatus> statuses, QueryContext queryContext);
     
     /**
      * Returns all available case instances;
      * @param caseDefinitionId case definition id
+     * @param statuses list of statuses that case should be in to match
      * @param queryContext control parameters for the result e.g. sorting, paging 
      *
      */
-    Collection<CaseInstance> getCaseInstancesByDefinition(String caseDefinitionId, List<Integer> statuses, QueryContext queryContext);
+    Collection<CaseInstance> getCaseInstancesByDefinition(String caseDefinitionId, List<CaseStatus> statuses, QueryContext queryContext);
     
     /**
      * Returns all case instances owned by given user
+     * @param statuses list of statuses that case should be in to match
      * @param queryContext control parameters for the result e.g. sorting, paging
      *
      */
-    Collection<CaseInstance> getCaseInstancesOwnedBy(String owner, List<Integer> statuses, QueryContext queryContext);
+    Collection<CaseInstance> getCaseInstancesOwnedBy(String owner, List<CaseStatus> statuses, QueryContext queryContext);
     
     /**
      * Returns cases instances that given user (via identity provider) has access to with given role.
@@ -220,14 +224,14 @@ public interface CaseRuntimeDataService {
      * @param statuses statuses of the case instances
      * @param queryContext control parameters for the result e.g. sorting, paging
      */
-    Collection<CaseInstance> getCaseInstancesByRole(String roleName, List<Integer> statuses, QueryContext queryContext);
+    Collection<CaseInstance> getCaseInstancesByRole(String roleName, List<CaseStatus> statuses, QueryContext queryContext);
     
     /**
      * Returns case instances that given user (via identity provider) is involved in in any role.
      * @param statuses statuses of the case instances
      * @param queryContext control parameters for the result e.g. sorting, paging
      */
-    Collection<CaseInstance> getCaseInstancesAnyRole(List<Integer> statuses, QueryContext queryContext);
+    Collection<CaseInstance> getCaseInstancesAnyRole(List<CaseStatus> statuses, QueryContext queryContext);
     
     /**
      * Returns all tasks associated with given case id that are eligible for user to see.
