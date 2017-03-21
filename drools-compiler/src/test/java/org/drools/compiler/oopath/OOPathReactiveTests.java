@@ -47,6 +47,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
 /**
@@ -618,6 +619,39 @@ public class OOPathReactiveTests {
         toy.setName( "eleonor toy 2" );
         ksession.fireAllRules();
         Assertions.assertThat(list).hasSize(1);
+    }
+
+    @Test
+    public void testReactivitySettingAttributeInDrl() {
+        final String drl =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  Man( $child: /wife/children{age >= 10} )\n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule R2 when\n" +
+                        "  Man( $child: /wife/children{age < 10} )\n" +
+                        "then\n" +
+                        "$child.setAge(12);" +
+                        "end\n";
+
+        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        final Man bob = new Man("Bob", 40);
+
+        final Woman alice = new Woman("Alice", 38);
+        final Child charlie = new Child("Charles", 9);
+        final Child debbie = new Child("Debbie", 8);
+        bob.setWife(alice);
+        alice.addChild(charlie);
+        alice.addChild(debbie);
+
+        ksession.insert(bob);
+
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(4);
     }
 
     private List<?> factsCollection(KieSession ksession) {
