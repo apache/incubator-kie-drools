@@ -37,6 +37,10 @@ import org.kie.internal.query.QueryContext;
  *  <li>available cases</li>
  *  <li>available milestones</li>
  *  <li>available stages</li>
+ *  <p>
+ *     Note: {@link CaseInstance#getCaseFile()} will always be empty when using {@link CaseRuntimeDataService}.
+ *     Refer to using {@link CaseService#getCaseFileInstance(String)} when access to case file information is needed.
+ *  </p>
  * </ul>
  */
 public interface CaseRuntimeDataService {
@@ -163,7 +167,7 @@ public interface CaseRuntimeDataService {
     
     /**
      * Returns case instance for given case id if the caller of this class is authorized to see the case instance
-     * @param caseId unique case id of the case 
+     * @param caseId unique case id of the case
      * @return case instance with basic details or null in case it was not found or access was not granted
      */
     CaseInstance getCaseInstanceById(String caseId);

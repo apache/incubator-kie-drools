@@ -19,6 +19,8 @@ package org.jbpm.casemgmt.api.model.instance;
 import java.util.Collection;
 import java.util.Date;
 
+import org.jbpm.casemgmt.api.CaseService;
+
 /**
  * Describes case structure and requirements.
  *
@@ -57,6 +59,10 @@ public interface CaseInstance {
     
     /**
      * Returns case file associated with this case.
+     * <p>
+     *     Note: {@link CaseInstance#getCaseFile()} will always be empty.
+     *     Refer to using {@link CaseService#getCaseFileInstance(String)} when access to case file information is needed.
+     *  </p>
      */
     CaseFileInstance getCaseFile();
     
