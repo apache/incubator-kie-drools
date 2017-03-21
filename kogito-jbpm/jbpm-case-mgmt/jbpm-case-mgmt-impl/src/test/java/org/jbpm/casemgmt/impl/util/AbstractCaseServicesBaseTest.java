@@ -214,6 +214,7 @@ public abstract class AbstractCaseServicesBaseTest {
         ((CaseServiceImpl) caseService).setRuntimeDataService(runtimeDataService);
         ((CaseServiceImpl) caseService).setCommandService(new TransactionalCommandService(emf));
         ((CaseServiceImpl) caseService).setAuthorizationManager(authorizationManager);
+        ((CaseServiceImpl) caseService).setIdentityProvider(identityProvider);
 
         CaseConfigurationDeploymentListener configurationListener = new CaseConfigurationDeploymentListener();
 

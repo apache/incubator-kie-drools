@@ -16,6 +16,7 @@
 
 package org.jbpm.casemgmt.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.core.ClassObjectFilter;
+import org.jbpm.casemgmt.api.AdHocFragmentNotFoundException;
 import org.jbpm.casemgmt.api.CaseActiveException;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.CaseRuntimeDataService;
@@ -34,6 +36,7 @@ import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.auth.AuthorizationManager.ProtectedOperation;
 import org.jbpm.casemgmt.api.dynamic.TaskSpecification;
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
+import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
@@ -74,6 +77,7 @@ import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 import org.kie.internal.KieInternalServices;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.runtime.manager.context.CaseContext;
@@ -100,6 +104,7 @@ public class CaseServiceImpl implements CaseService {
     private CaseRuntimeDataService caseRuntimeDataService;
     private TransactionalCommandService commandService;
     private AuthorizationManager authorizationManager;
+    private IdentityProvider identityProvider;
     
     private CaseEventSupport emptyCaseEventSupport = new CaseEventSupport(Collections.emptyList());
     
@@ -130,6 +135,10 @@ public class CaseServiceImpl implements CaseService {
     public void setAuthorizationManager(AuthorizationManager authorizationManager) {
         this.authorizationManager = authorizationManager;
     }
+    
+    public void setIdentityProvider(IdentityProvider identityProvider) {
+        this.identityProvider = identityProvider;
+    }
 
     @Override
     public String startCase(String deploymentId, String caseDefinitionId) {
@@ -155,6 +164,8 @@ public class CaseServiceImpl implements CaseService {
             ((CaseFileInstanceImpl)caseFile).setCaseId(caseId);
             logger.debug("CaseFile {} was given, associating it with case {}", caseFile, caseId);
         }
+        
+        ((CaseFileInstanceImpl)caseFile).assignOwner(newUser(identityProvider.getName()));
         
         processService.execute(deploymentId, CaseContext.get(caseId), new StartCaseCommand(caseId, deploymentId, caseDefinitionId, caseFile, processService));
         
@@ -354,9 +365,10 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public void triggerAdHocFragment(Long processInstanceId, String fragmentName, Object data) throws CaseNotFoundException {
-        
-        processService.signalProcessInstance(processInstanceId, fragmentName, data);
+        ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceById(processInstanceId);
+        internalTriggerAdHocFragment(pi, fragmentName, data);
     }
+   
 
     /*
      * Case file data methods
@@ -554,6 +566,27 @@ public class CaseServiceImpl implements CaseService {
         return caseFile;
     }
     
+    protected void internalTriggerAdHocFragment(ProcessInstanceDesc pi, String fragmentName, Object data) throws CaseNotFoundException {
+        
+        CaseDefinition caseDef = caseRuntimeDataService.getCase(pi.getDeploymentId(), pi.getProcessId());
+        List<AdHocFragment> allFragments = new ArrayList<>();
+        if (caseDef.getAdHocFragments() != null) {
+            allFragments.addAll(caseDef.getAdHocFragments());
+        }
+        caseDef.getCaseStages().forEach(stage -> {
+            if (stage.getAdHocFragments() != null) {
+                allFragments.addAll(stage.getAdHocFragments());
+            } 
+        });
+        
+        allFragments.stream()
+        .filter(fragment -> fragment.getName().equals(fragmentName))
+        .findFirst()
+        .orElseThrow(() -> new AdHocFragmentNotFoundException("AdHoc fragment '" + fragmentName + "' not found in case " + pi.getCorrelationKey()));
+        
+        processService.signalProcessInstance(pi.getId(), fragmentName, data);
+    }
+    
     /*
      * helper method
      */
@@ -587,5 +620,12 @@ public class CaseServiceImpl implements CaseService {
         return emptyCaseEventSupport;
     }
 
+    protected boolean isEmpty(Collection<?> data) {
+        if (data == null || data.isEmpty()) {
+            return true;
+        }
+        
+        return false;
+    }
 
 }

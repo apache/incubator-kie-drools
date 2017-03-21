@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.model.CaseRole;
 import org.jbpm.casemgmt.api.model.instance.CaseFileDataFilter;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
@@ -34,6 +35,7 @@ import org.jbpm.casemgmt.api.model.instance.CaseRoleInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelFactory;
 import org.kie.internal.task.api.TaskModelProvider;
 
@@ -212,6 +214,14 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     public void setupRoles(Collection<CaseRole> roles) {
         if (roles != null) {
             roles.stream().forEach(r -> this.roles.put(r.getName(), new CaseRoleInstanceImpl(r.getName(), r.getCardinality())));
+        }
+    }
+    
+    public void assignOwner(User actualOwner) {
+        boolean hasDefinedOwner = roles.containsKey(AuthorizationManager.OWNER_ROLE);
+        if (!hasDefinedOwner && !roles.isEmpty()) {
+            this.roles.put(AuthorizationManager.OWNER_ROLE, new CaseRoleInstanceImpl(AuthorizationManager.OWNER_ROLE, 1));
+            assign(AuthorizationManager.OWNER_ROLE, actualOwner);
         }
     }
     

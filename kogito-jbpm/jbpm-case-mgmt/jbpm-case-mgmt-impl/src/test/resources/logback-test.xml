@@ -11,19 +11,18 @@
 
   <logger name="org.jbpm" level="info"/>
   <logger name="bitronix.tm" level="error"/>
-  
+
   <!--  hibernate -->
   <logger name="org.hibernate" level="warn"/>
   <logger name="org.hibernate.tool.hbm2ddl.SchemaExport" level="off" />
   <logger name="org.hibernate.ejb.Ejb3Configuration" level="off" />
   <logger name="org.hibernate.ejb.Ejb3Configuration" level="off" />
   <logger name="org.hibernate.service.jta.platform.internal.JtaPlatformInitiator" level="off" />
-  
+
   <logger name="org.jbpm.kie.services.impl.store" level="info"/>
   <logger name="org.dashbuilder.dataprovider.sql.SQLDataSetProvider" level="info"/>
-  
+
   <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="error" />
-  
   <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>
