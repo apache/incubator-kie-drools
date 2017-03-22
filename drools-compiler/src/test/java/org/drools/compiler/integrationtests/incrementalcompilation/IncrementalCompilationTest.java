@@ -15,6 +15,22 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.Message;
@@ -31,7 +47,6 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.kie.api.time.SessionPseudoClock;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,9 +56,9 @@ import org.kie.api.Service;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
+import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
-import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -65,26 +80,11 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.command.CommandFactory;
-
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
@@ -4051,5 +4051,76 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
         assertEquals( 0, addResults.getAddedMessages().size() );
+    }
+
+    public static class BaseClass {
+        String baseField;
+        public String getBaseField() {
+            return baseField;
+        }
+        public void setBaseField(String baseField) {
+            this.baseField = baseField;
+        }
+    }
+
+    @Test
+    public void testUpdateWithPojoExtensionDifferentPackages() throws Exception {
+        // DROOLS-1491
+        String drlDeclare = "package org.drools.compiler.integrationtests\n" +
+                            "declare DroolsApplications extends " + BaseClass.class.getCanonicalName() + "\n" +
+                            "    droolsAppName: String\n" +
+                            "end";
+        String drlRule = "package org.drools.compiler.test\n" +
+                         "rule R1 when\n" +
+                         "   $fact : org.drools.compiler.integrationtests.DroolsApplications( droolsAppName == \"appName\" )\n" +
+                         "then\n" +
+                         "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+
+        kfs.generateAndWritePomXML( releaseId1 );
+        kfs.write( ks.getResources()
+                     .newReaderResource( new StringReader( drlDeclare ) )
+                     .setResourceType( ResourceType.DRL )
+                     .setSourcePath( "drlDeclare.drl" ) );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        kieBuilder.buildAll();
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+
+        KieSession ksession = kc.newKieSession();
+        FactType factType = kc.getKieBase().getFactType( "org.drools.compiler.integrationtests", "DroolsApplications" );
+        Object fact = factType.newInstance();
+        factType.set( fact, "droolsAppName", "appName" );
+        ksession.insert( fact );
+        assertEquals( 0, ksession.fireAllRules() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        KieFileSystem kfs2 = ks.newKieFileSystem();
+
+
+        kfs2.generateAndWritePomXML( releaseId2 );
+
+        kfs2.write( ks.getResources()
+                      .newReaderResource( new StringReader( drlDeclare ) )
+                      .setResourceType( ResourceType.DRL )
+                      .setSourcePath( "drlDeclare.drl" ) );
+
+        kfs2.write( ks.getResources()
+                      .newReaderResource( new StringReader( drlRule ) )
+                      .setResourceType( ResourceType.DRL )
+                      .setSourcePath( "drlRule.drl" ) );
+
+        KieBuilder kieBuilder2 = ks.newKieBuilder( kfs2 );
+        kieBuilder2.buildAll();
+
+        Results updateResults = kc.updateToVersion( releaseId2 );
+
+        assertEquals( 0, updateResults.getMessages().size() );
+
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }

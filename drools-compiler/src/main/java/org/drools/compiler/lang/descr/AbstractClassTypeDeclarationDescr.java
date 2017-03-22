@@ -17,17 +17,16 @@
 package org.drools.compiler.lang.descr;
 
 
-import org.drools.core.rule.Namespaceable;
-import org.kie.api.io.Resource;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Map;
+
+import org.drools.core.rule.Namespaceable;
+import org.kie.api.io.Resource;
 
 
 public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDescr
@@ -127,7 +126,10 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
      */
     @SuppressWarnings("unchecked")
     public Map<String, TypeFieldDescr> getFields() {
-        return (Map<String, TypeFieldDescr>) (this.fields != null ? this.fields : Collections.emptyMap());
+        if (fields == null) {
+            fields = new LinkedHashMap<>();
+        }
+        return fields;
     }
 
     /**
@@ -138,13 +140,10 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
     }
 
     public void addField( TypeFieldDescr field ) {
-        if ( this.fields == null ) {
-            this.fields = new LinkedHashMap<String, TypeFieldDescr>();
-        }
         // Setting the resource on the field does not seem to be necessary (because it's always already been set)
         // but I'm leaving in this just to be safe..
         field.setResource(getResource());
-        this.fields.put( field.getFieldName(), field );
+        getFields().put( field.getFieldName(), field );
     }
 
     @Override
