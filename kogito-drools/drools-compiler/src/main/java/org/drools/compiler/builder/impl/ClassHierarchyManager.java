@@ -15,6 +15,15 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
@@ -33,15 +42,6 @@ import org.drools.core.util.HierarchySorter;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.Key;
 import org.kie.api.io.Resource;
-
-import java.io.IOException;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ClassHierarchyManager {
 
@@ -162,39 +162,25 @@ public class ClassHierarchyManager {
 
         for ( QualifiedName qname : tDescr.getSuperTypes() ) {
             //descriptor needs fields inherited from superclass
-            if ( mergeInheritedFields(tDescr, unresolvedTypes, unprocessableDescrs, pkgRegistry.getTypeResolver() ) ) {
-                /*
-                //descriptor also needs metadata from superclass - NO LONGER SINCE DROOLS 6.x
-                for ( AbstractClassTypeDeclarationDescr descr : sortedTypeDescriptors ) {
-                    // sortedTypeDescriptors are sorted by inheritance order, so we'll always find the superClass (if any) before the subclass
-                    if ( qname.equals( descr.getType() ) ) {
-                        typeDescr.getAnnotations().putAll( descr.getAnnotations() );
-                        break;
-                    } else if ( typeDescr.getType().equals( descr.getType() ) ) {
-                        break;
-                    }
-                }
-                */
-            }
+            mergeInheritedFields(tDescr, unresolvedTypes, unprocessableDescrs, pkgRegistry.getTypeResolver() );
         }
 
         if ( inferFields ) {
             // not novel, but only an empty declaration was provided.
             // after inheriting the fields from supertypes, now we fill in the locally declared fields
-            try {
-                Class existingClass = TypeDeclarationUtils.getExistingDeclarationClass( typeDescr, pkgRegistry );
-                buildDescrsFromFields( existingClass, tDescr, pkgRegistry, tDescr.getFields());
-            } catch ( Exception e ) {
-                // can't happen as we know that the class is not novel - that is, it has been resolved before
-            }
+            Class existingClass = TypeDeclarationUtils.getExistingDeclarationClass( typeDescr, pkgRegistry );
+            buildDescrsFromFields( existingClass, tDescr, pkgRegistry, tDescr.getFields());
         }
-
-
     }
 
-    private static void buildDescrsFromFields( Class klass, TypeDeclarationDescr typeDescr, PackageRegistry pkgRegistry,
-            Map<String, TypeFieldDescr> fieldMap ) throws IOException {
-        ClassFieldInspector inspector = new ClassFieldInspector( klass );
+    private static void buildDescrsFromFields( Class klass, TypeDeclarationDescr typeDescr,
+                                               PackageRegistry pkgRegistry, Map<String, TypeFieldDescr> fieldMap ) {
+        ClassFieldInspector inspector = null;
+        try {
+            inspector = new ClassFieldInspector( klass );
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
         for (String name : inspector.getGetterMethods().keySet()) {
             // classFieldAccessor requires both getter and setter
             if (inspector.getSetterMethods().containsKey(name)) {
@@ -237,14 +223,14 @@ public class ClassHierarchyManager {
      *            fields descriptors
      * @return true if all went well
      */
-    protected boolean mergeInheritedFields( TypeDeclarationDescr typeDescr,
+    protected void mergeInheritedFields( TypeDeclarationDescr typeDescr,
                                             List<TypeDefinition> unresolvedTypes,
                                             Map<String,AbstractClassTypeDeclarationDescr> unprocessableDescrs,
                                             TypeResolver typeResolver ) {
 
-        if (typeDescr.getSuperTypes().isEmpty())
-            return false;
-        boolean merge = false;
+        if (typeDescr.getSuperTypes().isEmpty()) {
+            return;
+        }
 
         for (int j = typeDescr.getSuperTypes().size() - 1; j >= 0; j--) {
             QualifiedName qname = typeDescr.getSuperTypes().get(j);
@@ -252,25 +238,23 @@ public class ClassHierarchyManager {
             String superTypePackageName = qname.getNamespace();
             String fullSuper = qname.getFullName();
 
-            merge = mergeFields( simpleSuperTypeName,
-                                 superTypePackageName,
-                                 fullSuper,
-                                 typeDescr,
-                                 unresolvedTypes,
-                                 unprocessableDescrs,
-                                 typeResolver ) || merge;
+            mergeFields( simpleSuperTypeName,
+                         superTypePackageName,
+                         fullSuper,
+                         typeDescr,
+                         unresolvedTypes,
+                         unprocessableDescrs,
+                         typeResolver );
         }
-
-        return merge;
     }
 
-    protected boolean mergeFields( String simpleSuperTypeName,
-                                   String superTypePackageName,
-                                   String fullSuper,
-                                   TypeDeclarationDescr typeDescr,
-                                   List<TypeDefinition> unresolvedTypes,
-                                   Map<String,AbstractClassTypeDeclarationDescr> unprocessableDescrs,
-                                   TypeResolver resolver ) {
+    protected void mergeFields( String simpleSuperTypeName,
+                                String superTypePackageName,
+                                String fullSuper,
+                                TypeDeclarationDescr typeDescr,
+                                List<TypeDefinition> unresolvedTypes,
+                                Map<String,AbstractClassTypeDeclarationDescr> unprocessableDescrs,
+                                TypeResolver resolver ) {
 
         Map<String, TypeFieldDescr> fieldMap = new LinkedHashMap<String, TypeFieldDescr>();
         boolean isNovel = TypeDeclarationUtils.isNovelClass( typeDescr, kbuilder.getPackageRegistry( typeDescr.getNamespace() ) );
@@ -279,19 +263,11 @@ public class ClassHierarchyManager {
         InternalKnowledgePackage pack = null;
         if ( registry != null ) {
             pack = registry.getPackage();
-        } else {
-            // If there is no regisrty the type isn't a DRL-declared type, which is forbidden.
-            // Avoid NPE JIRA-3041 when trying to access the registry. Avoid subsequent problems.
-            // DROOLS-536 At this point, the declarations might exist, but the package might not have been processed yet
-            if ( isNovel ) {
-                unprocessableDescrs.put( typeDescr.getType().getFullName(), typeDescr );
-                return false;
-            }
         }
 
         if ( unprocessableDescrs.containsKey( fullSuper ) ) {
             unprocessableDescrs.put( typeDescr.getType().getFullName(), typeDescr );
-            return false;
+            return;
         }
 
         // if a class is declared in DRL, its package can't be null? The default package is replaced by "defaultpkg"
@@ -315,21 +291,6 @@ public class ClassHierarchyManager {
                 // new classes are already distinguished from tagged external classes
                 isSuperClassTagged = !superTypeDeclaration.isNovel();
             }
-            /*
-            else {
-                for ( TypeDefinition def : unresolvedTypes ) {
-                    if ( def.getTypeClassName().equals( fullSuper ) ) {
-                        TypeDeclarationDescr td = (TypeDeclarationDescr) def.typeDescr;
-                        for ( TypeFieldDescr tf : td.getFields().values() ) {
-                            fieldMap.put( tf.getFieldName(), tf.cloneAsInherited() );
-                        }
-                        isSuperClassDeclared = def.type.isNovel();
-                        break;
-                    }
-                    isSuperClassDeclared = false;
-                }
-            }
-            */
         } else {
             isSuperClassDeclared = false;
         }
@@ -346,9 +307,8 @@ public class ClassHierarchyManager {
                 }
                 buildDescrsFromFields( superKlass, typeDescr, registry, fieldMap);
             } catch (ClassNotFoundException cnfe) {
-                throw new RuntimeException("Unable to resolve Type Declaration superclass '" + fullSuper + "'");
-            } catch ( IOException e ) {
-                e.printStackTrace();
+                unprocessableDescrs.put( typeDescr.getType().getFullName(), typeDescr );
+                return;
             }
         }
 
@@ -391,7 +351,7 @@ public class ClassHierarchyManager {
                     kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                        "Cannot redeclare field '" + fieldName + " from " + type1 + " to " + type2));
                     typeDescr.setType(null,null);
-                    return false;
+                    return;
                 } else {
                     String initVal = fieldMap.get(fieldName).getInitExpr();
                     TypeFieldDescr fd = typeDescr.getFields().get(fieldName);
@@ -419,8 +379,6 @@ public class ClassHierarchyManager {
         }
 
         typeDescr.setFields(fieldMap);
-
-        return true;
     }
 
     protected TypeFieldDescr buildInheritedFieldDescrFromDefinition(org.kie.api.definition.type.FactField fld, TypeDeclarationDescr typeDescr) {

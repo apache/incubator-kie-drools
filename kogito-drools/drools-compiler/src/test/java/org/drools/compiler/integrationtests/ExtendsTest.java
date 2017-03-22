@@ -16,6 +16,12 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.api.DescrFactory;
@@ -42,12 +48,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Test for declared bean Extension
@@ -977,7 +977,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testDeclareExtendsMissingDeclareForParent() {
+    public void testDeclareExtendsJavaParent() {
         String drl = "package org.drools.test; \n" +
                      "import org.drools.compiler.Person; \n" +
                      "declare Student extends Person end \n" +
@@ -987,14 +987,11 @@ public class ExtendsTest extends CommonTestMethodBase {
         if ( kBuilder.hasErrors() ) {
             System.err.println( kBuilder.getErrors() );
         }
-        assertTrue( kBuilder.hasErrors() );
-        assertEquals( 1, kBuilder.getErrors().size() );
+        assertFalse( kBuilder.hasErrors() );
     }
 
-
-
     @Test
-    public void testDeclareExtendsMissingDeclareForParentOuterPackaga() {
+    public void testDeclareExtendsJavaParentOuterPackaga() {
         String drl = "package org.drools.test; \n" +
                      "import org.drools.compiler.integrationtests.ExtendsTest.X; \n" +
                      "declare Student extends X end \n" +
@@ -1004,10 +1001,22 @@ public class ExtendsTest extends CommonTestMethodBase {
         if ( kBuilder.hasErrors() ) {
             System.err.println( kBuilder.getErrors() );
         }
-        assertTrue( kBuilder.hasErrors() );
-        assertEquals( 1, kBuilder.getErrors().size() );
+        assertFalse( kBuilder.hasErrors() );
     }
 
+    @Test
+    public void testDeclareExtendsMissingJavaParent() {
+        String drl = "package org.drools.test; \n" +
+                     "import org.drools.compiler.integrationtests.ExtendsTest.Y; \n" +
+                     "declare Student extends Y end \n" +
+                     "";
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors() );
+        }
+        assertTrue( kBuilder.hasErrors() );
+    }
 
     @Test
     public void testDeclareExtendsWithFullyQualifiedName() {
