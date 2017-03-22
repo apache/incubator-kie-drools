@@ -16,6 +16,16 @@
 
 package org.drools.core.base;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.Map;
+
 import org.drools.core.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.core.base.extractors.BaseBooleanClassFieldReader;
 import org.drools.core.base.extractors.BaseBooleanClassFieldWriter;
@@ -30,6 +40,7 @@ import org.drools.core.base.extractors.BaseFloatClassFieldReader;
 import org.drools.core.base.extractors.BaseFloatClassFieldWriter;
 import org.drools.core.base.extractors.BaseIntClassFieldReader;
 import org.drools.core.base.extractors.BaseIntClassFieldWriter;
+import org.drools.core.base.extractors.BaseLocalDateTimeClassFieldReader;
 import org.drools.core.base.extractors.BaseLongClassFieldReader;
 import org.drools.core.base.extractors.BaseLongClassFieldWriter;
 import org.drools.core.base.extractors.BaseNumberClassFieldReader;
@@ -37,23 +48,16 @@ import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.base.extractors.BaseObjectClassFieldWriter;
 import org.drools.core.base.extractors.BaseShortClassFieldReader;
 import org.drools.core.base.extractors.BaseShortClassFieldWriter;
+import org.drools.core.base.extractors.BaseZonedDateTimeClassFieldReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.core.util.ByteArrayClassLoader;
+import org.drools.core.util.asm.ClassFieldInspector;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
-
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.ProtectionDomain;
-import java.util.Date;
-import java.util.Map;
 
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
@@ -584,6 +588,10 @@ public class ClassFieldAccessorFactory {
             ret = BaseNumberClassFieldReader.class;
         } else if ( Date.class.isAssignableFrom( fieldType ) ) {
             ret = BaseDateClassFieldReader.class;
+        } else if ( LocalDateTime.class.isAssignableFrom( fieldType ) ) {
+            ret = BaseLocalDateTimeClassFieldReader.class;
+        } else if ( ZonedDateTime.class.isAssignableFrom( fieldType ) ) {
+            ret = BaseZonedDateTimeClassFieldReader.class;
         } else {
             ret = BaseObjectClassFieldReader.class;
         }
