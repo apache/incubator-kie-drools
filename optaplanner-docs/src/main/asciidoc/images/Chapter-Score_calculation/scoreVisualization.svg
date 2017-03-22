@@ -977,7 +977,7 @@
      inkscape:cx="400"
      inkscape:cy="300"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer3"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -1402,7 +1402,7 @@
            height="140"
            x="470"
            y="120" /></flowRegion><flowPara
-         id="flowPara5168"></flowPara></flowRoot>  </g>
+         id="flowPara5168" /></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer1"
@@ -1960,5 +1960,17 @@
        d="m 445,357.52399 c 30.25523,0 45,-50 75,-50"
        style="display:inline;fill:none;stroke:#555753;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
        sodipodi:nodetypes="cc" />
-  </g>
+    <flowRoot
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       id="flowRoot3783"
+       xml:space="preserve"
+       transform="translate(430,392.24799)"><flowRegion
+         id="flowRegion3785"><rect
+           style="font-size:16px;text-align:end;text-anchor:end;fill:#000000;fill-opacity:1"
+           y="127.75201"
+           x="170"
+           height="20.000004"
+           width="40"
+           id="rect3787" /></flowRegion><flowPara
+         id="flowPara3789">0..1</flowPara></flowRoot>  </g>
 </svg>
