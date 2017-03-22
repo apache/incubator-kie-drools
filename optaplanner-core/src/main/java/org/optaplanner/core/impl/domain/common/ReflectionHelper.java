@@ -105,7 +105,7 @@ public final class ReflectionHelper {
     /**
      * @param containingClass never null
      * @param propertyName never null
-     * @return true if that getter exists
+     * @return sometimes null
      */
     public static Method getGetterMethod(Class<?> containingClass, String propertyName) {
         String getterName = PROPERTY_ACCESSOR_PREFIX_GET
@@ -126,6 +126,28 @@ public final class ReflectionHelper {
             // intentionally empty
         }
         return null;
+    }
+
+    /**
+     * @param containingClass never null
+     * @param fieldName never null
+     * @return true if that field exists
+     */
+    public static boolean hasField(Class<?> containingClass, String fieldName) {
+        return getField(containingClass, fieldName) != null;
+    }
+
+    /**
+     * @param containingClass never null
+     * @param fieldName never null
+     * @return sometimes null
+     */
+    public static Field getField(Class<?> containingClass, String fieldName) {
+        try {
+            return containingClass.getField(fieldName);
+        } catch (NoSuchFieldException e) {
+            return null;
+        }
     }
 
     /**
