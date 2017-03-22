@@ -1,7 +1,7 @@
 = OptaPlanner User Guide
 The OptaPlanner Team <https://www.optaplanner.org/community/team.html>
 :doctype: book
-:title-logo-image: image:PlannerIntroduction/optaPlannerLogo.png[align="center"]
+:title-logo-image: image:Chapter-Planner_introduction/optaPlannerLogo.png[align="center"]
 :toc: left
 :toclevels: 3
 :sectnums:
