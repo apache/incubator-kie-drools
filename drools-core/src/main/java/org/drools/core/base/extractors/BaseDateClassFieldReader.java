@@ -16,13 +16,12 @@
 
 package org.drools.core.base.extractors;
 
+import java.lang.reflect.Method;
+import java.util.Date;
+
 import org.drools.core.base.BaseClassFieldReader;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
-
-import java.lang.reflect.Method;
-import java.util.Date;
 
 public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
 
@@ -77,7 +76,11 @@ public abstract class BaseDateClassFieldReader extends BaseClassFieldReader {
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory, Object object) {
-        return ((Date)getValue(workingMemory, object)).getTime();
+        return getDate( workingMemory, object ).getTime();
+    }
+
+    protected Date getDate( InternalWorkingMemory workingMemory, Object object ) {
+        return (Date)getValue( workingMemory, object );
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
