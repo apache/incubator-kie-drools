@@ -1,5 +1,4 @@
-/*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+/* * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +58,9 @@ import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKI
 import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
 import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
@@ -98,17 +99,25 @@ public class JpaPersistentStatefulSessionTest {
 
     @Test
     public void testFactHandleSerialization() {
-        String str = "";
-        str += "package org.kie.test\n";
-        str += "import java.util.concurrent.atomic.AtomicInteger\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += " $i: AtomicInteger(intValue > 0)\n";
-        str += "then\n";
-        str += " list.add( $i );\n";
-        str += "end\n";
-        str += "\n";
+        factHandleSerialization(false);
+    }
+
+    @Test
+    public void testFactHandleSerializationWithOOPath() {
+        factHandleSerialization(true);
+    }
+
+    private void factHandleSerialization(final boolean withOOPath) {
+        final String str = "package org.kie.test\n" +
+                "import java.util.concurrent.atomic.AtomicInteger\n" +
+                "global java.util.List list\n" +
+                "rule rule1\n" +
+                "when\n" +
+                (withOOPath ? " AtomicInteger($i: /intValue{this > 0})\n" : " $i: AtomicInteger(intValue > 0)\n") +
+                "then\n" +
+                " list.add( $i );\n" +
+                "end\n" +
+                "\n";
 
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
@@ -143,23 +152,22 @@ public class JpaPersistentStatefulSessionTest {
         list = (List<?>) ksession.getGlobal("list");
 
         assertEquals(3, list.size());
-
     }
 
     @Test
     public void testLocalTransactionPerStatement() {
-        String str = "";
-        str += "package org.kie.test\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += "  Integer(intValue > 0)\n";
-        str += "then\n";
-        str += "  list.add( 1 );\n";
-        str += "end\n";
-        str += "\n";
+        localTransactionPerStatement(false);
+    }
 
-        final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+    @Test
+    public void testLocalTransactionPerStatementWithOOPath() {
+        localTransactionPerStatement(true);
+    }
+
+    private void localTransactionPerStatement(final boolean withOOPath) {
+        final String rule = getSimpleRule(withOOPath);
+
+        final KieBase kbase = new KieHelper().addContent(rule, ResourceType.DRL).build();
 
         final KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, null, env);
         final List<?> list = new ArrayList<>();
@@ -178,16 +186,23 @@ public class JpaPersistentStatefulSessionTest {
 
     @Test
     public void testUserTransactions() throws Exception {
-        String str = "";
-        str += "package org.kie.test\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += "  $i : Integer(intValue > 0)\n";
-        str += "then\n";
-        str += "  list.add( $i );\n";
-        str += "end\n";
-        str += "\n";
+        userTransactions(false);
+    }
+
+    @Test
+    public void testUserTransactionsWithOOPath() throws Exception {
+        userTransactions(true);
+    }
+
+    private void userTransactions(final boolean withOOPath) throws Exception {
+        final String str = "package org.kie.test\n" +
+                "global java.util.List list\n" +
+                "rule rule1\n" +
+                "when\n" +
+                (withOOPath ? " $i: Integer( /intValue{this > 0})\n" : " $i : Integer(intValue > 0)\n") +
+                "then\n" +
+                " list.add( $i );\n" +
+                "end\n";
 
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
@@ -254,16 +269,16 @@ public class JpaPersistentStatefulSessionTest {
 
     @Test
     public void testInterceptor() {
-        String str = "";
-        str += "package org.kie.test\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += "  Integer(intValue > 0)\n";
-        str += "then\n";
-        str += "  list.add( 1 );\n";
-        str += "end\n";
-        str += "\n";
+        interceptor(false);
+    }
+
+    @Test
+    public void testInterceptorWithOOPath() {
+        interceptor(true);
+    }
+
+    private void interceptor(final boolean withOOPath) {
+        final String str = getSimpleRule(withOOPath);
 
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
@@ -283,16 +298,16 @@ public class JpaPersistentStatefulSessionTest {
 
     @Test
     public void testInterceptorOnRollback() throws Exception {
-        String str = "";
-        str += "package org.kie.test\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += "  Integer(intValue > 0)\n";
-        str += "then\n";
-        str += "  list.add( 1 );\n";
-        str += "end\n";
-        str += "\n";
+        interceptorOnRollback(false);
+    }
+
+    @Test
+    public void testInterceptorOnRollbackWithOOPAth() throws Exception {
+        interceptorOnRollback(true);
+    }
+
+    private void interceptorOnRollback(final boolean withOOPath) throws Exception {
+        final String str = getSimpleRule(withOOPath);
 
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
@@ -331,17 +346,25 @@ public class JpaPersistentStatefulSessionTest {
 
     @Test
     public void testSetFocus() {
-        String str = "";
-        str += "package org.kie.test\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "agenda-group \"badfocus\"";
-        str += "when\n";
-        str += "  Integer(intValue > 0)\n";
-        str += "then\n";
-        str += "  list.add( 1 );\n";
-        str += "end\n";
-        str += "\n";
+        testFocus(false);
+    }
+
+    @Test
+    public void testSetFocusWithOOPath() {
+        testFocus(true);
+    }
+
+    private void testFocus(final boolean withOOPath) {
+        final String str = "package org.kie.test\n" +
+                "global java.util.List list\n" +
+                "rule rule1\n" +
+                "agenda-group \"badfocus\"" +
+                "when\n" +
+                (withOOPath ? "  Integer(/intValue{this > 0})\n" : "  Integer(intValue > 0)\n") +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n" +
+                "\n";
 
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
@@ -405,16 +428,16 @@ public class JpaPersistentStatefulSessionTest {
 
     @Test(expected = IllegalStateException.class)
     public void testCreateAndDestroySession() {
-        String str = "";
-        str += "package org.kie.test\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += "  Integer(intValue > 0)\n";
-        str += "then\n";
-        str += "  list.add( 1 );\n";
-        str += "end\n";
-        str += "\n";
+        createAndDestroySession(false);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testCreateAndDestroySessionWithOOPath() {
+        createAndDestroySession(true);
+    }
+
+    public void createAndDestroySession(final boolean withOOPath) {
+        final String str = getSimpleRule(withOOPath);
 
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
@@ -441,16 +464,16 @@ public class JpaPersistentStatefulSessionTest {
 
     @Test(expected = IllegalStateException.class)
     public void testCreateAndDestroyNonPersistentSession() {
-        String str = "";
-        str += "package org.kie.test\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += "  Integer(intValue > 0)\n";
-        str += "then\n";
-        str += "  list.add( 1 );\n";
-        str += "end\n";
-        str += "\n";
+        createAndDestroyNonPersistentSession(false);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testCreateAndDestroyNonPersistentSessionWithOOPath() {
+        createAndDestroyNonPersistentSession(true);
+    }
+
+    private void createAndDestroyNonPersistentSession(final boolean withOOPath) {
+        final String str = getSimpleRule(withOOPath);
 
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
@@ -477,20 +500,29 @@ public class JpaPersistentStatefulSessionTest {
 
     @Test
     public void testFromNodeWithModifiedCollection() {
+        fromNodeWithModifiedCollection(false);
+    }
+
+    @Test
+    public void testFromNodeWithModifiedCollectionWithOOPath() {
+        fromNodeWithModifiedCollection(true);
+    }
+
+    private void fromNodeWithModifiedCollection(final boolean withOOPath) {
         // DROOLS-376
-        String str = "";
-        str += "package org.drools.test\n";
-        str += "import org.drools.compiler.Person\n";
-        str += "import org.drools.compiler.Address\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += " $p: Person($list : addresses)\n";
-        str += " $a: Address(street == \"y\") from $list\n";
-        str += "then\n";
-        str += " $list.add( new Address(\"z\") );\n";
-        str += " $list.add( new Address(\"w\") );\n";
-        str += "end\n";
-        str += "\n";
+        final String str = "package org.drools.test\n" +
+                "import org.drools.compiler.Person\n" +
+                "import org.drools.compiler.Address\n" +
+                "rule rule1\n" +
+                "when\n" +
+                (withOOPath ?
+                        " $p: Person($list : addresses, /addresses{street == \"y\"})\n" :
+                        " $p: Person($list : addresses)\n" + " $a: Address(street == \"y\") from $list\n"
+                ) +
+                "then\n" +
+                " $list.add( new Address(\"z\") );\n" +
+                " $list.add( new Address(\"w\") );\n" +
+                "end\n";
 
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
@@ -509,5 +541,17 @@ public class JpaPersistentStatefulSessionTest {
         ksession.dispose();
 
         // Should not fail here
+    }
+
+    private String getSimpleRule(final boolean withOOPath) {
+        return "package org.kie.test\n" +
+                "global java.util.List list\n" +
+                "rule rule1\n" +
+                "when\n" +
+                (withOOPath ? "  Integer(/intValue{this > 0})\n" : "  Integer(intValue > 0)\n") +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n" +
+                "\n";
     }
 }
