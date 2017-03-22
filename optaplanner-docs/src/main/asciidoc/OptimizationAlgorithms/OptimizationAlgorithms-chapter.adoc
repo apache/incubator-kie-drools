@@ -592,7 +592,7 @@ public interface Solver<Solution_> {
 }
 ----
 
-The `BestSolutionChangedEvent`'s' `newBestSolution` may not be initialized or feasible.
+The ``BestSolutionChangedEvent``'s `newBestSolution` may not be initialized or feasible.
 Use the `isFeasible()` method on `BestSolutionChangedEvent`'s new best `Score` to detect such cases:
 
 [source,java,options="nowrap"]

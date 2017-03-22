@@ -1241,7 +1241,7 @@ guiScoreDirector.setWorkingSolution(cloudBalance);
 Score score = guiScoreDirector.calculateScore();
 ----
 
-Furthermore, the `ScoreDirector`can explain the score with constraint match totals and/or indictments:
+Furthermore, the `ScoreDirector` can explain the score with constraint match totals and/or indictments:
 
 image::Chapter-Score_calculation/scoreVisualization.png[align="center"]
 
