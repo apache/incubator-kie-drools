@@ -285,7 +285,6 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             mapper.removeMapping(new EnvironmentAwareProcessInstanceContext(
             		event.getKieRuntime().getEnvironment(),
             		event.getProcessInstance().getId()), managerId);
-            removeLocalRuntime(runtime);
             
             registerDisposeCallback(runtime, 
                         new DestroySessionTransactionSynchronization(runtime.getKieSession()));            

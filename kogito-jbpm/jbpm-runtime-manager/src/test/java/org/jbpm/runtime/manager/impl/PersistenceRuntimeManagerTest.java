@@ -117,6 +117,7 @@ public class PersistenceRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(1, sessions.size());
         
         ksession.getWorkItemManager().completeWorkItem(1, null);
+        manager.disposeRuntimeEngine(runtime);
         // since process is completed now session should not be there any more
         try {
             manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId())).getKieSession();
