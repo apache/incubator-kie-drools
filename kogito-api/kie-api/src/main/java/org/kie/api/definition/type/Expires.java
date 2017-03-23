@@ -26,4 +26,8 @@ import java.lang.annotation.Target;
 public @interface Expires {
 
     String value();
+
+    Policy policy() default Policy.TIME_HARD;
+
+    enum Policy { TIME_HARD, TIME_SOFT }
 }
