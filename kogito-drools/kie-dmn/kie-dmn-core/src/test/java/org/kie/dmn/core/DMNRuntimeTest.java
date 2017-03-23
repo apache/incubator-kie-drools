@@ -867,6 +867,45 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "Loan Recommendation" ), is( "Decline" ) );
     }
+    
+    @Test
+    public void testInputClauseTypeRefWithAllowedValues() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "actualInputMatchInputValues-forTypeRef.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "https://www.drools.org/kie-dmn/definitions",
+                "definitions" );
+        assertThat( dmnModel, notNullValue() );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        context.set("MyInput", "a");
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "MyDecision" ), is( "Decision taken" ) );
+    }
+    
+    @Test
+    public void testInputDataTypeRefWithAllowedValues() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "actualInputMatchInputValues-forTypeRef.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "https://www.drools.org/kie-dmn/definitions",
+                "definitions" );
+        assertThat( dmnModel, notNullValue() );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        context.set("MyInput", "zzz");              // <<< `zzz` is NOT in the list of allowed value as declared by the typeRef for this inputdata
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
+        assertThat( dmnResult.getMessages().size(), is( 1 ) );
+        assertThat( dmnResult.getMessages().get( 0 ).getSourceId(), is( "_3d560678-a126-4654-a686-bc6d941fe40b" ) );
+    }
 
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );

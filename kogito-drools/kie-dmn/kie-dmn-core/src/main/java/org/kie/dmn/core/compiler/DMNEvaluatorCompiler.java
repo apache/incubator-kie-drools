@@ -7,6 +7,7 @@ import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.*;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -20,6 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import static java.util.stream.Collectors.toList;
 
@@ -218,6 +221,16 @@ public class DMNEvaluatorCompiler {
             ctx.exitFrame();
         }
     }
+    
+    private String resolveNamespaceForTypeRef(QName typeRef, DMNElement fromElement) {
+        if ( typeRef.getNamespaceURI() == null || typeRef.getNamespaceURI().isEmpty() ) {
+            // TODO this could have actually been populated during unmarshalling, but requires throughout customization of the Stax reader.
+            String namespaceURI = fromElement.getNamespaceURI(typeRef.getPrefix());
+            return namespaceURI;
+        } else {
+            return typeRef.getNamespaceURI();
+        }
+    }
 
     private DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt) {
         java.util.List<DTInputClause> inputs = new ArrayList<>();
@@ -225,15 +238,22 @@ public class DMNEvaluatorCompiler {
         for ( InputClause ic : dt.getInput() ) {
             String inputExpressionText = ic.getInputExpression().getText();
             String inputValuesText =  Optional.ofNullable( ic.getInputValues() ).map( UnaryTests::getText).orElse( null);
-            inputs.add( new DTInputClause(inputExpressionText, inputValuesText,
-                                          textToUnaryTestList( ctx,
-                                                               inputValuesText,
-                                                               model,
-                                                               ic,
-                                                               Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX,
-                                                               inputValuesText,
-                                                               node.getIdentifierString(),
-                                                               ++index ) ) );
+            java.util.List<UnaryTest> inputValues = null;
+            if ( inputValuesText != null ) {
+                inputValues = textToUnaryTestList( ctx,
+                                                   inputValuesText,
+                                                   model,
+                                                   ic,
+                                                   Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX,
+                                                   inputValuesText,
+                                                   node.getIdentifierString(),
+                                                   ++index );
+            } else if ( ic.getInputExpression().getTypeRef() != null ) {
+                QName inputExpressionTypeRef = ic.getInputExpression().getTypeRef();
+                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef, ic), inputExpressionTypeRef.getLocalPart());
+                inputValues = typeRef.getAllowedValues();
+            }
+            inputs.add( new DTInputClause(inputExpressionText, inputValuesText, inputValues) );
         }
         java.util.List<DTOutputClause> outputs = new ArrayList<>();
         index = 0;
@@ -245,15 +265,21 @@ public class DMNEvaluatorCompiler {
             String id = oc.getId();
             String outputValuesText = Optional.ofNullable( oc.getOutputValues() ).map( UnaryTests::getText ).orElse( null );
             String defaultValue = oc.getDefaultOutputEntry() != null ? oc.getDefaultOutputEntry().getText() : null;
-            java.util.List<UnaryTest> outputValues = outputValuesText == null ? null : textToUnaryTestList( ctx,
-                                                                                                            outputValuesText,
-                                                                                                            model,
-                                                                                                            oc,
-                                                                                                            Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX,
-                                                                                                            outputValuesText,
-                                                                                                            node.getIdentifierString(),
-                                                                                                            ++index );
-
+            java.util.List<UnaryTest> outputValues = null;
+            if ( outputValuesText != null ) {
+                outputValues = textToUnaryTestList( ctx,
+                                                    outputValuesText,
+                                                    model,
+                                                    oc,
+                                                    Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX,
+                                                    outputValuesText,
+                                                    node.getIdentifierString(),
+                                                    ++index );
+            } else if ( oc.getTypeRef() != null ) {
+                QName outputExpressionTypeRef = oc.getTypeRef();
+                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(outputExpressionTypeRef, oc), outputExpressionTypeRef.getLocalPart());
+                outputValues = typeRef.getAllowedValues();
+            }
             outputs.add( new DTOutputClause( outputName, id, outputValues, defaultValue ) );
         }
         java.util.List<DTDecisionRule> rules = new ArrayList<>();

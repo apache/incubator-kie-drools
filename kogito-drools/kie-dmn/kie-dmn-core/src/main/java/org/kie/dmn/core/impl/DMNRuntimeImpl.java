@@ -26,16 +26,21 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNPackage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
+import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.internal.io.ResourceTypePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,6 +183,20 @@ public class DMNRuntimeImpl
         try {
             eventManager.fireBeforeEvaluateBKM( bkm, result );
             for( DMNNode dep : bkm.getDependencies().values() ) {
+                if ( !checkDependencyValueIsValid(b, dep, result.getContext()) ) {
+                    DMNMessage message = MsgUtil.reportMessage( logger,
+                                                                DMNMessage.Severity.ERROR,
+                                                                ((DMNBaseNode) dep).getSource(),
+                                                                result,
+                                                                null,
+                                                                null,
+                                                                Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
+                                                                getIdentifier( bkm ),
+                                                                getIdentifier( dep ),
+                                                                result.getContext().get( dep.getName() )
+                                                                );
+                    return;
+                }
                 if( ! result.getContext().isDefined( dep.getName() ) ) {
                     if( dep instanceof BusinessKnowledgeModelNode ) {
                         evaluateBKM( context, result, (BusinessKnowledgeModelNode) dep );
@@ -233,6 +252,21 @@ public class DMNRuntimeImpl
             boolean missingInput = false;
             DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById( decision.getId() );
             for( DMNNode dep : decision.getDependencies().values() ) {
+                if ( !checkDependencyValueIsValid(d, dep, result.getContext()) ) {
+                    missingInput = true;
+                    DMNMessage message = MsgUtil.reportMessage( logger,
+                            DMNMessage.Severity.ERROR,
+                            ((DMNBaseNode) dep).getSource(),
+                            result,
+                            null,
+                            null,
+                            Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
+                            getIdentifier( decision ),
+                            getIdentifier( dep ),
+                            result.getContext().get( dep.getName() )
+                            );
+                    reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
+                }
                 if( ! result.getContext().isDefined( dep.getName() ) ) {
                     if( dep instanceof DecisionNode ) {
                         if( ! evaluateDecision( context, result, (DecisionNode) dep ) ) {
@@ -314,6 +348,18 @@ public class DMNRuntimeImpl
         } finally {
             eventManager.fireAfterEvaluateDecision( decision, result );
         }
+    }
+
+    private boolean checkDependencyValueIsValid(DMNNode currentNode, DMNNode dep, DMNContext context) {
+        if (dep instanceof InputDataNode) {
+            InputDataNode inputDataNode = (InputDataNode) dep;
+            BaseDMNTypeImpl dmnType = (BaseDMNTypeImpl) inputDataNode.getType();
+            if ( dmnType.getAllowedValues() != null && !dmnType.getAllowedValues().isEmpty() ) {
+                List<UnaryTest> allowedValues = dmnType.getAllowedValues();
+                return DMNFEELHelper.valueMatchesInUnaryTests(allowedValues, context.get( dep.getName() ), context);
+            }
+        }
+        return true;
     }
 
     private String getIdentifier(DMNNode node) {

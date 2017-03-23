@@ -52,12 +52,10 @@ public class DMNCompilerImpl
     private static final Logger logger = LoggerFactory.getLogger( DMNCompilerImpl.class );
     private final DMNEvaluatorCompiler evaluatorCompiler;
     private final DMNFEELHelper feel;
-    private final DMNTypeRegistry types;
 
     public DMNCompilerImpl() {
         this.feel = new DMNFEELHelper();
         this.evaluatorCompiler = new DMNEvaluatorCompiler( this, feel );
-        this.types = new DMNTypeRegistry();
     }
 
     @Override
@@ -317,7 +315,7 @@ public class DMNCompilerImpl
                     }
                 }
                 if( topLevel ) {
-                    DMNType registered = types.registerType( type );
+                    DMNType registered = dmnModel.getTypeRegistry().registerType( type );
                     if( registered != type ) {
                         MsgUtil.reportMessage( logger,
                                                DMNMessage.Severity.ERROR,
@@ -351,7 +349,7 @@ public class DMNCompilerImpl
             }
             type = compType;
             if( topLevel ) {
-                DMNType registered = types.registerType( type );
+                DMNType registered = dmnModel.getTypeRegistry().registerType( type );
                 if( registered != type ) {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
@@ -371,7 +369,7 @@ public class DMNCompilerImpl
         if ( typeRef != null ) {
             String namespace = getNamespace( localElement, typeRef );
 
-            DMNType type = types.resolveType( namespace, typeRef.getLocalPart() );
+            DMNType type = dmnModel.getTypeRegistry().resolveType( namespace, typeRef.getLocalPart() );
             if( type == null && DMNModelInstrumentedBase.URI_FEEL.equals( namespace ) ) {
                 if ( model instanceof Decision && ((Decision) model).getExpression() instanceof DecisionTable ) {
                     DecisionTable dt = (DecisionTable) ((Decision) model).getExpression();
@@ -382,7 +380,7 @@ public class DMNCompilerImpl
                             DMNType fieldType = resolveTypeRef( dmnModel, node, model, oc, oc.getTypeRef() );
                             compType.addField( oc.getName(), fieldType );
                         }
-                        types.registerType( compType );
+                        dmnModel.getTypeRegistry().registerType( compType );
                         return compType;
                     } else if ( dt.getOutput().size() == 1 ) {
                         return resolveTypeRef( dmnModel, node, model, dt.getOutput().get( 0 ), dt.getOutput().get( 0 ).getTypeRef() );
@@ -401,7 +399,7 @@ public class DMNCompilerImpl
             }
             return type;
         }
-        return types.resolveType( DMNModelInstrumentedBase.URI_FEEL, BuiltInType.UNKNOWN.getName() );
+        return dmnModel.getTypeRegistry().resolveType( DMNModelInstrumentedBase.URI_FEEL, BuiltInType.UNKNOWN.getName() );
     }
 
     private String getNamespace(DMNModelInstrumentedBase localElement, QName typeRef) {

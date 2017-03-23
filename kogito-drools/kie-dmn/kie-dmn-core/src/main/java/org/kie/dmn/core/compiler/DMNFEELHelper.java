@@ -1,5 +1,6 @@
 package org.kie.dmn.core.compiler;
 
+import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -12,6 +13,8 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
@@ -20,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class DMNFEELHelper
         implements FEELEventListener {
@@ -43,6 +47,32 @@ public class DMNFEELHelper
     @Override
     public void onEvent(FEELEvent event) {
         feelEvents.add( event );
+    }
+    
+    public static boolean valueMatchesInUnaryTests(List<UnaryTest> unaryTests, Object value, DMNContext dmnContext) {
+        EvaluationContextImpl ctx = new EvaluationContextImpl( null );
+        try {
+            ctx.enterFrame();
+            // need to set the values for in context variables...
+            for ( Map.Entry<String,Object> entry : dmnContext.getAll().entrySet() ) {
+                ctx.setValue( entry.getKey(), entry.getValue() );
+            }
+    
+            for ( UnaryTest t : unaryTests ) {
+                try {
+                    Boolean applyT = t.apply(ctx, value);
+                    if ( applyT ) {
+                        return true;
+                    }
+                } catch ( Throwable e ) {
+                    // if an unaryTest fail for any treason, is simply considered FALSE.
+                    logger.warn("A non-critical error happened while evaluating a unary test. Execution will continue.", e);
+                }
+            }
+        } finally {
+            ctx.exitFrame();
+        }
+        return false;
     }
 
     public CompiledExpression compileFeelExpression(DMNCompilerContext ctx, String expression, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
