@@ -85,7 +85,7 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.internal.query.QueryContext;
+import org.kie.api.runtime.query.QueryContext;
 
 
 public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, DeploymentEventListener {

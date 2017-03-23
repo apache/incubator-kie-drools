@@ -75,7 +75,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.query.QueryContext;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
@@ -578,7 +578,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             
             // add dynamic user task to empty case instance - first by case id
             Map<String, Object> parameters = new HashMap<>();            
-            caseService.addDynamicSubprocess(FIRST_CASE_ID, SUBPROCESS_P_ID, parameters);                        
+            caseService.addDynamicSubprocess(FIRST_CASE_ID, SUBPROCESS_P_ID, parameters);
             
             // second task add by process instance id
             Collection<ProcessInstanceDesc> caseProcessInstances = caseRuntimeDataService.getProcessInstancesForCase(caseId, new QueryContext());

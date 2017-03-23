@@ -42,7 +42,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
-import org.kie.internal.query.QueryContext;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.scanner.MavenRepository;
 
 

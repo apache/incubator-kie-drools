@@ -30,7 +30,7 @@ import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
-import org.kie.internal.query.QueryContext;
+import org.kie.api.runtime.query.QueryContext;
 
 /**
  * Provides case management operations.

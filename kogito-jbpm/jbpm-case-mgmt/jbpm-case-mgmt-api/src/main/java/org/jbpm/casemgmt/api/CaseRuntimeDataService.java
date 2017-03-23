@@ -30,7 +30,7 @@ import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.query.QueryContext;
+import org.kie.api.runtime.query.QueryContext;
 
 /**
  * Provides access to case(s) and its runtime data such as:

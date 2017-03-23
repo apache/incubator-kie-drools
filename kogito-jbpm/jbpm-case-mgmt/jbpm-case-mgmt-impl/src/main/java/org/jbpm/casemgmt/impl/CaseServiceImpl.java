@@ -79,7 +79,7 @@ import org.kie.api.task.model.User;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.internal.query.QueryContext;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.TaskModelFactory;

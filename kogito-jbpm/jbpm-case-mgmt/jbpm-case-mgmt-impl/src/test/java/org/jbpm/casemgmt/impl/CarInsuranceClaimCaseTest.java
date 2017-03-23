@@ -54,7 +54,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.query.QueryContext;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.scanner.MavenRepository;
