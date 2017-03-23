@@ -32,7 +32,7 @@
   <semantic:itemDefinition label="tCreditRisk" name="tCreditRisk">
     <semantic:typeRef>feel:string</semantic:typeRef>
     <semantic:allowedValues triso:constraintsType="enumeration">
-      <semantic:text>"A","B","C","D","E"</semantic:text>
+      <semantic:text>"A","B","C","D","E",null</semantic:text>
     </semantic:allowedValues>
   </semantic:itemDefinition>
   <semantic:itemDefinition label="tLoan" name="tLoan">
