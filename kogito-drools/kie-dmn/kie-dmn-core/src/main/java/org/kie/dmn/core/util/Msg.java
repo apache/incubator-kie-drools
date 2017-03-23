@@ -40,8 +40,12 @@ public class Msg {
     public static final Message2 PARAMETER_COUNT_MISMATCH            = new Message2( DMNMessageType.PARAMETER_MISMATCH, "Parameter count mismatch invoking function '%s' on node '%s'" );
     public static final Message2 DUPLICATED_ITEM_COMPONENT           = new Message2( DMNMessageType.DUPLICATED_ITEM_DEF, "Item Component '%s' is duplicated on Item Definition '%s'" );
     public static final Message1 DUPLICATED_ITEM_DEFINITION          = new Message1( DMNMessageType.DUPLICATED_ITEM_DEF, "Item Definition '%s' is duplicated in the model" );
+    public static final Message2 DUPLICATED_RELATION_COLUMN          = new Message2( DMNMessageType.DUPLICATED_RELATION_COLUMN, "Relation column '%s' is duplicated on node '%s'" );
+    public static final Message2 RELATION_CELL_NOT_LITERAL           = new Message2( DMNMessageType.RELATION_CELL_NOT_LITERAL, "Relation row '%d' contains a cell that is not a literal expression on node '%s'" );
+    public static final Message2 RELATION_CELL_COUNT_MISMATCH        = new Message2( DMNMessageType.RELATION_CELL_COUNT_MISMATCH, "Relation row '%d' contains the wrong number of cells on node '%s'" );
 
     public static final Message0 FAILED_VALIDATOR                    = new Message0( DMNMessageType.FAILED_VALIDATOR, "The Validator Was unable to compile embedded DMN validation rules, validation of the DMN Model cannot be performed." );
+    public static final Message0 FAILED_NO_XML_SOURCE                = new Message0( DMNMessageType.FAILED_VALIDATOR, "Schema validation not supported for in memory object. Please use the validate method with the file or reader signature." );
     public static final Message1 FAILED_XML_VALIDATION               = new Message1( DMNMessageType.FAILED_XML_VALIDATION, "Failed XML validation of DMN file: %s" );
 
     // not consolidated yet
@@ -70,9 +74,6 @@ public class Msg {
     public static final Message2 ERR_EVAL_LIST_ELEMENT_ON_POSITION_ON_LIST           = new Message2( DMNMessageType.ERR_EVAL, "Error evaluating list element on position '%s' on list '%s'" );
     public static final Message3 ERR_EVAL_ROW_ELEMENT_ON_POSITION_ON_ROW_OF_RELATION = new Message3( DMNMessageType.ERR_EVAL, "Error evaluating row element on position '%s' on row '%s' of relation '%s'" );
 
-    public static final Message0 RELATION_DUP_COLUMN                 = new Message0( DMNMessageType.RELATION_DUP_COLUMN, "Relation contains duplicate column name" );
-    public static final Message0 RELATION_ROW_CELL_NOTLITERAL        = new Message0( DMNMessageType.RELATION_ROW_CELL_NOTLITERAL, "Relation contains a row with a cell which is not a literalExpression" );
-    public static final Message0 RELATION_ROW_CELLCOUNTMISMATCH      = new Message0( DMNMessageType.RELATION_ROW_CELLCOUNTMISMATCH, "Relation contains a row with wrong number of cells" );
     public static final Message0 REQAUTH_NOT_KNOWLEDGESOURCE         = new Message0( DMNMessageType.REQAUTH_NOT_KNOWLEDGESOURCE, "RequiredAuthority is not pointing to a KnowledgeSource" );
     public static final Message0 TYPEREF_NO_FEEL_TYPE                = new Message0( DMNMessageType.TYPEREF_NO_FEEL_TYPE, "This element indicates a 'typeRef' which is not a valid built-in FEEL type" );
 

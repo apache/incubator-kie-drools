@@ -57,8 +57,6 @@ public interface DMNValidator {
      *
      * @return returns a list of messages from the validation, or an empty
      *         list otherwise.
-     *
-     * @throws IllegalArgumentException if VALIDATE_SCHEMA is set
      */
     List<DMNMessage> validate( Definitions dmnModel, Validation... options );
 
@@ -86,8 +84,6 @@ public interface DMNValidator {
      *
      * @return returns a list of messages from the validation, or an empty
      *         list otherwise.
-     *
-     * @throws IllegalArgumentException if the file can't be read
      */
     List<DMNMessage> validate( File xmlFile, Validation... options );
 

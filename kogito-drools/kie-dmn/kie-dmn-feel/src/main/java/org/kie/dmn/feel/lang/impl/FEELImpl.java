@@ -16,7 +16,6 @@
 
 package org.kie.dmn.feel.lang.impl;
 
-import jdk.nashorn.internal.runtime.regexp.joni.constants.StringType;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
@@ -100,7 +99,10 @@ public class FEELImpl
             ListNode listNode = (ListNode) compiledExpression.getExpression();
             List<BaseNode> tests = new ArrayList<>(  );
             for( BaseNode o : listNode.getElements() ) {
-                if ( o instanceof UnaryTestNode || o instanceof DashNode ) {
+                if ( o == null ) {
+                    // not much we can do, so just skip it. Error was reported somewhere else
+                    continue;
+                } else if ( o instanceof UnaryTestNode || o instanceof DashNode ) {
                     tests.add( o );
                 } else if( o instanceof RangeNode ) {
                     tests.add( new UnaryTestNode( "in", o ) );
