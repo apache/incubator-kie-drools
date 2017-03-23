@@ -1,0 +1,166 @@
+[[cloudBalancingDomainModel]]
+= Using the Domain Model
+
+
+[[cloudBalancingDomainModelDesign]]
+== Domain Model Design
+
+Using a <<domainModelingGuide,domain model>> helps determine which classes are planning entities and which of their properties are planning variables. It also helps to simplify contraints, improve performance, and increase flexibility for future needs. 
+
+. Draw a class diagram of your domain model. 
+. Normalize it to remove duplicate data.
+. Write down some sample instances for each class. 
+
+* ``Computer``: represents a computer with certain hardware and maintenance costs. 
++
+In this example, the sample instances for the `Computer` class are: `cpuPower`, `memory`, `networkBandwidth`, `cost`. 
+* ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by Planner. 
++
+Sample instances for ``Process`` are: `requiredCpuPower`, `requiredMemory`, and `requiredNetworkBandwidth`.
+* ``CloudBalance``: represents a problem. Contains every `Computer` and `Process` for a certain data set. 
++
+The sample instance for `CloudBalance` is `score`.
+
+. Determine which relationships (or fields) change during planning.
+
+* Planning entity: the class (or classes) that changes during solving. In this example, it is the class ``Process``.
+* Planning variable: the property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
+* Planning solution: the class that represents a data set and contains all planning entities. In this example that is the class ``CloudBalance``.
+
+In the UML class diagram below, the Planner concepts are already annotated:
+
+image::Chapter-Quick_start/cloudBalanceClassDiagram.png[align="center"]
+
+[[cloudBalancingDomainModelImplementation]]
+== Domain Model Implementation
+
+
+[[cloudBalancingClassComputer]]
+=== The `Computer` Class
+
+The `Computer` class is a POJO (Plain Old Java Object). Usually, you will have more of this kind of classes with input data.
+
+.CloudComputer.java
+====
+[source,java,options="nowrap"]
+----
+public class CloudComputer ... {
+
+    private int cpuPower;
+    private int memory;
+    private int networkBandwidth;
+    private int cost;
+
+    ... // getters
+}
+----
+====
+
+
+[[cloudBalancingClassProcess]]
+=== The `Process` Class
+
+The `Process` class is particularly important. It is the class that is modified during solving.
+
+We need to tell Planner that it can change the property ``computer``. To do this:
+. Annotate the class with `@PlanningEntity`.
+. Annotate the getter `getComputer()` with ``@PlanningVariable``.
+
+Of course, the property `computer` needs a setter too, so Planner can change it during solving.
+
+.CloudProcess.java
+====
+[source,java,options="nowrap"]
+----
+@PlanningEntity(...)
+public class CloudProcess ... {
+
+    private int requiredCpuPower;
+    private int requiredMemory;
+    private int requiredNetworkBandwidth;
+
+    private CloudComputer computer;
+
+    ... // getters
+
+    @PlanningVariable(valueRangeProviderRefs = {"computerRange"})
+    public CloudComputer getComputer() {
+        return computer;
+    }
+
+    public void setComputer(CloudComputer computer) {
+        computer = computer;
+    }
+
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    ...
+
+}
+----
+====
+
+* Planner needs to know which values it can choose from to assign to the property ``computer``. Those values are retrieved from the method `CloudBalance.getComputerList()` on the planning solution, which returns a list of all computers in the current data set.
+
+* The ``@PlanningVariable``'s `valueRangeProviderRefs` parameter on `CloudProcess.getComputer()` needs to match with the ``@ValueRangeProvider``'s `id` on CloudBalance.getComputerList().
+
+[NOTE]
+====
+Instead of getter annotations, it is also possible to use <<annotationAlternatives,field annotations>>.
+====
+
+
+[[cloudBalancingClassCloudBalance]]
+=== The `CloudBalance` Class
+
+The `CloudBalance` class has a [path]_@PlanningSolution_
+ annotation.
+* It holds a list of all computers and processes.
+* It represents both the planning problem and (if it's initialized) the planning solution.
+
+. Planner needs to retrieve the collection of processes that it can change, therefore we annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
+
+. The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.
+Planner automatically updates it when it calculates a `Score` for a solution instance and therefore it needs a setter.
+
+. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so the computers are known to it.
+
+.CloudBalance.java
+====
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+public class CloudBalance ... {
+
+    private List<CloudComputer> computerList;
+
+    private List<CloudProcess> processList;
+
+    private HardSoftScore score;
+
+    @ValueRangeProvider(id = "computerRange")
+    @ProblemFactCollectionProperty
+    public List<CloudComputer> getComputerList() {
+        return computerList;
+    }
+
+    @PlanningEntityCollectionProperty
+    public List<CloudProcess> getProcessList() {
+        return processList;
+    }
+
+    @PlanningScore
+    public HardSoftScore getScore() {
+        return score;
+    }
+
+    public void setScore(HardSoftScore score) {
+        this.score = score;
+    }
+
+    ...
+}
+----
+====

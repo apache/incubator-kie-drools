@@ -1,0 +1,55 @@
+[[cloudBalancingTutorial]]
+= Cloud Balancing Tutorial
+
+
+[[cloudBalancingProblemDescription]]
+== Problem Description
+
+Suppose your company owns a number of cloud computers and needs to run a number of processes on those computers.
+Assign each process to a computer.
+
+The following hard constraints must be fulfilled:
+
+* Every computer must be able to handle the minimum hardware requirements of the sum of its processes:
+** **CPU capacity**: The CPU power of a computer must be at least the sum of the CPU power required by the processes assigned to that computer.
+** **Memory capacity**: The RAM memory of a computer must be at least the sum of the RAM memory required by the processes assigned to that computer.
+** **Network capacity**: The network bandwidth of a computer must be at least the sum of the network bandwidth required by the processes assigned to that computer.
+
+The following soft constraints should be optimized:
+
+* Each computer that has one or more processes assigned, incurs a maintenance cost (which is fixed per computer).
+** **Cost**: Minimize the total maintenance cost.
+
+This problem is a form of __bin packing__.
+The following is a simplified example, in which we assign four processes to two computers with two constraints (CPU and RAM) with a simple algorithm:
+
+image::Chapter-Quick_start/cloudBalanceUseCase.png[align="center"]
+
+The simple algorithm used here is the _First Fit Decreasing_ algorithm, which assigns the bigger processes first and assigns the smaller processes to the remaining space.
+As you can see, it is not optimal, as it does not leave enough room to assign the yellow process ``D``.
+
+Planner does find the more optimal solution by using additional, smarter algorithms.
+It also scales: both in data (more processes, more computers) and constraints (more hardware requirements, other constraints).
+So let's see how Planner can be used in this scenario.
+
+Here's an executive summary of this example and <<machineReassignment,an advanced implementation with more constraints>>:
+
+image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
+
+
+[[cloudBalancingProblemSize]]
+== Problem Size
+
+.Cloud Balancing Problem Size
+[cols="1,1,1,1", options="header"]
+|===
+|Problem Size |Computers |Processes |Search Space
+
+|2computers-6processes |2 |6 |64
+|3computers-9processes |3 |9 |10^4
+|4computers-012processes |4 |12 |10^7
+|100computers-300processes |100 |300 |10^600
+|200computers-600processes |200 |600 |10^1380
+|400computers-1200processes |400 |1200 |10^3122
+|800computers-2400processes |800 |2400|10^6967
+|===

@@ -1,0 +1,8 @@
+[[cloudBalancingBeyondThisTutorial]]
+= Beyond this Tutorial
+
+Now that this simple example works, try going further.
+Enrich the domain model and add extra constraints such as these:
+
+* Each `Process` belongs to a ``Service``. A computer might crash, so processes running the same service should be assigned to different computers.
+* Each `Computer` is located in a ``Building``. A building might burn down, so processes of the same services should be assigned to computers in different buildings.

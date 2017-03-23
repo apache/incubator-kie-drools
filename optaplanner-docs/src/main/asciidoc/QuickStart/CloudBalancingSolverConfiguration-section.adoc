@@ -1,0 +1,74 @@
+[[cloudBalancingSolverConfiguration]]
+= Solver Configuration
+
+Take a look at the solver configuration:
+
+.cloudBalancingSolverConfig.xml
+====
+[source,xml,options="nowrap"]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!-- Domain model configuration -->
+  <scanAnnotatedClasses/>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+  </scoreDirectorFactory>
+
+  <!-- Optimization algorithms configuration -->
+  <termination>
+    <secondsSpentLimit>30</secondsSpentLimit>
+  </termination>
+</solver>
+----
+====
+
+This solver configuration consists of three parts:
+
+. **Domain model configuration**
+
+*What can Planner change?*
++
+We need to make Planner aware of our domain classes. In this configuration, it will automatically scan all classes in your classpath (for a `@PlanningEntity` or `@PlanningSolution` annotation):
++
+
+[source,xml,options="nowrap"]
+----
+  <scanAnnotatedClasses/>
+----
+. **Score configuration** 
+
+*How should Planner optimize the planning variables? What is our goal?*
++
+Since we have hard and soft constraints, we use a ``HardSoftScore``. But we need to tell Planner how to calculate the score, depending on our business requirements. Further down, we will look into two alternatives to calculate the score: using an easy Java implementation, or using Drools DRL.
++
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+  </scoreDirectorFactory>
+----
+. **Optimization algorithms configuration** 
+
+*How should Planner optimize it?*
++
+In this case, we use the default <<optimizationAlgorithms,optimization algorithms>> (because no explicit optimization algorithms are configured) for 30 seconds:
++
+
+[source,xml,options="nowrap"]
+----
+  <termination>
+    <secondsSpentLimit>30</secondsSpentLimit>
+  </termination>
+----
++
+Planner should get a good result in seconds (and even in less than 15 milliseconds with <<realTimePlanning,real-time planning>>), but the more time it has, the better the result will be. Advanced use cases might use a different <<termination,termination criteria>> than a hard time limit.
++ 
+The default algorithms will already easily surpass human planners and most in-house implementations.
+Use the <<benchmarker,Benchmarker>> to <<powerTweaking,power tweak>> to get even better results.
+
