@@ -94,6 +94,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.Expires.Policy;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Role;
 import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
@@ -1155,8 +1156,18 @@ public class KnowledgeBaseImpl
                                                     true,
                                                     false) );
 
-        existingDecl.setExpirationOffset( Math.max( existingDecl.getExpirationOffset(),
-                                                    newDecl.getExpirationOffset() ) );
+        if ( newDecl.getExpirationPolicy() == Policy.TIME_HARD ) {
+            if (existingDecl.getExpirationPolicy() == Policy.TIME_SOFT ||
+                newDecl.getExpirationOffset() > existingDecl.getExpirationOffset()) {
+                existingDecl.setExpirationOffset( newDecl.getExpirationOffset() );
+                existingDecl.setExpirationType( Policy.TIME_HARD );
+            }
+        } else {
+            if (existingDecl.getExpirationPolicy() == Policy.TIME_SOFT &&
+                newDecl.getExpirationOffset() > existingDecl.getExpirationOffset()) {
+                existingDecl.setExpirationOffset( newDecl.getExpirationOffset() );
+            }
+        }
 
         if ( newDecl.getNature().equals( TypeDeclaration.Nature.DEFINITION ) && newDecl.isNovel() ) {
             // At this point, the definitions must be equivalent.

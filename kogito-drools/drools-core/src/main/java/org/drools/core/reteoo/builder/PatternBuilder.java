@@ -49,6 +49,7 @@ import org.drools.core.time.impl.CompositeMaxDurationTimer;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.Timer;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.Expires.Policy;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 
@@ -288,18 +289,43 @@ public class PatternBuilder
         return false;
     }
 
-    private static long getExpiratioOffsetForType(BuildContext context,
-                                                  ObjectType objectType) {
-        long expirationOffset = context.getKnowledgeBase().getTypeDeclarations().stream()
-                                       .filter( t -> t.getObjectType().isAssignableFrom( objectType ) )
-                                       .mapToLong( TypeDeclaration::getExpirationOffset )
-                                       .max().orElse( NEVER_EXPIRES );
+    private static ExpirationSpec getExpirationForType( BuildContext context,
+                                              ObjectType objectType ) {
+        long offset = NEVER_EXPIRES;
+        boolean hard = false;
+
+        for (TypeDeclaration type : context.getKnowledgeBase().getTypeDeclarations()) {
+            if (type.getObjectType().isAssignableFrom( objectType )) {
+                if ( hard ) {
+                    if ( type.getExpirationPolicy() == Policy.TIME_HARD && type.getExpirationOffset() > offset ) {
+                        offset = type.getExpirationOffset();
+                    }
+                } else {
+                    if ( type.getExpirationPolicy() == Policy.TIME_HARD ) {
+                        offset = type.getExpirationOffset();
+                        hard = true;
+                    } else if ( type.getExpirationOffset() > offset ) {
+                        offset = type.getExpirationOffset();
+                    }
+                }
+            }
+        }
 
         // if none of the type declarations have an @expires annotation
         // we return -1 (no-expiration) value, otherwise we return the
         // set expiration value+1 to enable the fact to match events with
         // the same timestamp
-        return expirationOffset == NEVER_EXPIRES ? NEVER_EXPIRES : expirationOffset+1;
+        return new ExpirationSpec( offset == NEVER_EXPIRES ? NEVER_EXPIRES : offset+1, hard );
+    }
+
+    private static class ExpirationSpec {
+        final long offset;
+        final boolean hard;
+
+        private ExpirationSpec( long offset, boolean hard ) {
+            this.offset = offset;
+            this.hard = hard;
+        }
     }
 
     public void attachAlphaNodes(final BuildContext context,
@@ -349,19 +375,25 @@ public class PatternBuilder
                                                  objectType,
                                                  context );
         if ( objectType.isEvent() && EventProcessingOption.STREAM.equals( context.getKnowledgeBase().getConfiguration().getEventProcessingMode() ) ) {
-            long expirationOffset = getExpiratioOffsetForType( context,
-                                                               objectType );
-            if( expirationOffset != NEVER_EXPIRES ) {
-                // expiration policy is set, so use it
-                otn.setExpirationOffset( expirationOffset );
+            ExpirationSpec expirationSpec = getExpirationForType( context, objectType );
+
+            if( expirationSpec.offset != NEVER_EXPIRES && expirationSpec.hard ) {
+                // hard expiration is set, so use it
+                otn.setExpirationOffset( expirationSpec.offset );
             } else {
                 // otherwise calculate it based on behaviours and temporal constraints
+                long offset = NEVER_EXPIRES;
                 for ( Behavior behavior : pattern.getBehaviors() ) {
                     if ( behavior.getExpirationOffset() != NEVER_EXPIRES ) {
-                        expirationOffset = Math.max( behavior.getExpirationOffset(),
-                                                     expirationOffset );
+                        offset = Math.max( behavior.getExpirationOffset(), offset );
                     }
                 }
+
+                // if there's no implicit expiration uses the (eventually set) soft one
+                if (offset == NEVER_EXPIRES && !expirationSpec.hard) {
+                    offset = expirationSpec.offset;
+                }
+
                 long distance = context.getExpirationOffset( pattern );
                 if( distance == NEVER_EXPIRES ) {
                     // it means the rules have no temporal constraints, or
@@ -369,9 +401,9 @@ public class PatternBuilder
                     // case, we allow type declarations to override the implicit 
                     // expiration offset by defining an expiration policy with the
                     // @expires tag
-                    otn.setExpirationOffset( expirationOffset );
+                    otn.setExpirationOffset( offset );
                 } else {
-                    otn.setExpirationOffset( Math.max( distance, expirationOffset ) );
+                    otn.setExpirationOffset( Math.max( distance, offset ) );
                 }
             }
         }
