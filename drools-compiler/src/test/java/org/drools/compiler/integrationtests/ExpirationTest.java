@@ -16,11 +16,17 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Role;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -28,10 +34,8 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.utils.KieHelper;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import static org.junit.Assert.assertEquals;
+import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 
 public class ExpirationTest {
 
@@ -279,5 +283,147 @@ public class ExpirationTest {
         public String toString() {
             return "C(" + id + ")";
         }
+    }
+
+
+    @Role(Role.Type.EVENT)
+    @Expires( "10s" )
+    public static class ExpiringEventA { }
+
+    @Role(Role.Type.EVENT)
+    @Expires( value = "30s", policy = TIME_SOFT )
+    public static class ExpiringEventB { }
+
+    @Role(Role.Type.EVENT)
+    @Expires( value = "30s", policy = TIME_SOFT )
+    public static class ExpiringEventC { }
+
+    @Test
+    public void testSoftExpiration() {
+        // DROOLS-1483
+        String drl = "import " + ExpiringEventA.class.getCanonicalName() + "\n" +
+                     "import " + ExpiringEventB.class.getCanonicalName() + "\n" +
+                     "import " + ExpiringEventC.class.getCanonicalName() + "\n" +
+                     "rule Ra when\n" +
+                     "  $e : ExpiringEventA() over window:time(20s)\n" +
+                     "then end\n " +
+                     "rule Rb when\n" +
+                     "  $e : ExpiringEventB() over window:time(20s)\n" +
+                     "then end\n " +
+                     "rule Rc when\n" +
+                     "  $e : ExpiringEventC()\n" +
+                     "then end\n";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        ksession.insert( new ExpiringEventA() );
+        ksession.insert( new ExpiringEventB() );
+        ksession.insert( new ExpiringEventC() );
+        ksession.fireAllRules();
+
+        clock.advanceTime( 5, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventA.class ) ).size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventB.class ) ).size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventC.class ) ).size() );
+
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        // t=15 -> hard expiration of A
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventA.class ) ).size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventB.class ) ).size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventC.class ) ).size() );
+
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        // t=25 -> implicit expiration of B
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventA.class ) ).size() );
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventB.class ) ).size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( ExpiringEventC.class ) ).size() );
+
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        // t=35 -> soft expiration of C
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventA.class ) ).size() );
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventB.class ) ).size() );
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( ExpiringEventC.class ) ).size() );
+    }
+
+    @Test
+    public void testSoftExpirationWithDeclaration() {
+        // DROOLS-1483
+        String drl = "import " + A.class.getCanonicalName() + "\n" +
+                     "import " + B.class.getCanonicalName() + "\n" +
+                     "import " + C.class.getCanonicalName() + "\n" +
+                     "declare A @role( event ) @expires(10s) end\n" +
+                     "declare B @role( event ) @expires(value = 30s, policy = TIME_SOFT) end\n" +
+                     "declare C @role( event ) @expires(value = 30s, policy = TIME_SOFT) end\n" +
+                     "rule Ra when\n" +
+                     "  $e : A() over window:time(20s)\n" +
+                     "then end\n " +
+                     "rule Rb when\n" +
+                     "  $e : B() over window:time(20s)\n" +
+                     "then end\n " +
+                     "rule Rc when\n" +
+                     "  $e : C()\n" +
+                     "then end\n";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        ksession.insert( new A(1) );
+        ksession.insert( new B(2) );
+        ksession.insert( new C(3) );
+        ksession.fireAllRules();
+
+        clock.advanceTime( 5, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( A.class ) ).size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( B.class ) ).size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( C.class ) ).size() );
+
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        // t=15 -> hard expiration of A
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( A.class ) ).size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( B.class ) ).size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( C.class ) ).size() );
+
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        // t=25 -> implicit expiration of B
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( A.class ) ).size() );
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( B.class ) ).size() );
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( C.class ) ).size() );
+
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        // t=35 -> soft expiration of C
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( A.class ) ).size() );
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( B.class ) ).size() );
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( C.class ) ).size() );
     }
 }

@@ -31,6 +31,8 @@ import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Expires.Policy;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.Resource;
@@ -115,6 +117,7 @@ public class TypeDeclaration
 
     private transient ObjectType   objectType;
     private long                   expirationOffset = NEVER_EXPIRES;
+    private Expires.Policy         expirationPolicy;
 
     private int                    order;
 
@@ -175,6 +178,7 @@ public class TypeDeclaration
         this.timestampExtractor = (InternalReadAccessor) in.readObject();
         this.resource = (Resource) in.readObject();
         this.expirationOffset = in.readLong();
+        this.expirationPolicy = (Expires.Policy) in.readObject();
         this.dynamic = in.readBoolean();
         this.typesafe = in.readBoolean();
         this.propertyReactive = in.readBoolean();
@@ -194,8 +198,9 @@ public class TypeDeclaration
         out.writeObject( typeClassDef );
         out.writeObject( durationExtractor );
         out.writeObject( timestampExtractor );
-        out.writeObject( this.resource );
+        out.writeObject( resource );
         out.writeLong(expirationOffset);
+        out.writeObject( expirationPolicy );
         out.writeBoolean(dynamic);
         out.writeBoolean( typesafe );
         out.writeBoolean(propertyReactive);
@@ -435,6 +440,14 @@ public class TypeDeclaration
 
     public void setExpirationOffset(final long expirationOffset) {
         this.expirationOffset = expirationOffset;
+    }
+
+    public Policy getExpirationPolicy() {
+        return expirationPolicy;
+    }
+
+    public void setExpirationType( Policy expirationPolicy ) {
+        this.expirationPolicy = expirationPolicy;
     }
 
     public String getTypeClassName() {
