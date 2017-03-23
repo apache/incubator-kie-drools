@@ -44,8 +44,7 @@
         <plugin>
           <groupId>org.asciidoctor</groupId>
           <artifactId>asciidoctor-maven-plugin</artifactId>
-          <!-- TODO upgrade to 1.5.4 when https://github.com/asciidoctor/asciidoctor-maven-plugin/pull/270 is fixed to avoid docinfo files copy -->
-          <version>1.5.3</version>
+          <version>1.5.5</version>
           <configuration>
             <attributes>
               <revnumber>${project.version}</revnumber>
@@ -61,7 +60,7 @@
           <executions>
             <execution>
               <id>generate-single-html</id>
-              <phase>process-sources</phase>
+              <phase>generate-resources</phase>
               <goals>
                 <goal>process-asciidoc</goal>
               </goals>
@@ -75,7 +74,7 @@
             </execution>
             <execution>
               <id>generate-pdf</id>
-              <phase>process-sources</phase>
+              <phase>generate-resources</phase>
               <goals>
                 <goal>process-asciidoc</goal>
               </goals>
@@ -92,12 +91,12 @@
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctorj</artifactId>
-              <version>1.5.4.1</version>
+              <version>1.5.5</version>
             </dependency>
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctorj-pdf</artifactId>
-              <version>1.5.0-alpha.11</version>
+              <version>1.5.0-alpha.14</version>
             </dependency>
           </dependencies>
         </plugin>
