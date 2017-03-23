@@ -347,7 +347,6 @@ public class ValidatorTest {
     @Test
     public void testITEMDEF_NOT_UNIQUE() {
         List<DMNMessage> validate = validator.validate( getReader( "ITEMDEF_NOT_UNIQUE.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        System.out.println( formatMessages( validate ) );
         assertThat( formatMessages( validate ), validate.size(), is( 2 ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.DUPLICATED_ITEM_DEF ) ) );
     }
@@ -355,44 +354,46 @@ public class ValidatorTest {
     @Test
     public void testITEMDEF_NOT_UNIQUE_DROOLS_1450() {
         // DROOLS-1450
-        Definitions definitions = utilDefinitions( "ITEMDEF_NOT_UNIQUE_DROOLS-1450.dmn", "ITEMDEF_NOT_UNIQUE" );
-        List<DMNMessage> validate = validator.validate(definitions);
-        
-        assertFalse( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.DUPLICATED_ITEM_DEF ) ) );
+        List<DMNMessage> validate = validator.validate( getReader( "ITEMDEF_NOT_UNIQUE_DROOLS-1450.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( formatMessages( validate ), validate.size(), is( 0 ) );
     }
     
     @Test
     public void testRELATION_DUP_COLUMN() {
-        Definitions definitions = utilDefinitions( "RELATION_DUP_COLUMN.dmn", "RELATION_DUP_COLUMN" );
-        List<DMNMessage> validate = validator.validate(definitions);
-        
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.RELATION_DUP_COLUMN ) ) );
+        List<DMNMessage> validate = validator.validate( getReader( "RELATION_DUP_COLUMN.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( formatMessages( validate ), validate.size(), is( 2 ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.DUPLICATED_RELATION_COLUMN ) ) );
     }
     
     @Test
     public void testRELATION_ROW_CELL_NOTLITERAL() {
-        Definitions definitions = utilDefinitions( "RELATION_ROW_CELL_NOTLITERAL.dmn", "RELATION_ROW_CELL_NOTLITERAL" );
-        List<DMNMessage> validate = validator.validate(definitions);
-        
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.RELATION_ROW_CELL_NOTLITERAL ) ) );
+        List<DMNMessage> validate = validator.validate( getReader( "RELATION_ROW_CELL_NOTLITERAL.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( formatMessages( validate ), validate.size(), is( 1 ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.RELATION_CELL_NOT_LITERAL ) ) );
     }
     
     @Test
     public void testRELATION_ROW_CELLCOUNTMISMATCH() {
-        Definitions definitions = utilDefinitions( "RELATION_ROW_CELLCOUNTMISMATCH.dmn", "RELATION_ROW_CELLCOUNTMISMATCH" );
-        List<DMNMessage> validate = validator.validate(definitions);
-        
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.RELATION_ROW_CELLCOUNTMISMATCH ) ) );
+        List<DMNMessage> validate = validator.validate( getReader( "RELATION_ROW_CELLCOUNTMISMATCH.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( formatMessages( validate ), validate.size(), is( 1 ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.RELATION_CELL_COUNT_MISMATCH ) ) );
     }
         
     @Test
     public void testREQAUTH_NOT_KNOWLEDGESOURCE() {
-        Definitions definitions = utilDefinitions( "REQAUTH_NOT_KNOWLEDGESOURCE.dmn", "REQAUTH_NOT_KNOWLEDGESOURCE" );
-        List<DMNMessage> validate = validator.validate(definitions);
-
+        List<DMNMessage> validate = validator.validate( getReader( "REQAUTH_NOT_KNOWLEDGESOURCE.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( formatMessages( validate ), validate.size(), is( 3 ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQAUTH_NOT_KNOWLEDGESOURCE ) ) );
     }
-    
+
+    @Test
+    public void testMortgageRecommender() {
+        // This file has a gazillion errors. The goal of this test is simply check that the validator itself is not blowing up
+        // and raising an exception. The errors in the file itself are irrelevant.
+        List<DMNMessage> validate = validator.validate( getReader( "MortgageRecommender.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( formatMessages( validate ), validate.isEmpty(), is( false ) );
+    }
+
     @Test
     public void testREQAUTH_NOT_KNOWLEDGESOURCEbis() {
         // DROOLS-1435

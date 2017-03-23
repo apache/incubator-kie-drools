@@ -17,11 +17,7 @@
 package org.kie.dmn.core;
 
 import org.junit.Test;
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNDecisionResult;
-import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.*;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.*;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
@@ -47,6 +43,7 @@ public class FlightRebookingTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
+        //assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) ); // need proper type support to enable this
 
         DMNContext context = DMNFactory.newContext();
 
@@ -258,5 +255,10 @@ public class FlightRebookingTest {
     private BigDecimal number( Number n ) {
         return BigDecimal.valueOf( n.longValue() );
     }
+
+    private String formatMessages(List<DMNMessage> messages) {
+        return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
+    }
+
 }
 

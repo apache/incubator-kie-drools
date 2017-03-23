@@ -20,6 +20,9 @@ public enum DMNMessageType {
     DUPLICATED_PARAM ( "The referenced param is duplicated", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     PARAMETER_MISMATCH( "The named parameter does not match", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     DUPLICATED_ITEM_DEF( "The referenced item definition or item component is duplicated", Tag.COMPILATION, Tag.VALIDATION, Tag.DMN_VALIDATOR, Tag.DMN_CORE ),
+    DUPLICATED_RELATION_COLUMN ( "The referenced relation column is duplicated", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
+    RELATION_CELL_NOT_LITERAL ( "The referenced relation cell is not a literal expression", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
+    RELATION_CELL_COUNT_MISMATCH ( "The referenced relation row cell count doesn't match the list of defined columns", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
 
     FAILED_VALIDATOR ( "The DMN validator failed to load the validation rules. Impossible to proceed with validation.", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     FAILED_XML_VALIDATION ( "DMN model failed XML schema validation", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
@@ -35,9 +38,6 @@ public enum DMNMessageType {
     ERR_EVAL( "", Tag.DMN_CORE),                                     // runtime
     ERR_INVOKE( "", Tag.DMN_CORE),                                   // runtime
 
-    RELATION_DUP_COLUMN ( "", Tag.DMN_VALIDATOR ),
-    RELATION_ROW_CELL_NOTLITERAL ( "", Tag.DMN_VALIDATOR ),
-    RELATION_ROW_CELLCOUNTMISMATCH ( "", Tag.DMN_VALIDATOR ),
     REQAUTH_NOT_KNOWLEDGESOURCE ( "", Tag.DMN_VALIDATOR ),
     TYPEREF_NO_FEEL_TYPE( "", Tag.DMN_VALIDATOR ),                   // DUPS of TYPE_REF_NOT_FOUND ?
     ;

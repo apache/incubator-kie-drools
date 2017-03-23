@@ -295,21 +295,28 @@ when
   $c1 : InformationItem( parent instanceof Relation )
   $c2 : InformationItem( name == $c1.name, parent == $c1.parent, this != $c1 )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $c1 , Msg.RELATION_DUP_COLUMN );
+  reporter.report( DMNMessage.Severity.ERROR,  $c1 , Msg.DUPLICATED_RELATION_COLUMN, $c1.getName(), $c1.getParentDRGElement().getName() );
 end
 
-rule RELATION_ROW_CELL_NOTLITERAL
+rule RELATION_ROW_CELL_NOT_LITERAL
 when
   $e : Expression( parent instanceof org.kie.dmn.model.v1_1.List, parent.parent instanceof Relation, ! (this instanceof LiteralExpression) )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $e , Msg.RELATION_ROW_CELL_NOTLITERAL );
+  org.kie.dmn.model.v1_1.List row = (org.kie.dmn.model.v1_1.List) $e.getParent();
+  Relation relation = (Relation) row.getParent();
+  reporter.report( DMNMessage.Severity.ERROR,  $e , Msg.RELATION_CELL_NOT_LITERAL,
+                   relation.getRow().indexOf(row)+1,
+                   relation.getParentDRGElement().getName() );
 end
 
 rule RELATION_ROW_CELLCOUNTMISMATCH
 when
-  $row : org.kie.dmn.model.v1_1.List( parent instanceof Relation, expression.size != parent.column.size )
+  $rel : Relation()
+  $row : org.kie.dmn.model.v1_1.List( expression.size != $rel.column.size ) from $rel.row
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $row , Msg.RELATION_ROW_CELLCOUNTMISMATCH );
+  reporter.report( DMNMessage.Severity.ERROR,  $row , Msg.RELATION_CELL_COUNT_MISMATCH,
+                   $rel.getRow().indexOf($row)+1,
+                   $rel.getParentDRGElement().getName() );
 end
 
 rule REQAUTH_NOT_KNOWLEDGESOURCE
