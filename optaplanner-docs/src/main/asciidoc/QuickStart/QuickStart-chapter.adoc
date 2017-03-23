@@ -66,6 +66,9 @@ image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
 |800computers-2400processes |800 |2400|10^6967
 |===
 
+[[cloudBalancingDomainModel]]
+== Using the Domain Model
+
 
 [[cloudBalancingDomainModelDesign]]
 === Domain Model Design
@@ -233,7 +236,7 @@ public class CloudBalance ... {
 
 
 [[cloudBalancingMainMethod]]
-=== Run the Cloud Balancing Hello World
+== Run the Cloud Balancing Hello World
 
 . <<runTheExamplesInAnIDE,Download and configure the examples in your preferred IDE.>>
 . Create a run configuration with the following main class: `org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld`
@@ -315,7 +318,7 @@ Building the `Solver` is the most complicated part of this procedure. For more d
 
 
 [[cloudBalancingSolverConfiguration]]
-=== Solver Configuration
+== Solver Configuration
 
 Take a look at the solver configuration:
 
@@ -390,7 +393,7 @@ Use the <<benchmarker,Benchmarker>> to <<powerTweaking,power tweak>> to get even
 
 
 [[cloudBalancingScoreConfiguration]]
-=== Score Configuration
+== Score Configuration
 
 Planner will search for the `Solution` with the highest ``Score``.
 This example uses a ``HardSoftScore``, which means Planner will look for the solution with no hard constraints broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize maintenance cost).
@@ -406,7 +409,7 @@ There are several ways to implement such a score function:
 
 
 [[cloudBalancingEasyJavaScoreConfiguration]]
-==== Easy Java Score Configuration
+=== Easy Java Score Configuration
 
 One way to define a score function is to implement the interface `EasyScoreCalculator` in plain Java.
 
@@ -479,7 +482,7 @@ To fix that, either use incremental Java score calculation or Drools score calcu
 
 
 [[cloudBalancingDroolsScoreConfiguration]]
-==== Drools Score Configuration
+=== Drools Score Configuration
 
 Drools score calculation uses incremental calculation, where every score constraint is written as one or more score rules. 
 
@@ -559,7 +562,7 @@ end
 
 
 [[cloudBalancingBeyondThisTutorial]]
-=== Beyond this Tutorial
+== Beyond this Tutorial
 
 Now that this simple example works, try going further.
 Enrich the domain model and add extra constraints such as these:
