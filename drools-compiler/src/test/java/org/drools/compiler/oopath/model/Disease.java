@@ -16,46 +16,28 @@
 
 package org.drools.compiler.oopath.model;
 
+
 import org.drools.core.phreak.AbstractReactiveObject;
-import org.drools.core.phreak.ReactiveSet;
 
-import java.util.Set;
+public class Disease extends AbstractReactiveObject {
 
-public abstract class Person extends AbstractReactiveObject {
+    private String name;
 
-    private final String name;
-    private int age;
-
-    private final Set<Disease> diseases = new ReactiveSet<>();
-
-    public Person(String name, int age) {
+    public Disease (final String name) {
         this.name = name;
-        this.age = age;
+    }
+
+    public void setName( String name ) {
+        this.name = name;
+        notifyModification();
     }
 
     public String getName() {
         return name;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-        notifyModification();
-    }
-
-    public Set<Disease> getDiseases() {
-        return  diseases;
-    }
-
-    public void addDisease(Disease disease) {
-        diseases.add(disease);
-    }
-
     @Override
     public String toString() {
-        return name;
+        return ("Disease: " + name);
     }
 }
