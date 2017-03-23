@@ -54,13 +54,8 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
-import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.*;
+import static org.drools.persistence.util.DroolsPersistenceUtil.*;
 
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
@@ -122,7 +117,7 @@ public class JpaPersistentStatefulSessionTest {
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
         KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, null, env);
-        List<?> list = new ArrayList<>();
+        List<AtomicInteger> list = new ArrayList<>();
 
         ksession.setGlobal("list", list);
 
@@ -131,13 +126,13 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertThat(list).hasSize(1);
 
         value.addAndGet(1);
         ksession.update(atomicFH, value);
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
+        assertThat(list).hasSize(2);
         final String externalForm = atomicFH.toExternalForm();
 
         ksession = KieServices.get().getStoreServices().loadKieSession(ksession.getIdentifier(), kbase, null, env);
@@ -149,9 +144,9 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        list = (List<?>) ksession.getGlobal("list");
+        list = (List<AtomicInteger>) ksession.getGlobal("list");
 
-        assertEquals(3, list.size());
+        assertThat(list).hasSize(3);
     }
 
     @Test
@@ -170,7 +165,7 @@ public class JpaPersistentStatefulSessionTest {
         final KieBase kbase = new KieHelper().addContent(rule, ResourceType.DRL).build();
 
         final KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, null, env);
-        final List<?> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
 
         ksession.setGlobal("list", list);
 
@@ -180,8 +175,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals(3, list.size());
-
+        assertThat(list).hasSize(3);
     }
 
     @Test
@@ -211,7 +205,7 @@ public class JpaPersistentStatefulSessionTest {
         KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, null, env);
         ut.commit();
 
-        final List<?> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
 
         // insert and commit
         ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
@@ -233,7 +227,7 @@ public class JpaPersistentStatefulSessionTest {
         ut.begin();
         ksession.fireAllRules();
         ut.commit();
-        assertEquals(2, list.size());
+        assertThat(list).hasSize(2);
 
         // insert and commit
         ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
@@ -251,7 +245,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals(4, list.size());
+        assertThat(list).hasSize(4);
 
         // now load the ksession
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getIdentifier(), kbase, null, env);
@@ -264,7 +258,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals(6, list.size());
+        assertThat(list).hasSize(6);
     }
 
     @Test
@@ -287,13 +281,13 @@ public class JpaPersistentStatefulSessionTest {
         sscs.addInterceptor(new LoggingInterceptor());
         sscs.addInterceptor(new FireAllRulesInterceptor());
         sscs.addInterceptor(new LoggingInterceptor());
-        final List<?> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
         ksession.setGlobal("list", list);
         ksession.insert(1);
         ksession.insert(2);
         ksession.insert(3);
         ksession.getWorkItemManager().completeWorkItem(0, null);
-        assertEquals(3, list.size());
+        assertThat(list).hasSize(3);
     }
 
     @Test
@@ -319,11 +313,11 @@ public class JpaPersistentStatefulSessionTest {
 
         ChainableRunner runner = sscs.getChainableRunner();
 
-        assertEquals(LoggingInterceptor.class, runner.getClass());
+        assertThat(runner.getClass()).isEqualTo(LoggingInterceptor.class);
         runner = (ChainableRunner) runner.getNext();
-        assertEquals(FireAllRulesInterceptor.class, runner.getClass());
+        assertThat(runner.getClass()).isEqualTo(FireAllRulesInterceptor.class);
         runner = (ChainableRunner) runner.getNext();
-        assertEquals(LoggingInterceptor.class, runner.getClass());
+        assertThat(runner.getClass()).isEqualTo(LoggingInterceptor.class);
 
         final UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
@@ -336,11 +330,11 @@ public class JpaPersistentStatefulSessionTest {
 
         runner = sscs.getChainableRunner();
 
-        assertEquals(LoggingInterceptor.class, runner.getClass());
+        assertThat(runner.getClass()).isEqualTo(LoggingInterceptor.class);
         runner = (ChainableRunner) runner.getNext();
-        assertEquals(FireAllRulesInterceptor.class, runner.getClass());
+        assertThat(runner.getClass()).isEqualTo(FireAllRulesInterceptor.class);
         runner = (ChainableRunner) runner.getNext();
-        assertEquals(LoggingInterceptor.class, runner.getClass());
+        assertThat(runner.getClass()).isEqualTo(LoggingInterceptor.class);
 
     }
 
@@ -369,7 +363,7 @@ public class JpaPersistentStatefulSessionTest {
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
         final KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, null, env);
-        final List<?> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
 
         ksession.setGlobal("list", list);
 
@@ -380,7 +374,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals(3, list.size());
+        assertThat(list).hasSize(3);
     }
 
     @Test
@@ -395,7 +389,7 @@ public class JpaPersistentStatefulSessionTest {
         test.add(x);
         test2.add(x);
 
-        assertSame(test.get(0), test2.get(0));
+        assertThat(test.get(0)).isSameAs(test2.get(0));
 
         ksession.insert(test);
         ksession.insert(test2);
@@ -407,7 +401,7 @@ public class JpaPersistentStatefulSessionTest {
         final List ref1 = (List) c.next();
         final List ref2 = (List) c.next();
 
-        assertSame(ref1.get(0), ref2.get(0));
+        assertThat(ref1.get(0)).isSameAs(ref2.get(0));
 
     }
 
@@ -423,7 +417,7 @@ public class JpaPersistentStatefulSessionTest {
         final KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, config, env);
         final SessionConfiguration sessionConfig = (SessionConfiguration) ksession.getSessionConfiguration();
 
-        assertEquals("com.example.CustomJPAProcessInstanceManagerFactory", sessionConfig.getProcessInstanceManagerFactory());
+        assertThat(sessionConfig.getProcessInstanceManagerFactory()).isEqualTo("com.example.CustomJPAProcessInstanceManagerFactory");
     }
 
     @Test(expected = IllegalStateException.class)
@@ -442,7 +436,7 @@ public class JpaPersistentStatefulSessionTest {
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
         final KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, null, env);
-        final List<?> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
 
         ksession.setGlobal("list", list);
 
@@ -452,7 +446,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals(3, list.size());
+        assertThat(list).hasSize(3);
 
         final long ksessionId = ksession.getIdentifier();
         ksession.destroy();
@@ -478,7 +472,7 @@ public class JpaPersistentStatefulSessionTest {
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
         final KieSession ksession = kbase.newKieSession();
-        final List<?> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
 
         ksession.setGlobal("list",
                 list);
@@ -489,7 +483,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals(3, list.size());
+        assertThat(list).hasSize(3);
 
         final long ksessionId = ksession.getIdentifier();
         ksession.destroy();
@@ -536,7 +530,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.fireAllRules();
 
-        assertEquals(4, p1.getAddresses().size());
+        assertThat(p1.getAddresses()).hasSize(4);
 
         ksession.dispose();
 
