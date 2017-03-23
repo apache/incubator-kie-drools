@@ -34,6 +34,7 @@ public class GuidedDecisionTableTest {
     private Person johnFromBarcelona;
     private Person elizabeth35Years;
     private Person william25Years;
+    private Person oldPeter;
     private KieSession kSession;
     private TrackingAgendaEventListener rulesFired;
 
@@ -44,6 +45,8 @@ public class GuidedDecisionTableTest {
                                           "Barcelona");
         johnFromBarcelona = new Person("John",
                                        18);
+        oldPeter = new Person("Peter",
+                              70);
         johnFromBarcelona.setAddress(barcelonaCityCenter);
         elizabeth35Years = new Person("Elizabeth",
                                       35);
@@ -106,6 +109,85 @@ public class GuidedDecisionTableTest {
 
         Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(1);
         Assertions.assertThat(rulesFired.isRuleFired("Row 2 firstHitPolicy")).isTrue();
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testResolvedHitPolicy() throws Exception {
+        initKieSession("resolvedHitPolicy.gdst");
+        kSession.insert(oldPeter);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(1);
+        Assertions.assertThat(rulesFired.isRuleFired("Row 2 resolvedHitPolicy")).isTrue();
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testResolvedHitPolicyPossibleMatchOnTwoRows() throws Exception {
+        initKieSession("resolvedHitPolicyPossibleMatchOnTwoRows.gdst");
+        kSession.insert(oldPeter);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(1);
+
+        Assertions.assertThat(rulesFired.isRuleFired("Row 6 resolvedHitPolicyPossibleMatchOnTwoRows")).isTrue();
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testResolvedHitPolicyPrioritiesOverSameRow() throws Exception {
+        initKieSession("resolvedHitPolicyPrioritiesOverSameRow.gdst");
+        kSession.insert(oldPeter);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(1);
+        Assertions.assertThat(rulesFired.isRuleFired("Row 3 resolvedHitPolicyPrioritiesOverSameRow")).isTrue();
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testResolvedHitPolicyPrioritiesOverSameRowMatchTwoRows() throws Exception {
+        initKieSession("resolvedHitPolicyPrioritiesOverSameRowMatchTwoRows.gdst");
+        kSession.insert(oldPeter);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(1);
+        Assertions.assertThat(rulesFired.isRuleFired("Row 5 resolvedHitPolicyPrioritiesOverSameRowMatchTwoRows")).isTrue();
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testResolvedHitPolicyTransitivePriorities() throws Exception {
+        initKieSession("resolvedHitPolicyTransitivePriorities.gdst");
+        kSession.insert(oldPeter);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(1);
+        Assertions.assertThat(rulesFired.isRuleFired("Row 4 resolvedHitPolicyTransitivePriorities")).isTrue();
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testResolvedHitPolicyTransitivePrioritiesMatchTwoRows() throws Exception {
+        initKieSession("resolvedHitPolicyTransitivePrioritiesMatchTwoRows.gdst");
+        kSession.insert(oldPeter);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(1);
+        Assertions.assertThat(rulesFired.isRuleFired("Row 3 resolvedHitPolicyTransitivePrioritiesMatchTwoRows")).isTrue();
 
         kSession.dispose();
     }
