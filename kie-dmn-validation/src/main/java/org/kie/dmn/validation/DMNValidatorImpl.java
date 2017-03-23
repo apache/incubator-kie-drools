@@ -102,9 +102,25 @@ public class DMNValidatorImpl implements DMNValidator {
         DMNMessageManager results = new DefaultDMNMessagesManager();
         EnumSet<Validation> flags = EnumSet.copyOf( Arrays.asList( options ) );
         if( flags.contains( VALIDATE_SCHEMA ) ) {
-            throw new IllegalArgumentException( "Schema validation not supported for in memory object. Please use the validate method with the file or reader signature." );
+            MsgUtil.reportMessage( LOG,
+                                   DMNMessage.Severity.ERROR,
+                                   dmnModel,
+                                   results,
+                                   null,
+                                   null,
+                                   Msg.FAILED_NO_XML_SOURCE );
         }
-        validateModelCompilation( dmnModel, results, flags );
+        try {
+            validateModelCompilation( dmnModel, results, flags );
+        } catch ( Throwable t ) {
+            MsgUtil.reportMessage( LOG,
+                                   DMNMessage.Severity.ERROR,
+                                   dmnModel,
+                                   results,
+                                   t,
+                                   null,
+                                   Msg.FAILED_VALIDATOR );
+        }
         return results.getMessages();
     }
 
@@ -125,9 +141,14 @@ public class DMNValidatorImpl implements DMNValidator {
             try {
                 dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( new FileReader( xmlFile ) );
                 validateModelCompilation( dmndefs, results, flags );
-            } catch ( FileNotFoundException e ) {
-                LOG.error( "Error reading file {}. Unable to validate it.", xmlFile.getAbsolutePath(), e );
-                throw new IllegalArgumentException( "Error reading file "+xmlFile.getAbsolutePath(), e );
+            } catch ( Throwable t ) {
+                MsgUtil.reportMessage( LOG,
+                                       DMNMessage.Severity.ERROR,
+                                       null,
+                                       results,
+                                       t,
+                                       null,
+                                       Msg.FAILED_VALIDATOR );
             }
         }
         return results.getMessages();
@@ -152,8 +173,13 @@ public class DMNValidatorImpl implements DMNValidator {
                 validateModelCompilation( dmndefs, results, flags );
             }
         } catch ( Throwable t ) {
-            LOG.error( "Error reading content from the reader. Unable to validate it.", t );
-            throw new IllegalArgumentException( "Error reading content from the reader. Unable to validate it. ", t );
+            MsgUtil.reportMessage( LOG,
+                                   DMNMessage.Severity.ERROR,
+                                   null,
+                                   results,
+                                   t,
+                                   null,
+                                   Msg.FAILED_VALIDATOR );
         }
         return results.getMessages();
     }
@@ -175,7 +201,7 @@ public class DMNValidatorImpl implements DMNValidator {
             results.addAll( validateModel( dmnModel ) );
         }
         if( flags.contains( VALIDATE_COMPILATION ) ) {
-            results.addAll( validateCompilation( dmnModel ) );
+            results.addAll( validateCompilation( dmnModel, results ) );
         }
     }
 
@@ -215,14 +241,20 @@ public class DMNValidatorImpl implements DMNValidator {
         return reporter.getMessages().getMessages();
     }
 
-    private List<DMNMessage> validateCompilation(Definitions dmnModel) {
+    private List<DMNMessage> validateCompilation(Definitions dmnModel, DMNMessageManager results) {
         if( dmnModel != null ) {
             DMNCompiler compiler = new DMNCompilerImpl();
             DMNModel model = compiler.compile( dmnModel );
             if( model != null ) {
                 return model.getMessages();
             } else {
-                LOG.error( "Compilation failed for model {}. Unable to validate compilation.", dmnModel.getName() );
+                MsgUtil.reportMessage( LOG,
+                                       DMNMessage.Severity.ERROR,
+                                       dmnModel,
+                                       results,
+                                       null,
+                                       null,
+                                       Msg.FAILED_VALIDATOR );
             }
         }
         return Collections.emptyList();

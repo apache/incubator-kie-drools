@@ -87,12 +87,17 @@ public class DMNFEELHelper
     }
 
     public List<UnaryTest> evaluateUnaryTests(DMNCompilerContext ctx, String unaryTests, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
-        Map<String, Type> variableTypes = new HashMap<>();
-        for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
-            // TODO: need to properly resolve types here
-            variableTypes.put( entry.getKey(), BuiltInType.UNKNOWN );
+        List<UnaryTest> result = Collections.emptyList();
+        try {
+            Map<String, Type> variableTypes = new HashMap<>();
+            for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
+                // TODO: need to properly resolve types here
+                variableTypes.put( entry.getKey(), BuiltInType.UNKNOWN );
+            }
+            result = feel.evaluateUnaryTests( unaryTests, variableTypes );
+        } catch( Throwable t ) {
+            logger.error( "Error evaluating unary tests. Error will be reported in the model.", t );
         }
-        List<UnaryTest> result = feel.evaluateUnaryTests( unaryTests, variableTypes );
         processEvents( model, element, errorMsg, msgParams );
         return result;
     }
