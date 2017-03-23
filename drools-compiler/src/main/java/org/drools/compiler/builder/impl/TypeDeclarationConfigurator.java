@@ -76,7 +76,7 @@ public class TypeDeclarationConfigurator {
                     }
                     if ( type.getExpirationOffset() >= 0 ) {
                         oldType.setExpirationOffset( type.getExpirationOffset() );
-                        oldType.setExpirationType( type.getExpirationType() );
+                        oldType.setExpirationType( type.getExpirationPolicy() );
                     }
                 }
                 if (type.isPropertyReactive()) {
@@ -228,7 +228,7 @@ public class TypeDeclarationConfigurator {
             long offset = TimeIntervalParser.parseSingle( expiration );
             // @Expires( -1 ) means never expire
             type.setExpirationOffset(offset == -1L ? Long.MAX_VALUE : offset);
-            type.setExpirationType( expires.type() );
+            type.setExpirationType( expires.policy() );
         }
     }
 

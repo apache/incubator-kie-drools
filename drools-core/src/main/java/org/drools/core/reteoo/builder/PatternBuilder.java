@@ -49,7 +49,7 @@ import org.drools.core.time.impl.CompositeMaxDurationTimer;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.Timer;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.definition.type.Expires.Type;
+import org.kie.api.definition.type.Expires.Policy;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 
@@ -297,11 +297,11 @@ public class PatternBuilder
         for (TypeDeclaration type : context.getKnowledgeBase().getTypeDeclarations()) {
             if (type.getObjectType().isAssignableFrom( objectType )) {
                 if ( hard ) {
-                    if ( type.getExpirationType() == Type.HARD && type.getExpirationOffset() > offset ) {
+                    if ( type.getExpirationPolicy() == Policy.TIME_HARD && type.getExpirationOffset() > offset ) {
                         offset = type.getExpirationOffset();
                     }
                 } else {
-                    if ( type.getExpirationType() == Type.HARD ) {
+                    if ( type.getExpirationPolicy() == Policy.TIME_HARD ) {
                         offset = type.getExpirationOffset();
                         hard = true;
                     } else if ( type.getExpirationOffset() > offset ) {

@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.Expires;
-import org.kie.api.definition.type.Expires.Type;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -36,6 +35,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 
 public class ExpirationTest {
 
@@ -291,11 +291,11 @@ public class ExpirationTest {
     public static class ExpiringEventA { }
 
     @Role(Role.Type.EVENT)
-    @Expires( value = "30s", type = Type.SOFT )
+    @Expires( value = "30s", policy = TIME_SOFT )
     public static class ExpiringEventB { }
 
     @Role(Role.Type.EVENT)
-    @Expires( value = "30s", type = Type.SOFT )
+    @Expires( value = "30s", policy = TIME_SOFT )
     public static class ExpiringEventC { }
 
     @Test
@@ -368,8 +368,8 @@ public class ExpirationTest {
                      "import " + B.class.getCanonicalName() + "\n" +
                      "import " + C.class.getCanonicalName() + "\n" +
                      "declare A @role( event ) @expires(10s) end\n" +
-                     "declare B @role( event ) @expires(value = 30s, type = Type.SOFT) end\n" +
-                     "declare C @role( event ) @expires(value = 30s, type = Type.SOFT) end\n" +
+                     "declare B @role( event ) @expires(value = 30s, policy = TIME_SOFT) end\n" +
+                     "declare C @role( event ) @expires(value = 30s, policy = TIME_SOFT) end\n" +
                      "rule Ra when\n" +
                      "  $e : A() over window:time(20s)\n" +
                      "then end\n " +
