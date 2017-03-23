@@ -19,6 +19,7 @@ package org.kie.dmn.core.impl;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -27,6 +28,7 @@ import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNMessageManager;
 import org.kie.dmn.core.ast.*;
+import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
@@ -47,11 +49,17 @@ public class DMNModelImpl
     // these are messages created at loading/compilation time
     private DMNMessageManager messages = new DefaultDMNMessagesManager();
 
+    private DMNTypeRegistry types = new DMNTypeRegistry();
+
     public DMNModelImpl() {
     }
 
     public DMNModelImpl(Definitions definitions) {
         this.definitions = definitions;
+    }
+    
+    public DMNTypeRegistry getTypeRegistry() {
+        return this.types;
     }
 
     @Override
