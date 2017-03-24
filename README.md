@@ -119,3 +119,6 @@ according to the FEEL grammar, these are not valid function names, as `and` and 
   lists with heterogeneous element types. This is an experimental extension and does limit the 
   functionality of some functions and filters. We will re-evaluate this decision in the future.
   
+2. __TypeRef link between Decision Tables and Item Definitions__: on decision tables/input clause,
+  if no values list is defined, the engine automatically checks the type reference and apply the
+  allowed values check if it is defined.
