@@ -27,7 +27,7 @@ public class Company extends AbstractReactiveObject {
 
     private Employee[] employees;
 
-    public Company(String name) {
+    public Company(final String name) {
         this.name = name;
     }
 
@@ -35,7 +35,7 @@ public class Company extends AbstractReactiveObject {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
         notifyModification();
     }
@@ -44,7 +44,7 @@ public class Company extends AbstractReactiveObject {
         return  employees;
     }
 
-    public void setEmployees(Employee[] employees) {
+    public void setEmployees(final Employee[] employees) {
         this.employees = employees;
         notifyModification();
     }

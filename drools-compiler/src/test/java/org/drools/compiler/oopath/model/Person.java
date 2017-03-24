@@ -32,7 +32,7 @@ public abstract class Person extends AbstractReactiveObject {
 
     private final Map<BodyMeasurement, Integer> bodyMeasurementsMap = new HashMap<>();
 
-    public Person(String name, int age) {
+    public Person(final String name, final int age) {
         this.name = name;
         this.age = age;
     }
@@ -45,7 +45,7 @@ public abstract class Person extends AbstractReactiveObject {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(final int age) {
         this.age = age;
         notifyModification();
     }
@@ -54,7 +54,7 @@ public abstract class Person extends AbstractReactiveObject {
         return  diseases;
     }
 
-    public void addDisease(Disease disease) {
+    public void addDisease(final Disease disease) {
         diseases.add(disease);
     }
 
@@ -62,7 +62,7 @@ public abstract class Person extends AbstractReactiveObject {
         return this.bodyMeasurementsMap;
     }
 
-    public void putBodyMeasurement(BodyMeasurement bodyMeasurement, Integer number) {
+    public void putBodyMeasurement(final BodyMeasurement bodyMeasurement, final Integer number) {
         bodyMeasurementsMap.put(bodyMeasurement, number);
         notifyModification();
     }

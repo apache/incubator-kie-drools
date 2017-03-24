@@ -17,7 +17,7 @@
 package org.drools.compiler.oopath.model;
 
 public class Employee extends Person {
-    public Employee(String name, int age) {
+    public Employee(final String name, final int age) {
         super(name, age);
     }
 }
