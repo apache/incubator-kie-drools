@@ -534,6 +534,43 @@ public class OOPathReactiveTests {
     }
 
     @Test
+    public void testReactiveArray() {
+        final String drl =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  Company( $employee: /employees )\n" +
+                        "then\n" +
+                        "  list.add( $employee.getName() );\n" +
+                        "end\n";
+
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Company robotics = new Company("Robotics");
+        final Employee mark = new Employee("Mark", 35);
+        final Employee thomas = new Employee("Thomas", 40);
+        robotics.setEmployees(new Employee[] {mark, thomas});
+
+        ksession.insert(robotics);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Mark", "Thomas");
+
+        list.clear();
+        final Employee arnold = new Employee("Arnold", 50);
+        robotics.setEmployees(new Employee[] {mark, thomas, arnold});
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Mark", "Thomas", "Arnold");
+    }
+
+    @Test
     public void testReactiveSet() {
         final String drl =
                 "import org.drools.compiler.oopath.model.*;\n" +
