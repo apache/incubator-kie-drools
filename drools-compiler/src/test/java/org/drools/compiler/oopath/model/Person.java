@@ -19,6 +19,8 @@ package org.drools.compiler.oopath.model;
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveSet;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class Person extends AbstractReactiveObject {
@@ -27,6 +29,8 @@ public abstract class Person extends AbstractReactiveObject {
     private int age;
 
     private final Set<Disease> diseases = new ReactiveSet<>();
+
+    private final Map<BodyMeasurement, Integer> bodyMeasurementsMap = new HashMap<>();
 
     public Person(String name, int age) {
         this.name = name;
@@ -52,6 +56,15 @@ public abstract class Person extends AbstractReactiveObject {
 
     public void addDisease(Disease disease) {
         diseases.add(disease);
+    }
+
+    public Map<BodyMeasurement, Integer> getBodyMeasurementsMap() {
+        return this.bodyMeasurementsMap;
+    }
+
+    public void putBodyMeasurement(BodyMeasurement bodyMeasurement, Integer number) {
+        bodyMeasurementsMap.put(bodyMeasurement, number);
+        notifyModification();
     }
 
     @Override

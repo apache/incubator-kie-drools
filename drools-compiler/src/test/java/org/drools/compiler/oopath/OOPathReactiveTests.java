@@ -16,6 +16,7 @@
 
 package org.drools.compiler.oopath;
 
+import static org.drools.compiler.oopath.model.BodyMeasurement.*;
 import static org.junit.Assert.*;
 
 import java.util.*;
@@ -571,8 +572,41 @@ public class OOPathReactiveTests {
         list.clear();
         charlie.addDisease(new Disease("epilepsy"));
         ksession.fireAllRules();
-
         Assertions.assertThat(list).containsExactlyInAnyOrder("epilepsy");
+    }
+
+    @Test
+    public void testReactiveMap() {
+        final String drl =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  Man( $bodyMeasurement: /wife/bodyMeasurementsMap/entrySet )\n" +
+                        "then\n" +
+                        "  list.add( $bodyMeasurement.getValue() );\n" +
+                        "end\n";
+
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        final List<Integer> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        final Man bob = new Man("Bob", 40);
+        final Woman alice = new Woman("Alice", 38);
+        alice.putBodyMeasurement(CHEST, 80);
+        bob.setWife(alice);
+
+        ksession.insert(bob);
+        ksession.fireAllRules();
+        Assertions.assertThat(list).containsExactlyInAnyOrder(80);
+
+        list.clear();
+        alice.putBodyMeasurement(RIGHT_FOREARM, 38);
+        ksession.fireAllRules();
+        Assertions.assertThat(list).containsExactlyInAnyOrder(38, 80);
     }
 
     @Test
