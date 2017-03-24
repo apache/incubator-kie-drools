@@ -252,7 +252,6 @@ public class PhreakRuleTerminalNode {
             executor.removeLeftTuple(leftTuple);
         }
 
-        rtnLt.setActivationUnMatchListener(null);
         leftTuple.setContextObject( null );
     }
 

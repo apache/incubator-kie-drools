@@ -83,8 +83,4 @@ public class RuleRuntimeEventSupport extends AbstractEventSupport<RuleRuntimeEve
             } while (iter.hasNext());
         }
     }
-
-    public void reset() {
-        this.clear();
-    }
 }

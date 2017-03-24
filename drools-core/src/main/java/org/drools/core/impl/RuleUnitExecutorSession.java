@@ -25,6 +25,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.datasources.CursoredDataSource;
 import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.event.AgendaEventSupport;
+import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.ruleunit.RuleUnitDescr;
@@ -56,6 +57,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
         initSession();
         session.agendaEventSupport = new AgendaEventSupport();
         session.ruleRuntimeEventSupport = new RuleRuntimeEventSupport();
+        session.ruleEventListenerSupport = new RuleEventListenerSupport();
     }
 
     public RuleUnitExecutorSession( final long id,
