@@ -535,6 +535,7 @@ public class OOPathReactiveTests {
 
     @Test
     public void testReactiveArray() {
+        // RHBRMS-2768
         final String drl =
                 "import org.drools.compiler.oopath.model.*;\n" +
                         "global java.util.List list\n" +
