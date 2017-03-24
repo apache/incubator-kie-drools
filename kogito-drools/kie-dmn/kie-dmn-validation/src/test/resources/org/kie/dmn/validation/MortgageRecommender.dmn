@@ -1,0 +1,3296 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_2b51bb3a-9e6e-4054-9772-b37ea5b006aa" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.7.201703201809" id="_2b51bb3a-9e6e-4054-9772-b37ea5b006aa" name="Chapter 15 - Mortgage Recommender" namespace="http://www.trisotech.com/dmn/definitions/_2b51bb3a-9e6e-4054-9772-b37ea5b006aa" triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <triso:ProjectCharter>
+      <projectDescription xmlns="">&lt;p&gt;Source: DMN Method &amp;amp; Style by Bruce Silver. Publication date: 2016.&lt;/p&gt;</projectDescription>
+      <projectGoals xmlns=""/>
+      <projectChallenges xmlns=""/>
+      <projectStakeholders xmlns="">
+        <informed>&lt;p&gt;Source: DMN Method and Style by Bruce Silver, 2016.&lt;/p&gt;</informed>
+      </projectStakeholders>
+    </triso:ProjectCharter>
+  </semantic:extensionElements>
+  <semantic:decision id="_9ce08b5b-98e6-4032-a9f1-2f8030ab5d12" name="RankedProducts" triso:displayName="RankedProducts">
+    <semantic:variable id="_a248ce64-5157-4db0-b56d-beb7b66ebb07" name="RankedProducts"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_49951ae8-0fcc-4f8b-9031-b487f78c8446"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_1702260f-b73b-44ee-8160-e87ce5e1edfc"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_b37db751-dc31-40ec-b023-b7ac3685ca65"/>
+    </semantic:knowledgeRequirement>
+    <semantic:context id="_4d424fe0-392d-44bc-9af3-d1037d8efdc1">
+      <semantic:contextEntry>
+        <semantic:variable id="_7324e43a-edd1-445c-afc5-898e316786ec" name="FinancialMetrics"/>
+        <semantic:functionDefinition id="_03f6aab2-57f2-4c03-be0f-11fda1b317a4">
+          <semantic:formalParameter id="_f4964dd3-bd0e-46f7-a9a6-163500fb1f15" name="product"/>
+          <semantic:formalParameter id="_91c52ea8-77e1-41ef-9303-89293ad6168b" name="Requested"/>
+          <semantic:context id="context__03f6aab2-57f2-4c03-be0f-11fda1b317a4">
+            <semantic:contextEntry>
+              <semantic:variable id="_a887a7f8-cb90-4835-81aa-31cf3467758b" name="LenderName"/>
+              <semantic:literalExpression id="_2b209911-78a4-4004-81f1-61183536b580">
+                <semantic:text>product.LenderName</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_f06cfe84-5cab-4160-84c3-63669d73516e" name="MortgageType"/>
+              <semantic:literalExpression id="_a7b8f9e5-94d0-4eea-a1a0-15ccef2e5af5">
+                <semantic:text>product.MortgageType</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_71a27511-2fcb-47f5-a1b9-471c1eb8cf57" name="ConformanceType"/>
+              <semantic:literalExpression id="_f7302b6e-f16a-40c8-b077-bf1993e44d33">
+                <semantic:text>product.ConformanceType</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_4ef660a5-99b1-4de1-9e3a-eab56f172e73" name="LoanAmt"/>
+              <semantic:literalExpression id="_7a19a8f0-e752-4f9e-94d9-e0f146666912">
+                <semantic:text>Requested.LoanAmt * (1+product.Points/100) + product.FeesAmt</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_66ac91e7-82f4-483c-87fe-16982ee90496" name="DownPct"/>
+              <semantic:literalExpression id="_04be22b7-0fd9-4aa0-ab0a-8f31e209bade">
+                <semantic:text>max(product.Mindown, Requested.DownPct)</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_c91f52ba-cd67-4773-9ee9-ae4e8b01f2c7" name="DownAmt"/>
+              <semantic:literalExpression id="_6b72d37b-5d7c-4e85-951b-0e7a9ba8ee54">
+                <semantic:text>LoanAmt * DownPct</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_a65c8df4-db10-4924-b09c-5b24fb4bda38" name="Rate"/>
+              <semantic:literalExpression id="_ead7ea15-4138-4b41-bc72-465031f4f45f">
+                <semantic:text>product.Rate</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_8df5649c-041f-44f9-af25-5aa9cc6de50c" name="Points"/>
+              <semantic:literalExpression id="_9ad16a3d-4b7b-4e32-bfe7-20017de93b7c">
+                <semantic:text>product.Points</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_68cc8e16-485c-4fd7-875b-80e3fe69c48d" name="FeesAmt"/>
+              <semantic:literalExpression id="_18ededb9-bfaa-40f9-a130-672bf3d54ad3">
+                <semantic:text>product.FeesAmt</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_a44cd428-fbd9-4168-a1b1-030f0960298e" name="r"/>
+              <semantic:literalExpression id="_3b40d7de-f726-453e-ab83-e4c10e70f526">
+                <semantic:text>product.Rate/12</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_57960f73-1d85-483c-9f24-733745f57c98" name="Payment"/>
+              <semantic:literalExpression id="_6a6a7c8e-2b95-4d47-8cf1-5f824f998ff4">
+                <semantic:text>LoanAmt * r/(1-(1+r)**-product.Term)</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_7eb5f672-9973-4c71-a15a-e32e22527639" name="P36"/>
+              <semantic:literalExpression id="_cd360650-0d6d-4f22-b1af-ad3a2eea88ed">
+                <semantic:text>LoanAmt * (1+r)**36-Payment * ((1+r)**36-1)/r</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_db3ac092-174b-40d3-b942-c22875ec33cf" name="V"/>
+              <semantic:literalExpression id="_f8bb9f39-2dc1-4516-9d88-398d46072169">
+                <semantic:text>Requested.LoanAmt/(1-DownPct)</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_574c05f0-32b8-4169-9190-e5ae1068f3bc" name="EquityPct"/>
+              <semantic:literalExpression id="_47b3e453-5e97-43e9-ba25-a3bafd223660">
+                <semantic:text>1-P36/V</semantic:text>
+              </semantic:literalExpression>
+            </semantic:contextEntry>
+          </semantic:context>
+        </semantic:functionDefinition>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_75c38b01-ce68-4928-a43a-c5312a936645" name="ProductMetrics"/>
+        <semantic:literalExpression id="_ae70155f-7dd3-4c83-9e15-d7f163dcf862">
+          <semantic:text>for m in MatchingProducts return FinancialMetrics(m, Requested.LoanAmt)</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_5c9e7707-5c9a-479b-ac9b-69f5e20f1adc" name="RankByRate"/>
+        <semantic:literalExpression id="_7ce89133-4901-465e-9474-270805279772">
+          <semantic:text>sort(ProductMetrics, precedesFunction(x,y)x.Rate&lt;y.Rate)</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_4a05a474-48b8-402a-b6fb-9f7de98f643d" name="RankByPayment"/>
+        <semantic:literalExpression id="_968c8e32-ab41-4753-8994-63cbc7d767d9">
+          <semantic:text>sort(ProductMetrics, precedesFunction(x,y)x.Payment&lt;y.Payment)</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_561618af-406f-461d-8f16-0e3db27538a6" name="RankByEquity"/>
+        <semantic:literalExpression id="_a1dcde47-0870-4eb5-a672-0936dafe1265">
+          <semantic:text>sort(ProductMetrics, precedesFunction(x,y)x.EquityPct&gt;y.EquityPct</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_52195626-5b93-49bf-958d-3755d783eca2" name="RankByDown"/>
+        <semantic:literalExpression id="_e7261f1c-df18-4817-8e99-4e6d6e1171ab">
+          <semantic:text>sort(ProductMetrics, precedesFunction(x,y)xDownAmt&lt;y.DownAmt</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_fd5bd8ed-265e-43ce-bca9-747deec2b4b7">
+          <semantic:text>if Requested.Objective="Rate" then RankByRate else if Requested.Objective="Payment" then RankByPayment else if Requested.Objective="Equity" then RankByEquity else if Requested.Objective="Down" then RankByDown else null</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:decision id="_49951ae8-0fcc-4f8b-9031-b487f78c8446" name="MatchingProducts" triso:displayName="MatchingProducts">
+    <semantic:variable id="_b0276acc-f464-4f69-914a-e0a40aadd5d5" name="MatchingProducts"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_048afa98-a1be-4998-93a4-61c78e012f8d"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_acc2086b-f8a8-406b-ae1e-c0e06355c99d"/>
+    </semantic:informationRequirement>
+    <semantic:context id="_c9638477-6aca-4efc-8502-0541523a8975">
+      <semantic:contextEntry>
+        <semantic:variable id="_06ffaa65-4d91-4b26-8cad-16145a184388" name="MatchLoanType"/>
+        <semantic:functionDefinition id="_b2b993cc-77d4-4416-90e1-f43a4b25c684">
+          <semantic:formalParameter id="_f4feadc0-c742-4262-8d06-dda498b9c01c" name="t"/>
+          <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+            <semantic:text>Bankrates[MortgageType=t.MortgageType and ConformanceType=t.ConformanceType and MinDown&lt;=t.DownPct]</semantic:text>
+          </semantic:literalExpression>
+        </semantic:functionDefinition>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_eed47154-97ef-4246-a621-3021676b2a54">
+          <semantic:text>for t in LoanTypes return MatchLoanType(t)</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:decision id="_048afa98-a1be-4998-93a4-61c78e012f8d" name="LoanTypes" triso:displayName="LoanTypes">
+    <semantic:variable id="_6e2dcd64-8293-4fad-bf0d-862b0e6b3307" name="LoanTypes"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_d0aeeb20-1527-4a4d-bb7a-0f3fcfb2e9fb"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_1702260f-b73b-44ee-8160-e87ce5e1edfc"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="COLLECT" id="_83cf9745-361a-4582-a26d-63673ed434fa" outputLabel="LoanTypes">
+      <semantic:input id="_2f1b4cc5-5303-4f0f-9606-78530aa9fe41" label="Requested.Objective">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Requested.Objective</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"Payment","Equity","Rate","Down"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_ea9d1c1b-f95c-42a3-9566-48f9434cb4ce" label="Requested.MortgageType">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Requested.MortgageType</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"Fixed 40","Fixed 30","Fixed 20","Fixed 15","Fixed 10","ARM 7/1","ARM 5/1","ARM 3/1","ARM 1/1"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_89d63d1f-15a0-47fd-95fe-194de6ed98db" label="isConforming">
+        <semantic:inputExpression typeRef="feel:boolean">
+          <semantic:text>isConforming</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_47a55533-7dcb-47c5-87c5-b917dd7b2401" label="Requested.DownPct">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_364f65a3-9c98-41b5-a8be-805962219173" name="MortgageType" typeRef="feel:string">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"Fixed 40","Fixed 30","Fixed 20","Fixed 15","Fixed 10","ARM 7/1","ARM 5/1","ARM 3/1","ARM 1/1"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:output id="_5c794da5-1d03-4b86-9078-cc128bfd5ae2" name="ConformanceType" typeRef="feel:string">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"Conventional","Jumbo"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:output id="_2b7d0afa-982e-4f4e-aba9-9772b903de53" name="DownPct" typeRef="feel:string">
+        <semantic:defaultOutputEntry>
+          <semantic:text>Percentage</semantic:text>
+        </semantic:defaultOutputEntry>
+      </semantic:output>
+      <semantic:rule id="_2d5f1c17-8aff-417e-9bdf-0702dd929c06">
+        <semantic:inputEntry id="_2263d240-4304-45de-9069-8dedc2cd35f1">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_33cf6e8a-579a-4f74-8db9-280dd6db6950">
+          <semantic:text>ϵ {Fixed 30, Fixed 20, Fixed 15}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6a4902c3-eda9-4b9e-a56e-fea3ac033409">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_7e1762f4-1517-4c92-af21-5e348f349baa">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_587618d2-efd2-4e1a-bc84-18d855d5033c">
+          <semantic:text>ARM 3/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_291623d4-f9c5-40bb-ad17-3e43851eef20">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_ff8a9274-b995-47e5-924b-6e3a681d168a">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_d146146e-d7a3-49f8-a8e0-9afd7d522fbf">
+        <semantic:inputEntry id="_01db05b1-3c5f-4d3a-8ce2-4d5db088180f">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_126a8363-dbe9-4a97-ab62-9e60528e3d59">
+          <semantic:text>ϵ {Fixed 30, Fixed 20, Fixed 15}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_489460d2-c06c-4e50-82b8-a7d14376c09c">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_68989a61-9098-49c8-88fc-f4ccee1f8f91">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_f9dd2f1c-9216-4825-ab94-b6e8526914f1">
+          <semantic:text>ARM 3/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_d36a8816-b0d0-4fcd-9572-145923c9ec56">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_09b0d2bb-4aec-4a28-b3ee-91fb65aee997">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_23305692-8e64-4614-87ec-9518a1a7611c">
+        <semantic:inputEntry id="_98570289-34b3-4b5b-bd99-51ad790ea252">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6e07167b-a777-481c-b623-1fef2ba587db">
+          <semantic:text>ϵ {Fixed 30, Fixed 20, Fixed 15}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c255a825-a9c7-4ef8-bcbe-0eb51530bb47">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_58bd0325-46f9-46d4-b071-467b3e7bbf26">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_2f366b2f-4289-47a4-bb37-e2c005139eeb">
+          <semantic:text>ARM 3/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b346222d-24ce-42c3-b16f-e9497c9ac9d8">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_ee93fa43-5563-4d55-9e10-2ce7d28b77c0">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b6cac349-1d39-423d-a59f-0b973c95e1dc">
+        <semantic:inputEntry id="_ea25ec29-2aec-483d-8607-4f062494d02e">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fcc12741-447d-48cc-8e54-df3f678848b0">
+          <semantic:text>= Fixed 15</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_eadb7f44-bdf5-4887-b750-4e4bfee45173">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6a498226-cdef-4d3d-a9b5-e0f8fb21a8cd">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_893fba79-8775-440b-9be2-26b9da235755">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_48fc693b-2654-41a9-8fcd-7d5fcec890dd">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_3cc2ef64-c0b1-48b7-a53f-2a0e784d5765">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_a568fa04-de23-43a8-8b1e-c94c49861b40">
+        <semantic:inputEntry id="_171c7fb5-cc17-4ff1-a9a8-35fa340249e5">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8b940e0a-28cd-4543-8824-ac143d295497">
+          <semantic:text>= Fixed 15</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_72a51530-b235-4804-970e-36c9d3903b43">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9c5245cd-a0eb-4739-88c7-36cd9b037b13">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e77a016e-e9fc-49c7-a8aa-75f2b0e45250">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_22327fa8-3c8f-4178-a62e-71a01e96c69a">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_7d72ff8c-50c6-4220-8b82-8f1c6d69d0d0">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_db4ce249-9c43-48aa-b391-bed71ef41c99">
+        <semantic:inputEntry id="_a9d30cdb-7c3a-4991-bb49-c5bd5eaab8d8">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b019e3cb-ca2a-434b-912a-531a0c6257de">
+          <semantic:text>= Fixed 15</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5c6226b9-dfd0-43f8-a278-e990fb1d7427">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9289c46b-bce7-4db8-a8eb-6e9401f20c4f">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_cb945a09-8775-4717-8d74-5665a216020d">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b6a6b8be-ae71-42ab-84df-1a99ae57ccbd">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_deef908c-5ba0-4c2b-a014-192bebd6c35c">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c8c7c08b-425f-4183-b154-35097fe60956">
+        <semantic:inputEntry id="_aec20ec8-8725-4ab7-b60e-ea762d08c699">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_984d76cf-5e4e-41fb-a181-ba56a9f09ef2">
+          <semantic:text>= Fixed 20</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_73c51f82-07ef-4aee-8095-c7a6be06b20d">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_f3de7215-aee7-4f23-9082-e1048d02f949">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_2c6f377e-889d-4cfa-88ce-6f7aac65abc5">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_f9165d1e-8211-4d0d-9b5e-4a7134c0dac0">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_e234296e-6fdd-490f-bed5-05228cb89c86">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_0df6101a-2f9a-45cf-b5c2-e78ec603dda4">
+        <semantic:inputEntry id="_777cd976-398d-4705-82b2-b17d72c5eb3a">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6bde9ac0-9470-4399-b0b5-dcd91c50ece3">
+          <semantic:text>= Fixed 20</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8faf9350-e63d-4cf9-ac20-aeffa22ba59f">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_28c9ff9d-fa5a-4650-b77a-348adda2e081">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_13d8fd4c-8ba3-4d74-9de0-37cba22da253">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_f9c4067e-eb61-4bf7-a864-741e655e0f39">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_c3267724-e916-4523-854c-cc310dc9aaa5">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_5b570ccd-23a9-4dbc-a348-34db847595b7">
+        <semantic:inputEntry id="_3a10fdd2-0d39-47a0-b66b-51a227d46518">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3100392c-da2a-4fea-bd9f-3c92d80b538b">
+          <semantic:text>= Fixed 20</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b1c45f92-d761-4fed-9890-5e9da0f1af72">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_ac1e36b2-74d6-45d6-bd46-5720a5d0babb">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3c1816a9-044b-47e7-bd6d-1cb719a50d1e">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_f3419229-c1fa-40a4-a579-06b7471d0719">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_0c6ed868-f249-450c-aa74-6535f62c9bf4">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_214b3799-0888-432c-b4ab-4abc8dc4d0b6">
+        <semantic:inputEntry id="_9bec11b6-2434-4e32-9e1e-c37ed1444321">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_df1c5142-8dd0-4176-b87d-a82ad1f80edf">
+          <semantic:text>= Fixed 30</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2b027bb7-c4ec-4bbb-9ea9-00644063a568">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_0791e36d-0d65-4a9a-8138-a265536b56ea">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_783b51a6-32f6-4e4a-a6b3-c3578e872d0c">
+          <semantic:text>Fixed 40</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_3a59825a-348d-4a8b-9f52-effff88e2476">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_152b9017-52b4-4058-a34a-84c8fc7496d8">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_f54683f2-0c1a-40d7-b8fd-0732b7d03178">
+        <semantic:inputEntry id="_a3c6015d-397a-4205-9e42-0a5b2e7bb59b">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d6e0e0ac-54ab-4eb4-8b91-5c29815383a5">
+          <semantic:text>= Fixed 30</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8e12e1e0-c1c8-46df-bd34-a6e96a2d69bf">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_bd2465cb-55e5-41e3-aa5c-7d81c7053701">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_6ca4e5e2-7c55-445e-bcf9-6d563f666df7">
+          <semantic:text>Fixed 40</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_fff4e33d-a8d4-4497-9468-8530fd1c56d7">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_75086e74-485e-4f93-817d-a22dd8cadb24">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_012330a2-be41-4d4f-8d17-5382adb5c918">
+        <semantic:inputEntry id="_925303a2-c506-4d98-8adf-80650858d3ac">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_bdb9d05b-2f45-404b-9d9c-7d6033cf52f1">
+          <semantic:text>= Fixed 30</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_26e2e8d5-ab87-4e66-8daa-bd69cfe102be">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_f82fa815-b233-48cb-a6d5-cac6a5babdca">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_72f4abae-b99a-426d-92a6-f37e2a924e4f">
+          <semantic:text>Fixed 40</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_9e4d8f44-c3ca-41d8-b09a-317c55e10375">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_2de5d887-cf2c-4534-b643-f9b192ac40d9">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_9adfbd53-0d26-4b19-870d-a1df4a23979a">
+        <semantic:inputEntry id="_5b0601ac-8ed9-4209-ad35-fa4a7cfac04f">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d58745f0-0c62-40b4-8573-79758e7feee4">
+          <semantic:text>ϵ {ARM 7/1, ARM 5/1}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5114d3f4-f741-44a6-bd99-7d0598cf0022">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_487176fe-c208-4fa8-8508-6a0374da2986">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_5e6f52a8-6b26-4ddc-b8b7-d8f32bcf86eb">
+          <semantic:text>ARM 3/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_3599e2cc-9fd1-4ffc-a8ef-52511a427485">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_1b3d9c8c-18ab-44a0-a7fb-7b20495955f5">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_2f2d1174-50a7-4e61-bd9e-e85c1e592478">
+        <semantic:inputEntry id="_df6aa6af-c25e-4dae-93da-10cae87a75aa">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_558c66c0-be92-446f-92c7-462e1d238d51">
+          <semantic:text>ϵ {ARM 7/1, ARM 5/1}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c5c27f06-a768-40c6-a57d-f085b16a6a2f">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_74ba5d47-f502-4d74-91ad-1ca5e46ec8f8">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_f9b37f08-c3ea-4785-bb42-d04f690a4f92">
+          <semantic:text>ARM 3/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_47b5cc3a-c1c7-4a4f-906d-452db8add1ca">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_a48c9573-5c54-4e4e-82a9-f3bc34bbf4a8">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_0e1cd6a9-57f5-412c-afb3-21c552c34f3d">
+        <semantic:inputEntry id="_2466899d-766c-4233-b17c-56c5aa86f72e">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6fab792e-0b73-4b5e-8bd2-fe6ed7a6c291">
+          <semantic:text>ϵ {ARM 7/1, ARM 5/1}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fbeb9c2b-d354-4f55-9243-5da03811c5f8">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_83dc6e88-d5f0-475c-9e8f-941a74aa5750">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3b48c442-c545-44e9-a673-7623947eff75">
+          <semantic:text>ARM 3/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b04c3fb9-aed5-450b-ada9-20f148d54e94">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_d84a7991-88be-43ba-98b7-48c78682176b">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_9284a4df-8cb5-4494-adac-56a8954f46a7">
+        <semantic:inputEntry id="_d9604548-949b-4627-b589-e231a7d3bf15">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6b4e1b50-883a-43d9-982c-6ede5a10a1e5">
+          <semantic:text>ARM 3/1</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a674aa40-3356-4e6d-bffa-30ff008d8798">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_db747af3-0e30-4765-8f1f-8c1ebdee7336">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a352f75c-e64e-4646-b029-ec4e320f6851">
+          <semantic:text>ARM 1/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_974171ce-1ed0-43b2-a0ee-a6266969ec81">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_88b75e72-6fc6-4b51-acca-fc24a23feb81">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_3f5235f7-ed7a-44bd-ae54-746680bc2e09">
+        <semantic:inputEntry id="_835f35c4-8a91-406a-b5c7-1a3c2c5436dd">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_7223ef6b-b30d-441b-9560-671f16cf4874">
+          <semantic:text>ARM 3/1</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b9996459-16af-4a41-a983-7f30d00a748c">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_f0d628b8-3169-4cd4-82b4-c409834180a8">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_804e4bcb-6994-4f71-9dec-65be015940a8">
+          <semantic:text>ARM 1/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_9d9eeb26-bd0b-4b45-9af4-29d33b3617ac">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_a84069b7-7419-4ac9-9b08-f576fe28d4c7">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_257ed3c1-90dd-4f86-877e-b2334973b86d">
+        <semantic:inputEntry id="_1b6d18f9-c1d6-4458-8664-236b3c705987">
+          <semantic:text>= Payment</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b8d05f99-164c-4c65-acbb-43c483c17356">
+          <semantic:text>ARM 3/1</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_14011b5a-22c9-4bcd-b7d0-84da20b62271">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_f590b920-f072-40b8-bb0a-9a1b050ebdd0">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_34c7f51f-edfe-41dd-b308-77627b7ec4f4">
+          <semantic:text>ARM 1/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_5657838a-7932-4426-a450-32b901598083">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_d3b8ffaf-d64d-4396-94c1-bc5ec2373443">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_242d61d1-05a8-4bdd-9d3a-a4ce84bb63ab">
+        <semantic:inputEntry id="_9652c2bf-ffc4-4555-8894-dad8d1d1dcd9">
+          <semantic:text>ϵ {Rate, Equity}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6db35ea2-ee60-42c0-bce2-284887d4ad25">
+          <semantic:text>= Fixed 30</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2a5223cb-4cb3-452a-b702-2fc11e8e955f">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fe948819-2a4e-4a87-abbc-e0bbf1178cb9">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b463a542-8f72-41ec-95d5-f57b18c4e245">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_9a9155d0-418f-4a90-8dc1-fe1b713a9bdf">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_3f703654-7d94-45a8-858f-911936c28d48">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_fdf73bb1-3742-4e38-9185-75cf18e92259">
+        <semantic:inputEntry id="_c004e08b-d5fa-4d69-a106-499783c6d425">
+          <semantic:text>ϵ {Rate, Equity}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_992b1a2d-0686-45ee-bc4d-4e0ad905f6d4">
+          <semantic:text>= Fixed 30</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_cbd80756-27f7-400f-b565-4ff1eba971cf">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_56db9eb4-723c-4ed9-8530-2a84b35a29c9">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_38160e3c-e2e3-4b32-adf5-0abf758bd282">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_a7c432ff-15cf-4a68-bd1e-028a8817f078">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b0e9b816-eeba-4c52-b54e-d79d30b6b5e3">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_a9edd81e-e92b-474e-a6e6-60f63588b604">
+        <semantic:inputEntry id="_80172671-9dc0-4613-bb57-5a5f8cdaac8f">
+          <semantic:text>ϵ {Rate, Equity}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_14cf6ab8-3711-457d-91a3-eb2cc29e1c90">
+          <semantic:text>= Fixed 30</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9afbc319-758e-4da8-bc0d-e92372d96947">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_f7bd0a05-34e3-4984-8480-2cc323c4cd35">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_af4e38f6-2183-43ac-b999-10becf053e2e">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_8c855f4f-fc59-4820-bcd3-8835d11dfadc">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_0cba6f60-77f4-4bf7-92d4-4924b0e04bc9">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_220b28b8-ca29-4faf-8335-7906205406c2">
+        <semantic:inputEntry id="_e047b737-024a-4616-91f3-f1cba7466669">
+          <semantic:text>ϵ {Rate, Equity}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c210bcd7-e693-43a2-9299-6c26384b1efc">
+          <semantic:text>= Fixed 20</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_f3fc76ce-f580-45a4-9782-3c63bcb93e3d">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_be34c0a5-6eb6-43a5-92a7-5a0016cb93d7">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a22c41fe-7964-4847-891f-812343d54d8f">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_e7edc399-8d91-43a0-a748-2e40edad241e">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_91ba0ea0-01f9-4fcf-b0a1-69377e77d776">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c00e0e4a-9ead-4ab9-8529-42dea50431a2">
+        <semantic:inputEntry id="_066c1a8a-123a-489c-a920-05928d35aa1c">
+          <semantic:text>ϵ {Rate, Equity}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e1a507de-2852-4ca0-97da-edcefeefcbd2">
+          <semantic:text>= Fixed 20</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3bbffd44-e4a1-45fb-9b57-fa6ed4dfeae6">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_36e85e97-874a-42a0-82fe-713afafce1e8">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_955ca140-faae-4cf5-bbb7-965ee335f8ae">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_9e753619-93a2-4c82-b66c-6064edd39d66">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_f0ed867f-a1ae-4bc0-bc88-94fd9bb6b7bf">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_8dab4e46-0f8b-42c7-8a0e-67d277ebe4d2">
+        <semantic:inputEntry id="_41ec1f86-6b48-463f-a31d-f5cb3f283cf7">
+          <semantic:text>ϵ {Rate, Equity}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c326b15e-b65d-4570-878a-690566083fe2">
+          <semantic:text>= Fixed 20</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9926ae41-ffe2-48c1-b6aa-bc42d37a0fa1">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2932daf3-64cd-4b90-aa92-cb6645f2081f">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c385846f-1a15-4376-9f9a-b6134fc3370f">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_8aae2e9f-3690-40a7-86d0-91c19a3ddc53">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_392b9da9-9403-4486-b30a-9854a2acaa61">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_16f356ab-a3e9-4723-9f39-20850346dc17">
+        <semantic:inputEntry id="_aaf02605-cebe-488c-a2f7-b502dafad769">
+          <semantic:text>= Equity</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_689f5edc-3d03-4923-ab26-04cd42246d0e">
+          <semantic:text>= Fixed 15</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_33b08e9d-79a8-44a3-b4cc-fd6401bd371a">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8c910416-509e-4e9c-aeac-0bfd5bd494a6">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_5a761f61-bbdb-40e7-9244-e4ad892a483e">
+          <semantic:text>Fixed 10</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_a03e0ddc-7866-44ae-b4b5-93d17f2587c4">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_a3843c4c-95a2-4084-a506-4ef42e35c11a">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b491d3ad-d1ca-4bee-a834-a7bad2f9c9a5">
+        <semantic:inputEntry id="_55b0fed4-65fe-4f4f-a735-eede4606199b">
+          <semantic:text>= Equity</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d861a988-24bd-4d1d-acb9-6e1476f6dda3">
+          <semantic:text>= Fixed 15</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c088a50c-95ad-43f1-98ef-f607004d17ce">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6bc1dcf4-db09-45c6-96ad-7a83bbd79ada">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_bd40ce33-522a-48ae-b8c9-d1c33ec6dccd">
+          <semantic:text>Fixed 10</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_96f3200a-40f3-4adb-93d8-ab38b75a7aa2">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_71a05e07-a275-4276-9c15-d7f765b2b15c">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_879a2ca0-700f-4752-a538-2add55b27c79">
+        <semantic:inputEntry id="_fe0401e4-572d-4c94-8814-c58eb3cbccda">
+          <semantic:text>= Equity</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a8c86bdf-96c4-454c-b1db-68802d7f9a14">
+          <semantic:text>= Fixed 15</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fa4ccbf8-edd9-4586-82cb-0e85f2d758c4">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_90c25096-37bf-464d-ac6a-240f2dcc6ecb">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_26bf22a7-ed9c-4e1e-a2ef-e4bf4d9fafb2">
+          <semantic:text>Fixed 10</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_d97803c2-d46b-4160-80b4-ff0753b8044f">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_03546958-69b2-4ebf-b7dc-608b12da0d53">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_767cbc17-66f0-4ffb-a34a-ff1c88a8840b">
+        <semantic:inputEntry id="_86d3fa4a-d4c2-4ffb-9c79-0c7aff4b397e">
+          <semantic:text>= Equity</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_047fee86-ef56-4cc4-982a-f9d2c44869b4">
+          <semantic:text>ϵ {ARM 7/1, ARM 5/1, ARM 3/1, ARM 1/1}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d4032acc-05d8-4036-9111-ca12ef86f698">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c78379a7-9ad1-4fc8-b4fb-9ea7e60d0e7e">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_931907e5-7578-4823-b02c-c17870017a68">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_52c34e6d-e134-4891-a06a-0888987d4daf">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_3119eb45-2fe6-4475-ab52-0348a2998f5f">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_ccbaf107-5342-47cb-9462-a995740f8052">
+        <semantic:inputEntry id="_a59ac29f-a7b1-4ee0-9797-bb99c8f190f9">
+          <semantic:text>= Equity</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a33e694d-428a-4f0f-a091-fbc1ff4a8c0f">
+          <semantic:text>ϵ {ARM 7/1, ARM 5/1, ARM 3/1, ARM 1/1}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_f78d3275-8f34-47a5-958a-97fed126a969">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6b3b9b8e-706d-4a64-8e8f-3eadf8d1e0de">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_f333f18f-2f92-426a-9012-1cd0a3e888b3">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_e572fa9a-ed58-4432-b971-40b9f057ff5e">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_2cb10c8e-be2c-45cf-838d-a23a31e55923">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_e0cc3360-f0b1-4270-b6b1-26ccf033a102">
+        <semantic:inputEntry id="_f918d6d6-2119-41af-9075-0e9fcc42a76b">
+          <semantic:text>= Equity</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_be42aef0-31bb-4dc2-b228-49c6eaddbfb4">
+          <semantic:text>ϵ {ARM 7/1, ARM 5/1, ARM 3/1, ARM 1/1}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_be1d8877-db89-40b8-bfb1-68b972612452">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6b72fa37-6e49-4ad3-a7f9-6a66732b13e9">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_d66c86be-1d13-41c5-b9c8-a7123d3d3001">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_7b57b517-b77c-48d3-aaa5-c50fa062693d">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_14211bb8-4c45-4a82-9489-c054b608e450">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_fdef0e23-2248-46b0-b8d1-ab57023e952e">
+        <semantic:inputEntry id="_4486b26a-d060-4295-8c45-8ba543fc036a">
+          <semantic:text>= Rate</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4fe52932-adf2-485a-b424-3160731104a0">
+          <semantic:text>ϵ {Fixed 30, Fixed 20, Fixed 15}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_1034ce4e-8565-4703-8982-4f7ccbd9234a">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_0756c3a2-740a-4ccc-bd0b-dd236746bce7">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3cd01f30-d49d-4153-a5f0-2b5dc8b9308e">
+          <semantic:text>ARM 5/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_7a397721-7cb5-4c0b-b54a-e5a3d5ee86ef">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_443cc860-f06a-480f-bba9-ea7aca908b1c">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_d0f54316-b41a-438b-a915-fc98d7d85d24">
+        <semantic:inputEntry id="_4594e779-c3b5-42f1-bf06-1f9fcd9e526f">
+          <semantic:text>= Rate</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_80931f45-a5ad-4533-a08b-4ff675f57024">
+          <semantic:text>ϵ {Fixed 30, Fixed 20, Fixed 15}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_01acdea5-3c3c-4017-8318-bd81f849a986">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a93c246f-3542-44e2-8d23-c34845c5aec3">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_9c046fdf-2b90-430e-bb1e-767ed9792407">
+          <semantic:text>ARM 5/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_6ee3a05f-8a7a-4e30-80f3-6120fa6d1d6c">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_35da4a22-89fa-43c8-8dfc-04fb2be64850">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_8feb0061-3b51-473f-b727-aa7bcff0d0eb">
+        <semantic:inputEntry id="_2789b2bf-d007-43a1-8bed-491a36bf0895">
+          <semantic:text>= Rate</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2ee35234-7dfe-41c8-b160-642d02d88ba6">
+          <semantic:text>ϵ {Fixed 30, Fixed 20, Fixed 15}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9090d4e3-d00c-4754-9eaa-fe7ce644e343">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_659d5264-780b-4395-96ca-c86f74a3936f">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_89fd3dee-ce17-42b4-afb9-f861d1f67914">
+          <semantic:text>ARM 5/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b73d66c7-1f9c-4f58-9beb-1dc4424de8ec">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_946e01bc-a67d-4b43-91f7-232bfb526d07">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_0d594eee-a2ad-4330-94b3-a6c5d24d03a1">
+        <semantic:inputEntry id="_ba38a15f-7299-43d8-8554-cc58a40373d7">
+          <semantic:text>= Rate</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dbedf65a-9367-41d6-81e4-81174a125d82">
+          <semantic:text>ϵ {ARM 7/1, ARM 5/1, ARM 3/1}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_7219b9c5-5ff8-4a2a-b4e2-380c05772652">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_76ea2e63-eae1-46ec-ad69-e6e6ad7f8153">
+          <semantic:text>&lt; 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_2f276b2a-f719-4653-a6bb-25ecf32edeef">
+          <semantic:text>ARM 1/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_6f1ecfac-ab7a-44ee-803c-a978eedd7f2a">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_5e25efe3-2fd8-4ccc-9c2c-5e1fc043e782">
+          <semantic:text>20.00%</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_bbff1048-2979-49a8-bd9a-3345323c9533">
+        <semantic:inputEntry id="_fc8bf6c7-8f84-4870-b44e-e487a44213d8">
+          <semantic:text>= Rate</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d956658d-810a-42cf-b1df-2e2db4d4aeae">
+          <semantic:text>ϵ {ARM 7/1, ARM 5/1, ARM 3/1}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4f914625-fc2c-4c7e-b0fb-2b648c471869">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_256fb9ac-c284-47c2-9d7d-9509cfc65c81">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_cec4a7da-83b0-4bcd-a898-6903accdb18c">
+          <semantic:text>ARM 1/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_1eb43330-0b4e-4508-b739-2c9fc3832ae9">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_5c130155-6f03-488a-995e-d8b86265e52e">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_2129bebc-5554-4d5f-8fef-582313358396">
+        <semantic:inputEntry id="_bf08f809-45a4-4a31-8fc2-3cdec639c803">
+          <semantic:text>= Rate</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9fd3304f-4e39-4809-9040-3c6b06650346">
+          <semantic:text>ϵ {ARM 7/1, ARM 5/1, ARM 3/1}</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_221b260c-95fc-490b-a6ec-21711c8a92c1">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_521a70ec-6b3f-44fb-8e5c-12f1583a7213">
+          <semantic:text>≥ 20.00%</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_eab0d4db-13ec-476e-9414-beca11b13263">
+          <semantic:text>ARM 1/1</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_bcf6ef60-26d3-4d08-b60a-c639e85f29bd">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_0d619957-4447-444f-838b-9af1dbe2b48e">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_1c858c02-59c6-4119-95f5-92ba5ea106ec">
+        <semantic:inputEntry id="_38540833-cbec-4363-80b8-712fb8b0d59f">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b25f6460-595d-4d2d-aa6e-44513c3c7bfb">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_0efd40d5-822d-4e1b-8d10-9accdb23bb1c">
+          <semantic:text>= true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8f79fdbd-f121-474f-8428-a9187438a81d">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_5b8cf518-d443-4002-9ad4-60fe993b8689">
+          <semantic:text>#Requested.MortgageType</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_ee2d03b7-f48c-4ed3-96c7-3636737c0f01">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_187dd4fd-8af0-4e20-abcd-d8a1918aa91f">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_49ef569c-c62b-43ee-9bea-6a0d63ecb52e">
+        <semantic:inputEntry id="_033de612-1ad0-40ee-a29e-9c9ef4241b3c">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3c243dab-e7fd-4561-90b6-816f2220d012">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_afce74fb-a5b1-4287-96e7-741ec5f33b9f">
+          <semantic:text>= false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_23dfc820-104f-442c-b90f-1b6f2f7b9d84">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_887678dc-234b-45e9-a633-0a055b28d076">
+          <semantic:text>#Requested.MortgageType</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_3171cb32-a826-4fa3-937b-9385c4b3911e">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_021b5813-1f66-4ca1-a915-f7661be53f4a">
+          <semantic:text>#Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_d0aeeb20-1527-4a4d-bb7a-0f3fcfb2e9fb" name="isConforming" triso:displayName="isConforming">
+    <semantic:variable id="_02dd5949-c433-4f62-ac03-90931f4f6361" name="isConforming"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_1702260f-b73b-44ee-8160-e87ce5e1edfc"/>
+    </semantic:informationRequirement>
+  </semantic:decision>
+  <semantic:inputData id="_1702260f-b73b-44ee-8160-e87ce5e1edfc" name="Requested" triso:displayName="Requested">
+    <semantic:variable id="_ebad702f-6784-43dc-845d-49a57d4176f4" name="Requested"/>
+  </semantic:inputData>
+  <semantic:businessKnowledgeModel id="_b37db751-dc31-40ec-b023-b7ac3685ca65" name="FinancialMetrics" triso:displayName="FinancialMetrics">
+    <semantic:variable id="_db5e74a3-5816-41dd-b2f3-7e7d5c5f7f02" name="FinancialMetrics"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:inputData id="_acc2086b-f8a8-406b-ae1e-c0e06355c99d" name="Bankrates" triso:displayName="Bankrates">
+    <semantic:variable id="_208c8877-ed50-4196-bd28-e5aa8c02c093" name="Bankrates"/>
+  </semantic:inputData>
+  <semantic:decision id="_f23751c5-d8e6-4c86-b92a-ad701ac2a269" name="Requested" triso:displayName="Requested">
+    <semantic:variable id="_6b4fb43d-9e4d-400d-afb9-c3c1673e3053" name="Requested"/>
+    <semantic:context id="_be4a30cf-7b22-4fe7-936c-afdae858102b">
+      <semantic:contextEntry>
+        <semantic:variable id="_dae14f3c-159b-4890-8c2d-305a3ff40f64" name="MortgateType"/>
+        <semantic:literalExpression id="_eef683ce-15a9-46b0-b2d3-e0ac0afc8b89">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_3d17d6f0-5f5a-4abe-bc4f-ee401130cbf8" name="Objective"/>
+        <semantic:literalExpression id="_f8445f78-930a-4039-ad8f-9a2f3551d10e">
+          <semantic:text>Equity</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_39988926-1dba-48a1-9096-a018ab23d3a4" name="DownPct"/>
+        <semantic:literalExpression id="_83973f83-30ce-4697-b152-992e9bca311f">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_bb3a0e09-94f8-4e96-9826-24eb7dcd0fd9" name="LoanAmt"/>
+        <semantic:literalExpression id="_94b34ba4-e63e-4a8e-a6f2-765d612104fb">
+          <semantic:text>350000</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:variable id="_b9972856-7f36-4a7d-9f14-121469d1d479" name="PropertyZip"/>
+        <semantic:literalExpression id="_781ca7eb-38c5-4817-8fe0-28666ec22406">
+          <semantic:text>91001</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:decision id="_53725700-fe0e-49e7-b7d0-b91d9f9e0b85" name="LoanTypes Result" triso:displayName="LoanTypes Result">
+    <semantic:variable id="_ebaa500b-f27a-498e-b529-945759b7ae08" name="LoanTypes Result"/>
+    <semantic:relation id="_ab303a84-a99c-4459-8023-6dc6e7d696ec">
+      <semantic:column id="_9dd72901-255e-4235-a7fa-0f1ea707dd90" name="MortgageType"/>
+      <semantic:column id="_f76e4b11-4d12-409f-9ece-53438483bafd" name="PerformanceType"/>
+      <semantic:column id="_8885c980-8ac6-4524-8188-7954fc7b40d5" name="DownPct"/>
+      <semantic:row id="_8e2ed2ba-80fe-4767-81c9-73a63ffd77ba">
+        <semantic:literalExpression id="_62afe80a-582a-43fb-b777-216ee5c06dbc">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4fc4da69-4baf-4474-b955-783ee7a4df37">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cec0b9d2-1944-435c-b873-4dada7be2bc1">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_19a91d94-9324-4c63-8c1d-ce2b6185133c">
+        <semantic:literalExpression id="_24197dd5-c649-4063-9ba2-a5cbe2ee4a0b">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4574ca2b-bab6-45f5-a5f7-d45d0e7bd052">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5d592903-f5fa-4342-a9a3-ca0a4849f4ba">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+    </semantic:relation>
+  </semantic:decision>
+  <semantic:decision id="_6b0bbc4f-1f69-4533-9f21-8ed63316ade2" name="BankRates" triso:displayName="BankRates">
+    <semantic:variable id="_6a9d1001-2004-4f2a-b6cc-042fc55c9bd5" name="BankRates"/>
+    <semantic:relation id="_665f7b9c-e1d4-4540-86d4-9c0b7a9cefc2">
+      <semantic:column id="_2c5a04e1-0c10-46ab-b495-f09d46f1662a" name="LenderName"/>
+      <semantic:column id="_31624de6-3ca7-4cd5-bd69-1d11909e3f09" name="MortgageType"/>
+      <semantic:column id="_42847504-10fd-4e34-8c52-7f005ede170c" name="ConformanceType"/>
+      <semantic:column id="_e4c5dc67-df60-4c64-b8c0-d81b38521b41" name="MinDown"/>
+      <semantic:column id="_e6506cde-0269-4005-b4c7-66cc20ac4a95" name="Term"/>
+      <semantic:column id="_22774c8a-052d-4f84-a42e-be6c5685b14c" name="ARP"/>
+      <semantic:column id="_9cb9c936-6b86-451a-887a-a9d79b941512" name="Rate"/>
+      <semantic:column id="_5ce20edb-ae5f-4fe1-9a2e-01814c1a8b3a" name="Points"/>
+      <semantic:column id="_71c1deef-7d41-4b9b-9e01-cfee178913ab" name="FeesAmt"/>
+      <semantic:row id="_ba821d09-02e3-49ce-92a7-e153cdd3a93b">
+        <semantic:literalExpression id="_c9b28faf-8463-4553-bd3d-66c92dbf8bef">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_83f5d081-97d6-4150-ac9d-c4ac3c8aba8e">
+          <semantic:text>ARM 5/1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4459b7d6-0c1a-46ee-bc7c-e7cff5ba4627">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e8d0e96f-6d14-4a53-b316-a30d3275efea">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_94274135-066e-4f86-b5c3-06e08751b855">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3108e9c9-e37b-4e28-ad7a-90cf9bdaf5e9">
+          <semantic:text>2.787%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7ec250ac-f233-436b-a4ae-c6c5335b895f">
+          <semantic:text>2.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ce256509-5a63-4be9-875d-0275d4d48fd1">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bdbb5a54-3d64-48d6-90ae-bb24cdbf8c61">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_abec516a-f29b-4769-b53c-d7961f068f0f">
+        <semantic:literalExpression id="_39f01d57-52f7-40b4-91b6-464ec94baa38">
+          <semantic:text>LInear Home Loans</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8b95c092-c096-4616-8e05-a8b7948e472b">
+          <semantic:text>ARM 5/1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_25cd30da-7dd8-4ce9-8b89-ca620e741aab">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_61348de9-7ca1-4c1d-a024-51cc3c29417c">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5307f50b-dffa-4ef3-9f34-656644924cec">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6d5eb2dc-f59e-47fe-ae3d-26200b9a0f74">
+          <semantic:text>2.870%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7b7c120e-116d-4e20-955a-0708cfc00970">
+          <semantic:text>2.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_634c2935-d2d1-4510-ac31-c0b787529e27">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c11f890e-eda6-4057-a5e8-b6cfadce6223">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_346dacfa-e1fe-44f1-934e-2821dcb5e6c3">
+        <semantic:literalExpression id="_59d4705c-f670-4bf5-8926-8d34c97ebce2">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3ecbe622-f4a1-4f27-94a2-894f190ea596">
+          <semantic:text>ARM 5/1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0c9881da-fa5b-436c-ba04-2376c173f2cb">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ad3ce100-26d7-4fd0-bf88-a9ea04dd63c7">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_aa83aae1-764a-4003-b603-bb12a4ae1ec4">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d4bfac26-1be0-4a5f-b259-1188b093751d">
+          <semantic:text>3.002%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9c020860-ab95-4e23-b3df-cc32e0fcbb29">
+          <semantic:text>2.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_06b826a7-2adb-4e3b-8b21-5e27dcac3704">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5e9e6933-a0af-47d5-a315-dabfcf2c49a2">
+          <semantic:text>$ 1,995</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_6cc36957-8fbc-408c-9cc7-a26065bccb56">
+        <semantic:literalExpression id="_c4cb7d01-1557-445d-8f4c-faf36dd59780">
+          <semantic:text>CalFed</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_585f4a49-5aa5-48b1-8313-0a14d4b23bc6">
+          <semantic:text>ARM 5/1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a68d64a5-63aa-4f24-ab7f-ff2546454a05">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_db03b80c-3fec-4e34-8f43-aea73336448e">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_22c6fcd6-553d-4361-ade6-84c5c7e5d9c7">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8ce30931-b659-4b41-ab4f-2d101b4d4794">
+          <semantic:text>3.117%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f979a8de-59e9-4e3b-9fcd-13b2c1c69315">
+          <semantic:text>3.000%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_66c083a2-28af-4dfd-851e-7616aaa835ea">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_abc71ea0-3c43-42e5-b13b-4ba2997fccb6">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_b045a1cd-1db0-44b1-b011-1a6f9cc5b873">
+        <semantic:literalExpression id="_d262fa32-92b3-42ec-8168-a6fbf3c18eae">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d1db4b7d-ebdb-4bcb-aa43-37eccc3da60b">
+          <semantic:text>ARM 5/1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0e59a51c-2f21-4072-89be-5a93a238988a">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a2f9be79-9d78-4610-8f02-66cf6bfef9a1">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1a9542f1-62bc-4a6d-975b-5aa813e63571">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c006420e-6a64-408a-9d70-123e27370c5b">
+          <semantic:text>3.029%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_fa3b7ec6-09ea-4c16-ac01-686ed8cd42d6">
+          <semantic:text>2.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0559c7ca-1014-4407-a85e-8a02d2b879a1">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cf971103-a00b-4e7c-b80c-83541e5690f7">
+          <semantic:text>$ 1,995</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_604a3525-59d0-4c56-b691-86e95b751b23">
+        <semantic:literalExpression id="_81c9ce5a-430a-43e8-ae39-17a554724056">
+          <semantic:text>CalFed</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1d8e5201-bc2c-44c6-aa8c-215189bd01d3">
+          <semantic:text>ARM 5/1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_49d7d117-32b4-4c58-b451-7a1ee15176c4">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_90f3b296-091c-439d-a01c-3b21ae08b229">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_552f8147-4080-49b6-8554-f938be637f44">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9c36c4b3-a86b-4cbf-9b32-ae5b2a46b54b">
+          <semantic:text>3.080%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2d5c61db-d693-46a1-a5cd-66b25f1c0e73">
+          <semantic:text>3.000%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0d33435c-bb1a-42fe-ac23-979fa1d6d018">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b0eb96a5-c7ca-4287-bc1f-2db75c7138fa">
+          <semantic:text>$ 95</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_a5bd9f07-e210-459d-a792-2cf2db88feb7">
+        <semantic:literalExpression id="_72e9215a-99a4-4e92-aab8-3527bbb38402">
+          <semantic:text>Kinecta</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8a3b8c4a-0c6c-4cc5-8a85-ac3562d5acdc">
+          <semantic:text>ARM 5/1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b7e42903-276f-46b2-a830-de0f3025ee33">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4c1c8360-23c5-40c7-bbb4-61eeb0970a5d">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_71170bec-e37a-4113-ad4a-6c09f5d5e0f9">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9648f416-08ac-46f5-8bee-14284c2244a5">
+          <semantic:text>3.127%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_608433f4-77f4-4c6c-a2ae-fc4a169c31c9">
+          <semantic:text>2.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d0549e4b-c62b-4fdc-bb14-26c7ff947e54">
+          <semantic:text>0.75</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e2577636-14a5-4511-bacc-456fbb0e2aec">
+          <semantic:text>$ 1,800</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_81519408-e53a-47f2-82c5-4b4a591b7f7e">
+        <semantic:literalExpression id="_f0f2dc5e-d7fb-48a2-ab3d-dc734e2a6fd5">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_36c226e2-0fe1-43b4-b29b-b9953e679d4d">
+          <semantic:text>ARM 7/1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_20e4219b-ec2e-415b-81d1-2a0d722eae4d">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_fae4a6eb-ed6a-485e-a9e5-11bd86a1ef33">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bc87f55b-a3bd-464c-bcfc-4eb65d643361">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0fce4e5b-17f7-4b2b-84f1-7c2a213fa237">
+          <semantic:text>3.002%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bd0e65a6-7314-4b64-86c0-74829f882285">
+          <semantic:text>3.000%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_35923f55-2a33-48f5-8f86-faa14c329885">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_42622715-2a70-45cd-bb1d-b323c9c668e9">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_c1040b32-4919-4b77-9096-c06ec4d128a8">
+        <semantic:literalExpression id="_2a1af7e2-95d8-4954-9124-dc7490c9fec0">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2a90d8cf-5869-4279-aa59-0840a9dddd41">
+          <semantic:text>ARM 7/1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b793070c-1d5f-412a-aef5-095ee5470538">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_28a6e93b-de1c-485b-8b47-62b0afe2fd17">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bc740f3e-2fc9-43db-8195-6028d9512cbf">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1f2488a8-dfba-4eb2-966d-9bad9b22dae1">
+          <semantic:text>3.103%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e5230981-0326-4540-94e3-fda6fc40ef5a">
+          <semantic:text>2.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f896ee5a-ee67-4124-8dff-0b15c0c71014">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_caa2d33c-b6d8-4bc3-87eb-759fb65682de">
+          <semantic:text>$ 1,995</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_a44666a8-105e-4525-b21d-943a47d46222">
+        <semantic:literalExpression id="_f578e21a-a02b-42ef-b9f0-86de7ff53d64">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7f94f204-0c07-4d92-9727-22fffcf8bd3f">
+          <semantic:text>ARM 7/1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9bea85eb-a51a-46a9-a33b-a8e6b0da1999">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_72acc358-ff9d-43f3-9800-1212dd4e39b9">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_036dd88f-8dd5-4ca2-8a7f-6495e67e6c55">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_99f86ac2-f3bf-4655-8721-ae6b8ed3ffbf">
+          <semantic:text>3.130%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_750528a0-696a-4603-ad2e-b705aa763d19">
+          <semantic:text>2.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ca48d928-e187-4361-a7d0-47faeaaa2322">
+          <semantic:text>1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7b99f4ab-1080-4514-b7cf-2f6ac4dd8ac1">
+          <semantic:text>$ 899</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_7495a582-39a8-4046-8223-531246886012">
+        <semantic:literalExpression id="_1460116e-32ed-415e-9fed-443a79b3f4c4">
+          <semantic:text>Linear Home Loans</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_26a6d5fb-b3ad-4665-96ee-d58968dc5b1e">
+          <semantic:text>Fixed 10</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ad78d8a4-7213-4d82-b611-a0eab4da7be3">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6c900462-e152-4f1e-97a9-3c611c5086e4">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6841e551-31d8-42db-a242-d552adc49a81">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d153e66e-a751-40bd-89ce-a4472e50c403">
+          <semantic:text>2.851%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_05afbc49-2918-40fe-b7e3-5b482ca4c4ce">
+          <semantic:text>2.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d01677e6-58ba-4a3b-b434-7ede74581c1f">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1377ff77-884e-4dc4-9820-1ecc8d64ef9b">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_bbfc0275-9106-44fe-b012-f2df3926a428">
+        <semantic:literalExpression id="_67947831-6803-41eb-a486-e51b37fee41c">
+          <semantic:text>American One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d8e7316b-dc1d-4bca-9989-1272a310fe90">
+          <semantic:text>Fixed 10</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8ff52813-421e-4091-ad57-2a5362f14573">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2939ef00-4dca-4161-b930-314aae04873f">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a8dcc1bf-69b1-4f71-a4b5-65356a03f6b1">
+          <semantic:text>120</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_15080671-6a7c-4ed3-9a46-191034f731f8">
+          <semantic:text>2.937%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_72c05aa4-b692-4693-a0d4-9e21eb56b3b1">
+          <semantic:text>2.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1d50d35d-e657-48e4-bda7-addd157d4223">
+          <semantic:text>1</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0f86ac31-b87e-4558-b22d-fc9e944152f2">
+          <semantic:text>$ 799</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_3fc17126-85aa-47af-826d-46e0c968aeb5">
+        <semantic:literalExpression id="_1a63a317-922f-420e-af9f-908c5bd6cb3d">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_68f6d294-de75-4d74-a8dd-47be95ce4efd">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_59935e54-c2ff-4589-8303-74172cd48fb0">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ab98b97c-a84d-4031-bbcd-5097acc68f05">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_47dfb02e-58a8-4e6a-a685-989ef6a58f91">
+          <semantic:text>120</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_fd96b548-faf5-4b52-a1cc-08dd3bcc8aa2">
+          <semantic:text>2.745%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7745e128-a5a5-4aa9-b1f9-57dc179a107b">
+          <semantic:text>2.375%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_382fff04-9ce1-46e4-9e20-10d6c0196875">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5717a6c7-e991-402b-b584-68aaee3d5642">
+          <semantic:text>$ 945</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_d076ba46-055b-4062-a340-051cfe7a038b">
+        <semantic:literalExpression id="_8535cbdf-5e4c-46ff-8d37-ecaa1b7982f2">
+          <semantic:text>Linear Home Loans</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b5ba380d-66f0-4554-94a8-ddb2ed852fd5">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_494397bf-77f0-40a3-a699-0b54c4ed7caf">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7cac809d-3771-46c3-9663-5f3fb9b6f5fa">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b8a8515e-086b-40df-a4ae-298477abebef">
+          <semantic:text>180</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_64a414a8-df5b-44a4-a7e0-6a1f6d458d1a">
+          <semantic:text>2.819%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6f88fabd-e12f-45e5-a85b-be71a71c41e0">
+          <semantic:text>2.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_564e6ad8-d4dd-427a-a279-645c1563e7cf">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_249029b3-c8c5-4bae-8aae-c041bf9afbf5">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_28ccacd0-fd76-4d7d-9106-cbb793e42f75">
+        <semantic:literalExpression id="_410a6afb-fb27-4815-a09f-2453787601b4">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_216a19c5-0d32-47f3-8021-c2b45cfc3e60">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a5c8d9a7-9ef2-4e69-a57a-f822fe286ea9">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_81331c57-6b83-4173-8f5b-e3682b4410c5">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_93c7f385-edf6-4ce5-b2d5-d3e1ba2a8fb4">
+          <semantic:text>180</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_75ee1b29-75bf-48b4-ae41-4fffe48e2937">
+          <semantic:text>2.887%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_731b272c-9ec6-423a-b634-eb498c3518a1">
+          <semantic:text>2.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e42e5f23-e479-4374-a849-7af65313324e">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_53df3bdd-9217-4e8e-a7d3-546c828d7fc3">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_58cd3cc1-cc3e-41f0-bb23-d3115e271a32">
+        <semantic:literalExpression id="_51745174-ea5c-4f81-85ca-0a05df3703c5">
+          <semantic:text>CalFed</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2f48ebe9-1fab-4375-9623-5ed358fc3a1e">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_537a526f-113d-4953-814c-9f9b44467708">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ada75961-f90d-45a9-b2e9-647590e0c344">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8a393518-eae7-42a5-9203-f22c6b136b7f">
+          <semantic:text>180</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8b407982-34ba-4fce-976c-5a4075116acb">
+          <semantic:text>2.891%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_42f16169-5c4d-4327-9fcc-93a70d470b8c">
+          <semantic:text>2.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a2c5e222-f04a-40fe-98f7-74ee01dd7a76">
+          <semantic:text>0.5</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5b3d92d7-5019-4d7d-a884-221efdf691b0">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_b3ccbe64-a126-4288-bb77-13b6b3796fc5">
+        <semantic:literalExpression id="_c3273fd4-8747-4786-a8f0-4d0978d59077">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_88a50224-1894-4b1f-8f69-093c3e29ef30">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_37828277-dbaf-4c16-b3b2-e4cf794dfb3a">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_55eaaa82-481a-4466-abca-c90cac28037c">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_764b18e1-b9f4-45c1-8959-a5effca87608">
+          <semantic:text>180</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5dffd9c8-c6cc-4088-ab81-6ced6c21ac2c">
+          <semantic:text>2.924%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6eb3c702-8f03-48d6-b651-1920e32ec307">
+          <semantic:text>2.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1f47df8d-8843-4816-a781-c9a1e8c25820">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c90d4da0-7703-4746-84f4-b5aca2b6677d">
+          <semantic:text>$ 1,995</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_d7ad0d04-4956-4575-a8ea-4a36348f6bd4">
+        <semantic:literalExpression id="_c0b0702b-a74c-40c0-af34-1069ce0380dd">
+          <semantic:text>IPL Mortgage</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_43711454-a745-490b-aac7-dc5031ee57d7">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b4bce72d-9923-4f9d-b90c-d152fb44dfd0">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_69416fc7-11e1-4209-ad32-d29a2c444c74">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9ec261d7-0d86-44fd-aa57-a4d245a645a7">
+          <semantic:text>180</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_27c62bfd-46f2-4ba6-b412-c48fa531159f">
+          <semantic:text>3.068%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c8b62754-949a-445c-a9c7-2c4dc20647dc">
+          <semantic:text>2.990%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_93639171-a6f8-40e0-a46e-900e911ac0ae">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_53bd5cd0-5e7e-4e54-92f3-56aefd80db56">
+          <semantic:text>$ 465</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_bb1ed815-f96a-4c6e-9fe6-4753382c95bb">
+        <semantic:literalExpression id="_d3cedab2-4948-43cc-b248-531e09d4ccfe">
+          <semantic:text>Kinecta</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2697b422-d586-4459-b932-f779c76f1010">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_39cc4454-d203-4b58-a426-0124aa62210d">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_367331d7-9077-42bb-9e2f-3e8badc46718">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_19de4685-6970-44ad-8f3b-a1f57843bffb">
+          <semantic:text>180</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1256fd3f-09ce-4412-b421-e3615e28801b">
+          <semantic:text>3.124%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ff8cdb0e-56b3-48e2-877a-c69f204de3ca">
+          <semantic:text>2.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3298e5da-3b36-4cf7-af5b-ceafa0fe0ffb">
+          <semantic:text>0.625</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6152f81e-3e91-4e9c-810d-3212139e3e24">
+          <semantic:text>$ 1,800</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_50a0cb2b-204e-413c-9c05-fd05e12420c0">
+        <semantic:literalExpression id="_5fced127-e1f5-4a38-83ea-4564740e76d2">
+          <semantic:text>Farmers and Merchants</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_266b87a4-f178-4cd9-9dfb-e2ac9d772e64">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_28d827ac-f360-427a-939d-921c2bf1ae10">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b0d49298-5491-42cf-af6b-f2073b6e03b5">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a1809e91-0255-4a8f-b223-7f57e95272a8">
+          <semantic:text>180</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_05eccc8b-01e2-450e-90fe-dd4ec030b15b">
+          <semantic:text>3.298%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7e726016-90d1-4c68-a04c-6ac8fee9f25f">
+          <semantic:text>3.125%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cc4b4a3c-409c-4151-ad6a-3caf6cf1f242">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a136bbf8-d795-4edb-b8cb-cb70cb70339e">
+          <semantic:text>$ 1,960</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_546d5b05-523e-4ad6-960d-ac1e2574b7fa">
+        <semantic:literalExpression id="_487a57ad-e4e4-4c98-9b9a-f4c9aeeb9f12">
+          <semantic:text>IPL Mortgage</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_852444a0-088b-4196-a0e4-6bda18d5c9e9">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bf4b3787-bf80-4421-957e-f25210270dea">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_94520e67-4581-4bc2-ae5c-9d728d70fac7">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_51396b6e-af57-4bdf-96bb-8eae1ad45979">
+          <semantic:text>180</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c2af1037-d6e4-4034-9477-99225e318b12">
+          <semantic:text>3.155%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b2336424-9722-4edb-955b-5f8adbf2fe3a">
+          <semantic:text>3.125%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e577e0bf-c3e4-4675-b9ca-9ae08aac09bb">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1449327f-aeef-43ac-8bdf-dc3c9c7b4542">
+          <semantic:text>$ 895</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_994d3917-d366-47a1-8363-a0bbf77cb1d9">
+        <semantic:literalExpression id="_c5e66d65-d081-421f-8844-dea502761eff">
+          <semantic:text>Farmers and Merchants</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8baeaeeb-ef71-4d1a-828c-d6c1e0368fea">
+          <semantic:text>Fixed 15</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4af5ac3f-fdc4-4e0d-b2fb-0ac0f5e84ed6">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3b41d8b4-944a-4212-b03a-f819b4ff9715">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a23500e9-1404-46ca-a1f4-d1009a7a30a9">
+          <semantic:text>180</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_85a20121-f3ec-48a0-9f26-06b8b34cd1b9">
+          <semantic:text>3.691%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cce6681d-3db8-4cda-9465-da84eefa9a4a">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7cb6239f-be88-472f-a29c-8b0b1e8bae69">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a87a0a20-4a15-4b29-b26a-16fcafda01e1">
+          <semantic:text>$ 1,960</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_67f7284b-2c42-4b9f-bacf-f8b39a181b90">
+        <semantic:literalExpression id="_afbdd2ff-f5a4-4ebb-adae-2ab36ca270c3">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3dd9b9c4-57ed-44a9-b4b1-ed7813b609da">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_17afa961-7083-4330-9441-f09a910463ca">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d79460f9-40ed-4c7f-bb97-cb7521a72999">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_10bd86c1-3bd3-4019-b03d-01c89a29ddaf">
+          <semantic:text>240</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e966705a-408b-49eb-b560-7116d5d5aec2">
+          <semantic:text>3.502%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1d299709-924a-419a-b388-32779c31a868">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_994536e2-493e-44d5-bffb-b55dac005531">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_810a6afe-1bfa-4060-a6af-b8c054f209ef">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_bb306485-3464-4be6-815b-016407db725f">
+        <semantic:literalExpression id="_461d7277-ff1b-4a90-b1fb-718fbfe63003">
+          <semantic:text>Linear Home Loans</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9f5d1588-4707-4b36-b8f7-5d94d373809a">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_70d3c055-c70a-4d47-b9bf-56798c058f94">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1ca9a3d7-a46f-4ca4-bebc-46cc0a21e322">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9d23c7b1-92de-4486-8a66-080385ea4772">
+          <semantic:text>240</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_17a590f7-260e-4a7a-a60e-c8fa35230cca">
+          <semantic:text>3.555%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6ab53c3b-9b2f-4116-a4de-b41967bac238">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9f57e4e5-0bcd-41b4-8c93-8a8374b9b3c7">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b5bc2aa1-e21b-4ebd-bbbc-7e4d2c484d55">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_8c8d6b15-44f4-44d1-87e6-edb63e3668f8">
+        <semantic:literalExpression id="_f529c2a8-230d-4678-bc57-be8253da295a">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_09da6ce9-9137-45d7-b968-e0b60789c45e">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_75f1ddb5-6768-4610-a0e1-5d41956c193f">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_fbe1e31e-d772-4610-ac09-2742118c3eee">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bbe7979c-294b-4154-8f56-76d835ac2de8">
+          <semantic:text>240</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b317b6c7-93cc-4457-8166-b673d26de9d3">
+          <semantic:text>3.573%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b995b6b3-6c70-4051-acab-64f279582cae">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4ffdf9fd-9b40-43b5-bcdc-40c37a76b6e1">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f5bf09a9-460c-40e6-9cfa-1b0fe8bb4c60">
+          <semantic:text>$ 1,995</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_24c4805f-4e9b-428e-929a-4d372c4546b6">
+        <semantic:literalExpression id="_e4292ee9-3869-4add-91e5-5b8531e031ae">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_96521764-15a4-4fbf-acc1-1a7ceeb23c26">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a07816fc-2404-4297-9801-2be36360e43b">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_27a2abe1-1087-4583-bf3f-37dcb5db2126">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_81d49be7-2e87-4e31-a545-48d6be35d35f">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_17553e98-d72c-4935-a743-7177de4e2d3d">
+          <semantic:text>3.577%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1828159e-4007-477a-808d-9b9598908795">
+          <semantic:text>3.375%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2a16b19f-be9e-4a15-9b6b-9a5a037458e0">
+          <semantic:text>2</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c1841bdb-8dec-45c0-87d0-823289d23d14">
+          <semantic:text>$ 799</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_65f2917e-7ea2-4207-b21a-a5cd46b319e0">
+        <semantic:literalExpression id="_16b44b97-aea1-40da-a55e-fe87b5b06fe2">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_210f03f4-4d65-4c3d-a4de-db278dd2c7cf">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9357f347-be52-4dac-957a-c65bcec5e846">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d3b546a6-917a-4d98-bc92-230c729696eb">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8cd70abe-6bc7-4eb7-9079-9252cb1de16e">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_76976126-7a7b-4fbf-aafc-ed974eb057f5">
+          <semantic:text>3.629%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_27129f3a-5aeb-465e-8327-82366faebad8">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f2b430d4-a496-4b63-a04b-7f2615dd4a53">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_da151125-29d1-4c4b-8e25-6a1be4ff988d">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_73e17480-b9e3-41f7-8554-8f0aa08f08df">
+        <semantic:literalExpression id="_5844a3ef-ddad-49fd-9126-38d861203b28">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_25b107b7-38bd-4830-ab24-214f70323d94">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9b374eef-a2fb-4692-b675-61397f98341e">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_75b02c4c-289d-44d4-9212-6c0ede9697fb">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e032881f-aa37-4bbf-8ca7-0974d2a20558">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_09cee3eb-9f14-4339-87bb-7ba6d0f7d8ee">
+          <semantic:text>3.682%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3ba80a89-ab78-4241-a0c9-24429aa7a091">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6747e2bc-9aa1-4942-b89f-789f5bcb7f4f">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_13915d3f-5156-42fe-9362-1ef05a1b9653">
+          <semantic:text>$ 1,068</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_5fd2c1af-e683-4a2b-8eca-af3f2d5bf889">
+        <semantic:literalExpression id="_30ccd377-4fbe-40ff-9cfe-462b900fe020">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_31a050be-ef60-46fe-a2c9-1e17ea7b0b14">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_59de2011-566c-4b73-852a-8c1f7afa1d06">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c12f4372-644f-48c0-9436-9a4a2f2e5c55">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b06a52f6-52f0-4880-a23f-fa2b41105f24">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6310aaa4-86ad-45d3-825b-4110c35a59b4">
+          <semantic:text>3.790%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ad02dc9d-7087-4ec6-8e97-3f063044ad6a">
+          <semantic:text>3.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_77812412-6bb0-4c34-8215-a673435eeaff">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d51938c3-af1b-4bb1-a6d6-110f812f0244">
+          <semantic:text>$ 799</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_b437dd47-88c1-4933-8c7b-051aca6c855b">
+        <semantic:literalExpression id="_56d4bdc2-0e74-480c-b74c-9acd11b8124b">
+          <semantic:text>IPL Mortgage</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_463b79ef-f6bd-4d33-b5ec-9fb7c26d02d2">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d7504bd4-e9ef-4ecb-928e-6ddc388fe7f6">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_61d938fb-28dc-4de8-bf06-22978b585e1a">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f08e753b-a008-485f-9f7f-ec2f292ecaf9">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_17a827a0-3d2b-4572-8c24-9f61164b1be5">
+          <semantic:text>3.796%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0a7a2f5d-bc4d-4ba9-84c8-28f3e00ca674">
+          <semantic:text>3.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9af81a61-78b6-475f-a5e5-a955828d5cc0">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c14d5587-cc83-47dc-9374-83d334bf7537">
+          <semantic:text>$ 895</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_7fb85a5c-2f87-406f-8289-a4e21987776b">
+        <semantic:literalExpression id="_17ead03e-bbd0-469c-b281-9f6c05e2ed4d">
+          <semantic:text>Kinecta</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_493eddbf-2f7f-4159-bd77-5e56fbc6de36">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_99c13769-48fb-4fbf-8679-0ba67c7d6db9">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9f9ae8c8-134c-4579-9c5b-f61c7c2bdb31">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e2089ab2-88d6-475c-bf65-9a8fa0caec76">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c925ad76-b94d-4f28-b85b-498538c69072">
+          <semantic:text>3.808%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_357f7f0f-e3ec-443c-82a7-c31c5b67c7a9">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2b95560e-b3ca-4906-b6c5-0b638f620eef">
+          <semantic:text>1.125</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ffae3e90-74d8-437e-aaf6-5aa83f0b2acc">
+          <semantic:text>$ 1,800</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_538c7032-231b-4771-832c-178b370440eb">
+        <semantic:literalExpression id="_62457b57-f8ed-4833-b74d-491d72ae1e02">
+          <semantic:text>CalFed</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0c632afe-d6c6-4042-845f-89b975a9f776">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_075fe115-75ab-4d09-825a-16c1b0f8ad82">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_117b0552-fd7f-4de2-9dd7-d517dcda465a">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_887c638b-ed2f-4095-8b30-9ae9f7bc3cc6">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_40f46112-fe7a-4c3c-8125-63ef6afc6ea2">
+          <semantic:text>3.915%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_191b7ca3-e22e-4036-af0d-09698692be7d">
+          <semantic:text>3.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5007fd10-8bf0-4a48-96fb-e4f3ef04173f">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f747ed59-ad20-4a81-accf-6f2428ffdb3a">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_3eaf55a6-53f5-469b-a0f1-322acd84009e">
+        <semantic:literalExpression id="_31cc5a1c-7d8d-4f6e-89b0-4671148412a9">
+          <semantic:text>Farmers and Merchants</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_77236c09-1b7b-404d-8603-35a24f89afd5">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_68c4479a-064e-4e91-99bb-6d6c7fa1ca36">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b3bbef15-24d1-431d-ad15-a7acd7f1b3ff">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_196b8c77-b876-46d7-8e28-a4b3ee09d74e">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1b78db64-8e19-452f-89d9-de7b35609c05">
+          <semantic:text>3.974%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b89d8352-c3cc-411f-a2d0-e71c5a1eb84a">
+          <semantic:text>3.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7421a775-7a5d-4656-9df4-d6ba55c08d60">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ef379d4b-b5fe-4139-be4e-f4f89393181c">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_d70e0c0b-bddc-4d03-9fb6-a5441854a0ad">
+        <semantic:literalExpression id="_0f7e2be1-428b-4549-ba44-eee250ab64ff">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_77b21c0b-b692-46ee-8e22-20c2ec9e10af">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_458e5e85-8ae2-43f9-9e96-0c7aefe50ed1">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0523cc31-61d9-41b8-8b2e-c9ee7c1d00e6">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bff778da-7320-4c59-a211-63e515a7ec4e">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_08cd7d6c-f064-4b7b-9386-1d51ca6334b4">
+          <semantic:text>3.662%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6f4c384d-edce-4b81-a01c-dac25187f5ca">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_122b4ccc-cfe2-43b9-8cec-8cb570d42ea9">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_329ccdfb-d3a0-4ec1-b98b-280a03629e35">
+          <semantic:text>$ 1,995</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_a2d4c11b-0075-48d0-8c07-f2b599c736a8">
+        <semantic:literalExpression id="_445c26b4-3dd0-479d-aa56-ceb408e02ad7">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a13ace9d-7194-441b-9af3-e6c027389248">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_22461e89-41d0-44f9-ac44-1f63f68d48b2">
+          <semantic:text>Jumbo</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cb4e15de-06b1-4c20-b8ee-0f193b1d00a6">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5ab4fe31-bce5-4e07-9984-24f4857ad154">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b941021c-43e5-45db-ab8f-a5e5ef140801">
+          <semantic:text>3.805%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7e160078-fd84-430d-a751-6adbfca50392">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e83d4623-1b74-43f9-bb95-d7aa552e8e50">
+          <semantic:text>2</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d3b7d6aa-4053-4920-8e93-210120142930">
+          <semantic:text>$ 799</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+    </semantic:relation>
+  </semantic:decision>
+  <semantic:decision id="_d2d881ea-6b04-486d-83a7-0cccb1b197b8" name="MatchingProducts Result" triso:displayName="MatchingProducts Result">
+    <semantic:variable id="_f765b540-198f-40bf-a829-71d84f33486a" name="MatchingProducts Result"/>
+    <semantic:relation id="_b8a91365-d7db-4f61-9769-ac7ac52cba11">
+      <semantic:column id="_4dcf8780-5ee7-48b5-a30a-f312992fd18b" name="LenderName"/>
+      <semantic:column id="_d53b4d8b-7b3f-41a3-8c5b-57586f161d3d" name="MortgageType"/>
+      <semantic:column id="_9e582b17-68bb-4434-a63e-f23beb656d4d" name="ConformanceType"/>
+      <semantic:column id="_cb8e5a50-7077-4f2e-8a24-526086cd1196" name="MinDown"/>
+      <semantic:column id="_97eaef0f-8748-4fcb-9dc2-a0c7ff91999b" name="Term"/>
+      <semantic:column id="_919e9ed0-dea5-4f3a-956f-75772e05b1ab" name="ARP"/>
+      <semantic:column id="_7807cbe3-1664-4d9a-9503-4ded16c5f7b3" name="Rate"/>
+      <semantic:column id="_5648dab7-68cc-4458-9ca7-56e6a1144459" name="Points"/>
+      <semantic:column id="_55be0fda-3976-419a-9d8e-d1121daefd70" name="FeesAmt"/>
+      <semantic:row id="_c005c7c8-48f7-4e82-a962-a61ad066f01c">
+        <semantic:literalExpression id="_4683e719-1a58-46d1-ad38-373c1f27b02a">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b31852c0-4ca2-421d-8f3f-20731ed40c62">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ceaa49aa-0d43-4d40-9b2f-f8c87a36f694">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_fed4be55-8128-426b-9df3-b3f6e2bd7248">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cb4cdc55-16c5-4888-94dc-7c0b5eabdbdd">
+          <semantic:text>240</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2ac04d69-0587-4808-898a-5e23caee111e">
+          <semantic:text>3.502%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_30292bd5-83e3-485e-81cb-a8915c44db62">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_901ed2db-b743-4087-9fff-84f06f8e2327">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3131a0c1-f030-4b21-b371-902c327fdb76">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_81d1bf4f-6f60-419c-bec5-dc6478f306f8">
+        <semantic:literalExpression id="_995ca533-0d28-4e4e-a8c5-82b613309f24">
+          <semantic:text>Linear Home Loans</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_33d3d59b-e488-40b4-b0a3-e43170e96ce9">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_74f0a236-fce0-4536-af46-be660baa467e">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_33e35681-507c-4bd8-9c42-abc997fb697c">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b14eb9e0-b725-444d-a97d-eaed86995a31">
+          <semantic:text>240</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_07e5c93a-5d27-4994-862a-aaa75bf65f14">
+          <semantic:text>3.555%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4ad50677-71de-45f3-b673-faaa246e89fb">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0fb4741f-5611-4a10-9162-3bacf77e39b4">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4a104e99-605c-431d-a86a-f08046257a2e">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_8c71962f-22a3-49d2-b16a-d148460da122">
+        <semantic:literalExpression id="_be97f324-0de9-4a09-9216-ad6ed1365e80">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_592c5c2a-d82f-4495-8b30-4d1abe2498fd">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_057cdaa7-230b-4e04-a929-cbf9ae437567">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3c8d6dad-16a7-429f-866e-6c52f2f5e623">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1db875e4-6c37-4d46-b382-20901c62b6d9">
+          <semantic:text>240</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_229692f5-be5a-4c93-8743-39857bb6e66d">
+          <semantic:text>3.573%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_dd0f6db1-8c25-469c-bd8f-dd0578a7cdad">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_655281bc-58b3-4b96-8909-abffd613ff40">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3d20e713-489e-44ab-9741-1246f7dd409f">
+          <semantic:text>$ 1,995</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_e8ad7798-3ee9-497e-8602-04e003e7f7af">
+        <semantic:literalExpression id="_05bb1c5f-dfe9-46f7-81bf-7639c4d10a0e">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2ee17687-6684-4156-b1fb-63407bb9b415">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_db17dba3-2b5a-49c0-82cc-a1c253467f02">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9a9e3d69-188f-469c-8918-eb4951e5b164">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5817c90f-db89-463e-8204-1829c954ef7f">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e6ab6e93-0d70-4a28-b3b7-b9eebe1c0fb0">
+          <semantic:text>3.577%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8a325ce5-ee0e-40ff-b775-fb83752ef0d7">
+          <semantic:text>3.375%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9e128c76-457f-42e2-b84c-0da830145c20">
+          <semantic:text>2</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_46b7f6ff-4b2a-48f8-9804-f7f6475741aa">
+          <semantic:text>$ 799</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_53d77a76-d22e-4cea-9c61-23bb0a952bc1">
+        <semantic:literalExpression id="_63ec8c41-db71-465b-8747-109ae6c1aee7">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a69dc350-eba1-4b05-86c5-f66f652fd0aa">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d975799f-f867-4280-9520-83b97f53c217">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2c5f5773-62c0-4c02-8129-3f1608beb726">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_70219b04-0445-4894-948a-3e0be5faeacd">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cdc8ecbd-ff58-4bc0-80be-88df3ff4ce72">
+          <semantic:text>3.629%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8f9b0971-0f42-4d27-9636-e1698848d54a">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_95d697c0-af0a-4878-8529-1f624df9aabc">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4587d70f-234d-4656-80c9-417a3aac0e83">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_2a51ae9d-9903-4a7b-bfa0-a84be9ab0c9d">
+        <semantic:literalExpression id="_e0b8805d-e87c-4e67-9fda-f4488a59ab0c">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_60a8a3c1-8ac2-4e3c-b754-1b99df3fc6cb">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e61ce193-5627-4586-80a2-cbc4d95b90a4">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e547c5d1-9ede-42b1-9ce4-c1dc827f7f98">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f4dfbec8-e1e8-43ad-85fa-d4ceb9a3d795">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e4d991fc-b361-41aa-b499-823da8f38b50">
+          <semantic:text>3.682%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8c9dd9eb-7c23-41b6-b1ad-7dafdd3e8093">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f0822016-9efa-4863-bd40-603a680d37e1">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f450a0aa-6048-43f7-8ba0-b55ce4836119">
+          <semantic:text>$ 1,068</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_2c2a326f-d0f7-48dd-99c3-6638eb8add54">
+        <semantic:literalExpression id="_78b3767d-d04d-4a82-a479-d51af0162029">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cd8d86a1-54a7-4ffd-b3c3-b56ff035967c">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_78584734-de35-47e4-a695-5915454388f0">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f7398096-d67a-43f3-bc3f-8e9cdfff938b">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a6d07e5d-89d5-48fb-8f5b-36839b033c03">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6cc4a3e2-666b-4441-bb72-c43ae45c8bfb">
+          <semantic:text>3.790%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_00d6015b-2b00-41fd-9102-6ab6021bd085">
+          <semantic:text>3.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c4eecedc-9f5d-412c-9be9-ac8100eee611">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ef47b0b5-66dc-4c8b-94bd-72ca3a0370f1">
+          <semantic:text>$ 799</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_7c188cb7-aa3b-4a58-9f7b-fdd30b018477">
+        <semantic:literalExpression id="_84eda992-4482-4ac1-8b95-63a7abb44e17">
+          <semantic:text>IPL Mortgage</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_79c05ae9-6b3d-4fad-a296-02a622c06729">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6740013b-f6e8-4a73-8a20-3ca50372a279">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_639791a9-7619-4eae-a3a0-86656ecd62dc">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_be4aea73-4d04-4e1e-8a42-f72b9647482a">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c7e2151f-50ad-4ccd-81f0-070a49ead684">
+          <semantic:text>3.796%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_82975d52-35e4-4633-9009-7d1505a66a87">
+          <semantic:text>3.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7dfd3d18-7c0e-4488-95df-59f18a0d02b4">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9670eb1d-caf2-4b54-af54-8ad1b04adb0b">
+          <semantic:text>$ 895</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_bc5242d8-401a-4682-a8aa-b5fac8c19757">
+        <semantic:literalExpression id="_56be0ffc-ad92-4962-b5ba-ef90e268a3fa">
+          <semantic:text>Kinecta</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_02ed8e90-559e-41a4-9b92-1271a0eece7e">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3a5c9244-673d-4665-ab8f-097bdd8c3d31">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_147d03c7-dc03-4206-b445-2b6b18b7d349">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d7704ade-1629-4029-86ba-5265b66d8baf">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d0f68e1e-30bf-4962-b8e3-110be6cf3b44">
+          <semantic:text>3.808%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cb47a9da-c650-41e8-b4ab-2a1cb8197edb">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_475c89d6-d561-4188-83d7-236542102629">
+          <semantic:text>1.125</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_28edea58-6782-422b-a744-f43454270035">
+          <semantic:text>$ 1,800</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_e17d7ab1-930e-4e67-90e9-3bc4a0ca3198">
+        <semantic:literalExpression id="_ee1d5deb-9296-4452-bbae-4c5dbe7f211f">
+          <semantic:text>CalFed</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_752091e3-7981-4bbb-b874-51c3c9179e6b">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a0ce2734-04a4-49a8-adfd-9bc5b7e6607a">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e21c40db-c2a6-4a6f-9e1f-79a39d0b71c7">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_197f089b-bf93-4a90-a1c1-06847e3a2a19">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8552e040-a0d5-4e8a-87fd-7657200a4479">
+          <semantic:text>3.915%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3d02f75d-cfd6-4121-ac49-0abf96e54745">
+          <semantic:text>3.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b36fb666-b511-4580-9b2e-62ec9cbbe928">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a0935c07-a39d-460f-8876-0ec8b56cc339">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_2d492542-40fe-4783-8eba-4e6d2b1efd41">
+        <semantic:literalExpression id="_503430fa-9008-49e1-8ce3-94f84c869647">
+          <semantic:text>Farmers and Merchants</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c6ab8d9d-c076-47f9-9e00-b8ea7ca80d84">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bb071abd-6965-4880-818c-f75acd189c17">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d47effae-68c9-4e6e-b3a6-3bec4cb48af7">
+          <semantic:text>20%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6b89631c-72d1-4427-bb43-94cb03e37496">
+          <semantic:text>360</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4ab469ac-2811-40a2-8fd3-a3a6ec8ffa96">
+          <semantic:text>3.974%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_20d7495c-d991-43bc-96c7-c4837cb6789c">
+          <semantic:text>3.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d3c93067-fcfe-4462-9397-ef586410f1f7">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c0228069-142d-4db4-9a2a-76e5643af90c">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+    </semantic:relation>
+  </semantic:decision>
+  <semantic:decision id="_cce76157-955f-4a7b-9baa-604c9a00bd60" name="ProductMetrics Result" triso:displayName="ProductMetrics Result">
+    <semantic:variable id="_6c800bb2-6295-4625-838d-864fd6122f7c" name="ProductMetrics Result"/>
+    <semantic:relation id="_deac2d4b-ff35-4ae4-b813-9618813ca963">
+      <semantic:column id="_cd155b63-1307-4cf7-94b2-71b0630304e3" name="LenderName"/>
+      <semantic:column id="_3ec4b658-4693-49f9-8b23-2117857e6490" name="MortgageType"/>
+      <semantic:column id="_c6ec4e86-af2f-4f79-ab48-c63e0434bea6" name="ConformanceType"/>
+      <semantic:column id="_62334465-3e73-415a-a5ef-1f2e83de2d27" name="LoanAmt"/>
+      <semantic:column id="_3846cd20-3fee-43b2-bad4-0d51c47a4a52" name="DownAmt"/>
+      <semantic:column id="_8fbdf849-98a5-4f92-b2f6-184c9df8d0e6" name="Rate"/>
+      <semantic:column id="_f9d47582-ed8f-4826-a050-54c9f2cd97b4" name="Points"/>
+      <semantic:column id="_70ae9559-a081-47b2-9f1a-f7dc7c0a6de6" name="FeeAmt"/>
+      <semantic:column id="_23e0bfb3-6371-4b6f-9e65-05ab242b404a" name="Payment"/>
+      <semantic:column id="_2e714cf5-3510-42a4-bbbf-c98bd262eb0f" name="EquityPct"/>
+      <semantic:row id="_6c46a78b-345d-4467-a992-86b6f7cb33a6">
+        <semantic:literalExpression id="_65f1e233-3821-42fd-92e3-b24a7e554033">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_149500a1-afcb-4064-88a2-0c58d32afee7">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_65171dc1-e348-4d02-a743-4da8a9ada054">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_257dfa6b-fd80-4cf9-aa8d-e8adee67c048">
+          <semantic:text>$ 350,000</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_304954b1-1169-4417-b782-9f07a769a4bc">
+          <semantic:text>$ 70,000</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7c3847c1-5086-43e3-85fb-b0ac379d38d9">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a6dc4fc1-5906-4a33-b8cf-4bd23ffc67cb">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b139a6a2-4aca-4a1c-b17d-c63524f48dd2">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_05f8aacf-e861-4f74-8bb8-f48361c02185">
+          <semantic:text>$ 2,029.86</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3e7d31a8-2a21-4130-ba0d-81c86222c5b3">
+          <semantic:text>28.7%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_930bea90-cb18-408e-8c6b-4f6d874ef356">
+        <semantic:literalExpression id="_d5b79647-0cfd-4133-acc7-56ec13a5ef3b">
+          <semantic:text>Linear Home Loans</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0b2f7346-62d2-41b6-99db-dc89eeb23047">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_74ea0b71-e4e9-43bc-97d7-daaf6920b432">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_95ea51d9-102a-42a5-a81c-aa242067e370">
+          <semantic:text>$ 350,795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6feedfa1-9696-4121-8f1d-10aa62dbbeee">
+          <semantic:text>$ 70,159</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_17444ca7-a7cd-4548-9d77-ef5b388aa6ca">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1a9bc677-8fdf-4213-8fb0-3d355ff31bd5">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bb15d01b-ba2c-4b44-b205-2e49aee181e4">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_17cd134d-fd48-46d4-8966-cec156336882">
+          <semantic:text>$ 2,034.47</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_fac26746-bf9c-49e9-a7ef-ffd76a41d013">
+          <semantic:text>28.6%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_0f5cccea-8a68-42ea-83d7-ea9f5daefb1c">
+        <semantic:literalExpression id="_f61807c3-b805-45bb-be6f-2f024edd45d6">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_23879fa2-e454-454a-a5f7-c48f167ed789">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1222d84f-8e3a-47fe-b878-292651b6a99d">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_70b2a5b5-59b4-4d86-badb-88800328da2b">
+          <semantic:text>$ 351,995</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_52d89ab4-f9b2-4a52-b273-dfb5446d80b9">
+          <semantic:text>$ 70,399</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_efd9ae12-688b-4e42-876a-720dbcf21da4">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_da1d6bcd-644d-4349-ba24-687aa5345db6">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_502d633b-ae1c-4f41-b73a-297efa4d68c1">
+          <semantic:text>$ 1,995</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a725f557-38c9-4550-b290-e91f4830ea59">
+          <semantic:text>$ 2,041.43</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cb31f98b-8ad4-4cda-b9da-f1a9777d3ea9">
+          <semantic:text>28.3%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_c01bb9ab-d777-4c80-bbe6-8d874a813c83">
+        <semantic:literalExpression id="_d3cc825e-c931-440e-843a-fcbb3c7567c3">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_dde7eaf4-5c40-4d5e-a010-b7906c06e07e">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f4c38fe0-191f-46da-858a-75dee0b45e6e">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_58d6163c-7377-4078-a4d3-73b7c7a1929e">
+          <semantic:text>$ 357,799</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4516ff2a-fe7d-4156-9870-28ae082a6274">
+          <semantic:text>$ 71,560</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9a3e7e80-1835-4bd9-9039-df3b3a93cc2a">
+          <semantic:text>3.375%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_736a1c61-7d67-4731-a21e-2d380e393893">
+          <semantic:text>2</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_581112b5-7608-42e0-bca6-acbd17c67412">
+          <semantic:text>$ 799</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f9d6def2-3d21-489c-af20-08b547878908">
+          <semantic:text>$ 1,581.82</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d3fe9dfc-f8da-4942-bc4a-894b4a935a1e">
+          <semantic:text>23.2%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_6ff650b0-791a-44e0-b105-4aa595f5ade0">
+        <semantic:literalExpression id="_17841c24-55ae-4169-9e46-593edf3f7af9">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_460e9f31-fd2c-495a-a8d0-2dbc2a0434fe">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_76e06a87-3dd1-452d-a345-dd1012983090">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ff3af00b-5cfa-42d0-8835-9d87eb2dcfad">
+          <semantic:text>$ 350,000</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_db0bf73c-d1aa-4d02-bc52-e7b83f72791b">
+          <semantic:text>$ 70,000</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_fe69485e-89da-4ce5-97e1-f40822b5d01a">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8a793fef-7728-471b-9260-5c9b45b5ab30">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7f9c7fb5-b487-4979-952d-9bdb1f834fb0">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b2ec0559-4dd5-4cb0-927e-5cbc7b5b267e">
+          <semantic:text>$ 1,596.18</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b72e6bc4-d920-4d05-bcb7-f4c99c9348c6">
+          <semantic:text>24.7%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_92bec778-3054-4cad-b632-fd97662e8b2e">
+        <semantic:literalExpression id="_ab714084-1949-4362-9c27-73e8448cb242">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9889f079-5e83-4f2b-a909-6a94caf2409d">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_130f91a8-8fc3-406f-bd61-bebdc864d6e6">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0f8e278d-9e22-4d84-b237-7e1d9b38e36e">
+          <semantic:text>$ 351,068</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_de1a60bc-940c-4665-be6c-40a7dd8de7f8">
+          <semantic:text>$ 70,214</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0a795dfe-0e08-4e6c-8033-7f93ee158223">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_07ee5ec3-8b3c-401f-9131-8e1cdccb97c3">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_217d6f48-71b2-4a43-9440-49dcab8525bb">
+          <semantic:text>$ 1,068</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f65cef79-2da2-46f2-9c83-b37df2470426">
+          <semantic:text>$ 1,601.05</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6111442a-4059-478d-a33c-9ad06878a854">
+          <semantic:text>24.4%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_a06f857b-1036-40cc-b2c7-cb8b1696dad1">
+        <semantic:literalExpression id="_40b075ef-f930-4f33-81e1-82ced373ce46">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5a204f44-ae23-4e8e-a879-7f270bf0fc5d">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_56e06870-5c7c-46eb-bf39-756157201872">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_beddc0de-336c-4eb6-b2bc-5fdcef4fa7ca">
+          <semantic:text>$ 350,799</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_608a2f78-5c42-437d-b4c7-1b8208a1307f">
+          <semantic:text>$ 70,160</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_75266cc4-62b7-4480-8510-d73ae02c6c97">
+          <semantic:text>3.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_97e6f0f0-cecc-4905-a251-609cef158b2d">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a41b8b7b-ab71-455f-bc46-42108bb70df9">
+          <semantic:text>$ 799</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_08006b9d-834b-4fdc-b00b-a44cbed4ca8f">
+          <semantic:text>$ 1,624.60</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_98c16be4-9052-4064-9991-d410c43f215e">
+          <semantic:text>24.4%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_54f96059-8d1b-4275-8191-bb8ff80b4163">
+        <semantic:literalExpression id="_7b9b22c5-9b31-45dc-bba8-9a10029cb1a9">
+          <semantic:text>IPL Mortgage</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_eee66077-aef7-4e60-8cf4-5819347bb537">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1f58d9a0-8814-4e1a-9612-7053752f9e83">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a0fe8a3d-b823-4c3c-aefe-7aa8fe96f2fe">
+          <semantic:text>$ 350,895</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d46c8dc6-ef36-4925-bf41-4ca054dae0d2">
+          <semantic:text>$ 70,179</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_92be7ade-b182-46f5-b3ce-8789d1b8142c">
+          <semantic:text>3.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_55f2fde3-b31d-4be2-b292-855545a29766">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_05bfca39-034f-4b3f-a937-e84cff55ebdb">
+          <semantic:text>$ 895</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e7861aa1-8475-4731-9000-6ca7e34d3e8e">
+          <semantic:text>$ 1,1625.05</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_af17110f-e628-4edc-a82a-fd06777f4539">
+          <semantic:text>24.4%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_e6aabc8f-d8e5-436e-8750-5c2be4137a55">
+        <semantic:literalExpression id="_a353dade-01ec-4415-a166-1d5a101ce3e8">
+          <semantic:text>Kinecta</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c3a92ee1-9462-4e1b-a5d6-5690524fe969">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_886f94a6-e21f-464c-b3c3-abbaa1ae8d32">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7a890f9f-9e2b-40ed-bfb2-9cb1cdb8ea25">
+          <semantic:text>$ 355,738</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b499be5a-e7e9-4259-a8f1-ecb58ce649ca">
+          <semantic:text>$ 71,148</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e901162a-cafa-480a-a21f-3666acb92b2d">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e347c5cc-6056-4889-bb78-c987ac7e8cea">
+          <semantic:text>1.125</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_83a5c5db-2d8a-407a-82bf-a70783c0c827">
+          <semantic:text>$ 1,800</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f2183cb9-9372-4ce5-8848-e06101f3cba1">
+          <semantic:text>$ 1,622.35</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ad7653c2-f60f-4050-b826-eca97dad707d">
+          <semantic:text>23.4%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_67e6079e-3815-45e3-b409-d7612717ed16">
+        <semantic:literalExpression id="_724fe771-bbd3-418c-bc59-ab2b4bf32e23">
+          <semantic:text>CalFed</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1b1857b4-c80b-48f9-b98a-53c14bed6808">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e9b7801f-8a30-47d0-90c4-3528b4973626">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_eaaa65fe-d682-4b76-be84-ef0b3212b409">
+          <semantic:text>$ 350,795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_6ecd92fa-c4a2-4dc9-b630-7c4ae2fe4a90">
+          <semantic:text>$ 70,159</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a35e1936-03e0-4967-bf2c-6e2a008e94fd">
+          <semantic:text>3.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_93e3d237-c380-4efd-b46a-1907addc6de3">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a62d5b87-566c-49c5-8bd9-c53a048a4671">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_82dbe3e0-2a20-4ff7-b28e-b9115d193d97">
+          <semantic:text>$ 1,649.57</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b9b15072-6878-4054-b819-2e59165728ed">
+          <semantic:text>24.3%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_2625b099-a040-4529-a5a7-979627d151c4">
+        <semantic:literalExpression id="_cfe2873c-325a-4cfb-affb-99ce5ccce390">
+          <semantic:text>Farmers and Merchants</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_caf5ad2d-9b1d-4aa3-b12b-e37c0b5b804a">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a5d8a445-a1f7-48b3-8fa6-e200e4c9a7c1">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a8577afe-2784-442e-8726-60dbd1456442">
+          <semantic:text>$ 350,795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b8e11b43-d12b-47e1-9a41-2db73a29fe8a">
+          <semantic:text>$ 70,159</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b3b9bb87-3589-41ff-b513-70027f62113c">
+          <semantic:text>3.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_229ca201-867d-4373-95fd-d200f4122993">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2602633c-e079-4cbe-93aa-1b8e65e8a948">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e85b0829-e916-4d14-9348-2fd37dfbd231">
+          <semantic:text>$ 1,649.57</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b0c7a53f-89ea-4fc5-8f89-f43874a3fe50">
+          <semantic:text>24.3%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+    </semantic:relation>
+  </semantic:decision>
+  <semantic:decision id="_daf924fe-5b56-438d-8463-7094832f1da1" name="RankedProducts Result" triso:displayName="RankedProducts Result">
+    <semantic:variable id="_3cb73bdf-223c-48f6-8d8c-eaac0802f9b8" name="RankedProducts Result"/>
+    <semantic:relation id="_cd0d2a6a-c464-4bc0-9119-4eac8da7f135">
+      <semantic:column id="_ce972b50-d048-4cf4-a8d2-95c2c5eb2e11" name="LenderName"/>
+      <semantic:column id="_8fc8de46-1549-45da-b894-93aa6bbd1d60" name="MortgageType"/>
+      <semantic:column id="_5d37feec-a26d-4d9b-998a-34e47f58ccf0" name="ConformanceType"/>
+      <semantic:column id="_4eb758d4-2180-4467-b6c5-566cc0e859a8" name="LoanAmt"/>
+      <semantic:column id="_eb0739d0-2e79-4cd3-804b-b642fdaee7d1" name="DownAmt"/>
+      <semantic:column id="_fc3d8e5c-9f7b-492f-bd71-b57ed8456d43" name="Rate"/>
+      <semantic:column id="_e0894419-55ed-4697-8e14-658d98338fe6" name="Points"/>
+      <semantic:column id="_ae62e472-8f70-4578-903d-3d24393956e2" name="FeesAmt"/>
+      <semantic:column id="_bb52e0a4-f4e7-4150-8cc8-dfba970b2615" name="Payment"/>
+      <semantic:column id="_b5863ab1-f464-4262-b0d3-5420d571c68b" name="EquityPct"/>
+      <semantic:row id="_1efc4ea5-329d-4a5c-b272-a60f9cb8a7d2">
+        <semantic:literalExpression id="_1d002114-b3f0-472a-8a24-188564cd1dfa">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_34bfe9ae-8c44-40ae-ba55-62b0053e984d">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_92dbe959-9dc9-45b3-865b-521fe05ab976">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_af1fde1e-1cf5-4775-98b3-234429cfcece">
+          <semantic:text>$ 350,000</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7b7d71a5-ba56-4655-8118-5c0d9d84db72">
+          <semantic:text>$ 70,000</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_58f73b15-5705-4eb3-811d-ec9d08e22e1e">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5ebf6645-39cf-4df1-b338-d081ba02ff4e">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ec200fb9-d737-4e47-b648-1e02dc527507">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1aa6e397-0471-49a1-82df-fdf9e1e713f3">
+          <semantic:text>$ 2,029.86</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_7803347d-396c-4147-87a3-02c758910f35">
+          <semantic:text>28.7%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_59f08c24-07f5-4534-b0c8-3af79df1a289">
+        <semantic:literalExpression id="_3de3e796-08ee-423c-804f-615e4d30c081">
+          <semantic:text>Linear Home Loans</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_459e0f42-e938-4a4f-af9b-1e42c67ebb1c">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2e44d118-eeb3-4ef7-a8c3-c0787fca06a1">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_73cdbf67-66e8-4270-a1a3-011216b8a4e6">
+          <semantic:text>$ 350,795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_138e0498-e386-4ff3-ab6a-e830c4689a6e">
+          <semantic:text>$ 70,159</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_2f096e7e-008d-4a55-a4d6-b531138b95a1">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bc0b87b3-bc8e-467a-8443-24ab8f61f080">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_49ed2995-9da4-415b-8bef-c1ab9cb096a2">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_52086d4a-b811-476e-95c2-de5d8b659a79">
+          <semantic:text>$ 2,034.47</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_df1915f6-45c3-432e-a59d-caa0520b5519">
+          <semantic:text>28.6%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_365b3dd9-45d6-4317-a341-d246f2fc11d4">
+        <semantic:literalExpression id="_d635bee8-a4f9-42ef-88b5-047602ed39bf">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ed72384f-c04a-43df-b6ba-fe637592138a">
+          <semantic:text>Fixed 20</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_129c561e-10e5-4784-915d-d02b796a0dae">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_64bb324d-1016-42f3-b4d8-58b63cfb6eef">
+          <semantic:text>$ 351,995</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cdc9f0f6-7eef-4af0-b5c4-4cf7693fcd56">
+          <semantic:text>$ 70,399</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d772eb65-0985-4026-8647-69c122a84c7f">
+          <semantic:text>3.500%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e486227e-115a-40bf-94d2-dcdac3834ac5">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_aa8dda4e-dbd8-49e9-b856-9d39689be30b">
+          <semantic:text>$ 1,995</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_184c31c6-1c68-46c9-b2af-4f75cdf0ff41">
+          <semantic:text>$ 2,041.43</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4d1c3dba-6022-4387-aaa4-abe26733d4f9">
+          <semantic:text>28.3%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_eb9882bb-3ae0-40d9-92c8-41b91c87ce68">
+        <semantic:literalExpression id="_b093b1d1-f629-4c64-8a0a-d68cc9cd6b82">
+          <semantic:text>Mount Diablo Lending</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_054d1abc-9599-4941-b662-f108056b7776">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5c80b478-83fb-4ca0-8626-6881524b7d0d">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_36cd585e-0803-41b4-8e8d-751cf9c020e8">
+          <semantic:text>$ 350,000</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e9ce61af-74c5-49fa-986c-9aa1428485ff">
+          <semantic:text>$ 70,000</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4334f8ed-f149-43ed-b712-779e6913e53e">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_227082cc-b257-4f5f-b75a-dec3a3056f2c">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_35d117ed-178e-4203-9f33-ec63611eef4d">
+          <semantic:text>-</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a8406208-a1a7-48bc-b688-e3798ff6ab20">
+          <semantic:text>$ 1,596.18</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f4f3393a-2eb6-45e7-802d-44d4fc6b386d">
+          <semantic:text>24.7%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_de50f0d2-52e3-4018-9fea-c2dcd5a94d88">
+        <semantic:literalExpression id="_131423bd-b0ad-4bf3-a74c-038a3967f9c7">
+          <semantic:text>AimLoan</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_22f346c3-735a-486b-839a-9928c4e6b7e5">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0bc24e9e-a699-4ac5-8249-cd8b4c9e16ff">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_f2f371ef-2580-4392-9bf8-172666f991d3">
+          <semantic:text>$ 351,068</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a971f307-a00f-47bc-962d-f4db41d65e90">
+          <semantic:text>$ 70,214</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_10e1bf1f-393c-45a5-8668-38988eba0afb">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0adc69a3-694a-4f99-8f23-2062b8b02c6c">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_414fd0ee-93b5-4e60-a2ec-59f5ebe87c93">
+          <semantic:text>$ 1,068</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_048b53bd-722f-4ee0-aa0c-39c9699cdec8">
+          <semantic:text>$ 1,601.05</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_da4034e0-d343-4a71-96d5-f22c491f386a">
+          <semantic:text>24.4%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_1d2d783c-b914-4e4b-9d68-53ea76a05d2c">
+        <semantic:literalExpression id="_8de68339-10fc-444f-8805-25015b12dc71">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5693e067-38ca-4efc-be71-2639e52c15aa">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3906afd2-0c13-484d-82df-1da15a46a760">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_14530569-b565-4632-b1fb-93ea620b82d6">
+          <semantic:text>$ 350,799</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1b09855c-1d27-4953-8714-c70c1bc36ab6">
+          <semantic:text>$ 70,160</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_27f683be-93dd-4af9-9598-4be6fcf5dbde">
+          <semantic:text>3.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b2cb167d-bebb-4793-beb6-e0fac9e6427e">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4ae5c0b1-65d3-4f07-8593-bcebe99796a9">
+          <semantic:text>$ 799</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_249a6a55-0793-465b-a26c-78e79def4c82">
+          <semantic:text>$ 1,624.60</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_129f3908-45bb-4935-b329-e1cf7786e033">
+          <semantic:text>24.4%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_ae8c7327-88bd-47d9-9269-e24a87f46b47">
+        <semantic:literalExpression id="_1a723c0d-b692-45d3-b6f8-dd0e08b124eb">
+          <semantic:text>IPL Mortgage</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_53272760-a615-4e83-8f88-4a9c4bb67ff0">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_eda8c53a-1c28-4ee7-8c00-6c7a647b6aea">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_642a42f6-4b71-4322-b127-dd9a37f937b3">
+          <semantic:text>$ 350,895</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a3dbc8ad-54f6-4f00-aa14-d858b4f10c26">
+          <semantic:text>$ 70,179</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9f76d406-bdfe-4647-b275-77668add1aba">
+          <semantic:text>3.750%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_20375b6b-a394-482e-a57b-092caf63c89d">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0e67fd02-f52c-442b-a753-160f7cb6f501">
+          <semantic:text>$ 895</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3acc41b0-171b-4099-a45f-029e1e8df8a8">
+          <semantic:text>$ 1,625.05</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_da719136-e740-4887-b028-1aed63b851b3">
+          <semantic:text>24.4%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_8ba4ad9f-cdf8-4667-94b4-4e0d64e66466">
+        <semantic:literalExpression id="_b7132968-95c3-4512-9de5-d596911f3fca">
+          <semantic:text>CalFed</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_eebe1a0f-3514-43c9-ac6f-5225367b7d6d">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1433bae6-0e9a-4ec6-b935-6963a01096f4">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5f5f1c27-ee7b-46d1-ad1b-e3ec1ac79c06">
+          <semantic:text>$ 350,795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9450e1a8-3946-4004-8c8d-98707930f360">
+          <semantic:text>$ 70,159</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ec865e63-4f87-4fd8-91eb-e7c3b6bd6da3">
+          <semantic:text>3.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_418abd48-0cf8-407c-8041-f319a1894a2a">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5a94d85a-0c1d-456c-866e-cd7e846b71f4">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_cfd04a96-9b7b-425e-a9f7-342637a169f2">
+          <semantic:text>$ 1,649.57</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_e17d4c28-13f6-4169-907c-f69ef1653b68">
+          <semantic:text>24.3%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_5ec769c2-1666-4564-be7e-07bf9fc1c092">
+        <semantic:literalExpression id="_a004fed8-3478-4f5d-94b4-0447c910f317">
+          <semantic:text>Farmers and Merchants</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_ab6bcb29-9c87-4bb7-83bb-cc098a7d2102">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_5195d257-b58d-44e0-9681-5357a5ebeafc">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_363ce702-0a0f-4d54-9b1b-3410ce0dff82">
+          <semantic:text>$ 350,795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_02c0ea1e-b154-464c-916c-a84645b1a04e">
+          <semantic:text>$ 70,159</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9cbaf7bd-51e3-4fc2-ae86-188003674ccd">
+          <semantic:text>3.875%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4303943a-302f-474e-b21d-96c790dbb244">
+          <semantic:text>0</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_4f2c5858-d969-41e4-b898-a00c35c9b909">
+          <semantic:text>$ 795</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_900ee669-78d0-461a-ae0b-68aa928538cf">
+          <semantic:text>$ 1,649.57</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_0d189c6c-45f4-4af3-978d-fcac1950cecd">
+          <semantic:text>24.3%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_fee5d8a7-153c-4d57-8f2f-9fee750e3bd4">
+        <semantic:literalExpression id="_fa4bbee0-2d62-4b37-b8ec-8111912749d3">
+          <semantic:text>Kinecta</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_95b3b785-65a6-46d2-a896-35668b975363">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_979db2f3-6e9c-46b1-b31e-b0cb3282665b">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_3f705b38-4cc1-4cb4-a412-d5488f186e40">
+          <semantic:text>$ 355,738</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_76e1257a-f786-4951-9b67-c646ecb3224b">
+          <semantic:text>$ 71,148</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a08d43c3-843b-42e3-bf70-36c59f0ced4c">
+          <semantic:text>3.625%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_246974aa-fcb1-4b86-aab7-a3898e4e55d0">
+          <semantic:text>1.125</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_bb64177f-5771-400e-93d8-c388d0d5fd6c">
+          <semantic:text>$ 1,800</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_48046781-7113-4ccb-9d37-8e9eadb0c6ca">
+          <semantic:text>$ 1,622.35</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_b620cee2-17c1-46ee-91f8-553f8a1b4f12">
+          <semantic:text>23.4</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_9bd26dba-d166-4159-889c-66e2ca578a27">
+        <semantic:literalExpression id="_74e1f216-3eb3-4833-bfe8-380639bf1812">
+          <semantic:text>America One</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_357c53fd-86cc-48e8-90a2-cd6953403abc">
+          <semantic:text>Fixed 30</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a38625ec-ab8b-42b3-9f09-704263646a59">
+          <semantic:text>Conventional</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_dd67d986-a934-47ff-a21e-f69f5df8d121">
+          <semantic:text>$ 357,799</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_551c130f-b908-4314-bf6d-9b290ba970e1">
+          <semantic:text>$ 71,560</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_44e7ed67-0127-4c2d-9098-f3b9d2b83d1d">
+          <semantic:text>3.375%</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_1752cae1-2611-431c-9809-2218ff65abc1">
+          <semantic:text>2</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_d46a8d44-b708-404e-896c-fcfba817d580">
+          <semantic:text>$ 799</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_a1d8c993-f758-4392-9dd9-49d2fcdd410c">
+          <semantic:text>$ 1,581.82</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_477f2885-464b-4d1d-91d1-7862b249cf2c">
+          <semantic:text>23.2%</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+    </semantic:relation>
+  </semantic:decision>
+  <semantic:textAnnotation id="_f65dea7e-c990-4e8b-a237-e6fe4fe99bed">
+    <semantic:text>An example of this input data can be found in the BankRates tab.</semantic:text>
+  </semantic:textAnnotation>
+  <semantic:association id="_988b9301-08d1-4733-80b1-de13882c97ce">
+    <semantic:sourceRef href="#_acc2086b-f8a8-406b-ae1e-c0e06355c99d"/>
+    <semantic:targetRef href="#_f65dea7e-c990-4e8b-a237-e6fe4fe99bed"/>
+  </semantic:association>
+  <semantic:textAnnotation id="_b6719cf6-3369-466e-9aec-276b758e961d">
+    <semantic:text>An example of the RequestedData can be found in the Requested tab.</semantic:text>
+  </semantic:textAnnotation>
+  <semantic:association id="_494a4915-0f87-4f18-8906-cb03746682bd">
+    <semantic:sourceRef href="#_1702260f-b73b-44ee-8160-e87ce5e1edfc"/>
+    <semantic:targetRef href="#_b6719cf6-3369-466e-9aec-276b758e961d"/>
+  </semantic:association>
+</semantic:definitions>
