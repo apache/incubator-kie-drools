@@ -1005,11 +1005,21 @@ public class KnowledgeBaseImpl
     }
 
     private boolean hasMultiplePartitions() {
+        RuleBasePartitionId usedPartition = null;
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
             for ( ObjectTypeNode otn : entryPointNode.getObjectTypeNodes().values() ) {
                 ObjectSinkPropagator sink = otn.getObjectSinkPropagator();
-                if (sink instanceof CompositePartitionAwareObjectSinkAdapter && ( (CompositePartitionAwareObjectSinkAdapter) sink ).getUsedPartitionsCount() > 1) {
-                    return true;
+                if (sink instanceof CompositePartitionAwareObjectSinkAdapter) {
+                    CompositePartitionAwareObjectSinkAdapter partitionedSink = (CompositePartitionAwareObjectSinkAdapter) sink;
+                    if (partitionedSink.getUsedPartitionsCount() > 1) {
+                        return true;
+                    } else {
+                        if (usedPartition == null) {
+                            usedPartition = partitionedSink.getFirstUsedPartition();
+                        } else if (!usedPartition.equals( partitionedSink.getFirstUsedPartition() )) {
+                            return true;
+                        }
+                    }
                 }
             }
         }

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.drools.core.common.BaseNode;
@@ -174,7 +175,7 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
     public BaseNode getMatchingNode( BaseNode candidate ) {
         return Stream.of( partitionedPropagators )
                      .map( p -> p.getMatchingNode( candidate ) )
-                     .filter( node -> node != null )
+                     .filter( Objects::nonNull )
                      .findFirst()
                      .orElse( null );
     }
@@ -249,8 +250,8 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
 
     public ObjectSinkPropagator asNonPartitionedSinkPropagator(int alphaNodeHashingThreshold) {
         ObjectSinkPropagator sinkPropagator = new EmptyObjectSinkAdapter();
-        for ( int i = 0; i < partitionedPropagators.length; i++ ) {
-            for (ObjectSink sink : partitionedPropagators[i].getSinks()) {
+        for ( ObjectSinkPropagator partitionedPropagator : partitionedPropagators ) {
+            for ( ObjectSink sink : partitionedPropagator.getSinks() ) {
                 sinkPropagator = sinkPropagator.addObjectSink( sink, alphaNodeHashingThreshold );
             }
         }
@@ -259,12 +260,20 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
 
     public int getUsedPartitionsCount() {
         int partitions = 0;
-        for ( int i = 0; i < partitionedPropagators.length; i++ ) {
-            if (partitionedPropagators[i].size() > 0) {
+        for ( ObjectSinkPropagator partitionedPropagator : partitionedPropagators ) {
+            if ( !partitionedPropagator.isEmpty() ) {
                 partitions++;
             }
         }
         return partitions;
     }
 
+    public RuleBasePartitionId getFirstUsedPartition() {
+        for ( ObjectSinkPropagator partitionedPropagator : partitionedPropagators ) {
+            if ( !partitionedPropagator.isEmpty() ) {
+                return partitionedPropagator.getSinks()[0].getPartitionId();
+            }
+        }
+        return null;
+    }
 }
