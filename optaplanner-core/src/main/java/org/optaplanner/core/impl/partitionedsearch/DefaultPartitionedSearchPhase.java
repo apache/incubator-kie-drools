@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -51,7 +54,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         implements PartitionedSearchPhase<Solution_>, PartitionedSearchPhaseLifecycleListener<Solution_> {
 
     protected SolutionPartitioner<Solution_> solutionPartitioner;
-    protected ThreadPoolExecutor threadPoolExecutor;
+    protected ThreadFactory threadFactory;
     protected Integer runnablePartThreadLimit;
 
     protected List<PhaseConfig> phaseConfigList;
@@ -66,8 +69,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         this.solutionPartitioner = solutionPartitioner;
     }
 
-    public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
-        this.threadPoolExecutor = threadPoolExecutor;
+    public void setThreadFactory(ThreadFactory threadFactory) {
+        this.threadFactory = threadFactory;
     }
 
     public void setRunnablePartThreadLimit(Integer runnablePartThreadLimit) {
@@ -94,11 +97,12 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     @Override
     public void solve(DefaultSolverScope<Solution_> solverScope) {
         PartitionedSearchPhaseScope<Solution_> phaseScope = new PartitionedSearchPhaseScope<>(solverScope);
-        phaseStarted(phaseScope);
         List<Solution_> partList = solutionPartitioner.splitWorkingSolution(
                 solverScope.getScoreDirector(), runnablePartThreadLimit);
         int partCount = partList.size();
         phaseScope.setPartCount(partCount);
+        phaseStarted(phaseScope);
+        ThreadPoolExecutor threadPoolExecutor = createThreadPoolExecutor();
         if (threadPoolExecutor.getMaximumPoolSize() < partCount) {
             throw new IllegalStateException(
                     "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
@@ -109,9 +113,10 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         }
         ChildThreadPlumbingTermination childThreadPlumbingTermination = new ChildThreadPlumbingTermination();
         PartitionQueue<Solution_> partitionQueue = new PartitionQueue<>(partCount);
-        Semaphore runnablePartThreadSemaphore = runnablePartThreadLimit == null ? null : new Semaphore(runnablePartThreadLimit);
+        Semaphore runnablePartThreadSemaphore
+                = runnablePartThreadLimit == null ? null : new Semaphore(runnablePartThreadLimit);
         try {
-            for (ListIterator<Solution_> it = partList.listIterator(); it.hasNext(); ) {
+            for (ListIterator<Solution_> it = partList.listIterator(); it.hasNext();) {
                 int partIndex = it.nextIndex();
                 Solution_ part = it.next();
                 PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(
@@ -128,6 +133,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                         partitionSolver.solve(part);
                         partitionQueue.addFinish(partIndex);
                     } catch (Throwable throwable) {
+                        // Any Exception or even Error that happens here (on a partition thread) must be stored
+                        // in the partitionQueue in order to be propagated to the solver thread
                         partitionQueue.addExceptionThrown(partIndex, throwable);
                     }
                 });
@@ -147,8 +154,26 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             // If a partition thread throws an Exception, it is propagated here
             // but the other partition thread won't finish any time soon, so we need to terminate them
             childThreadPlumbingTermination.terminateChildren();
+            threadPoolExecutor.shutdownNow();
+            try {
+                if (!threadPoolExecutor.awaitTermination(1, TimeUnit.SECONDS)) {
+                    logger.warn("{}Partitioned Search threadPoolExecutor didn't terminate within timeout (1 second).",
+                            logIndentation);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("Thread pool shutdown was interrupted.", e);
+            }
         }
         phaseEnded(phaseScope);
+    }
+
+    private ThreadPoolExecutor createThreadPoolExecutor() {
+        // Based on Executors.newCachedThreadPool(...)
+        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                60L, TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                threadFactory);
     }
 
     public PartitionSolver<Solution_> buildPartitionSolver(
@@ -165,7 +190,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             partPhaseIndex++;
         }
         // TODO create PartitionSolverScope alternative to deal with 3 layer terminations
-        DefaultSolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
+        DefaultSolverScope<Solution_> partSolverScope
+                = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
         partSolverScope.setRunnableThreadSemaphore(runnablePartThreadSemaphore);
         return new PartitionSolver<>(partTermination, bestSolutionRecaller, phaseList, partSolverScope);
     }
@@ -192,8 +218,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         super.stepEnded(stepScope);
         PartitionedSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
-            logger.debug("{}    PS step ({}), time spent ({}), score ({}), {} best score ({})," +
-                    " picked move ({}).",
+            logger.debug("{}    PS step ({}), time spent ({}), score ({}), {} best score ({}), picked move ({}).",
                     logIndentation,
                     stepScope.getStepIndex(),
                     phaseScope.calculateSolverTimeMillisSpentUpToNow(),
@@ -208,7 +233,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         super.phaseEnded(phaseScope);
         phaseScope.endingNow();
         logger.info("{}Partitioned Search phase ({}) ended: time spent ({}), best score ({}),"
-                        + " score calculation speed ({}/sec), step total ({}), partCount ({}), runnablePartThreadLimit ({}).",
+                + " score calculation speed ({}/sec), step total ({}), partCount ({}), runnablePartThreadLimit ({}).",
                 logIndentation,
                 phaseIndex,
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),

@@ -39,7 +39,7 @@ public interface SolutionPartitioner<Solution_> {
      * Problem facts can be multiple partitions (with our without cloning).
      * <p>
      * Any class that is {@link SolutionCloner solution cloned} must also be partitioned cloned.
-     * A class can be partitioned cloned without being solution cloned.
+     * A class can be partition cloned without being solution cloned.
      * @param scoreDirector never null, the {@link ScoreDirector}
      * which has the {@link ScoreDirector#getWorkingSolution()} that needs to be split up
      * @param runnablePartThreadLimit null if unlimited, never negative

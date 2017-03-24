@@ -26,7 +26,7 @@ public class PartitionedSearchStepScope<Solution_> extends AbstractStepScope<Sol
 
     private final PartitionedSearchPhaseScope<Solution_> phaseScope;
 
-    private PartitionChangeMove step = null;
+    private PartitionChangeMove<Solution_> step = null;
     private String stepString = null;
 
     public PartitionedSearchStepScope(PartitionedSearchPhaseScope<Solution_> phaseScope) {
@@ -43,11 +43,11 @@ public class PartitionedSearchStepScope<Solution_> extends AbstractStepScope<Sol
         return phaseScope;
     }
 
-    public PartitionChangeMove getStep() {
+    public PartitionChangeMove<Solution_> getStep() {
         return step;
     }
 
-    public void setStep(PartitionChangeMove step) {
+    public void setStep(PartitionChangeMove<Solution_> step) {
         this.step = step;
     }
 

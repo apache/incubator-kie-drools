@@ -85,13 +85,14 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
     }
 
     @Override
-    public boolean isMoveDoable(ScoreDirector<Solution_>  scoreDirector) {
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         return true;
     }
 
     @Override
-    public PartitionChangeMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        throw new UnsupportedOperationException();
+    protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
+        // TODO not yet implemented, returns null to fail fast if it is used
+        return null;
     }
 
     @Override
@@ -136,4 +137,5 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
         return new PartitionChangeMove<>(destinationChangeMap);
     }
 
+    // TODO implement toString()
 }

@@ -44,7 +44,7 @@ public class PhaseLifecycleTest {
 
         // prepare solution
         TestdataSolution solution = new TestdataSolution("s1");
-        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v1")));
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         final int entitiesCount = 17;
         ArrayList<TestdataEntity> entities = new ArrayList<>(entitiesCount);
         for (int i = 0; i < entitiesCount; i++) {

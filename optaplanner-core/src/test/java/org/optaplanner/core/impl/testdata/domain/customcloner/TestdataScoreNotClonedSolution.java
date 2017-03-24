@@ -34,12 +34,12 @@ public class TestdataScoreNotClonedSolution implements SolutionCloner<TestdataSc
     @PlanningScore
     private SimpleScore score;
     @PlanningEntityProperty
-    private TestdataEntity entity = new TestdataEntity();
+    private TestdataEntity entity = new TestdataEntity("A");
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
     public List<TestdataValue> valueRange() {
-        return Collections.singletonList(new TestdataValue());
+        return Collections.singletonList(new TestdataValue("1"));
     }
 
     @Override

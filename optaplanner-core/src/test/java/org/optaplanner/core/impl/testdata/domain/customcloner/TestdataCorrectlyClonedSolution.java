@@ -35,13 +35,13 @@ public class TestdataCorrectlyClonedSolution implements SolutionCloner<TestdataC
     @PlanningScore
     private SimpleScore score;
     @PlanningEntityProperty
-    private TestdataEntity entity = new TestdataEntity();
+    private TestdataEntity entity = new TestdataEntity("A");
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
     public List<TestdataValue> valueRange() {
         // two values needed to allow for at least one doable move, otherwise the second step ends in an infinite loop
-        return Arrays.asList(new TestdataValue(), new TestdataValue());
+        return Arrays.asList(new TestdataValue("1"), new TestdataValue("2"));
     }
 
     @Override

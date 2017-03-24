@@ -256,12 +256,11 @@ public class DefaultSolverScope<Solution_> {
     /**
      * Similar to {@link Thread#yield()}, but allows capping the number of active solver threads
      * at less than the CPU processor count, so other threads (for example servlet threads that handle REST calls)
-     * and other processes (such as SSH) have access to uncontested CPU's and don't suffer any latency.
+     * and other processes (such as SSH) have access to uncontested CPUs and don't suffer any latency.
      * <p>
      * Needs to be called <b>before</b> {@link Termination#isPhaseTerminated(AbstractPhaseScope)},
      * so the decision to start a new iteration is after any yield waiting time has been consumed
      * (so {@link Solver#terminateEarly()} reacts immediately).
-     * Furthermore, this method will
      */
     public void checkYielding() {
         if (runnableThreadSemaphore != null) {
