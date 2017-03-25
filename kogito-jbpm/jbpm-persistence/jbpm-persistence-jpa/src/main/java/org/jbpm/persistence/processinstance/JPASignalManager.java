@@ -52,10 +52,10 @@ public class JPASignalManager extends DefaultSignalManager {
                 
                 for (Long processInstanceId : processInstancesToSignalList) {
                     CommandContext ctx = new CommandContext();
-                    ctx.setData("DeploymentId", runtimeManager.getIdentifier());
-                    ctx.setData("ProcessInstanceId", processInstanceId);
+                    ctx.setData("deploymentId", runtimeManager.getIdentifier());
+                    ctx.setData("processInstanceId", processInstanceId);
                     ctx.setData("Signal", actualSignalType);
-                    ctx.setData("Event", event);
+                    ctx.setData("Event", event);                    
                     
                     executorService.scheduleRequest(AsyncSignalEventCommand.class.getName(), ctx);
                 }

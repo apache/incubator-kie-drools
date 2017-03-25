@@ -53,8 +53,8 @@ public class AsyncEventNodeInstance extends EventNodeInstance {
     	    RuntimeManager runtimeManager = ((RuntimeManager)getProcessInstance().getKnowledgeRuntime().getEnvironment().get("RuntimeManager"));
     	    
     	    CommandContext ctx = new CommandContext();
-            ctx.setData("DeploymentId", runtimeManager.getIdentifier());
-            ctx.setData("ProcessInstanceId", getProcessInstance().getId());
+            ctx.setData("deploymentId", runtimeManager.getIdentifier());
+            ctx.setData("processInstanceId", getProcessInstance().getId());
             ctx.setData("Signal", getEventType());
             ctx.setData("Event", null);
             

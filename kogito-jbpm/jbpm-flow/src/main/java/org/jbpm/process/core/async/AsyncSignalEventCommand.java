@@ -28,8 +28,14 @@ public class AsyncSignalEventCommand implements Command {
 
     @Override
     public ExecutionResults execute(CommandContext ctx) throws Exception {
-        String deploymentId = (String) ctx.getData("DeploymentId");
-        Long processInstanceId = (Long) ctx.getData("ProcessInstanceId");
+        String deploymentId = (String) ctx.getData("deploymentId");
+        if (deploymentId == null) {
+            deploymentId = (String) ctx.getData("DeploymentId");
+        }
+        Long processInstanceId = (Long) ctx.getData("processInstanceId");
+        if (processInstanceId == null) {
+            processInstanceId = (Long) ctx.getData("ProcessInstanceId");
+        }
         String signal = (String) ctx.getData("Signal");
         Object event = ctx.getData("Event");
         

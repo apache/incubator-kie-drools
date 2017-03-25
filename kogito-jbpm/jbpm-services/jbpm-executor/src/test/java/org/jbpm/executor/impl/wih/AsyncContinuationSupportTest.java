@@ -32,6 +32,7 @@ import javax.persistence.Persistence;
 
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.process.core.async.AsyncSignalEventCommand;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
@@ -43,6 +44,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.executor.ExecutorService;
+import org.kie.api.executor.RequestInfo;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -53,6 +55,7 @@ import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.manager.audit.NodeInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
@@ -94,7 +97,7 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
         pds.close();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testAsyncScriptTask() throws Exception {
         final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Hello", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
@@ -686,6 +689,76 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
         assertNotNull(logs);
         assertEquals(14, logs.size());
     }
+    
+    @Test(timeout=10000)
+    public void testAsyncScriptTaskIgnoreNotExistingDeployments() throws Exception {
+        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Hello", 1);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-AsyncScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addEnvironmentEntry("ExecutorService", executorService)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new SystemOutWorkItemHandler());
+                        return handlers;
+                    }
+                    @Override
+                    public List<ProcessEventListener> getProcessEventListeners( RuntimeEngine runtime) {
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(countDownListener);
+                        return listeners;
+                    }
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, "special-test-case"); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        ProcessInstance processInstance = ksession.startProcess("AsyncScriptTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
+        
+        // make sure that waiting for event process is not finished yet as it must be through executor/async
+        processInstance = runtime.getKieSession().getProcessInstance(processInstanceId);
+        assertNotNull(processInstance);
+        
+        manager.close();
+        
+        List<RequestInfo> queued = executorService.getQueuedRequests(new QueryContext());
+        assertNotNull(queued);
+        assertEquals(1, queued.size());
+        assertEquals(AsyncSignalEventCommand.class.getName(), queued.get(0).getCommandName());
+        
+        countDownListener.waitTillCompleted(2000);
+        
+        queued = executorService.getQueuedRequests(new QueryContext());
+        assertNotNull(queued);
+        assertEquals(1, queued.size());
+        assertEquals(AsyncSignalEventCommand.class.getName(), queued.get(0).getCommandName());
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, "special-test-case"); 
+        assertNotNull(manager);
+        
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstanceId);
+        assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(8, logs.size());
+    } 
       
     
     private ExecutorService buildExecutorService() {        

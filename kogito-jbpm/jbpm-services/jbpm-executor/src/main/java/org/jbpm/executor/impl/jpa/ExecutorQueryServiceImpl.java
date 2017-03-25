@@ -16,6 +16,15 @@
 
 package org.jbpm.executor.impl.jpa;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.NoResultException;
+
 import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
 import org.jbpm.shared.services.impl.QueryManager;
@@ -28,16 +37,6 @@ import org.kie.api.runtime.Context;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
-
-import javax.persistence.NoResultException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 
