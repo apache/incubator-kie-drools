@@ -1,11 +1,11 @@
 [[exhaustiveSearch]]
 = Exhaustive Search
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[exhaustiveSearchOverview]]
@@ -24,7 +24,7 @@ That being said, it doesn't scale (not even beyond toy data sets) and is therefo
 
 The Brute Force algorithm creates and evaluates every possible solution.
 
-image::Chapter-Exhaustive_search/bruteForceNQueens04.png[align="center"]
+image::ExhaustiveSearch/bruteForceNQueens04.png[align="center"]
 
 Notice that it creates a search tree that explodes exponentially as the problem size increases, so it hits a scalability wall.
 
@@ -73,7 +73,7 @@ Planner maximizes the score (because it supports combining negative and positive
 For example: at index 14, it sets the global pessimistic bound to ``-2``.
 Because all solutions reachable from the node visited at index 11 will have a score lower or equal to `-2` (the node's optimistic bound), they can be pruned away.
 
-image::Chapter-Exhaustive_search/depthFirstBranchAndBoundNQueens04.png[align="center"]
+image::ExhaustiveSearch/depthFirstBranchAndBoundNQueens04.png[align="center"]
 
 Notice that Branch And Bound (much like <<bruteForce,Brute Force>>) creates a search tree that explodes exponentially as the problem size increases.
 So it hits the same scalability wall, only a little bit later.
@@ -188,11 +188,11 @@ Exhaustive Search variants suffer from 2 big scalability issues:
 As shown in these time spent graphs from the <<benchmarker,Benchmarker>>, Brute Force and Branch And Bound both hit a performance scalability wall.
 For example, on N queens it hits wall at a few dozen queens:
 
-image::Chapter-Exhaustive_search/exhaustiveSearchScalabilityNQueens.png[align="center"]
+image::ExhaustiveSearch/exhaustiveSearchScalabilityNQueens.png[align="center"]
 
 In most use cases, such as Cloud Balancing, the wall appears out of thin air:
 
-image::Chapter-Exhaustive_search/exhaustiveSearchScalabilityCloudBalance.png[align="center"]
+image::ExhaustiveSearch/exhaustiveSearchScalabilityCloudBalance.png[align="center"]
 
 *Exhaustive Search hits this wall on small datasets already, so in production these optimizations algorithms are mostly useless.* Use Construction Heuristics with Local Search instead: those can handle thousands of queens/computers easily.
 

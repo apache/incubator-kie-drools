@@ -51,6 +51,6 @@ For enterprise support and consulting, take a look at https://www.optaplanner.or
 OptaPlanner is part of the http://www.kiegroup.org[KIE group of projects].
 It releases regularly (often once or twice per month) together with the http://www.drools.org/[Drools] rule engine and the http://www.jbpm.org/[jBPM] workflow engine.
 
-image::Chapter-Planner_introduction/kieFunctionalityOverview.png[align="center"]
+image::PlannerIntroduction/kieFunctionalityOverview.png[align="center"]
 
 See <<architectureOverview,the architecture overview>> to learn more about the optional integration with Drools.

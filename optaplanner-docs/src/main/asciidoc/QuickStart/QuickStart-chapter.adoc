@@ -3,11 +3,11 @@
 = Getting Started: A Cloud Balancing Demonstration
 
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 include::CloudBalancingTutorial-section.adoc[leveloffset=+1]

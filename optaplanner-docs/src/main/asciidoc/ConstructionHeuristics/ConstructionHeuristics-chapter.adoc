@@ -1,11 +1,11 @@
 [[constructionHeuristics]]
 = Construction Heuristics
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[constructionHeuristicsOverview]]
@@ -29,7 +29,7 @@ It assigns the planning entity to the best available planning value, taking the 
 It terminates when all planning entities have been initialized.
 It never changes a planning entity after it has been assigned.
 
-image::Chapter-Construction_heuristics/firstFitNQueens04.png[align="center"]
+image::ConstructionHeuristics/firstFitNQueens04.png[align="center"]
 
 Notice that it starts with putting `Queen` A into row 0 (and never moving it later), which makes it impossible to reach the optimal solution.
 Suffixing this construction heuristic with metaheuristics can remedy that.
@@ -67,7 +67,7 @@ So it sorts the planning entities on decreasing difficulty.
 
 Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
 
-image::Chapter-Construction_heuristics/firstFitDecreasingNQueens04.png[align="center"]
+image::ConstructionHeuristics/firstFitDecreasingNQueens04.png[align="center"]
 
 
 [NOTE]
@@ -606,7 +606,7 @@ It assigns a planning entity to the best available planning value (out of all th
 It terminates when all planning entities have been initialized.
 It never changes a planning entity after it has been assigned.
 
-image::Chapter-Construction_heuristics/cheapestInsertionNQueens04.png[align="center"]
+image::ConstructionHeuristics/cheapestInsertionNQueens04.png[align="center"]
 
 
 [NOTE]

@@ -28,12 +28,12 @@ $ cd examples
 $ runExamples.bat
 ----
 
-image::Chapter-Planner_introduction/distributionZip.png[align="center"]
+image::PlannerIntroduction/distributionZip.png[align="center"]
 
 The Examples GUI application will open.
 Pick an example to try it out:
 
-image::Chapter-Planner_introduction/plannerExamplesAppScreenshot.png[align="center"]
+image::PlannerIntroduction/plannerExamplesAppScreenshot.png[align="center"]
 
 
 [NOTE]
@@ -80,7 +80,7 @@ To successfully deploy the webesxamples on a servlet container (such as Jetty or
 
 Pick an example to try it out, such as the Vehicle Routing example:
 
-image::Chapter-Planner_introduction/plannerWebexamplesScreenshot.png[align="center"]
+image::PlannerIntroduction/plannerWebexamplesScreenshot.png[align="center"]
 
 
 [[runTheExamplesInAnIDE]]

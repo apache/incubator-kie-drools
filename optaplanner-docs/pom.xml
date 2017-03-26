@@ -46,6 +46,7 @@
           <artifactId>asciidoctor-maven-plugin</artifactId>
           <version>1.5.5</version>
           <configuration>
+            <imagesDir>.</imagesDir>
             <attributes>
               <revnumber>${project.version}</revnumber>
               <!-- Custom attributes -->

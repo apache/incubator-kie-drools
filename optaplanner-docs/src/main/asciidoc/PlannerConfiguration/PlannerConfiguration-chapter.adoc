@@ -1,11 +1,11 @@
 [[plannerConfiguration]]
 = Planner Configuration
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[plannerConfigurationOverview]]
@@ -18,7 +18,7 @@ Solving a planning problem with Planner consists of the following steps:
 . *Load a problem data set* from your data layer, for example a 4 Queens instance. That is the planning problem.
 . *Solve it* with `Solver.solve(planningProblem)` which returns the best solution found.
 
-image::Chapter-Planner_configuration/inputOutputOverview.png[align="center"]
+image::PlannerConfiguration/inputOutputOverview.png[align="center"]
 
 
 [[solverConfiguration]]
@@ -859,7 +859,7 @@ A planning variable that is chained either:
 
 Here are some example of valid and invalid chains:
 
-image::Chapter-Planner_configuration/chainPrinciples.png[align="center"]
+image::PlannerConfiguration/chainPrinciples.png[align="center"]
 
 *Every initialized planning entity is part of an open-ended chain that begins from an anchor.* A valid model means that:
 
@@ -882,7 +882,7 @@ If your constraints dictate a closed chain, model it as an open-ended chain (whi
 
 The optimization algorithms and built-in ``Move``s do chain correction to guarantee that the model stays valid:
 
-image::Chapter-Planner_configuration/chainCorrection.png[align="center"]
+image::PlannerConfiguration/chainCorrection.png[align="center"]
 
 
 [WARNING]
@@ -955,7 +955,7 @@ A shadow variable is a planning variable whose correct value can be deduced from
 Even though such a variable violates the principle of normalization by definition, in some use cases it can be very practical to use a shadow variable, especially to express the constraints more naturally.
 For example in vehicle routing with time windows: the arrival time at a customer for a vehicle can be calculated based on the previously visited customers of that vehicle (and the known travel times between two locations).
 
-image::Chapter-Planner_configuration/planningVariableListener.png[align="center"]
+image::PlannerConfiguration/planningVariableListener.png[align="center"]
 
 When the customers for a vehicle change, the arrival time for each customer is automatically adjusted.
 For more information, see the <<vehicleRoutingDomainModel,vehicle routing domain model>>.
@@ -981,7 +981,7 @@ There are several built-in shadow variables:
 
 Two variables are bi-directional if their instances always point to each other (unless one side points to `null` and the other side does not exist). So if A references B, then B references A.
 
-image::Chapter-Planner_configuration/bidirectionalVariable.png[align="center"]
+image::PlannerConfiguration/bidirectionalVariable.png[align="center"]
 
 For a non-chained planning variable, the bi-directional relationship must be a many to one relationship.
 To map a bi-directional relationship between two planning variables, annotate the master side (which is the genuine side) as a normal planning variable:
@@ -1185,7 +1185,7 @@ If one `VariableListener` changes two shadow variables (because having two separ
 All shadow variables are triggered by a ``VariableListener``, regardless if it's a built-in or a custom shadow variable.
 The genuine and shadow variables form a graph, that determines the order in which the ``afterEntityAdded()``, `afterVariableChanged()` and `afterEntityRemoved()` methods are called:
 
-image::Chapter-Planner_configuration/shadowVariableOrder.png[align="center"]
+image::PlannerConfiguration/shadowVariableOrder.png[align="center"]
 
 
 [NOTE]
@@ -1462,7 +1462,7 @@ A planning clone of a solution must fulfill these requirements:
 * The clone must represent the same planning problem. Usually it reuses the same instances of the problem facts and problem fact collections as the original.
 * The clone must use different, cloned instances of the entities and entity collections. Changes to an original `Solution` entity's variables must not affect its clone.
 
-image::Chapter-Planner_configuration/solutionCloning.png[align="center"]
+image::PlannerConfiguration/solutionCloning.png[align="center"]
 
 *Implementing a planning clone method is hard, therefore you do not need to implement it.*
 
@@ -1593,7 +1593,7 @@ For example in n queens, an `NQueens` instance is created with the required `Col
 ----
 
 .Uninitialized Solution for the 4 Queens Puzzle
-image::Chapter-Planner_configuration/uninitializedNQueens04.png[align="left"]
+image::PlannerConfiguration/uninitializedNQueens04.png[align="left"]
 
 Usually, most of this data comes from your data layer, and your `Solution` implementation just aggregates that data and creates the uninitialized planning entity instances to plan:
 
@@ -1661,7 +1661,7 @@ Just provide the planning problem as argument to the `solve()` method and it wil
 For example in n queens, the `solve()` method will return an `NQueens` instance with every `Queen` assigned to a ``Row``.
 
 .Best Solution for the 4 Queens Puzzle in 8ms (Also an Optimal Solution)
-image::Chapter-Planner_configuration/solvedNQueens04.png[align="left"]
+image::PlannerConfiguration/solvedNQueens04.png[align="left"]
 
 The `solve(Solution)` method can take a long time (depending on the problem size and the solver configuration). The `Solver` intelligently wades through <<searchSpaceSize,the search space>> of possible solutions and remembers the best solution it encounters during solving.
 Depending on a number factors (including problem size, how much time the `Solver` has, the solver configuration, ...), <<doesPlannerFindTheOptimalSolution,that best solution might or might not be an optimal solution>>.

@@ -1,11 +1,11 @@
 [[moveAndNeighborhoodSelection]]
 = `Move` and Neighborhood Selection
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[moveAndNeighborhoodSelectionIntroduction]]
@@ -18,13 +18,13 @@
 A `Move` is a change (or set of changes) from a solution A to a solution B.
 For example, the move below changes queen `C` from row `0` to row ``2``:
 
-image::Chapter-Move_and_neighborhood_selection/singleMoveNQueens04.png[align="center"]
+image::MoveAndNeighborhoodSelection/singleMoveNQueens04.png[align="center"]
 
 The new solution is called a _neighbor_ of the original solution, because it can be reached in a single ``Move``.
 Although a single move can change multiple queens, the neighbors of a solution should always be a very small subset of all possible solutions.
 For example, on that original solution, these are all possible ``changeMove``'s:
 
-image::Chapter-Move_and_neighborhood_selection/possibleMovesNQueens04.png[align="center"]
+image::MoveAndNeighborhoodSelection/possibleMovesNQueens04.png[align="center"]
 
 If we ignore the 4 ``changeMove``'s that have not impact and are therefore not doable, we can see that number of moves is ``n * (n - 1) = 12``.
 This is far less than the number of possible solutions, which is ``n ^ n = 256``.
@@ -33,7 +33,7 @@ As the problem scales out, the number of possible moves increases far less than 
 Yet, in 4 ``changeMove``'s or less we can reach any solution.
 For example we can reach a very different solution in 3 ``changeMove``'s:
 
-image::Chapter-Move_and_neighborhood_selection/sequentialMovesNQueens04.png[align="center"]
+image::MoveAndNeighborhoodSelection/sequentialMovesNQueens04.png[align="center"]
 
 
 [NOTE]
@@ -97,7 +97,7 @@ A MoveSelector is often composed out of ``EntitySelector``s, ``ValueSelector``s 
 
 Together, this structure forms a `Selector` tree:
 
-image::Chapter-Move_and_neighborhood_selection/selectorTree.png[align="center"]
+image::MoveAndNeighborhoodSelection/selectorTree.png[align="center"]
 
 The root of this tree is a `MoveSelector` which is injected into the optimization algorithm implementation to be (partially) iterated in every step.
 
@@ -111,7 +111,7 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 
 For 1 planning variable, the `ChangeMove` selects 1 planning entity and 1 planning value and assigns the entity's variable to that value.
 
-image::Chapter-Move_and_neighborhood_selection/changeMove.png[align="center"]
+image::MoveAndNeighborhoodSelection/changeMove.png[align="center"]
 
 Simplest configuration:
 
@@ -154,7 +154,7 @@ This guarantees that every possible `Solution` can be reached through applying a
 
 The `SwapMove` selects 2 different planning entities and swaps the planning values of all their planning variables.
 
-image::Chapter-Move_and_neighborhood_selection/swapMove.png[align="center"]
+image::MoveAndNeighborhoodSelection/swapMove.png[align="center"]
 
 Although a `SwapMove` on a single variable is essentially just 2 ``ChangeMove``s, it's often the winning step where the first of the 2 ``ChangeMove``s would not be the winning step because it leaves the solution in a state with broken hard constraints.
 For example: swapping the room of 2 lectures doesn't bring the solution in a intermediate state where both lectures are in the same room which breaks a hard constraint.
@@ -199,7 +199,7 @@ For example for course scheduling, specifying only `variableNameInclude` room wi
 
 A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarChangeMove` selects 1 entity pillar (or subset of those) and changes the value of 1 variable (which is the same for all entities) to another value.
 
-image::Chapter-Move_and_neighborhood_selection/pillarChangeMove.png[align="center"]
+image::MoveAndNeighborhoodSelection/pillarChangeMove.png[align="center"]
 
 In the example above, queen A and C have the same value (row 0) and are moved to row 2.
 Also the yellow and blue process have the same value (computer Y) and are moved to computer X.
@@ -252,7 +252,7 @@ The other properties are explained in <<changeMoveSelector,changeMoveSelector>>.
 
 A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarSwapMove` selects 2 different entity pillars and swaps the values of all their variables for all their entities.
 
-image::Chapter-Move_and_neighborhood_selection/pillarSwapMove.png[align="center"]
+image::MoveAndNeighborhoodSelection/pillarSwapMove.png[align="center"]
 
 Simplest configuration:
 
@@ -474,7 +474,7 @@ Advanced configuration:
 The `selectorProbabilityWeightFactory` determines in `selectionOrder` ``RANDOM`` how often a `MoveSelector` child is selected to supply the next Move.
 By default, each `MoveSelector` child has the same chance of being selected.
 
-image::Chapter-Move_and_neighborhood_selection/selectorProbabilityInUnion.png[align="center"]
+image::MoveAndNeighborhoodSelection/selectorProbabilityInUnion.png[align="center"]
 
 Change the `fixedProbabilityWeight` of such a child to select it more often.
 For example, the `unionMoveSelector` can return a `SwapMove` twice as often as a ``ChangeMove``:
@@ -715,7 +715,7 @@ It's the default, so this explicit configuration of `cacheType` and `selectionOr
 Here's how it works.
 When `Iterator<Move>.next()` is called, a child `MoveSelector` is randomly selected (1), which creates a random `Move` (2, 3, 4) and is then returned (5):
 
-image::Chapter-Move_and_neighborhood_selection/jitRandomSelection.png[align="center"]
+image::MoveAndNeighborhoodSelection/jitRandomSelection.png[align="center"]
 
 Notice that *it never creates a list of ``**Move**``s* and it generates random numbers only for ``Move``s that are actually selected.
 
@@ -738,7 +738,7 @@ This combination often wins for small and medium use cases (5000 entities or les
 
 Here's how it works: At the start of the phase (or step depending on the ``cacheType``), all moves are created (1) and cached (2). When `MoveSelector.iterator()` is called, the moves are shuffled (3). When `Iterator<Move>.next()` is called, the next element in the shuffled list is returned (4):
 
-image::Chapter-Move_and_neighborhood_selection/cachedShuffledSelection.png[align="center"]
+image::MoveAndNeighborhoodSelection/cachedShuffledSelection.png[align="center"]
 
 Notice that **each ``**Move**`` will only be selected once**, even though they are selected in random order.
 
@@ -797,7 +797,7 @@ Furthermore, it must also filter the change moves of the Construction Heuristics
 
 If a move is unaccepted by the filter, it's not executed and the score isn't calculated.
 
-image::Chapter-Move_and_neighborhood_selection/filteredSelection.png[align="center"]
+image::MoveAndNeighborhoodSelection/filteredSelection.png[align="center"]
 
 Filtering uses the interface ``SelectionFilter``:
 
@@ -1085,7 +1085,7 @@ public interface SelectionSorter<Solution_, T> {
 Probabilistic selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
 It does not work with `cacheType` ``JUST_IN_TIME`` and it only works with ``selectionOrder`` ``PROBABILISTIC``.
 
-image::Chapter-Move_and_neighborhood_selection/probabilisticSelection.png[align="center"]
+image::MoveAndNeighborhoodSelection/probabilisticSelection.png[align="center"]
 
 Each selection has a ``probabilityWeight``, which determines the chance that selection will be selected:
 
@@ -1166,11 +1166,11 @@ Mimic selection is useful to create <<cartesianProductMoveSelector,a composite m
 
 In some use cases (such as TSP and VRP, but also in non-chained variable cases), changing entities to nearby values or swapping nearby entities can *heavily increase scalability* and improve solution quality.
 
-image::Chapter-Move_and_neighborhood_selection/nearbySelectionMotivation.png[align="center"]
+image::MoveAndNeighborhoodSelection/nearbySelectionMotivation.png[align="center"]
 
 Nearby selection increases the probability of selecting an entity or value which is nearby to the first entity being moved in that move.
 
-image::Chapter-Move_and_neighborhood_selection/nearbySelectionRandomDistribution.png[align="center"]
+image::MoveAndNeighborhoodSelection/nearbySelectionRandomDistribution.png[align="center"]
 
 The distance between 2 entities or values is domain specific.
 Therefore, implement the `NearbyDistanceMeter` interface:

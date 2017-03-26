@@ -1,11 +1,11 @@
 [[partitionedSearch]]
 = Partitioned Search
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[partitionedSearchAlgorithm]]
@@ -20,7 +20,7 @@ because the search space sum of a partitioned Construction Heuristic is far less
 
 However, **partitioning does lead to suboptimal results**, even if the pieces are solved optimally, as shown below:
 
-image::Chapter-Partitioned_search/mapReduceIsTerribleForTsp.png[align="center"]
+image::PartitionedSearch/mapReduceIsTerribleForTsp.png[align="center"]
 
 It effectively trades a short term gain in solution quality for long term loss.
 One way to compensate for this loss,
@@ -262,7 +262,7 @@ The other part threads will temporarily block and therefore will not consume any
 All part threads share the CPU cores in a round-robin manner
 to consume (more or less) the same number of CPU cycles:
 
-image::Chapter-Partitioned_search/partitionedSearchThreading.png[align="center"]
+image::PartitionedSearch/partitionedSearchThreading.png[align="center"]
 
 The following `runnablePartThreadLimit` options are supported:
 

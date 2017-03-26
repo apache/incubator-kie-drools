@@ -1,11 +1,11 @@
 [[plannerIntroduction]]
 = OptaPlanner Introduction
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 include::WhatIsOptaPlanner-section.adoc[leveloffset=+1]
 

@@ -1,11 +1,11 @@
 [[evolutionaryAlgorithms]]
 = Evolutionary Algorithms
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[evolutionaryAlgorithmsOverview]]

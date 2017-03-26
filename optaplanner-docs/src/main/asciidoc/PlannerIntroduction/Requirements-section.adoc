@@ -11,4 +11,4 @@ OptaPlanner is available in <<useWithMavenGradleEtc,the Maven Central Repository
 
 Planner works on any Java Virtual Machine and is compatible with Standard Java, Enterprise Java, and all JVM languages.
 
-image::Chapter-Planner_introduction/compatibility.png[align="center"]
+image::PlannerIntroduction/compatibility.png[align="center"]

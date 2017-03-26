@@ -1,11 +1,11 @@
 [[hyperheuristics]]
 = Hyperheuristics
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[hyperheuristicsOverview]]

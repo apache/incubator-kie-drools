@@ -1,11 +1,11 @@
 [[designPatterns]]
 = Design Patterns
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[designPatternsIntroduction]]
@@ -54,7 +54,7 @@ it probably has an inherit performance and complexity cost, so it might be bette
 the _many to many_ relationship between the `Shift` and `Employee`.
 It's effectively every spot that needs to be filled with an employee.
 +
-image::Chapter-Design_patterns/employeeShiftRosteringModelingGuideA.png[align="center"]
+image::DesignPatterns/employeeShiftRosteringModelingGuideA.png[align="center"]
 
 . In a _many to one_ relationship, *usually the _many_ side is the planning entity class*.
 Annotate it with a `@PlanningEntity` annotation.
@@ -84,11 +84,11 @@ On the other hand, the number of employees per shift is known in advance,
 so it's better to make the `Shift` relationship a problem property
 and the `Employee` relationship a planning variable.
 +
-image::Chapter-Design_patterns/employeeShiftRosteringModelingGuideB.png[align="center"]
+image::DesignPatterns/employeeShiftRosteringModelingGuideB.png[align="center"]
 
 For inspiration, take a look at how the examples modeled their domain:
 
-image::Chapter-Design_patterns/entityVariableAndValueExamples.png[align="center"]
+image::DesignPatterns/entityVariableAndValueExamples.png[align="center"]
 
 [NOTE]
 ====
@@ -129,7 +129,7 @@ There are also several designs for assigning a planning entity to a starting tim
 
 Choose the right pattern depending on the use case:
 
-image::Chapter-Design_patterns/assigningTimeToPlanningEntities.png[align="center"]
+image::DesignPatterns/assigningTimeToPlanningEntities.png[align="center"]
 
 
 [[timeslotPattern]]

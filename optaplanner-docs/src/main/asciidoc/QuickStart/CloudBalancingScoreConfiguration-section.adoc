@@ -4,7 +4,7 @@
 Planner will search for the `Solution` with the highest ``Score``.
 This example uses a ``HardSoftScore``, which means Planner will look for the solution with no hard constraints broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize maintenance cost).
 
-image::Chapter-Quick_start/cloudBalanceScoreCalculation.png[align="center"]
+image::QuickStart/cloudBalanceScoreCalculation.png[align="center"]
 
 Of course, Planner needs to be told about these domain-specific score constraints.
 There are several ways to implement such a score function:

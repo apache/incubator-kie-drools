@@ -29,7 +29,7 @@ The sample instance for `CloudBalance` is `score`.
 
 In the UML class diagram below, the Planner concepts are already annotated:
 
-image::Chapter-Quick_start/cloudBalanceClassDiagram.png[align="center"]
+image::QuickStart/cloudBalanceClassDiagram.png[align="center"]
 
 [[cloudBalancingDomainModelImplementation]]
 == Domain Model Implementation

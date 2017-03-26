@@ -1,11 +1,11 @@
 [[useCasesAndExamples]]
 = Use Cases and Examples
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[examplesOverview]]
@@ -247,7 +247,7 @@ These realistic competitions provide an objective comparison of Planner with com
 Place n queens on a n sized chessboard so no 2 queens can attack each other.
 The most common n queens puzzle is the 8 queens puzzle, with __n = 8__:
 
-image::Chapter-Use_cases_and_examples/nQueensScreenshot.png[align="center"]
+image::UseCasesAndExamples/nQueensScreenshot.png[align="center"]
 
 Constraints:
 
@@ -260,14 +260,14 @@ This documentation heavily uses the 4 queens puzzle as the primary example.
 A proposed solution could be:
 
 .A Wrong Solution for the 4 Queens Puzzle
-image::Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png[align="center"]
+image::UseCasesAndExamples/partiallySolvedNQueens04Explained.png[align="center"]
 
 The above solution is wrong because queens `A1` and `B0` can attack each other (so can queens `B0` and ``D0``). Removing queen `B0` would respect the "no 2 queens can attack each other" constraint, but would break the "place n queens" constraint.
 
 Below is a correct solution:
 
 .A Correct Solution for the 4 Queens Puzzle
-image::Chapter-Use_cases_and_examples/solvedNQueens04.png[align="center"]
+image::UseCasesAndExamples/solvedNQueens04.png[align="center"]
 
 All the constraints have been met, so the solution is correct.
 Note that most n queens puzzles have multiple correct solutions.
@@ -365,7 +365,7 @@ Notice that in the 4 queens example, NQueens's `getN()` method will always retur
 | ascendingDiagonalIndex (columnIndex + rowIndex)
 | descendingDiagonalIndex (columnIndex - rowIndex)
 
-.4+| image::Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png[align="center"]
+.4+| image::UseCasesAndExamples/partiallySolvedNQueens04Explained.png[align="center"]
 
 |A1
 |0
@@ -434,7 +434,7 @@ lu980    has 980 cities with a search space of 10^2927.
 Despite TSP's simple definition, the problem is surprisingly hard to solve.
 Because it's an NP-hard problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when that problem dataset is slightly altered:
 
-image::Chapter-Use_cases_and_examples/tspOptimalSolutionVolatility.png[align="center"]
+image::UseCasesAndExamples/tspOptimalSolutionVolatility.png[align="center"]
 
 
 [[dinnerParty]]
@@ -501,7 +501,7 @@ munich-7teams has 7 teams, 18 days, 12 unavailabilityPenalties and 72 teamAssign
 [[tennisDomainModel]]
 ==== Domain Model
 
-image::Chapter-Use_cases_and_examples/tennisClassDiagram.png[align="center"]
+image::UseCasesAndExamples/tennisClassDiagram.png[align="center"]
 
 
 [[meetingScheduling]]
@@ -593,7 +593,7 @@ comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17
 [[curriculumCourseDomainModel]]
 ==== Domain Model
 
-image::Chapter-Use_cases_and_examples/curriculumCourseClassDiagram.png[align="center"]
+image::UseCasesAndExamples/curriculumCourseClassDiagram.png[align="center"]
 
 
 [[machineReassignment]]
@@ -625,13 +625,13 @@ Soft constraints:
 
 The problem is defined by http://challenge.roadef.org/2012/en/[the Google ROADEF/EURO Challenge 2012].
 
-image::Chapter-Use_cases_and_examples/cloudOptimizationIsLikeTetris.png[align="center"]
+image::UseCasesAndExamples/cloudOptimizationIsLikeTetris.png[align="center"]
 
 
 [[machineReassignmentValueProposition]]
 ==== Value Proposition
 
-image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
+image::QuickStart/cloudOptimizationValueProposition.png[align="center"]
 
 [[machineReassignmentProblemSize]]
 ==== Problem Size
@@ -664,7 +664,7 @@ model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  48
 [[machineReassignmentDomainModel]]
 ==== Domain Model
 
-image::Chapter-Use_cases_and_examples/machineReassignmentClassDiagram.png[align="center"]
+image::UseCasesAndExamples/machineReassignmentClassDiagram.png[align="center"]
 
 
 [[vehicleRouting]]
@@ -677,7 +677,7 @@ image::Chapter-Use_cases_and_examples/machineReassignmentClassDiagram.png[align=
 Using a fleet of vehicles, pick up the objects of each customer and bring them to the depot.
 Each vehicle can service multiple customers, but it has a limited capacity.
 
-image::Chapter-Use_cases_and_examples/vehicleRoutingUseCase.png[align="center"]
+image::UseCasesAndExamples/vehicleRoutingUseCase.png[align="center"]
 
 Besides the basic case (CVRP), there is also a variant with time windows (CVRPTW).
 
@@ -700,7 +700,7 @@ The capacitated vehicle routing problem (CVRP) and its timewindowed variant (CVR
 [[vehicleRoutingValueProposition]]
 ==== Value Proposition
 
-image::Chapter-Use_cases_and_examples/vehicleRoutingValueProposition.png[align="center"]
+image::UseCasesAndExamples/vehicleRoutingValueProposition.png[align="center"]
 
 
 [[vehicleRoutingProblemSize]]
@@ -794,7 +794,7 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
 [[vehicleRoutingDomainModel]]
 ==== Domain Model
 
-image::Chapter-Use_cases_and_examples/vehicleRoutingClassDiagram.png[align="center"]
+image::UseCasesAndExamples/vehicleRoutingClassDiagram.png[align="center"]
 
 The vehicle routing with timewindows domain model makes heavily use of <<shadowVariable,shadow variables>>.
 This allows it to express its constraints more naturally, because properties such as `arrivalTime` and ``departureTime``, are directly available on the domain model.
@@ -806,26 +806,26 @@ This allows it to express its constraints more naturally, because properties suc
 In the real world, vehicles can't follow a straight line from location to location: they have to use roads and highways.
 From a business point of view, this matters a lot:
 
-image::Chapter-Use_cases_and_examples/vehicleRoutingDistanceType.png[align="center"]
+image::UseCasesAndExamples/vehicleRoutingDistanceType.png[align="center"]
 
 For the optimization algorithm, this doesn't matter much, as long as the distance between 2 points can be looked up (and are preferably precalculated). The road cost doesn't even need to be a distance, it can also be travel time, fuel cost, or a weighted function of those.
 There are several technologies available to precalculate road costs, such as https://graphhopper.com/[GraphHopper] (embeddable, offline Java engine), http://open.mapquestapi.com/directions/#matrix[Open MapQuest] (web service) and https://developers.google.com/maps/documentation/webservices/client-library[Google Maps Client API] (web service).
 
-image::Chapter-Use_cases_and_examples/integrationWithRealMaps.png[align="center"]
+image::UseCasesAndExamples/integrationWithRealMaps.png[align="center"]
 
 There are also several technologies to render it, such as http://leafletjs.com[Leaflet] and https://developers.google.com/maps/[Google Maps for developers]: the `optaplanner-webexamples-*.war` has an example which demonstrates such rendering:
 
-image::Chapter-Use_cases_and_examples/vehicleRoutingLeafletAndGoogleMaps.png[align="center"]
+image::UseCasesAndExamples/vehicleRoutingLeafletAndGoogleMaps.png[align="center"]
 
 It's even possible to render the actual road routes with GraphHopper or Google Map Directions, but because of route overlaps on highways, it can become harder to see the standstill order:
 
-image::Chapter-Use_cases_and_examples/vehicleRoutingGoogleMapsDirections.png[align="center"]
+image::UseCasesAndExamples/vehicleRoutingGoogleMapsDirections.png[align="center"]
 
 Take special care that the road costs between 2 points use the same optimization criteria as the one used in Planner.
 For example, GraphHopper etc will by default return the fastest route, not the shortest route.
 Don't use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in Planner: this leads to a suboptimal solution as shown below:
 
-image::Chapter-Use_cases_and_examples/roadDistanceTriangleInequality.png[align="center"]
+image::UseCasesAndExamples/roadDistanceTriangleInequality.png[align="center"]
 
 Contrary to popular belief, most users don't want the shortest route: they want the fastest route instead.
 They prefer highways over normal roads.
@@ -845,7 +845,7 @@ Each job is part of a project.
 A job can be executed in different ways: each way is an execution mode that implies a different duration but also different resource usages.
 This is a form of flexible __job shop scheduling__.
 
-image::Chapter-Use_cases_and_examples/projectJobSchedulingUseCase.png[align="center"]
+image::UseCasesAndExamples/projectJobSchedulingUseCase.png[align="center"]
 
 Hard constraints:
 
@@ -906,7 +906,7 @@ The arrival and departure dates of the patients is fixed: only a bed needs to be
 
 This problem features <<overconstrainedPlanning,overconstrained>> datasets.
 
-image::Chapter-Use_cases_and_examples/patientAdmissionScheduleUseCase.png[align="center"]
+image::UseCasesAndExamples/patientAdmissionScheduleUseCase.png[align="center"]
 
 Hard constraints:
 
@@ -954,7 +954,7 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
 [[bedAllocationDomainModel]]
 ==== Domain Model
 
-image::Chapter-Use_cases_and_examples/hospitalBedAllocationClassDiagram.png[align="center"]
+image::UseCasesAndExamples/hospitalBedAllocationClassDiagram.png[align="center"]
 
 
 [[taskAssigning]]
@@ -1004,7 +1004,7 @@ Soft level 3 constraints:
 [[taskAssigningDomainModel]]
 ==== Domain Model
 
-image::Chapter-Use_cases_and_examples/taskAssigningClassDiagram.png[align="center"]
+image::UseCasesAndExamples/taskAssigningClassDiagram.png[align="center"]
 
 
 [[difficultExamples]]
@@ -1021,7 +1021,7 @@ image::Chapter-Use_cases_and_examples/taskAssigningClassDiagram.png[align="cente
 Schedule each exam into a period and into a room.
 Multiple exams can share the same room during the same period.
 
-image::Chapter-Use_cases_and_examples/examinationTimetablingUseCase.png[align="center"]
+image::UseCasesAndExamples/examinationTimetablingUseCase.png[align="center"]
 
 Hard constraints:
 
@@ -1074,7 +1074,7 @@ exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period 
 Below you can see the main examination domain classes:
 
 .Examination Domain Class Diagram
-image::Chapter-Use_cases_and_examples/examinationDomainDiagram.png[align="center"]
+image::UseCasesAndExamples/examinationDomainDiagram.png[align="center"]
 
 Notice that we've split up the exam concept into an `Exam` class and a `Topic` class.
 The `Exam` instances change during solving (this is the planning entity class), when their period or room property changes.
@@ -1090,7 +1090,7 @@ The ``Topic``, `Period` and `Room` instances never change during solving (these 
 
 For each shift, assign a nurse to work that shift.
 
-image::Chapter-Use_cases_and_examples/employeeShiftRosteringUseCase.png[align="center"]
+image::UseCasesAndExamples/employeeShiftRosteringUseCase.png[align="center"]
 
 Hard constraints:
 
@@ -1120,7 +1120,7 @@ The problem is defined by http://www.kuleuven-kortrijk.be/nrpcompetition[the Int
 [[employeeRosteringValueProposition]]
 ==== Value Proposition
 
-image::Chapter-Use_cases_and_examples/employeeRosteringValueProposition.png[align="center"]
+image::UseCasesAndExamples/employeeRosteringValueProposition.png[align="center"]
 
 
 [[employeeRosteringProblemSize]]
@@ -1195,7 +1195,7 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
 [[employeeRosteringDomainModel]]
 ==== Domain Model
 
-image::Chapter-Use_cases_and_examples/employeeShiftRosteringClassDiagram.png[align="center"]
+image::UseCasesAndExamples/employeeShiftRosteringClassDiagram.png[align="center"]
 
 
 [[travelingTournament]]
@@ -1207,7 +1207,7 @@ image::Chapter-Use_cases_and_examples/employeeShiftRosteringClassDiagram.png[ali
 
 Schedule matches between _n_ teams.
 
-image::Chapter-Use_cases_and_examples/travelingTournamentUseCase.png[align="center"]
+image::UseCasesAndExamples/travelingTournamentUseCase.png[align="center"]
 
 Hard constraints:
 

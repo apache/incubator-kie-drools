@@ -1,19 +1,18 @@
 [[development]]
 = Development
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
-
 
 [[methodologyOverview]]
 == Methodology Overview
 
 The diagram below explains the overall structure of the OptaPlanner source code:
 
-image::Chapter-Development/methodologyOverview.png[align="center"]
+image::Development/methodologyOverview.png[align="center"]
 
 In the diagram above, it's important to understand the clear separation between the configuration and runtime classes.
 

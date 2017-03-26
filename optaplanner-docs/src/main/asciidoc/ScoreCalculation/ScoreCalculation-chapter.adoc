@@ -1,11 +1,11 @@
 [[scoreCalculation]]
 = Score Calculation
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[scoreTerminology]]
@@ -25,7 +25,7 @@ which might be the __optimal solution__.
 Planner cannot automatically know which `Solution` is best for your business, so you need to tell it how to calculate the score of a given `Solution` according to your business needs.
 If you forget or are unable to implement an important business constraint, the solution is probably useless:
 
-image::Chapter-Score_calculation/optimalWithIncompleteConstraints.png[align="center"]
+image::ScoreCalculation/optimalWithIncompleteConstraints.png[align="center"]
 
 
 [[formalizeTheBusinessConstraints]]
@@ -51,7 +51,7 @@ A constraint can be a simple pattern (such as __Maximize the apple harvest in th
 A positive constraint is a constraint you want to maximize.
 A negative constraint is a constraint you want to minimize.
 
-image::Chapter-Score_calculation/positiveAndNegativeConstraints.png[align="center"]
+image::ScoreCalculation/positiveAndNegativeConstraints.png[align="center"]
 
 The image above illustrates that **the optimal solution always has the highest score**,
 regardless if the constraints are positive or negative.
@@ -77,7 +77,7 @@ When a constraint activates (because the negative constraint is broken or the po
 Not all score constraints are equally important.
 If breaking one constraint is equally bad as breaking another constraint x times, then those two constraints have a different weight (but they are in the same score level). For example in vehicle routing, you can make one "unhappy driver" constraint match count as much as two "fuel tank usage" constraint matches:
 
-image::Chapter-Score_calculation/scoreWeighting.png[align="center"]
+image::ScoreCalculation/scoreWeighting.png[align="center"]
 
 Score weighting is easy in use cases where you can __put a price tag on everything__.
 In that case, the positive constraints maximize revenue and the negative constraints minimize expenses, so together they maximize profit.
@@ -91,7 +91,7 @@ Putting a good weight on a constraint can be a difficult analytical decision, be
 Don't spend too much time on it at the start of an implementation.
 A non-accurate weight is less damaging than mediocre algorithms:
 
-image::Chapter-Score_calculation/scoreTradeoffInPerspective.png[align="center"]
+image::ScoreCalculation/scoreTradeoffInPerspective.png[align="center"]
 
 
 [NOTE]
@@ -116,7 +116,7 @@ The first score level gets compared first.
 If those differ, the remaining score levels are ignored.
 For example, a score that breaks `0` hard constraints and `1000000` soft constraints is better than a score that breaks `1` hard constraint and `0` soft constraints.
 
-image::Chapter-Score_calculation/scoreLevels.png[align="center"]
+image::ScoreCalculation/scoreLevels.png[align="center"]
 
 If there are two (or more) score levels, for example a hard and soft level, then a score is _feasible_ if no hard constraints are broken.
 
@@ -132,7 +132,7 @@ For example: `-1soft` which has score level of ``soft``, a weight of `1` and a n
 Do not use a big constraint weight when your business actually wants different score levels.
 That hack, known as __score folding__, is broken:
 
-image::Chapter-Score_calculation/scoreFoldingIsBroken.png[align="center"]
+image::ScoreCalculation/scoreFoldingIsBroken.png[align="center"]
 
 
 [NOTE]
@@ -171,7 +171,7 @@ Similarly, we can state that two apples and one orange are better than just one 
 So despite our inability to compare some Scores conclusively (at which point we declare them equal), we can find a set of optimal scores.
 Those are called pareto optimal.
 
-image::Chapter-Score_calculation/paretoOptimizationScoring.png[align="center"]
+image::ScoreCalculation/paretoOptimizationScoring.png[align="center"]
 
 Scores are considered equal far more often.
 It is left up to a human to choose the better out of a set of best solutions (with equal scores) found by Planner.
@@ -193,7 +193,7 @@ Yet, two apples are not greater than one orange (but actually equal). Pareto com
 
 All the score techniques mentioned above, can be combined seamlessly:
 
-image::Chapter-Score_calculation/scoreComposition.png[align="center"]
+image::ScoreCalculation/scoreComposition.png[align="center"]
 
 
 [[scoreInterface]]
@@ -213,7 +213,7 @@ Your score might not efficiently fit in a single `long` value.
 Planner has several built-in `Score` implementations, but you can implement a custom `Score` too.
 Most use cases tend to use the built-in ``HardSoftScore``.
 
-image::Chapter-Score_calculation/scoreClassDiagram.png[align="center"]
+image::ScoreCalculation/scoreClassDiagram.png[align="center"]
 
 All Score implementations also have an `initScore` (which is an ``int``). It is mostly intended for internal use in Planner: it is the negative number of uninitialized planning variables.
 From a user's perspective this is ``0``, unless a Construction Heuristic is terminated before it could initialize all planning variables (in which case `Score.isSolutionInitialized()` returns ``false``).
@@ -245,7 +245,7 @@ For example: a `double` cannot hold the value `0.05` correctly.
 Instead, it holds the nearest representable value.
 Arithmetic (including addition and subtraction) with floating point numbers, especially for planning problems, leads to incorrect decisions:
 
-image::Chapter-Score_calculation/scoreWeightType.png[align="center"]
+image::ScoreCalculation/scoreWeightType.png[align="center"]
 
 Additionally, floating point number addition is not associative:
 
@@ -540,7 +540,7 @@ public interface IncrementalScoreCalculator<Solution_> {
 }
 ----
 
-image::Chapter-Score_calculation/incrementalScoreCalculatorSequenceDiagram.png[align="center"]
+image::ScoreCalculation/incrementalScoreCalculatorSequenceDiagram.png[align="center"]
 
 For example in n queens:
 
@@ -882,7 +882,7 @@ end
 This score rule will fire once for every 2 queens with the same ``rowIndex``.
 The `(id > $id)` condition is needed to assure that for 2 queens A and B, it can only fire for (A, B) and not for (B, A), (A, A) or (B, B). Let us take a closer look at this score rule on this solution of 4 queens:
 
-image::Chapter-Score_calculation/unsolvedNQueens04.png[align="center"]
+image::ScoreCalculation/unsolvedNQueens04.png[align="center"]
 
 In this solution the multipleQueensHorizontal score rule will fire for 6 queen couples: (A, B), (A, C), (A, D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this solution will have a score of ``-6``.
 An optimal solution of 4 queens has a score of ``0``.
@@ -1081,7 +1081,7 @@ When a `Solution` changes, incremental score calculation (AKA delta based score 
 For example, if a single queen A moves from row `1` to ``2``, it will not bother to check if queen B and C can attack each other, since neither of them changed.
 
 .Incremental Score Calculation for the 4 Queens Puzzle
-image::Chapter-Score_calculation/incrementalScoreCalculationNQueens04.png[align="center"]
+image::ScoreCalculation/incrementalScoreCalculationNQueens04.png[align="center"]
 
 This is a huge performance and scalability gain.
 *Drools score calculation gives you this huge scalability gain without forcing you to write a complicated incremental score calculation algorithm.*
@@ -1151,7 +1151,7 @@ For example, consider this score trap.
 If the blue item moves from an overloaded computer to an empty computer, the hard score should improve.
 The trapped score implementation fails to do that:
 
-image::Chapter-Score_calculation/scoreTrap.png[align="center"]
+image::ScoreCalculation/scoreTrap.png[align="center"]
 
 The Solver should eventually get out of this trap, but it will take a lot of effort (especially if there are even more processes on the overloaded computer). Before they do that, they might actually start moving more processes into that overloaded computer, as there is no penalty for doing so.
 
@@ -1196,12 +1196,12 @@ Some use cases have a business requirement to provide a fair schedule (usually a
 Implementing such a constraint can seem difficult (especially because there are different ways to formalize fairness), but usually the _squared workload_ implementation behaves most desirable.
 For each employee/asset, count the workload `w` and subtract `w²` from the score.
 
-image::Chapter-Score_calculation/fairnessScoreConstraint.png[align="center"]
+image::ScoreCalculation/fairnessScoreConstraint.png[align="center"]
 
 As shown above, the _squared workload_ implementation guarantees that if you select two employees from a given solution and make their distribution between those two employees fairer, then the resulting new solution will have a better overall score.
 Don not just use the difference from the average workload, as that can lead to unfairness, as demonstrated below.
 
-image::Chapter-Score_calculation/fairnessScoreConstraintPitfall.png[align="center"]
+image::ScoreCalculation/fairnessScoreConstraintPitfall.png[align="center"]
 
 
 [NOTE]
@@ -1243,7 +1243,7 @@ Score score = guiScoreDirector.calculateScore();
 
 Furthermore, the `ScoreDirector` can explain the score with constraint match totals and/or indictments:
 
-image::Chapter-Score_calculation/scoreVisualization.png[align="center"]
+image::ScoreCalculation/scoreVisualization.png[align="center"]
 
 
 [[constraintMatchTotal]]

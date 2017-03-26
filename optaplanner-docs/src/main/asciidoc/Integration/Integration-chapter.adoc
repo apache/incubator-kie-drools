@@ -1,11 +1,11 @@
 [[integration]]
 = Integration
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[integrationOverview]]
@@ -18,7 +18,7 @@ For example:
 * To read a planning problem from an XML file (and store the best solution in it), annotate the domain POJO's with XStream or JAXB annotations.
 * To expose the Solver as a REST Service that reads the planning problem and responds with the best solution, annotate the domain POJO's with XStream, JAXB or Jackson annotations and hook the `Solver` in Camel or RESTEasy.
 
-image::Chapter-Integration/integrationOverview.png[align="center"]
+image::Integration/integrationOverview.png[align="center"]
 
 
 [[integrationWithPersistentStorage]]
@@ -514,9 +514,9 @@ But despite that, both can benefit if the human planner becomes the supervisor o
 
 Therefore, it's often a good idea to involve the human planner in your project.
 
-image::Chapter-Integration/parameterizeTheScoreWeights.png[align="center"]
+image::Integration/parameterizeTheScoreWeights.png[align="center"]
 
-image::Chapter-Integration/keepTheUserInControl.png[align="center"]
+image::Integration/keepTheUserInControl.png[align="center"]
 
 
 [[sizingHardwareAndSoftware]]
@@ -524,7 +524,7 @@ image::Chapter-Integration/keepTheUserInControl.png[align="center"]
 
 Before sizing a Planner service, first understand the typical behaviour of a `Solver.solve()` call:
 
-image::Chapter-Integration/sizingHardware.png[align="center"]
+image::Integration/sizingHardware.png[align="center"]
 
 Understand these guidelines to decide the hardware for a Planner service:
 

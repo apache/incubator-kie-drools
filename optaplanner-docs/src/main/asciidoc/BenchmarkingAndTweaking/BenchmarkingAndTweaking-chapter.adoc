@@ -1,11 +1,11 @@
 [[benchmarker]]
 = Benchmarking And Tweaking
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[findTheBestSolverConfiguration]]
@@ -19,7 +19,7 @@ Those parameters can influence the results a lot, even though most solver phases
 Luckily, Planner includes a benchmarker, which allows you to play out different solver phases with different settings
 against each other in development, so you can use the best configuration for your planning problem in production.
 
-image::Chapter-Benchmarking_and_tweaking/benchmarkOverview.png[align="center"]
+image::BenchmarkingAndTweaking/benchmarkOverview.png[align="center"]
 
 
 [[benchmarkConfiguration]]
@@ -457,7 +457,7 @@ Shows the best score per `inputSolutionFile` for each solver configuration.
 Useful for visualizing the best solver configuration.
 
 .Best Score Summary Statistic
-image::Chapter-Benchmarking_and_tweaking/bestScoreSummary.png[align="center"]
+image::BenchmarkingAndTweaking/bestScoreSummary.png[align="center"]
 
 
 [[benchmarkReportBestScoreScalabilitySummary]]
@@ -481,7 +481,7 @@ Shows the best score distribution per `inputSolutionFile` for each solver config
 Useful for visualizing the reliability of each solver configuration.
 
 .Best Score Distribution Summary Statistic
-image::Chapter-Benchmarking_and_tweaking/bestScoreDistributionSummary.png[align="center"]
+image::BenchmarkingAndTweaking/bestScoreDistributionSummary.png[align="center"]
 
 Enable <<statisticalBenchmarking,statistical benchmarking>> to use this summary.
 
@@ -591,7 +591,7 @@ To see how the best score evolves over time, add:
 ----
 
 .Best Score Over Time Statistic
-image::Chapter-Benchmarking_and_tweaking/bestScoreStatistic.png[align="center"]
+image::BenchmarkingAndTweaking/bestScoreStatistic.png[align="center"]
 
 
 [NOTE]
@@ -604,7 +604,7 @@ On the other hand, for the Tabu Search and Late Annealing, what you see is what 
 *The best score over time statistic is very useful to detect abnormalities, such as a
 potential <<scoreTrap,score trap>> which gets the solver temporarily stuck in a local optima.*
 
-image::Chapter-Benchmarking_and_tweaking/letTheBestScoreStatisticGuideYou.png[align="center"]
+image::BenchmarkingAndTweaking/letTheBestScoreStatisticGuideYou.png[align="center"]
 
 
 [[benchmarkReportStepScoreOverTimeStatistic]]
@@ -621,7 +621,7 @@ To see how the step score evolves over time, add:
 ----
 
 .Step Score Over Time Statistic
-image::Chapter-Benchmarking_and_tweaking/stepScoreStatistic.png[align="center"]
+image::BenchmarkingAndTweaking/stepScoreStatistic.png[align="center"]
 
 Compare the step score statistic with the best score statistic (especially on parts for which the best score flatlines). If it hits a local optima, the solver should take deteriorating steps to escape it.
 But it shouldn't deteriorate too much either.
@@ -646,7 +646,7 @@ To see how fast the scores are calculated, add:
 ----
 
 .Score Calculation Speed Statistic
-image::Chapter-Benchmarking_and_tweaking/scoreCalculationSpeedStatistic.png[align="center"]
+image::BenchmarkingAndTweaking/scoreCalculationSpeedStatistic.png[align="center"]
 
 
 [NOTE]
@@ -671,7 +671,7 @@ To see how much each new best solution differs from the __previous best solution
 ----
 
 .Best Solution Mutation Over Time Statistic
-image::Chapter-Benchmarking_and_tweaking/bestSolutionMutationStatistic.png[align="center"]
+image::BenchmarkingAndTweaking/bestSolutionMutationStatistic.png[align="center"]
 
 Use Tabu Search - an algorithm that behaves like a human - to get an estimation on how difficult it would be for a human to improve the previous best solution to that new best solution.
 
@@ -690,7 +690,7 @@ To see how the selected and accepted move count per step evolves over time, add:
 ----
 
 .Move Count Per Step Statistic
-image::Chapter-Benchmarking_and_tweaking/moveCountPerStepStatistic.png[align="center"]
+image::BenchmarkingAndTweaking/moveCountPerStepStatistic.png[align="center"]
 
 
 [WARNING]
@@ -713,7 +713,7 @@ To see how much memory is used, add:
 ----
 
 .Memory Use Statistic
-image::Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png[align="center"]
+image::BenchmarkingAndTweaking/memoryUseStatistic.png[align="center"]
 
 
 [WARNING]
@@ -776,7 +776,7 @@ To see which constraints are matched in the best score (and how much) over time,
 ----
 
 .Constraint Match Total Best Score Diff Over Time Statistic
-image::Chapter-Benchmarking_and_tweaking/constraintMatchTotalBestScoreStatistic.png[align="center"]
+image::BenchmarkingAndTweaking/constraintMatchTotalBestScoreStatistic.png[align="center"]
 
 Requires the score calculation to support <<explainingTheScore,constraint matches>>. <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires more work.
 
@@ -800,7 +800,7 @@ To see which constraints are matched in the step score (and how much) over time,
 ----
 
 .Constraint Match Total Step Score Diff Over Time Statistic
-image::Chapter-Benchmarking_and_tweaking/constraintMatchTotalStepScoreStatistic.png[align="center"]
+image::BenchmarkingAndTweaking/constraintMatchTotalStepScoreStatistic.png[align="center"]
 
 Requires the score calculation to support <<explainingTheScore,constraint matches>>. <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires more work.
 
@@ -824,7 +824,7 @@ To see which move types improve the best score (and how much) over time, add:
 ----
 
 .Picked Move Type Best Score Diff Over Time Statistic
-image::Chapter-Benchmarking_and_tweaking/pickedMoveTypeBestScoreDiffStatistic.png[align="center"]
+image::BenchmarkingAndTweaking/pickedMoveTypeBestScoreDiffStatistic.png[align="center"]
 
 
 [[benchmarkReportPickedMoveTypeStepScoreDiffOverTimeStatistic]]
@@ -841,7 +841,7 @@ To see how much each winning step affects the step score over time, add:
 ----
 
 .Picked Move Type Step Score Diff Over Time Statistic
-image::Chapter-Benchmarking_and_tweaking/pickedMoveTypeStepScoreDiffStatistic.png[align="center"]
+image::BenchmarkingAndTweaking/pickedMoveTypeStepScoreDiffStatistic.png[align="center"]
 
 
 [[advancedBenchmarking]]
@@ -1043,7 +1043,7 @@ And build it with the class ``PlannerBenchmarkFactory``:
 
 The `BenchmarkAggregator` takes 1 or more existing benchmarks and merges them into new benchmark report, without actually running the benchmarks again.
 
-image::Chapter-Benchmarking_and_tweaking/benchmarkAggregator.png[align="center"]
+image::BenchmarkingAndTweaking/benchmarkAggregator.png[align="center"]
 
 This is useful to:
 

@@ -1,11 +1,11 @@
 [[repeatedPlanning]]
 = Repeated Planning
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[introductionToRepeatedPlanning]]
@@ -56,7 +56,7 @@ There are 2 ways to avoid that:
 
 If we handle overconstrained planning with nullable variables, the overload entities will be left unassigned:
 
-image::Chapter-Repeated_planning/overconstrainedPlanning.png[align="center"]
+image::RepeatedPlanning/overconstrainedPlanning.png[align="center"]
 
 To implement this:
 
@@ -101,7 +101,7 @@ The planning window can be split up in several parts:
 * *Future* (out of scope): Planning entities that aren't in the current planning window.
 ** If <<assigningTimeToPlanningEntities,time is a planning variable>>, there is no future part. Instead, if the planning window is too small to plan all entities, you're dealing with <<overconstrainedPlanning,overconstrained planning>>.
 
-image::Chapter-Repeated_planning/continuousPlanningEmployeeRostering.png[align="center"]
+image::RepeatedPlanning/continuousPlanningEmployeeRostering.png[align="center"]
 
 In the employee rostering example above, we replan every 4 days.
 Each time, we actually plan a window of 12 days, but we only share the tentative roster of the next 4 days with the employees.
@@ -112,7 +112,7 @@ The start of the planning window (so the first tentative time period) does _not_
 That too can be a week in advance.
 ====
 
-image::Chapter-Repeated_planning/continuousPlanningPatientAdmissionSchedule.png[align="center"]
+image::RepeatedPlanning/continuousPlanningPatientAdmissionSchedule.png[align="center"]
 
 In the hospital bed planning example above, notice the difference between the original planning of November 1th and the new planning of November 5th: some problem facts (F, H, I, J, K) changed meanwhile, which results in unrelated planning entities (G) changing too.
 
@@ -160,7 +160,7 @@ If the plan affects humans (such as employees, drivers, ...), very disruptive ch
 In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes.
 This is usually implemented by taxing all planning entities that change.
 
-image::Chapter-Repeated_planning/nonvolatileReplanning.png[align="center"]
+image::RepeatedPlanning/nonvolatileReplanning.png[align="center"]
 
 For example, in the Machine Reassignment example, the entity has both the planning variable `machine` and its original value ``originalMachine``:
 
@@ -208,7 +208,7 @@ The soft penalty of `-1000` means that a better solution is only accepted if it 
 To do real-time planning, first combine <<backupPlanning,backup planning>> and <<continuousPlanning,continuous planning>> with short planning windows to lower the burden of real-time planning.
 As time passes, the problem itself changes:
 
-image::Chapter-Repeated_planning/realTimePlanningVehicleRouting.png[align="center"]
+image::RepeatedPlanning/realTimePlanningVehicleRouting.png[align="center"]
 
 In the example above, 3 customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55` and in some cases after the vehicles already left.
 Planner can handle such scenario's with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable planning entities>>).
@@ -279,7 +279,7 @@ Here's an example:
 Any change on the problem facts or planning entities in a `ProblemFactChange` must be told to the ``ScoreDirector``.
 ====
 
-image::Chapter-Repeated_planning/realTimePlanningConcurrencySequenceDiagram.png[align="center"]
+image::RepeatedPlanning/realTimePlanningConcurrencySequenceDiagram.png[align="center"]
 
 [IMPORTANT]
 ====

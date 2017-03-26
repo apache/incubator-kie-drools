@@ -1,11 +1,11 @@
 [[optimizationAlgorithms]]
 = Optimization Algorithms
 :doctype: book
+:imagesdir: ..
 :sectnums:
 :toc: left
 :icons: font
 :experimental:
-:sourcedir: .
 
 
 [[searchSpaceSize]]
@@ -23,11 +23,11 @@ For example:
 For comparison: the minimal number of atoms in the known universe (10^80). As a planning problem gets bigger, the search space tends to blow up really fast.
 Adding only one extra planning entity or planning value can heavily multiply the running time of some algorithms.
 
-image::Chapter-Optimization_algorithms/cloudBalanceSearchSpaceSize.png[align="center"]
+image::OptimizationAlgorithms/cloudBalanceSearchSpaceSize.png[align="center"]
 
 Calculating the number of possible solutions depends on the design of the domain model:
 
-image::Chapter-Optimization_algorithms/searchSpaceSizeCalculation.png[align="center"]
+image::OptimizationAlgorithms/searchSpaceSizeCalculation.png[align="center"]
 
 
 [NOTE]
@@ -81,7 +81,7 @@ Planner is the first framework to combine optimization algorithms (metaheuristic
 * A rule engine, such as Drools Expert, is *great for calculating the score* of a solution of a planning problem. It makes it easy and scalable to add additional soft or hard constraints such as, "a teacher should not teach more then seven hours a day". It does delta-based score calculation without any extra code. However it tends to be not suitable to actually find new solutions.
 * An optimization algorithm is *great at finding new improving solutions* for a planning problem, without necessarily brute-forcing every possibility. However, it needs to know the score of a solution and offers no support in calculating that score efficiently.
 
-image::Chapter-Optimization_algorithms/architectureOverview.png[align="center"]
+image::OptimizationAlgorithms/architectureOverview.png[align="center"]
 
 
 [[optimizationAlgorithmsOverview]]
@@ -90,7 +90,7 @@ image::Chapter-Optimization_algorithms/architectureOverview.png[align="center"]
 Planner supports three _families_ of optimization algorithms: Exhaustive Search, Construction Heuristics and Metaheuristics.
 In practice, Metaheuristics (in combination with Construction Heuristics to initialize) are the recommended choice:
 
-image::Chapter-Optimization_algorithms/scalabilityOfOptimizationAlgorithms.png[align="center"]
+image::OptimizationAlgorithms/scalabilityOfOptimizationAlgorithms.png[align="center"]
 
 Each of these algorithm families have multiple optimization algorithms:
 
@@ -211,7 +211,7 @@ The solver phases are run in the order defined by solver configuration.
 
 Usually, a `Solver` will first run a construction heuristic and then run one or multiple metaheuristics:
 
-image::Chapter-Optimization_algorithms/generalPhaseSequence.png[align="center"]
+image::OptimizationAlgorithms/generalPhaseSequence.png[align="center"]
 
 If no phases are configured, Planner will default to a Construction Heuristic phase followed by a Local Search phase.
 
@@ -252,7 +252,7 @@ These form four nested scopes:
 . Step
 . Move
 
-image::Chapter-Optimization_algorithms/scopeOverview.png[align="center"]
+image::OptimizationAlgorithms/scopeOverview.png[align="center"]
 
 Configure <<logging,logging>> to display the log messages of each scope.
 
@@ -763,7 +763,7 @@ To avoid those, configure a `NoChangePhase`:
 
 There are several ways of doing multi-threaded solving:
 
-image::Chapter-Optimization_algorithms/multiThreadingStrategies.png[align="center"]
+image::OptimizationAlgorithms/multiThreadingStrategies.png[align="center"]
 
 For now, only Partitioned Search is supported out of the box.
 
