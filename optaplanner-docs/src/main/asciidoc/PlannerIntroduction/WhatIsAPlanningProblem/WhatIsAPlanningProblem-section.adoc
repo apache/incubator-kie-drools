@@ -1,6 +1,8 @@
 [[whatIsAPlanningProblem]]
 = What is a Planning Problem?
-image::PlannerIntroduction/whatIsAPlanningProblem.png[align="center"]
+:imagesdir: ../..
+
+image::PlannerIntroduction/WhatIsAPlanningProblem/whatIsAPlanningProblem.png[align="center"]
 
 A planning problem has an optimal goal, based on limited resources and under specific constraints. Optimal goals can be any number of things, such as:
 

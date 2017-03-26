@@ -1,5 +1,6 @@
 [[requirements]]
 = Requirements
+:imagesdir: ../..
 
 OptaPlanner is _open source_ software, released under http://www.apache.org/licenses/LICENSE-2.0.html[the Apache Software License 2.0].
 This license is very liberal and allows reuse for commercial purposes.
@@ -11,4 +12,4 @@ OptaPlanner is available in <<useWithMavenGradleEtc,the Maven Central Repository
 
 Planner works on any Java Virtual Machine and is compatible with Standard Java, Enterprise Java, and all JVM languages.
 
-image::PlannerIntroduction/compatibility.png[align="center"]
+image::PlannerIntroduction/Requirements/compatibility.png[align="center"]

@@ -7,12 +7,12 @@
 :icons: font
 :experimental:
 
-include::WhatIsOptaPlanner-section.adoc[leveloffset=+1]
+include::WhatIsOptaPlanner/WhatIsOptaPlanner-section.adoc[leveloffset=+1]
 
-include::WhatIsAPlanningProblem-section.adoc[leveloffset=+1]
+include::WhatIsAPlanningProblem/WhatIsAPlanningProblem-section.adoc[leveloffset=+1]
 
-include::Requirements-section.adoc[leveloffset=+1]
+include::Requirements/Requirements-section.adoc[leveloffset=+1]
 
-include::Governance-section.adoc[leveloffset=+1]
+include::Governance/Governance-section.adoc[leveloffset=+1]
 
-include::DownloadAndRunTheExamples-section.adoc[leveloffset=+1]
+include::DownloadAndRunTheExamples/DownloadAndRunTheExamples-section.adoc[leveloffset=+1]

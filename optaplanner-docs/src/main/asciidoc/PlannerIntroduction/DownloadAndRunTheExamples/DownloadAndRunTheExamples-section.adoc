@@ -1,5 +1,6 @@
 [[downloadAndRunTheExamples]]
 = Download and Run the Examples
+:imagesdir: ../..
 
 
 [[getTheReleaseZipAndRunTheExamples]]
@@ -28,12 +29,12 @@ $ cd examples
 $ runExamples.bat
 ----
 
-image::PlannerIntroduction/distributionZip.png[align="center"]
+image::PlannerIntroduction/DownloadAndRunTheExamples/distributionZip.png[align="center"]
 
 The Examples GUI application will open.
 Pick an example to try it out:
 
-image::PlannerIntroduction/plannerExamplesAppScreenshot.png[align="center"]
+image::PlannerIntroduction/DownloadAndRunTheExamples/plannerExamplesAppScreenshot.png[align="center"]
 
 
 [NOTE]
@@ -80,7 +81,7 @@ To successfully deploy the webesxamples on a servlet container (such as Jetty or
 
 Pick an example to try it out, such as the Vehicle Routing example:
 
-image::PlannerIntroduction/plannerWebexamplesScreenshot.png[align="center"]
+image::PlannerIntroduction/DownloadAndRunTheExamples/plannerWebexamplesScreenshot.png[align="center"]
 
 
 [[runTheExamplesInAnIDE]]

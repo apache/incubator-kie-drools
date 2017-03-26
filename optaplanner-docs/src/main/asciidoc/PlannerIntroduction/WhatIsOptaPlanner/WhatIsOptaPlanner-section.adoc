@@ -1,5 +1,6 @@
 [[whatIsOptaPlanner]]
 = What is OptaPlanner?
+:imagesdir: ../..
 
 Every organization faces planning problems: providing products or services with a limited set of _constrained_ resources (employees, assets, time and money). OptaPlanner optimizes such planning to do more business with less resources.
 This is known as _Constraint Satisfaction Programming_ (which is part of the _Operations Research_ discipline).
@@ -16,4 +17,4 @@ https://www.optaplanner.org[OptaPlanner] is a lightweight, embeddable constraint
 * **Sport scheduling**: planning games and training schedules for football leagues, baseball leagues, ...
 * **Financial optimization**: investment portfolio optimization, risk spreading, ...
 
-image::PlannerIntroduction/useCaseOverview.png[align="center"]
+image::PlannerIntroduction/WhatIsOptaPlanner/useCaseOverview.png[align="center"]
