@@ -1,5 +1,6 @@
 [[cloudBalancingDomainModel]]
 = Using the Domain Model
+:imagesdir: ../..
 
 
 [[cloudBalancingDomainModelDesign]]
@@ -29,7 +30,7 @@ The sample instance for `CloudBalance` is `score`.
 
 In the UML class diagram below, the Planner concepts are already annotated:
 
-image::QuickStart/cloudBalanceClassDiagram.png[align="center"]
+image::QuickStart/CloudBalancingDomainModel/cloudBalanceClassDiagram.png[align="center"]
 
 [[cloudBalancingDomainModelImplementation]]
 == Domain Model Implementation

@@ -631,7 +631,7 @@ image::UseCasesAndExamples/cloudOptimizationIsLikeTetris.png[align="center"]
 [[machineReassignmentValueProposition]]
 ==== Value Proposition
 
-image::QuickStart/cloudOptimizationValueProposition.png[align="center"]
+image::QuickStart/CloudBalancingTutorial/cloudOptimizationValueProposition.png[align="center"]
 
 [[machineReassignmentProblemSize]]
 ==== Problem Size

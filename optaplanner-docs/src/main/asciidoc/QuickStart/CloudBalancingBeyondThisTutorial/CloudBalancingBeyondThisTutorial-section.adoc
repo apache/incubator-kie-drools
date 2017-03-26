@@ -1,5 +1,6 @@
 [[cloudBalancingBeyondThisTutorial]]
 = Beyond this Tutorial
+:imagesdir: ../..
 
 Now that this simple example works, try going further.
 Enrich the domain model and add extra constraints such as these:

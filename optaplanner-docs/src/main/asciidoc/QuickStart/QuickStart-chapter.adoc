@@ -1,7 +1,5 @@
-
 [[quickStart]]
 = Getting Started: A Cloud Balancing Demonstration
-
 :doctype: book
 :imagesdir: ..
 :sectnums:
@@ -10,14 +8,14 @@
 :experimental:
 
 
-include::CloudBalancingTutorial-section.adoc[leveloffset=+1]
+include::CloudBalancingTutorial/CloudBalancingTutorial-section.adoc[leveloffset=+1]
 
-include::CloudBalancingDomainModel-section.adoc[leveloffset=+1]
+include::CloudBalancingDomainModel/CloudBalancingDomainModel-section.adoc[leveloffset=+1]
 
-include::CloudBalancingMainMethod-section.adoc[leveloffset=+1]
+include::CloudBalancingMainMethod/CloudBalancingMainMethod-section.adoc[leveloffset=+1]
 
-include::CloudBalancingSolverConfiguration-section.adoc[leveloffset=+1]
+include::CloudBalancingSolverConfiguration/CloudBalancingSolverConfiguration-section.adoc[leveloffset=+1]
 
-include::CloudBalancingScoreConfiguration-section.adoc[leveloffset=+1]
+include::CloudBalancingScoreConfiguration/CloudBalancingScoreConfiguration-section.adoc[leveloffset=+1]
 
-include::CloudBalancingBeyondThisTutorial-section.adoc[leveloffset=+1]
+include::CloudBalancingBeyondThisTutorial/CloudBalancingBeyondThisTutorial-section.adoc[leveloffset=+1]

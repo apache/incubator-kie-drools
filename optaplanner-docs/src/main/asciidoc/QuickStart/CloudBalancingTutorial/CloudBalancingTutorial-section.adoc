@@ -1,5 +1,6 @@
 [[cloudBalancingTutorial]]
 = Cloud Balancing Tutorial
+:imagesdir: ../..
 
 
 [[cloudBalancingProblemDescription]]
@@ -23,7 +24,7 @@ The following soft constraints should be optimized:
 This problem is a form of __bin packing__.
 The following is a simplified example, in which we assign four processes to two computers with two constraints (CPU and RAM) with a simple algorithm:
 
-image::QuickStart/cloudBalanceUseCase.png[align="center"]
+image::QuickStart/CloudBalancingTutorial/cloudBalanceUseCase.png[align="center"]
 
 The simple algorithm used here is the _First Fit Decreasing_ algorithm, which assigns the bigger processes first and assigns the smaller processes to the remaining space.
 As you can see, it is not optimal, as it does not leave enough room to assign the yellow process ``D``.
@@ -34,7 +35,7 @@ So let's see how Planner can be used in this scenario.
 
 Here's an executive summary of this example and <<machineReassignment,an advanced implementation with more constraints>>:
 
-image::QuickStart/cloudOptimizationValueProposition.png[align="center"]
+image::QuickStart/CloudBalancingTutorial/cloudOptimizationValueProposition.png[align="center"]
 
 
 [[cloudBalancingProblemSize]]
@@ -51,5 +52,5 @@ image::QuickStart/cloudOptimizationValueProposition.png[align="center"]
 |100computers-300processes |100 |300 |10^600
 |200computers-600processes |200 |600 |10^1380
 |400computers-1200processes |400 |1200 |10^3122
-|800computers-2400processes |800 |2400|10^6967
+|800computers-2400processes |800 |2400 |10^6967
 |===

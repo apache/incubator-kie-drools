@@ -1,5 +1,6 @@
 [[cloudBalancingMainMethod]]
 = Run the Cloud Balancing Hello World
+:imagesdir: ../..
 
 . <<runTheExamplesInAnIDE,Download and configure the examples in your preferred IDE.>>
 . Create a run configuration with the following main class: `org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld`
