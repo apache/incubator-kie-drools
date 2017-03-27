@@ -16,30 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.util.debug.DebugList;
-import org.drools.core.ClockType;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.time.impl.PseudoClockScheduler;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.conf.MultithreadEvaluationOption;
-import org.kie.internal.utils.KieHelper;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +28,30 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.drools.compiler.util.debug.DebugList;
+import org.drools.core.ClockType;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.time.impl.PseudoClockScheduler;
+import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.conf.MultithreadEvaluationOption;
+import org.kie.internal.utils.KieHelper;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
@@ -918,7 +918,6 @@ public class ParallelEvaluationTest {
     }
 
     @Test(timeout = 10000L)
-    @Ignore("Because of DROOLS-1496")
     public void testMultipleParallelKieSessionsFireUntilHalt() throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 
@@ -941,49 +940,45 @@ public class ParallelEvaluationTest {
     }
 
     private Callable<Void> getMultipleParallelKieSessionsFireUntilHaltCallable(KieBase kBase, boolean asyncInsert) {
-        return new Callable<Void>() {
-            @Override
-            public Void call() {
-                KieSession ksession = kBase.newKieSession();
-                assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
+        return () -> {
+            KieSession ksession = kBase.newKieSession();
+            assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
 
-                CountDownLatch done = new CountDownLatch(1);
+            CountDownLatch done = new CountDownLatch(1);
 
-                DebugList<Integer> list = new DebugList<Integer>();
-                list.onItemAdded = (l -> {
-                    if (l.size() == 10) {
-                        ksession.halt();
-                        done.countDown();
-                    }
-                });
-                ksession.setGlobal("list", list);
-
-                new Thread(() -> ksession.fireUntilHalt()).start();
-                if (asyncInsert) {
-                    StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl) ksession;
-                    for (int i = 0; i < 10; i++) {
-                        session.insertAsync(i);
-                        session.insertAsync("" + String.valueOf(i));
-                    }
-                } else {
-                    insertFacts(ksession, 10);
+            DebugList<Integer> list = new DebugList<Integer>();
+            list.onItemAdded = (l -> {
+                if (l.size() == 10) {
+                    ksession.halt();
+                    done.countDown();
                 }
+            });
+            ksession.setGlobal("list", list);
 
-                try {
-                    done.await();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+            new Thread(ksession::fireUntilHalt).start();
+            if (asyncInsert) {
+                StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl) ksession;
+                for (int i = 0; i < 10; i++) {
+                    session.insertAsync(i);
+                    session.insertAsync("" + String.valueOf(i));
                 }
-
-                assertThat(list.size()).isEqualTo(10);
-
-                return null;
+            } else {
+                insertFacts(ksession, 10);
             }
+
+            try {
+                done.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            assertThat(list.size()).isEqualTo(10);
+
+            return null;
         };
     }
 
     @Test(timeout = 10000L)
-    @Ignore("Because of DROOLS-1496")
     public void testMultipleParallelKieSessionsFireUntilHaltWithAsyncInsert() throws InterruptedException, ExecutionException, TimeoutException {
         final int NUMBER_OF_PARALLEL_SESSIONS = 5;
 

@@ -23,7 +23,8 @@ import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -54,7 +55,9 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     protected static final transient Logger log = LoggerFactory.getLogger( CompositeDefaultAgenda.class );
 
-    private static final Executor EXECUTOR = ExecutorProviderFactory.getExecutorProvider().getExecutor();
+    private static final ExecutorService EXECUTOR = ExecutorProviderFactory.getExecutorProvider().getExecutor();
+
+    private static final AtomicBoolean FIRING_UNTIL_HALT_USING_EXECUTOR = new AtomicBoolean( false );
 
     private final DefaultAgenda[] agendas = new DefaultAgenda[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
 
@@ -172,6 +175,12 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public void fireUntilHalt( AgendaFilter agendaFilter ) {
+        ExecutorService fireUntilHaltExecutor = EXECUTOR;
+
+        if ( FIRING_UNTIL_HALT_USING_EXECUTOR.getAndSet( true )) {
+            fireUntilHaltExecutor = (ExecutorService) ExecutorProviderFactory.getExecutorProvider().newFixedThreadPool();
+        }
+
         if ( log.isTraceEnabled() ) {
             log.trace("Starting Fire Until Halt");
         }
@@ -181,7 +190,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
                 CompletableFuture<Void>[] futures = new CompletableFuture[agendas.length-1];
                 for (int i = 0; i < futures.length; i++) {
                     final int j = i;
-                    futures[j] = runAsync( () -> agendas[j].internalFireUntilHalt( agendaFilter, false ), EXECUTOR );
+                    futures[j] = runAsync( () -> agendas[j].internalFireUntilHalt( agendaFilter, false ), fireUntilHaltExecutor );
                 }
 
                 agendas[agendas.length-1].internalFireUntilHalt( agendaFilter, false );
@@ -192,6 +201,11 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
             }
         } finally {
             executionStateMachine.immediateHalt(propagationList);
+            if (fireUntilHaltExecutor == EXECUTOR) {
+                FIRING_UNTIL_HALT_USING_EXECUTOR.set( false );
+            } else {
+                fireUntilHaltExecutor.shutdown();
+            }
         }
         if ( log.isTraceEnabled() ) {
             log.trace("Ending Fire Until Halt");
