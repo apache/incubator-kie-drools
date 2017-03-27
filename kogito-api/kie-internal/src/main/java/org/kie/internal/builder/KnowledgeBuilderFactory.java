@@ -34,7 +34,10 @@ import org.kie.internal.utils.ServiceRegistryImpl;
  * </pre>
  */
 public class KnowledgeBuilderFactory {
-    private static volatile KnowledgeBuilderFactoryService factoryService;
+
+    private static class FactoryServiceHolder {
+        private static final KnowledgeBuilderFactoryService factoryService = ServiceRegistryImpl.getInstance().get( KnowledgeBuilderFactoryService.class );
+    }
 
     /**
      * Create and return a new KnowledgeBuilder, using the default KnowledgeBuilderConfigurations
@@ -42,7 +45,7 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilder
      */
     public static KnowledgeBuilder newKnowledgeBuilder() {
-        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilder();
+        return FactoryServiceHolder.factoryService.newKnowledgeBuilder();
     }
 
     /**
@@ -51,17 +54,16 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilder
      */
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilder( conf );
+        return FactoryServiceHolder.factoryService.newKnowledgeBuilder( conf );
     }
 
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase) {
-        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilder( kbase );
+        return FactoryServiceHolder.factoryService.newKnowledgeBuilder( kbase );
     }
 
     public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
                                                        KnowledgeBuilderConfiguration conf) {
-        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilder( kbase,
-                                                                  conf );
+        return FactoryServiceHolder.factoryService.newKnowledgeBuilder( kbase, conf );
     }
 
     /**
@@ -70,7 +72,7 @@ public class KnowledgeBuilderFactory {
      *     The KnowledgeBuilderConfiguration.
      */
     public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration() {
-        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilderConfiguration();
+        return FactoryServiceHolder.factoryService.newKnowledgeBuilderConfiguration();
     }
 
     /**
@@ -81,8 +83,7 @@ public class KnowledgeBuilderFactory {
      */
     public static KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties,
                                                                                  ClassLoader... classLoaders) {
-        return getKnowledgeBuilderServiceFactory().newKnowledgeBuilderConfiguration( properties,
-                                                                                     classLoaders );
+        return FactoryServiceHolder.factoryService.newKnowledgeBuilderConfiguration( properties, classLoaders );
     }
 
     /**
@@ -105,7 +106,7 @@ public class KnowledgeBuilderFactory {
      * @return
      */
     public static DecisionTableConfiguration newDecisionTableConfiguration() {
-        return getKnowledgeBuilderServiceFactory().newDecisionTableConfiguration();
+        return FactoryServiceHolder.factoryService.newDecisionTableConfiguration();
     }
 
     /**
@@ -127,27 +128,10 @@ public class KnowledgeBuilderFactory {
      * </pre>
      */
     public static ScoreCardConfiguration newScoreCardConfiguration() {
-        return getKnowledgeBuilderServiceFactory().newScoreCardConfiguration();
+        return FactoryServiceHolder.factoryService.newScoreCardConfiguration();
     }
 
-    public static JaxbConfiguration newJaxbConfiguration(Options xjcOpts,
-                                                         String systemId) {
-        return getKnowledgeBuilderServiceFactory().newJaxbConfiguration(xjcOpts,
-                                                                        systemId);
-    }
-
-    private static synchronized void setKnowledgeBuilderFactoryService(KnowledgeBuilderFactoryService serviceFactory) {
-        KnowledgeBuilderFactory.factoryService = serviceFactory;
-    }
-
-    private static synchronized KnowledgeBuilderFactoryService getKnowledgeBuilderServiceFactory() {
-        if ( factoryService == null ) {
-            loadServiceFactory();
-        }
-        return factoryService;
-    }
-
-    private static void loadServiceFactory() {
-        setKnowledgeBuilderFactoryService( ServiceRegistryImpl.getInstance().get( KnowledgeBuilderFactoryService.class ) );
+    public static JaxbConfiguration newJaxbConfiguration(Options xjcOpts, String systemId) {
+        return FactoryServiceHolder.factoryService.newJaxbConfiguration(xjcOpts, systemId);
     }
 }

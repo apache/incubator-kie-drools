@@ -59,7 +59,7 @@ public class ServiceRegistryImpl
     private final Map<String, Callable< ? >>      registry        = new HashMap<String, Callable< ? >>();
     private final Map<String, Callable< ? >>      defaultServices = new HashMap<String, Callable< ? >>();
 
-    public static synchronized ServiceRegistry getInstance() {
+    public static ServiceRegistry getInstance() {
         return instance;
     }
 
@@ -95,20 +95,6 @@ public class ServiceRegistryImpl
         // logger.info( "register : " + service );
         this.registry.put( service.getClass().getInterfaces()[0].getName(),
                            new ReturnInstance<Service>( service ) );
-
-        //
-        //        BundleContext bc = this.context.getBundleContext();
-        //        ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
-        //        ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
-        //
-        //        try {
-        //            Configuration conf = admin.getConfiguration( (String) confAdminRef.getProperty( "service.id" ) );
-        //            Dictionary properties = conf.getProperties();
-        //            properties.put( values[0], "true" );
-        //            conf.update( properties );
-        //        } catch ( IOException e ) {
-        //            logger.error("error", e);
-        //        }
     }
 
     /* (non-Javadoc)
@@ -122,35 +108,6 @@ public class ServiceRegistryImpl
         this.registry.put( name,
                            this.defaultServices.get( name ) );
     }
-
-    //    ConfigurationAdmin confAdmin;
-    //    synchronized void setConfigurationAdmin(ConfigurationAdmin confAdmin) {
-    //        this.confAdmin = confAdmin;
-    //        logger.info( "ConfAdmin : " + this.confAdmin );
-    //    }
-    //
-    //    synchronized void unsetConfigurationAdmin(ConfigurationAdmin confAdmin) {
-    //        this.confAdmin = null;
-    //    }
-
-    //    private ComponentContext context;
-    //    void activate(ComponentContext context) {
-    //        logger.info( "reg comp" + context.getProperties() );
-    //        this.context = context;
-    //
-    //
-    //
-    //      BundleContext bc = this.context.getBundleContext();
-    //
-    //      ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
-    //      ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
-    //      logger.info( "conf admin : " + admin );
-    //        //context.
-    //    //    log = (LogService) context.locateService("LOG");
-    //        }
-    //    void deactivate(ComponentContext context ){
-    //
-    //    }
 
     public synchronized <T> T get(Class<T> cls) {
 
