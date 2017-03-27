@@ -387,8 +387,9 @@ public class ValidatorTest {
     @Test
     public void testRELATION_ROW_CELL_NOTLITERAL() {
         List<DMNMessage> validate = validator.validate( getReader( "RELATION_ROW_CELL_NOTLITERAL.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( formatMessages( validate ), validate.size(), is( 1 ) );
+        assertThat( formatMessages( validate ), validate.size(), is( 2 ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.RELATION_CELL_NOT_LITERAL ) ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
     }
     
     @Test
@@ -423,7 +424,7 @@ public class ValidatorTest {
     @Test
     public void testTYPEREF_NO_FEEL_TYPE() {
         List<DMNMessage> validate = validator.validate( getReader( "TYPEREF_NO_FEEL_TYPE.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( formatMessages( validate ), validate.size(), is( 0 ) );
+        assertThat( formatMessages( validate ), validate.size(), is( 1 ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.TYPE_REF_NOT_FOUND ) ) );
     }
     
