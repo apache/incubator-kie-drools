@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_da1a4dcb-01bf-4dee-9be8-f498bc68178c" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.0.35.201611211744" id="_da1a4dcb-01bf-4dee-9be8-f498bc68178c"
+                      name="Collect Hit Policy" namespace="http://www.trisotech.com/definitions/_da1a4dcb-01bf-4dee-9be8-f498bc68178c"
+                      triso:logoChoice="None">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:decision id="_0ec4142e-209c-4ab6-b6b2-43e3c1431bd5" name="Collect">
+    <semantic:variable id="_5c26fb00-41cd-455f-9d18-3b5a5c1cb076" name="Collect" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_ad3c2a7e-b135-4754-a9c6-7fcb60a54d52"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable aggregation="SUM" hitPolicy="COLLECT" outputLabel="Collect">
+      <semantic:input id="_624f3133-2495-419c-a241-19739e76d727" label="Input">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Input</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_ffa236e1-c9ba-4541-bde0-664073561acb"/>
+      <semantic:rule id="_a1b5a2e4-7e56-4435-8cf2-e27b31203bac">
+        <semantic:inputEntry id="_a1b5a2e4-7e56-4435-8cf2-e27b31203bac-0">
+          <semantic:text>[0..10]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a1b5a2e4-7e56-4435-8cf2-e27b31203bac-1">
+          <semantic:text>10</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_a9acc00b-d55c-4977-97da-608b57061984">
+        <semantic:inputEntry id="_a9acc00b-d55c-4977-97da-608b57061984-0">
+          <semantic:text>[10..20]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a9acc00b-d55c-4977-97da-608b57061984-1">
+          <semantic:text>20</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_25a643bd-69e1-4c30-a952-ca892debe3ac">
+        <semantic:inputEntry id="_25a643bd-69e1-4c30-a952-ca892debe3ac-0">
+          <semantic:text>[20..30]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_25a643bd-69e1-4c30-a952-ca892debe3ac-1">
+          <semantic:text>30</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_e8f8d581-2ba7-42f1-a10d-ccd0ae617190">
+        <semantic:inputEntry id="_e8f8d581-2ba7-42f1-a10d-ccd0ae617190-0">
+          <semantic:text>&gt;30</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e8f8d581-2ba7-42f1-a10d-ccd0ae617190-1">
+          <semantic:text>40</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_ad3c2a7e-b135-4754-a9c6-7fcb60a54d52" name="Input">
+    <semantic:variable id="_293a1661-47d9-40a7-9682-e9d086d6ece6" name="Input" typeRef="feel:number"/>
+  </semantic:inputData>
+</semantic:definitions>

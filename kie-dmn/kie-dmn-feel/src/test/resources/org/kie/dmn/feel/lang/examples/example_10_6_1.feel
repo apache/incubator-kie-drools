@@ -1,0 +1,49 @@
+/*
+ *  Example context from DMN Spec page 142
+ *
+ *  Defines a complex context
+ */
+{
+    // applicant is a nested context
+    applicant : {
+        age : 51,
+        marital status : "M",
+        employment status : "EMPLOYED",
+        existing customer : false,
+        monthly : {
+            income: 10000.00,
+            repayments: 2500.00,
+            expenses: 3000.00
+        }
+    },
+    requested product : {
+        product type : "STANDARD LOAN",
+        rate : 0.25,
+        term : 36,
+        amount : 100000.00
+    },
+
+    // a reference to a qualified name on a previous entry
+    monthly income : applicant.monthly.income,
+
+    // a list of qualified names
+    monthly outgoings : [ applicant.monthly.repayments, applicant.monthly.expenses ],
+
+    // a relation (list of contexts)
+    credit history : [
+        {
+            record date : date( "2008-03-12" ),
+            event : "home mortgage",
+            weight : 100
+        },
+        {
+            record date : date( "2011-04-01" ),
+            event : "foreclosure warning",
+            weight : 150
+        }
+    ],
+
+    // a custom function
+    PMT : function( rate, term, amount )
+              (amount * rate / 12) / ( 1 - ( 1 + rate / 12 ) ** -term )
+}

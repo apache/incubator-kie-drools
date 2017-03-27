@@ -1,0 +1,54 @@
+{
+    // the following would be input parameters,
+    // shown here for completeness
+    holiday : date("2017-01-01"),
+
+    // Joe is working in Tokyo
+    shift start : date and time( "2017-01-02T08:00:00+09:00[Asia/Tokyo]" ),
+    shift end : date and time( "2017-01-02T09:30:00+09:00[Asia/Tokyo]" ),
+
+    // holiday in california
+    holiday start california: date and time( holiday, time("00:00:00-08:00") ),
+    holiday end california: date and time( holiday, time("23:59:59-08:00") ),
+
+    holiday start tokyo: date and time( holiday, time("00:00:00+09:00") ),
+    holiday end tokyo: date and time( holiday, time("23:59:59+09:00") ),
+
+    // rate factor if joe is paid based on california's time
+    rate factor california : if shift start > holiday start california and
+                     shift end < holiday end california
+                  then
+                     1.5
+                  else
+                     1.0,
+
+    // rate factor if joe is paid based on tokyo's time
+    rate factor tokyo : if shift start > holiday start tokyo and
+                     shift end < holiday end tokyo
+                  then
+                     1.5
+                  else
+                     1.0,
+
+    // date/time comparison with and without timezones:
+    comparison : date and time( holiday, time("00:00:00+00:00")) = date and time( holiday, time("00:00:00")),
+
+    comparison2 : date and time( "2017-01-02T08:00:00+09:00" ) - date and time( "2017-01-01T16:00:00-07:00" ),
+
+    date check : date( date and time( "2017-01-02T08:00:00+09:00" ) ),
+    date check2 : date( date and time( "2017-01-01T16:00:00-07:00" ) ),
+
+    date arithmetic 1 : date and time( "2015-01-28T00:00:00" ) + duration( "P0Y1M" ),
+    date arithmetic 2 : date and time( "2015-01-29T00:00:00" ) + duration( "P0Y1M" ),
+    date arithmetic 3 : date and time( "2015-01-30T00:00:00" ) + duration( "P0Y1M" ),
+    date arithmetic 4 : date and time( "2015-01-31T00:00:00" ) + duration( "P0Y1M" ),
+
+    date arithmetic 5 : date and time( "2015-01-28T00:00:00" ) + duration( "P30D" ),
+    date arithmetic 6 : date and time( "2015-01-29T00:00:00" ) + duration( "P30D" ),
+    date arithmetic 7 : date and time( "2015-01-30T00:00:00" ) + duration( "P30D" ),
+    date arithmetic 8 : date and time( "2015-01-31T00:00:00" ) + duration( "P30D" ),
+
+    current : now()
+}
+
+

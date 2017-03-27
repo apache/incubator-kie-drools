@@ -1,0 +1,14 @@
+{
+   area DT : decision table(
+                                outputs: "Area",
+                                input expression list: ["Shape", "Radio", "Side"],
+                                rule list: [
+                                    [ "Circle", -, -, "3.14 * Radio ** 2" ],
+                                    [ "Square", -, -, "Side ** 2" ]
+                                ],
+                                hit policy: "U"
+                            ),
+
+   square area: area DT( "Square", null, 5 ),
+   circle area: area DT( "Circle", 5, null )
+}
