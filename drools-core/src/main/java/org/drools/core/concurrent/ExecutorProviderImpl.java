@@ -15,19 +15,19 @@
 
 package org.drools.core.concurrent;
 
-import org.kie.api.concurrent.KieExecutors;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import java.util.concurrent.CompletionService;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.kie.api.concurrent.KieExecutors;
 
 public class ExecutorProviderImpl implements KieExecutors {
 
@@ -37,10 +37,23 @@ public class ExecutorProviderImpl implements KieExecutors {
     public static final String THREAD_FACTORY_PROPERTY = "drools.threadFactory";
 
     private static class ExecutorHolder {
-        private static final java.util.concurrent.ExecutorService executor;
+        private static final ExecutorService executor;
+        private static final ThreadFactory threadFactory;
 
         static {
-            java.util.concurrent.ExecutorService newExecutor = null;
+            String threadFactoryClass = System.getProperty( THREAD_FACTORY_PROPERTY );
+
+            if ( threadFactoryClass == null ) {
+                threadFactory = new DaemonThreadFactory();
+            } else {
+                try {
+                    threadFactory = (ThreadFactory) Class.forName( threadFactoryClass ).newInstance();
+                } catch (Exception e) {
+                    throw new RuntimeException( "Unable to instance a ThreadFactory of class " + threadFactoryClass, e );
+                }
+            }
+
+            ExecutorService newExecutor = null;
 
             String executorServiceName = System.getProperty( EXECUTOR_SERVICE_PROPERTY );
             try {
@@ -55,19 +68,6 @@ public class ExecutorProviderImpl implements KieExecutors {
             }
 
             if (newExecutor == null) {
-                String threadFactoryClass = System.getProperty( THREAD_FACTORY_PROPERTY );
-                ThreadFactory threadFactory;
-
-                if ( threadFactoryClass == null ) {
-                    threadFactory = new DaemonThreadFactory();
-                } else {
-                    try {
-                        threadFactory = (ThreadFactory) Class.forName( threadFactoryClass ).newInstance();
-                    } catch (Exception e) {
-                        throw new RuntimeException( "Unable to instance a ThreadFactory of class " + threadFactoryClass, e );
-                    }
-                }
-
                 newExecutor = new ThreadPoolExecutor( Pool.SIZE, Pool.SIZE,
                                                       60L, TimeUnit.SECONDS,
                                                       new LinkedBlockingQueue<Runnable>(),
@@ -78,19 +78,27 @@ public class ExecutorProviderImpl implements KieExecutors {
         }
     }
 
-    public Executor getExecutor() {
+    public ExecutorService getExecutor() {
         return ExecutorHolder.executor;
     }
 
-    public Executor newSingleThreadExecutor() {
-        return Executors.newSingleThreadExecutor(new DaemonThreadFactory());
+    public ExecutorService newSingleThreadExecutor() {
+        return Executors.newSingleThreadExecutor(ExecutorHolder.threadFactory);
+    }
+
+    public ExecutorService newFixedThreadPool() {
+        return newFixedThreadPool(Pool.SIZE);
+    }
+
+    public ExecutorService newFixedThreadPool(int nThreads) {
+        return Executors.newFixedThreadPool(Pool.SIZE, ExecutorHolder.threadFactory);
     }
 
     public <T> CompletionService<T> getCompletionService() {
         return new ExecutorCompletionService<T>(getExecutor());
     }
 
-    private static class DaemonThreadFactory implements ThreadFactory {
+    public static class DaemonThreadFactory implements ThreadFactory {
         private static final AtomicInteger threadCount = new AtomicInteger();
 
         public Thread newThread(Runnable r) {
