@@ -207,9 +207,10 @@ public class DMNRuntimeImpl
                                                result,
                                                null,
                                                null,
-                                               Msg.MISSING_DEP_FOR_BKM,
-                                               getIdentifier( bkm ),
-                                               getIdentifier( dep ) );
+                                               Msg.REQ_DEP_NOT_FOUND_FOR_NODE,
+                                               getIdentifier( dep ),
+                                               getIdentifier( bkm )
+                        );
                         return;
                     }
                 }
@@ -277,7 +278,7 @@ public class DMNRuntimeImpl
                                                                         result,
                                                                         null,
                                                                         null,
-                                                                        Msg.UNABLE_TO_EVALUATE_DECISION_AS_IT_DEPS,
+                                                                        Msg.UNABLE_TO_EVALUATE_DECISION_REQ_DEP,
                                                                         getIdentifier( decision ),
                                                                         getIdentifier( dep ) );
                             reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
@@ -292,9 +293,10 @@ public class DMNRuntimeImpl
                                                                     result,
                                                                     null,
                                                                     null,
-                                                                    Msg.MISSING_DEP_FOR_DECISION,
-                                                                    getIdentifier( decision ),
-                                                                    getIdentifier( dep ) );
+                                                                    Msg.REQ_DEP_NOT_FOUND_FOR_NODE,
+                                                                    getIdentifier( dep ),
+                                                                    getIdentifier( decision )
+                                                                    );
                         reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
                     }
                 }

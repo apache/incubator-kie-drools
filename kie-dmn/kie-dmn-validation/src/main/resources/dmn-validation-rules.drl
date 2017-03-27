@@ -114,6 +114,21 @@ then
   reporter.report( DMNMessage.Severity.ERROR,  $ce1 , Msg.DUPLICATE_CONTEXT_ENTRY, $ce1.getVariable().getName() );
 end
 
+rule CONTEXT_MISSING_ENTRIES
+when
+  $c : Context( contextEntry == null || contextEntry.isEmpty() )
+then
+  reporter.report( DMNMessage.Severity.WARN, $c , Msg.MISSING_ENTRIES_ON_CONTEXT, $c.getParentDRGElement().getName() );
+end
+
+rule CONTEXT_MISSING_VARIABLE
+when
+  $c : Context( contextEntry != null && ! contextEntry.isEmpty() )
+  $ce : ContextEntry( variable == null, parent == $c, $c.contextEntry.indexOf( this ) < $c.contextEntry.size()-1 )
+then
+  reporter.report( DMNMessage.Severity.ERROR, $ce , Msg.MISSING_VARIABLE_ON_CONTEXT, $c.getParentDRGElement().getName() );
+end
+
 rule VARIABLE_NOTYPEREF
 when
   $ce1 : InformationItem( typeRef == null, !(parent instanceof Binding || parent instanceof FunctionDefinition || parent instanceof Relation ) )
@@ -321,38 +336,38 @@ end
 
 rule REQAUTH_NOT_KNOWLEDGESOURCE
 when
-  AuthorityRequirement( requiredAuthority != null, $oc: requiredAuthority )
+  $ar : AuthorityRequirement( requiredAuthority != null, $oc: requiredAuthority )
   DMNElement( id == rightOfHash( $oc.href ) , !(this instanceof KnowledgeSource) ) 
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQAUTH_NOT_KNOWLEDGESOURCE );
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQ_DEP_INVALID_TYPE, $oc.getHref(), $ar.getParentDRGElement().getName() );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p1
 when
   $o: Expression( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NO_FEEL_TYPE );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_FEEL_TYPE_REF_ON_NODE, $o.getTypeRef(), $o.getParentDRGElement().getName() );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p2
 when
   $o: InformationItem( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  $o: reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NO_FEEL_TYPE );
+  $o: reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_FEEL_TYPE_REF_ON_NODE, $o.getTypeRef(), $o.getParentDRGElement().getName() );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p3
 when
   $o: ItemDefinition( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NO_FEEL_TYPE );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_FEEL_TYPE_REF_ON_NODE, $o.getTypeRef(), $o.getParentDRGElement().getName() );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p4
 when
   $o: OutputClause( typeRef!.prefix != null, getNamespaceURI( typeRef.prefix ) == DMNModelInstrumentedBase.URI_FEEL, BuiltInType.determineTypeFromName( typeRef.localPart ) == BuiltInType.UNKNOWN )
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.TYPEREF_NO_FEEL_TYPE );
+  reporter.report( DMNMessage.Severity.ERROR,  $o , Msg.UNKNOWN_FEEL_TYPE_REF_ON_NODE, $o.getTypeRef(), $o.getParentDRGElement().getName() );
 end
 
 rule TYPEREF_NOT_FEEL_NOT_DEF_p1
