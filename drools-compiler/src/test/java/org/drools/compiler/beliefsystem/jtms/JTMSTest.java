@@ -15,39 +15,36 @@
 
 package org.drools.compiler.beliefsystem.jtms;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.core.BeliefSystemType;
 import org.drools.compiler.Person;
+import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.common.EqualityKey;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.event.rule.RuleEventListener;
+import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.rule.FactHandle;
+
+import static org.junit.Assert.*;
 
 public class JTMSTest {
 
@@ -99,7 +96,6 @@ public class JTMSTest {
     public void testPosNegNonConflictingInsertions() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
         		"\n" + 
-        		"import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
         		"import java.util.List \n" +
         		"import org.drools.core.common.AgendaItem;" +
         		"global java.util.List list;\n" + 
@@ -125,14 +121,6 @@ public class JTMSTest {
                 "    final String s = '+' + $n;" +
                 "    final List l = list;" +
                 "    l.add( s );\n" +
-                "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
-                "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" + 
-                "        \n" + 
-                "        public void unMatch(org.kie.api.runtime.rule.RuleRuntime wm,\n" +
-                "                            org.kie.api.runtime.rule.Match activation) {\n" +
-                "            l.remove( s );\n" + 
-                "        }\n" + 
-                "    } );" +
                 "end\n" +
                 "rule \"Negative\"\n" +
                 "when\n" +
@@ -141,20 +129,24 @@ public class JTMSTest {
                 "    final String s = '-' + $n; \n" +
                 "    final List l = list; \n" +
                 "    l.add( s ); \n" +
-                "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
-                "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" +
-                "        \n" +
-                "        public void unMatch(org.kie.api.runtime.rule.RuleRuntime wm,\n" +
-                "                            org.kie.api.runtime.rule.Match activation) {\n" +
-                "            l.remove( s );\n" +
-                "        }\n" +
-                "    } );" +
                 "end\n";
 
         StatefulKnowledgeSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
-        
+
+        ( (RuleEventManager) kSession ).addEventListener( new RuleEventListener() {
+            @Override
+            public void onDeleteMatch( Match match ) {
+                String rule = match.getRule().getName();
+                if (rule.equals( "Positive" )) {
+                    list.remove("+" + match.getDeclarationValue( "$n" ));
+                } else if (rule.equals( "Negative" )) {
+                    list.remove("-" + match.getDeclarationValue( "$n" ));
+                }
+            }
+        } );
+
         FactHandle fhGo1 = kSession.insert( "go1" );
         kSession.fireAllRules();
         assertTrue( list.contains( "-neg" ) );
@@ -189,7 +181,6 @@ public class JTMSTest {
     public void testConflictToggleWithoutGoingEmpty() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                    "\n" +
-                   "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
                    "import java.util.List \n" +
                    "import org.drools.core.common.AgendaItem;" +
                    "global java.util.List list;\n" +
@@ -230,14 +221,6 @@ public class JTMSTest {
                    "    final String s = '+' + $n;" +
                    "    final List l = list;" +
                    "    l.add( s );\n" +
-                   "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
-                   "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" +
-                   "        \n" +
-                   "        public void unMatch(org.kie.api.runtime.rule.RuleRuntime wm,\n" +
-                   "                            org.kie.api.runtime.rule.Match activation) {\n" +
-                   "            l.remove( s );\n" +
-                   "        }\n" +
-                   "    } );" +
                    "end\n" +
                    "rule \"Negative\"\n" +
                    "when\n" +
@@ -246,20 +229,24 @@ public class JTMSTest {
                    "    final String s = '-' + $n; \n" +
                    "    final List l = list; \n" +
                    "    l.add( s ); \n" +
-                   "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
-                   "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" +
-                   "        \n" +
-                   "        public void unMatch(org.kie.api.runtime.rule.RuleRuntime wm,\n" +
-                   "                            org.kie.api.runtime.rule.Match activation) {\n" +
-                   "            l.remove( s );\n" +
-                   "        }\n" +
-                   "    } );" +
                    "end\n" +
                 "";
 
         StatefulKnowledgeSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
+
+        ( (RuleEventManager) kSession ).addEventListener( new RuleEventListener() {
+            @Override
+            public void onDeleteMatch( Match match ) {
+                String rule = match.getRule().getName();
+                if (rule.equals( "Positive" )) {
+                    list.remove("+" + match.getDeclarationValue( "$n" ));
+                } else if (rule.equals( "Negative" )) {
+                    list.remove("-" + match.getDeclarationValue( "$n" ));
+                }
+            }
+        } );
 
         FactHandle fhGo1 = kSession.insert( "go1" );
         FactHandle fhGo2 = kSession.insert( "go2" );
@@ -476,7 +463,6 @@ public class JTMSTest {
     public void testRetractHandleWhenOnlyNeg() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
-                "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
                 "import org.drools.core.common.AgendaItem;" +
                 "global java.util.List list;\n" + 
@@ -507,20 +493,22 @@ public class JTMSTest {
                 "    final String s = '-' + $n; \n" +
                 "    final List l = list; \n" +
                 "    l.add( s ); \n" +
-                "    AgendaItem item = ( AgendaItem ) kcontext.getMatch(); \n" +
-                "    item.setActivationUnMatchListener( new ActivationUnMatchListener() { \n" + 
-                "        \n" + 
-                "        public void unMatch(org.kie.api.runtime.rule.RuleRuntime wm, \n" +
-                "                            org.kie.api.runtime.rule.Match activation) { \n" +
-                "            l.remove( s ); \n" + 
-                "        }\n" + 
-                "    } );" + 
                 "end\n";
         
         StatefulKnowledgeSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
-        
+
+        ( (RuleEventManager) kSession ).addEventListener( new RuleEventListener() {
+            @Override
+            public void onDeleteMatch( Match match ) {
+                String rule = match.getRule().getName();
+                if (rule.equals( "Negative" )) {
+                    list.remove("-" + match.getDeclarationValue( "$n" ));
+                }
+            }
+        } );
+
         FactHandle fhGo1 = kSession.insert( "go1" );
         kSession.fireAllRules();
         assertTrue( list.contains( "-neg" ) );        

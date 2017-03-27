@@ -15,6 +15,10 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.drools.compiler.Cell;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -32,6 +36,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.spi.AgendaGroup;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -43,10 +48,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
@@ -669,7 +670,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( "rule2", list.get( 1 ) );
     }
     
-    @Test 
+    @Test
+    @Ignore("this test mistakenly invoke the listenter directly from the consequence")
     public void testUnMatchListenerForChainedPlanningEntities() {
         String str =""+
                 "package org.drools.compiler.integrationtests;\n" +
