@@ -17,15 +17,19 @@
 package org.kie.api.concurrent;
 
 import java.util.concurrent.CompletionService;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import org.kie.api.Service;
 
 public interface KieExecutors extends Service {
 
-    Executor getExecutor();
+    ExecutorService getExecutor();
 
-    Executor newSingleThreadExecutor();
+    ExecutorService newSingleThreadExecutor();
+
+    ExecutorService newFixedThreadPool();
+
+    ExecutorService newFixedThreadPool(int nThreads);
 
     <T> CompletionService<T> getCompletionService();
 
