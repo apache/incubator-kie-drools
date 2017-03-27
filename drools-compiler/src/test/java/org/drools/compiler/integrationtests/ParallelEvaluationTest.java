@@ -27,6 +27,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.conf.EventProcessingOption;
@@ -39,12 +40,19 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 public class ParallelEvaluationTest {
@@ -767,5 +775,254 @@ public class ParallelEvaluationTest {
 
         assertEquals(10, list.size());
         assertEquals( list, Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1, 0) );
+    }
+
+    @Test(timeout = 10000L)
+    public void testMultipleParallelKieSessionsWithInsertions() throws InterruptedException, ExecutionException, TimeoutException {
+        final int NUMBER_OF_PARALLEL_SESSIONS = 5;
+
+        /* Create KIE base */
+        StringBuilder sb = new StringBuilder();
+        sb.append("global java.util.List list;\n");
+        final int ruleNr = 200;
+
+        for (int i = 0; i < ruleNr; i++) {
+            sb.append(getRule(i, "insert( $i + 10 );\ninsert( \"\" + ($i + 10) );\n"));
+        }
+        KieBase kBase = new KieHelper().addContent(sb.toString(), ResourceType.DRL)
+                .build(MultithreadEvaluationOption.YES);
+
+        /* Create parallel tasks */
+        List<Callable<Void>> tasks = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_PARALLEL_SESSIONS; i++) {
+            tasks.add(getMultipleParallelKieSessionsWithInsertionsCallable(kBase, ruleNr));
+        }
+
+        runTasksInParallel(tasks);
+    }
+
+    private Callable<Void> getMultipleParallelKieSessionsWithInsertionsCallable(KieBase kBase, int ruleNr) {
+        return new Callable<Void>() {
+            @Override public Void call() {
+                KieSession ksession = kBase.newKieSession();
+                assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+
+                List<Integer> list = new DebugList<Integer>();
+                ksession.setGlobal( "list", list );
+
+                insertFacts(ksession, 10);
+
+                ksession.fireAllRules();
+                assertEquals(ruleNr, list.size());
+
+                return null;
+            }
+        };
+    }
+
+    @Test(timeout = 10000L)
+    public void testMultipleParallelKieSessionsWithUpdates() throws InterruptedException, ExecutionException, TimeoutException {
+        final int NUMBER_OF_PARALLEL_SESSIONS = 5;
+
+        /* Create KIE base */
+        StringBuilder sb = new StringBuilder( 400 );
+        sb.append( "global java.util.List list;\n" );
+        for (int i = 0; i < 10; i++) {
+            sb.append( getRule( i, "" ) );
+        }
+        KieBase kBase = new KieHelper().addContent(sb.toString(), ResourceType.DRL)
+                .build(MultithreadEvaluationOption.YES);
+
+        /* Create parallel tasks */
+        List<Callable<Void>> tasks = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_PARALLEL_SESSIONS; i++) {
+            tasks.add(getMultipleParallelKieSessionsWithUpdatesCallable(kBase));
+        }
+
+        /* Run tasks in parallel */
+        runTasksInParallel(tasks);
+    }
+
+    private Callable<Void> getMultipleParallelKieSessionsWithUpdatesCallable(KieBase kBase) {
+        return new Callable<Void>() {
+            @Override public Void call() {
+                KieSession ksession = kBase.newKieSession();
+                assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).as("Parallel agenda has to be enabled").isTrue();
+
+                List<Integer> list = new DebugList<Integer>();
+                ksession.setGlobal( "list", list );
+
+                FactHandle[] fhs = new FactHandle[10];
+                fhs = insertFacts(ksession, 10);
+
+                ksession.fireAllRules();
+                assertThat(list.size()).isEqualTo(10);
+
+                list.clear();
+
+                for (int i = 0; i < 10; i++) {
+                    ksession.update( fhs[i], i );
+                }
+
+                ksession.fireAllRules();
+                assertThat(list.size()).isEqualTo(10);
+
+                return null;
+            }
+        };
+    }
+
+    @Test(timeout = 10000L)
+    public void testMultipleParallelKieSessionsWithDeletes() throws InterruptedException, ExecutionException, TimeoutException {
+        final int NUMBER_OF_PARALLEL_SESSIONS = 5;
+
+        /* Create KIE base */
+        StringBuilder sb = new StringBuilder(400);
+        sb.append("global java.util.List list;\n");
+        for (int i = 1; i < 11; i++) {
+            sb.append(getRule(i, "delete( $i );\n"));
+        }
+        for (int i = 1; i < 11; i++) {
+            sb.append(getNotRule(i));
+        }
+        KieBase kbase = new KieHelper().addContent(sb.toString(), ResourceType.DRL)
+                .build(MultithreadEvaluationOption.YES);
+
+        List<Callable<Void>> tasks = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_PARALLEL_SESSIONS; i++) {
+            tasks.add(getMultipleParallelKieSessionsWithDeletesCallable(kbase));
+        }
+
+        /* Run tasks in parallel */
+        runTasksInParallel(tasks);
+    }
+
+    private Callable<Void> getMultipleParallelKieSessionsWithDeletesCallable(KieBase kbase) {
+        return new Callable<Void>() {
+            @Override public Void call() {
+                KieSession ksession = kbase.newKieSession();
+                assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
+
+                List<Integer> list = new DebugList<Integer>();
+                ksession.setGlobal( "list", list );
+
+                insertFacts(ksession, 11);
+                ksession.fireAllRules();
+
+                assertThat(ksession.getObjects()).isEmpty();
+                assertThat(list.size()).isEqualTo(20);
+
+                return null;
+            }
+        };
+    }
+
+    @Test(timeout = 10000L)
+    @Ignore("Because of DROOLS-1496")
+    public void testMultipleParallelKieSessionsFireUntilHalt() throws InterruptedException, ExecutionException, TimeoutException {
+        final int NUMBER_OF_PARALLEL_SESSIONS = 5;
+
+        /* Create KIE base */
+        StringBuilder sb = new StringBuilder(400);
+        sb.append("global java.util.List list;\n");
+        for (int i = 0; i < 10; i++) {
+            sb.append(getRule(i, ""));
+        }
+        KieBase kbase = new KieHelper().addContent(sb.toString(), ResourceType.DRL)
+                .build(MultithreadEvaluationOption.YES);
+
+        List<Callable<Void>> tasks = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_PARALLEL_SESSIONS; i++) {
+            tasks.add(getMultipleParallelKieSessionsFireUntilHaltCallable(kbase, false));
+        }
+
+        /* Run tasks in parallel */
+        runTasksInParallel(tasks);
+    }
+
+    private Callable<Void> getMultipleParallelKieSessionsFireUntilHaltCallable(KieBase kBase, boolean asyncInsert) {
+        return new Callable<Void>() {
+            @Override
+            public Void call() {
+                KieSession ksession = kBase.newKieSession();
+                assertThat(((InternalWorkingMemory) ksession).getAgenda().isParallelAgenda()).isTrue();
+
+                CountDownLatch done = new CountDownLatch(1);
+
+                DebugList<Integer> list = new DebugList<Integer>();
+                list.onItemAdded = (l -> {
+                    if (l.size() == 10) {
+                        ksession.halt();
+                        done.countDown();
+                    }
+                });
+                ksession.setGlobal("list", list);
+
+                new Thread(() -> ksession.fireUntilHalt()).start();
+                if (asyncInsert) {
+                    StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl) ksession;
+                    for (int i = 0; i < 10; i++) {
+                        session.insertAsync(i);
+                        session.insertAsync("" + String.valueOf(i));
+                    }
+                } else {
+                    insertFacts(ksession, 10);
+                }
+
+                try {
+                    done.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                assertThat(list.size()).isEqualTo(10);
+
+                return null;
+            }
+        };
+    }
+
+    @Test(timeout = 10000L)
+    @Ignore("Because of DROOLS-1496")
+    public void testMultipleParallelKieSessionsFireUntilHaltWithAsyncInsert() throws InterruptedException, ExecutionException, TimeoutException {
+        final int NUMBER_OF_PARALLEL_SESSIONS = 5;
+
+        /* Create KIE base */
+        StringBuilder sb = new StringBuilder(400);
+        sb.append("global java.util.List list;\n");
+        for (int i = 0; i < 10; i++) {
+            sb.append(getRule(i, ""));
+        }
+        KieBase kbase = new KieHelper().addContent(sb.toString(), ResourceType.DRL)
+                .build(MultithreadEvaluationOption.YES);
+
+        /* Create parallel tasks */
+        List<Callable<Void>> tasks = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_PARALLEL_SESSIONS; i++) {
+            tasks.add(getMultipleParallelKieSessionsFireUntilHaltCallable(kbase, true));
+        }
+
+        /* Run tasks in parallel */
+        runTasksInParallel(tasks);
+    }
+
+    private FactHandle[] insertFacts(KieSession ksession, int n) {
+        FactHandle[] fhs = new FactHandle[n];
+        for (int i = 0; i < n; i++) {
+            fhs[i] = ksession.insert(i);
+            ksession.insert(String.valueOf(i));
+        }
+
+        return fhs;
+    }
+
+    private void runTasksInParallel(List<Callable<Void>> tasks) throws InterruptedException, TimeoutException, ExecutionException {
+        ExecutorService executorService = Executors.newFixedThreadPool(tasks.size());
+        try {
+            List<Future<Void>> futures = executorService.invokeAll(tasks);
+            assertThat(futures.size()).isEqualTo(tasks.size());
+        } finally {
+            executorService.shutdownNow();
+        }
     }
 }
