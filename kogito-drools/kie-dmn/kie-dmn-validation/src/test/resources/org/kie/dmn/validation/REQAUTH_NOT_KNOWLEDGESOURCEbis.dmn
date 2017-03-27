@@ -20,8 +20,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
   <businessKnowledgeModel name="bkm1">
+    <encapsulatedLogic>
+      <literalExpression>
+        <text>true</text>
+      </literalExpression>
+    </encapsulatedLogic>
+    <variable name="bkm1" typeRef="feel:string"/>
     <authorityRequirement>
-        <requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c22761b3" />
+      <requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c22761b3" />
     </authorityRequirement>
   </businessKnowledgeModel>
   <knowledgeSource id="auth2" name="auth2"></knowledgeSource>

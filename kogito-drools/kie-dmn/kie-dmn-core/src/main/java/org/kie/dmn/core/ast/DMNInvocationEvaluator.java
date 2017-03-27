@@ -89,7 +89,7 @@ public class DMNInvocationEvaluator
                                        result,
                                        null,
                                        null,
-                                       Msg.FUNCTION_NOT_FOUND_INVOCATION_FAILED_ON_NODE,
+                                       Msg.FUNCTION_NOT_FOUND,
                                        functionName,
                                        nodeName );
                 return new EvaluatorResultImpl( null, ResultType.FAILURE );
