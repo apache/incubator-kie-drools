@@ -55,7 +55,9 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
     }
 
     public void notifyAllListeners(Consumer<E> consumer) {
-        listeners.forEach( l -> consumer.accept( l ) );
+        if (!listeners.isEmpty()) {
+            listeners.forEach( l -> consumer.accept( l ) );
+        }
     }
 
     protected final Iterator<E> getEventListenersIterator() {
