@@ -57,7 +57,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     private static final ExecutorService EXECUTOR = ExecutorProviderFactory.getExecutorProvider().getExecutor();
 
-    private static final AtomicBoolean FIRING_UTIL_HALT_USING_EXECUTOR = new AtomicBoolean( false );
+    private static final AtomicBoolean FIRING_UNTIL_HALT_USING_EXECUTOR = new AtomicBoolean( false );
 
     private final DefaultAgenda[] agendas = new DefaultAgenda[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
 
@@ -177,7 +177,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     public void fireUntilHalt( AgendaFilter agendaFilter ) {
         ExecutorService fireUntilHaltExecutor = EXECUTOR;
 
-        if (FIRING_UTIL_HALT_USING_EXECUTOR.getAndSet( true )) {
+        if ( FIRING_UNTIL_HALT_USING_EXECUTOR.getAndSet( true )) {
             fireUntilHaltExecutor = (ExecutorService) ExecutorProviderFactory.getExecutorProvider().newFixedThreadPool();
         }
 
@@ -202,7 +202,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
         } finally {
             executionStateMachine.immediateHalt(propagationList);
             if (fireUntilHaltExecutor == EXECUTOR) {
-                FIRING_UTIL_HALT_USING_EXECUTOR.set(false);
+                FIRING_UNTIL_HALT_USING_EXECUTOR.set( false );
             } else {
                 fireUntilHaltExecutor.shutdown();
             }
