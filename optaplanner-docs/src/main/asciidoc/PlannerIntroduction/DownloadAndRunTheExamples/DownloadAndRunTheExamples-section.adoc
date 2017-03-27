@@ -72,7 +72,7 @@ If using JBoss EAP in standalone mode, this can be done by adding the `optaplann
 
 **Deploying Webexamples on a Servlet Container**
 
-To successfully deploy the webesxamples on a servlet container (such as Jetty or Tomcat) instead of on a real JEE application server (such as WildFly):
+To successfully deploy the webexamples on a servlet container (such as Jetty or Tomcat) instead of on a real JEE application server (such as WildFly):
 
 . Add the missing implementation libraries (for example RestEasy and Weld) in the `optaplanner-webexamples-*.war` manually.
 
