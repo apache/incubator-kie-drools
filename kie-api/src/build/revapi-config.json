@@ -522,6 +522,48 @@
           "methodName": "getProcessInstanceId",
           "elementKind": "method",
           "justification": "Aded process instance id to the RequestInfo for more customization options"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.concurrent.ExecutorService org.kie.api.concurrent.KieExecutors::newFixedThreadPool()",
+          "package": "org.kie.api.concurrent",
+          "classSimpleName": "KieExecutors",
+          "methodName": "newFixedThreadPool",
+          "elementKind": "method",
+          "justification": "Allow to create a new thread pool"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.concurrent.ExecutorService org.kie.api.concurrent.KieExecutors::newFixedThreadPool(int)",
+          "package": "org.kie.api.concurrent",
+          "classSimpleName": "KieExecutors",
+          "methodName": "newFixedThreadPool",
+          "elementKind": "method",
+          "justification": "Allow to create a new thread pool"
+        },
+        {
+          "code": "java.method.returnTypeChangedCovariantly",
+          "old": "method java.util.concurrent.Executor org.kie.api.concurrent.KieExecutors::getExecutor()",
+          "new": "method java.util.concurrent.ExecutorService org.kie.api.concurrent.KieExecutors::getExecutor()",
+          "oldType": "java.util.concurrent.Executor",
+          "newType": "java.util.concurrent.ExecutorService",
+          "package": "org.kie.api.concurrent",
+          "classSimpleName": "KieExecutors",
+          "methodName": "getExecutor",
+          "elementKind": "method",
+          "justification": "Return an ExecutorService to allow to shut it down"
+        },
+        {
+          "code": "java.method.returnTypeChangedCovariantly",
+          "old": "method java.util.concurrent.Executor org.kie.api.concurrent.KieExecutors::newSingleThreadExecutor()",
+          "new": "method java.util.concurrent.ExecutorService org.kie.api.concurrent.KieExecutors::newSingleThreadExecutor()",
+          "oldType": "java.util.concurrent.Executor",
+          "newType": "java.util.concurrent.ExecutorService",
+          "package": "org.kie.api.concurrent",
+          "classSimpleName": "KieExecutors",
+          "methodName": "newSingleThreadExecutor",
+          "elementKind": "method",
+          "justification": "Return an ExecutorService to allow to shut it down"
         }
       ]
     }
