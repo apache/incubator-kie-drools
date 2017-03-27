@@ -109,7 +109,7 @@ public class GuidedDecisionTable52 implements HasImports,
         FIRST_HIT( "F" ),
         RULE_ORDER( "R" );
 
-        public static final String RESOLVED_HIT_METADATA_NAME = "resolved-hit-priority-over-row";
+        public static final String RESOLVED_HIT_METADATA_NAME = "ResolvedHitPriorityOverRow";
 
         private final String id;
 
