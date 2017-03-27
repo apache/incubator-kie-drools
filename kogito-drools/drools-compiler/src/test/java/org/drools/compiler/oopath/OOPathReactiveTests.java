@@ -16,19 +16,14 @@
 
 package org.drools.compiler.oopath;
 
+import static org.drools.compiler.oopath.model.BodyMeasurement.*;
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.SerializationHelper;
-import org.drools.compiler.oopath.model.Adult;
-import org.drools.compiler.oopath.model.Child;
-import org.drools.compiler.oopath.model.Group;
-import org.drools.compiler.oopath.model.Man;
-import org.drools.compiler.oopath.model.School;
-import org.drools.compiler.oopath.model.Toy;
-import org.drools.compiler.oopath.model.Woman;
+import org.drools.compiler.oopath.model.*;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.BetaMemory;
@@ -260,6 +255,74 @@ public class OOPathReactiveTests {
         assertFalse (factsCollection(ksession).contains("Y.Bea"));
     }
 
+    @Test
+    public void testRemoveFromAndAddToReactiveSet() {
+        final String drl =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  School( $disease: /children/diseases )\n" +
+                        "then\n" +
+                        "  insertLogical( $disease );\n" +
+                        "end\n";
+
+        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        final Disease flu = new Disease("flu");
+        final Disease asthma = new Disease("asthma");
+        final Disease diabetes = new Disease("diabetes");
+
+        final Child charlie = new Child("Charles", 15);
+        charlie.addDisease(flu);
+        charlie.addDisease(asthma);
+
+        final Child debbie = new Child("Debbie", 19);
+        debbie.addDisease(diabetes);
+
+        final School school = new School("Da Vinci");
+        school.addChild(charlie);
+        school.addChild(debbie);
+
+        ksession.insert(school);
+        ksession.fireAllRules();
+        assertTrue(ksession.getObjects().contains(flu));
+        assertTrue(ksession.getObjects().contains(asthma));
+        assertTrue(ksession.getObjects().contains(diabetes));
+
+        charlie.getDiseases().remove(flu);
+        ksession.fireAllRules();
+        assertFalse(ksession.getObjects().contains(flu));
+        assertTrue(ksession.getObjects().contains(asthma));
+        assertTrue(ksession.getObjects().contains(diabetes));
+
+        charlie.getDiseases().remove(asthma);
+        ksession.fireAllRules();
+        assertFalse(ksession.getObjects().contains(flu));
+        assertFalse(ksession.getObjects().contains(asthma));
+        assertTrue(ksession.getObjects().contains(diabetes));
+
+        debbie.getDiseases().remove(diabetes);
+        ksession.fireAllRules();
+        assertFalse(ksession.getObjects().contains(flu));
+        assertFalse(ksession.getObjects().contains(asthma));
+        assertFalse(ksession.getObjects().contains(diabetes));
+
+        charlie.addDisease(flu);
+        ksession.fireAllRules();
+        assertTrue(ksession.getObjects().contains(flu));
+        assertFalse(ksession.getObjects().contains(asthma));
+        assertFalse(ksession.getObjects().contains(diabetes));
+
+        charlie.addDisease(asthma);
+        debbie.addDisease(diabetes);
+        ksession.fireAllRules();
+        assertTrue(ksession.getObjects().contains(flu));
+        assertTrue(ksession.getObjects().contains(asthma));
+        assertTrue(ksession.getObjects().contains(diabetes));
+    }
+
     /**
      * Same test as above but with serialization.
      */
@@ -471,6 +534,120 @@ public class OOPathReactiveTests {
     }
 
     @Test
+    public void testReactiveArray() {
+        // RHBRMS-2768
+        final String drl =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  Company( $employee: /employees )\n" +
+                        "then\n" +
+                        "  list.add( $employee.getName() );\n" +
+                        "end\n";
+
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Company robotics = new Company("Robotics");
+        final Employee mark = new Employee("Mark", 35);
+        final Employee thomas = new Employee("Thomas", 40);
+        robotics.setEmployees(new Employee[] {mark, thomas});
+
+        ksession.insert(robotics);
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Mark", "Thomas");
+
+        list.clear();
+        final Employee arnold = new Employee("Arnold", 50);
+        robotics.setEmployees(new Employee[] {mark, thomas, arnold});
+        ksession.fireAllRules();
+
+        Assertions.assertThat(list).containsExactlyInAnyOrder("Mark", "Thomas", "Arnold");
+    }
+
+    @Test
+    public void testReactiveSet() {
+        final String drl =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  Man( $disease: /wife/children{age > 10}/diseases )\n" +
+                        "then\n" +
+                        "  list.add( $disease.getName() );\n" +
+                        "end\n";
+
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        final Woman alice = new Woman("Alice", 38);
+        final Man bob = new Man("Bob", 40);
+        bob.setWife(alice);
+
+        final Child charlie = new Child("Charles", 12);
+        final Child debbie = new Child("Debbie", 10);
+        alice.addChild(charlie);
+        alice.addChild(debbie);
+
+        charlie.addDisease(new Disease("flu"));
+        charlie.addDisease(new Disease("asthma"));
+        debbie.addDisease(new Disease("diabetes"));
+
+        ksession.insert(bob);
+        ksession.fireAllRules();
+        Assertions.assertThat(list).containsExactlyInAnyOrder("flu", "asthma");
+
+        list.clear();
+        charlie.addDisease(new Disease("epilepsy"));
+        ksession.fireAllRules();
+        Assertions.assertThat(list).containsExactlyInAnyOrder("epilepsy");
+    }
+
+    @Test
+    public void testReactiveMap() {
+        final String drl =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  Man( $bodyMeasurement: /wife/bodyMeasurementsMap/entrySet )\n" +
+                        "then\n" +
+                        "  list.add( $bodyMeasurement.getValue() );\n" +
+                        "end\n";
+
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        final List<Integer> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        final Man bob = new Man("Bob", 40);
+        final Woman alice = new Woman("Alice", 38);
+        alice.putBodyMeasurement(CHEST, 80);
+        bob.setWife(alice);
+
+        ksession.insert(bob);
+        ksession.fireAllRules();
+        Assertions.assertThat(list).containsExactlyInAnyOrder(80);
+
+        list.clear();
+        alice.putBodyMeasurement(RIGHT_FOREARM, 38);
+        ksession.fireAllRules();
+        Assertions.assertThat(list).containsExactlyInAnyOrder(38, 80);
+    }
+
+    @Test
     public void testNonReactivePart() {
         final String drl =
                 "import org.drools.compiler.oopath.model.*;\n" +
@@ -618,6 +795,39 @@ public class OOPathReactiveTests {
         toy.setName( "eleonor toy 2" );
         ksession.fireAllRules();
         Assertions.assertThat(list).hasSize(1);
+    }
+
+    @Test
+    public void testReactivitySettingAttributeInDrl() {
+        final String drl =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                        "\n" +
+                        "rule R when\n" +
+                        "  Man( $child: /wife/children{age >= 10} )\n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule R2 when\n" +
+                        "  Man( $child: /wife/children{age < 10} )\n" +
+                        "then\n" +
+                        "$child.setAge(12);" +
+                        "end\n";
+
+        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                .build()
+                .newKieSession();
+
+        final Man bob = new Man("Bob", 40);
+
+        final Woman alice = new Woman("Alice", 38);
+        final Child charlie = new Child("Charles", 9);
+        final Child debbie = new Child("Debbie", 8);
+        bob.setWife(alice);
+        alice.addChild(charlie);
+        alice.addChild(debbie);
+
+        ksession.insert(bob);
+
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(4);
     }
 
     private List<?> factsCollection(KieSession ksession) {
