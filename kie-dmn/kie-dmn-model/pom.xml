@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>kie-dmn</artifactId>
+    <groupId>org.kie</groupId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>kie-dmn-model</artifactId>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+
+  <name>KIE :: Decision Model Notation :: Model</name>
+  
+  <properties>
+    <osgi.Bundle-SymbolicName>org.kie.dmn.model</osgi.Bundle-SymbolicName>
+  </properties>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              org.kie.dmn.model.v1_1.*
+            </Export-Package>
+            <Import-Package>
+              javax.xml,
+              javax.xml.stream,
+              com.thoughtworks.xstream.mapper;resolution:=optional,
+              com.thoughtworks.xstream.converters;resolution:=optional,
+              com.thoughtworks.xstream.converters.basic;resolution:=optional,
+              com.thoughtworks.xstream.converters.collections;resolution:=optional,
+              com.thoughtworks.xstream.converters.extended;resolution:=optional,
+              com.thoughtworks.xstream.converters.enums;resolution:=optional,
+              com.thoughtworks.xstream.converters.javabean;resolution:=optional,
+              com.thoughtworks.xstream.converters.reflection;resolution:=optional
+            </Import-Package>
+            <!-- <Bundle-Activator> Activator if needed </Bundle-Activator> -->
+            <_removeheaders>Private-Package</_removeheaders>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

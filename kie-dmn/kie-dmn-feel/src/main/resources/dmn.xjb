@@ -1,0 +1,15 @@
+<!--
+   This bindings file adds a base class to the JAXB generated
+   DMN ast classes
+  -->
+<jxb:bindings
+        version="1.0"
+        xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc">
+  <jxb:bindings
+          schemaLocation="dmn.xsd">
+    <jxb:globalBindings>
+      <xjc:superClass name="org.kie.dmn.feel.model.DMNModelInstrumentedBase"/>
+    </jxb:globalBindings>
+  </jxb:bindings>
+</jxb:bindings>
