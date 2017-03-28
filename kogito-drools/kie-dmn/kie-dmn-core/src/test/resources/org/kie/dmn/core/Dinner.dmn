@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_0c45df24-0d57-4acc-b296-b4cba8b71a36" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.0.35.201611211744"
+                      id="_0c45df24-0d57-4acc-b296-b4cba8b71a36" name="Dinner" namespace="http://www.trisotech.com/definitions/_0c45df24-0d57-4acc-b296-b4cba8b71a36"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:decision id="_b9dc3d65-6aa4-4ff9-9baf-f4ed04fdf8fd" name="Dish">
+    <semantic:variable id="_32b0b201-8057-4322-8625-4d9135957e4a" name="Dish" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_a6aa9499-d297-4c2e-bff9-782f2fe85df7"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_1480f7e8-1c39-4781-9684-9a0e784044ce"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Dish">
+      <semantic:input id="_dc643fcb-3d39-43c7-97e5-e18a48ff5470" label="Season">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Season</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Fall", "Spring", "Summer", "Winter"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_d436fe6c-590a-48d4-b27d-2f7e6ef18fbb" label="Number of guests">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Number of guests</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_459233c6-babd-46d5-a3c0-0bc785a3d887"/>
+      <semantic:rule id="_3dc0a14d-5200-4f15-976a-923432bed588">
+        <semantic:inputEntry id="_3dc0a14d-5200-4f15-976a-923432bed588-0">
+          <semantic:text>"Fall"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3dc0a14d-5200-4f15-976a-923432bed588-1">
+          <semantic:text>&lt;=8</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3dc0a14d-5200-4f15-976a-923432bed588-2">
+          <semantic:text>"Spareribs"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_dd0351d2-f013-42c1-962b-4063a134d77e">
+        <semantic:inputEntry id="_dd0351d2-f013-42c1-962b-4063a134d77e-0">
+          <semantic:text>"Winter"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dd0351d2-f013-42c1-962b-4063a134d77e-1">
+          <semantic:text>&lt;=8</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_dd0351d2-f013-42c1-962b-4063a134d77e-2">
+          <semantic:text>"Roastbeef"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_18e688f9-d5db-4b15-90a5-d9a94d8bbe41">
+        <semantic:inputEntry id="_18e688f9-d5db-4b15-90a5-d9a94d8bbe41-0">
+          <semantic:text>"Winter"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_18e688f9-d5db-4b15-90a5-d9a94d8bbe41-1">
+          <semantic:text>&lt;=4</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_18e688f9-d5db-4b15-90a5-d9a94d8bbe41-2">
+          <semantic:text>"Dry aged gourmet steak"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_beaa010c-b204-4919-b7c0-067ee1c09b9a">
+        <semantic:inputEntry id="_beaa010c-b204-4919-b7c0-067ee1c09b9a-0">
+          <semantic:text>"Spring"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_beaa010c-b204-4919-b7c0-067ee1c09b9a-1">
+          <semantic:text>[5..8]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_beaa010c-b204-4919-b7c0-067ee1c09b9a-2">
+          <semantic:text>"Steak"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_ebf3e7f3-3a15-486a-adda-a01b6597a56c">
+        <semantic:inputEntry id="_ebf3e7f3-3a15-486a-adda-a01b6597a56c-0">
+          <semantic:text>"Fall", "Winter", "Spring"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_ebf3e7f3-3a15-486a-adda-a01b6597a56c-1">
+          <semantic:text>&gt;8</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_ebf3e7f3-3a15-486a-adda-a01b6597a56c-2">
+          <semantic:text>"Stew"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_137acc7a-8143-41e4-be2e-70c719c992aa">
+        <semantic:inputEntry id="_137acc7a-8143-41e4-be2e-70c719c992aa-0">
+          <semantic:text>"Summer"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_137acc7a-8143-41e4-be2e-70c719c992aa-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_137acc7a-8143-41e4-be2e-70c719c992aa-2">
+          <semantic:text>"Light Salad and Burgers"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_f04d8713-9e52-4d10-96b1-7d720ad9aa15" name="Where to eat">
+    <semantic:variable id="_1d80624c-33f5-49d3-b79a-a61daedb8968" name="Where to eat" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_fe506149-53a7-45d4-89b6-859f8d5179cf"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_b80d9374-30a5-4df3-be43-997f60aeae32"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Where to eat">
+      <semantic:input id="_736ad69d-a357-479f-aa4c-35fbe7d36bde" label="Temp">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Temp</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_1613f036-8b57-48dc-a04e-9681f190820e" label="Rain Probability">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Rain Probability</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_0e33eb33-ed0f-401c-aac6-487c25818358">
+        <semantic:outputValues>
+          <semantic:text>"Inside", "Outside"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_4bd36786-88b1-44c5-89e6-a680abf879cf">
+        <semantic:inputEntry id="_4bd36786-88b1-44c5-89e6-a680abf879cf-0">
+          <semantic:text>&gt;=20</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4bd36786-88b1-44c5-89e6-a680abf879cf-1">
+          <semantic:text>&lt;50</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_4bd36786-88b1-44c5-89e6-a680abf879cf-2">
+          <semantic:text>"Outside"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_60028ca9-14ee-4b93-ba7a-65672c9f1c98">
+        <semantic:inputEntry id="_60028ca9-14ee-4b93-ba7a-65672c9f1c98-0">
+          <semantic:text>&lt;20</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_60028ca9-14ee-4b93-ba7a-65672c9f1c98-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_60028ca9-14ee-4b93-ba7a-65672c9f1c98-2">
+          <semantic:text>"Inside"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_af9bb2ae-24ff-4166-be71-1c4a7716084f">
+        <semantic:inputEntry id="_af9bb2ae-24ff-4166-be71-1c4a7716084f-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_af9bb2ae-24ff-4166-be71-1c4a7716084f-1">
+          <semantic:text>&gt;=50</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_af9bb2ae-24ff-4166-be71-1c4a7716084f-2">
+          <semantic:text>"Inside"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_a6aa9499-d297-4c2e-bff9-782f2fe85df7" name="Season">
+    <semantic:variable id="_3ee804f8-7abc-4144-9f94-17a1a1e00b16" name="Season"/>
+  </semantic:inputData>
+  <semantic:inputData id="_1480f7e8-1c39-4781-9684-9a0e784044ce" name="Number of guests">
+    <semantic:variable id="_db14818f-bd6b-4481-a797-7602d6f15c0e" name="Number of guests"/>
+  </semantic:inputData>
+  <semantic:decision id="_7e01ac6d-56b2-4ddf-aa0e-9242db09cfe5" name="Drinks">
+    <semantic:variable id="_4ea2078c-8107-4df9-b4d5-876462bcc728" name="Drinks" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_b9dc3d65-6aa4-4ff9-9baf-f4ed04fdf8fd"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_4fb400f3-b98b-4c31-8130-8f477fc7911c"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="COLLECT" outputLabel="Drinks">
+      <semantic:input id="_af357e02-12be-4916-bc3d-45faa1642a3b" label="Dish">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Dish</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Dry aged gourmet steak", "Roastbeef", "Spareribs", "Steak", "stew"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_6e00f595-ed4a-47fc-bc31-89bf40f1b340" label="Guests with children">
+        <semantic:inputExpression typeRef="feel:boolean">
+          <semantic:text>Guests with children</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_6836a51a-391b-411c-b27b-43917368e8a4"/>
+      <semantic:rule id="_e0edcc7b-7256-4ae3-9c70-94ae3fd9b271">
+        <semantic:inputEntry id="_e0edcc7b-7256-4ae3-9c70-94ae3fd9b271-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e0edcc7b-7256-4ae3-9c70-94ae3fd9b271-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e0edcc7b-7256-4ae3-9c70-94ae3fd9b271-2">
+          <semantic:text>"Apero"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_db512f7b-ab28-463e-acd5-b9eae62f41a7">
+        <semantic:inputEntry id="_db512f7b-ab28-463e-acd5-b9eae62f41a7-0">
+          <semantic:text>"Spareribs"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_db512f7b-ab28-463e-acd5-b9eae62f41a7-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_db512f7b-ab28-463e-acd5-b9eae62f41a7-2">
+          <semantic:text>"Ale"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_3e7c629c-7e5a-41f9-856b-22ff4f5226aa">
+        <semantic:inputEntry id="_3e7c629c-7e5a-41f9-856b-22ff4f5226aa-0">
+          <semantic:text>"stew"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3e7c629c-7e5a-41f9-856b-22ff4f5226aa-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3e7c629c-7e5a-41f9-856b-22ff4f5226aa-2">
+          <semantic:text>"Guiness"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_d84ff58b-2b45-41c0-aadd-ac100bec8a3b">
+        <semantic:inputEntry id="_d84ff58b-2b45-41c0-aadd-ac100bec8a3b-0">
+          <semantic:text>"Roastbeef"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d84ff58b-2b45-41c0-aadd-ac100bec8a3b-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_d84ff58b-2b45-41c0-aadd-ac100bec8a3b-2">
+          <semantic:text>"Bordeaux"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_81325d92-a1c7-49f7-9969-a3af464007d2">
+        <semantic:inputEntry id="_81325d92-a1c7-49f7-9969-a3af464007d2-0">
+          <semantic:text>"Dry aged gourmet steak", "Steak"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_81325d92-a1c7-49f7-9969-a3af464007d2-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_81325d92-a1c7-49f7-9969-a3af464007d2-2">
+          <semantic:text>"Cabernet"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_bd5fbec3-1abf-4664-b433-5c80b79e9847">
+        <semantic:inputEntry id="_bd5fbec3-1abf-4664-b433-5c80b79e9847-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_bd5fbec3-1abf-4664-b433-5c80b79e9847-1">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_bd5fbec3-1abf-4664-b433-5c80b79e9847-2">
+          <semantic:text>"Juice Boxes"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_4fb400f3-b98b-4c31-8130-8f477fc7911c" name="Guests with children">
+    <semantic:variable id="_c500ce25-2614-4307-b63d-0388b78dab72" name="Guests with children" typeRef="feel:boolean"/>
+  </semantic:inputData>
+  <semantic:inputData id="_fe506149-53a7-45d4-89b6-859f8d5179cf" name="Temp">
+    <semantic:variable id="_f355d0a9-c0e3-4dfb-95fd-30dbacb12b77" name="Temp" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_b80d9374-30a5-4df3-be43-997f60aeae32" name="Rain Probability">
+    <semantic:variable id="_7a44517f-e6b9-4f87-b1b8-82867b3df4e3" name="Rain Probability" typeRef="feel:number"/>
+  </semantic:inputData>
+</semantic:definitions>

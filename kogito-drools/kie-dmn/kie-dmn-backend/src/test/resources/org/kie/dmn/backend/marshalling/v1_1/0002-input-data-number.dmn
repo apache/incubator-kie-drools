@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="_0002-input-data-number" name="0002-input-data-number"
+	namespace="https://github.com/agilepro/dmn-tck"
+	xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+	xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+	<decision name="Yearly Salary" id="d_YearlySalary">
+		<variable name="Yearly Salary" typeRef="feel:number"/>
+		<informationRequirement>
+			<requiredInput href="#i_MonthlySalary"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>12 * Monthly Salary</text>
+		</literalExpression>
+	</decision>
+	<inputData name="Monthly Salary" id="i_MonthlySalary">
+		<variable name="Monthly Salary" typeRef="feel:number"/>
+	</inputData>
+</definitions>

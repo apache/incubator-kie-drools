@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20151101/DC" xmlns:di="http://www.omg.org/spec/DMN/20151101/DI"
+                      xmlns:dmndi="http://www.omg.org/spec/DMN/20151101/DMNDI" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns="http://www.trisotech.com/definitions/_7cf49108-9b55-4f35-b5ef-f83448061757"
+                      id="_7cf49108-9b55-4f35-b5ef-f83448061757" namespace="http://www.trisotech.com/definitions/_7cf49108-9b55-4f35-b5ef-f83448061757"
+                      exporter="DMN Modeler" exporterVersion="5.1.5.201702231111" name="Greater than 5 - Invalid U hit policy" triso:logoChoice="Custom">
+  <semantic:extensionElements/>
+  <semantic:decision id="_c5eda7c3-7f22-43c2-8c1e-a3cc79bb7a74" name="Greater than 5" triso:displayName="Greater than 5">
+    <semantic:variable name="Greater than 5" id="_a3209954-b7c0-4b98-af5f-0ad480f3a4c0" typeRef="feel:string"/>
+    <semantic:informationRequirement id="_d437a7c7-a748-4ca1-9373-1751523f3c0a">
+      <semantic:requiredInput href="#_f797b9e1-2817-45a6-82c6-1599a2b3f25a"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable id="_24231386-925e-47fd-bbaa-d733f1e88277" hitPolicy="UNIQUE" outputLabel="Greater than 5">
+      <semantic:input id="_42f323e2-0194-4d48-96af-2613f7eecb7b" label="Number">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Number</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_220c5ec4-a313-4cd7-a81a-57f466fc089f"/>
+      <semantic:rule id="_3d922879-f626-48e6-8228-b3d8e7057b0a">
+        <semantic:inputEntry id="_cc1c3938-5cbf-4d18-9dd3-86cf534e886d">
+          <semantic:text>&lt;=5</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c4a80459-6b9e-44df-bb2d-fe8919840b20">
+          <semantic:text>false</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_2d1e22d3-8a74-44c1-bd9e-3cd2c771898d">
+        <semantic:inputEntry id="_00383f65-ec41-470a-ac2d-1cb5da2885d2">
+          <semantic:text>5</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_6b0002f9-d5b8-4741-a212-d57f9556a898">
+          <semantic:text>false</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_6240a88f-86d7-4757-a56d-1056b4a8d3ab">
+        <semantic:inputEntry id="_ccc99127-ade9-4703-bca3-6d1e12e4fd71">
+          <semantic:text>&gt;5</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_eaf9065c-29b7-4ca0-94ff-9fe8b633c6bc">
+          <semantic:text>true</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_f797b9e1-2817-45a6-82c6-1599a2b3f25a" name="Number" triso:displayName="Number">
+    <semantic:variable name="Number" id="_143c938a-e6dc-4303-97c9-d7be77a1c8fb" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:decision id="_5bac3e4c-b59a-4f14-b5cf-d4d88c60877f" name="Decision Logic 2" triso:displayName="Decision Logic 2">
+    <semantic:variable name="Decision Logic 2" id="_8f026ec9-c6ef-4c07-8798-fdf58856b7b3" typeRef="feel:string"/>
+    <semantic:informationRequirement id="_89d2f816-ed48-4416-9976-5bf9f23b4496">
+      <semantic:requiredDecision href="#_c5eda7c3-7f22-43c2-8c1e-a3cc79bb7a74"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable id="_d46a072a-935b-44d1-9d00-e353c50ceee1" hitPolicy="UNIQUE" outputLabel="Decision Logic 2">
+      <semantic:input id="_a15eee27-b80a-433f-b670-2c4909ecd11c" label="Greater than 5">
+        <semantic:inputExpression typeRef="feel:boolean">
+          <semantic:text>Greater than 5</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_8aad493b-4e48-4c0e-b82c-d1e1f33d19cf"/>
+      <semantic:rule id="_bbdd5ac0-f9b2-4872-ac81-6b7b8b88407e">
+        <semantic:inputEntry id="_129f3700-6733-4165-b66a-bb09250fb698">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_2042c98a-df39-428f-b406-e307d0561955">
+          <semantic:text>"Input is greater than 5"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_d3039f79-299e-4a13-9830-d545ea638637">
+        <semantic:inputEntry id="_52171fe4-9853-4a16-95de-ccfa06627490">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_5a387006-7b7f-4b78-9083-a7d7c6e746e5">
+          <semantic:text>"Input is not greater than 5"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+</semantic:definitions>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" 
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling" 
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401" 
+                      xmlns:trisofeed="http://trisotech.com/feed" 
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xmlns="http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11" 
+                      id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11" 
+                      namespace="http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11" 
+                      exporter="DMN Modeler" exporterVersion="5.0.32.2" name="literal invocation1" 
+                      triso:logoChoice="Default" 
+                      xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd">
+    <semantic:extensionElements>
+        <rss xmlns="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" version="2.0">
+            <channel/>
+        </rss>
+    </semantic:extensionElements>
+    <semantic:itemDefinition name="tLoan">
+        <semantic:itemComponent name="amount">
+            <semantic:typeRef>feel:number</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent name="rate">
+            <semantic:typeRef>feel:number</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent name="term">
+            <semantic:typeRef>feel:number</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:decision id="d_MonthlyPayment" name="MonthlyPayment">
+        <semantic:variable name="MonthlyPayment" typeRef="feel:number"/>
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#i_Loan"/>
+        </semantic:informationRequirement>
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#i_fee"/>
+        </semantic:informationRequirement>
+        <semantic:knowledgeRequirement>
+            <semantic:requiredKnowledge href="#b_PMT"/>
+        </semantic:knowledgeRequirement>
+        <semantic:literalExpression>
+            <semantic:text>PMT(Loan.amount, Loan.rate, Loan.term)+fee</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:businessKnowledgeModel id="b_PMT" name="PMT">
+        <semantic:encapsulatedLogic>
+            <semantic:formalParameter name="p"/>
+            <semantic:formalParameter name="r"/>
+            <semantic:formalParameter name="n"/>
+            <semantic:literalExpression expressionLanguage="FEEL">
+                <semantic:text>(p*r/12)/(1-(1+r/12)**-n)</semantic:text>
+            </semantic:literalExpression>
+        </semantic:encapsulatedLogic>
+        <semantic:variable name="PMT"/>
+    </semantic:businessKnowledgeModel>
+    <semantic:inputData id="i_Loan" name="Loan">
+        <semantic:variable name="Loan" typeRef="tLoan"/>
+    </semantic:inputData>
+    <semantic:inputData id="i_fee" name="fee">
+        <semantic:variable name="fee" typeRef="feel:number"/>
+    </semantic:inputData>
+</semantic:definitions>

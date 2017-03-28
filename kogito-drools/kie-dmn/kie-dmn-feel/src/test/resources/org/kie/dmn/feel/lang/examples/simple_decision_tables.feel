@@ -1,0 +1,60 @@
+{
+   myDecisionTable : decision table (
+                               outputs: "Adult",
+                               input expression list: ["Age"],
+                               rule list: [
+                                   [ <18,       "\"Young\""],
+                                   [ >18,       "\"Adult\""]
+                               ],
+                               hit policy: "U"
+                           ),
+   
+   biggerDecisionTable : decision table (
+                                outputs: "Applicant Risk Rating",
+                                input expression list: ["Applicant Age", "Medical History"],
+                                rule list: [
+                                    [ >60,       "good",  "\"Medium\"" ],
+                                    [ >60,       "bad",   "\"High\""   ],
+                                    [ [25..60],  -,       "\"Medium\"" ],
+                                    [ <25,       "good",  "\"Low\""    ],
+                                    [ <25,       "bad",   "\"Medium\"" ]
+                                ],
+                                hit policy: "U"
+                            ),
+   
+   multipleOutputs : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1"],
+                                rule list: [
+                                    [ <=1,       "\"out1a\"",  "\"out2a\"" ],
+                                    [ >=2,       "\"out1b\"",  "\"out2b\"" ]
+                                ],
+                                hit policy: "U"
+                            ),
+   
+   multipleInOut : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ <10, >20,      "\"io1a\"",  "\"io2a\"" ],
+                                    [ >=10, <20,      "\"io1b\"",  "\"io2b\"" ]
+                                ],
+                                hit policy: "U"
+                            ),
+                            
+   checkNull : decision table (
+                               outputs: "Adult",
+                               input expression list: ["Age"],
+                               rule list: [
+                                   [ <18,       "\"Young\""],
+                                   [ [>18, <99],       "\"Adult\""]
+                               ],
+                               hit policy: "U"
+                           ),
+
+   result1: myDecisionTable( 34 ),
+   result2: biggerDecisionTable( 35, "good" ),
+   result3: multipleOutputs(2),
+   result4: multipleInOut(In2: 47, In1:2),
+   result5: checkNull(9999)
+}

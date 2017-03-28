@@ -1,0 +1,145 @@
+{
+    DTunique : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "\"row1\"", "1" ],
+                                    [ >0,  -, "\"row2\"", "2" ]
+                                ],
+                                hit policy: "U"
+                            ),
+   
+   DTunique10 : DTunique(1,0),
+   DTunique11 : DTunique(1,1),
+
+   DTfirst : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "\"row1\"", "1" ],
+                                    [ >0,  -, "\"row2\"", "2" ],
+                                    [ - ,  -, "\"row3\"", "3" ]
+                                ],
+                                hit policy: "F"
+                            ),
+                            
+   DTfirst11 : DTfirst(1,1),    
+   
+   DTany : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "\"A\"", "1" ],
+                                    [ >0,  -, "\"B\"", "7" ],
+                                    [ - ,  -, "\"B\"", "7" ]
+                                ],
+                                hit policy: "A"
+                            ),
+                            
+    DTAny10 : DTany(1,0),
+    DTAny11 : DTany(1,1),
+    
+    DTruleOrder : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "\"A\"", "1" ],
+                                    [ >0,  -, "\"B\"", "2" ],
+                                    [ - ,  -, "\"B\"", "3" ]
+                                ],
+                                hit policy: "R"
+                            ),
+                            
+    DTruleOrder10 : DTruleOrder(1,0),
+    DTruleOrder11 : DTruleOrder(1,1),
+    
+    DTcollect : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "\"A\"", "1" ],
+                                    [ >0,  -, "\"B\"", "2" ]
+                                ],
+                                hit policy: "C"
+                            ),
+                            
+    DTcollect11 : DTcollect(1,1),
+    
+    DTpriority : decision table (
+                                outputs: ["Out1", "Out2"],
+                                output values: [ ["C", "B", "A"], [1, 2] ],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "\"A\"", "1" ],
+                                    [ >0,  -, "\"B\"", "2" ]
+                                ],
+                                hit policy: "P"
+                            ),
+                            
+    DTpriority11 : DTpriority(1,1),
+    
+    DToutputOrder : decision table (
+                                outputs: ["Out1", "Out2"],
+                                output values: [ ["C", "B", "A"], [1, 2] ],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "\"A\"", "1" ],
+                                    [ >0,  -, "\"B\"", "2" ]
+                                ],
+                                hit policy: "O"
+                            ),
+                            
+    DToutputOrder11 : DToutputOrder(1,1),
+    
+    DTcount : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "\"A\"" , "1"],
+                                    [ >0,  -, "\"B\"" , "2"],
+                                    [ - ,  -, "\"B\"" , "3"]
+                                ],
+                                hit policy: "C#"
+                            ),
+    DTcount10 : DTcount(1,0),
+    DTcount11 : DTcount(1,1),
+    
+    DTsum : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "1", "\"A\"" ],
+                                    [ >0,  -, "2", "\"B\"" ],
+                                    [ - ,  -, "3", "\"C\"" ]
+                                ],
+                                hit policy: "C+"
+                            ),
+    DTsum10 : DTsum(1,0),
+    DTsum11 : DTsum(1,1),
+    
+    DTmin : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "1", "\"A\"" ],
+                                    [ >0,  -, "2", "\"B\"" ],
+                                    [ - ,  -, "3", "\"C\"" ]
+                                ],
+                                hit policy: "C<"
+                            ),
+    DTmin10 : DTmin(1,0),
+    DTmin11 : DTmin(1,1),
+    
+    DTmax : decision table (
+                                outputs: ["Out1", "Out2"],
+                                input expression list: ["In1", "In2"],
+                                rule list: [
+                                    [ >0, >0, "1", "\"A\"" ],
+                                    [ >0,  -, "2", "\"B\"" ],
+                                    [ - ,  -, "3", "\"C\"" ]
+                                ],
+                                hit policy: "C>"
+                            ),
+    DTmax10 : DTmax(1,0),
+    DTmax11 : DTmax(1,1)
+}

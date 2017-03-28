@@ -1,0 +1,9 @@
+/*
+ *  Example 10.6.6 from DMN Spec page 143
+ *
+ *  Shows the use of relations, filters and
+ *  function invocation simultaneously
+ */
+sum(
+     credit history[ record date > date("2011-01-01") ].weight
+   )

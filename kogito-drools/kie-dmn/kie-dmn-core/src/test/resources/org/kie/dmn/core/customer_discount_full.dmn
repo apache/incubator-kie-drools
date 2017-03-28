@@ -1,0 +1,1741 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.0.34.201611031704" id="_2da4948b-9245-4790-898d-32dbbb210a9d" name="Customer Discount Full" namespace="http://www.trisotech.com/dmn/definitions/_2da4948b-9245-4790-898d-32dbbb210a9d" triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:decision id="_c2b457a7-0721-4c5d-b1de-c654bb18e87b" name="Discount">
+    <semantic:variable id="_d9b55ca7-0b8a-41ba-8c1a-112f0abd303f" name="Discount" typeRef="feel:number"/>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_9b4f9d07-8744-4cf9-b826-cf1d10476a10"/>
+    </semantic:knowledgeRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_62b16bc3-a65e-4183-9089-41945db3e057"/>
+    </semantic:knowledgeRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_47fddb81-5b14-4c45-b222-fabd19ab8574"/>
+    </semantic:knowledgeRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Discount">
+      <semantic:input id="_55e9ca3f-f56f-4d13-9027-ea9bdf5ef46b" label="Related industry">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Related industry</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Same Industry", "Related", "Not Related"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_252b92ea-8699-4a8c-9de6-04f140f03432" label="Sales scale">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Sales scale</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Enterprise scale", "Large scale", "Medium scale", "Small Scale"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_3aefd1c6-6895-42f1-afc5-0f54ee30a3a9" label="Category">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Category</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Gold", "Silver", "Bronze"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_3a3af661-e5c7-465f-ad87-709ab79e796d">
+        <semantic:outputValues>
+          <semantic:text>[0..70]</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_8c318895-974e-46fd-b98b-62fb095e2069">
+        <semantic:inputEntry id="_8c318895-974e-46fd-b98b-62fb095e2069-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8c318895-974e-46fd-b98b-62fb095e2069-1">
+          <semantic:text>Enterprise scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8c318895-974e-46fd-b98b-62fb095e2069-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_8c318895-974e-46fd-b98b-62fb095e2069-3">
+          <semantic:text>70</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_15b6ceae-b32a-4b66-977a-b0e4cd5c1b58">
+        <semantic:inputEntry id="_15b6ceae-b32a-4b66-977a-b0e4cd5c1b58-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_15b6ceae-b32a-4b66-977a-b0e4cd5c1b58-1">
+          <semantic:text>Enterprise scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_15b6ceae-b32a-4b66-977a-b0e4cd5c1b58-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_15b6ceae-b32a-4b66-977a-b0e4cd5c1b58-3">
+          <semantic:text>68</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_3cc05bcf-3ae8-4cbd-bfb6-3093d4698457">
+        <semantic:inputEntry id="_3cc05bcf-3ae8-4cbd-bfb6-3093d4698457-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3cc05bcf-3ae8-4cbd-bfb6-3093d4698457-1">
+          <semantic:text>Enterprise scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3cc05bcf-3ae8-4cbd-bfb6-3093d4698457-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3cc05bcf-3ae8-4cbd-bfb6-3093d4698457-3">
+          <semantic:text>66</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_1728b05e-cd6b-4f23-a8e1-d53d551380b2">
+        <semantic:inputEntry id="_1728b05e-cd6b-4f23-a8e1-d53d551380b2-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_1728b05e-cd6b-4f23-a8e1-d53d551380b2-1">
+          <semantic:text>Large scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_1728b05e-cd6b-4f23-a8e1-d53d551380b2-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_1728b05e-cd6b-4f23-a8e1-d53d551380b2-3">
+          <semantic:text>64</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_79d05d84-c1b4-46bb-9039-f033f3c2f71c">
+        <semantic:inputEntry id="_79d05d84-c1b4-46bb-9039-f033f3c2f71c-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_79d05d84-c1b4-46bb-9039-f033f3c2f71c-1">
+          <semantic:text>Large scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_79d05d84-c1b4-46bb-9039-f033f3c2f71c-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_79d05d84-c1b4-46bb-9039-f033f3c2f71c-3">
+          <semantic:text>62</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_82d3d26b-df86-400f-81ea-8c6087f9d57b">
+        <semantic:inputEntry id="_82d3d26b-df86-400f-81ea-8c6087f9d57b-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_82d3d26b-df86-400f-81ea-8c6087f9d57b-1">
+          <semantic:text>Large scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_82d3d26b-df86-400f-81ea-8c6087f9d57b-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_82d3d26b-df86-400f-81ea-8c6087f9d57b-3">
+          <semantic:text>60</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c4f6f4d9-5ea5-47a9-a83e-25befbaa8431">
+        <semantic:inputEntry id="_c4f6f4d9-5ea5-47a9-a83e-25befbaa8431-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c4f6f4d9-5ea5-47a9-a83e-25befbaa8431-1">
+          <semantic:text>Medium scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c4f6f4d9-5ea5-47a9-a83e-25befbaa8431-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c4f6f4d9-5ea5-47a9-a83e-25befbaa8431-3">
+          <semantic:text>58</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_409007b8-843c-4ceb-8131-f00b5a82225c">
+        <semantic:inputEntry id="_409007b8-843c-4ceb-8131-f00b5a82225c-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_409007b8-843c-4ceb-8131-f00b5a82225c-1">
+          <semantic:text>Medium scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_409007b8-843c-4ceb-8131-f00b5a82225c-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_409007b8-843c-4ceb-8131-f00b5a82225c-3">
+          <semantic:text>56</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_3e4c7198-fd3f-4115-b234-20bf74ee8b3b">
+        <semantic:inputEntry id="_3e4c7198-fd3f-4115-b234-20bf74ee8b3b-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3e4c7198-fd3f-4115-b234-20bf74ee8b3b-1">
+          <semantic:text>Medium scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3e4c7198-fd3f-4115-b234-20bf74ee8b3b-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3e4c7198-fd3f-4115-b234-20bf74ee8b3b-3">
+          <semantic:text>54</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b92546e8-d020-4821-b262-ff6fd143fac6">
+        <semantic:inputEntry id="_b92546e8-d020-4821-b262-ff6fd143fac6-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b92546e8-d020-4821-b262-ff6fd143fac6-1">
+          <semantic:text>Small Scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b92546e8-d020-4821-b262-ff6fd143fac6-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b92546e8-d020-4821-b262-ff6fd143fac6-3">
+          <semantic:text>52</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_55e5d3e8-8311-4cbd-ad06-e970d53767ee">
+        <semantic:inputEntry id="_55e5d3e8-8311-4cbd-ad06-e970d53767ee-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_55e5d3e8-8311-4cbd-ad06-e970d53767ee-1">
+          <semantic:text>Small Scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_55e5d3e8-8311-4cbd-ad06-e970d53767ee-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_55e5d3e8-8311-4cbd-ad06-e970d53767ee-3">
+          <semantic:text>50</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c933672e-4fd7-4d14-8359-fa79965f8ea7">
+        <semantic:inputEntry id="_c933672e-4fd7-4d14-8359-fa79965f8ea7-0">
+          <semantic:text>Same Industry</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c933672e-4fd7-4d14-8359-fa79965f8ea7-1">
+          <semantic:text>Small Scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c933672e-4fd7-4d14-8359-fa79965f8ea7-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c933672e-4fd7-4d14-8359-fa79965f8ea7-3">
+          <semantic:text>48</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_2a250334-ba84-4644-8923-23575207c3d2">
+        <semantic:inputEntry id="_2a250334-ba84-4644-8923-23575207c3d2-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2a250334-ba84-4644-8923-23575207c3d2-1">
+          <semantic:text>Enterprise scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2a250334-ba84-4644-8923-23575207c3d2-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_2a250334-ba84-4644-8923-23575207c3d2-3">
+          <semantic:text>46</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_65c3ade9-552a-463e-a876-e0796bd82271">
+        <semantic:inputEntry id="_65c3ade9-552a-463e-a876-e0796bd82271-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_65c3ade9-552a-463e-a876-e0796bd82271-1">
+          <semantic:text>Enterprise scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_65c3ade9-552a-463e-a876-e0796bd82271-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_65c3ade9-552a-463e-a876-e0796bd82271-3">
+          <semantic:text>44</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_2c46813c-8311-48fb-91d5-5846decacd7f">
+        <semantic:inputEntry id="_2c46813c-8311-48fb-91d5-5846decacd7f-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2c46813c-8311-48fb-91d5-5846decacd7f-1">
+          <semantic:text>Enterprise scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2c46813c-8311-48fb-91d5-5846decacd7f-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_2c46813c-8311-48fb-91d5-5846decacd7f-3">
+          <semantic:text>42</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_41c030a7-747f-4d33-a35d-f99202857096">
+        <semantic:inputEntry id="_41c030a7-747f-4d33-a35d-f99202857096-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_41c030a7-747f-4d33-a35d-f99202857096-1">
+          <semantic:text>Large scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_41c030a7-747f-4d33-a35d-f99202857096-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_41c030a7-747f-4d33-a35d-f99202857096-3">
+          <semantic:text>40</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_f94dc0a8-4e22-4631-9359-1f8dfaf7716f">
+        <semantic:inputEntry id="_f94dc0a8-4e22-4631-9359-1f8dfaf7716f-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_f94dc0a8-4e22-4631-9359-1f8dfaf7716f-1">
+          <semantic:text>Large scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_f94dc0a8-4e22-4631-9359-1f8dfaf7716f-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_f94dc0a8-4e22-4631-9359-1f8dfaf7716f-3">
+          <semantic:text>38</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_935e8492-17a9-41ac-91cb-a84a0ee19b96">
+        <semantic:inputEntry id="_935e8492-17a9-41ac-91cb-a84a0ee19b96-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_935e8492-17a9-41ac-91cb-a84a0ee19b96-1">
+          <semantic:text>Large scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_935e8492-17a9-41ac-91cb-a84a0ee19b96-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_935e8492-17a9-41ac-91cb-a84a0ee19b96-3">
+          <semantic:text>36</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_a0bb013e-767d-4837-8979-71a22864393a">
+        <semantic:inputEntry id="_a0bb013e-767d-4837-8979-71a22864393a-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a0bb013e-767d-4837-8979-71a22864393a-1">
+          <semantic:text>Medium scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a0bb013e-767d-4837-8979-71a22864393a-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a0bb013e-767d-4837-8979-71a22864393a-3">
+          <semantic:text>34</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_e4ecf103-3f01-414b-8543-18ce751d6776">
+        <semantic:inputEntry id="_e4ecf103-3f01-414b-8543-18ce751d6776-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e4ecf103-3f01-414b-8543-18ce751d6776-1">
+          <semantic:text>Medium scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e4ecf103-3f01-414b-8543-18ce751d6776-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e4ecf103-3f01-414b-8543-18ce751d6776-3">
+          <semantic:text>32</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_a5ca55d2-697a-4d2b-91e5-bbf9b7c4080d">
+        <semantic:inputEntry id="_a5ca55d2-697a-4d2b-91e5-bbf9b7c4080d-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a5ca55d2-697a-4d2b-91e5-bbf9b7c4080d-1">
+          <semantic:text>Medium scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_a5ca55d2-697a-4d2b-91e5-bbf9b7c4080d-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a5ca55d2-697a-4d2b-91e5-bbf9b7c4080d-3">
+          <semantic:text>30</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_1a0eddc2-cbf9-4684-b586-682c8b06bc93">
+        <semantic:inputEntry id="_1a0eddc2-cbf9-4684-b586-682c8b06bc93-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_1a0eddc2-cbf9-4684-b586-682c8b06bc93-1">
+          <semantic:text>Small Scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_1a0eddc2-cbf9-4684-b586-682c8b06bc93-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_1a0eddc2-cbf9-4684-b586-682c8b06bc93-3">
+          <semantic:text>28</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_68e318a2-6652-4b74-a6e9-8ddf5fb3d62b">
+        <semantic:inputEntry id="_68e318a2-6652-4b74-a6e9-8ddf5fb3d62b-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_68e318a2-6652-4b74-a6e9-8ddf5fb3d62b-1">
+          <semantic:text>Small Scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_68e318a2-6652-4b74-a6e9-8ddf5fb3d62b-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_68e318a2-6652-4b74-a6e9-8ddf5fb3d62b-3">
+          <semantic:text>26</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_976c22c7-8425-4e21-abac-41815a8b7e76">
+        <semantic:inputEntry id="_976c22c7-8425-4e21-abac-41815a8b7e76-0">
+          <semantic:text>Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_976c22c7-8425-4e21-abac-41815a8b7e76-1">
+          <semantic:text>Small Scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_976c22c7-8425-4e21-abac-41815a8b7e76-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_976c22c7-8425-4e21-abac-41815a8b7e76-3">
+          <semantic:text>24</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_8cbc2762-fe14-40fe-855a-b2b72a439dd0">
+        <semantic:inputEntry id="_8cbc2762-fe14-40fe-855a-b2b72a439dd0-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8cbc2762-fe14-40fe-855a-b2b72a439dd0-1">
+          <semantic:text>Enterprise scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8cbc2762-fe14-40fe-855a-b2b72a439dd0-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_8cbc2762-fe14-40fe-855a-b2b72a439dd0-3">
+          <semantic:text>22</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_8a5c9460-3e06-4517-9d0e-a837a2408fa0">
+        <semantic:inputEntry id="_8a5c9460-3e06-4517-9d0e-a837a2408fa0-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8a5c9460-3e06-4517-9d0e-a837a2408fa0-1">
+          <semantic:text>Enterprise scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_8a5c9460-3e06-4517-9d0e-a837a2408fa0-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_8a5c9460-3e06-4517-9d0e-a837a2408fa0-3">
+          <semantic:text>20</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_52cefc82-808d-4d58-87e6-a31caa6896e4">
+        <semantic:inputEntry id="_52cefc82-808d-4d58-87e6-a31caa6896e4-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_52cefc82-808d-4d58-87e6-a31caa6896e4-1">
+          <semantic:text>Enterprise scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_52cefc82-808d-4d58-87e6-a31caa6896e4-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_52cefc82-808d-4d58-87e6-a31caa6896e4-3">
+          <semantic:text>18</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_4b2650af-d00f-4827-9403-492780711af9">
+        <semantic:inputEntry id="_4b2650af-d00f-4827-9403-492780711af9-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4b2650af-d00f-4827-9403-492780711af9-1">
+          <semantic:text>Large scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4b2650af-d00f-4827-9403-492780711af9-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_4b2650af-d00f-4827-9403-492780711af9-3">
+          <semantic:text>16</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_fe6e0dcb-b90f-46ef-ad8b-fdc8efc48e87">
+        <semantic:inputEntry id="_fe6e0dcb-b90f-46ef-ad8b-fdc8efc48e87-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fe6e0dcb-b90f-46ef-ad8b-fdc8efc48e87-1">
+          <semantic:text>Large scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fe6e0dcb-b90f-46ef-ad8b-fdc8efc48e87-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_fe6e0dcb-b90f-46ef-ad8b-fdc8efc48e87-3">
+          <semantic:text>14</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c7919e5f-b101-4870-beb5-1dbfdc467a8c">
+        <semantic:inputEntry id="_c7919e5f-b101-4870-beb5-1dbfdc467a8c-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c7919e5f-b101-4870-beb5-1dbfdc467a8c-1">
+          <semantic:text>Large scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c7919e5f-b101-4870-beb5-1dbfdc467a8c-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c7919e5f-b101-4870-beb5-1dbfdc467a8c-3">
+          <semantic:text>12</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b98fddc7-8742-4d42-b83f-052c6e4eb404">
+        <semantic:inputEntry id="_b98fddc7-8742-4d42-b83f-052c6e4eb404-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b98fddc7-8742-4d42-b83f-052c6e4eb404-1">
+          <semantic:text>Medium scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b98fddc7-8742-4d42-b83f-052c6e4eb404-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b98fddc7-8742-4d42-b83f-052c6e4eb404-3">
+          <semantic:text>10</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_4ec45049-85f8-4926-9dd7-751bade03120">
+        <semantic:inputEntry id="_4ec45049-85f8-4926-9dd7-751bade03120-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4ec45049-85f8-4926-9dd7-751bade03120-1">
+          <semantic:text>Medium scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4ec45049-85f8-4926-9dd7-751bade03120-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_4ec45049-85f8-4926-9dd7-751bade03120-3">
+          <semantic:text>8</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_162edfed-dd81-4060-9ffc-64fd38a3960b">
+        <semantic:inputEntry id="_162edfed-dd81-4060-9ffc-64fd38a3960b-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_162edfed-dd81-4060-9ffc-64fd38a3960b-1">
+          <semantic:text>Medium scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_162edfed-dd81-4060-9ffc-64fd38a3960b-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_162edfed-dd81-4060-9ffc-64fd38a3960b-3">
+          <semantic:text>6</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b3656f4d-21e5-41c0-a172-8be8fb48c12d">
+        <semantic:inputEntry id="_b3656f4d-21e5-41c0-a172-8be8fb48c12d-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b3656f4d-21e5-41c0-a172-8be8fb48c12d-1">
+          <semantic:text>Small Scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b3656f4d-21e5-41c0-a172-8be8fb48c12d-2">
+          <semantic:text>Gold</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b3656f4d-21e5-41c0-a172-8be8fb48c12d-3">
+          <semantic:text>4</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_e1cafaa5-2853-47ea-a830-e5c802d3af4c">
+        <semantic:inputEntry id="_e1cafaa5-2853-47ea-a830-e5c802d3af4c-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e1cafaa5-2853-47ea-a830-e5c802d3af4c-1">
+          <semantic:text>Small Scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e1cafaa5-2853-47ea-a830-e5c802d3af4c-2">
+          <semantic:text>Silver</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e1cafaa5-2853-47ea-a830-e5c802d3af4c-3">
+          <semantic:text>2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_4f69e926-dc93-41c1-8d00-34d1298a3b73">
+        <semantic:inputEntry id="_4f69e926-dc93-41c1-8d00-34d1298a3b73-0">
+          <semantic:text>Not Related</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4f69e926-dc93-41c1-8d00-34d1298a3b73-1">
+          <semantic:text>Small Scale</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4f69e926-dc93-41c1-8d00-34d1298a3b73-2">
+          <semantic:text>Bronze</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_4f69e926-dc93-41c1-8d00-34d1298a3b73-3">
+          <semantic:text>0</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:businessKnowledgeModel id="_47fddb81-5b14-4c45-b222-fabd19ab8574" name="Related industry">
+    <semantic:encapsulatedLogic>
+      <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Related industry">
+        <semantic:input id="_92a3223e-a828-4564-b9f0-365052d9bf86" label="Industry">
+          <semantic:inputExpression typeRef="feel:string">
+            <semantic:text>Industry</semantic:text>
+          </semantic:inputExpression>
+        </semantic:input>
+        <semantic:output id="_6b7ae63f-4e89-43cc-a280-c6d360d33f3c">
+          <semantic:outputValues>
+            <semantic:text>"Same Industry", "Related", "Not Related"</semantic:text>
+          </semantic:outputValues>
+        </semantic:output>
+        <semantic:rule id="_d24a063b-7592-477f-ab98-d4cd44b53cc5">
+          <semantic:inputEntry id="_d24a063b-7592-477f-ab98-d4cd44b53cc5-0">
+            <semantic:text>Finance</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_d24a063b-7592-477f-ab98-d4cd44b53cc5-1">
+            <semantic:text>Same Industry</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_39650961-0b6b-4b18-b7f8-f33db002cc8d">
+          <semantic:inputEntry id="_39650961-0b6b-4b18-b7f8-f33db002cc8d-0">
+            <semantic:text>Insurance</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_39650961-0b6b-4b18-b7f8-f33db002cc8d-1">
+            <semantic:text>Same Industry</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_0ef2a7bd-bd70-4b80-baf6-00e7139c172f">
+          <semantic:inputEntry id="_0ef2a7bd-bd70-4b80-baf6-00e7139c172f-0">
+            <semantic:text>[Real Estate, Rental, Leasing]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_0ef2a7bd-bd70-4b80-baf6-00e7139c172f-1">
+            <semantic:text>Related</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_c8339855-d3fe-42cd-8935-a40b3b8bd8fd">
+          <semantic:inputEntry id="_c8339855-d3fe-42cd-8935-a40b3b8bd8fd-0">
+            <semantic:text>[Professional, Scientific, Technical Services]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_c8339855-d3fe-42cd-8935-a40b3b8bd8fd-1">
+            <semantic:text>Related</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_089e686b-832f-4fee-ac56-dd6c454b1818">
+          <semantic:inputEntry id="_089e686b-832f-4fee-ac56-dd6c454b1818-0">
+            <semantic:text>[Health Care, Social Assistance, Education]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_089e686b-832f-4fee-ac56-dd6c454b1818-1">
+            <semantic:text>Related</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_07715af6-ecc5-47dc-9210-3c123c4e8adb">
+          <semantic:inputEntry id="_07715af6-ecc5-47dc-9210-3c123c4e8adb-0">
+            <semantic:text>-</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_07715af6-ecc5-47dc-9210-3c123c4e8adb-1">
+            <semantic:text>Not Related</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+      </semantic:decisionTable>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_3811903a-8a68-4629-8101-abe2105e157e" name="Related industry" typeRef="feel:string"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_62b16bc3-a65e-4183-9089-41945db3e057" name="Sales scale">
+    <semantic:encapsulatedLogic>
+      <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Sales scale">
+        <semantic:input id="_4242dba4-f2c9-493d-8da7-24f49eb9353a" label="Sales Per Year">
+          <semantic:inputExpression typeRef="feel:number">
+            <semantic:text>Sales Per Year</semantic:text>
+          </semantic:inputExpression>
+        </semantic:input>
+        <semantic:output id="_65fad24e-b268-444e-8fc4-7aab2b369fbd">
+          <semantic:outputValues>
+            <semantic:text>"Enterprise scale", "Large scale", "Medium scale", "Small scale"</semantic:text>
+          </semantic:outputValues>
+        </semantic:output>
+        <semantic:rule id="_df858207-8c04-4e4d-8ebe-2a4d7f220778">
+          <semantic:inputEntry id="_df858207-8c04-4e4d-8ebe-2a4d7f220778-0">
+            <semantic:text>[0..500000)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_df858207-8c04-4e4d-8ebe-2a4d7f220778-1">
+            <semantic:text>Small scale</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_cfb2111b-d59b-4a28-94b1-042b785f7780">
+          <semantic:inputEntry id="_cfb2111b-d59b-4a28-94b1-042b785f7780-0">
+            <semantic:text>[500000..1000000)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_cfb2111b-d59b-4a28-94b1-042b785f7780-1">
+            <semantic:text>Small scale</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_52932cfd-2b89-4dc8-8733-e34b0b33a3f0">
+          <semantic:inputEntry id="_52932cfd-2b89-4dc8-8733-e34b0b33a3f0-0">
+            <semantic:text>[1000000..10000000)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_52932cfd-2b89-4dc8-8733-e34b0b33a3f0-1">
+            <semantic:text>Medium scale</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_a6782a8c-b425-4f7f-ac16-71bc97c47cc6">
+          <semantic:inputEntry id="_a6782a8c-b425-4f7f-ac16-71bc97c47cc6-0">
+            <semantic:text>[10000000..50000000)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_a6782a8c-b425-4f7f-ac16-71bc97c47cc6-1">
+            <semantic:text>Large scale</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_9af32e47-6a0a-4a83-8cb0-b6f36f5135f9">
+          <semantic:inputEntry id="_9af32e47-6a0a-4a83-8cb0-b6f36f5135f9-0">
+            <semantic:text>&gt;=50000000</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_9af32e47-6a0a-4a83-8cb0-b6f36f5135f9-1">
+            <semantic:text>Enterprise scale</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+      </semantic:decisionTable>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_93a6161c-a69a-4b76-ac02-87a1bac1d342" name="Sales scale" typeRef="feel:string"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_9b4f9d07-8744-4cf9-b826-cf1d10476a10" name="Category">
+    <semantic:encapsulatedLogic>
+      <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Category">
+        <semantic:input id="_f3ee7569-8e2c-424a-8b81-f41fc9ea4351" label="Network Size">
+          <semantic:inputExpression typeRef="feel:string">
+            <semantic:text>Network Size</semantic:text>
+          </semantic:inputExpression>
+          <semantic:inputValues>
+            <semantic:text>"Large", "Medium", "Small"</semantic:text>
+          </semantic:inputValues>
+        </semantic:input>
+        <semantic:input id="_7a083d26-510d-4c8e-87d6-8f63fbaa509e" label="Size of the Customer">
+          <semantic:inputExpression typeRef="feel:string">
+            <semantic:text>Size of the Customer</semantic:text>
+          </semantic:inputExpression>
+          <semantic:inputValues>
+            <semantic:text>"Enterprise", "Large", "Medium", "Small"</semantic:text>
+          </semantic:inputValues>
+        </semantic:input>
+        <semantic:input id="_1d63f569-d97a-401d-a26e-0c04ff24a773" label="Cooperation Background">
+          <semantic:inputExpression typeRef="feel:string">
+            <semantic:text>Cooperation Background</semantic:text>
+          </semantic:inputExpression>
+          <semantic:inputValues>
+            <semantic:text>"Very old", "Old", "Normal", "New"</semantic:text>
+          </semantic:inputValues>
+        </semantic:input>
+        <semantic:output id="_657db45a-59a4-451a-9ce0-56c40c83f425">
+          <semantic:outputValues>
+            <semantic:text>"Gold", "Silver", "Bronze"</semantic:text>
+          </semantic:outputValues>
+        </semantic:output>
+        <semantic:rule id="_ad6c5ce6-7df1-4f5d-8a20-2ede054b39e6">
+          <semantic:inputEntry id="_ad6c5ce6-7df1-4f5d-8a20-2ede054b39e6-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_ad6c5ce6-7df1-4f5d-8a20-2ede054b39e6-1">
+            <semantic:text>Enterprise</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_ad6c5ce6-7df1-4f5d-8a20-2ede054b39e6-2">
+            <semantic:text>[Old, Very old]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_ad6c5ce6-7df1-4f5d-8a20-2ede054b39e6-3">
+            <semantic:text>Gold</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_8e4e5f08-709e-43d3-ac43-19094e63a66d">
+          <semantic:inputEntry id="_8e4e5f08-709e-43d3-ac43-19094e63a66d-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_8e4e5f08-709e-43d3-ac43-19094e63a66d-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_8e4e5f08-709e-43d3-ac43-19094e63a66d-2">
+            <semantic:text>[Old, Very old]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_8e4e5f08-709e-43d3-ac43-19094e63a66d-3">
+            <semantic:text>Gold</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_99a512b3-f0ab-4b2f-8adb-9de81439abcd">
+          <semantic:inputEntry id="_99a512b3-f0ab-4b2f-8adb-9de81439abcd-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_99a512b3-f0ab-4b2f-8adb-9de81439abcd-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_99a512b3-f0ab-4b2f-8adb-9de81439abcd-2">
+            <semantic:text>[Old, Very old]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_99a512b3-f0ab-4b2f-8adb-9de81439abcd-3">
+            <semantic:text>Gold</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_7a819dc8-109e-44db-b8a7-9d02d5ff4968">
+          <semantic:inputEntry id="_7a819dc8-109e-44db-b8a7-9d02d5ff4968-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_7a819dc8-109e-44db-b8a7-9d02d5ff4968-1">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_7a819dc8-109e-44db-b8a7-9d02d5ff4968-2">
+            <semantic:text>[Old, Very old]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_7a819dc8-109e-44db-b8a7-9d02d5ff4968-3">
+            <semantic:text>Silver</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_3d3e7f2e-574d-4acc-a663-8206b2d7ddf1">
+          <semantic:inputEntry id="_3d3e7f2e-574d-4acc-a663-8206b2d7ddf1-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_3d3e7f2e-574d-4acc-a663-8206b2d7ddf1-1">
+            <semantic:text>Enterprise</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_3d3e7f2e-574d-4acc-a663-8206b2d7ddf1-2">
+            <semantic:text>[Normal, New]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_3d3e7f2e-574d-4acc-a663-8206b2d7ddf1-3">
+            <semantic:text>Gold</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_9c42499c-6aec-4d81-bbea-fce90e255db4">
+          <semantic:inputEntry id="_9c42499c-6aec-4d81-bbea-fce90e255db4-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_9c42499c-6aec-4d81-bbea-fce90e255db4-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_9c42499c-6aec-4d81-bbea-fce90e255db4-2">
+            <semantic:text>[Normal, New]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_9c42499c-6aec-4d81-bbea-fce90e255db4-3">
+            <semantic:text>Silver</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_34def3de-7ac4-4a46-8634-5452aebaee34">
+          <semantic:inputEntry id="_34def3de-7ac4-4a46-8634-5452aebaee34-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_34def3de-7ac4-4a46-8634-5452aebaee34-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_34def3de-7ac4-4a46-8634-5452aebaee34-2">
+            <semantic:text>[Normal, New]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_34def3de-7ac4-4a46-8634-5452aebaee34-3">
+            <semantic:text>Silver</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_d5055ff1-4454-47fe-b4f8-d7809df3e7a1">
+          <semantic:inputEntry id="_d5055ff1-4454-47fe-b4f8-d7809df3e7a1-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_d5055ff1-4454-47fe-b4f8-d7809df3e7a1-1">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_d5055ff1-4454-47fe-b4f8-d7809df3e7a1-2">
+            <semantic:text>[Normal, New]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_d5055ff1-4454-47fe-b4f8-d7809df3e7a1-3">
+            <semantic:text>Bronze</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_8be77b88-adf6-442c-a936-42c9ba07cec0">
+          <semantic:inputEntry id="_8be77b88-adf6-442c-a936-42c9ba07cec0-0">
+            <semantic:text>[Medium, Small]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_8be77b88-adf6-442c-a936-42c9ba07cec0-1">
+            <semantic:text>Enterprise</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_8be77b88-adf6-442c-a936-42c9ba07cec0-2">
+            <semantic:text>[Old, Very old]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_8be77b88-adf6-442c-a936-42c9ba07cec0-3">
+            <semantic:text>Gold</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_bfd8f94b-f660-4647-933f-770c9c5f0d44">
+          <semantic:inputEntry id="_bfd8f94b-f660-4647-933f-770c9c5f0d44-0">
+            <semantic:text>[Medium, Small]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_bfd8f94b-f660-4647-933f-770c9c5f0d44-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_bfd8f94b-f660-4647-933f-770c9c5f0d44-2">
+            <semantic:text>[Old, Very old]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_bfd8f94b-f660-4647-933f-770c9c5f0d44-3">
+            <semantic:text>Silver</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_ea0c28b7-1e50-4bb6-9303-b4bc86bbd6d0">
+          <semantic:inputEntry id="_ea0c28b7-1e50-4bb6-9303-b4bc86bbd6d0-0">
+            <semantic:text>[Medium, Small]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_ea0c28b7-1e50-4bb6-9303-b4bc86bbd6d0-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_ea0c28b7-1e50-4bb6-9303-b4bc86bbd6d0-2">
+            <semantic:text>[Old, Very old]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_ea0c28b7-1e50-4bb6-9303-b4bc86bbd6d0-3">
+            <semantic:text>Bronze</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_4763fbe1-2876-4bcf-ab73-b2fe64852717">
+          <semantic:inputEntry id="_4763fbe1-2876-4bcf-ab73-b2fe64852717-0">
+            <semantic:text>[Medium, Small]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_4763fbe1-2876-4bcf-ab73-b2fe64852717-1">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_4763fbe1-2876-4bcf-ab73-b2fe64852717-2">
+            <semantic:text>[Old, Very old]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_4763fbe1-2876-4bcf-ab73-b2fe64852717-3">
+            <semantic:text>Bronze</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_0ccceeca-48da-4b65-990d-0522da6bbd89">
+          <semantic:inputEntry id="_0ccceeca-48da-4b65-990d-0522da6bbd89-0">
+            <semantic:text>[Medium, Small]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_0ccceeca-48da-4b65-990d-0522da6bbd89-1">
+            <semantic:text>Enterprise</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_0ccceeca-48da-4b65-990d-0522da6bbd89-2">
+            <semantic:text>[Normal, New]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_0ccceeca-48da-4b65-990d-0522da6bbd89-3">
+            <semantic:text>Gold</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_107555ef-e4db-4b58-a24e-2059ae0cff00">
+          <semantic:inputEntry id="_107555ef-e4db-4b58-a24e-2059ae0cff00-0">
+            <semantic:text>[Medium, Small]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_107555ef-e4db-4b58-a24e-2059ae0cff00-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_107555ef-e4db-4b58-a24e-2059ae0cff00-2">
+            <semantic:text>[Normal, New]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_107555ef-e4db-4b58-a24e-2059ae0cff00-3">
+            <semantic:text>Silver</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_9fd45eb8-a0f5-4de9-b0e9-3a65f902fd8a">
+          <semantic:inputEntry id="_9fd45eb8-a0f5-4de9-b0e9-3a65f902fd8a-0">
+            <semantic:text>[Medium, Small]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_9fd45eb8-a0f5-4de9-b0e9-3a65f902fd8a-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_9fd45eb8-a0f5-4de9-b0e9-3a65f902fd8a-2">
+            <semantic:text>[Normal, New]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_9fd45eb8-a0f5-4de9-b0e9-3a65f902fd8a-3">
+            <semantic:text>Bronze</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_a47a3a17-f10b-49bc-b94c-45449c716512">
+          <semantic:inputEntry id="_a47a3a17-f10b-49bc-b94c-45449c716512-0">
+            <semantic:text>[Medium, Small]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_a47a3a17-f10b-49bc-b94c-45449c716512-1">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_a47a3a17-f10b-49bc-b94c-45449c716512-2">
+            <semantic:text>[Normal, New]</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_a47a3a17-f10b-49bc-b94c-45449c716512-3">
+            <semantic:text>Bronze</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+      </semantic:decisionTable>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_28744029-0f6b-44c4-81c1-e39b9d06ac4f" name="Category" typeRef="feel:string"/>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_2e924d3e-4813-4f0f-8c95-d9acbafc8445"/>
+    </semantic:knowledgeRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_a820bebf-ee68-4896-8ab6-21aecfba9520"/>
+    </semantic:knowledgeRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_119d70aa-383c-422d-b6f3-cf0afc5c8998"/>
+    </semantic:knowledgeRequirement>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_2e924d3e-4813-4f0f-8c95-d9acbafc8445" name="Size of the Customer">
+    <semantic:encapsulatedLogic>
+      <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Size of the Customer">
+        <semantic:input id="_d913aea3-4b59-4caa-9d5e-fd7815596662" label="Number of Employees">
+          <semantic:inputExpression typeRef="feel:number">
+            <semantic:text>Number of Employees</semantic:text>
+          </semantic:inputExpression>
+        </semantic:input>
+        <semantic:output id="_069f8ea1-7280-4254-9111-9d669937c152">
+          <semantic:outputValues>
+            <semantic:text>"Enterprise", "Large", "Medium", "Small"</semantic:text>
+          </semantic:outputValues>
+        </semantic:output>
+        <semantic:rule id="_71bbb2d6-87c7-4abf-bd9f-b533fe402e45">
+          <semantic:inputEntry id="_71bbb2d6-87c7-4abf-bd9f-b533fe402e45-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_71bbb2d6-87c7-4abf-bd9f-b533fe402e45-1">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_99f213ed-a251-4184-b50f-241a89e9cd66">
+          <semantic:inputEntry id="_99f213ed-a251-4184-b50f-241a89e9cd66-0">
+            <semantic:text>[10..50)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_99f213ed-a251-4184-b50f-241a89e9cd66-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_49b99c1f-6cd0-46e9-ae8a-354a89552c15">
+          <semantic:inputEntry id="_49b99c1f-6cd0-46e9-ae8a-354a89552c15-0">
+            <semantic:text>[50..100)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_49b99c1f-6cd0-46e9-ae8a-354a89552c15-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_69a44d3f-fbe3-4936-9d50-b4c3d27716a7">
+          <semantic:inputEntry id="_69a44d3f-fbe3-4936-9d50-b4c3d27716a7-0">
+            <semantic:text>&gt;=100</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_69a44d3f-fbe3-4936-9d50-b4c3d27716a7-1">
+            <semantic:text>Enterprise</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+      </semantic:decisionTable>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_40000504-987f-4209-bbd9-f2f048b12eeb" name="Size of the Customer" typeRef="feel:string"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_a820bebf-ee68-4896-8ab6-21aecfba9520" name="Cooperation Background">
+    <semantic:encapsulatedLogic>
+      <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Cooperation Background">
+        <semantic:input id="_87215a8c-f423-4bf0-aed1-421dafa2e6ca" label="Years of Cooperation">
+          <semantic:inputExpression typeRef="feel:number">
+            <semantic:text>Years of Cooperation</semantic:text>
+          </semantic:inputExpression>
+        </semantic:input>
+        <semantic:output id="_568c491f-935d-4df6-9fc2-069b91aa9a4f">
+          <semantic:outputValues>
+            <semantic:text>"Very old", "Old", "Normal", "New"</semantic:text>
+          </semantic:outputValues>
+        </semantic:output>
+        <semantic:rule id="_e348c37b-f8f4-46b0-8ab8-4970b447a589">
+          <semantic:inputEntry id="_e348c37b-f8f4-46b0-8ab8-4970b447a589-0">
+            <semantic:text>[0..2)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_e348c37b-f8f4-46b0-8ab8-4970b447a589-1">
+            <semantic:text>New</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_d9354cd8-46a8-422e-bf9d-b998cd76316a">
+          <semantic:inputEntry id="_d9354cd8-46a8-422e-bf9d-b998cd76316a-0">
+            <semantic:text>[2..5)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_d9354cd8-46a8-422e-bf9d-b998cd76316a-1">
+            <semantic:text>Normal</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_1fddc0fc-725f-4615-a555-a95275dad073">
+          <semantic:inputEntry id="_1fddc0fc-725f-4615-a555-a95275dad073-0">
+            <semantic:text>[5..10)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_1fddc0fc-725f-4615-a555-a95275dad073-1">
+            <semantic:text>Old</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_2e45018b-691f-4115-99f5-a5f8ac3bcbb8">
+          <semantic:inputEntry id="_2e45018b-691f-4115-99f5-a5f8ac3bcbb8-0">
+            <semantic:text>&gt;=10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_2e45018b-691f-4115-99f5-a5f8ac3bcbb8-1">
+            <semantic:text>Very old</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+      </semantic:decisionTable>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_2e1e6c34-0901-4a9e-b413-6f7e349d98f8" name="Cooperation Background" typeRef="feel:string"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_119d70aa-383c-422d-b6f3-cf0afc5c8998" name="Network Size">
+    <semantic:encapsulatedLogic>
+      <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Network Size">
+        <semantic:input id="_1ce49e91-12a3-4e02-ada6-4bf2becd7a6f" label="Branches distribution">
+          <semantic:inputExpression typeRef="feel:string">
+            <semantic:text>Branches distribution</semantic:text>
+          </semantic:inputExpression>
+          <semantic:inputValues>
+            <semantic:text>"Large", "Medium", "Small"</semantic:text>
+          </semantic:inputValues>
+        </semantic:input>
+        <semantic:input id="_d9a2434a-0cb4-4d68-9f1e-958e1d5983d0" label="Re-sellers distribution">
+          <semantic:inputExpression typeRef="feel:string">
+            <semantic:text>Re-sellers distribution</semantic:text>
+          </semantic:inputExpression>
+          <semantic:inputValues>
+            <semantic:text>"Large", "Medium", "Small"</semantic:text>
+          </semantic:inputValues>
+        </semantic:input>
+        <semantic:input id="_4c0f9b11-bd3e-40ff-a7cb-fec5fc1b0453" label="Partners distribution">
+          <semantic:inputExpression typeRef="feel:string">
+            <semantic:text>Partners distribution</semantic:text>
+          </semantic:inputExpression>
+          <semantic:inputValues>
+            <semantic:text>"Large", "Medium", "Small"</semantic:text>
+          </semantic:inputValues>
+        </semantic:input>
+        <semantic:output id="_da320d30-6794-43fa-aecd-84cdf95dc24d">
+          <semantic:outputValues>
+            <semantic:text>"Large", "Medium", "Small"</semantic:text>
+          </semantic:outputValues>
+        </semantic:output>
+        <semantic:rule id="_547c8a2b-8ffd-413a-a1f9-1a09c9124f8f">
+          <semantic:inputEntry id="_547c8a2b-8ffd-413a-a1f9-1a09c9124f8f-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_547c8a2b-8ffd-413a-a1f9-1a09c9124f8f-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_547c8a2b-8ffd-413a-a1f9-1a09c9124f8f-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_547c8a2b-8ffd-413a-a1f9-1a09c9124f8f-3">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_1a67cd2d-110c-441b-926b-873a9c4da659">
+          <semantic:inputEntry id="_1a67cd2d-110c-441b-926b-873a9c4da659-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_1a67cd2d-110c-441b-926b-873a9c4da659-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_1a67cd2d-110c-441b-926b-873a9c4da659-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_1a67cd2d-110c-441b-926b-873a9c4da659-3">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_9afb1dd8-c1a8-476b-b9f4-572908f9d598">
+          <semantic:inputEntry id="_9afb1dd8-c1a8-476b-b9f4-572908f9d598-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_9afb1dd8-c1a8-476b-b9f4-572908f9d598-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_9afb1dd8-c1a8-476b-b9f4-572908f9d598-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_9afb1dd8-c1a8-476b-b9f4-572908f9d598-3">
+            <semantic:text/>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_381c41b7-e4ac-4943-8ac2-5e7bc30d4ebe">
+          <semantic:inputEntry id="_381c41b7-e4ac-4943-8ac2-5e7bc30d4ebe-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_381c41b7-e4ac-4943-8ac2-5e7bc30d4ebe-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_381c41b7-e4ac-4943-8ac2-5e7bc30d4ebe-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_381c41b7-e4ac-4943-8ac2-5e7bc30d4ebe-3">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_77315e30-5087-41b5-8863-9cc919d51d57">
+          <semantic:inputEntry id="_77315e30-5087-41b5-8863-9cc919d51d57-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_77315e30-5087-41b5-8863-9cc919d51d57-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_77315e30-5087-41b5-8863-9cc919d51d57-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_77315e30-5087-41b5-8863-9cc919d51d57-3">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_e9a04e4c-3ff3-4827-ab21-7b1749af6559">
+          <semantic:inputEntry id="_e9a04e4c-3ff3-4827-ab21-7b1749af6559-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_e9a04e4c-3ff3-4827-ab21-7b1749af6559-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_e9a04e4c-3ff3-4827-ab21-7b1749af6559-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_e9a04e4c-3ff3-4827-ab21-7b1749af6559-3">
+            <semantic:text/>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_a60e610e-70cd-43da-ba96-8810f3512724">
+          <semantic:inputEntry id="_a60e610e-70cd-43da-ba96-8810f3512724-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_a60e610e-70cd-43da-ba96-8810f3512724-1">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_a60e610e-70cd-43da-ba96-8810f3512724-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_a60e610e-70cd-43da-ba96-8810f3512724-3">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_fda1aefe-6d94-4561-b7e3-8877d84db2f9">
+          <semantic:inputEntry id="_fda1aefe-6d94-4561-b7e3-8877d84db2f9-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_fda1aefe-6d94-4561-b7e3-8877d84db2f9-1">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_fda1aefe-6d94-4561-b7e3-8877d84db2f9-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_fda1aefe-6d94-4561-b7e3-8877d84db2f9-3">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_cd3a2f11-6fee-4e97-a7ae-b27a1b3597b2">
+          <semantic:inputEntry id="_cd3a2f11-6fee-4e97-a7ae-b27a1b3597b2-0">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_cd3a2f11-6fee-4e97-a7ae-b27a1b3597b2-1">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_cd3a2f11-6fee-4e97-a7ae-b27a1b3597b2-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_cd3a2f11-6fee-4e97-a7ae-b27a1b3597b2-3">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_bb7c1a31-57af-4295-b7e8-c6e0a35419ac">
+          <semantic:inputEntry id="_bb7c1a31-57af-4295-b7e8-c6e0a35419ac-0">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_bb7c1a31-57af-4295-b7e8-c6e0a35419ac-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_bb7c1a31-57af-4295-b7e8-c6e0a35419ac-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_bb7c1a31-57af-4295-b7e8-c6e0a35419ac-3">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_b2cbedcf-c966-4373-bed4-755815404437">
+          <semantic:inputEntry id="_b2cbedcf-c966-4373-bed4-755815404437-0">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_b2cbedcf-c966-4373-bed4-755815404437-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_b2cbedcf-c966-4373-bed4-755815404437-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_b2cbedcf-c966-4373-bed4-755815404437-3">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_6424524a-f34a-476c-9147-6487c7059ee4">
+          <semantic:inputEntry id="_6424524a-f34a-476c-9147-6487c7059ee4-0">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_6424524a-f34a-476c-9147-6487c7059ee4-1">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_6424524a-f34a-476c-9147-6487c7059ee4-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_6424524a-f34a-476c-9147-6487c7059ee4-3">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_1e1fc222-7a36-4797-bc63-377567ade086">
+          <semantic:inputEntry id="_1e1fc222-7a36-4797-bc63-377567ade086-0">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_1e1fc222-7a36-4797-bc63-377567ade086-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_1e1fc222-7a36-4797-bc63-377567ade086-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_1e1fc222-7a36-4797-bc63-377567ade086-3">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_b4f32d34-bbc8-4218-a613-7f281d0c7dd9">
+          <semantic:inputEntry id="_b4f32d34-bbc8-4218-a613-7f281d0c7dd9-0">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_b4f32d34-bbc8-4218-a613-7f281d0c7dd9-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_b4f32d34-bbc8-4218-a613-7f281d0c7dd9-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_b4f32d34-bbc8-4218-a613-7f281d0c7dd9-3">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_1d631953-70ac-408b-b673-0bcce48eb593">
+          <semantic:inputEntry id="_1d631953-70ac-408b-b673-0bcce48eb593-0">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_1d631953-70ac-408b-b673-0bcce48eb593-1">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_1d631953-70ac-408b-b673-0bcce48eb593-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_1d631953-70ac-408b-b673-0bcce48eb593-3">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_08b63c58-1230-4f91-9822-52b86124f8fa">
+          <semantic:inputEntry id="_08b63c58-1230-4f91-9822-52b86124f8fa-0">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_08b63c58-1230-4f91-9822-52b86124f8fa-1">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_08b63c58-1230-4f91-9822-52b86124f8fa-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_08b63c58-1230-4f91-9822-52b86124f8fa-3">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_5604bc94-f21c-4631-95d4-36b0bc468a12">
+          <semantic:inputEntry id="_5604bc94-f21c-4631-95d4-36b0bc468a12-0">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_5604bc94-f21c-4631-95d4-36b0bc468a12-1">
+            <semantic:text/>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_5604bc94-f21c-4631-95d4-36b0bc468a12-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_5604bc94-f21c-4631-95d4-36b0bc468a12-3">
+            <semantic:text/>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_42d023c0-8576-4574-988b-789c9fc84828">
+          <semantic:inputEntry id="_42d023c0-8576-4574-988b-789c9fc84828-0">
+            <semantic:text>Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_42d023c0-8576-4574-988b-789c9fc84828-1">
+            <semantic:text/>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_42d023c0-8576-4574-988b-789c9fc84828-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_42d023c0-8576-4574-988b-789c9fc84828-3">
+            <semantic:text/>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_a1d22a43-53a0-4108-a63d-66df994b3d88">
+          <semantic:inputEntry id="_a1d22a43-53a0-4108-a63d-66df994b3d88-0">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_a1d22a43-53a0-4108-a63d-66df994b3d88-1">
+            <semantic:text>-</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_a1d22a43-53a0-4108-a63d-66df994b3d88-2">
+            <semantic:text>Large, Medium</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_a1d22a43-53a0-4108-a63d-66df994b3d88-3">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_af2e015c-7ddc-495b-ba7c-5d66ae1b84d4">
+          <semantic:inputEntry id="_af2e015c-7ddc-495b-ba7c-5d66ae1b84d4-0">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_af2e015c-7ddc-495b-ba7c-5d66ae1b84d4-1">
+            <semantic:text>-</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_af2e015c-7ddc-495b-ba7c-5d66ae1b84d4-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_af2e015c-7ddc-495b-ba7c-5d66ae1b84d4-3">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+      </semantic:decisionTable>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_6f8e864e-edd3-4a32-88ed-5a672e953bc5" name="Network Size" typeRef="feel:string"/>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_68df30c6-0a52-4efa-b5b3-151d19b3807a"/>
+    </semantic:knowledgeRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_d4972f84-a455-4f86-89ed-08810849aa67"/>
+    </semantic:knowledgeRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_dc3a8113-bafe-47b6-8af3-9260e4917812"/>
+    </semantic:knowledgeRequirement>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_68df30c6-0a52-4efa-b5b3-151d19b3807a" name="Branches distribution&amp;#10;">
+    <semantic:encapsulatedLogic>
+      <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Branches distribution&amp;#10;">
+        <semantic:input id="_a5c5ded5-9030-4eac-ab46-748b9b3668f5" label="Number of Branches">
+          <semantic:inputExpression typeRef="feel:number">
+            <semantic:text>Number of Branches</semantic:text>
+          </semantic:inputExpression>
+        </semantic:input>
+        <semantic:input id="_1b65eab6-f0fa-49d9-b5c8-c6207c2e4f6c" label="Branches dispersion">
+          <semantic:inputExpression typeRef="feel:string">
+            <semantic:text>Branches dispersion</semantic:text>
+          </semantic:inputExpression>
+          <semantic:inputValues>
+            <semantic:text>"Town", "Province", "Country", "Continent"</semantic:text>
+          </semantic:inputValues>
+        </semantic:input>
+        <semantic:output id="_7b99bcbb-cf09-4b49-9a18-2e8d58a2c77a">
+          <semantic:outputValues>
+            <semantic:text>"Large", "Medium", "Small"</semantic:text>
+          </semantic:outputValues>
+        </semantic:output>
+        <semantic:rule id="_2c8f1724-a07a-4aee-9271-89678a2ec7ff">
+          <semantic:inputEntry id="_2c8f1724-a07a-4aee-9271-89678a2ec7ff-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_2c8f1724-a07a-4aee-9271-89678a2ec7ff-1">
+            <semantic:text>Town</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_2c8f1724-a07a-4aee-9271-89678a2ec7ff-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_9ad09758-ed23-4ca5-aed7-bc8299c0090c">
+          <semantic:inputEntry id="_9ad09758-ed23-4ca5-aed7-bc8299c0090c-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_9ad09758-ed23-4ca5-aed7-bc8299c0090c-1">
+            <semantic:text>Province</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_9ad09758-ed23-4ca5-aed7-bc8299c0090c-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_054faeef-69a2-49d2-a9a8-ef93c7164f8b">
+          <semantic:inputEntry id="_054faeef-69a2-49d2-a9a8-ef93c7164f8b-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_054faeef-69a2-49d2-a9a8-ef93c7164f8b-1">
+            <semantic:text>Country</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_054faeef-69a2-49d2-a9a8-ef93c7164f8b-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_5a7abd6f-a0b1-4ede-aac0-f2880e3ec2f0">
+          <semantic:inputEntry id="_5a7abd6f-a0b1-4ede-aac0-f2880e3ec2f0-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_5a7abd6f-a0b1-4ede-aac0-f2880e3ec2f0-1">
+            <semantic:text>Continent</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_5a7abd6f-a0b1-4ede-aac0-f2880e3ec2f0-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_8a211d04-10f4-46e2-9202-794153183690">
+          <semantic:inputEntry id="_8a211d04-10f4-46e2-9202-794153183690-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_8a211d04-10f4-46e2-9202-794153183690-1">
+            <semantic:text>Town</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_8a211d04-10f4-46e2-9202-794153183690-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_179c529e-4549-4d8b-a65d-57bda8001f4f">
+          <semantic:inputEntry id="_179c529e-4549-4d8b-a65d-57bda8001f4f-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_179c529e-4549-4d8b-a65d-57bda8001f4f-1">
+            <semantic:text>Province</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_179c529e-4549-4d8b-a65d-57bda8001f4f-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_34d4f178-94b0-4c04-921f-78ae6b512838">
+          <semantic:inputEntry id="_34d4f178-94b0-4c04-921f-78ae6b512838-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_34d4f178-94b0-4c04-921f-78ae6b512838-1">
+            <semantic:text>Country</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_34d4f178-94b0-4c04-921f-78ae6b512838-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_b8833cac-03fa-43ce-a8fa-3385fe65527f">
+          <semantic:inputEntry id="_b8833cac-03fa-43ce-a8fa-3385fe65527f-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_b8833cac-03fa-43ce-a8fa-3385fe65527f-1">
+            <semantic:text>Continent</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_b8833cac-03fa-43ce-a8fa-3385fe65527f-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_57b5668c-bae7-4560-abac-d9f531f25fd4">
+          <semantic:inputEntry id="_57b5668c-bae7-4560-abac-d9f531f25fd4-0">
+            <semantic:text>&gt;30</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_57b5668c-bae7-4560-abac-d9f531f25fd4-1">
+            <semantic:text>-</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_57b5668c-bae7-4560-abac-d9f531f25fd4-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+      </semantic:decisionTable>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_5543a493-21ed-45fa-b47d-cb6950f5f56f" name="Branches distribution&amp;#10;" typeRef="feel:string"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_dc3a8113-bafe-47b6-8af3-9260e4917812" name="Re-sellers distribution">
+    <semantic:encapsulatedLogic>
+      <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Re-sellers distribution">
+        <semantic:input id="_a5caa2b4-efe0-4e2d-9ec4-51329c8dce12" label="Number of Re-sellers">
+          <semantic:inputExpression typeRef="feel:number">
+            <semantic:text>Number of Re-sellers</semantic:text>
+          </semantic:inputExpression>
+        </semantic:input>
+        <semantic:input id="_335a1413-0d06-47a0-a89c-d993c74cc202" label="Re-sellers dispersion">
+          <semantic:inputExpression typeRef="feel:string">
+            <semantic:text>Re-sellers dispersion</semantic:text>
+          </semantic:inputExpression>
+          <semantic:inputValues>
+            <semantic:text>"Town", "Province", "Country", "Continent"</semantic:text>
+          </semantic:inputValues>
+        </semantic:input>
+        <semantic:output id="_34ebeff2-a467-4ab6-bb3c-17ae941ce265">
+          <semantic:outputValues>
+            <semantic:text>"Large", "Medium", "Small"</semantic:text>
+          </semantic:outputValues>
+        </semantic:output>
+        <semantic:rule id="_1066c52e-b56a-486c-8024-5bca798c1e29">
+          <semantic:inputEntry id="_1066c52e-b56a-486c-8024-5bca798c1e29-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_1066c52e-b56a-486c-8024-5bca798c1e29-1">
+            <semantic:text>Town</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_1066c52e-b56a-486c-8024-5bca798c1e29-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_336f7f8f-f3a7-41ca-82dc-1dfbae32ea40">
+          <semantic:inputEntry id="_336f7f8f-f3a7-41ca-82dc-1dfbae32ea40-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_336f7f8f-f3a7-41ca-82dc-1dfbae32ea40-1">
+            <semantic:text>Province</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_336f7f8f-f3a7-41ca-82dc-1dfbae32ea40-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_a56cd828-1d0a-4aad-9c6b-eedfb9761344">
+          <semantic:inputEntry id="_a56cd828-1d0a-4aad-9c6b-eedfb9761344-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_a56cd828-1d0a-4aad-9c6b-eedfb9761344-1">
+            <semantic:text>Country</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_a56cd828-1d0a-4aad-9c6b-eedfb9761344-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_d8a9c399-dbe8-4389-be16-c15bfcf45360">
+          <semantic:inputEntry id="_d8a9c399-dbe8-4389-be16-c15bfcf45360-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_d8a9c399-dbe8-4389-be16-c15bfcf45360-1">
+            <semantic:text>Continent</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_d8a9c399-dbe8-4389-be16-c15bfcf45360-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_0c8b888f-16b8-4268-a6ee-f4c0382a11d3">
+          <semantic:inputEntry id="_0c8b888f-16b8-4268-a6ee-f4c0382a11d3-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_0c8b888f-16b8-4268-a6ee-f4c0382a11d3-1">
+            <semantic:text>Town</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_0c8b888f-16b8-4268-a6ee-f4c0382a11d3-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_03d89a9a-8fac-4001-885f-12327ea48a03">
+          <semantic:inputEntry id="_03d89a9a-8fac-4001-885f-12327ea48a03-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_03d89a9a-8fac-4001-885f-12327ea48a03-1">
+            <semantic:text>Province</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_03d89a9a-8fac-4001-885f-12327ea48a03-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_5e2b5b06-8035-4c15-ab4f-1e9ec1983927">
+          <semantic:inputEntry id="_5e2b5b06-8035-4c15-ab4f-1e9ec1983927-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_5e2b5b06-8035-4c15-ab4f-1e9ec1983927-1">
+            <semantic:text>Country</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_5e2b5b06-8035-4c15-ab4f-1e9ec1983927-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_51b780ed-633b-46ac-ad3d-a4b4f4f2da24">
+          <semantic:inputEntry id="_51b780ed-633b-46ac-ad3d-a4b4f4f2da24-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_51b780ed-633b-46ac-ad3d-a4b4f4f2da24-1">
+            <semantic:text>Continent</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_51b780ed-633b-46ac-ad3d-a4b4f4f2da24-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_55628f2b-d2d5-4102-a692-fac0c64a1832">
+          <semantic:inputEntry id="_55628f2b-d2d5-4102-a692-fac0c64a1832-0">
+            <semantic:text>&gt;30</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_55628f2b-d2d5-4102-a692-fac0c64a1832-1">
+            <semantic:text>-</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_55628f2b-d2d5-4102-a692-fac0c64a1832-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+      </semantic:decisionTable>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_7bf2abc7-74d6-4f7d-be06-37b3eef551d2" name="Re-sellers distribution" typeRef="feel:string"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_d4972f84-a455-4f86-89ed-08810849aa67" name="Partners distribution">
+    <semantic:encapsulatedLogic>
+      <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Partners distribution">
+        <semantic:input id="_36371586-4f3b-4b2f-84b2-950f6beb0354" label="Number of Partners">
+          <semantic:inputExpression typeRef="feel:number">
+            <semantic:text>Number of Partners</semantic:text>
+          </semantic:inputExpression>
+        </semantic:input>
+        <semantic:input id="_032af21d-e843-4bb5-9948-f8c26b3337cd" label="Partners dispersion">
+          <semantic:inputExpression typeRef="feel:string">
+            <semantic:text>Partners dispersion</semantic:text>
+          </semantic:inputExpression>
+          <semantic:inputValues>
+            <semantic:text>"Town", "Province", "Country", "Continent"</semantic:text>
+          </semantic:inputValues>
+        </semantic:input>
+        <semantic:output id="_3841cb78-9ffe-4470-8afc-d90eee56511f">
+          <semantic:outputValues>
+            <semantic:text>"Large", "Medium", "Small"</semantic:text>
+          </semantic:outputValues>
+        </semantic:output>
+        <semantic:rule id="_212de11e-6227-4dd5-97d4-82d1619086b1">
+          <semantic:inputEntry id="_212de11e-6227-4dd5-97d4-82d1619086b1-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_212de11e-6227-4dd5-97d4-82d1619086b1-1">
+            <semantic:text>Town</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_212de11e-6227-4dd5-97d4-82d1619086b1-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_3cd1004f-0af3-4563-8ce8-c60159b06749">
+          <semantic:inputEntry id="_3cd1004f-0af3-4563-8ce8-c60159b06749-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_3cd1004f-0af3-4563-8ce8-c60159b06749-1">
+            <semantic:text>Province</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_3cd1004f-0af3-4563-8ce8-c60159b06749-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_7a2c75cf-e0b7-4896-9bc3-b049fc45aecb">
+          <semantic:inputEntry id="_7a2c75cf-e0b7-4896-9bc3-b049fc45aecb-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_7a2c75cf-e0b7-4896-9bc3-b049fc45aecb-1">
+            <semantic:text>Country</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_7a2c75cf-e0b7-4896-9bc3-b049fc45aecb-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_546ab95f-77b4-4de9-b3bf-f0918d3be418">
+          <semantic:inputEntry id="_546ab95f-77b4-4de9-b3bf-f0918d3be418-0">
+            <semantic:text>&lt;10</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_546ab95f-77b4-4de9-b3bf-f0918d3be418-1">
+            <semantic:text>Continent</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_546ab95f-77b4-4de9-b3bf-f0918d3be418-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_d448e668-023a-401a-9486-5229d2e561e8">
+          <semantic:inputEntry id="_d448e668-023a-401a-9486-5229d2e561e8-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_d448e668-023a-401a-9486-5229d2e561e8-1">
+            <semantic:text>Town</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_d448e668-023a-401a-9486-5229d2e561e8-2">
+            <semantic:text>Small</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_c5918841-4254-489c-b072-7759d3c1849e">
+          <semantic:inputEntry id="_c5918841-4254-489c-b072-7759d3c1849e-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_c5918841-4254-489c-b072-7759d3c1849e-1">
+            <semantic:text>Province</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_c5918841-4254-489c-b072-7759d3c1849e-2">
+            <semantic:text>Medium</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_a1865e01-2f37-4ba2-8624-e0feb5fc19e1">
+          <semantic:inputEntry id="_a1865e01-2f37-4ba2-8624-e0feb5fc19e1-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_a1865e01-2f37-4ba2-8624-e0feb5fc19e1-1">
+            <semantic:text>Country</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_a1865e01-2f37-4ba2-8624-e0feb5fc19e1-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_517d254c-f13b-4f04-93c1-2f25adb99944">
+          <semantic:inputEntry id="_517d254c-f13b-4f04-93c1-2f25adb99944-0">
+            <semantic:text>[10..30)</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_517d254c-f13b-4f04-93c1-2f25adb99944-1">
+            <semantic:text>Continent</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_517d254c-f13b-4f04-93c1-2f25adb99944-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+        <semantic:rule id="_d394d66a-04a3-4ca7-a8d5-9953eb89c614">
+          <semantic:inputEntry id="_d394d66a-04a3-4ca7-a8d5-9953eb89c614-0">
+            <semantic:text>&gt;30</semantic:text>
+          </semantic:inputEntry>
+          <semantic:inputEntry id="_d394d66a-04a3-4ca7-a8d5-9953eb89c614-1">
+            <semantic:text>-</semantic:text>
+          </semantic:inputEntry>
+          <semantic:outputEntry id="_d394d66a-04a3-4ca7-a8d5-9953eb89c614-2">
+            <semantic:text>Large</semantic:text>
+          </semantic:outputEntry>
+        </semantic:rule>
+      </semantic:decisionTable>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_ae643d8e-c469-4658-b0dd-590648c72010" name="Partners distribution" typeRef="feel:string"/>
+  </semantic:businessKnowledgeModel>
+</semantic:definitions>

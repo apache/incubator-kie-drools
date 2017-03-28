@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<definitions id="DROOLS-1447" name="DROOLS-1447"
+  namespace="https://github.com/kiegroup/kie-dmn" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+  xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
+  <extensionElements />
+  <decision id="_c7523fa1-22af-4673-8990-fdf920b35667" name="Decision Logic 1" >
+    <variable id="_b1e4588e-9ce1-4474-8e4e-48dbcdb7524b" typeRef="feel:boolean"/>
+    <literalExpression><text>true</text></literalExpression>
+  </decision>
+  <decision id="_5e43b55c-888e-443c-b1b9-80e4aa6746bd" name="">
+    <variable id="_cd52910c-65e5-448d-8e60-1912b5db849e" name="" typeRef="feel:boolean" />
+    <literalExpression><text>true</text></literalExpression>
+  </decision>
+</definitions>

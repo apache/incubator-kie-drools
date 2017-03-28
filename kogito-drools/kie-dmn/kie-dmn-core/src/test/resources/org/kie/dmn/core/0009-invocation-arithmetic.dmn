@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+             xmlns:tns="http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11"
+             xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11"
+             namespace="http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11"
+             exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.32.2; 1.0" name="literal invocation1" triso:logoChoice="Default"
+             xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd"
+             expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
+             typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+  <itemDefinition name="tLoan" isCollection="false">
+    <itemComponent name="amount" isCollection="false">
+      <typeRef>feel:number</typeRef>
+    </itemComponent>
+    <itemComponent name="rate" isCollection="false">
+      <typeRef>feel:number</typeRef>
+    </itemComponent>
+    <itemComponent name="term" isCollection="false">
+      <typeRef>feel:number</typeRef>
+    </itemComponent>
+  </itemDefinition>
+  <decision id="d_MonthlyPayment" name="MonthlyPayment">
+    <variable name="MonthlyPayment" typeRef="feel:number"/>
+    <informationRequirement>
+      <requiredInput href="#i_Loan"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#i_fee"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#b_PMT"/>
+    </knowledgeRequirement>
+    <literalExpression>
+      <text>PMT(Loan.amount, Loan.rate, Loan.term)+fee</text>
+    </literalExpression>
+  </decision>
+  <businessKnowledgeModel id="b_PMT" name="PMT">
+    <encapsulatedLogic>
+      <formalParameter name="p"/>
+      <formalParameter name="r"/>
+      <formalParameter name="n"/>
+      <literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401">
+        <text>(p*r/12)/(1-(1+r/12)**-n)</text>
+      </literalExpression>
+    </encapsulatedLogic>
+    <variable name="PMT" typeRef="feel:number"/>
+  </businessKnowledgeModel>
+  <inputData id="i_Loan" name="Loan">
+    <variable name="Loan" typeRef="tns:tLoan"/>
+  </inputData>
+  <inputData id="i_fee" name="fee">
+    <variable name="fee" typeRef="feel:number"/>
+  </inputData>
+</definitions>

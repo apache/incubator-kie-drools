@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_bbb692e7-3d95-407a-bf39-353085bf57f0" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.0.201612201657" id="_bbb692e7-3d95-407a-bf39-353085bf57f0" name="Invocation with two decision table as parameters" namespace="http://www.trisotech.com/definitions/_bbb692e7-3d95-407a-bf39-353085bf57f0" triso:logoChoice="None">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:itemDefinition label="abc" name="abc">
+    <semantic:itemComponent id="_127930af-c9b9-4148-93a8-6a8e5c0a164f" name="a">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_1da4004c-48d9-4daf-83ff-2ce9350dd6a2" name="b">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:decision id="_d94d2ee4-b5df-422e-bd25-40b3311400a8" name="Decision Logic 2">
+    <semantic:variable id="_506d6717-b172-4e79-9ac0-d7347e2aecbb" name="Decision Logic 2"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_bd0c3ecc-845b-45d2-b87f-dfcb3bc68a30"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_d48956fc-7f3f-4d4e-a6ea-e3ef3e74db23"/>
+    </semantic:knowledgeRequirement>
+    <semantic:invocation>
+      <semantic:literalExpression>
+        <semantic:text>Decision Logic 1</semantic:text>
+      </semantic:literalExpression>
+      <semantic:binding>
+        <semantic:parameter id="_803ac80b-90b1-4f22-ac3f-899bc4794d81" name="a"/>
+        <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="a">
+          <semantic:input id="_9dca5bf5-29c2-464d-9492-50a3583fd85a" label="Number">
+            <semantic:inputExpression typeRef="feel:number">
+              <semantic:text>Number</semantic:text>
+            </semantic:inputExpression>
+          </semantic:input>
+          <semantic:output id="_bc4c261e-ac61-47e4-b36b-c9f6d8bf19c7"/>
+          <semantic:rule id="_81562f0d-d199-4136-8f51-e08ff9a4da59">
+            <semantic:inputEntry id="_81562f0d-d199-4136-8f51-e08ff9a4da59-0">
+              <semantic:text>&lt;5</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_81562f0d-d199-4136-8f51-e08ff9a4da59-1">
+              <semantic:text>"A number smaller than 5"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_963555af-dfe4-43af-9ab8-071a29d6881d">
+            <semantic:inputEntry id="_963555af-dfe4-43af-9ab8-071a29d6881d-0">
+              <semantic:text>5</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_963555af-dfe4-43af-9ab8-071a29d6881d-1">
+              <semantic:text>"The number 5"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_b7692c5f-7566-4a32-b5fe-23d5e93a71c5">
+            <semantic:inputEntry id="_b7692c5f-7566-4a32-b5fe-23d5e93a71c5-0">
+              <semantic:text>&gt;5</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_b7692c5f-7566-4a32-b5fe-23d5e93a71c5-1">
+              <semantic:text>"A number greater than 5"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+        </semantic:decisionTable>
+      </semantic:binding>
+      <semantic:binding>
+        <semantic:parameter id="_a4b6ee39-bc20-49f3-9117-4bb594d8611c" name="b"/>
+        <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="b">
+          <semantic:input id="_0ca2ef96-45d9-4888-ba98-bc150c605530" label="Number">
+            <semantic:inputExpression typeRef="feel:number">
+              <semantic:text>Number</semantic:text>
+            </semantic:inputExpression>
+          </semantic:input>
+          <semantic:output id="_419dfdd7-6479-4313-880f-d124cc553102"/>
+          <semantic:rule id="_7fa45bda-34f6-4906-a6c5-463ef4466835">
+            <semantic:inputEntry id="_7fa45bda-34f6-4906-a6c5-463ef4466835-0">
+              <semantic:text>&lt;100</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_7fa45bda-34f6-4906-a6c5-463ef4466835-1">
+              <semantic:text>"A number smaller than 100"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_c6142671-988a-4d06-bd5b-b61792502a9e">
+            <semantic:inputEntry id="_c6142671-988a-4d06-bd5b-b61792502a9e-0">
+              <semantic:text>100</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_c6142671-988a-4d06-bd5b-b61792502a9e-1">
+              <semantic:text>"Number 100"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+          <semantic:rule id="_22f9c554-8516-4b9d-87ff-0223d0168016">
+            <semantic:inputEntry id="_22f9c554-8516-4b9d-87ff-0223d0168016-0">
+              <semantic:text>&gt;100</semantic:text>
+            </semantic:inputEntry>
+            <semantic:outputEntry id="_22f9c554-8516-4b9d-87ff-0223d0168016-1">
+              <semantic:text>"A number greater than 100"</semantic:text>
+            </semantic:outputEntry>
+          </semantic:rule>
+        </semantic:decisionTable>
+      </semantic:binding>
+    </semantic:invocation>
+  </semantic:decision>
+  <semantic:businessKnowledgeModel id="_d48956fc-7f3f-4d4e-a6ea-e3ef3e74db23" name="Decision Logic 1">
+    <semantic:encapsulatedLogic>
+      <semantic:formalParameter name="a"/>
+      <semantic:formalParameter name="b"/>
+      <semantic:context>
+        <semantic:contextEntry>
+          <semantic:variable id="_de6e0136-52c9-420b-acee-b25ef2f93d55" name="the 5 analysis" typeRef="feel:string"/>
+          <semantic:literalExpression>
+            <semantic:text>a</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_6785a298-b600-47c8-90c8-241c3199b6b6" name="the 100 analysis"/>
+          <semantic:literalExpression>
+            <semantic:text>b</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_15ed0551-f2f8-462d-83be-0a5bbaab13d1" name="Decision Logic 1"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:inputData id="_bd0c3ecc-845b-45d2-b87f-dfcb3bc68a30" name="Number">
+    <semantic:variable id="_6c3a2c35-42a6-4a1f-a524-962585f099c1" name="Number" typeRef="feel:string"/>
+  </semantic:inputData>
+</semantic:definitions>

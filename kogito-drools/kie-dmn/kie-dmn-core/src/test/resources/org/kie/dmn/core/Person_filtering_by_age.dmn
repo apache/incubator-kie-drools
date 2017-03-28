@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_e215ed7a-701b-4c53-b8df-4b4d23d5fe32" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.0.201612161330" id="_e215ed7a-701b-4c53-b8df-4b4d23d5fe32" name="Person filtering by age" namespace="http://www.trisotech.com/definitions/_e215ed7a-701b-4c53-b8df-4b4d23d5fe32" triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+            <rss:channel/>
+        </rss:rss>
+  </semantic:extensionElements>
+  <semantic:businessKnowledgeModel id="_d8d03646-2d42-4b87-8213-9a60c999a727" name="persons">
+    <semantic:encapsulatedLogic>
+      <semantic:relation>
+        <semantic:column id="_6c8684e0-2942-44a6-b70d-659638a0aa0b" name="Name"/>
+        <semantic:column id="_ad141c48-ebb2-4913-9955-a61eaa3eee35" name="Age"/>
+        <semantic:row id="_1c0ccfa4-096c-44df-9c56-3ce3030d941a">
+          <semantic:literalExpression>
+            <semantic:text>"Georges"</semantic:text>
+          </semantic:literalExpression>
+          <semantic:literalExpression>
+            <semantic:text>88</semantic:text>
+          </semantic:literalExpression>
+        </semantic:row>
+        <semantic:row id="_0421ccb6-0428-42c2-932c-a61cbb988622">
+          <semantic:literalExpression>
+            <semantic:text>"Jon"</semantic:text>
+          </semantic:literalExpression>
+          <semantic:literalExpression>
+            <semantic:text>55</semantic:text>
+          </semantic:literalExpression>
+        </semantic:row>
+        <semantic:row id="_2a5ec789-0bcd-4455-b1e8-34cb3ee26509">
+          <semantic:literalExpression>
+            <semantic:text>"Jane"</semantic:text>
+          </semantic:literalExpression>
+          <semantic:literalExpression>
+            <semantic:text>44</semantic:text>
+          </semantic:literalExpression>
+        </semantic:row>
+      </semantic:relation>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_e041d6ee-55bf-4460-b955-799918242b88" name="persons"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:decision id="_72ac4279-8414-4d72-9702-1d5dc7b265bb" name="Filtering">
+    <semantic:variable id="_9de86377-4223-4590-9301-9a50180845cc" name="Filtering"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_505d9a2d-cc8c-47be-a04f-b10049e87576"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_d8d03646-2d42-4b87-8213-9a60c999a727"/>
+    </semantic:knowledgeRequirement>
+    <semantic:literalExpression>
+      <semantic:text>persons()[Age&gt;Min Age]</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_505d9a2d-cc8c-47be-a04f-b10049e87576" name="Min Age">
+    <semantic:variable id="_12618295-f576-4699-8527-608ecc8f1d33" name="Min Age"/>
+  </semantic:inputData>
+</semantic:definitions>

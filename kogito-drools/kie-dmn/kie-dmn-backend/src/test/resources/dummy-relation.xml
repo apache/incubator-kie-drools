@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions exporter="" exporterVersion="" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="idvalue0" label="" name="" namespace="http://tempuri.org" typeLanguage="http://www.omg.org/spec/FEEL/20140401" xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd dmn.xsd ">
+  <description>description</description>
+  <itemDefinition id="idvalue1" isCollection="false" label="" name="" typeLanguage="http://tempuri.org">
+    <description>description</description>
+  </itemDefinition>
+  <decision id="idvalue2" label="" name="">
+    <description>description</description>
+    <question>question</question>
+    <allowedAnswers>allowedAnswers</allowedAnswers>
+    <variable id="idvalue3" label="" name="" typeRef="QName">
+      <description>description</description>
+    </variable>
+    <informationRequirement>
+      <requiredDecision href="http://tempuri.org"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="http://tempuri.org"/>
+    </knowledgeRequirement>
+    <authorityRequirement>
+      <requiredDecision href="http://tempuri.org"/>
+    </authorityRequirement>
+    <supportedObjective href="http://tempuri.org"/>
+    <impactedPerformanceIndicator href="http://tempuri.org"/>
+    <decisionMaker href="http://tempuri.org"/>
+    <decisionOwner href="http://tempuri.org"/>
+    <usingProcess href="http://tempuri.org"/>
+    <usingTask href="http://tempuri.org"/>
+    <relation>
+      <description>description</description>
+      <column id="idrelation1" label="" name="" typeRef="QName">
+        <description>description</description>
+      </column>
+      <row id="idrelation2" label="" typeRef="QName">
+        <description>description</description>
+        <literalExpression expressionLanguage="http://tempuri.org" id="idrelation3" label="" typeRef="QName">
+          <description>description</description>
+          <text>text</text>
+        </literalExpression>
+      </row>
+    </relation>
+  </decision>
+  <textAnnotation id="idvalue5" label="" textFormat="text/plain">
+    <description>description</description>
+    <text>text</text>
+  </textAnnotation>
+  <elementCollection id="idvalue6" label="" name="">
+    <description>description</description>
+    <drgElement href="http://tempuri.org"/>
+  </elementCollection>
+  <performanceIndicator URI="http://tempuri.org" id="idvalue7" label="" name="">
+    <description>description</description>
+    <impactingDecision href="http://tempuri.org"/>
+  </performanceIndicator>
+</definitions>

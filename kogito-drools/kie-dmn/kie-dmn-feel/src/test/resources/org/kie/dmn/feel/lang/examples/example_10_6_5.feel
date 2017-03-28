@@ -1,0 +1,8 @@
+/*
+ *  Example 10.6.5 from DMN Spec page 143
+ *
+ *  Shows a user defined function invocation
+ */
+PMT( requested product . rate,
+     requested product . term,
+     requested product . amount )

@@ -1,0 +1,18 @@
+{
+   t0004simpletableU : decision table (
+                                outputs: "Approval Status",
+                                input expression list: ["Age", "RiskCategory", "isAffordable"],
+                                input values list: [-, ["High", "Low", "Medium"], -],
+                                rule list: [
+                                    [ >=18, ["Medium", "Low"], true , "\"Approved\""],
+                                    [ <18 , ["Medium", "Low"], true , "\"Declined\""],
+                                    [ -   , "High"           , true , "\"Declined\""],
+                                    [ -   , -                , false, "\"Declined\""]
+                                ],
+                                hit policy: "U"
+                            ),
+
+   result1: t0004simpletableU(18, "Medium", true),
+   result2: t0004simpletableU(18, "WRONG VALUE", false),
+   result3: t0004simpletableU(18, "Low", false)
+}
