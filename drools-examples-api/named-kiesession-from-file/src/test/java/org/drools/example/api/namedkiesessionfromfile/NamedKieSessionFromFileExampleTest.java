@@ -23,6 +23,7 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 
 public class NamedKieSessionFromFileExampleTest {
+    private static final String NL = System.getProperty("line.separator");
 
     @Test
     public void testGo() {
@@ -33,8 +34,8 @@ public class NamedKieSessionFromFileExampleTest {
 
         String actual = new String(baos.toByteArray());
         String expected = "" +
-                          "Dave: Hello, HAL. Do you read me, HAL?\n" +
-                          "HAL: Dave. I read you.\n";
+                          "Dave: Hello, HAL. Do you read me, HAL?" + NL +
+                          "HAL: Dave. I read you." + NL;
         assertEquals(expected, actual);
     }
 }
