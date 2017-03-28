@@ -249,7 +249,7 @@ public class JpaPersistentStatefulSessionTest {
         ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
 
-        insertIntRange(ksession, 7,8);
+        insertIntRange(ksession, 7, 8);
         ut.commit();
 
         ksession.fireAllRules();
