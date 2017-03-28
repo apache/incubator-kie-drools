@@ -178,7 +178,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     @Override
-    protected ObjectTypeNode getObjectTypeNode() {
+    public ObjectTypeNode getObjectTypeNode() {
         return null;
     }
 

@@ -307,8 +307,6 @@ public abstract class LeftTupleSource extends BaseNode
         this.leftInputOtnId = leftInputOtnId;
     }
 
-    protected abstract ObjectTypeNode getObjectTypeNode();
-
     public ObjectType getObjectType() {
         ObjectTypeNode objectTypeNode = getObjectTypeNode();
         return objectTypeNode != null ? objectTypeNode.getObjectType() : null;

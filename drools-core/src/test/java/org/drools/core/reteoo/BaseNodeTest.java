@@ -71,6 +71,11 @@ public class BaseNodeTest {
         }
 
         @Override
+        public ObjectTypeNode getObjectTypeNode() {
+            return null;
+        }
+
+        @Override
         public void networkUpdated(UpdateContext updateContext) {           
         }
 
