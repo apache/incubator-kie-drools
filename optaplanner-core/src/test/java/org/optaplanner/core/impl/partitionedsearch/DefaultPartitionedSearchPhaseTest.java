@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -42,7 +41,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DefaultPartitionedSearchPhaseTest {
 
@@ -62,32 +61,6 @@ public class DefaultPartitionedSearchPhaseTest {
             }
         });
         solver.solve(createSolution(partCount * partSize, 2));
-    }
-
-    @Test
-    public void threadPoolShutdown() {
-        final int entities = 15;
-        final int partSize = 1;
-        final int partCount = entities / partSize;
-        final int runnableThreadCount = 2;
-        SolverFactory<TestdataSolution> solverFactory = createSolverFactory();
-        setPartSize(solverFactory.getSolverConfig(), partSize);
-        setRunnableThreadCount(solverFactory.getSolverConfig(), runnableThreadCount);
-        DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) solverFactory.buildSolver();
-
-        // overwrite thread factory
-        DefaultPartitionedSearchPhase<TestdataSolution> phase
-                = (DefaultPartitionedSearchPhase<TestdataSolution>) solver.getPhaseList().get(0);
-        TestThreadFactory threadFactory = new TestThreadFactory();
-        phase.setThreadFactory(threadFactory);
-
-        solver.solve(createSolution(entities, 2));
-
-        int totalThreadsCreated = threadFactory.createdThreads.size();
-        assertTrue("Threads created: " + totalThreadsCreated, totalThreadsCreated <= partCount);
-        for (Thread thread : threadFactory.createdThreads) {
-            assertEquals(thread.toString(), Thread.State.TERMINATED, thread.getState());
-        }
     }
 
     private static SolverFactory<TestdataSolution> createSolverFactory() {
@@ -128,12 +101,6 @@ public class DefaultPartitionedSearchPhaseTest {
         phaseConfig.setSolutionPartitionerCustomProperties(map);
     }
 
-    private void setRunnableThreadCount(SolverConfig solverConfig, int runnablePartThreadLimit) {
-        PartitionedSearchPhaseConfig phaseConfig
-                = (PartitionedSearchPhaseConfig) solverConfig.getPhaseConfigList().get(0);
-        phaseConfig.setRunnablePartThreadLimit(Integer.toString(runnablePartThreadLimit));
-    }
-
     public static class TestdataSolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
 
         /**
@@ -164,21 +131,6 @@ public class DefaultPartitionedSearchPhaseTest {
                 partitions.add(partition);
             }
             return partitions;
-        }
-
-    }
-
-    private static class TestThreadFactory implements ThreadFactory {
-
-        private List<Thread> createdThreads = new ArrayList<>();
-        private int i = 0;
-
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(r, "TestThread #" + i);
-            createdThreads.add(t);
-            i++;
-            return t;
         }
 
     }
