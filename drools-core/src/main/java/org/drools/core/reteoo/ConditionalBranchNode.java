@@ -15,22 +15,20 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.bitmask.AllSetBitMask;
-import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 
 /**
  * Node which allows to follow different paths in the Rete-OO network,
@@ -252,7 +250,8 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         public void reset() { }
     }
 
-    protected ObjectTypeNode getObjectTypeNode() {
+    @Override
+    public ObjectTypeNode getObjectTypeNode() {
         return getLeftTupleSource().getObjectTypeNode();
     }
 

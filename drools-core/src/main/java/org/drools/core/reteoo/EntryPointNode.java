@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -260,7 +261,7 @@ public class EntryPointNode extends ObjectSource
         // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
         RightTuple rightTuple = modifyPreviousTuples.peekRightTuple(partition);
         while ( rightTuple != null &&
-                ((BetaNode) rightTuple.getTupleSink()).getObjectTypeNode() == node ) {
+                ((BaseNode) rightTuple.getTupleSink()).getObjectTypeNode() == node ) {
             modifyPreviousTuples.removeRightTuple(partition);
 
             modifyPreviousTuples.doRightDelete(pctx, wm, rightTuple);

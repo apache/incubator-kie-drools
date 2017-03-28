@@ -500,7 +500,8 @@ public abstract class BetaNode extends LeftTupleSource
         return list;
     }
 
-    protected ObjectTypeNode getObjectTypeNode() {
+    @Override
+    public ObjectTypeNode getObjectTypeNode() {
         if (objectTypeNode == null) {
             ObjectSource source = this.rightInput;
             while ( source != null ) {
