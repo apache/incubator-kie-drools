@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
@@ -169,9 +170,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.setGlobal("list", list);
 
-        ksession.insert(1);
-        ksession.insert(2);
-        ksession.insert(3);
+        insertIntRange(ksession, 1, 3);
 
         ksession.fireAllRules();
 
@@ -211,8 +210,7 @@ public class JpaPersistentStatefulSessionTest {
         ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
         ksession.setGlobal("list", list);
-        ksession.insert(1);
-        ksession.insert(2);
+        insertIntRange(ksession, 1, 2);
         ksession.fireAllRules();
         ut.commit();
 
@@ -232,15 +230,13 @@ public class JpaPersistentStatefulSessionTest {
         // insert and commit
         ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
-        ksession.insert(3);
-        ksession.insert(4);
+        insertIntRange(ksession, 3, 4);
         ut.commit();
 
         // rollback again, this is testing that we can do consecutive rollbacks and commits without issue
         ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
-        ksession.insert(5);
-        ksession.insert(6);
+        insertIntRange(ksession, 5, 6);
         ut.rollback();
 
         ksession.fireAllRules();
@@ -252,8 +248,8 @@ public class JpaPersistentStatefulSessionTest {
 
         ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();
-        ksession.insert(7);
-        ksession.insert(8);
+
+        insertIntRange(ksession, 7,8);
         ut.commit();
 
         ksession.fireAllRules();
@@ -283,9 +279,7 @@ public class JpaPersistentStatefulSessionTest {
         sscs.addInterceptor(new LoggingInterceptor());
         final List<Integer> list = new ArrayList<>();
         ksession.setGlobal("list", list);
-        ksession.insert(1);
-        ksession.insert(2);
-        ksession.insert(3);
+        insertIntRange(ksession, 1, 3);
         ksession.getWorkItemManager().completeWorkItem(0, null);
         assertThat(list).hasSize(3);
     }
@@ -367,9 +361,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.setGlobal("list", list);
 
-        ksession.insert(1);
-        ksession.insert(2);
-        ksession.insert(3);
+        insertIntRange(ksession, 1, 3);
         ksession.getAgenda().getAgendaGroup("badfocus").setFocus();
 
         ksession.fireAllRules();
@@ -440,9 +432,7 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.setGlobal("list", list);
 
-        ksession.insert(1);
-        ksession.insert(2);
-        ksession.insert(3);
+        insertIntRange(ksession, 1, 3);
 
         ksession.fireAllRules();
 
@@ -477,9 +467,7 @@ public class JpaPersistentStatefulSessionTest {
         ksession.setGlobal("list",
                 list);
 
-        ksession.insert(1);
-        ksession.insert(2);
-        ksession.insert(3);
+        insertIntRange(ksession, 1, 3);
 
         ksession.fireAllRules();
 
@@ -547,5 +535,16 @@ public class JpaPersistentStatefulSessionTest {
                 "  list.add( 1 );\n" +
                 "end\n" +
                 "\n";
+    }
+
+    /**
+     * Insert integer range into session
+     *
+     * @param ksession Session to insert ints in
+     * @param from start of the range of ints to be inserted to ksession (inclusive)
+     * @param to end of the range of ints to be inserted to ksession (inclusive)
+     */
+    private void insertIntRange(final KieSession ksession, final int from, final int to){
+        IntStream.rangeClosed(from, to).forEach(ksession::insert);
     }
 }
