@@ -14,8 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.ComparableVersion;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.KieModuleRepo;
 import org.drools.compiler.kproject.ReleaseIdImpl;
@@ -27,8 +28,6 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This test contains
@@ -36,8 +35,6 @@ import org.slf4j.LoggerFactory;
  * functions as a LRU cache, and evicts old {@link KieModule} instances )
  */
 public class KieModuleRepoTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(KieModuleRepoTest.class);
 
     private KieModuleRepo kieModuleRepo;
 
@@ -75,15 +72,6 @@ public class KieModuleRepoTest {
             fail( "Thread '" + threadName + "' was interrupted while waiting for the other threads!");
         } catch( final BrokenBarrierException e ) {
             fail( "Thread '" + threadName + "' barrier was broken while waiting for the other threads!");
-        }
-    }
-
-    protected static void waitFor(final CountDownLatch countDownLatch) {
-        final String threadName = Thread.currentThread().getName();
-        try {
-            countDownLatch.await();
-        } catch( final InterruptedException e ) {
-            fail( "Thread '" + threadName + "' was interrupted while waiting for the count down!");
         }
     }
 
@@ -159,12 +147,17 @@ public class KieModuleRepoTest {
                 getStoreArtifactRunnable(kieModuleRepo, groupId, artifactId, secondVersion,
                         storeOperationBarrier, threadsFinishedBarrier));
 
+        final ExecutorService executor = Executors.newFixedThreadPool(2);
         firstThread.setName("normal");
-        firstThread.start();
+        executor.submit(firstThread);
         secondThread.setName("newFeature");
-        secondThread.start();
+        executor.submit(secondThread);
 
-        waitFor(threadsFinishedBarrier);
+        try {
+            waitFor(threadsFinishedBarrier);
+        } finally {
+            executor.shutdownNow();
+        }
 
         final String ga = groupId + ":" + artifactId;
         final Map<ComparableVersion, KieModule> artifactMap = kieModuleRepo.kieModules.get(ga);
@@ -225,16 +218,16 @@ public class KieModuleRepoTest {
             waitFor(threadsFinishedBarrier);
         };
 
+        final ExecutorService executor = Executors.newFixedThreadPool(2);
         // 2. remove and redploy
-        final Thread removeThread = new Thread(removeRunnable);
-        removeThread.setName("remove");
-        removeThread.start();
+        executor.submit(removeRunnable);
+        executor.submit(redeployRunnable);
 
-        final Thread redeployThread = new Thread(redeployRunnable);
-        redeployThread.setName("store");
-        redeployThread.start();
-
-        waitFor(threadsFinishedBarrier);
+        try {
+            waitFor(threadsFinishedBarrier);
+        } finally {
+            executor.shutdownNow();
+        }
 
         final String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
         final Map<ComparableVersion, KieModule> artifactMap = kieModuleRepo.kieModules.get(ga);
@@ -290,16 +283,21 @@ public class KieModuleRepoTest {
             waitFor(threadsFinishedBarrier);
         };
 
-        final Thread deployThread = new Thread(deployRunnable);
-        final Thread secondDeployThread = new Thread(deployRunnable);
-
+        final ExecutorService executor = Executors.newFixedThreadPool(2);
         // 2. remove and redploy
+        final Thread deployThread = new Thread(deployRunnable);
         deployThread.setName("one");
-        deployThread.start();
-        secondDeployThread.setName("two");
-        secondDeployThread.start();
+        executor.submit(deployThread);
 
-        waitFor(threadsFinishedBarrier);
+        final Thread secondDeployThread = new Thread(deployRunnable);
+        secondDeployThread.setName("two");
+        executor.submit(secondDeployThread);
+
+        try {
+            waitFor(threadsFinishedBarrier);
+        } finally {
+            executor.shutdownNow();
+        }
 
         // never gets this far, but this is a good check
         final KieModule oldKieModule = kieModuleRepo.oldKieModules.get(releaseId);
