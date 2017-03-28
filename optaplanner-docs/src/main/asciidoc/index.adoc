@@ -2,7 +2,7 @@
 The OptaPlanner Team <https://www.optaplanner.org/community/team.html>
 :doctype: book
 :imagesdir: .
-:title-logo-image: image:common/optaPlannerLogo.png[align="center"]
+:title-logo-image: image:shared/optaPlannerLogo.png[align="center"]
 :toc: left
 :toclevels: 3
 :sectnums:
@@ -16,7 +16,7 @@ The OptaPlanner Team <https://www.optaplanner.org/community/team.html>
 
 // PDF uses :title-logo-image: on first page, no need to repeat image later on
 ifndef::backend-pdf[]
-image::common/optaPlannerLogo.png[align="center"]
+image::shared/optaPlannerLogo.png[align="center"]
 endif::[]
 
 include::PlannerIntroduction/PlannerIntroduction-chapter.adoc[leveloffset=+1]
