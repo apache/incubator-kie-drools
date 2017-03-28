@@ -4,40 +4,17 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie</groupId>
-    <artifactId>kie-parent</artifactId>
+    <groupId>org.drools</groupId>
+    <artifactId>drools</artifactId>
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.kie</groupId>
   <artifactId>kie-dmn</artifactId>
   <packaging>pom</packaging>
 
   <name>KIE :: Decision Model Notation</name>
   <description>Top level pom for the KIE DMN support implementation</description>
-
-  <repositories>
-    <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <scm>
-    <connection>scm:git:https://github.com/kiegroup/kie-dmn.git</connection>
-    <developerConnection>scm:git:git@github.com:kiegroup/kie-dmn.git</developerConnection>
-    <url>https://github.com/kiegroup/kie-dmn</url>
-  </scm>
 
   <modules>
     <module>kie-dmn-api</module>
@@ -50,13 +27,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
 
       <dependency>
         <groupId>org.kie</groupId>

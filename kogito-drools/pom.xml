@@ -64,6 +64,7 @@
     <module>drools-scorecards</module>
     <module>kie-ci</module>
     <module>kie-ci-osgi</module>
+    <module>kie-dmn</module>
     <module>drools-examples-api</module>
     <module>drools-examples-cdi</module>
     <module>drools-workbench-models</module>
