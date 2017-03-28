@@ -329,4 +329,9 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public final void setPartitionIdWithSinks( RuleBasePartitionId partitionId ) {
         this.partitionId = partitionId;
     }
+
+    @Override
+    public ObjectTypeNode getObjectTypeNode() {
+        return getLeftTupleSource().getObjectTypeNode();
+    }
 }

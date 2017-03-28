@@ -16,6 +16,13 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
+
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.base.mvel.MVELEnabledExpression;
 import org.drools.core.base.mvel.MVELSalienceExpression;
@@ -31,13 +38,6 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.impl.BaseTimer;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -396,10 +396,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void setFireDirect(boolean fireDirect) {
         this.fireDirect = fireDirect;
-    }
-
-    protected ObjectTypeNode getObjectTypeNode() {
-        return getLeftTupleSource().getObjectTypeNode();
     }
 
     public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {

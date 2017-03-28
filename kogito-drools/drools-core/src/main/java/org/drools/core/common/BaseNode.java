@@ -162,6 +162,8 @@ public abstract class BaseNode
      */
     public abstract boolean isInUse();
 
+    public abstract ObjectTypeNode getObjectTypeNode();
+
     public String toString() {
         return "[" + this.getClass().getSimpleName() + "(" + this.id + ")]";
     }

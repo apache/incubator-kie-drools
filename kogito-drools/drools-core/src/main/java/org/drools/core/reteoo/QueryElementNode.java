@@ -746,7 +746,8 @@ public class QueryElementNode extends LeftTupleSource
         }
     }
 
-    protected ObjectTypeNode getObjectTypeNode() {
+    @Override
+    public ObjectTypeNode getObjectTypeNode() {
         return leftInput.getObjectTypeNode();
     }
 

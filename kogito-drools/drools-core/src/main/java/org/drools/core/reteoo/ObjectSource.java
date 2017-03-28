@@ -256,7 +256,8 @@ public abstract class ObjectSource extends BaseNode
         return false;
     }
 
-    protected ObjectTypeNode getObjectTypeNode() {
+    @Override
+    public ObjectTypeNode getObjectTypeNode() {
         ObjectSource source = this;
         while (source != null) {
             if (source.getType() ==  NodeTypeEnums.ObjectTypeNode) {
