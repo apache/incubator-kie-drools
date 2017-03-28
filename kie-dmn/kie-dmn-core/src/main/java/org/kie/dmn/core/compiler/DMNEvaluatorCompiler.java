@@ -279,6 +279,11 @@ public class DMNEvaluatorCompiler {
                 QName outputExpressionTypeRef = oc.getTypeRef();
                 BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(outputExpressionTypeRef, oc), outputExpressionTypeRef.getLocalPart());
                 outputValues = typeRef.getAllowedValues();
+            } else if ( dt.getOutput().size() == 1
+                        && ( dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry ) ) {
+                QName inferredTypeRef = recurseUpToInferTypeRef(model, dt);
+                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
+                outputValues = typeRef.getAllowedValues();
             }
             outputs.add( new DTOutputClause( outputName, id, outputValues, defaultValue ) );
         }
@@ -321,6 +326,63 @@ public class DMNEvaluatorCompiler {
         DTInvokerFunction dtf = new DTInvokerFunction( dti );
         DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator( node, dtf );
         return dtee;
+    }
+    
+    /**
+     * Utility method for DecisionTable with only 1 output, to infer typeRef from parent
+     * @param model used for reporting errors
+     * @param recursionIdx start of the recursion is the DecisionTable model node itself
+     * @return the inferred `typeRef` or null in case of errors. Errors are reported with standard notification mechanism via MsgUtil.reportMessage
+     */
+    private QName recurseUpToInferTypeRef(DMNModelImpl model, DMNElement recursionIdx) {
+        if ( recursionIdx.getParent() instanceof Decision ) {
+            InformationItem parentVariable = ((Decision) recursionIdx.getParent()).getVariable();
+            if ( parentVariable != null ) {
+                return parentVariable.getTypeRef();
+            } else {
+                return null; // simply to avoid NPE, the proper error is already managed in compilation
+            }
+        } else if ( recursionIdx.getParent() instanceof BusinessKnowledgeModel ) {
+            InformationItem parentVariable = ((BusinessKnowledgeModel) recursionIdx.getParent()).getVariable();
+            if ( parentVariable != null ) {
+                return parentVariable.getTypeRef();
+            } else {
+                return null; // simply to avoid NPE, the proper error is already managed in compilation
+            }
+        } else if ( recursionIdx.getParent() instanceof ContextEntry ) {
+            ContextEntry parentCtxEntry = (ContextEntry) recursionIdx.getParent();
+            if ( parentCtxEntry.getVariable() != null ) {
+                return parentCtxEntry.getVariable().getTypeRef();
+            } else {
+                Context parentCtx = (Context) parentCtxEntry.getParent();
+                if ( parentCtx.getContextEntry().get(parentCtx.getContextEntry().size()-1).equals(parentCtxEntry) ) {
+                    // the ContextEntry is the last one in the Context, so I can recurse up-ward in the DMN model tree
+                    // please notice the recursion would be considering the parentCtxEntry's parent, which is the `parentCtx` so is effectively a 2x jump upward in the model tree 
+                    return recurseUpToInferTypeRef(model, parentCtx);
+                } else {
+                    // error not last ContextEntry in context
+                    MsgUtil.reportMessage( logger,
+                            DMNMessage.Severity.ERROR,
+                            parentCtxEntry,
+                            model,
+                            null,
+                            null,
+                            Msg.MISSING_VARIABLE_ON_CONTEXT,
+                            parentCtxEntry );
+                    return null;
+                }
+            }
+        } else {
+            MsgUtil.reportMessage( logger,
+                    DMNMessage.Severity.ERROR,
+                    recursionIdx,
+                    model,
+                    null,
+                    null,
+                    Msg.ERR_INFERRING_TYPE_REF_FOR_NODE,
+                    recursionIdx );
+            return null;
+        }
     }
 
     private DMNExpressionEvaluator compileLiteralExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, LiteralExpression expression) {
