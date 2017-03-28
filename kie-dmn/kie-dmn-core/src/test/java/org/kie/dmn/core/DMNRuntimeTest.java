@@ -924,6 +924,24 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "Approval Status" ), is( "Declined" ) );
     }
+    
+    @Test
+    public void testPriority_table_context_recursion() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "priority_table_context_recursion.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_ff54a44d-b8f5-48fc-b2b7-43db767e8a1c",
+                "not quite all or nothing P" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        context.set("isAffordable", false);
+        context.set("RiskCategory", "Medium");
+        
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Approval Status" ), is( "Declined" ) );
+    }
 
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
