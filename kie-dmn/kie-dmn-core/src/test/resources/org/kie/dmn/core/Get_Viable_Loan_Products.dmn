@@ -1,0 +1,1056 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+                      xmlns="http://www.trisotech.com/definitions/_3e1a628d-36bc-45f1-8464-b201735e5ce0"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      xmlns:trisofeed="http://trisotech.com/feed"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.5.201702101630"
+                      id="_3e1a628d-36bc-45f1-8464-b201735e5ce0" name="Get Viable Loan Products"
+                      namespace="http://www.trisotech.com/definitions/_3e1a628d-36bc-45f1-8464-b201735e5ce0" triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <triso:ProjectCharter>
+      <triso:projectDescription>&lt;p&gt;This example was taken from the book "DMN Method &amp;amp; Style" by Bruce Silver and then modified by Trisotech.&lt;/p&gt;
+&lt;p&gt;It is a concrete usage of DMN to suggest mortgage products to a customer based on his need and his objectives.&lt;/p&gt;</triso:projectDescription>
+      <triso:projectGoals/>
+      <triso:projectChallenges/>
+      <triso:projectStakeholders/>
+    </triso:ProjectCharter>
+  </semantic:extensionElements>
+  <semantic:itemDefinition label="tRequested" name="tRequested">
+    <semantic:itemComponent id="_759b9f16-90bd-4e99-a37a-09b79a88af8e" name="PropertyZIP">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_1e989817-dd09-4b40-8c75-fcd113c9904b" name="LoanAmt">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_287df45e-55e4-4dcc-bcf3-5ddd5ef58cca" name="Objective">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_21fba730-555d-47e5-b9dc-5a3b161de361" name="DownPct">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_70d5bb32-0798-476a-b22d-a89273d39a75" name="MortgageType">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:decision id="_048afa98-a1be-4998-93a4-61c78e012f8d" name="LoanTypes">
+    <semantic:description>&lt;p&gt;&lt;em&gt;LoanTypes&lt;/em&gt; decision table takes into consideration the customer requested loan type but it also adds its own suggestion based on the stated objectives. Since is has a collect hit policy, it will produce a list. In addition to the Requested input data, it also uses the result from &lt;em&gt;isConforming&lt;/em&gt; decision table.&lt;/p&gt;
+&lt;p&gt;An example result based on the Requested data can be found in the &lt;em&gt;LoanTypes Result&lt;/em&gt; relation.&lt;/p&gt;</semantic:description>
+    <semantic:variable id="_134a7357-a8df-4685-99b5-eb3a6e7dcedc" name="LoanTypes"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_d0aeeb20-1527-4a4d-bb7a-0f3fcfb2e9fb"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_1702260f-b73b-44ee-8160-e87ce5e1edfc"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="COLLECT" outputLabel="LoanTypes">
+      <semantic:input id="_0c3c4bd7-8aa8-47ff-a015-9f9576ed4512" label="Requested.Objective">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Requested.Objective</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_27ac961a-8bbf-4058-b839-0578e76712d7" label="Requested.MortgageType">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Requested.MortgageType</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_c00b129d-1d03-41a0-b2eb-8efc8d2afe27" label="isConforming">
+        <semantic:inputExpression typeRef="feel:boolean">
+          <semantic:text>isConforming</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_22e2e7bd-b9eb-4d9f-aafa-164fb5533fd4" label="Requested.DownPct">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_1918a936-05cf-4fe0-b513-b2cfc2bfac72" name="MortgageType" typeRef="feel:string">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"ARM 1/1","ARM 3/1","ARM 5/1","ARM 7/1","Fixed 10","Fixed 15","Fixed 20","Fixed 30","Fixed 40"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:output id="_2fe21985-147f-483f-8ab8-ed53ce20d268" name="ConformanceType" typeRef="feel:string">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"Conventional","Jumbo"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:output id="_e213ef7a-15bb-4bcb-9970-dcfe244d2cee" name="DownPct" typeRef="feel:number"/>
+      <semantic:rule id="_881559aa-9444-40e9-aed9-c68b671643fd">
+        <semantic:inputEntry id="_881559aa-9444-40e9-aed9-c68b671643fd-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_881559aa-9444-40e9-aed9-c68b671643fd-1">
+          <semantic:text>"Fixed 30", "Fixed 20", "Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_881559aa-9444-40e9-aed9-c68b671643fd-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_881559aa-9444-40e9-aed9-c68b671643fd-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_881559aa-9444-40e9-aed9-c68b671643fd-4">
+          <semantic:text>"ARM 3/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_881559aa-9444-40e9-aed9-c68b671643fd-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_881559aa-9444-40e9-aed9-c68b671643fd-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_efdda108-30e8-44d7-8330-9406ca60f94a">
+        <semantic:inputEntry id="_efdda108-30e8-44d7-8330-9406ca60f94a-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_efdda108-30e8-44d7-8330-9406ca60f94a-1">
+          <semantic:text>"Fixed 30", "Fixed 20", "Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_efdda108-30e8-44d7-8330-9406ca60f94a-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_efdda108-30e8-44d7-8330-9406ca60f94a-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_efdda108-30e8-44d7-8330-9406ca60f94a-4">
+          <semantic:text>"ARM 3/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_efdda108-30e8-44d7-8330-9406ca60f94a-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_efdda108-30e8-44d7-8330-9406ca60f94a-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_15d0834f-6e88-47ce-8246-e397a1664c36">
+        <semantic:inputEntry id="_15d0834f-6e88-47ce-8246-e397a1664c36-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_15d0834f-6e88-47ce-8246-e397a1664c36-1">
+          <semantic:text>"Fixed 30", "Fixed 20", "Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_15d0834f-6e88-47ce-8246-e397a1664c36-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_15d0834f-6e88-47ce-8246-e397a1664c36-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_15d0834f-6e88-47ce-8246-e397a1664c36-4">
+          <semantic:text>"ARM 3/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_15d0834f-6e88-47ce-8246-e397a1664c36-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_15d0834f-6e88-47ce-8246-e397a1664c36-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c1b25977-b64a-46ba-9da3-29fca12a2269">
+        <semantic:inputEntry id="_c1b25977-b64a-46ba-9da3-29fca12a2269-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c1b25977-b64a-46ba-9da3-29fca12a2269-1">
+          <semantic:text>"Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c1b25977-b64a-46ba-9da3-29fca12a2269-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c1b25977-b64a-46ba-9da3-29fca12a2269-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c1b25977-b64a-46ba-9da3-29fca12a2269-4">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_c1b25977-b64a-46ba-9da3-29fca12a2269-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_c1b25977-b64a-46ba-9da3-29fca12a2269-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_47278af5-f441-41da-890f-2dcc51372b95">
+        <semantic:inputEntry id="_47278af5-f441-41da-890f-2dcc51372b95-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_47278af5-f441-41da-890f-2dcc51372b95-1">
+          <semantic:text>"Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_47278af5-f441-41da-890f-2dcc51372b95-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_47278af5-f441-41da-890f-2dcc51372b95-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_47278af5-f441-41da-890f-2dcc51372b95-4">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_47278af5-f441-41da-890f-2dcc51372b95-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_47278af5-f441-41da-890f-2dcc51372b95-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_4aa7e3a3-312e-43f3-976c-8a8fe80f8ccf">
+        <semantic:inputEntry id="_4aa7e3a3-312e-43f3-976c-8a8fe80f8ccf-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4aa7e3a3-312e-43f3-976c-8a8fe80f8ccf-1">
+          <semantic:text>"Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4aa7e3a3-312e-43f3-976c-8a8fe80f8ccf-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4aa7e3a3-312e-43f3-976c-8a8fe80f8ccf-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_4aa7e3a3-312e-43f3-976c-8a8fe80f8ccf-4">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_4aa7e3a3-312e-43f3-976c-8a8fe80f8ccf-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_4aa7e3a3-312e-43f3-976c-8a8fe80f8ccf-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_d438679f-10a5-47bf-bd90-8e651a04c61d">
+        <semantic:inputEntry id="_d438679f-10a5-47bf-bd90-8e651a04c61d-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d438679f-10a5-47bf-bd90-8e651a04c61d-1">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d438679f-10a5-47bf-bd90-8e651a04c61d-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d438679f-10a5-47bf-bd90-8e651a04c61d-3">
+          <semantic:text>&lt;0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_d438679f-10a5-47bf-bd90-8e651a04c61d-4">
+          <semantic:text>"Fixed 30"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_d438679f-10a5-47bf-bd90-8e651a04c61d-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_d438679f-10a5-47bf-bd90-8e651a04c61d-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_0cfbf94a-df55-42a0-badc-8288cb68fa8d">
+        <semantic:inputEntry id="_0cfbf94a-df55-42a0-badc-8288cb68fa8d-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_0cfbf94a-df55-42a0-badc-8288cb68fa8d-1">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_0cfbf94a-df55-42a0-badc-8288cb68fa8d-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_0cfbf94a-df55-42a0-badc-8288cb68fa8d-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_0cfbf94a-df55-42a0-badc-8288cb68fa8d-4">
+          <semantic:text>"Fixed 30"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_0cfbf94a-df55-42a0-badc-8288cb68fa8d-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_0cfbf94a-df55-42a0-badc-8288cb68fa8d-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b98ee08e-f1fc-412f-9c7b-00cd28fd9db7">
+        <semantic:inputEntry id="_b98ee08e-f1fc-412f-9c7b-00cd28fd9db7-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b98ee08e-f1fc-412f-9c7b-00cd28fd9db7-1">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b98ee08e-f1fc-412f-9c7b-00cd28fd9db7-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b98ee08e-f1fc-412f-9c7b-00cd28fd9db7-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b98ee08e-f1fc-412f-9c7b-00cd28fd9db7-4">
+          <semantic:text>"Fixed 30"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b98ee08e-f1fc-412f-9c7b-00cd28fd9db7-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b98ee08e-f1fc-412f-9c7b-00cd28fd9db7-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_bc3c638d-5a63-49dc-8da9-a5220fdcd939">
+        <semantic:inputEntry id="_bc3c638d-5a63-49dc-8da9-a5220fdcd939-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_bc3c638d-5a63-49dc-8da9-a5220fdcd939-1">
+          <semantic:text>"Fixed 30"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_bc3c638d-5a63-49dc-8da9-a5220fdcd939-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_bc3c638d-5a63-49dc-8da9-a5220fdcd939-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_bc3c638d-5a63-49dc-8da9-a5220fdcd939-4">
+          <semantic:text>"Fixed 40"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_bc3c638d-5a63-49dc-8da9-a5220fdcd939-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_bc3c638d-5a63-49dc-8da9-a5220fdcd939-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_30cc6b8d-b48d-4e4d-b93d-34bd2559052b">
+        <semantic:inputEntry id="_30cc6b8d-b48d-4e4d-b93d-34bd2559052b-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_30cc6b8d-b48d-4e4d-b93d-34bd2559052b-1">
+          <semantic:text>"Fixed 30"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_30cc6b8d-b48d-4e4d-b93d-34bd2559052b-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_30cc6b8d-b48d-4e4d-b93d-34bd2559052b-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_30cc6b8d-b48d-4e4d-b93d-34bd2559052b-4">
+          <semantic:text>"Fixed 40"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_30cc6b8d-b48d-4e4d-b93d-34bd2559052b-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_30cc6b8d-b48d-4e4d-b93d-34bd2559052b-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_48cd0636-2af3-4c3c-8076-cf284781076c">
+        <semantic:inputEntry id="_48cd0636-2af3-4c3c-8076-cf284781076c-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_48cd0636-2af3-4c3c-8076-cf284781076c-1">
+          <semantic:text>"Fixed 30"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_48cd0636-2af3-4c3c-8076-cf284781076c-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_48cd0636-2af3-4c3c-8076-cf284781076c-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_48cd0636-2af3-4c3c-8076-cf284781076c-4">
+          <semantic:text>"Fixed 40"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_48cd0636-2af3-4c3c-8076-cf284781076c-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_48cd0636-2af3-4c3c-8076-cf284781076c-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b3e87026-1bdd-4071-9e33-af9e28454c95">
+        <semantic:inputEntry id="_b3e87026-1bdd-4071-9e33-af9e28454c95-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b3e87026-1bdd-4071-9e33-af9e28454c95-1">
+          <semantic:text>"ARM 7/1", "ARM 5/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b3e87026-1bdd-4071-9e33-af9e28454c95-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b3e87026-1bdd-4071-9e33-af9e28454c95-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b3e87026-1bdd-4071-9e33-af9e28454c95-4">
+          <semantic:text>"ARM 3/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b3e87026-1bdd-4071-9e33-af9e28454c95-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b3e87026-1bdd-4071-9e33-af9e28454c95-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_e7144ab6-47b9-461a-a886-2fa6af977146">
+        <semantic:inputEntry id="_e7144ab6-47b9-461a-a886-2fa6af977146-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e7144ab6-47b9-461a-a886-2fa6af977146-1">
+          <semantic:text>"ARM 7/1", "ARM 5/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e7144ab6-47b9-461a-a886-2fa6af977146-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_e7144ab6-47b9-461a-a886-2fa6af977146-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e7144ab6-47b9-461a-a886-2fa6af977146-4">
+          <semantic:text>"ARM 3/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_e7144ab6-47b9-461a-a886-2fa6af977146-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_e7144ab6-47b9-461a-a886-2fa6af977146-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_aab53958-bbce-4f91-989d-1905d8990de7">
+        <semantic:inputEntry id="_aab53958-bbce-4f91-989d-1905d8990de7-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_aab53958-bbce-4f91-989d-1905d8990de7-1">
+          <semantic:text>"ARM 7/1", "ARM 5/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_aab53958-bbce-4f91-989d-1905d8990de7-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_aab53958-bbce-4f91-989d-1905d8990de7-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_aab53958-bbce-4f91-989d-1905d8990de7-4">
+          <semantic:text>"ARM 3/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_aab53958-bbce-4f91-989d-1905d8990de7-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_aab53958-bbce-4f91-989d-1905d8990de7-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_dff4e5fa-37cb-4f1a-b64a-d1d410714f0b">
+        <semantic:inputEntry id="_dff4e5fa-37cb-4f1a-b64a-d1d410714f0b-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dff4e5fa-37cb-4f1a-b64a-d1d410714f0b-1">
+          <semantic:text>"ARM 3/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dff4e5fa-37cb-4f1a-b64a-d1d410714f0b-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dff4e5fa-37cb-4f1a-b64a-d1d410714f0b-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_dff4e5fa-37cb-4f1a-b64a-d1d410714f0b-4">
+          <semantic:text>"ARM 1/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_dff4e5fa-37cb-4f1a-b64a-d1d410714f0b-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_dff4e5fa-37cb-4f1a-b64a-d1d410714f0b-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_5d3471c5-ce0b-4afc-a6cf-78c88640e433">
+        <semantic:inputEntry id="_5d3471c5-ce0b-4afc-a6cf-78c88640e433-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5d3471c5-ce0b-4afc-a6cf-78c88640e433-1">
+          <semantic:text>"ARM 3/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5d3471c5-ce0b-4afc-a6cf-78c88640e433-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5d3471c5-ce0b-4afc-a6cf-78c88640e433-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_5d3471c5-ce0b-4afc-a6cf-78c88640e433-4">
+          <semantic:text>"ARM 1/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_5d3471c5-ce0b-4afc-a6cf-78c88640e433-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_5d3471c5-ce0b-4afc-a6cf-78c88640e433-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_0a2cf792-07c6-44df-8d10-f1b1d7c427ae">
+        <semantic:inputEntry id="_0a2cf792-07c6-44df-8d10-f1b1d7c427ae-0">
+          <semantic:text>"Payment"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_0a2cf792-07c6-44df-8d10-f1b1d7c427ae-1">
+          <semantic:text>"ARM 3/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_0a2cf792-07c6-44df-8d10-f1b1d7c427ae-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_0a2cf792-07c6-44df-8d10-f1b1d7c427ae-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_0a2cf792-07c6-44df-8d10-f1b1d7c427ae-4">
+          <semantic:text>"ARM 1/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_0a2cf792-07c6-44df-8d10-f1b1d7c427ae-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_0a2cf792-07c6-44df-8d10-f1b1d7c427ae-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_3b231ede-5af1-44b0-8d1a-fed259a50fc2">
+        <semantic:inputEntry id="_3b231ede-5af1-44b0-8d1a-fed259a50fc2-0">
+          <semantic:text>"Rate", "Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3b231ede-5af1-44b0-8d1a-fed259a50fc2-1">
+          <semantic:text>"Fixed 30"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3b231ede-5af1-44b0-8d1a-fed259a50fc2-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3b231ede-5af1-44b0-8d1a-fed259a50fc2-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3b231ede-5af1-44b0-8d1a-fed259a50fc2-4">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_3b231ede-5af1-44b0-8d1a-fed259a50fc2-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_3b231ede-5af1-44b0-8d1a-fed259a50fc2-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_9fd7fc98-3495-4fe4-bb88-aeeb6ffc65d4">
+        <semantic:inputEntry id="_9fd7fc98-3495-4fe4-bb88-aeeb6ffc65d4-0">
+          <semantic:text>"Rate", "Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9fd7fc98-3495-4fe4-bb88-aeeb6ffc65d4-1">
+          <semantic:text>"Fixed 30"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9fd7fc98-3495-4fe4-bb88-aeeb6ffc65d4-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9fd7fc98-3495-4fe4-bb88-aeeb6ffc65d4-3">
+          <semantic:text>&gt;=0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_9fd7fc98-3495-4fe4-bb88-aeeb6ffc65d4-4">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_9fd7fc98-3495-4fe4-bb88-aeeb6ffc65d4-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_9fd7fc98-3495-4fe4-bb88-aeeb6ffc65d4-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_ce8d8c3b-7178-49d4-ad21-bf65a7893f95">
+        <semantic:inputEntry id="_ce8d8c3b-7178-49d4-ad21-bf65a7893f95-0">
+          <semantic:text>"Rate", "Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_ce8d8c3b-7178-49d4-ad21-bf65a7893f95-1">
+          <semantic:text>"Fixed 30"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_ce8d8c3b-7178-49d4-ad21-bf65a7893f95-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_ce8d8c3b-7178-49d4-ad21-bf65a7893f95-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_ce8d8c3b-7178-49d4-ad21-bf65a7893f95-4">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_ce8d8c3b-7178-49d4-ad21-bf65a7893f95-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_ce8d8c3b-7178-49d4-ad21-bf65a7893f95-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_12b9aa18-1a99-4923-b8cf-5630baec2ea7">
+        <semantic:inputEntry id="_12b9aa18-1a99-4923-b8cf-5630baec2ea7-0">
+          <semantic:text>"Rate", "Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_12b9aa18-1a99-4923-b8cf-5630baec2ea7-1">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_12b9aa18-1a99-4923-b8cf-5630baec2ea7-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_12b9aa18-1a99-4923-b8cf-5630baec2ea7-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_12b9aa18-1a99-4923-b8cf-5630baec2ea7-4">
+          <semantic:text>"Fixed 15"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_12b9aa18-1a99-4923-b8cf-5630baec2ea7-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_12b9aa18-1a99-4923-b8cf-5630baec2ea7-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_6263d4a1-c6ea-41e6-bcf9-5f91da71fdf1">
+        <semantic:inputEntry id="_6263d4a1-c6ea-41e6-bcf9-5f91da71fdf1-0">
+          <semantic:text>"Rate", "Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6263d4a1-c6ea-41e6-bcf9-5f91da71fdf1-1">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6263d4a1-c6ea-41e6-bcf9-5f91da71fdf1-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6263d4a1-c6ea-41e6-bcf9-5f91da71fdf1-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_6263d4a1-c6ea-41e6-bcf9-5f91da71fdf1-4">
+          <semantic:text>"Fixed 15"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_6263d4a1-c6ea-41e6-bcf9-5f91da71fdf1-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_6263d4a1-c6ea-41e6-bcf9-5f91da71fdf1-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_fb1226ce-5d37-42cb-9cc8-81a486495beb">
+        <semantic:inputEntry id="_fb1226ce-5d37-42cb-9cc8-81a486495beb-0">
+          <semantic:text>"Rate", "Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fb1226ce-5d37-42cb-9cc8-81a486495beb-1">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fb1226ce-5d37-42cb-9cc8-81a486495beb-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fb1226ce-5d37-42cb-9cc8-81a486495beb-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_fb1226ce-5d37-42cb-9cc8-81a486495beb-4">
+          <semantic:text>"Fixed 15"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_fb1226ce-5d37-42cb-9cc8-81a486495beb-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_fb1226ce-5d37-42cb-9cc8-81a486495beb-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_66aeeb8f-195e-4b3d-9096-f3f6f5eccbaf">
+        <semantic:inputEntry id="_66aeeb8f-195e-4b3d-9096-f3f6f5eccbaf-0">
+          <semantic:text>"Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_66aeeb8f-195e-4b3d-9096-f3f6f5eccbaf-1">
+          <semantic:text>"Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_66aeeb8f-195e-4b3d-9096-f3f6f5eccbaf-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_66aeeb8f-195e-4b3d-9096-f3f6f5eccbaf-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_66aeeb8f-195e-4b3d-9096-f3f6f5eccbaf-4">
+          <semantic:text>"Fixed 10"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_66aeeb8f-195e-4b3d-9096-f3f6f5eccbaf-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_66aeeb8f-195e-4b3d-9096-f3f6f5eccbaf-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_dc5d8cdc-9a41-4211-b113-d5dc2aa2ce22">
+        <semantic:inputEntry id="_dc5d8cdc-9a41-4211-b113-d5dc2aa2ce22-0">
+          <semantic:text>"Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dc5d8cdc-9a41-4211-b113-d5dc2aa2ce22-1">
+          <semantic:text>"Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dc5d8cdc-9a41-4211-b113-d5dc2aa2ce22-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dc5d8cdc-9a41-4211-b113-d5dc2aa2ce22-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_dc5d8cdc-9a41-4211-b113-d5dc2aa2ce22-4">
+          <semantic:text>"Fixed 10"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_dc5d8cdc-9a41-4211-b113-d5dc2aa2ce22-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_dc5d8cdc-9a41-4211-b113-d5dc2aa2ce22-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_dec8a7aa-a3f7-476d-989e-81d1386f4566">
+        <semantic:inputEntry id="_dec8a7aa-a3f7-476d-989e-81d1386f4566-0">
+          <semantic:text>"Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dec8a7aa-a3f7-476d-989e-81d1386f4566-1">
+          <semantic:text>"Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dec8a7aa-a3f7-476d-989e-81d1386f4566-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dec8a7aa-a3f7-476d-989e-81d1386f4566-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_dec8a7aa-a3f7-476d-989e-81d1386f4566-4">
+          <semantic:text>"Fixed 10"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_dec8a7aa-a3f7-476d-989e-81d1386f4566-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_dec8a7aa-a3f7-476d-989e-81d1386f4566-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b9b21435-9286-4633-9a8f-2247d23396b7">
+        <semantic:inputEntry id="_b9b21435-9286-4633-9a8f-2247d23396b7-0">
+          <semantic:text>"Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b9b21435-9286-4633-9a8f-2247d23396b7-1">
+          <semantic:text>"ARM 7/1", "ARM 5/1", "ARM 3/1", "ARM 1/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b9b21435-9286-4633-9a8f-2247d23396b7-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b9b21435-9286-4633-9a8f-2247d23396b7-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b9b21435-9286-4633-9a8f-2247d23396b7-4">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b9b21435-9286-4633-9a8f-2247d23396b7-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_b9b21435-9286-4633-9a8f-2247d23396b7-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_1ee0121c-5618-49b5-8769-6e9eb4d0f420">
+        <semantic:inputEntry id="_1ee0121c-5618-49b5-8769-6e9eb4d0f420-0">
+          <semantic:text>"Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_1ee0121c-5618-49b5-8769-6e9eb4d0f420-1">
+          <semantic:text>"ARM 7/1", "ARM 5/1", "ARM 3/1", "ARM 1/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_1ee0121c-5618-49b5-8769-6e9eb4d0f420-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_1ee0121c-5618-49b5-8769-6e9eb4d0f420-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_1ee0121c-5618-49b5-8769-6e9eb4d0f420-4">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_1ee0121c-5618-49b5-8769-6e9eb4d0f420-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_1ee0121c-5618-49b5-8769-6e9eb4d0f420-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_523c146f-719d-4a5e-8198-cf1a11be9fb0">
+        <semantic:inputEntry id="_523c146f-719d-4a5e-8198-cf1a11be9fb0-0">
+          <semantic:text>"Equity"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_523c146f-719d-4a5e-8198-cf1a11be9fb0-1">
+          <semantic:text>"ARM 7/1", "ARM 5/1", "ARM 3/1", "ARM 1/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_523c146f-719d-4a5e-8198-cf1a11be9fb0-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_523c146f-719d-4a5e-8198-cf1a11be9fb0-3">
+          <semantic:text>&gt;=0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_523c146f-719d-4a5e-8198-cf1a11be9fb0-4">
+          <semantic:text>"Fixed 20"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_523c146f-719d-4a5e-8198-cf1a11be9fb0-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_523c146f-719d-4a5e-8198-cf1a11be9fb0-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_5e731064-442f-4133-9a8c-d4ae4620060e">
+        <semantic:inputEntry id="_5e731064-442f-4133-9a8c-d4ae4620060e-0">
+          <semantic:text>"Rate"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5e731064-442f-4133-9a8c-d4ae4620060e-1">
+          <semantic:text>"Fixed 30", "Fixed 20", "Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5e731064-442f-4133-9a8c-d4ae4620060e-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5e731064-442f-4133-9a8c-d4ae4620060e-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_5e731064-442f-4133-9a8c-d4ae4620060e-4">
+          <semantic:text>"ARM 5/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_5e731064-442f-4133-9a8c-d4ae4620060e-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_5e731064-442f-4133-9a8c-d4ae4620060e-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_111222b5-ed8a-45d8-8a6f-5da50ee245c6">
+        <semantic:inputEntry id="_111222b5-ed8a-45d8-8a6f-5da50ee245c6-0">
+          <semantic:text>"Rate"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_111222b5-ed8a-45d8-8a6f-5da50ee245c6-1">
+          <semantic:text>"Fixed 30", "Fixed 20", "Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_111222b5-ed8a-45d8-8a6f-5da50ee245c6-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_111222b5-ed8a-45d8-8a6f-5da50ee245c6-3">
+          <semantic:text>&gt;=0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_111222b5-ed8a-45d8-8a6f-5da50ee245c6-4">
+          <semantic:text>"ARM 5/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_111222b5-ed8a-45d8-8a6f-5da50ee245c6-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_111222b5-ed8a-45d8-8a6f-5da50ee245c6-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_eda8e050-6459-4481-9f16-9977a439501b">
+        <semantic:inputEntry id="_eda8e050-6459-4481-9f16-9977a439501b-0">
+          <semantic:text>"Rate"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_eda8e050-6459-4481-9f16-9977a439501b-1">
+          <semantic:text>"Fixed 30", "Fixed 20", "Fixed 15"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_eda8e050-6459-4481-9f16-9977a439501b-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_eda8e050-6459-4481-9f16-9977a439501b-3">
+          <semantic:text>&gt;=0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_eda8e050-6459-4481-9f16-9977a439501b-4">
+          <semantic:text>"ARM 5/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_eda8e050-6459-4481-9f16-9977a439501b-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_eda8e050-6459-4481-9f16-9977a439501b-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_2170c26e-e986-46df-801d-f09fb86f931c">
+        <semantic:inputEntry id="_2170c26e-e986-46df-801d-f09fb86f931c-0">
+          <semantic:text>"Rate"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2170c26e-e986-46df-801d-f09fb86f931c-1">
+          <semantic:text>"ARM 7/1", "ARM 5/1", "ARM 3/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2170c26e-e986-46df-801d-f09fb86f931c-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2170c26e-e986-46df-801d-f09fb86f931c-3">
+          <semantic:text>&lt; 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_2170c26e-e986-46df-801d-f09fb86f931c-4">
+          <semantic:text>"ARM 1/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_2170c26e-e986-46df-801d-f09fb86f931c-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_2170c26e-e986-46df-801d-f09fb86f931c-6">
+          <semantic:text>0.2</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_dd37ca39-89d6-45d1-a725-14e78a70c623">
+        <semantic:inputEntry id="_dd37ca39-89d6-45d1-a725-14e78a70c623-0">
+          <semantic:text>"Rate"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dd37ca39-89d6-45d1-a725-14e78a70c623-1">
+          <semantic:text>"ARM 7/1", "ARM 5/1", "ARM 3/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dd37ca39-89d6-45d1-a725-14e78a70c623-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_dd37ca39-89d6-45d1-a725-14e78a70c623-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_dd37ca39-89d6-45d1-a725-14e78a70c623-4">
+          <semantic:text>"ARM 1/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_dd37ca39-89d6-45d1-a725-14e78a70c623-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_dd37ca39-89d6-45d1-a725-14e78a70c623-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_07b80858-cc83-49e9-b15f-b157ac80c5f2">
+        <semantic:inputEntry id="_07b80858-cc83-49e9-b15f-b157ac80c5f2-0">
+          <semantic:text>"Rate"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_07b80858-cc83-49e9-b15f-b157ac80c5f2-1">
+          <semantic:text>"ARM 7/1", "ARM 5/1", "ARM 3/1"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_07b80858-cc83-49e9-b15f-b157ac80c5f2-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_07b80858-cc83-49e9-b15f-b157ac80c5f2-3">
+          <semantic:text>&gt;= 0.2</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_07b80858-cc83-49e9-b15f-b157ac80c5f2-4">
+          <semantic:text>"ARM 1/1"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_07b80858-cc83-49e9-b15f-b157ac80c5f2-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_07b80858-cc83-49e9-b15f-b157ac80c5f2-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_c17658ae-3370-472d-9c61-b70e5d7a68a0">
+        <semantic:inputEntry id="_c17658ae-3370-472d-9c61-b70e5d7a68a0-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c17658ae-3370-472d-9c61-b70e5d7a68a0-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c17658ae-3370-472d-9c61-b70e5d7a68a0-2">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c17658ae-3370-472d-9c61-b70e5d7a68a0-3">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c17658ae-3370-472d-9c61-b70e5d7a68a0-4">
+          <semantic:text>Requested.MortgageType</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_c17658ae-3370-472d-9c61-b70e5d7a68a0-5">
+          <semantic:text>"Conventional"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_c17658ae-3370-472d-9c61-b70e5d7a68a0-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_6fb52988-4a52-48a6-80be-fc565f20393a">
+        <semantic:inputEntry id="_6fb52988-4a52-48a6-80be-fc565f20393a-0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6fb52988-4a52-48a6-80be-fc565f20393a-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6fb52988-4a52-48a6-80be-fc565f20393a-2">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_6fb52988-4a52-48a6-80be-fc565f20393a-3">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_6fb52988-4a52-48a6-80be-fc565f20393a-4">
+          <semantic:text>Requested.MortgageType</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_6fb52988-4a52-48a6-80be-fc565f20393a-5">
+          <semantic:text>"Jumbo"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_6fb52988-4a52-48a6-80be-fc565f20393a-6">
+          <semantic:text>Requested.DownPct</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_d0aeeb20-1527-4a4d-bb7a-0f3fcfb2e9fb" name="isConforming">
+    <semantic:description>&lt;p&gt;This decision wasn't drawn in the book, but it was explained as follow:&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p style="padding-left: 30px;"&gt;The decision &lt;em&gt;isConforming&lt;/em&gt; is a table look up that determines whether the requested loan amount conforms to the limits set by secondary market. The limit, either $417,000 or $625,000 depends on the &lt;em&gt;PropertyZIP&lt;/em&gt; value. Loan amount above that limit require a &lt;em&gt;ConformanceType&lt;/em&gt; of "Jumbo". Jumbo loans have a minimum 20% down payment and more stringent credit requirements&lt;/p&gt;
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;The Decision table &lt;em&gt;isConfirming&lt;/em&gt; was created based on those statements, but only a few sample rules were created. Normally, all the zip code that are in the $417,000 limit should be listed with 91001 and all the other with 96822.&lt;/p&gt;</semantic:description>
+    <semantic:variable id="_e13fff9a-de94-4ffc-98a7-80a030716db2" name="isConforming" typeRef="feel:boolean"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_1702260f-b73b-44ee-8160-e87ce5e1edfc"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="isConforming">
+      <semantic:input id="_23493992-696f-416f-ac7e-580f404a87e3" label="Requested.PropertyZIP">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Requested.PropertyZIP</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_fc3c1c53-3e15-4a68-8d5d-f40435722972" label="Requested.LoanAmt">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Requested.LoanAmt</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_857b2403-eaf8-4f48-9894-83f1a3428c8c"/>
+      <semantic:rule id="_18048763-d622-41db-b847-11db0548f3a7">
+        <semantic:inputEntry id="_18048763-d622-41db-b847-11db0548f3a7-0">
+          <semantic:text>"91001"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_18048763-d622-41db-b847-11db0548f3a7-1">
+          <semantic:text>&lt;=417000</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_18048763-d622-41db-b847-11db0548f3a7-2">
+          <semantic:text>true</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_909b87c6-9cea-45cf-8154-574332b8ea77">
+        <semantic:inputEntry id="_909b87c6-9cea-45cf-8154-574332b8ea77-0">
+          <semantic:text>"91001"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_909b87c6-9cea-45cf-8154-574332b8ea77-1">
+          <semantic:text>&gt;417000</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_909b87c6-9cea-45cf-8154-574332b8ea77-2">
+          <semantic:text>false</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_50cfcee8-f6b3-44cd-abc8-a37817653960">
+        <semantic:inputEntry id="_50cfcee8-f6b3-44cd-abc8-a37817653960-0">
+          <semantic:text>"96822"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_50cfcee8-f6b3-44cd-abc8-a37817653960-1">
+          <semantic:text>&lt;=625000</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_50cfcee8-f6b3-44cd-abc8-a37817653960-2">
+          <semantic:text>true</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_42603d1a-2d8d-4329-b97f-ed89f96c27af">
+        <semantic:inputEntry id="_42603d1a-2d8d-4329-b97f-ed89f96c27af-0">
+          <semantic:text>"96822"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_42603d1a-2d8d-4329-b97f-ed89f96c27af-1">
+          <semantic:text>&gt;625000</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_42603d1a-2d8d-4329-b97f-ed89f96c27af-2">
+          <semantic:text>false</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_b7a5947a-1415-4d33-8a10-4c223606ec1f">
+        <semantic:inputEntry id="_b7a5947a-1415-4d33-8a10-4c223606ec1f-0">
+          <semantic:text>not("91001","96822")</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b7a5947a-1415-4d33-8a10-4c223606ec1f-1">
+          <semantic:text>&lt;=417000</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b7a5947a-1415-4d33-8a10-4c223606ec1f-2">
+          <semantic:text>true</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_ba4f586c-172d-464d-9b78-9f176dfe49f5">
+        <semantic:inputEntry id="_ba4f586c-172d-464d-9b78-9f176dfe49f5-0">
+          <semantic:text>not("91001","96822")</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_ba4f586c-172d-464d-9b78-9f176dfe49f5-1">
+          <semantic:text>&gt;417000</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_ba4f586c-172d-464d-9b78-9f176dfe49f5-2">
+          <semantic:text>false</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_1702260f-b73b-44ee-8160-e87ce5e1edfc" name="Requested">
+    <semantic:description>&lt;p&gt;Customer must provide the following information:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MortgageType&lt;/li&gt;
+&lt;li&gt;Objective&lt;/li&gt;
+&lt;li&gt;DownPct (down payment percentage)&lt;/li&gt;
+&lt;li&gt;LoanAmt (loan amount)&lt;/li&gt;
+&lt;li&gt;PropertyZip (zip code of the property for which the mortgage is requested)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Sample input data can be found in &lt;em&gt;Requested&lt;/em&gt; boxed context.&lt;/p&gt;</semantic:description>
+    <semantic:variable id="_784e660d-64ad-4e50-b72e-69bd5241a1c9" name="Requested" typeRef="tRequested"/>
+  </semantic:inputData>
+</semantic:definitions>

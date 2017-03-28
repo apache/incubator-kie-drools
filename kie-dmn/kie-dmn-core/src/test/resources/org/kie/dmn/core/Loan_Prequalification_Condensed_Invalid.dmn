@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_ba68fb9d-7421-4f3a-a7ab-f785ea0bae6b" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.5.201702231111" id="_ba68fb9d-7421-4f3a-a7ab-f785ea0bae6b"
+                      name="Loan Prequalification Condensed" namespace="http://www.trisotech.com/definitions/_ba68fb9d-7421-4f3a-a7ab-f785ea0bae6b"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="Borrower" name="Borrower">
+    <semantic:itemComponent id="_9b6318b2-ea96-4c5a-9f56-37a39f00c865" name="Name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_ffbcb6c3-1e15-45ad-8e7a-37537c0cdca2" name="AnnualIncome">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_b8165842-2e19-4d1f-9a3c-ece7c196c9ac" name="FICOScore">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_80fe72b6-b186-479d-b569-c89942adc936" name="TotalMonthlyDebt">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="Loan" name="Loan">
+    <semantic:itemComponent id="_cf48090a-c201-4ea1-bc8c-47734badd8a2" name="LoanAmount">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_24954ee1-fa2b-4085-b74e-f6d9184a5d12" name="LoanTerm">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_6111e414-69a3-4200-96c7-3dec38cd9586" name="InterestRate">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_bf35943c-8e3a-4632-b6d6-4539304a0633" name="DownPayment">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_cd7713cc-fccd-40e0-a198-aaafb154d838" name="InsuranceAmount">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_45814042-6f20-40d1-9d29-ea4a37451601" name="TaxPayment">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:decision id="_2736d818-4f32-49d0-b75e-e1aa932fd452" name="CreditScoreRating" triso:displayName="CreditScoreRating">
+    <semantic:question>What is borrower's credit rating?</semantic:question>
+    <semantic:allowedAnswers>Excellent, Good, Fair, Poor, Bad</semantic:allowedAnswers>
+    <semantic:variable id="_af878495-e7d6-4394-a7b3-59bcb959a945" name="CreditScoreRating" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_346694ee-a648-4aed-bafc-4734e7c0d483"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_33a162ea-6996-4c2f-997e-ee0e4c24986a" outputLabel="CreditScoreRating">
+      <semantic:input id="_7338f340-24d4-47e7-9539-1288a622c238" label="Borrower.FICOScore">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Borrower.FICOScore</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_a731ab90-edd3-47cb-8d05-969a234c0076">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"EXCELLENT","GOOD","FAIR","POOR","BAD"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_0c135c1b-d315-413d-a55f-0e88d3dbd0cc">
+        <semantic:inputEntry id="_d21b60d8-6d49-499b-a2fb-7a50082b8279">
+          <semantic:text>&gt;= 750</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b6a3b47d-6cf7-4f50-b20d-ec92f5399784">
+          <semantic:text>"EXCELLENT"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_d368d730-d346-43fa-b8e7-4fb81e070a18">
+        <semantic:inputEntry id="_a5a853ec-bbc8-4ba1-ab91-fd1c1d1e0b10">
+          <semantic:text>[700..749]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_514437ff-0765-4a60-93d5-d4282083f20c" triso:unparsed="false">
+          <semantic:text>"GOOD"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_83877a9d-f5b7-497a-bdd2-3e9a61034a0d">
+        <semantic:inputEntry id="_8b5a768c-de5f-4155-8674-a5b254221ad9">
+          <semantic:text>[650..699]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_11e4d95b-0d25-47f2-a7a4-8917aa1bf738">
+          <semantic:text>"FAIR"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_2e5b02fc-8047-47a9-b9fd-30868033d75e">
+        <semantic:inputEntry id="_32e735dc-03d3-43f0-b74f-5b01356fa283">
+          <semantic:text>[600..649]</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_be7090fb-5a81-446b-a4a4-cbbc107e9c55">
+          <semantic:text>"POOR"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_bc500ee9-f323-4007-ba26-52de863a5532">
+        <semantic:inputEntry id="_6f4c81b2-821b-4ebc-ba59-0650350ee2f5">
+          <semantic:text>&lt; 600</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_de88ff02-cb53-4b38-834e-756bcb28cc41">
+          <semantic:text>"BAD"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_bbf9c6c8-7418-4512-a6e5-1586c84795ce" name="FrontEndRatioPITI" triso:displayName="FrontEndRatioPITI">
+    <semantic:question>Is the PITI ratio sufficient?</semantic:question>
+    <semantic:allowedAnswers>Sufficient or Insufficient</semantic:allowedAnswers>
+    <semantic:variable id="_1ae9cc34-1b17-4f40-af79-fa0f37c96373" name="FrontEndRatioPITI" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_f09ea3a7-525c-4c61-9bab-d670cc2d644a"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_bac0993e-1f15-4589-b927-00030e817697" outputLabel="FrontEndRatioPITI">
+      <semantic:input id="_e89fdfc6-e18f-462c-abb7-9e07d66f3b06" label="CalculatedPITI.PITIMax">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>CalculatedPITI.PITIMax</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_849be650-7c7d-4588-86f6-bb3422c9a136" label="CalculatedPITI.PITIActual">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>CalculatedPITI.PITIActual</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_34a8d7e8-0750-47ff-b110-0867e49d9ee2">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"SUFFICIENT","INSUFFICIENT"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_33329722-3cf4-4536-9bec-54428ab1b9ee">
+        <semantic:inputEntry id="_02d4c5f6-5382-4b28-a59f-c24ced2903d2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5c8cd108-78f9-444c-9699-07110889fbdb">
+          <semantic:text>&lt;=CalculatedPITI.PITIMax</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_d4f0cf95-d993-4122-932a-f97f174883a2">
+          <semantic:text>"SUFFICIENT"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_926644e8-34c5-411a-955f-4b5005de3b51">
+        <semantic:inputEntry id="_4828c78b-070e-479a-9bb0-4531d63a04e0">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_9999b2f8-2dcf-4a9e-a8d4-bf5187be1211">
+          <semantic:text>&gt;CalculatedPITI.PITIMax</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_57bbfc83-dbbb-4925-9a5c-94bd6dbe6b26">
+          <semantic:text>"INSUFFICIENT"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_ed64794c-c6b1-417e-9fe7-1317c537fb26" name="Determine Loan PreQual Result" triso:displayName="Determine Loan PreQual Result">
+    <semantic:question>Is borrower successfully prequalified for the requested loan?</semantic:question>
+    <semantic:allowedAnswers>Qualified
+      Not Qualified
+      Decision Reason
+    </semantic:allowedAnswers>
+    <semantic:variable id="_0af3e59c-47b5-4278-b8a8-82e7c3d8577a" name="Determine Loan PreQual Result"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_2736d818-4f32-49d0-b75e-e1aa932fd452"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_bbf9c6c8-7418-4512-a6e5-1586c84795ce"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#inputData__fb048dc0-4f27-4727-81e8-75015f808bb5"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_57456a06-1de4-43bd-a285-fa6927c2853d"/>
+    </semantic:knowledgeRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_b0b733ff-8bb1-4afe-996c-fbdeca46daf6" outputLabel="Determine Loan PreQual Result">
+      <semantic:input id="_377aaf84-55d0-4871-8f1d-47abb9def8a4" label="CreditScoreRating">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>CreditScoreRating</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"POOR","BAD","FAIR","GOOD","EXCELLENT"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_fb048dc0-4f27-4727-81e8-75015f808bb5" label="BackEndRatioDTI">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>BackEndRatioDTI</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"SUFFICIENT","INSUFFICIENT"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_9f428e4b-51ac-41e6-a233-944eb4a8ec0a" label="FrontEndRatioPITI">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>FrontEndRatioPITI</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"INSUFFICIENT","SUFFICIENT"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_f8711457-a2fd-4114-b341-c1e8bb40a47f" name="LoanPrequalificationResult" typeRef="feel:string">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"NOT QUALIFIED","QUALIFIED"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:output id="_19f86e82-668e-4071-a73c-bd3c231b82d5" name="Reason" typeRef="feel:string"/>
+      <semantic:rule id="_83626bf5-2018-4d2c-92ec-e4af388e9fb7">
+        <semantic:description>Credit Score too low.</semantic:description>
+        <semantic:inputEntry id="_ec8b7d65-811e-4fd8-abe6-8352adb8d6d8">
+          <semantic:text>"POOR","BAD"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_5736ffd8-0325-4461-92a1-6fd90c3335ca">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_3654ee2a-07e8-496d-9c1f-3490cdce5fe8">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_fcb44a9d-ca5a-4d17-bb64-3573a80e9888">
+          <semantic:text>"NOT QUALIFIED"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_3c531dea-6ac9-4539-9214-477402130db7">
+          <semantic:text>"Credit Score too low."</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_2305a359-2d22-48dd-a632-80d8fc042d4c">
+        <semantic:description>Debt to income ratio is too high.</semantic:description>
+        <semantic:inputEntry id="_0d20acb7-7511-4123-8660-1854ece48fd5">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_92b86a56-8401-4282-909a-723442dd2ff5">
+          <semantic:text>"INSUFFICIENT"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_736aec31-264e-4284-8de5-59503e2e07c9">
+          <semantic:text>"SUFFICIENT"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_0fd9ff33-ccad-4420-9e63-9532bd8ebbb6">
+          <semantic:text>"NOT QUALIFIED"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_14d2201b-ffd8-4e09-b3a6-0fcf3af167f2">
+          <semantic:text>"Debt to income ratio is too high."</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_fe3c6ada-60a8-4a80-9d16-8e0275136e47">
+        <semantic:description>Mortgage payment to income ratio is too high.</semantic:description>
+        <semantic:inputEntry id="_27d8a5d3-7ab9-4ad9-a51f-3cfee9df9b2e">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_7068aea0-0f1f-4bd2-bd62-ee4de4a84441">
+          <semantic:text>"SUFFICIENT"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_c0eae4eb-811c-456d-8472-984841e17360">
+          <semantic:text>"INSUFFICIENT"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_e28f75fb-a7a4-4b60-878c-bb473bb9b7c3">
+          <semantic:text>"NOT QUALIFIED"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_627e9129-3ac2-481a-b432-9a456c65d965">
+          <semantic:text>"Mortgage payment to income ratio is too high."</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_717bb897-ec47-48ce-bec0-03d56a030dd5">
+        <semantic:description>Debt to income ratio is too high AND mortgage payment to income ratio is too high.</semantic:description>
+        <semantic:inputEntry id="_baff90c1-a208-4e6f-bd21-61e4c735e00a">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_97eb2e67-e536-45c1-a5f2-61c38cf1e9e3">
+          <semantic:text>"INSUFFICIENT"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_bc0f425b-bea8-47b8-99ae-8de3956951b1">
+          <semantic:text>"INSUFFICIENT"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_daec660f-5d27-4750-9d70-b25402b8a3ab">
+          <semantic:text>"NOT QUALIFIED"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_07015b95-2bab-4935-9556-95b119790626">
+          <semantic:text>"Debt to income ratio is too high AND mortgage payment to income ratio is too high."</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_5346a575-d477-417b-9190-40b9130e590b">
+        <semantic:description>The borrower has been successfully prequalified for the requested loan.</semantic:description>
+        <semantic:inputEntry id="_a5a65c01-ccf6-4a29-bd82-a806d0221a4e">
+          <semantic:text>"FAIR","GOOD","EXCELLENT"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2c6d18f6-630f-4c38-bc77-55c6dbd1cf0b">
+          <semantic:text>"SUFFICIENT"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d9350940-d257-4686-8a82-0eb7b1d9491f">
+          <semantic:text>"SUFFICIENT"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b4c0fea6-282d-4acc-b5f0-4bf6ef06f81e">
+          <semantic:text>"QUALIFIED"</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_da82b531-9cce-418b-9cfd-6c202e1425a7">
+          <semantic:text>"The borrower has been successfully prequalified for the requested loan."</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_f09ea3a7-525c-4c61-9bab-d670cc2d644a" name="CalculatedPITI" triso:displayName="CalculatedPITI">
+    <semantic:question>What is the Principal, Interest, Taxes and Insurance?</semantic:question>
+    <semantic:allowedAnswers>Sum of Principal, Interest, Taxes and Insurance</semantic:allowedAnswers>
+    <semantic:variable id="_b149a726-96d6-48f4-9bad-1e79eeeba08e" name="CalculatedPITI"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_346694ee-a648-4aed-bafc-4734e7c0d483"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_c5a3a889-e89b-4acb-8f73-e2eed6680806"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_7da6cbf3-7e7d-479c-8fc3-4d6809796ade"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_f2ecad7b-b415-46c9-b0c5-82965683bf65" outputLabel="CalculatedPITI">
+      <semantic:input id="_dba1c7be-4e65-4c59-9c87-b8f501930560" label="Borrower.AnnualIncome">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Borrower.AnnualIncome</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_3d8a0a07-d71a-49e1-879b-ab9b9e65eb35" label="Loan.InsuranceAmount">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Loan.InsuranceAmount</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_b250dbd5-520e-4609-b42a-d72d32ad80a3" label="Loan.TaxPayment">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Loan.TaxPayment</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_f24e17c3-c094-4d0a-919f-9ce0a0b64fdf" label="MonthlyPayment">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>MonthlyPayment</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_66e89151-5829-49c0-a8b6-a53e244bc082" name="PITIActual" typeRef="feel:number"/>
+      <semantic:output id="_4e371458-59a9-4753-8877-d1e2877ea9ab" name="PITIMax" typeRef="feel:number"/>
+      <semantic:rule id="_b4025a37-d0f7-410d-b5c8-fd8abd829da2">
+        <semantic:inputEntry id="_b167de50-a231-48b0-a325-a9c32ff0a05f">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_2cd898d2-325b-4c00-adca-7f013e396950">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4d405fc5-5e6b-4c53-95a9-8b87bb155082">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_68c6d5e9-7488-430e-a1f4-b33689d6b27f">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_c3c7fa80-dc52-43d6-8f83-d43293ddb323">
+          <semantic:text>MonthlyPayment +Loan.InsuranceAmount+Loan.TaxPayment</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_be432600-e264-4a80-a179-f2cada08c61c">
+          <semantic:text>Borrower.AnnualIncome/12*0.28</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_346694ee-a648-4aed-bafc-4734e7c0d483" name="Borrower" triso:displayName="Borrower">
+    <semantic:variable id="_4e840a53-02c4-427c-8c65-a3e6dc385f36" name="Borrower" typeRef="Borrower"/>
+  </semantic:inputData>
+  <semantic:inputData id="_c5a3a889-e89b-4acb-8f73-e2eed6680806" name="Loan" triso:displayName="Loan">
+    <semantic:variable id="_5a9a484f-c3b2-4076-8f0a-ffd7a95c2a7c" name="Loan" typeRef="Loan"/>
+  </semantic:inputData>
+  <semantic:decision id="_7da6cbf3-7e7d-479c-8fc3-4d6809796ade" name="MonthlyPayment" triso:displayName="MonthlyPayment">
+    <semantic:variable id="_948e279f-1db3-4743-a15e-f1d974367b4a" name="MonthlyPayment"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_c5a3a889-e89b-4acb-8f73-e2eed6680806"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_9fb4495d-c19a-4ef8-8610-7c2c4708be8f">
+      <semantic:text>Loan.LoanAmount*((Loan.InterestRate/100)/"12")/(1-(1/((1+(Loan.InterestRate/100)/12))**Loan.LoanTerm))</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:businessKnowledgeModel id="_57456a06-1de4-43bd-a285-fa6927c2853d" name="BackEndRatioDTI" triso:displayName="BackEndRatioDTI">
+    <semantic:encapsulatedLogic id="_bc5a0c06-3de8-4cca-a29a-749df8eb9bb9">
+      <semantic:context id="context__bc5a0c06-3de8-4cca-a29a-749df8eb9bb9">
+        <semantic:contextEntry>
+          <semantic:variable id="_657247ee-c2f0-48a0-b2c6-a3b81ceb7106" name="Borrower"/>
+          <semantic:context id="_26b3d25f-0199-459a-b4cc-bbf1cb6130e0">
+            <semantic:contextEntry>
+              <semantic:variable id="_3f5b065c-4ce7-4818-a150-55010147217c" name="AnnualIncome"/>
+              <semantic:literalExpression id="_8b5cac9e-c8ca-4817-b05a-c70fa79a8d48"/>
+            </semantic:contextEntry>
+            <semantic:contextEntry>
+              <semantic:variable id="_f3f79579-7312-42b3-afc9-476f0d24d15d" name="TotalMonthlyDebt"/>
+              <semantic:literalExpression id="_ef09d90e-e1a4-4ec9-885b-482d1f4a1cee"/>
+            </semantic:contextEntry>
+          </semantic:context>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:literalExpression id="_2f19b08c-6075-4e48-ad0a-f17207a6b510">
+            <semantic:text>if Borrower.TotalMonthlyDebt &lt;= Borrower.AnnualIncome / 12 * 0.36 then "SUFFICIENT" else "INSUFFICIENT"</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_815adb22-2b2d-49b6-ae89-edabf085b081" name="BackEndRatioDTI"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:inputData id="inputData__fb048dc0-4f27-4727-81e8-75015f808bb5" name="BackEndRatioDTI">
+    <semantic:variable name="BackEndRatioDTI" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:textAnnotation id="_f3723500-1bd8-4104-bbc8-50204d047cbf">
+    <semantic:text>Q: Is borrower successfully prequalified for the requested loan?
+      A: Qualified or Not Qualified and Decision Reason
+
+    </semantic:text>
+  </semantic:textAnnotation>
+  <semantic:association id="_f8233831-335a-420d-8330-4c30127a4e35">
+    <semantic:sourceRef href="#_ed64794c-c6b1-417e-9fe7-1317c537fb26"/>
+    <semantic:targetRef href="#_f3723500-1bd8-4104-bbc8-50204d047cbf"/>
+  </semantic:association>
+  <semantic:association id="_5dbcdea9-1a22-4ac9-a246-22b5a6f7b7ee">
+    <semantic:sourceRef href="#_ed64794c-c6b1-417e-9fe7-1317c537fb26"/>
+    <semantic:targetRef href="#_f3723500-1bd8-4104-bbc8-50204d047cbf"/>
+  </semantic:association>
+  <semantic:textAnnotation id="_c663a8c0-c16e-4f17-b139-6343bf6000a2">
+    <semantic:text>Loan Amount
+      Loan Term
+      Interest Rate
+      Down Payment
+      Insurance Amount
+      Tax Payment
+    </semantic:text>
+  </semantic:textAnnotation>
+  <semantic:association id="_bfe0e89c-d7ba-4ea2-a612-9541bc4490dd">
+    <semantic:sourceRef href="#_ed64794c-c6b1-417e-9fe7-1317c537fb26"/>
+    <semantic:targetRef href="#_f3723500-1bd8-4104-bbc8-50204d047cbf"/>
+  </semantic:association>
+  <semantic:textAnnotation id="_00c4dc04-7c11-41c3-9883-f0898fe10c90">
+    <semantic:text>Q: What is borrower's credit rating?
+      A: Excellent, Good, Fair, Poor or Bad
+    </semantic:text>
+  </semantic:textAnnotation>
+  <semantic:textAnnotation id="_bc08df13-c073-4947-9547-af87a3b52a6a">
+    <semantic:text>Q: What is the Principal, Interest, Taxes &amp; Insurance?
+      A: Principal, Interest, Taxes &amp; Insurance
+    </semantic:text>
+  </semantic:textAnnotation>
+  <semantic:textAnnotation id="_3ed69b21-1c79-49d9-956e-fd84f8ded171">
+    <semantic:text>Q: Is the PITI ratio
+      sufficient?
+      A: Sufficient or Insufficient
+    </semantic:text>
+  </semantic:textAnnotation>
+  <semantic:textAnnotation id="_79ef414d-45aa-4013-931f-9266fa9f37be">
+    <semantic:text>Q: Is the DTI ratio
+      sufficient?
+      A: Sufficient or Insufficient
+    </semantic:text>
+  </semantic:textAnnotation>
+  <semantic:association id="_ca97698c-8e9c-49e9-9827-3cdc3d67b689">
+    <semantic:sourceRef href="#_f09ea3a7-525c-4c61-9bab-d670cc2d644a"/>
+    <semantic:targetRef href="#_bc08df13-c073-4947-9547-af87a3b52a6a"/>
+  </semantic:association>
+  <semantic:association id="_b6905242-357f-4204-839e-316c61556d30">
+    <semantic:sourceRef href="#_79ef414d-45aa-4013-931f-9266fa9f37be"/>
+    <semantic:targetRef href="#_79ef414d-45aa-4013-931f-9266fa9f37be"/>
+  </semantic:association>
+  <semantic:association id="_50121872-ca7a-469f-88b2-950487b823b1">
+    <semantic:sourceRef href="#_bbf9c6c8-7418-4512-a6e5-1586c84795ce"/>
+    <semantic:targetRef href="#_3ed69b21-1c79-49d9-956e-fd84f8ded171"/>
+  </semantic:association>
+  <semantic:association id="_1afd6464-0d6e-4017-8af7-eafae4dfb36b">
+    <semantic:sourceRef href="#_2736d818-4f32-49d0-b75e-e1aa932fd452"/>
+    <semantic:targetRef href="#_00c4dc04-7c11-41c3-9883-f0898fe10c90"/>
+  </semantic:association>
+  <semantic:association id="_2091f79b-8d44-4863-9159-69d4f40e7226">
+    <semantic:sourceRef href="#_c663a8c0-c16e-4f17-b139-6343bf6000a2"/>
+    <semantic:targetRef href="#_c5a3a889-e89b-4acb-8f73-e2eed6680806"/>
+  </semantic:association>
+  <semantic:textAnnotation id="_3ee7141f-4716-44bc-ac2b-3d067a0a027c">
+    <semantic:text>Name
+      AnnualIncome
+      FICOScore
+      TotalMonthlyDebt
+    </semantic:text>
+  </semantic:textAnnotation>
+  <semantic:association id="_80dd04d9-68b5-4bfc-b6ff-5a7fee881a3e">
+    <semantic:sourceRef href="#_3ee7141f-4716-44bc-ac2b-3d067a0a027c"/>
+    <semantic:targetRef href="#_346694ee-a648-4aed-bafc-4734e7c0d483"/>
+  </semantic:association>
+</semantic:definitions>
