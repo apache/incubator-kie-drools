@@ -1,0 +1,15 @@
+,,
+RuleSet,org.drools.testcoverage.functional.oopath,
+Import,"org.drools.testcoverage.common.model.Person, org.drools.testcoverage.common.model.Address, org.drools.testcoverage.common.model.InternationalAddress, java.util.List",
+Queries,"query listSafeCities $cities : List() from accumulate (Person ( $city: /address{#InternationalAddress, state == ""Safecountry""}/city), collectList($city)) end",
+Notes,,
+,,
+RuleTable ,,
+CONDITION,CONDITION,ACTION
+$p: Person,Person,list
+"/address{#InternationalAddress, state  == ""$param""}","age > $param, this == $p","add(""$param"")"
+STATE,AGE,RESULT
+Safecountry,21,SafeDriver
+Riskyland,15,Risky Driver
+,,
+Variables,java.util.List list,
