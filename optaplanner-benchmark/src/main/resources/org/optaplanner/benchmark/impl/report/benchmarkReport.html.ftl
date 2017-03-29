@@ -319,24 +319,6 @@
                                 </table>
                             </div>
                         </div>
-                        <!-- HACK Duplication to show the navigation tabs in the same viewport as the tables -->
-                        <ul class="nav nav-pills">
-                            <li class="active">
-                                <a href="#summary_bestScore" data-toggle="tab">Best score</a>
-                            </li>
-                            <li>
-                                <a href="#summary_bestScoreScalability" data-toggle="tab">Best score scalability</a>
-                            </li>
-                            <li>
-                                <a href="#summary_bestScoreDistribution" data-toggle="tab">Best score distribution</a>
-                            </li>
-                            <li>
-                                <a href="#summary_winningScoreDifference" data-toggle="tab">Winning score difference</a>
-                            </li>
-                            <li>
-                                <a href="#summary_worstScoreDifferencePercentage" data-toggle="tab">Worst score difference percentage (ROI)</a>
-                            </li>
-                        </ul>
                     </div>
                 </section>
 
@@ -497,21 +479,6 @@
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.bestScorePerTimeSpentSummaryChartFileList idPrefix="summary_bestScorePerTimeSpent" />
                             </div>
                         </div>
-                        <!-- HACK Duplication to show the navigation tabs in the same viewport as the tables -->
-                        <ul class="nav nav-pills">
-                            <li class="active">
-                                <a href="#summary_scoreCalculationSpeed" data-toggle="tab">Score calculation speed</a>
-                            </li>
-                            <li>
-                                <a href="#summary_timeSpent" data-toggle="tab">Time spent</a>
-                            </li>
-                            <li>
-                                <a href="#summary_timeSpentScalability" data-toggle="tab">Time spent scalability</a>
-                            </li>
-                            <li>
-                                <a href="#summary_bestScorePerTimeSpent" data-toggle="tab">Best score per time spent</a>
-                            </li>
-                        </ul>
                     </div>
                 </section>
             </section>
