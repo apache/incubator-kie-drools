@@ -16,6 +16,7 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.kie.dmn.model.v1_1.*;
+import org.kie.dmn.model.v1_1.HitPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -284,6 +285,16 @@ public class DMNEvaluatorCompiler {
                 QName inferredTypeRef = recurseUpToInferTypeRef(model, dt);
                 BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
                 outputValues = typeRef.getAllowedValues();
+            }
+            if ( dt.getHitPolicy().equals(HitPolicy.PRIORITY) && ( outputValues == null || outputValues.isEmpty() ) ) {
+                MsgUtil.reportMessage( logger,
+                        DMNMessage.Severity.ERROR,
+                        oc,
+                        model,
+                        null,
+                        null,
+                        Msg.MISSING_OUTPUT_VALUES,
+                        oc );
             }
             outputs.add( new DTOutputClause( outputName, id, outputValues, defaultValue ) );
         }
