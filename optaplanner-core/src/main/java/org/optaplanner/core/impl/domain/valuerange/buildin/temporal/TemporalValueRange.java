@@ -15,6 +15,7 @@
  */
 package org.optaplanner.core.impl.domain.valuerange.buildin.temporal;
 
+import java.time.DateTimeException;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalUnit;
@@ -26,7 +27,8 @@ import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.util.ValueRangeIterator;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 
-public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super Temporal_>> extends AbstractCountableValueRange<Temporal_> {
+public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super Temporal_>>
+        extends AbstractCountableValueRange<Temporal_> {
 
     private final Temporal_ from;
     private final Temporal_ to;
@@ -40,7 +42,8 @@ public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super 
      * @param from never null, inclusive minimum
      * @param to never null, exclusive maximum, {@code >= from}
      * @param incrementUnitAmount {@code > 0}
-     * @param incrementUnitType never null, must be {@link Temporal#isSupported(TemporalUnit) supported} by {@code from} and {@code to}
+     * @param incrementUnitType never null, must be {@link Temporal#isSupported(TemporalUnit) supported} by {@code from}
+     * and {@code to}
      */
     public TemporalValueRange(Temporal_ from, Temporal_ to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
         this.from = from;
@@ -60,7 +63,8 @@ public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super 
         if (!from.isSupported(incrementUnitType) || !to.isSupported(incrementUnitType)) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
                     + " must have a incrementUnitType (" + incrementUnitType
-                    + ") that is supported by its from (" + from + ") and to (" + to + ").");
+                    + ") that is supported by its from (" + from.getClass().getSimpleName()
+                    + ") and to (" + to.getClass().getSimpleName() + ").");
         }
         // We cannot use Temporal.until() to check bounds due to rounding errors
         if (from.compareTo(to) > 0) {
@@ -68,7 +72,7 @@ public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super 
                     + " cannot have a from (" + from + ") which is strictly higher than its to (" + to + ").");
         }
         long space = from.until(to, incrementUnitType);
-        if (to.equals(from.plus(space + 1, incrementUnitType))) {
+        if (!to.equals(from.plus(space, incrementUnitType))) {
             // Temporal.until() rounds down, but it needs to round up, to be consistent with Temporal.plus()
             space++;
         }
@@ -81,14 +85,21 @@ public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super 
                     + ") between from (" + from + ") and to (" + to + ").");
         }
         // Fail fast if there's a remainder on type (to be consistent with other value ranges)
-        if (!to.equals(from.plus(space, incrementUnitType))) {
+        boolean typeRemainder = true;
+        try {
+            typeRemainder = !to.equals(from.plus(space, incrementUnitType));
+        } catch (DateTimeException e) {
+            // When using extreme ranges, like [LocalDate.MIN-LocalData.MAX) the space may exceed maximum Year value
+            space--; // only needed for the exception message below (otherwise DateTimeException will be thrown)
+        }
+        if (typeRemainder) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
                     + " 's incrementUnitType (" + incrementUnitType
                     + ") must fit an integer number of times in the space (" + space
                     + ") between from (" + from + ") and to (" + to + ").\n"
-                    + "The to (" + to + ") is not the expected to (" + from.plus(space, incrementUnitType) + ").");
+                    + "The to (" + from.plus(space, incrementUnitType) + ") is not the expected to (" + to + ").");
         }
-        size =  space / incrementUnitAmount;
+        size = space / incrementUnitAmount;
     }
 
     @Override

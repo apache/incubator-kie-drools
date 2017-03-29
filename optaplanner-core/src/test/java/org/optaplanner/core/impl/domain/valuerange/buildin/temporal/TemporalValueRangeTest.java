@@ -17,13 +17,18 @@ package org.optaplanner.core.impl.domain.valuerange.buildin.temporal;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Year;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalUnit;
+import java.util.Iterator;
 import java.util.Random;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyInt;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -326,6 +331,13 @@ public class TemporalValueRangeTest {
     }
 
     @Test
+    public void emptyRandomIterator() {
+        Iterator<Year> it = new TemporalValueRange<>(Year.of(0), Year.of(0), 1, ChronoUnit.YEARS)
+                .createRandomIterator(new Random(0));
+        assertFalse(it.hasNext());
+    }
+
+    @Test
     public void getAndCreateOriginalIteratorInSyncForLocalDate() {
         LocalDate from = LocalDate.of(2016, 1, 31);
         LocalDate to = LocalDate.of(2016, 7, 31);
@@ -347,4 +359,118 @@ public class TemporalValueRangeTest {
                 LocalDate.of(2016, 6, 30));
     }
 
+    @Test
+    public void fullLocalDateRange() {
+        TemporalUnit unit = ChronoUnit.DAYS;
+        LocalDate from = LocalDate.MIN;
+        LocalDate to = LocalDate.MAX;
+        int increment = 4093;
+        TemporalValueRange<LocalDate> range = new TemporalValueRange<>(from, to, increment, unit);
+        assertEquals(from.until(to, unit), range.getSize() * increment);
+        assertTrue(range.contains(from));
+        assertFalse(range.contains(to));
+    }
+
+    @Test
+    public void fullLocalDateTimeRange() {
+        TemporalUnit unit = ChronoUnit.DAYS;
+        LocalDateTime from = LocalDateTime.MIN;
+        LocalDateTime to = LocalDateTime.MAX.truncatedTo(unit);
+        int increment = 1;
+        TemporalValueRange<LocalDateTime> range = new TemporalValueRange<>(from, to, increment, unit);
+        assertEquals(from.until(to, unit), range.getSize() * increment);
+        assertTrue(range.contains(from));
+        assertFalse(range.contains(to));
+    }
+
+    @Test
+    public void fullYearRange() {
+        TemporalUnit unit = ChronoUnit.YEARS;
+        Year from = Year.of(Year.MIN_VALUE);
+        Year to = Year.of(Year.MAX_VALUE);
+        int increment = 1;
+        TemporalValueRange<Year> range = new TemporalValueRange<>(from, to, increment, unit);
+        assertEquals(from.until(to, unit), range.getSize() * increment);
+        assertTrue(range.contains(from));
+        assertFalse(range.contains(to));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void nullFrom() {
+        assertNotNull(new TemporalValueRange<>(null, LocalDate.MAX, 1, ChronoUnit.DAYS));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void nullTo() {
+        assertNotNull(new TemporalValueRange<>(LocalDate.MIN, null, 1, ChronoUnit.DAYS));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void nullIncrementUnitType() {
+        assertNotNull(new TemporalValueRange<>(LocalDate.MIN, LocalDate.MAX, 1, null));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void invalidIncrementUnitAmount() {
+        assertNotNull(new TemporalValueRange<>(LocalDate.MIN, LocalDate.MAX, 0, ChronoUnit.DAYS));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void fromAfterTo() {
+        assertNotNull(new TemporalValueRange<>(LocalDate.MAX, LocalDate.MIN, 1, ChronoUnit.DAYS));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void incrementUnitTypeNotSupportedByFrom() {
+        TemporalMock from = mock(TemporalMock.class);
+        when(from.isSupported(any(TemporalUnit.class))).thenReturn(Boolean.FALSE);
+        TemporalMock to = mock(TemporalMock.class);
+        when(from.isSupported(any(TemporalUnit.class))).thenReturn(Boolean.TRUE);
+        assertNotNull(new TemporalValueRange<>(from, to, 1, mock(TemporalUnit.class)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void incrementUnitTypeNotSupportedByTo() {
+        TemporalMock from = mock(TemporalMock.class);
+        when(from.isSupported(any(TemporalUnit.class))).thenReturn(Boolean.TRUE);
+        TemporalMock to = mock(TemporalMock.class);
+        when(from.isSupported(any(TemporalUnit.class))).thenReturn(Boolean.FALSE);
+        assertNotNull(new TemporalValueRange<>(from, to, 1, mock(TemporalUnit.class)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void remainderOnIncrementAmount() {
+        assertNotNull(new TemporalValueRange<>(Year.of(0), Year.of(3), 2, ChronoUnit.YEARS));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void remainderOnIncrementType() {
+        LocalTime from = LocalTime.of(11, 30);
+        LocalTime to = LocalTime.of(13, 29);
+        assertNotNull(new TemporalValueRange<>(from, to, 1, ChronoUnit.HOURS));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void remainderOnIncrementTypeExceedsMaximumYear() {
+        Year from = Year.of(Year.MIN_VALUE);
+        Year to = Year.of(Year.MAX_VALUE - 0);
+        assertNotEquals(0, (to.getValue() - from.getValue()) % 10); // Maximum Year range is not divisible by 10
+        assertNotNull(new TemporalValueRange<>(from, to, 1, ChronoUnit.DECADES));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void getIndexNegative() {
+        new TemporalValueRange<>(Year.of(0), Year.of(1), 1, ChronoUnit.YEARS).get(-1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void getIndexGreaterThanSize() {
+        TemporalValueRange<Year> range = new TemporalValueRange<>(Year.of(0), Year.of(1), 1, ChronoUnit.YEARS);
+        assertEquals(1L, range.getSize());
+        range.get(1);
+    }
+
+    private static interface TemporalMock extends Temporal, Comparable<Temporal> {
+
+    }
 }
