@@ -53,8 +53,8 @@ public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
 
     List<FactHandle> getFactHandles();
 
-    Object getCallback();
-    void setCallback(Object callback);
+    Runnable getCallback();
+    void setCallback(Runnable callback);
 
     default List<FactHandle> getFactHandles(Tuple tuple) {
         FactHandle[] factHandles = tuple.toFactHandles();

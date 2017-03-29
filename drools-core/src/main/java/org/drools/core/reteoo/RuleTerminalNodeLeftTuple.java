@@ -63,7 +63,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     private           boolean                                        active;
     private           RuleAgendaItem                                 ruleAgendaItem;
 
-    private Object callback;
+    private Runnable callback;
 
     public RuleTerminalNodeLeftTuple() {
         // constructor needed for serialisation
@@ -404,12 +404,12 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     }
 
     @Override
-    public Object getCallback() {
+    public Runnable getCallback() {
         return callback;
     }
 
     @Override
-    public void setCallback( Object callback ) {
+    public void setCallback( Runnable callback ) {
         this.callback = callback;
     }
 

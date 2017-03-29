@@ -78,7 +78,7 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     private           boolean                                        matched;
     private           boolean                                        active;
 
-    private Object callback;
+    private Runnable callback;
 
     // ------------------------------------------------------------
     // Constructors
@@ -451,12 +451,12 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     }
 
     @Override
-    public Object getCallback() {
+    public Runnable getCallback() {
         return callback;
     }
 
     @Override
-    public void setCallback( Object callback ) {
+    public void setCallback( Runnable callback ) {
         this.callback = callback;
     }
 }
