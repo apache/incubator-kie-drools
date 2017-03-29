@@ -42,7 +42,7 @@
                           <semantic:text>RiskCategory</semantic:text>
                         </semantic:inputExpression>
                       </semantic:input>
-                      <semantic:output id="_704c6117-4670-4d2f-865e-a4d973db5e9f" typeref="ts:tApprovalStatus" />
+                      <semantic:output id="_704c6117-4670-4d2f-865e-a4d973db5e9f"/>
                       <semantic:rule id="_c9dd9401-69a6-4da7-bd70-22e062addf06">
                         <semantic:inputEntry id="_8ba69e42-c77b-4be4-b566-3385fada3a7a">
                           <semantic:text>true</semantic:text>
