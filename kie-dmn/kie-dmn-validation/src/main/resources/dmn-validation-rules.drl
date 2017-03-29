@@ -343,12 +343,52 @@ then
                    $rel.getParentDRGElement().getIdentifierString() );
 end
 
-rule REQAUTH_NOT_KNOWLEDGESOURCE
+rule AUTHREQ_MISSING_DEPENDENCY_REQ_AUTH
+when
+  $ar : AuthorityRequirement( requiredAuthority != null, $oc: requiredAuthority )
+  not (DMNElement( id == rightOfHash( $oc.href )))
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $oc.getHref(), $ar.getParentDRGElement().getName() );
+end
+
+rule AUTHREQ_MISSING_DEPENDENCY_REQ_DEC
+when
+  $ar : AuthorityRequirement( requiredDecision != null, $rd: requiredDecision )
+  not (DMNElement( id == rightOfHash( $rd.href )))
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $rd , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $rd.getHref(), $ar.getParentDRGElement().getName() );
+end
+
+rule AUTHREQ_MISSING_DEPENDENCY_REQ_INPUT
+when
+  $ar : AuthorityRequirement( requiredInput != null, $ri: requiredInput )
+  not (DMNElement( id == rightOfHash( $ri.href )))
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $ri , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $ri.getHref(), $ar.getParentDRGElement().getName() );
+end
+
+rule AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE
 when
   $ar : AuthorityRequirement( requiredAuthority != null, $oc: requiredAuthority )
   DMNElement( id == rightOfHash( $oc.href ) , !(this instanceof KnowledgeSource) ) 
 then
   reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQ_DEP_INVALID_TYPE, $oc.getHref(), $ar.getParentDRGElement().getIdentifierString() );
+end
+
+rule AUTHREQ_DEP_REQ_DEC_NOT_DECISION
+when
+  $ar : AuthorityRequirement( requiredDecision != null, $rd: requiredDecision )
+  DMNElement( id == rightOfHash( $rd.href ) , !(this instanceof Decision) )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $rd , Msg.REQ_DEP_INVALID_TYPE, $rd.getHref(), $ar.getParentDRGElement().getName() );
+end
+
+rule AUTHREQ_DEP_REQ_INPUT_NOT_INPUT
+when
+  $ar : AuthorityRequirement( requiredInput != null, $ri: requiredInput )
+  DMNElement( id == rightOfHash( $ri.href ) , !(this instanceof InputData) )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $ri , Msg.REQ_DEP_INVALID_TYPE, $ri.getHref(), $ar.getParentDRGElement().getName() );
 end
 
 rule TYPEREF_NO_FEEL_TYPE_p1
