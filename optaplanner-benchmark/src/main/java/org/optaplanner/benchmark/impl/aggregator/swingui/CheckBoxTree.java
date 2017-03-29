@@ -164,17 +164,17 @@ public class CheckBoxTree extends JTree {
                     return;
                 }
                 switch (checkBox.getStatus()) {
-                    case CHECKED: {
+                    case CHECKED:
                         resolveNewCheckBoxState(currentNode, UNCHECKED, MIXED);
                         break;
-                    }
-                    case UNCHECKED: {
+                    case UNCHECKED:
                         resolveNewCheckBoxState(currentNode, CHECKED, MIXED);
                         break;
-                    }
-                    case MIXED: {
+                    case MIXED:
                         resolveNewCheckBoxState(currentNode, CHECKED, null);
-                    }
+                        break;
+                    default:
+                        throw new IllegalStateException("The status (" + checkBox.getStatus() + ") is not implemented.");
                 }
                 tree.treeDidChange();
             }
