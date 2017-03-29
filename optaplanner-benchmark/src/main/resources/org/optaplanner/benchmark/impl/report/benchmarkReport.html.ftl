@@ -432,7 +432,11 @@
                                 <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
                                     <tr<#if solverBenchmarkResult.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmarkResult.name}&nbsp;<@addSolverBenchmarkBadges solverBenchmarkResult=solverBenchmarkResult/></th>
-                                        <td>${solverBenchmarkResult.averageWorstScoreCalculationSpeedDifferencePercentage?string["0.00%"]!""}</td>
+                                        <#if solverBenchmarkResult.averageWorstScoreCalculationSpeedDifferencePercentage??>
+                                            <td>${solverBenchmarkResult.averageWorstScoreCalculationSpeedDifferencePercentage?string["0.00%"]!""}</td>
+                                        <#else>
+                                            <td></td>
+                                        </#if>
                                         <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                             <#if !solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)??>
                                                 <td></td>
