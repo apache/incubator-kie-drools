@@ -122,8 +122,10 @@ public class TaskHandler extends AbstractNodeHandler {
                         dataType = "java.lang.String";
                     }
                     dataTypeInputs.put(inputName, dataType);
-                } else {
+                } else if (itemDefinitions.get(itemSubjectRef) != null) {
                     dataTypeInputs.put(inputName, itemDefinitions.get(itemSubjectRef).getStructureRef());
+                } else {
+                    dataTypeInputs.put(inputName, "java.lang.Object");
                 }
             }
             if ("dataOutput".equals(subNodeName)) {
@@ -139,8 +141,10 @@ public class TaskHandler extends AbstractNodeHandler {
                         dataType = "java.lang.String";
                     }
                     dataTypeOutputs.put(outputName, dataType);
-                } else {
+                } else if (itemDefinitions.get(itemSubjectRef) != null) {
                     dataTypeOutputs.put(outputName, itemDefinitions.get(itemSubjectRef).getStructureRef());
+                } else {
+                    dataTypeOutputs.put(outputName, "java.lang.Object");
                 }
             }
             subNode = subNode.getNextSibling();
