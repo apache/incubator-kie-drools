@@ -90,6 +90,7 @@ public class ProblemBenchmarkResult<Solution_> {
     private Integer failureCount = null;
     private SingleBenchmarkResult winningSingleBenchmarkResult = null;
     private SingleBenchmarkResult worstSingleBenchmarkResult = null;
+    private Long worstScoreCalculationSpeed = null;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -192,6 +193,10 @@ public class ProblemBenchmarkResult<Solution_> {
 
     public SingleBenchmarkResult getWorstSingleBenchmarkResult() {
         return worstSingleBenchmarkResult;
+    }
+
+    public Long getWorstScoreCalculationSpeed() {
+        return worstScoreCalculationSpeed;
     }
 
     // ************************************************************************
@@ -322,6 +327,7 @@ public class ProblemBenchmarkResult<Solution_> {
     private void determineTotalsAndAveragesAndRanking() {
         failureCount = 0;
         maximumSubSingleCount = 0;
+        worstScoreCalculationSpeed = null;
         long totalUsedMemoryAfterInputSolution = 0L;
         int usedMemoryAfterInputSolutionCount = 0;
         List<SingleBenchmarkResult> successResultList = new ArrayList<>(singleBenchmarkResultList);
@@ -339,6 +345,10 @@ public class ProblemBenchmarkResult<Solution_> {
                 if (singleBenchmarkResult.getUsedMemoryAfterInputSolution() != null) {
                     totalUsedMemoryAfterInputSolution += singleBenchmarkResult.getUsedMemoryAfterInputSolution();
                     usedMemoryAfterInputSolutionCount++;
+                }
+                if (worstScoreCalculationSpeed == null
+                        || singleBenchmarkResult.getScoreCalculationSpeed() < worstScoreCalculationSpeed) {
+                    worstScoreCalculationSpeed = singleBenchmarkResult.getScoreCalculationSpeed();
                 }
             }
         }
@@ -380,6 +390,10 @@ public class ProblemBenchmarkResult<Solution_> {
             singleBenchmarkResult.setWorstScoreDifferencePercentage(
                     ScoreDifferencePercentage.calculateScoreDifferencePercentage(
                             worstSingleBenchmarkResult.getAverageScore(), singleBenchmarkResult.getAverageScore()));
+            singleBenchmarkResult.setWorstScoreCalculationSpeedDifferencePercentage(
+                    ScoreDifferencePercentage.calculateDifferencePercentage(
+                            (double) worstScoreCalculationSpeed,
+                            (double) singleBenchmarkResult.getScoreCalculationSpeed()));
         }
     }
 

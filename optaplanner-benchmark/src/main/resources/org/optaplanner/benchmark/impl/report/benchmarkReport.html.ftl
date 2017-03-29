@@ -330,6 +330,9 @@
                                 <a href="#summary_scoreCalculationSpeed" data-toggle="tab">Score calculation speed</a>
                             </li>
                             <li>
+                                <a href="#summary_worstScoreCalculationSpeedDifferencePercentage" data-toggle="tab">Worst score calculation speed difference percentage</a>
+                            </li>
+                            <li>
                                 <a href="#summary_timeSpent" data-toggle="tab">Time spent</a>
                             </li>
                             <li>
@@ -398,6 +401,47 @@
                                                         </ul>
                                                       </div></td>
                                                     </#if>
+                                                </#if>
+                                            </#if>
+                                        </#list>
+                                    </tr>
+                                </#list>
+                                </table>
+                            </div>
+                            <div class="tab-pane" id="summary_worstScoreCalculationSpeedDifferencePercentage">
+                                <h3>Worst score calculation speed difference percentage</h3>
+                                <p>
+                                    Useful for comparing different score calculators and/or score rule implementations
+                                    (presuming that the solver configurations do not differ otherwise).
+                                    Also useful to measure the scalability cost of an extra constraint.
+                                </p>
+                                <div class="benchmark-chart">
+                                    <img src="summary/${benchmarkReport.worstScoreCalculationSpeedDifferencePercentageSummaryChartFile.name}"/>
+                                </div>
+                                <table class="benchmark-table table table-striped table-bordered">
+                                    <tr>
+                                        <th rowspan="2">Solver</th>
+                                        <th rowspan="2">Average</th>
+                                        <th colspan="${benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList?size}">Problem</th>
+                                    </tr>
+                                    <tr>
+                                    <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
+                                        <th>${problemBenchmarkResult.name}</th>
+                                    </#list>
+                                    </tr>
+                                <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
+                                    <tr<#if solverBenchmarkResult.favorite> class="favoriteSolverBenchmark"</#if>>
+                                        <th>${solverBenchmarkResult.name}&nbsp;<@addSolverBenchmarkBadges solverBenchmarkResult=solverBenchmarkResult/></th>
+                                        <td>${solverBenchmarkResult.averageWorstScoreCalculationSpeedDifferencePercentage?string["0.00%"]!""}</td>
+                                        <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
+                                            <#if !solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)??>
+                                                <td></td>
+                                            <#else>
+                                                <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
+                                                <#if !singleBenchmarkResult.hasAllSuccess()>
+                                                    <td><span class="label label-important">Failed</span></td>
+                                                <#else>
+                                                    <td>${singleBenchmarkResult.worstScoreCalculationSpeedDifferencePercentage?string["0.00%"]!""}</td>
                                                 </#if>
                                             </#if>
                                         </#list>

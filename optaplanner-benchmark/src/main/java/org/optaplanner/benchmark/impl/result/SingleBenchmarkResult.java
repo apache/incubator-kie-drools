@@ -80,6 +80,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     // Compared to winningSingleBenchmarkResult in the same ProblemBenchmarkResult (which might not be the overall favorite)
     private Score winningScoreDifference = null;
     private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
+    private Double worstScoreCalculationSpeedDifferencePercentage = null;
 
     // Ranking starts from 0
     private Integer ranking = null;
@@ -172,6 +173,14 @@ public class SingleBenchmarkResult implements BenchmarkResult {
 
     public void setWorstScoreDifferencePercentage(ScoreDifferencePercentage worstScoreDifferencePercentage) {
         this.worstScoreDifferencePercentage = worstScoreDifferencePercentage;
+    }
+
+    public Double getWorstScoreCalculationSpeedDifferencePercentage() {
+        return worstScoreCalculationSpeedDifferencePercentage;
+    }
+
+    public void setWorstScoreCalculationSpeedDifferencePercentage(Double worstScoreCalculationSpeedDifferencePercentage) {
+        this.worstScoreCalculationSpeedDifferencePercentage = worstScoreCalculationSpeedDifferencePercentage;
     }
 
     public Integer getRanking() {
@@ -331,8 +340,6 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         usedMemoryAfterInputSolution = median.getUsedMemoryAfterInputSolution();
         timeMillisSpent = median.getTimeMillisSpent();
         scoreCalculationCount = median.getScoreCalculationCount();
-        winningScoreDifference = median.getWinningScoreDifference();
-        worstScoreDifferencePercentage = median.getWorstScoreDifferencePercentage();
     }
 
     private void determineTotalsAndAveragesAndRanking() {

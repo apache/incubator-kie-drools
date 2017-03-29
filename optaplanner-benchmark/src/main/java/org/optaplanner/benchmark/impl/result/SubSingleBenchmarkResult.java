@@ -67,10 +67,6 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     // Report accumulates
     // ************************************************************************
 
-    // Compared to winningSubSingleBenchmarkResult in the same SubSingleBenchmarkResult (which might not be the overall favorite)
-    private Score winningScoreDifference = null;
-    private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
-
     // Ranking starts from 0
     private Integer ranking = null;
 
@@ -161,22 +157,6 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     public void setScoreCalculationCount(long scoreCalculationCount) {
         this.scoreCalculationCount = scoreCalculationCount;
-    }
-
-    public Score getWinningScoreDifference() {
-        return winningScoreDifference;
-    }
-
-    public void setWinningScoreDifference(Score winningScoreDifference) {
-        this.winningScoreDifference = winningScoreDifference;
-    }
-
-    public ScoreDifferencePercentage getWorstScoreDifferencePercentage() {
-        return worstScoreDifferencePercentage;
-    }
-
-    public void setWorstScoreDifferencePercentage(ScoreDifferencePercentage worstScoreDifferencePercentage) {
-        this.worstScoreDifferencePercentage = worstScoreDifferencePercentage;
     }
 
     public Integer getRanking() {

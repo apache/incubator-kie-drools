@@ -94,6 +94,7 @@ public class BenchmarkReport {
     private List<File> winningScoreDifferenceSummaryChartFileList = null;
     private List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
     private File scoreCalculationSpeedSummaryChartFile = null;
+    private File worstScoreCalculationSpeedDifferencePercentageSummaryChartFile = null;
     private File timeSpentSummaryChartFile = null;
     private File timeSpentScalabilitySummaryChartFile = null;
     private List<File> bestScorePerTimeSpentSummaryChartFileList = null;
@@ -171,6 +172,10 @@ public class BenchmarkReport {
         return scoreCalculationSpeedSummaryChartFile;
     }
 
+    public File getWorstScoreCalculationSpeedDifferencePercentageSummaryChartFile() {
+        return worstScoreCalculationSpeedDifferencePercentageSummaryChartFile;
+    }
+
     public File getTimeSpentSummaryChartFile() {
         return timeSpentSummaryChartFile;
     }
@@ -239,6 +244,7 @@ public class BenchmarkReport {
         writeWorstScoreDifferencePercentageSummaryChart();
         writeBestScoreDistributionSummaryChart();
         writeScoreCalculationSpeedSummaryChart();
+        writeWorstScoreCalculationSpeedDifferencePercentageSummaryChart();
         writeTimeSpentSummaryChart();
         writeTimeSpentScalabilitySummaryChart();
         writeBestScorePerTimeSpentSummaryChart();
@@ -537,6 +543,28 @@ public class BenchmarkReport {
         JFreeChart chart = new JFreeChart("Score calculation speed summary (higher is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         scoreCalculationSpeedSummaryChartFile = writeChartToImageFile(chart, "scoreCalculationSpeedSummary");
+    }
+
+    private void writeWorstScoreCalculationSpeedDifferencePercentageSummaryChart() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
+            String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
+            for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
+                String planningProblemLabel = singleBenchmarkResult.getProblemBenchmarkResult().getName();
+                if (singleBenchmarkResult.hasAllSuccess()) {
+                    double worstScoreCalculationSpeedDifferencePercentage
+                            = singleBenchmarkResult.getWorstScoreCalculationSpeedDifferencePercentage();
+                    dataset.addValue(worstScoreCalculationSpeedDifferencePercentage, solverLabel, planningProblemLabel);
+                }
+            }
+        }
+        CategoryPlot plot = createBarChartPlot(dataset,
+                "Worst score calculation speed difference percentage",
+                NumberFormat.getPercentInstance(locale));
+        JFreeChart chart = new JFreeChart("Worst score calculation speed difference percentage"
+                + " summary (higher is better)",
+                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        worstScoreCalculationSpeedDifferencePercentageSummaryChartFile = writeChartToImageFile(chart, "worstScoreCalculationSpeedDifferencePercentageSummary");
     }
 
     private void writeTimeSpentSummaryChart() {

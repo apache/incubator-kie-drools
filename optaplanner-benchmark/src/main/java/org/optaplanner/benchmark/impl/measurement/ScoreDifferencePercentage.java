@@ -27,8 +27,8 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class ScoreDifferencePercentage implements Serializable {
 
-    public static <S extends Score> ScoreDifferencePercentage calculateScoreDifferencePercentage(
-            Score<S> baseScore, Score<S> valueScore) {
+    public static <Score_ extends Score<Score_>> ScoreDifferencePercentage calculateScoreDifferencePercentage(
+            Score_ baseScore, Score_ valueScore) {
         double[] baseLevels = ScoreUtils.extractLevelDoubles(baseScore);
         double[] valueLevels = ScoreUtils.extractLevelDoubles(valueScore);
         if (baseLevels.length != valueLevels.length) {
@@ -38,24 +38,24 @@ public class ScoreDifferencePercentage implements Serializable {
         }
         double[] percentageLevels = new double[baseLevels.length];
         for (int i = 0; i < baseLevels.length; i++) {
-            percentageLevels[i] = calculateScoreDifferencePercentageLevel(baseLevels[i], valueLevels[i]);
+            percentageLevels[i] = calculateDifferencePercentage(baseLevels[i], valueLevels[i]);
         }
         return new ScoreDifferencePercentage(percentageLevels);
     }
 
-    protected static double calculateScoreDifferencePercentageLevel(double baseLevel, double valueLevel) {
-        double differenceLevel = valueLevel - baseLevel;
-        if (baseLevel < 0.0) {
-            return differenceLevel / - baseLevel;
-        } else if (baseLevel == 0.0) {
-            if (differenceLevel == 0.0) {
+    public static double calculateDifferencePercentage(double base, double value) {
+        double difference = value - base;
+        if (base < 0.0) {
+            return difference / - base;
+        } else if (base == 0.0) {
+            if (difference == 0.0) {
                 return 0.0;
             } else {
                 // percentageLevel will return Infinity or -Infinity
-                return differenceLevel / baseLevel;
+                return difference / base;
             }
         } else {
-            return differenceLevel / baseLevel;
+            return difference / base;
         }
     }
 
