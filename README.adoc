@@ -1,3 +1,7 @@
+= OptaPlanner
+
+https://www.optaplanner.org/[www.optaplanner.org]
+
 == Quick development start
 
 To build and run from source:
