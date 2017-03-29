@@ -57,7 +57,7 @@ public class IntValueRange extends AbstractCountableValueRange<Integer> {
         }
         if (((long) to - (long) from) % incrementUnit != 0L) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
-                    + " 's incrementUnit (" + incrementUnit
+                    + "'s incrementUnit (" + incrementUnit
                     + ") must fit an integer number of times between from (" + from + ") and to (" + to + ").");
         }
     }

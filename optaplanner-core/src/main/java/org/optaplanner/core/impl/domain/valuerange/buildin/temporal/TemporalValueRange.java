@@ -80,7 +80,7 @@ public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super 
         // Fail fast if there's a remainder on amount (to be consistent with other value ranges)
         if (space % incrementUnitAmount > 0) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
-                    + " 's incrementUnitAmount (" + incrementUnitAmount
+                    + "'s incrementUnitAmount (" + incrementUnitAmount
                     + ") must fit an integer number of times in the space (" + space
                     + ") between from (" + from + ") and to (" + to + ").");
         }
@@ -94,7 +94,7 @@ public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super 
         }
         if (typeRemainder) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
-                    + " 's incrementUnitType (" + incrementUnitType
+                    + "'s incrementUnitType (" + incrementUnitType
                     + ") must fit an integer number of times in the space (" + space
                     + ") between from (" + from + ") and to (" + to + ").\n"
                     + "The to (" + from.plus(space, incrementUnitType) + ") is not the expected to (" + to + ").");

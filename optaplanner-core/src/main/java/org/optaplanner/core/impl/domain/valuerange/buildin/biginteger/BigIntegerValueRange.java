@@ -59,7 +59,7 @@ public class BigIntegerValueRange extends AbstractCountableValueRange<BigInteger
 
         if (!to.subtract(from).remainder(incrementUnit).equals(BigInteger.ZERO)) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
-                    + " 's incrementUnit (" + incrementUnit
+                    + "'s incrementUnit (" + incrementUnit
                     + ") must fit an integer number of times between from (" + from + ") and to (" + to + ").");
         }
     }
