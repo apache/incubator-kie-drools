@@ -61,6 +61,7 @@ public abstract class AbstractSolverRankingComparatorTest {
         singleBenchmarkResult.setWinningScoreDifference(score.subtract(bestScore));
         singleBenchmarkResult.setWorstScoreDifferencePercentage(
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(worstScore, score));
+        singleBenchmarkResult.setWorstScoreCalculationSpeedDifferencePercentage(5.0);
         singleBenchmarkResultList.add(singleBenchmarkResult);
         return singleBenchmarkResult;
     }
