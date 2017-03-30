@@ -251,7 +251,7 @@ public class DMNEvaluatorCompiler {
                                                    ++index );
             } else if ( ic.getInputExpression().getTypeRef() != null ) {
                 QName inputExpressionTypeRef = ic.getInputExpression().getTypeRef();
-                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef, ic), inputExpressionTypeRef.getLocalPart());
+                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef, ic.getInputExpression()), inputExpressionTypeRef.getLocalPart());
                 inputValues = typeRef.getAllowedValues();
             }
             inputs.add( new DTInputClause(inputExpressionText, inputValuesText, inputValues) );
