@@ -40,12 +40,10 @@ import org.kie.dmn.model.v1_1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
-import java.util.Optional;
 
 
 public class DMNCompilerImpl
@@ -369,7 +367,7 @@ public class DMNCompilerImpl
 
     public DMNType resolveTypeRef(DMNModelImpl dmnModel, DMNNode node, NamedElement model, DMNModelInstrumentedBase localElement, QName typeRef) {
         if ( typeRef != null ) {
-            String namespace = getNamespace( dmnModel, localElement, typeRef );
+            String namespace = getNamespace( localElement, typeRef );
 
             DMNType type = dmnModel.getTypeRegistry().resolveType( namespace, typeRef.getLocalPart() );
             if( type == null && DMNModelInstrumentedBase.URI_FEEL.equals( namespace ) ) {
@@ -397,21 +395,14 @@ public class DMNCompilerImpl
                                        null,
                                        Msg.UNKNOWN_TYPE_REF_ON_NODE,
                                        typeRef.toString(),
-                                       Optional.ofNullable(localElement.getParentDRGElement()).map(x->x.getIdentifierString()).orElse(null) );
+                                       localElement.getParentDRGElement().getIdentifierString() );
             }
             return type;
         }
         return dmnModel.getTypeRegistry().resolveType( DMNModelInstrumentedBase.URI_FEEL, BuiltInType.UNKNOWN.getName() );
     }
 
-    private String getNamespace(DMNModelImpl dmnModel, DMNModelInstrumentedBase localElement, QName typeRef) {
-        if ( typeRef.getNamespaceURI() != null ) {
-            if ( XMLConstants.DEFAULT_NS_PREFIX.equals( typeRef.getPrefix() ) && XMLConstants.NULL_NS_URI.equals( typeRef.getNamespaceURI() ) ) {
-                return dmnModel.getNamespace();
-            } else {
-                return typeRef.getNamespaceURI();
-            }
-        }
+    private String getNamespace(DMNModelInstrumentedBase localElement, QName typeRef) {
         String prefix = typeRef.getPrefix();
         return localElement.getNamespaceURI( prefix );
     }
