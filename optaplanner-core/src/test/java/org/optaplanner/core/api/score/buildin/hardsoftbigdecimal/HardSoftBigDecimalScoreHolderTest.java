@@ -46,28 +46,31 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, new BigDecimal("-0.08"));
         assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-0.09"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
-        callUnMatch(hard2Undo);
+        callOnDelete(hard2Undo);
         assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-0.01"), new BigDecimal("0.00")), scoreHolder.extractScore(0));
 
         RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, new BigDecimal("-0.10"));
+        callOnUpdate(soft1);
         scoreHolder.addSoftConstraintMatch(soft1, new BigDecimal("-0.20")); // Overwrite existing
 
         RuleContext multi1 = mockRuleContext("multi1");
         scoreHolder.addMultiConstraintMatch(multi1, new BigDecimal("-1.00"), new BigDecimal("-10.00"));
+        callOnUpdate(multi1);
         scoreHolder.addMultiConstraintMatch(multi1, new BigDecimal("-3.00"), new BigDecimal("-40.00")); // Overwrite existing
 
         RuleContext hard3 = mockRuleContext("hard3");
         scoreHolder.addHardConstraintMatch(hard3, new BigDecimal("-100.00"));
+        callOnUpdate(hard3);
         scoreHolder.addHardConstraintMatch(hard3, new BigDecimal("-500.00")); // Overwrite existing
 
         RuleContext soft2Undo = mockRuleContext("soft2Undo", UNDO_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft2Undo, new BigDecimal("-0.99"));
-        callUnMatch(soft2Undo);
+        callOnDelete(soft2Undo);
 
         RuleContext multi2Undo = mockRuleContext("multi2Undo");
         scoreHolder.addMultiConstraintMatch(multi2Undo, new BigDecimal("-9.99"), new BigDecimal("-9.99"));
-        callUnMatch(multi2Undo);
+        callOnDelete(multi2Undo);
 
         assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-503.01"), new BigDecimal("-40.20")), scoreHolder.extractScore(0));
         assertEquals(HardSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-503.01"), new BigDecimal("-40.20")), scoreHolder.extractScore(-7));

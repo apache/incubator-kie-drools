@@ -44,28 +44,31 @@ public class HardSoftLongScoreHolderTest extends AbstractScoreHolderTest {
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, -8L);
         assertEquals(HardSoftLongScore.valueOf(-9L, -0L), scoreHolder.extractScore(0));
-        callUnMatch(hard2Undo);
+        callOnDelete(hard2Undo);
         assertEquals(HardSoftLongScore.valueOf(-1L, -0L), scoreHolder.extractScore(0));
 
         RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, -10L);
+        callOnUpdate(soft1);
         scoreHolder.addSoftConstraintMatch(soft1, -20L); // Overwrite existing
 
         RuleContext multi1 = mockRuleContext("multi1");
         scoreHolder.addMultiConstraintMatch(multi1, -100L, -1000L);
+        callOnUpdate(multi1);
         scoreHolder.addMultiConstraintMatch(multi1, -300L, -4000L); // Overwrite existing
 
         RuleContext hard3 = mockRuleContext("hard3");
         scoreHolder.addHardConstraintMatch(hard3, -10000L);
+        callOnUpdate(hard3);
         scoreHolder.addHardConstraintMatch(hard3, -50000L); // Overwrite existing
 
         RuleContext soft2Undo = mockRuleContext("soft2Undo", UNDO_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft2Undo, -99L);
-        callUnMatch(soft2Undo);
+        callOnDelete(soft2Undo);
 
         RuleContext multi2Undo = mockRuleContext("multi2Undo");
         scoreHolder.addMultiConstraintMatch(multi2Undo, -999L, -999L);
-        callUnMatch(multi2Undo);
+        callOnDelete(multi2Undo);
 
         assertEquals(HardSoftLongScore.valueOf(-50301L, -4020L), scoreHolder.extractScore(0));
         assertEquals(HardSoftLongScore.valueOfUninitialized(-7, -50301L, -4020L), scoreHolder.extractScore(-7));

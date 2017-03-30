@@ -44,36 +44,40 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, 0, -8);
         assertEquals(BendableLongScore.valueOf(new long[]{-9L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));
-        callUnMatch(hard2Undo);
+        callOnDelete(hard2Undo);
         assertEquals(BendableLongScore.valueOf(new long[]{-1L}, new long[]{0L, 0L}), scoreHolder.extractScore(0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addSoftConstraintMatch(medium1, 0, -10L);
+        callOnUpdate(medium1);
         scoreHolder.addSoftConstraintMatch(medium1, 0, -20L); // Overwrite existing
 
         RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, 1, -100L);
+        callOnUpdate(soft1);
         scoreHolder.addSoftConstraintMatch(soft1, 1, -300L); // Overwrite existing
 
         RuleContext multi1 = mockRuleContext("multi1");
         scoreHolder.addMultiConstraintMatch(multi1, new long[]{-1000L}, new long[]{-10000L, -100000L});
+        callOnUpdate(multi1);
         scoreHolder.addMultiConstraintMatch(multi1, new long[]{-4000L}, new long[]{-50000L, -600000L}); // Overwrite existing
 
         RuleContext hard3 = mockRuleContext("hard3");
         scoreHolder.addHardConstraintMatch(hard3, 0, -1000000L);
+        callOnUpdate(hard3);
         scoreHolder.addHardConstraintMatch(hard3, 0, -7000000L); // Overwrite existing
 
         RuleContext soft2Undo = mockRuleContext("soft2Undo", UNDO_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft2Undo, 1, -99L);
-        callUnMatch(soft2Undo);
+        callOnDelete(soft2Undo);
 
         RuleContext multi2Undo = mockRuleContext("multi2Undo");
         scoreHolder.addMultiConstraintMatch(multi2Undo, new long[]{-999L}, new long[]{-999L, -999L});
-        callUnMatch(multi2Undo);
+        callOnDelete(multi2Undo);
 
         RuleContext medium2Undo = mockRuleContext("medium2Undo");
         scoreHolder.addSoftConstraintMatch(medium2Undo, 0, -9999L);
-        callUnMatch(medium2Undo);
+        callOnDelete(medium2Undo);
 
         assertEquals(BendableLongScore.valueOf(new long[]{-7004001L}, new long[]{-50020L, -600300L}), scoreHolder.extractScore(0));
         assertEquals(BendableLongScore.valueOfUninitialized(-7, new long[]{-7004001L}, new long[]{-50020L, -600300L}), scoreHolder.extractScore(-7));

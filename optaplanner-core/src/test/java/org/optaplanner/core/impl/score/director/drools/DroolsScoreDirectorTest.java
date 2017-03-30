@@ -19,6 +19,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.event.rule.RuleEventManager;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 
@@ -51,7 +52,8 @@ public class DroolsScoreDirectorTest {
         DroolsScoreDirectorFactory<Object> factory = mock(DroolsScoreDirectorFactory.class);
         when(factory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
         when(factory.getSolutionDescriptor()).thenReturn(mock(SolutionDescriptor.class));
-        when(factory.newKieSession()).thenReturn(mock(KieSession.class));
+        when(factory.newKieSession()).thenReturn(
+                mock(KieSession.class, withSettings().extraInterfaces(RuleEventManager.class)));
         return factory;
     }
 

@@ -44,36 +44,40 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         RuleContext hard2Undo = mockRuleContext("hard2Undo");
         scoreHolder.addHardConstraintMatch(hard2Undo, -8);
         assertEquals(HardMediumSoftScore.valueOf(-9, 0, 0), scoreHolder.extractScore(0));
-        callUnMatch(hard2Undo);
+        callOnDelete(hard2Undo);
         assertEquals(HardMediumSoftScore.valueOf(-1, 0, 0), scoreHolder.extractScore(0));
 
         RuleContext medium1 = mockRuleContext("medium1");
         scoreHolder.addMediumConstraintMatch(medium1, -10);
+        callOnUpdate(medium1);
         scoreHolder.addMediumConstraintMatch(medium1, -20); // Overwrite existing
 
         RuleContext soft1 = mockRuleContext("soft1", DEFAULT_JUSTIFICATION, OTHER_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft1, -100);
+        callOnUpdate(soft1);
         scoreHolder.addSoftConstraintMatch(soft1, -300); // Overwrite existing
 
         RuleContext multi1 = mockRuleContext("multi1");
         scoreHolder.addMultiConstraintMatch(multi1, -1000, -10000, -100000);
+        callOnUpdate(multi1);
         scoreHolder.addMultiConstraintMatch(multi1, -4000, -50000, -600000); // Overwrite existing
 
         RuleContext hard3 = mockRuleContext("hard3");
         scoreHolder.addHardConstraintMatch(hard3, -1000000);
+        callOnUpdate(hard3);
         scoreHolder.addHardConstraintMatch(hard3, -7000000); // Overwrite existing
 
         RuleContext soft2Undo = mockRuleContext("soft2Undo", UNDO_JUSTIFICATION);
         scoreHolder.addSoftConstraintMatch(soft2Undo, -99);
-        callUnMatch(soft2Undo);
+        callOnDelete(soft2Undo);
 
         RuleContext multi2Undo = mockRuleContext("multi2Undo");
         scoreHolder.addMultiConstraintMatch(multi2Undo, -999, -999, -999);
-        callUnMatch(multi2Undo);
+        callOnDelete(multi2Undo);
 
         RuleContext medium2Undo = mockRuleContext("medium2Undo");
         scoreHolder.addMediumConstraintMatch(medium2Undo, -9999);
-        callUnMatch(medium2Undo);
+        callOnDelete(medium2Undo);
 
         assertEquals(HardMediumSoftScore.valueOf(-7004001, -50020, -600300), scoreHolder.extractScore(0));
         assertEquals(HardMediumSoftScore.valueOfUninitialized(-7, -7004001, -50020, -600300), scoreHolder.extractScore(-7));

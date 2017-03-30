@@ -44,10 +44,11 @@ public class SimpleBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
 
         RuleContext scoreRule2 = mockRuleContext("scoreRule2");
         scoreHolder.addConstraintMatch(scoreRule2, new BigDecimal("-2.00"));
-        callUnMatch(scoreRule2);
+        callOnDelete(scoreRule2);
 
         RuleContext scoreRule3 = mockRuleContext("scoreRule3");
         scoreHolder.addConstraintMatch(scoreRule3, new BigDecimal("-0.30"));
+        callOnUpdate(scoreRule3);
         scoreHolder.addConstraintMatch(scoreRule3, new BigDecimal("-0.03")); // Overwrite existing
 
         assertEquals(SimpleBigDecimalScore.valueOfUninitialized(0, new BigDecimal("-10.03")), scoreHolder.extractScore(0));
