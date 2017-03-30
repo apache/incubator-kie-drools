@@ -25,6 +25,7 @@ import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 import org.kie.internal.runtime.Closeable;
 
@@ -51,6 +52,12 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(listeners);
+    }
+
+    public void notifyAllListeners(Consumer<E> consumer) {
+        if (!listeners.isEmpty()) {
+            listeners.forEach( l -> consumer.accept( l ) );
+        }
     }
 
     protected final Iterator<E> getEventListenersIterator() {

@@ -15,18 +15,20 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.drools.compiler.Cell;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
-import org.drools.compiler.Father;
 import org.drools.compiler.Foo;
 import org.drools.compiler.Message;
 import org.drools.compiler.Neighbor;
 import org.drools.compiler.Person;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Pet;
-import org.drools.compiler.TotalHolder;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -43,10 +45,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
@@ -669,77 +667,6 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( "rule2", list.get( 1 ) );
     }
     
-    @Test 
-    public void testUnMatchListenerForChainedPlanningEntities() {
-        String str =""+
-                "package org.drools.compiler.integrationtests;\n" +
-                "\n" +
-                "import org.drools.compiler.Father;\n" +
-                "import org.drools.compiler.TotalHolder;\n" +
-                "\n" +
-                "import org.drools.core.common.AgendaItem;\n" +
-                "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
-                "import org.kie.api.runtime.rule.RuleRuntime;\n" +
-                "import org.kie.api.runtime.rule.Match;\n" +
-                "\n" +
-                "global TotalHolder totalHolder;\n" +
-                "\n" +
-                "rule \"sumWeightOfFather\"\n" +
-                "when\n" +
-                "    $h: Father(father != null, $wf : weightOfFather)\n" +
-                "then\n" +
-                "    totalHolder.add($wf);\n" +
-                "    final TotalHolder finalTotalHolder = totalHolder;\n" +
-                "    final int finalWf = $wf;\n" +
-                "    AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();" +
-                "    if (agendaItem.getActivationUnMatchListener() != null) {\n" +
-                "        RuleRuntime session = null; // Should not be used by the undoListener anyway\n" +
-                "        agendaItem.getActivationUnMatchListener().unMatch(session, agendaItem);\n" +
-                "    }" +
-                "    agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {" +
-                "            public void unMatch(RuleRuntime session, Match match) {" +
-                "                finalTotalHolder.subtract(finalWf);" +
-                "            }" +
-                "    });" +
-                "end";
-
-        KieBase kbase = loadKnowledgeBaseFromString(str);
-        KieSession ksession = kbase.newKieSession();
-
-        ksession.setGlobal("totalHolder", new TotalHolder());
-        Father abraham = new Father("abraham", null, 100);
-        Father homer = new Father("homer", null, 20);
-        Father bart = new Father("bart", null, 3);
-
-        FactHandle abrahamHandle = ksession.insert(abraham);
-        FactHandle bartHandle = ksession.insert(bart);
-        ksession.fireAllRules();
-        assertEquals(0, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
-
-        bart.setFather(abraham);
-        ksession.update(bartHandle, bart);
-        ksession.fireAllRules();
-        assertEquals(100, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
-
-        bart.setFather(null);
-        ksession.update(bartHandle, bart);
-        ksession.fireAllRules();
-        assertEquals(0, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
-
-        bart.setFather(abraham);
-        ksession.update(bartHandle, bart);
-        ksession.fireAllRules();
-        assertEquals(100, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
-
-        FactHandle homerHandle = ksession.insert(homer);
-        homer.setFather(abraham);
-        ksession.update(homerHandle, homer);
-        bart.setFather(homer);
-        ksession.update(bartHandle, bart);
-        ksession.fireAllRules();
-        assertEquals(120, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
-    }    
-
     public static class Holder {
         private Integer val;
         private String  outcome;

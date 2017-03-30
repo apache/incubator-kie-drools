@@ -17,6 +17,7 @@
 package org.drools.core.spi;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.beliefsystem.ModedAssertion;
@@ -129,7 +130,6 @@ public interface Activation<T extends ModedAssertion<T>>
 
     boolean isRuleAgendaItem();
 
-
     void setQueueIndex(int index);
 
     int getQueueIndex();
@@ -137,6 +137,6 @@ public interface Activation<T extends ModedAssertion<T>>
     void dequeue();
 
     default List<Object> getObjectsDeep() {
-        return getObjects();
+        return Collections.emptyList();
     }
 }

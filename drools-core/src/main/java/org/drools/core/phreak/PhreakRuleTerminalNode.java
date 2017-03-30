@@ -27,7 +27,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Salience;
 import org.drools.core.spi.Tuple;
@@ -207,6 +206,7 @@ public class PhreakRuleTerminalNode {
 
                     rtnLeftTuple.update(salienceInt, pctx);
                     executor.addLeftTuple(leftTuple);
+                    wm.getRuleEventSupport().onUpdateMatch( rtnLeftTuple );
                 }
             }
 
@@ -238,13 +238,11 @@ public class PhreakRuleTerminalNode {
         pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple, pctx);
 
         RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) leftTuple;
-
-        Activation activation = (Activation) leftTuple;
-        activation.setMatched( false );
+        rtnLt.setMatched( false );
 
         agenda.cancelActivation( leftTuple,
                                  pctx,
-                                 activation,
+                                 rtnLt,
                                  rtnLt.getTerminalNode() );
 
         if ( leftTuple.getMemory() != null ) {
@@ -252,7 +250,6 @@ public class PhreakRuleTerminalNode {
             executor.removeLeftTuple(leftTuple);
         }
 
-        rtnLt.setActivationUnMatchListener(null);
         leftTuple.setContextObject( null );
     }
 

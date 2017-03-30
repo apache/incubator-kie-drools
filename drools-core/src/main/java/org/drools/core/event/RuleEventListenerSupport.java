@@ -16,58 +16,24 @@
 
 package org.drools.core.event;
 
-import org.kie.api.runtime.rule.FactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.event.*;
-import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
 
-import java.util.Iterator;
-
 public class RuleEventListenerSupport extends AbstractEventSupport<RuleEventListener> {
 
-//    public void onMatch(Match match) {
-//        final Iterator<RuleEventListener> iter = getEventListenersIterator();
-//        while ( iter.hasNext() ) {
-//            RuleEventListener listener = iter.next();
-//            listener.onMatch(match);
-//        }
-//    }
-//
-//    public void onReMatch(Match match) {
-//        final Iterator<RuleEventListener> iter = getEventListenersIterator();
-//        while ( iter.hasNext() ) {
-//            RuleEventListener listener = iter.next();
-//            listener.onReMatch(match);
-//        }
-//    }
-//
-//    public void onUnMatch(Match match) {
-//        final Iterator<RuleEventListener> iter = getEventListenersIterator();
-//        while ( iter.hasNext() ) {
-//            RuleEventListener listener = iter.next();
-//            listener.onUnMatch(match);
-//        }
-//    }
-//
-//    public void onFiring(Match match) {
-//        final Iterator<RuleEventListener> iter = getEventListenersIterator();
-//        while ( iter.hasNext() ) {
-//            RuleEventListener listener = iter.next();
-//            listener.onFiring(match);
-//        }
-//    }
-//
-//    public void onFired(Match match) {
-//        final Iterator<RuleEventListener> iter = getEventListenersIterator();
-//        while ( iter.hasNext() ) {
-//            RuleEventListener listener = iter.next();
-//            listener.onFired(match);
-//        }
-//    }
+    public void onBeforeMatchFire(Match match) {
+        notifyAllListeners( l -> l.onBeforeMatchFire(match) );
+    }
 
-    public void reset() {
-        this.clear();
+    public void onAfterMatchFire(Match match) {
+        notifyAllListeners( l -> l.onAfterMatchFire(match) );
+    }
+
+    public void onDeleteMatch(Match match) {
+        notifyAllListeners( l -> l.onDeleteMatch(match) );
+    }
+
+    public void onUpdateMatch(Match match) {
+        notifyAllListeners( l -> l.onUpdateMatch(match) );
     }
 }

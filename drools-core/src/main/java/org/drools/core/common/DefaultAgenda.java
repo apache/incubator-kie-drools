@@ -405,9 +405,7 @@ public class DefaultAgenda
             item.getRuleAgendaItem().getRuleExecutor().fireConsequenceEvent( this.workingMemory, this, item, ON_DELETE_MATCH_CONSEQUENCE_NAME );
         }
 
-        if ( item.getActivationUnMatchListener() != null ) {
-            item.getActivationUnMatchListener().unMatch( workingMemory.getKnowledgeRuntime(), item );
-        }
+        workingMemory.getRuleEventSupport().onDeleteMatch( item );
 
         TruthMaintenanceSystemHelper.removeLogicalDependencies( activation,
                                                                 context,
