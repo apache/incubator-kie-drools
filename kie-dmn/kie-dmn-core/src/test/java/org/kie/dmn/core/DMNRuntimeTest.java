@@ -975,6 +975,26 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "MyDecision" ), is( "Decision taken" ) );
     }
+    
+    @Test
+    public void testNoPrefix() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "drools1502-noprefix.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "https://www.drools.org/kie-dmn/definitions",
+                "definitions" );
+        assertThat( dmnModel, notNullValue() );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        context.set("MyInput", "a");
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "MyDecision" ), is( "Decision taken" ) );
+    }
 
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
