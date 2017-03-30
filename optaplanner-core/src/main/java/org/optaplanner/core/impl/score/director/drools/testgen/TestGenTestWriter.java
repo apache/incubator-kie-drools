@@ -71,7 +71,6 @@ class TestGenTestWriter {
     private void printInit() {
         sb.append("package org.optaplanner.testgen;\n\n");
         List<String> imports = new ArrayList<>();
-        imports.add("org.junit.Before");
         imports.add("org.junit.Test");
         imports.add("org.kie.api.KieServices");
         imports.add("org.kie.api.builder.KieFileSystem");
@@ -106,24 +105,13 @@ class TestGenTestWriter {
                 .forEach(cls -> sb.append(String.format("import %s;\n", cls)));
 
         sb.append("\n")
-                .append("public class ").append(className).append(" {\n\n")
-                .append("    KieContainer kieContainer;\n")
-                .append("    KieSession kieSession;\n");
-        if (scoreDefinition != null) {
-            sb.append(String.format("    ScoreHolder scoreHolder = new %s().buildScoreHolder(%s);\n",
-                    scoreDefinition.getClass().getSimpleName(), constraintMatchEnabled));
-        }
-
-        for (TestGenFact fact : journal.getFacts()) {
-            fact.printInitialization(sb);
-        }
-        sb.append("\n");
+                .append("public class ").append(className).append(" {\n\n");
     }
 
     private void printSetup() {
         sb
-                .append("    @Before\n")
-                .append("    public void setUp() {\n")
+                .append("    @Test\n")
+                .append("    public void test() {\n")
                 .append("        KieServices kieServices = KieServices.Factory.get();\n")
                 .append("        KieFileSystem kfs = kieServices.newKieFileSystem();\n");
         scoreDrlFileList.forEach(file -> {
@@ -139,11 +127,20 @@ class TestGenTestWriter {
         });
         sb
                 .append("        kieServices.newKieBuilder(kfs).buildAll();\n")
-                .append("        kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());\n")
-                .append("        kieSession = kieContainer.newKieSession();\n\n");
+                .append("        KieContainer kieContainer = kieServices.newKieContainer("
+                        + "kieServices.getRepository().getDefaultReleaseId());\n")
+                .append("        KieSession kieSession = kieContainer.newKieSession();\n\n");
         if (scoreDefinition != null) {
-            sb.append("        kieSession.setGlobal(\"").append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY)
+            sb
+                    .append("        ScoreHolder scoreHolder = new ").append(scoreDefinition.getClass().getSimpleName())
+                    .append("().buildScoreHolder(").append(constraintMatchEnabled).append(");\n");
+            sb
+                    .append("        kieSession.setGlobal(\"").append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY)
                     .append("\", scoreHolder);\n\n");
+        }
+
+        for (TestGenFact fact : journal.getFacts()) {
+            fact.printInitialization(sb);
         }
         for (TestGenFact fact : journal.getFacts()) {
             fact.printSetup(sb);
@@ -152,13 +149,10 @@ class TestGenTestWriter {
         for (TestGenKieSessionOperation insert : journal.getInitialInserts()) {
             insert.print(sb);
         }
-        sb.append("    }\n\n");
+        sb.append("\n");
     }
 
     private void printTest() {
-        sb
-                .append("    @Test\n")
-                .append("    public void test() {\n");
         for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
             op.print(sb);
         }
@@ -176,7 +170,7 @@ class TestGenTestWriter {
                     .append("\", scoreHolder);\n");
 
             sb
-                    .append("\n\n        // Insert everything into a fresh session to see the uncorrupted score\n");
+                    .append("\n        // Insert everything into a fresh session to see the uncorrupted score\n");
             for (TestGenKieSessionOperation insert : journal.getInitialInserts()) {
                 insert.print(sb);
             }

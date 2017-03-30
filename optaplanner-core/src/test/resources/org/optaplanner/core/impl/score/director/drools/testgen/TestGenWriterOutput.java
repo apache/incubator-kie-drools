@@ -2,7 +2,6 @@ package org.optaplanner.testgen;
 
 import java.io.File;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -15,15 +14,8 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 public class TestGenWriterOutput {
 
-    KieContainer kieContainer;
-    KieSession kieSession;
-    ScoreHolder scoreHolder = new SimpleScoreDefinition().buildScoreHolder(true);
-    private final String string_0 = new String();
-    private final TestdataEntity testdataEntity_1 = new TestdataEntity();
-    private final TestdataValue testdataValue_2 = new TestdataValue();
-
-    @Before
-    public void setUp() {
+    @Test
+    public void test() {
         KieServices kieServices = KieServices.Factory.get();
         KieFileSystem kfs = kieServices.newKieFileSystem();
         kfs.write(kieServices.getResources()
@@ -33,11 +25,15 @@ public class TestGenWriterOutput {
         kfs.write(kieServices.getResources()
                 .newClassPathResource("y"));
         kieServices.newKieBuilder(kfs).buildAll();
-        kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
-        kieSession = kieContainer.newKieSession();
+        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());
+        KieSession kieSession = kieContainer.newKieSession();
 
+        ScoreHolder scoreHolder = new SimpleScoreDefinition().buildScoreHolder(true);
         kieSession.setGlobal("scoreHolder", scoreHolder);
 
+        String string_0 = new String();
+        TestdataEntity testdataEntity_1 = new TestdataEntity();
+        TestdataValue testdataValue_2 = new TestdataValue();
         //abc
         //E
         testdataEntity_1.setCode("E");
@@ -46,10 +42,7 @@ public class TestGenWriterOutput {
 
         //operation I #0
         kieSession.insert(testdataValue_2);
-    }
 
-    @Test
-    public void test() {
         //operation U #1
         testdataEntity_1.setValue(testdataValue_2);
         kieSession.update(kieSession.getFactHandle(testdataEntity_1), testdataEntity_1, "value");
@@ -62,7 +55,6 @@ public class TestGenWriterOutput {
         kieSession = kieContainer.newKieSession();
         scoreHolder = new SimpleScoreDefinition().buildScoreHolder(true);
         kieSession.setGlobal("scoreHolder", scoreHolder);
-
 
         // Insert everything into a fresh session to see the uncorrupted score
         //operation I #0
