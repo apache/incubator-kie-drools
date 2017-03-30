@@ -16,6 +16,17 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
@@ -67,17 +78,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -8921,6 +8921,28 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       afv0.getValue() );
         assertEquals( FieldNatureType.TYPE_FORMULA,
                       afv0.getNature() );
+    }
+
+    @Test
+    public void testForAll() throws Exception {
+        // RHBPMS-4666
+        String drl = "package org.test;\n" +
+                     "import java.util.List;\n" +
+                     "rule \"MyRule\" dialect \"mvel\" when\n" +
+                     "  $myList : List( empty == false )\n" +
+                     "  forall( String( this.startsWith( \"n\" ) ) from $myList )\n" +
+                     "then\n" +
+                     "end";
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 Collections.emptyList(),
+                                                                                 dmo );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
 }
