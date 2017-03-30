@@ -39,6 +39,7 @@ import org.drools.compiler.lang.descr.CollectDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
+import org.drools.compiler.lang.descr.ExistsDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.FromDescr;
 import org.drools.compiler.lang.descr.GlobalDescr;
@@ -2593,11 +2594,17 @@ public class RuleModelDRLPersistenceImpl
                                                               final boolean isJavaDialect,
                                                               final Map<String, String> boundParams,
                                                               final PackageDataModelOracle dmo) {
-        CompositeFactPattern comp = conditionalDescr instanceof NotDescr ?
-                new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_NOT) :
-                conditionalDescr instanceof OrDescr ?
-                        new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_OR) :
-                        new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_EXISTS);
+        CompositeFactPattern comp;
+        if (conditionalDescr instanceof NotDescr) {
+            comp = new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_NOT);
+        } else if (conditionalDescr instanceof OrDescr) {
+            comp = new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_OR);
+        } else if (conditionalDescr instanceof ExistsDescr) {
+            comp = new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_EXISTS);
+        } else {
+            throw new IllegalArgumentException( "Unknown conditional descr type: " + conditionalDescr );
+        }
+
         addPatternToComposite(m,
                               conditionalDescr,
                               comp,
@@ -4151,7 +4158,7 @@ public class RuleModelDRLPersistenceImpl
         rm.setPackageName(PackageNameParser.parsePackageName(drl));
         rm.setImports(ImportsParser.parseImports(drl));
 
-        final Pattern rulePattern = Pattern.compile("\\s?rule\\s+(.+?)\\s+.*",
+        final Pattern rulePattern = Pattern.compile(".*\\s?rule\\s+(.+?)\\s+.*",
                                                     Pattern.DOTALL);
         final Pattern lhsPattern = Pattern.compile(".*\\s+when\\s+(.+?)\\s+then.*",
                                                    Pattern.DOTALL);
