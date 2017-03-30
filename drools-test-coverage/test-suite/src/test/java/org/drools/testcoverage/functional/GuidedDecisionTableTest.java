@@ -32,6 +32,8 @@ public class GuidedDecisionTableTest {
 
     private Address barcelonaCityCenter;
     private Person johnFromBarcelona;
+    private Person elizabeth35Years;
+    private Person william25Years;
     private KieSession kSession;
     private TrackingAgendaEventListener rulesFired;
 
@@ -43,6 +45,10 @@ public class GuidedDecisionTableTest {
         johnFromBarcelona = new Person("John",
                                        18);
         johnFromBarcelona.setAddress(barcelonaCityCenter);
+        elizabeth35Years = new Person("Elizabeth",
+                                      35);
+        william25Years = new Person("William",
+                                    25);
     }
 
     /**
@@ -74,6 +80,32 @@ public class GuidedDecisionTableTest {
 
         Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(1);
         Assertions.assertThat(rulesFired.isRuleFired("Row 4 uniqueHitPolicyWithSalience")).isTrue();
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testFirstHitPolicyMatchAll() throws Exception {
+        initKieSession("firstHitPolicy.gdst");
+        kSession.insert(elizabeth35Years);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(1);
+        Assertions.assertThat(rulesFired.isRuleFired("Row 1 firstHitPolicy")).isTrue();
+
+        kSession.dispose();
+    }
+
+    @Test
+    public void testFirstHitPolicyMatchTwoOfThree() throws Exception {
+        initKieSession("firstHitPolicy.gdst");
+        kSession.insert(william25Years);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(1);
+        Assertions.assertThat(rulesFired.isRuleFired("Row 2 firstHitPolicy")).isTrue();
 
         kSession.dispose();
     }
