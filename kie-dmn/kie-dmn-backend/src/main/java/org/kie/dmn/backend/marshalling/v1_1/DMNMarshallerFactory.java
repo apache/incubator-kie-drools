@@ -16,6 +16,7 @@
 
 package org.kie.dmn.backend.marshalling.v1_1;
 
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionElementRegister;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 
@@ -24,5 +25,10 @@ public class DMNMarshallerFactory {
     public static DMNMarshaller newDefaultMarshaller() {
         return new XStreamMarshaller();
     }
+
+    public static DMNMarshaller newMarshallerWithExtensions(DMNExtensionElementRegister extensionElementRegister) {
+        return new XStreamMarshaller(extensionElementRegister);
+    }
+
 
 }
