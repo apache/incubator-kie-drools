@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions id="definitions" 
+    name="definitions"
+    namespace="https://www.drools.org/kie-dmn/definitions"
+    xmlns:dmn="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+    xmlns="https://www.drools.org/kie-dmn/definitions"
+    xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+  <dmn:itemDefinition dmn:name="MyType">
+    <dmn:typeRef>feel:string</dmn:typeRef>
+    <dmn:allowedValues>
+      <dmn:text>"a","b","c"</dmn:text>
+    </dmn:allowedValues>
+  </dmn:itemDefinition>
+  <dmn:inputData dmn:id="_3d560678-a126-4654-a686-bc6d941fe40b" dmn:name="MyInput">
+    <dmn:variable dmn:id="_053333df-1777-45f1-a6c7-56562fbdfdae" dmn:name="MyInput" dmn:typeRef="MyType"/>
+  </dmn:inputData>
+  <dmn:decision dmn:id="_497a5306-b2e8-4945-b8b5-82af2e2b99b5" dmn:name="MyDecision">
+    <dmn:variable dmn:id="_514d6d8d-5329-44fa-af91-a7e7addbadd8" dmn:name="MyDecision" dmn:typeRef="feel:string"/>
+    <dmn:informationRequirement>
+      <dmn:requiredInput dmn:href="#_3d560678-a126-4654-a686-bc6d941fe40b"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable dmn:hitPolicy="UNIQUE" dmn:id="_fff2b82e-2850-4826-adc9-4b1570d6fa91" dmn:outputLabel="MyDecision">
+      <dmn:input dmn:id="_e0471736-9a71-40c7-b5ca-bf367c6a3af9">
+        <dmn:inputExpression dmn:typeRef="MyType">
+          <dmn:text>MyInput</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output dmn:id="_01796218-0d50-4ebe-bd2b-b4509318e334"/>
+      <dmn:rule dmn:id="_fd1835b6-5fe1-4fd9-a8e4-39b4f7083b24">
+        <dmn:inputEntry dmn:expressionLanguage="http://www.omg.org/spec/FEEL/20140401" dmn:id="_1c8b24c7-e722-40d7-8661-f03d402688d2">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry dmn:id="_0b9d04fe-032b-4753-84dd-9838f6cdef53">
+          <dmn:text>"Decision taken"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+</dmn:definitions>
