@@ -1,0 +1,78 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.kie.dmn.validation;
+
+import org.kie.dmn.model.v1_1.*;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.core.impl.DMNMessageImpl;
+import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.FEELParser;
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.core.util.Msg;
+
+import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
+
+global org.kie.dmn.validation.MessageReporter reporter;
+
+rule AUTHREQ_MISSING_DEPENDENCY_REQ_AUTH
+when
+  $ar : AuthorityRequirement( requiredAuthority != null, $oc: requiredAuthority )
+  not (DMNElement( id == rightOfHash( $oc.href )))
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $oc.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+end
+
+rule AUTHREQ_MISSING_DEPENDENCY_REQ_DEC
+when
+  $ar : AuthorityRequirement( requiredDecision != null, $rd: requiredDecision )
+  not (DMNElement( id == rightOfHash( $rd.href )))
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $rd , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $rd.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+end
+
+rule AUTHREQ_MISSING_DEPENDENCY_REQ_INPUT
+when
+  $ar : AuthorityRequirement( requiredInput != null, $ri: requiredInput )
+  not (DMNElement( id == rightOfHash( $ri.href )))
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $ri , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $ri.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+end
+
+rule AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE
+when
+  $ar : AuthorityRequirement( requiredAuthority != null, $oc: requiredAuthority )
+  DMNElement( id == rightOfHash( $oc.href ) , !(this instanceof KnowledgeSource) )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQ_DEP_INVALID_TYPE, $oc.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+end
+
+rule AUTHREQ_DEP_REQ_DEC_NOT_DECISION
+when
+  $ar : AuthorityRequirement( requiredDecision != null, $rd: requiredDecision )
+  DMNElement( id == rightOfHash( $rd.href ) , !(this instanceof Decision) )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $rd , Msg.REQ_DEP_INVALID_TYPE, $rd.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+end
+
+rule AUTHREQ_DEP_REQ_INPUT_NOT_INPUT
+when
+  $ar : AuthorityRequirement( requiredInput != null, $ri: requiredInput )
+  DMNElement( id == rightOfHash( $ri.href ) , !(this instanceof InputData) )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $ri , Msg.REQ_DEP_INVALID_TYPE, $ri.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+end

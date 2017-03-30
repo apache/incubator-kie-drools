@@ -77,7 +77,15 @@ public class DMNValidatorImpl implements DMNValidator {
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(
                 ks.newReleaseId( "org.kie", "kie-dmn-validation", Drools.getFullVersion() ),
-                ks.getResources().newClassPathResource("dmn-validation-rules.drl", getClass() ) );
+                ks.getResources().newClassPathResource("dmn-validation-rules.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-artifact.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-auth-req.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-bkm.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-context.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-decision.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-dtable.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-input.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-typeref.drl", getClass() ));
         if( kieContainer != null ) {
             this.kieContainer = Optional.of( kieContainer );
         } else {

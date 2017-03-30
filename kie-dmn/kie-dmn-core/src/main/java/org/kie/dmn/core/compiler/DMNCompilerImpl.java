@@ -17,7 +17,6 @@
 package org.kie.dmn.core.compiler;
 
 import org.kie.api.io.Resource;
-import org.kie.api.runtime.rule.Variable;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
@@ -412,7 +411,7 @@ public class DMNCompilerImpl
                                        null,
                                        Msg.UNKNOWN_TYPE_REF_ON_NODE,
                                        typeRef.toString(),
-                                       localElement.getParentDRGElement().getIdentifierString() );
+                                       localElement.getParentDRDElement().getIdentifierString() );
             }
             return type;
         }
