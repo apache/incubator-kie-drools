@@ -1568,8 +1568,8 @@ public class DefaultAgenda
         }
         for (PropagationContext ectx : expirationContexts) {
             InternalFactHandle factHandle = (InternalFactHandle) ectx.getFactHandle();
-            retractRightTuples( factHandle, ectx, workingMemory );
             retractLeftTuples( factHandle, ectx, workingMemory );
+            retractRightTuples( factHandle, ectx, workingMemory );
             if ( factHandle.isPendingRemoveFromStore() ) {
                 String epId = factHandle.getEntryPoint().getEntryPointId();
                 ( (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
