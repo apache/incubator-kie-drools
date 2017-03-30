@@ -30,6 +30,7 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
+import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -210,6 +211,12 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 
 	public RuleRuntimeEventSupport getRuleRuntimeEventSupport() {
 		return delegate.getRuleRuntimeEventSupport();
+	}
+
+	@Override
+	public RuleEventListenerSupport getRuleEventSupport() {
+		return delegate.getRuleEventSupport();
+
 	}
 
 	public AgendaEventSupport getAgendaEventSupport() {

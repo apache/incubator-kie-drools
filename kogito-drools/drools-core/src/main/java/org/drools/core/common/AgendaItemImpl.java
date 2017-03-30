@@ -16,10 +16,15 @@
 
 package org.drools.core.common;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
@@ -30,11 +35,6 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.event.rule.ActivationUnMatchListener;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Item entry in the <code>Agenda</code>.
@@ -77,7 +77,8 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     private transient boolean                                        canceled;
     private           boolean                                        matched;
     private           boolean                                        active;
-    private           ActivationUnMatchListener                      activationUnMatchListener;
+
+    private Runnable callback;
 
     // ------------------------------------------------------------
     // Constructors
@@ -376,26 +377,8 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
     }
 
     @Override
-    public ActivationUnMatchListener getActivationUnMatchListener() {
-        return activationUnMatchListener;
-    }
-
-    @Override
-    public void setActivationUnMatchListener(ActivationUnMatchListener activationUnMatchListener) {
-        this.activationUnMatchListener = activationUnMatchListener;
-    }
-
-    @Override
     public List<FactHandle> getFactHandles() {
-        FactHandle[] factHandles = this.tuple.toFactHandles();
-        List<FactHandle> list = new ArrayList<FactHandle>(factHandles.length);
-        for (FactHandle factHandle : factHandles) {
-            Object o = ((InternalFactHandle) factHandle).getObject();
-            if (!(o instanceof QueryElementFactHandle)) {
-                list.add(factHandle);
-            }
-        }
-        return Collections.unmodifiableList(list);
+        return getFactHandles(this.tuple);
     }
 
     @Override
@@ -405,14 +388,12 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
 
     @Override
     public List<Object> getObjects() {
-        FactHandle[] factHandles = this.tuple.toFactHandles();
-        List<Object> list = new ArrayList<Object>(factHandles.length);
-        int j = 0;
-        for (FactHandle factHandle : factHandles) {
-            Object o = ((InternalFactHandle) factHandle).getObject();
-            list.set( j++, o instanceof QueryElementFactHandle ? null : o );
-        }
-        return Collections.unmodifiableList(list);
+        return getObjects(this.tuple);
+    }
+
+    @Override
+    public List<Object> getObjectsDeep() {
+        return getObjectsDeep((LeftTuple) this.tuple );
     }
 
     @Override
@@ -467,5 +448,15 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
 
     public boolean isRuleInUse() {
         return rtn.getLeftTupleSource() != null;
+    }
+
+    @Override
+    public Runnable getCallback() {
+        return callback;
+    }
+
+    @Override
+    public void setCallback( Runnable callback ) {
+        this.callback = callback;
     }
 }

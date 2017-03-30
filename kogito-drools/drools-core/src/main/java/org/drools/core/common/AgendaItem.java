@@ -15,16 +15,19 @@
 
 package org.drools.core.common;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.event.rule.ActivationUnMatchListener;
-
-import java.util.List;
 
 public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
 
@@ -42,10 +45,6 @@ public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
 
     TerminalNode getTerminalNode();
 
-    ActivationUnMatchListener getActivationUnMatchListener();
-
-    void setActivationUnMatchListener(ActivationUnMatchListener activationUnMatchListener);
-
     String toExternalForm();
 
     boolean isCanceled();
@@ -53,4 +52,46 @@ public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
     void cancel();
 
     List<FactHandle> getFactHandles();
+
+    Runnable getCallback();
+    void setCallback(Runnable callback);
+
+    default List<FactHandle> getFactHandles(Tuple tuple) {
+        FactHandle[] factHandles = tuple.toFactHandles();
+        List<FactHandle> list = new ArrayList<FactHandle>( factHandles.length);
+        for (FactHandle factHandle : factHandles) {
+            Object o = ((InternalFactHandle) factHandle).getObject();
+            if (!(o instanceof QueryElementFactHandle)) {
+                list.add(factHandle);
+            }
+        }
+        return Collections.unmodifiableList( list );
+    }
+
+    default List<Object> getObjectsDeep(LeftTuple entry) {
+        List<Object> list = new ArrayList<Object>();
+        while ( entry != null ) {
+            if ( entry.getFactHandle() != null ) {
+                Object o = ((InternalFactHandle) entry.getFactHandle()).getObject();
+                if (!(o instanceof QueryElementFactHandle)) {
+                    list.add(o);
+                    list.addAll( entry.getAccumulatedObjects() );
+                }
+            }
+            entry = entry.getParent();
+        }
+        return list;
+    }
+
+    default List<Object> getObjects(Tuple tuple) {
+        FactHandle[] factHandles = tuple.toFactHandles();
+        List<Object> list = new ArrayList<Object>(factHandles.length);
+        for (FactHandle factHandle : factHandles) {
+            Object o = ((InternalFactHandle) factHandle).getObject();
+            if (!(o instanceof QueryElementFactHandle)) {
+                list.add(o);
+            }
+        }
+        return Collections.unmodifiableList(list);
+    }
 }

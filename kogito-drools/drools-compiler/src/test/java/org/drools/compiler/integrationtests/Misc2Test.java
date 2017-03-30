@@ -125,6 +125,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -134,6 +135,8 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.event.rule.RuleEventListener;
+import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -2269,21 +2272,20 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    $x : String( this == \"x\" )\n" +
                 "    ?q( \"x\"; )\n" +
                 "then\n" +
-                "    final java.util.List l = list;" +
-                "    org.drools.core.common.AgendaItem item = ( org.drools.core.common.AgendaItem ) drools.getMatch();\n" +
-                "    item.setActivationUnMatchListener( new org.kie.internal.event.rule.ActivationUnMatchListener() {\n" +
-                "        public void unMatch(org.kie.api.runtime.rule.RuleRuntime wm, org.kie.api.runtime.rule.Match activation) {\n" +
-                "            l.add(\"pippo\");\n" +
-                "        }\n" +
-                "    } );" +
                 "    delete( \"x\" );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
+
+        ( (RuleEventManager) ksession ).addEventListener( new RuleEventListener() {
+            @Override
+            public void onDeleteMatch( Match match ) {
+                list.add("test");
+            }
+        } );
 
         ksession.insert( "x" );
         ksession.fireAllRules();

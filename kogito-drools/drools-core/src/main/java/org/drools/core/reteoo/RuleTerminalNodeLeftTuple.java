@@ -29,7 +29,6 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
-import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.Declaration;
@@ -38,7 +37,6 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.event.rule.ActivationUnMatchListener;
 
 public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends BaseLeftTuple implements
                                                                     AgendaItem<T> {
@@ -63,8 +61,9 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     private transient boolean                                        canceled;
     private           boolean                                        matched;
     private           boolean                                        active;
-    private           ActivationUnMatchListener                      activationUnMatchListener;
     private           RuleAgendaItem                                 ruleAgendaItem;
+
+    private Runnable callback;
 
     public RuleTerminalNodeLeftTuple() {
         // constructor needed for serialisation
@@ -342,24 +341,8 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
         return (TerminalNode) getTupleSink();
     }
 
-    public ActivationUnMatchListener getActivationUnMatchListener() {
-        return activationUnMatchListener;
-    }
-
-    public void setActivationUnMatchListener(ActivationUnMatchListener activationUnMatchListener) {
-        this.activationUnMatchListener = activationUnMatchListener;
-    }
-
     public List<FactHandle> getFactHandles() {
-        FactHandle[] factHandles = toFactHandles();
-        List<FactHandle> list = new ArrayList<FactHandle>(factHandles.length);
-        for (FactHandle factHandle : factHandles) {
-            Object o = ((InternalFactHandle) factHandle).getObject();
-            if (!(o instanceof QueryElementFactHandle)) {
-                list.add(factHandle);
-            }
-        }
-        return Collections.unmodifiableList(list);
+        return getFactHandles(this);
     }
 
     public String toExternalForm() {
@@ -368,32 +351,12 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
 
     @Override
     public List<Object> getObjects() {
-        FactHandle[] factHandles = toFactHandles();
-        List<Object> list = new ArrayList<Object>(factHandles.length);
-        for (FactHandle factHandle : factHandles) {
-            Object o = ((InternalFactHandle) factHandle).getObject();
-            if (!(o instanceof QueryElementFactHandle)) {
-                list.add(o);
-            }
-        }
-        return Collections.unmodifiableList(list);
+        return getObjects(this);
     }
 
     @Override
     public List<Object> getObjectsDeep() {
-        List<Object> list = new ArrayList<Object>();
-        LeftTuple entry = this;
-        while ( entry != null ) {
-            if ( entry.getFactHandle() != null ) {
-                Object o = ((InternalFactHandle) entry.getFactHandle()).getObject();
-                if (!(o instanceof QueryElementFactHandle)) {
-                    list.add(o);
-                    list.addAll( entry.getAccumulatedObjects() );
-                }
-            }
-            entry = entry.getParent();
-        }
-        return list;
+        return getObjectsDeep(this);
     }
 
     public Object getDeclarationValue(String variableName) {
@@ -439,7 +402,17 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     public boolean isRuleAgendaItem() {
         return false;
     }
-    
+
+    @Override
+    public Runnable getCallback() {
+        return callback;
+    }
+
+    @Override
+    public void setCallback( Runnable callback ) {
+        this.callback = callback;
+    }
+
     @Override
     public String toString() {
         return "["+toExternalForm()+" [ " + super.toString()+ " ] ]";

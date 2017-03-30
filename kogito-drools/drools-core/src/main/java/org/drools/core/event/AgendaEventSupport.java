@@ -181,8 +181,4 @@ public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener
             } while (iter.hasNext());
         }
     }
-
-    public void reset() {
-        this.clear();
-    }
 }

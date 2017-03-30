@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import java.util.Comparator;
+
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.DefaultAgenda;
@@ -40,8 +42,6 @@ import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Comparator;
 
 public class RuleExecutor {
 
@@ -428,7 +428,11 @@ public class RuleExecutor {
             if ( log.isTraceEnabled() ) {
                 log.trace( "Fire event {} for rule \"{}\" \n{}", consequence.getName(), activation.getRule().getName(), activation.getTuple() );
             }
+
+            wm.getRuleEventSupport().onBeforeMatchFire( activation );
             consequence.evaluate(knowledgeHelper, wm);
+            wm.getRuleEventSupport().onAfterMatchFire( activation );
+
             activation.setActive(false);
             knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
             knowledgeHelper.reset();

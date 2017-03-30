@@ -145,6 +145,7 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.event.rule.RuleEventListener;
+import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
@@ -166,6 +167,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         KieRuntimeEventManager,
         InternalWorkingMemoryActions,
         EventSupport,
+        RuleEventManager,
         ProcessEventManager,
         CorrelationAwareProcessRuntime,
         Externalizable {
@@ -507,8 +509,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         for (WorkingMemoryEntryPoint ep : this.entryPoints.values()) {
             ep.dispose();
         }
-        this.ruleRuntimeEventSupport.reset();
-        this.agendaEventSupport.reset();
+        this.ruleRuntimeEventSupport.clear();
+        this.ruleEventListenerSupport.clear();
+        this.agendaEventSupport.clear();
         for (KieBaseEventListener listener : kieBaseEventListeners) {
             this.kBase.removeEventListener(listener);
         }
@@ -1164,8 +1167,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.kieBaseEventListeners.remove( listener );
     }
 
-    ///RuleEventListenerSupport
-    public void addEventListener(final RuleEventListener listener) {
+    public RuleEventListenerSupport getRuleEventSupport() {
+        return ruleEventListenerSupport;
+    }
+
+    public void addEventListener( final RuleEventListener listener ) {
         this.ruleEventListenerSupport.addEventListener( listener );
     }
 
