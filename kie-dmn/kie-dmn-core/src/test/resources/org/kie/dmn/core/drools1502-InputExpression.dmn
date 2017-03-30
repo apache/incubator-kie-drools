@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+    name="definitions"
+    namespace="https://www.drools.org/kie-dmn/definitions"
+    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+    xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
+  <itemDefinition label="MyType" name="MyType">
+    <typeRef>feel:string</typeRef>
+    <allowedValues constraintsType="enumeration">
+      <text>"a","b","c"</text>
+    </allowedValues>
+  </itemDefinition>
+  <inputData id="_3d560678-a126-4654-a686-bc6d941fe40b" name="MyInput">
+    <variable id="_053333df-1777-45f1-a6c7-56562fbdfdae" name="MyInput" typeRef="asd:MyType" xmlns:asd="https://www.drools.org/kie-dmn/definitions" />
+  </inputData>
+  <decision id="_497a5306-b2e8-4945-b8b5-82af2e2b99b5" name="MyDecision">
+    <variable id="_514d6d8d-5329-44fa-af91-a7e7addbadd8" name="MyDecision" typeRef="feel:string"/>
+    <informationRequirement>
+      <requiredInput href="#_3d560678-a126-4654-a686-bc6d941fe40b"/>
+    </informationRequirement>
+    <decisionTable hitPolicy="UNIQUE" id="_fff2b82e-2850-4826-adc9-4b1570d6fa91" outputLabel="MyDecision">
+      <input id="_e0471736-9a71-40c7-b5ca-bf367c6a3af9" label="MyInput">
+      <!-- TEST for this inputExpression the namespace `asd` is defined locally: -->
+        <inputExpression typeRef="asd:MyType" xmlns:asd="https://www.drools.org/kie-dmn/definitions" > 
+          <text>MyInput</text>
+        </inputExpression>
+      </input>
+      <output id="_01796218-0d50-4ebe-bd2b-b4509318e334"/>
+      <rule id="_fd1835b6-5fe1-4fd9-a8e4-39b4f7083b24">
+        <inputEntry expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_1c8b24c7-e722-40d7-8661-f03d402688d2">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="_0b9d04fe-032b-4753-84dd-9838f6cdef53">
+          <text>"Decision taken"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
