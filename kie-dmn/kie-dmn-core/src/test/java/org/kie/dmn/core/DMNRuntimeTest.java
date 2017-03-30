@@ -906,6 +906,55 @@ public class DMNRuntimeTest {
         assertThat( dmnResult.getMessages().size(), is( 1 ) );
         assertThat( dmnResult.getMessages().get( 0 ).getSourceId(), is( "_3d560678-a126-4654-a686-bc6d941fe40b" ) );
     }
+    
+    @Test
+    public void testPriority_table() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "priority_table.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_ff54a44d-b8f5-48fc-b2b7-43db767e8a1c",
+                "not quite all or nothing P" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        context.set("isAffordable", false);
+        context.set("RiskCategory", "Medium");
+        
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Approval Status" ), is( "Declined" ) );
+    }
+    
+    @Test
+    public void testPriority_table_context_recursion() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "priority_table_context_recursion.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_ff54a44d-b8f5-48fc-b2b7-43db767e8a1c",
+                "not quite all or nothing P" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        context.set("isAffordable", false);
+        context.set("RiskCategory", "Medium");
+        
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Approval Status" ), is( "Declined" ) );
+    }
+    
+    @Test
+    public void testPriority_table_missing_output_values() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DTABLE_PRIORITY_MISSING_OUTVALS.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "https://github.com/kiegroup/kie-dmn",
+                "DTABLE_PRIORITY_MISSING_OUTVALS" );
+        assertThat( dmnModel, notNullValue() );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
+        assertThat( dmnModel.getMessages().size(), is( 1 ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getSourceId(), is( "_oApprovalStatus" ) );
+    }
 
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
