@@ -15,6 +15,27 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.OrderEvent;
 import org.drools.compiler.Sensor;
@@ -60,7 +81,9 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Role;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
 import org.kie.api.event.rule.DebugAgendaEventListener;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -82,27 +105,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
@@ -6554,5 +6556,53 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertEquals( 1, list.size() );
         assertEquals( "R2", list.get(0) );
+    }
+
+    @Test
+    public void testExpiredEventOnSelfJoinAndUnactiveGroup() {
+        // RHBRMS-2769
+        String drl = "declare String @role( event ) @expires( 2d ) end\n" +
+                     "global java.util.List list;\n" +
+                     "rule R agenda-group \"rf-grp1\" when\n" +
+                     "    $s: String()\n" +
+                     "    not String(this after [1ms, 48h] $s)\n" +
+                     "then\n" +
+                     "    list.add(\"fired\");\n" +
+                     "end\n";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.addEventListener(new DefaultAgendaEventListener() {
+            public void agendaGroupPopped(AgendaGroupPoppedEvent event ) {
+                if (event.getAgendaGroup().getName().equals("another")) {
+                    event.getKieRuntime().getAgenda().getAgendaGroup("rf-grp1").setFocus();
+                }
+            }
+        });
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+        ksession.insert("asd");
+
+        ksession.getAgenda().getAgendaGroup( "another" ).setFocus();
+        ksession.fireAllRules();
+        assertEquals(0, list.size());
+
+        System.out.println("Step2:");
+
+        sessionClock.advanceTime(5, TimeUnit.DAYS);
+        ksession.getAgenda().getAgendaGroup( "another" ).setFocus();
+        ksession.fireAllRules();
+
+        assertEquals("the actual test to verify rule R has fired now", 1, list.size());
+
+        assertEquals(0, ksession.getFactCount());
     }
 }
