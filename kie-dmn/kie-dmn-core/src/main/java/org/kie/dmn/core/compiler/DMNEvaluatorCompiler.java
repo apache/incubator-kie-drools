@@ -390,7 +390,7 @@ public class DMNEvaluatorCompiler {
                     model,
                     null,
                     null,
-                    Msg.ERR_INFERRING_TYPE_REF_FOR_NODE,
+                    Msg.UNKNOWN_OUTPUT_TYPE_FOR_DT_ON_NODE,
                     recursionIdx );
             return null;
         }
