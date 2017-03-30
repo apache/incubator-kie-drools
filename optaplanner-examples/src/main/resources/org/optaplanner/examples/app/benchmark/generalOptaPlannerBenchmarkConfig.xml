@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/general</benchmarkDirectory>
+  <!--<warmUpMinutesSpentLimit>10</warmUpMinutesSpentLimit>-->
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
@@ -11,6 +12,7 @@
         <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
     </solver>
+    <!--<subSingleCount>8</subSingleCount>-->
   </inheritedSolverBenchmark>
 
 
