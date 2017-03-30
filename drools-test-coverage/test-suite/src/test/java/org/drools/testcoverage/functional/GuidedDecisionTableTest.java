@@ -192,6 +192,77 @@ public class GuidedDecisionTableTest {
         kSession.dispose();
     }
 
+    @Test
+    public void testRuleOrderHitPolicy() throws Exception {
+        initKieSession("ruleOrderHitPolicy.gdst");
+
+        kSession.insert(oldPeter);
+
+        kSession.fireAllRules();
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(4);
+        Assertions.assertThat(rulesFired.getRulesFiredOrder()).containsSequence("Row 1 ruleOrderHitPolicy",
+                                                                                "Row 2 ruleOrderHitPolicy",
+                                                                                "Row 3 ruleOrderHitPolicy",
+                                                                                "Row 4 ruleOrderHitPolicy");
+        kSession.dispose();
+    }
+
+    @Test
+    public void testRuleOrderHitPolicyTwoOfFour() throws Exception {
+        initKieSession("ruleOrderHitPolicy.gdst");
+        kSession.insert(johnFromBarcelona);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(2);
+        Assertions.assertThat(rulesFired.getRulesFiredOrder()).containsSequence("Row 1 ruleOrderHitPolicy",
+                                                                                "Row 3 ruleOrderHitPolicy");
+        kSession.dispose();
+    }
+
+    @Test
+    public void testRuleOrderHitPolicyActivationGroupBeginning() throws Exception {
+        initKieSession("ruleOrderHitPolicyActivationGroupBeginning.gdst");
+        kSession.insert(oldPeter);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(3);
+        Assertions.assertThat(rulesFired.getRulesFiredOrder()).containsSequence("Row 1 ruleOrderHitPolicyActivationGroupBeginning",
+                                                                                "Row 3 ruleOrderHitPolicyActivationGroupBeginning",
+                                                                                "Row 4 ruleOrderHitPolicyActivationGroupBeginning");
+        kSession.dispose();
+    }
+
+    @Test
+    public void testRuleOrderHitPolicyActivationGroupEnd() throws Exception {
+        initKieSession("ruleOrderHitPolicyActivationGroupEnd.gdst");
+        kSession.insert(oldPeter);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(3);
+        Assertions.assertThat(rulesFired.getRulesFiredOrder()).containsSequence("Row 1 ruleOrderHitPolicyActivationGroupEnd",
+                                                                                "Row 2 ruleOrderHitPolicyActivationGroupEnd",
+                                                                                "Row 3 ruleOrderHitPolicyActivationGroupEnd");
+        kSession.dispose();
+    }
+
+    @Test
+    public void testRuleOrderHitPolicyTwoActivationGroups() throws Exception {
+        initKieSession("ruleOrderHitPolicyTwoActivationGroups.gdst");
+        kSession.insert(oldPeter);
+
+        kSession.fireAllRules();
+
+        Assertions.assertThat(rulesFired.getFiredRules().size()).isEqualTo(4);
+        Assertions.assertThat(rulesFired.getRulesFiredOrder()).containsSequence("Row 1 ruleOrderHitPolicyTwoActivationGroups",
+                                                                                "Row 3 ruleOrderHitPolicyTwoActivationGroups",
+                                                                                "Row 4 ruleOrderHitPolicyTwoActivationGroups",
+                                                                                "Row 5 ruleOrderHitPolicyTwoActivationGroups");
+        kSession.dispose();
+    }
+
     private void initKieSession(String gdstName) {
         final Resource resource = KieServices.Factory.get().getResources().newClassPathResource(gdstName,
                                                                                                 GuidedDecisionTableTest.class);
