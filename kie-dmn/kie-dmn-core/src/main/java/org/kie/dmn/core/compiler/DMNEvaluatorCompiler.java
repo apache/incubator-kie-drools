@@ -282,7 +282,7 @@ public class DMNEvaluatorCompiler {
                 outputValues = typeRef.getAllowedValues();
             } else if ( dt.getOutput().size() == 1
                         && ( dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry ) ) {
-                QName inferredTypeRef = recurseUpToInferTypeRef(model, dt);
+                QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
                 BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
                 outputValues = typeRef.getAllowedValues();
             }
@@ -342,10 +342,11 @@ public class DMNEvaluatorCompiler {
     /**
      * Utility method for DecisionTable with only 1 output, to infer typeRef from parent
      * @param model used for reporting errors
+     * @param originalElement the original OutputClause[0] single output for which the DecisionTable parameter recursionIdx is being processed for inferring the typeRef
      * @param recursionIdx start of the recursion is the DecisionTable model node itself
      * @return the inferred `typeRef` or null in case of errors. Errors are reported with standard notification mechanism via MsgUtil.reportMessage
      */
-    private QName recurseUpToInferTypeRef(DMNModelImpl model, DMNElement recursionIdx) {
+    private QName recurseUpToInferTypeRef(DMNModelImpl model, OutputClause originalElement, DMNElement recursionIdx) {
         if ( recursionIdx.getParent() instanceof Decision ) {
             InformationItem parentVariable = ((Decision) recursionIdx.getParent()).getVariable();
             if ( parentVariable != null ) {
@@ -369,7 +370,7 @@ public class DMNEvaluatorCompiler {
                 if ( parentCtx.getContextEntry().get(parentCtx.getContextEntry().size()-1).equals(parentCtxEntry) ) {
                     // the ContextEntry is the last one in the Context, so I can recurse up-ward in the DMN model tree
                     // please notice the recursion would be considering the parentCtxEntry's parent, which is the `parentCtx` so is effectively a 2x jump upward in the model tree 
-                    return recurseUpToInferTypeRef(model, parentCtx);
+                    return recurseUpToInferTypeRef(model, originalElement, parentCtx);
                 } else {
                     // error not last ContextEntry in context
                     MsgUtil.reportMessage( logger,
@@ -386,12 +387,12 @@ public class DMNEvaluatorCompiler {
         } else {
             MsgUtil.reportMessage( logger,
                     DMNMessage.Severity.ERROR,
-                    recursionIdx,
+                    originalElement,
                     model,
                     null,
                     null,
                     Msg.UNKNOWN_OUTPUT_TYPE_FOR_DT_ON_NODE,
-                    recursionIdx );
+                    originalElement.getParentDRGElement().getName() );
             return null;
         }
     }
