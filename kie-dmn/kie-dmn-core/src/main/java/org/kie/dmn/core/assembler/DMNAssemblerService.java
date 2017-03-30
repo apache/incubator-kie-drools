@@ -25,6 +25,7 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionElementRegister;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
@@ -41,6 +42,8 @@ import java.util.Map;
 public class DMNAssemblerService implements KieAssemblerService {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNAssemblerService.class );
+    private static final String DMN_EXTENSION_REGISTER = "ork.kie.dmn.extension.element.register";
+
 
     @Override
     public ResourceType getResourceType() {
@@ -52,7 +55,19 @@ public class DMNAssemblerService implements KieAssemblerService {
             throws Exception {
 
         DMNCompiler dmnCompiler = DMNFactory.newCompiler();
-        DMNModel model = dmnCompiler.compile( resource );
+        String extensionRegisterClassName = ( (KnowledgeBuilderImpl) kbuilder ).getBuilderConfiguration().getChainedProperties().getProperty(DMN_EXTENSION_REGISTER,
+                null);
+
+        DMNModel model = null;
+
+        if(extensionRegisterClassName != null && !extensionRegisterClassName.isEmpty()) {
+            DMNExtensionElementRegister extensionElementRegister =
+                    (DMNExtensionElementRegister)Class.forName(extensionRegisterClassName).newInstance();
+            model = dmnCompiler.compile(resource, extensionElementRegister);
+        } else {
+            model = dmnCompiler.compile(resource);
+        }
+
         if( model != null ) {
             String namespace = model.getNamespace();
 

@@ -22,6 +22,7 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionElementRegister;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -71,9 +72,31 @@ public class DMNCompilerImpl
     }
 
     @Override
+    public DMNModel compile(Resource resource, DMNExtensionElementRegister extensionElementRegister) {
+        try {
+            return compile( resource.getReader(), extensionElementRegister );
+        } catch ( IOException e ) {
+            logger.error( "Error retrieving reader for resource: " + resource.getSourcePath(), e );
+        }
+        return null;
+    }
+
+    @Override
     public DMNModel compile(Reader source) {
         try {
             Definitions dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( source );
+            DMNModel model = compile( dmndefs );
+            return model;
+        } catch ( Exception e ) {
+            logger.error( "Error compiling model from source.", e );
+        }
+        return null;
+    }
+
+    @Override
+    public DMNModel compile(Reader source, DMNExtensionElementRegister extensionElementRegister) {
+        try {
+            Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(extensionElementRegister).unmarshal( source );
             DMNModel model = compile( dmndefs );
             return model;
         } catch ( Exception e ) {

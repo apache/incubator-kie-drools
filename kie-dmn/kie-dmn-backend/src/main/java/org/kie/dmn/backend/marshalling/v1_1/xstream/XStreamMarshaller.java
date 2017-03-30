@@ -40,6 +40,7 @@ import com.thoughtworks.xstream.io.xml.AbstractPullReader;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.StaxWriter;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionElementRegister;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
@@ -87,6 +88,8 @@ public class XStreamMarshaller
         implements DMNMarshaller {
 
     private static Logger logger = LoggerFactory.getLogger( XStreamMarshaller.class );
+    private DMNExtensionElementRegister extensionElementRegister;
+
 
     private static StaxDriver staxDriver;
     static {
@@ -107,6 +110,15 @@ public class XStreamMarshaller
         staxDriver.setQnameMap(qmap);
         staxDriver.setRepairingNamespace(false);
     }
+
+    public XStreamMarshaller() {
+
+    }
+
+    public XStreamMarshaller (DMNExtensionElementRegister extensionElementRegister) {
+        this.extensionElementRegister = extensionElementRegister;
+    }
+
 
     @Override
     public Definitions unmarshal(String xml) {
@@ -338,7 +350,12 @@ public class XStreamMarshaller
         xStream.registerConverter(new ExtensionElementsConverter( xStream ) );
         
         xStream.ignoreUnknownElements();
-        
+
+        if(extensionElementRegister != null) {
+            extensionElementRegister.registerExtensionConverters(xStream);
+        }
+
+
         return xStream;
     }
 
