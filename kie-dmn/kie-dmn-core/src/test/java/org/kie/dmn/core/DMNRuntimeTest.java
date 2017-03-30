@@ -20,6 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -32,6 +33,7 @@ import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.*;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.model.v1_1.ItemDefinition;
 import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
@@ -994,6 +996,27 @@ public class DMNRuntimeTest {
         assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "MyDecision" ), is( "Decision taken" ) );
+    }
+    
+    @Test
+    public void testWrongConstraintsInItemDefinition() {
+        // DROOLS-1503
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "WrongConstraintsInItemDefinition.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/dmn/definitions/_81d8fefe-9cd7-43b8-922a-ff245c434457",
+                "Dessin 1" );
+        assertThat( dmnModel, notNullValue() );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
+        assertThat( dmnModel.getMessages().size(), is( 3 ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getSourceReference(), is( instanceOf( ItemDefinition.class ) ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
+        assertThat( dmnModel.getMessages().get( 1 ).getSourceId(), is( "_e794c655-4fdf-45d1-b7b7-d990df513f92" ) );
+        assertThat( dmnModel.getMessages().get( 1 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
+        
+        // The DecisionTable does not define typeRef for the single OutputClause, but neither the enclosing Decision define typeRef for its variable
+        assertThat( dmnModel.getMessages().get( 2 ).getSourceId(), is( "_31911de7-e184-411c-99d1-f33977971270" ) );
+        assertThat( dmnModel.getMessages().get( 2 ).getMessageType(), is( DMNMessageType.MISSING_TYPE_REF ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {

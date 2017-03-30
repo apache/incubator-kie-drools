@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_81d8fefe-9cd7-43b8-922a-ff245c434457" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.8.201703291324" id="_81d8fefe-9cd7-43b8-922a-ff245c434457" name="Dessin 1" namespace="http://www.trisotech.com/dmn/definitions/_81d8fefe-9cd7-43b8-922a-ff245c434457" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="tBoolean" name="tBoolean">
+    <semantic:typeRef>feel:boolean</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>True,False</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:decision id="_f8475742-6b14-4b07-85b1-75abcf5affe8" name="Decision Logic 1" triso:displayName="Decision Logic 1">
+    <semantic:variable id="_31911de7-e184-411c-99d1-f33977971270" name="Decision Logic 1"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#inputData__e794c655-4fdf-45d1-b7b7-d990df513f92"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_790984bd-950e-4145-8360-cd1c08c1238a" outputLabel="Decision Logic 1">
+      <semantic:input id="_e794c655-4fdf-45d1-b7b7-d990df513f92">
+        <semantic:inputExpression typeRef="tBoolean">
+          <semantic:text>Nouvel intrant</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>True,False</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_6c09b12a-73d5-4f8f-b583-b007d58881ad"/>
+      <semantic:rule id="_0403ec9a-51e9-4b3c-883a-fe6584919036">
+        <semantic:inputEntry id="_fca031ec-9a37-4795-b06b-8b4c9044c8eb">
+          <semantic:text/>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_aef76a51-de39-488c-bf54-fdb3e193613b">
+          <semantic:text/>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="inputData__e794c655-4fdf-45d1-b7b7-d990df513f92" name="Nouvel intrant">
+    <semantic:variable name="Nouvel intrant" typeRef="tBoolean"/>
+  </semantic:inputData>
+</semantic:definitions>
