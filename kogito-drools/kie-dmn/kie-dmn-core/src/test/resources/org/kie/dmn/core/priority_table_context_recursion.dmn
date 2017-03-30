@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_ff54a44d-b8f5-48fc-b2b7-43db767e8a1c" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.8.1" id="_ff54a44d-b8f5-48fc-b2b7-43db767e8a1c" name="not quite all or nothing P" namespace="http://www.trisotech.com/definitions/_ff54a44d-b8f5-48fc-b2b7-43db767e8a1c" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="tRiskCategory" name="tRiskCategory">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"High","Low","Medium"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tApprovalStatus" name="tApprovalStatus">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Approved","Declined","Referred"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:decision id="_3b2953a3-745f-4d2e-b55d-75c8c5ae653c" name="Approval Status" triso:displayName="Approval Status">
+    <semantic:variable id="_7fe30427-4140-4e53-a070-2ecfc723d82b" name="Approval Status" typeRef="tApprovalStatus"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_5a4bdb64-f0ef-4978-9e03-6f1ae64a1f17"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_8ff18665-84e9-49f2-a8df-8981b1844549"/>
+    </semantic:informationRequirement>
+    <semantic:context>
+        <semantic:contextEntry>
+            <semantic:variable id="m1" name="m1" typeRef="feel:string"/>
+            <semantic:literalExpression>
+                <text>"Hello World"</text>
+            </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+            <semantic:context>
+                <semantic:contextEntry>
+                    <semantic:decisionTable hitPolicy="PRIORITY" id="_c98573c0-08b5-4bc3-baf1-3b065fedf1d1" outputLabel="Approval Status">
+                      <semantic:input id="_0524c2a9-a223-425a-988f-72d39eed9714" label="isAffordable">
+                        <semantic:inputExpression typeRef="feel:boolean">
+                          <semantic:text>isAffordable</semantic:text>
+                        </semantic:inputExpression>
+                      </semantic:input>
+                      <semantic:input id="_705b772e-6ac9-4c09-ace8-5165438454d9" label="RiskCategory">
+                        <semantic:inputExpression typeRef="tRiskCategory">
+                          <semantic:text>RiskCategory</semantic:text>
+                        </semantic:inputExpression>
+                      </semantic:input>
+                      <semantic:output id="_704c6117-4670-4d2f-865e-a4d973db5e9f"/>
+                      <semantic:rule id="_c9dd9401-69a6-4da7-bd70-22e062addf06">
+                        <semantic:inputEntry id="_8ba69e42-c77b-4be4-b566-3385fada3a7a">
+                          <semantic:text>true</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_4f356526-fe33-4e2d-9aab-837ad962ee43">
+                          <semantic:text>"Low"</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:outputEntry id="_9b79d813-37cb-4e67-9207-139a00802f39">
+                          <semantic:text>"Approved"</semantic:text>
+                        </semantic:outputEntry>
+                      </semantic:rule>
+                      <semantic:rule id="_4fb0af5e-d777-42ee-a886-c0e31ab3fc31">
+                        <semantic:inputEntry id="_a321bd86-943a-46d4-9eb4-3d68415e695c">
+                          <semantic:text>-</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_73262932-7275-47e3-9684-91cf5c336af2">
+                          <semantic:text>"Medium"</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:outputEntry id="_bdda5b02-fcc6-4a14-b668-c612b654c818">
+                          <semantic:text>"Referred"</semantic:text>
+                        </semantic:outputEntry>
+                      </semantic:rule>
+                      <semantic:rule id="_789b4b82-6bf6-4040-86bc-9237c41b37be">
+                        <semantic:inputEntry id="_9de5765c-f427-4df0-af9f-67a074f9f31f">
+                          <semantic:text>true</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_bc4319a2-f954-4fe6-a708-49de2a1c051d">
+                          <semantic:text>"High"</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:outputEntry id="_7330db40-ec90-4c0e-8989-798251da2187">
+                          <semantic:text>"Declined"</semantic:text>
+                        </semantic:outputEntry>
+                      </semantic:rule>
+                      <semantic:rule id="_a9f2bdca-8e42-4d79-862a-44a027e2b536">
+                        <semantic:inputEntry id="_23b70497-fee9-4dfb-ae24-93f672d9f1d7">
+                          <semantic:text>false</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:inputEntry id="_ce7b70c5-b5d2-48a5-9fa9-5ac865092945">
+                          <semantic:text>-</semantic:text>
+                        </semantic:inputEntry>
+                        <semantic:outputEntry id="_fa497253-0356-4234-9774-2e3d95c171d2">
+                          <semantic:text>"Declined"</semantic:text>
+                        </semantic:outputEntry>
+                      </semantic:rule>
+                    </semantic:decisionTable>
+                </semantic:contextEntry>
+            </semantic:context>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:inputData id="_5a4bdb64-f0ef-4978-9e03-6f1ae64a1f17" name="RiskCategory" triso:displayName="RiskCategory">
+    <semantic:variable id="_542fe70e-5c8e-4f30-bec7-ad19a792cfaf" name="RiskCategory" typeRef="tRiskCategory"/>
+  </semantic:inputData>
+  <semantic:inputData id="_8ff18665-84e9-49f2-a8df-8981b1844549" name="isAffordable" triso:displayName="isAffordable">
+    <semantic:variable id="_65f460e7-7bcb-419a-93c2-36b26b95273e" name="isAffordable" typeRef="feel:boolean"/>
+  </semantic:inputData>
+</semantic:definitions>

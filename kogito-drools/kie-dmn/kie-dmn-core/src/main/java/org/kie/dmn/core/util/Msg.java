@@ -14,6 +14,7 @@ public class Msg {
     public static final Message2 FUNCTION_NOT_FOUND                                  = new Message2( DMNMessageType.REQ_NOT_FOUND, "Function '%s' not found. Invocation failed on node '%s'" );
     public static final Message2 UNKNOWN_TYPE_REF_ON_NODE                            = new Message2( DMNMessageType.TYPE_DEF_NOT_FOUND, "Unable to resolve type reference '%s' on node '%s'" );
     public static final Message2 UNKNOWN_FEEL_TYPE_REF_ON_NODE                       = new Message2( DMNMessageType.TYPE_REF_NOT_FOUND, "Type reference '%s' is not a valid FEEL type reference on node '%s'" );
+    public static final Message1 UNKNOWN_OUTPUT_TYPE_FOR_DT_ON_NODE                  = new Message1( DMNMessageType.TYPE_REF_NOT_FOUND, "Unknown output type for decision table on node '%s'" );
     public static final Message2 INVALID_NAME                                        = new Message2( DMNMessageType.INVALID_NAME, "Invalid name '%s': %s" );
     public static final Message1 INVALID_SYNTAX                                      = new Message1( DMNMessageType.INVALID_SYNTAX, "%s: invalid syntax" );
     public static final Message2 INVALID_SYNTAX2                                     = new Message2( DMNMessageType.INVALID_SYNTAX, "%s: %s" );

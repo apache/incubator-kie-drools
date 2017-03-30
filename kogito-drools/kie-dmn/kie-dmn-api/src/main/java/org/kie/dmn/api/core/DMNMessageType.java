@@ -13,7 +13,7 @@ public enum DMNMessageType {
     MISSING_TYPE_REF( "Type ref not defined", Tag.COMPILATION, Tag.VALIDATION, Tag.DMN_CORE, Tag.DMN_VALIDATOR ),
     DUPLICATE_NAME( "The referenced name is not unique with its scope", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     MISSING_NAME( "The referenced element requires a name", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
-    MISSING_OUTPUT_VALUES( "The referenced output elements are missing the list of output values", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
+    MISSING_OUTPUT_VALUES( "The referenced output elements are missing the list of output values", Tag.COMPILATION, Tag.VALIDATION, Tag.DMN_VALIDATOR, Tag.DMN_CORE ),
     ILLEGAL_USE_OF_NAME( "The referenced element should not have a name set", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     ILLEGAL_USE_OF_TYPEREF( "The referenced element should not have a typeref set", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     INVALID_HREF_SYNTAX( "The 'href' attribute requires the use of anchor syntax", Tag.VALIDATION, Tag.DMN_VALIDATOR ),

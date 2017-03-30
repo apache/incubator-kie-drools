@@ -16,6 +16,7 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.kie.dmn.model.v1_1.*;
+import org.kie.dmn.model.v1_1.HitPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -279,6 +280,21 @@ public class DMNEvaluatorCompiler {
                 QName outputExpressionTypeRef = oc.getTypeRef();
                 BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(outputExpressionTypeRef, oc), outputExpressionTypeRef.getLocalPart());
                 outputValues = typeRef.getAllowedValues();
+            } else if ( dt.getOutput().size() == 1
+                        && ( dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry ) ) {
+                QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
+                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
+                outputValues = typeRef.getAllowedValues();
+            }
+            if ( dt.getHitPolicy().equals(HitPolicy.PRIORITY) && ( outputValues == null || outputValues.isEmpty() ) ) {
+                MsgUtil.reportMessage( logger,
+                        DMNMessage.Severity.ERROR,
+                        oc,
+                        model,
+                        null,
+                        null,
+                        Msg.MISSING_OUTPUT_VALUES,
+                        oc );
             }
             outputs.add( new DTOutputClause( outputName, id, outputValues, defaultValue ) );
         }
@@ -321,6 +337,64 @@ public class DMNEvaluatorCompiler {
         DTInvokerFunction dtf = new DTInvokerFunction( dti );
         DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator( node, dtf );
         return dtee;
+    }
+    
+    /**
+     * Utility method for DecisionTable with only 1 output, to infer typeRef from parent
+     * @param model used for reporting errors
+     * @param originalElement the original OutputClause[0] single output for which the DecisionTable parameter recursionIdx is being processed for inferring the typeRef
+     * @param recursionIdx start of the recursion is the DecisionTable model node itself
+     * @return the inferred `typeRef` or null in case of errors. Errors are reported with standard notification mechanism via MsgUtil.reportMessage
+     */
+    private QName recurseUpToInferTypeRef(DMNModelImpl model, OutputClause originalElement, DMNElement recursionIdx) {
+        if ( recursionIdx.getParent() instanceof Decision ) {
+            InformationItem parentVariable = ((Decision) recursionIdx.getParent()).getVariable();
+            if ( parentVariable != null ) {
+                return parentVariable.getTypeRef();
+            } else {
+                return null; // simply to avoid NPE, the proper error is already managed in compilation
+            }
+        } else if ( recursionIdx.getParent() instanceof BusinessKnowledgeModel ) {
+            InformationItem parentVariable = ((BusinessKnowledgeModel) recursionIdx.getParent()).getVariable();
+            if ( parentVariable != null ) {
+                return parentVariable.getTypeRef();
+            } else {
+                return null; // simply to avoid NPE, the proper error is already managed in compilation
+            }
+        } else if ( recursionIdx.getParent() instanceof ContextEntry ) {
+            ContextEntry parentCtxEntry = (ContextEntry) recursionIdx.getParent();
+            if ( parentCtxEntry.getVariable() != null ) {
+                return parentCtxEntry.getVariable().getTypeRef();
+            } else {
+                Context parentCtx = (Context) parentCtxEntry.getParent();
+                if ( parentCtx.getContextEntry().get(parentCtx.getContextEntry().size()-1).equals(parentCtxEntry) ) {
+                    // the ContextEntry is the last one in the Context, so I can recurse up-ward in the DMN model tree
+                    // please notice the recursion would be considering the parentCtxEntry's parent, which is the `parentCtx` so is effectively a 2x jump upward in the model tree 
+                    return recurseUpToInferTypeRef(model, originalElement, parentCtx);
+                } else {
+                    // error not last ContextEntry in context
+                    MsgUtil.reportMessage( logger,
+                            DMNMessage.Severity.ERROR,
+                            parentCtxEntry,
+                            model,
+                            null,
+                            null,
+                            Msg.MISSING_VARIABLE_ON_CONTEXT,
+                            parentCtxEntry );
+                    return null;
+                }
+            }
+        } else {
+            MsgUtil.reportMessage( logger,
+                    DMNMessage.Severity.ERROR,
+                    originalElement,
+                    model,
+                    null,
+                    null,
+                    Msg.UNKNOWN_OUTPUT_TYPE_FOR_DT_ON_NODE,
+                    originalElement.getParentDRGElement().getName() );
+            return null;
+        }
     }
 
     private DMNExpressionEvaluator compileLiteralExpression(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, LiteralExpression expression) {
