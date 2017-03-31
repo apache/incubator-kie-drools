@@ -447,7 +447,14 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.TYPE_REF_NOT_FOUND ) ) );
     }
-    
+
+    @Test
+    public void testKNOW_SOURCE_MISSING_OWNER() {
+        List<DMNMessage> validate = validator.validate( getReader( "KNOW_SOURCE_MISSING_OWNER.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
+    }
+
     @Test
     public void testVARIABLE_LEADING_TRAILING_SPACES() {
         List<DMNMessage> validate = validator.validate( getReader( "VARIABLE_LEADING_TRAILING_SPACES.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);

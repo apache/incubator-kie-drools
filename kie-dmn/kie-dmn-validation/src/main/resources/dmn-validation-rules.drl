@@ -200,3 +200,14 @@ then
                    $rel.getRow().indexOf($row)+1,
                    $rel.getParentDRDElement().getIdentifierString() );
 end
+
+rule KNOW_SOURCE_MISSING_OWNER
+when
+  $knowSource: KnowledgeSource( owner != null,
+                                $elemRef: owner,
+                                $targetId : rightOfHash( owner.href ),
+                                $elemRef.parentDRDElement == this)
+  not ( OrganizationUnit( id == $targetId ) )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $knowSource.getIdentifierString() );
+end

@@ -31,48 +31,60 @@ global org.kie.dmn.validation.MessageReporter reporter;
 
 rule AUTHREQ_MISSING_DEPENDENCY_REQ_AUTH
 when
-  $ar : AuthorityRequirement( requiredAuthority != null, $oc: requiredAuthority )
-  not (DMNElement( id == rightOfHash( $oc.href )))
+  $authReq : AuthorityRequirement(requiredAuthority != null,
+                                  $elemRef: requiredAuthority,
+                                  $targetId : rightOfHash(requiredAuthority.href))
+  not (KnowledgeSource(id == $targetId))
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $oc.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+  reporter.report(DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $authReq.getIdentifierString());
 end
 
 rule AUTHREQ_MISSING_DEPENDENCY_REQ_DEC
 when
-  $ar : AuthorityRequirement( requiredDecision != null, $rd: requiredDecision )
-  not (DMNElement( id == rightOfHash( $rd.href )))
+  $authReq : AuthorityRequirement(requiredDecision != null,
+                                  $elemRef: requiredDecision,
+                                  $targetId: rightOfHash(requiredDecision.href))
+  not (Decision(id == $targetId))
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $rd , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $rd.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+  reporter.report(DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $authReq.getIdentifierString());
 end
 
 rule AUTHREQ_MISSING_DEPENDENCY_REQ_INPUT
 when
-  $ar : AuthorityRequirement( requiredInput != null, $ri: requiredInput )
-  not (DMNElement( id == rightOfHash( $ri.href )))
+  $authReq : AuthorityRequirement(requiredInput != null,
+                                  $elemRef: requiredInput,
+                                  $targetId: rightOfHash(requiredInput.href))
+  not (InputData(id == $targetId))
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $ri , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $ri.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+  reporter.report(DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $authReq.getIdentifierString());
 end
 
 rule AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE
 when
-  $ar : AuthorityRequirement( requiredAuthority != null, $oc: requiredAuthority )
-  DMNElement( id == rightOfHash( $oc.href ) , !(this instanceof KnowledgeSource) )
+  $authReq : AuthorityRequirement(requiredAuthority != null,
+                                  $elemRef: requiredAuthority,
+                                  $targetId : rightOfHash(requiredAuthority.href))
+  DMNElement(id == $targetId, !(this instanceof KnowledgeSource))
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.REQ_DEP_INVALID_TYPE, $oc.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+  reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_INVALID_TYPE, $targetId, $authReq.getIdentifierString());
 end
 
 rule AUTHREQ_DEP_REQ_DEC_NOT_DECISION
 when
-  $ar : AuthorityRequirement( requiredDecision != null, $rd: requiredDecision )
-  DMNElement( id == rightOfHash( $rd.href ) , !(this instanceof Decision) )
+  $authReq : AuthorityRequirement(requiredDecision != null,
+                                  $elemRef: requiredDecision,
+                                  $targetId: rightOfHash(requiredDecision.href))
+  DMNElement(id == $targetId, !(this instanceof Decision))
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $rd , Msg.REQ_DEP_INVALID_TYPE, $rd.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+  reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $targetId, $authReq.getIdentifierString());
 end
 
 rule AUTHREQ_DEP_REQ_INPUT_NOT_INPUT
 when
-  $ar : AuthorityRequirement( requiredInput != null, $ri: requiredInput )
-  DMNElement( id == rightOfHash( $ri.href ) , !(this instanceof InputData) )
+  $authReq : AuthorityRequirement(requiredInput != null,
+                                  $elemRef: requiredInput,
+                                  $targetId: rightOfHash( requiredInput.href))
+  DMNElement(id == $targetId, !(this instanceof InputData))
 then
-  reporter.report( DMNMessage.Severity.ERROR,  $ri , Msg.REQ_DEP_INVALID_TYPE, $ri.getHref(), $ar.getParentDRDElement().getIdentifierString() );
+  reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $targetId, $authReq.getIdentifierString());
 end

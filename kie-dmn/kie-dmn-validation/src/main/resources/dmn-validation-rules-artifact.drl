@@ -33,7 +33,7 @@ rule ASSOC_SOURCE_REF_NOT_EXISTS
 when
     $association: Association(
         $elemRef: sourceRef,
-        $targetId : rightOfHash( sourceRef.href ),
+        $targetId : rightOfHash(sourceRef.href),
         $elemRef.parentDRDElement == this)
     not (DMNElement(id == $targetId))
 then
@@ -44,7 +44,7 @@ rule ASSOC_TARGET_REF_NOT_EXISTS
 when
     $association: Association(
         $elemRef: targetRef,
-        $targetId : rightOfHash( targetRef.href ),
+        $targetId : rightOfHash(targetRef.href),
         $elemRef.parentDRDElement == this)
     not (DMNElement(id == $targetId))
 then
