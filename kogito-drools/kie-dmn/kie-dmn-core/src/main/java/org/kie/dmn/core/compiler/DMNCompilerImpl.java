@@ -306,7 +306,9 @@ public class DMNCompilerImpl
                                 allowedValuesStr.getText(),
                                 dmnModel,
                                 itemDef,
-                                Msg.ERR_COMPILING_ALLOWED_VALUES_LIST_ON_ITEM_DEF
+                                Msg.ERR_COMPILING_ALLOWED_VALUES_LIST_ON_ITEM_DEF,
+                                allowedValuesStr.getText(),
+                                node.getName()
                         );
                         type.setAllowedValues( av );
                     }

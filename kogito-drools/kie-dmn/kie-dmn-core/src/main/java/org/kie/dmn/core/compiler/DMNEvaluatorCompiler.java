@@ -283,8 +283,11 @@ public class DMNEvaluatorCompiler {
             } else if ( dt.getOutput().size() == 1
                         && ( dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry ) ) {
                 QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
-                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
-                outputValues = typeRef.getAllowedValues();
+                // if inferredTypeRef is null, a std err will have been reported
+                if ( inferredTypeRef != null ) {
+                    BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
+                    outputValues = typeRef.getAllowedValues();
+                }
             }
             if ( dt.getHitPolicy().equals(HitPolicy.PRIORITY) && ( outputValues == null || outputValues.isEmpty() ) ) {
                 MsgUtil.reportMessage( logger,
@@ -350,21 +353,21 @@ public class DMNEvaluatorCompiler {
         if ( recursionIdx.getParent() instanceof Decision ) {
             InformationItem parentVariable = ((Decision) recursionIdx.getParent()).getVariable();
             if ( parentVariable != null ) {
-                return parentVariable.getTypeRef();
+                return variableTypeRefOrErrIfNull(model, parentVariable);
             } else {
                 return null; // simply to avoid NPE, the proper error is already managed in compilation
             }
         } else if ( recursionIdx.getParent() instanceof BusinessKnowledgeModel ) {
             InformationItem parentVariable = ((BusinessKnowledgeModel) recursionIdx.getParent()).getVariable();
             if ( parentVariable != null ) {
-                return parentVariable.getTypeRef();
+                return variableTypeRefOrErrIfNull(model, parentVariable);
             } else {
                 return null; // simply to avoid NPE, the proper error is already managed in compilation
             }
         } else if ( recursionIdx.getParent() instanceof ContextEntry ) {
             ContextEntry parentCtxEntry = (ContextEntry) recursionIdx.getParent();
             if ( parentCtxEntry.getVariable() != null ) {
-                return parentCtxEntry.getVariable().getTypeRef();
+                return variableTypeRefOrErrIfNull(model, parentCtxEntry.getVariable());
             } else {
                 Context parentCtx = (Context) parentCtxEntry.getParent();
                 if ( parentCtx.getContextEntry().get(parentCtx.getContextEntry().size()-1).equals(parentCtxEntry) ) {
@@ -385,6 +388,7 @@ public class DMNEvaluatorCompiler {
                 }
             }
         } else {
+            // this is only for safety in case the recursion is escaping the allowed path for a broken model.
             MsgUtil.reportMessage( logger,
                     DMNMessage.Severity.ERROR,
                     originalElement,
@@ -393,6 +397,29 @@ public class DMNEvaluatorCompiler {
                     null,
                     Msg.UNKNOWN_OUTPUT_TYPE_FOR_DT_ON_NODE,
                     originalElement.getParentDRGElement().getName() );
+            return null;
+        }
+    }
+    
+    /**
+     * Utility method to have a error message is reported if a DMN Variable is missing typeRef. 
+     * @param model used for reporting errors 
+     * @param variable the variable to extract typeRef
+     * @return the `variable.typeRef` or null in case of errors. Errors are reported with standard notification mechanism via MsgUtil.reportMessage
+     */
+    private QName variableTypeRefOrErrIfNull(DMNModelImpl model, InformationItem variable) {
+        if ( variable.getTypeRef() != null ) {
+            return variable.getTypeRef();
+        } else {
+            MsgUtil.reportMessage( logger,
+                    DMNMessage.Severity.ERROR,
+                    variable,
+                    model,
+                    null,
+                    null,
+                    Msg.MISSING_TYPEREF_FOR_VARIABLE,
+                    variable.getName(),
+                    variable.getParentDRGElement().getName() );
             return null;
         }
     }
