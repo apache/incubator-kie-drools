@@ -86,7 +86,7 @@ public class DMNValidatorImpl implements DMNValidator {
                 ks.getResources().newClassPathResource("dmn-validation-rules-dmnelementref.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-dtable.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-info-req.drl", getClass() ),
-                ks.getResources().newClassPathResource("dmn-validation-rules-input.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-inputdata.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-know-req.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-know-source.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-typeref.drl", getClass() ));
