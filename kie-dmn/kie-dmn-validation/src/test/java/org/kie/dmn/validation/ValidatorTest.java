@@ -86,13 +86,6 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testBKM_MISSING_EXPR() {
-        List<DMNMessage> validate = validator.validate( getReader( "BKM_MISSING_EXPR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertThat( validate.get( 0 ).toString(), validate.get( 0 ).getMessageType(), is( DMNMessageType.MISSING_EXPRESSION ) );
-    }
-
-    @Test
     public void testINVOCATION_MISSING_EXPR() {
         List<DMNMessage> validate = validator.validate( getReader( "INVOCATION_MISSING_EXPR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
@@ -122,20 +115,6 @@ public class ValidatorTest extends AbstractValidatorTest {
         // check that it reports and error for the second context entry, but not for the last one
         ContextEntry ce = (ContextEntry) validate.get( 0 ).getSourceReference();
         assertThat( ((Context)ce.getParent()).getContextEntry().indexOf( ce ), is( 1 ) );
-    }
-
-    @Test
-    public void testBKM_MISSING_VAR() {
-        List<DMNMessage> validate = validator.validate( getReader( "BKM_MISSING_VAR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_VARIABLE ) ) );
-    }
-
-    @Test
-    public void testBKM_MISMATCH_VAR() {
-        List<DMNMessage> validate = validator.validate( getReader( "BKM_MISMATCH_VAR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.VARIABLE_NAME_MISMATCH ) ) );
     }
 
     @Test
