@@ -16,8 +16,6 @@
 
 package org.jbpm.casemgmt.impl.model.instance;
 
-import static java.util.stream.Collectors.toMap;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +36,8 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelFactory;
 import org.kie.internal.task.api.TaskModelProvider;
+
+import static java.util.stream.Collectors.toMap;
 
 /*
  * Implementation note: since the CaseFileInstanceImpl will be marshalled/unmarshalled by 
@@ -165,11 +165,15 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
 
     @Override
     public void assign(String roleName, OrganizationalEntity entity) {
+        if(AuthorizationManager.OWNER_ROLE.equals(roleName) && entity instanceof User){
+            assignOwner((User)entity);
+            return;
+        }
         CaseRoleInstance caseRoleInstance = this.roles.get(roleName);
         if (caseRoleInstance == null) {
             throw new IllegalArgumentException("No role with name " + roleName + " was found");
         }
-        ((CaseRoleInstanceImpl)caseRoleInstance).addRoleAssignment(entity);        
+        ((CaseRoleInstanceImpl)caseRoleInstance).addRoleAssignment(entity);
     }
 
     @Override
@@ -184,13 +188,11 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     @Override
     public void assignUser(String roleName, String userId) {
        assign(roleName, factory.newUser(userId));
-        
     }
 
     @Override
     public void assignGroup(String roleName, String groupId) {
         assign(roleName, factory.newGroup(groupId));
-        
     }
     
     @Override
@@ -218,11 +220,12 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     }
     
     public void assignOwner(User actualOwner) {
-        boolean hasDefinedOwner = roles.containsKey(AuthorizationManager.OWNER_ROLE);
-        if (!hasDefinedOwner && !roles.isEmpty()) {
-            this.roles.put(AuthorizationManager.OWNER_ROLE, new CaseRoleInstanceImpl(AuthorizationManager.OWNER_ROLE, 1));
-            assign(AuthorizationManager.OWNER_ROLE, actualOwner);
+        CaseRoleInstance caseRoleInstance = this.roles.get(AuthorizationManager.OWNER_ROLE);
+        if (caseRoleInstance == null) {
+            caseRoleInstance = new CaseRoleInstanceImpl(AuthorizationManager.OWNER_ROLE, 1);
+            this.roles.put(AuthorizationManager.OWNER_ROLE, caseRoleInstance);
         }
+        ((CaseRoleInstanceImpl)caseRoleInstance).addRoleAssignment(actualOwner);
     }
     
     public Map<String, CaseRoleInstance> getRolesAssignments() {

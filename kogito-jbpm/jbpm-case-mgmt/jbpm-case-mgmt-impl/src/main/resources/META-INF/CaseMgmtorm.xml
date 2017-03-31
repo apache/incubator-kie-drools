@@ -14,8 +14,8 @@
         log.processInstanceDescription, <!-- case description -->            
         log.processId, <!--case definition  -->
         log.status, <!-- case status -->
-        log.externalId, <!-- deployment id -->      
-        log.identity, <!-- case owner -->
+        log.externalId, <!-- deployment id -->
+        (select r.entityId from CaseRoleAssignmentLog r where r.processInstanceId = log.processInstanceId and r.roleName = 'owner' and r.type = 1), <!-- case owner -->
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
@@ -41,8 +41,8 @@
         log.processInstanceDescription, <!-- case description -->            
         log.processId, <!--case definition  -->
         log.status, <!-- case status -->
-        log.externalId, <!-- deployment id -->      
-        log.identity, <!-- case owner -->
+        log.externalId, <!-- deployment id -->
+        (select r.entityId from CaseRoleAssignmentLog r where r.processInstanceId = log.processInstanceId and r.roleName = 'owner' and r.type = 1), <!-- case owner -->
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
@@ -70,8 +70,8 @@
         log.processInstanceDescription, <!-- case description -->            
         log.processId, <!--case definition  -->
         log.status, <!-- case status -->
-        log.externalId, <!-- deployment id -->      
-        log.identity, <!-- case owner -->
+        log.externalId, <!-- deployment id -->
+        (select r.entityId from CaseRoleAssignmentLog r where r.processInstanceId = log.processInstanceId and r.roleName = 'owner' and r.type = 1), <!-- case owner -->
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
@@ -99,8 +99,8 @@
         log.processInstanceDescription, <!-- case description -->            
         log.processId, <!--case definition  -->
         log.status, <!-- case status -->
-        log.externalId, <!-- deployment id -->      
-        log.identity, <!-- case owner -->
+        log.externalId, <!-- deployment id -->
+        (select r.entityId from CaseRoleAssignmentLog r where r.processInstanceId = log.processInstanceId and r.roleName = 'owner' and r.type = 1), <!-- case owner -->
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
@@ -110,7 +110,7 @@
         ProcessInstanceLog log
       where 
         log.processType = 2
-        and log.identity =:owner
+        and log.processInstanceId in (select r.processInstanceId from CaseRoleAssignmentLog r where r.roleName = 'owner' and r.type = 1 and r.entityId = :owner)
         and log.status in (:statuses)
       ORDER BY
         log.correlationKey, log.start
@@ -127,8 +127,8 @@
         log.processInstanceDescription, <!-- case description -->            
         log.processId, <!--case definition  -->
         log.status, <!-- case status -->
-        log.externalId, <!-- deployment id -->      
-        log.identity, <!-- case owner -->
+        log.externalId, <!-- deployment id -->
+        (select r.entityId from CaseRoleAssignmentLog r where r.processInstanceId = log.processInstanceId and r.roleName = 'owner' and r.type = 1),<!-- case owner -->
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
@@ -155,8 +155,8 @@
         log.processInstanceDescription, <!-- case description -->            
         log.processId, <!--case definition  -->
         log.status, <!-- case status -->
-        log.externalId, <!-- deployment id -->      
-        log.identity, <!-- case owner -->
+        log.externalId, <!-- deployment id -->
+        (select r.entityId from CaseRoleAssignmentLog r where r.processInstanceId = log.processInstanceId and r.roleName = 'owner' and r.type = 1), <!-- case owner -->
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
@@ -183,8 +183,8 @@
         log.processInstanceDescription, <!-- case description -->            
         log.processId, <!--case definition  -->
         log.status, <!-- case status -->
-        log.externalId, <!-- deployment id -->      
-        log.identity, <!-- case owner -->
+        log.externalId, <!-- deployment id -->
+        (select r.entityId from CaseRoleAssignmentLog r where r.processInstanceId = log.processInstanceId and r.roleName = 'owner' and r.type = 1), <!-- case owner -->
         log.start, <!-- case start date  -->
         log.end, <!-- case end date  -->
         log.processInstanceId, <!-- case top level process instance id -->
@@ -193,8 +193,9 @@
       from
         ProcessInstanceLog log
       where
-        log.correlationKey =:correlationKey
+        log.correlationKey = :correlationKey
         and log.status = 1
+
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>

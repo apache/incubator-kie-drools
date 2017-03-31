@@ -87,8 +87,8 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(CaseServiceImplTest.class);
     private static final String TEST_DOC_STORAGE = "target/docs";
     
-    private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
-    
+    private DeploymentUnit deploymentUnit;
+
     @Before
     public void prepare() {
         System.setProperty("org.jbpm.document.storage", TEST_DOC_STORAGE);
@@ -124,6 +124,11 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         // use user name who is part of the case roles assignment
         // so (s)he will be authorized to access case instance
         identityProvider.setName("john");
+
+        assertNotNull(deploymentService);
+        deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        deploymentService.deploy(deploymentUnit);
     }
     
     @After
@@ -132,23 +137,14 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         identityProvider.setRoles(new ArrayList<>());
         System.clearProperty("org.jbpm.document.storage");
         cleanupSingletonSessionId();
-        if (units != null && !units.isEmpty()) {
-            for (DeploymentUnit unit : units) {
-                deploymentService.undeploy(unit);
-            }
-            units.clear();
+        if (deploymentUnit != null) {
+                deploymentService.undeploy(deploymentUnit);
         }
         close();
     }
     
     @Test
     public void testStartEmptyCase() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID);
         assertNotNull(caseId);
         assertEquals(FIRST_CASE_ID, caseId);
@@ -177,12 +173,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartEmptyCaseAndDestroy() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID);
         assertNotNull(caseId);
         assertEquals(FIRST_CASE_ID, caseId);
@@ -211,11 +201,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartEmptyCaseWithCaseFile() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
         data.put("name", "my first case");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
@@ -259,11 +244,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartEmptyCaseWithCaseFileAndDocument() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         byte[] docContent = "first case document".getBytes();
         DocumentImpl document = new DocumentImpl(UUID.randomUUID().toString(), "test case doc", docContent.length, new Date());
         document.setContent(docContent);
@@ -313,11 +293,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testAddUserTaskToEmptyCase() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
         data.put("name", "my first case");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
@@ -411,12 +386,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testAddUserTaskToCaseWithStage() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("owner", new UserImpl("john"));
         
@@ -480,11 +449,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testAddServiceTaskToEmptyCase() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
         data.put("name", "my first case");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
@@ -558,11 +522,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testAddSubprocessToEmptyCase() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
         data.put("name", "my first case");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
@@ -623,12 +582,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testAddSubprocessToCaseWithStage() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("owner", new UserImpl("john"));
         
@@ -683,12 +636,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testTriggerTaskAndMilestoneInCase() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("owner", new UserImpl("john"));
         
@@ -810,11 +757,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testCaseRolesWithDynamicTask() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("owner", new UserImpl("john"));
         
@@ -878,12 +820,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testCaseWithStageAutoStartNodes() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("owner", new UserImpl("john"));
         
@@ -917,12 +853,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testCaseWithComments() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("owner", new UserImpl("john"));
         
@@ -1002,11 +932,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
 
     @Test
     public void testUpdateNotExistingCaseComment() {
-        assertNotNull(deploymentService);
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, data);
 
@@ -1027,11 +952,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
 
     @Test
     public void testRemoveNotExistingCaseComment() {
-        assertNotNull(deploymentService);
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, data);
 
@@ -1052,11 +972,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartCaseWithStageAndAdHocFragments() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
         data.put("name", "my first case");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_STAGE_ADHOC_CASE_P_ID, data);
@@ -1100,12 +1015,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartThenReopenEmptyCase() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         Map<String, Object> data = new HashMap<>();
         data.put("name", "my first case");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
@@ -1153,12 +1062,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartThenReopenEmptyCaseUpdateDescription() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);        
-
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID);
         assertNotNull(caseId);
         assertEquals(FIRST_CASE_ID, caseId);
@@ -1204,12 +1107,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartThenReopenActiveCase() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         Map<String, Object> data = new HashMap<>();
         data.put("name", "my first case");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
@@ -1242,12 +1139,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartThenReopenDestroyedCase() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         Map<String, Object> data = new HashMap<>();
         data.put("name", "my first case");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
@@ -1283,12 +1174,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartScriptRoleAssignmentCase() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), "ScriptRoleAssignmentCase");
         assertNotNull(caseId);
         assertEquals(HR_CASE_ID, caseId);
@@ -1316,12 +1201,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartCaseWithoutStartNode() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), NO_START_NODE_CASE_P_ID);
         assertNotNull(caseId);
         assertEquals(FIRST_CASE_ID, caseId);
@@ -1371,12 +1250,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartEmptyCaseViaProcessService() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         String caseId = FIRST_CASE_ID;
         
         CorrelationKey correlationKey = KieInternalServices.Factory.get().newCorrelationKeyFactory().newCorrelationKey(caseId);
@@ -1412,12 +1285,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartEmptyCaseViaProcessServiceWithoutCorrelationKey() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);               
-               
         Map<String, Object> params = new HashMap<>();
         params.put("name", "my case via process service");
         Long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, params);        
@@ -1451,12 +1318,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartEmptyCaseViaProcessServiceWithoutCorrelationKeyWithMilestones() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);               
-               
         Map<String, Object> params = new HashMap<>();
         params.put("s", "my case via process service");
         Long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, params);        
@@ -1501,13 +1362,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartThenCancelRetrieveCaseFile() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
-        try {            
+        try {
             caseService.getCaseFileInstance(FIRST_CASE_ID);
             fail("There is no case yet started");
         } catch (CaseNotFoundException e) {
@@ -1569,12 +1424,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testUserTaskToCaseWithStageComplete() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("owner", new UserImpl("john"));
         
@@ -1616,12 +1465,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     }
     @Test
     public void testStartCaseWithConditionalEvent() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         Map<String, Object> data = new HashMap<>();
         data.put("Documents", new ArrayList<>());
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), COND_CASE_P_ID, data);        
@@ -1654,12 +1497,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testStartCaseWithConditionalEventCompleteCase() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        
         List<String> docs = new ArrayList<>();
         docs.add("First doc");
         
@@ -1692,11 +1529,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testCaseRolesWithQueries() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("owner", new UserImpl("john"));
         roleAssignments.put("contact", new GroupImpl("HR"));
@@ -1746,11 +1578,6 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testCaseAuthorization() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("owner", new UserImpl("john"));
         roleAssignments.put("contact", new GroupImpl("HR"));
@@ -1811,12 +1638,8 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testCaseAuthorizationImplicitOwner() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         String expectedCaseId = "UniqueID-0000000001";
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();        
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("patient", new UserImpl("john"));
         
         Map<String, Object> data = new HashMap<>();
@@ -1831,6 +1654,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(expectedCaseId, cInstance.getCaseId());
+            assertEquals("mary", cInstance.getOwner());
             assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
            
             identityProvider.setName("john");
@@ -1868,12 +1692,8 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     
     @Test
     public void testTriggerNotExistingAdHocFragment() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         String expectedCaseId = "UniqueID-0000000001";
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();        
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
         roleAssignments.put("patient", new UserImpl("john"));
         
         Map<String, Object> data = new HashMap<>();
@@ -1911,6 +1731,118 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         } finally {            
             if (caseId != null) {
                 identityProvider.setName("mary");
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+
+    @Test
+    public void testStartEmptyCaseUsingLoggedInOwner() {
+        identityProvider.setName("mary");
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals("mary", cInstance.getOwner());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+
+            caseService.cancelCase(caseId);
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+
+    @Test
+    public void testStartEmptyCaseChangeOwner() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", "my first case");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data, new HashMap<>());
+
+        identityProvider.setName("mary");
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals("mary", cInstance.getOwner());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+
+            caseService.removeFromCaseRole(caseId, "owner", new UserImpl("mary"));
+            caseService.assignToCaseRole(caseId, "owner", new UserImpl("john"));
+
+            identityProvider.setName("john");
+
+            cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals("john", cInstance.getOwner());
+
+            caseService.cancelCase(caseId);
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+
+    @Test
+    public void testStartEmptyCaseUsingCaseFileOwner() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", "my first case");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data, roleAssignments);
+
+        identityProvider.setName("mary");
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        identityProvider.setName("john");
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals("john", cInstance.getOwner());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+
+            caseService.cancelCase(caseId);
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
                 caseService.cancelCase(caseId);
             }
         }

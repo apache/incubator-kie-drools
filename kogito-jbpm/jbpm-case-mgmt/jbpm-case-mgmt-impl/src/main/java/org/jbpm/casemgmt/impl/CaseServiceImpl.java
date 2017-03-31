@@ -73,13 +73,13 @@ import org.kie.api.KieServices;
 import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.TaskModelFactory;
@@ -164,9 +164,13 @@ public class CaseServiceImpl implements CaseService {
             ((CaseFileInstanceImpl)caseFile).setCaseId(caseId);
             logger.debug("CaseFile {} was given, associating it with case {}", caseFile, caseId);
         }
-        
-        ((CaseFileInstanceImpl)caseFile).assignOwner(newUser(identityProvider.getName()));
-        
+
+        //If owner is provided in the case file use that, otherwise default to current logged in user.
+        boolean hasOwner = ((CaseFileInstanceImpl) caseFile).getAssignments().stream().anyMatch(role -> role.getRoleName().equals(AuthorizationManager.OWNER_ROLE));
+        if(hasOwner == false){
+            ((CaseFileInstanceImpl)caseFile).assignOwner(newUser(identityProvider.getName()));
+        }
+
         processService.execute(deploymentId, CaseContext.get(caseId), new StartCaseCommand(caseId, deploymentId, caseDefinitionId, caseFile, processService));
         
         return caseId;
