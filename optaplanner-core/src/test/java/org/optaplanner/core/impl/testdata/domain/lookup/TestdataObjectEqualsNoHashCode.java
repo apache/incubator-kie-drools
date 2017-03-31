@@ -17,6 +17,7 @@ package org.optaplanner.core.impl.testdata.domain.lookup;
 
 import java.util.Objects;
 
+@SuppressWarnings("checkstyle:equalshashcode")
 public class TestdataObjectEqualsNoHashCode {
 
     private final Integer id;

@@ -132,6 +132,7 @@
                       <property name="severity" value="error"/>
                       <property name="eachLine" value="true"/>
                     </module>
+                    <module name="SuppressWarningsFilter"/>
                     <module name="TreeWalker">
                       <property name="cacheFile" value="target/cachefile"/>
                       <property name="tabWidth" value="4"/>
@@ -178,6 +179,7 @@
                       <!-- Miscellaneous other checks. -->
                       <module name="ArrayTypeStyle"/>
                       <module name="UpperEll"/>
+                      <module name="SuppressWarningsHolder"/>
                     </module>
                   </module>
                 </checkstyleRules>
