@@ -118,31 +118,6 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testTYPEREF_NO_NS() throws URISyntaxException {
-        List<DMNMessage> validate = validator.validate( getReader( "TYPEREF_NO_NS.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.FAILED_XML_VALIDATION ) ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.TYPE_DEF_NOT_FOUND ) ) );
-    }
-
-    @Test
-    public void testTYPEREF_NOT_FEEL_NOT_DEF() {
-        List<DMNMessage> validate = validator.validate( getReader( "TYPEREF_NOT_FEEL_NOT_DEF.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVALID_NAME ) ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.TYPE_DEF_NOT_FOUND ) ) );
-    }
-
-    @Test
-    public void testTYPEREF_NOT_FEEL_NOT_DEF_valid() {
-        // DROOLS-1433
-        // the assumption is that the following document TYPEREF_NOT_FEEL_NOT_DEF_valid.dmn should NOT contain any DMNMessageTypeId.TYPEREF_NOT_FEEL_NOT_DEF at all
-        // the test also highlight typically in a DMN model many nodes would not define a typeRef, resulting in a large number of false negative
-        List<DMNMessage> validate = validator.validate( getReader( "TYPEREF_NOT_FEEL_NOT_DEF_valid.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 0 ) );
-    }
-
-    @Test
     public void testNAME_INVALID() {
         List<DMNMessage> validate = validator.validate( getReader( "NAME_INVALID.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
@@ -215,7 +190,7 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.ILLEGAL_USE_OF_NAME ) ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.ILLEGAL_USE_OF_TYPEREF ) ) );
     }
-
+    
     @Test
     public void testELEMREF_NOHASH() {
         List<DMNMessage> validate = validator.validate( getReader( "ELEMREF_NOHASH.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
