@@ -19,6 +19,7 @@ package org.optaplanner.persistence.jaxb.api.score.buildin.hardsoftdouble;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapter;
 
+@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

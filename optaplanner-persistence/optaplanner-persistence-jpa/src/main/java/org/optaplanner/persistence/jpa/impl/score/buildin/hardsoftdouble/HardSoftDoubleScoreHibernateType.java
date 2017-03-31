@@ -20,6 +20,7 @@ import org.hibernate.type.StandardBasicTypes;
 import org.optaplanner.core.impl.score.buildin.hardsoftdouble.HardSoftDoubleScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
+@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

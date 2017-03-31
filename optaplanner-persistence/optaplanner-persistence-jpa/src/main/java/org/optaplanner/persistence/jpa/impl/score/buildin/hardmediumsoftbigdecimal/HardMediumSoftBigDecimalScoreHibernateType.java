@@ -19,6 +19,7 @@ import org.hibernate.type.StandardBasicTypes;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
+@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

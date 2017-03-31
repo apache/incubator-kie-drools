@@ -23,6 +23,7 @@ import org.hibernate.usertype.ParameterizedType;
 import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
+@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

@@ -19,6 +19,7 @@ package org.optaplanner.persistence.jaxb.api.score.buildin.hardmediumsoft;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapter;
 
+@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

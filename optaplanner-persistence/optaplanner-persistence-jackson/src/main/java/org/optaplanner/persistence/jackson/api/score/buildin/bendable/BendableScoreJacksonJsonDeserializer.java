@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.persistence.jackson.api.score.AbstractScoreJacksonJsonDeserializer;
 
+@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

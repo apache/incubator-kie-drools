@@ -19,6 +19,7 @@ package org.optaplanner.persistence.jaxb.api.score.buildin.bendablebigdecimal;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapter;
 
+@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */

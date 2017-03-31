@@ -19,6 +19,7 @@ package org.optaplanner.persistence.jaxb.api.score.buildin.bendable;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.persistence.jaxb.api.score.AbstractScoreJaxbXmlAdapter;
 
+@SuppressWarnings("checkstyle:javadocstyle")
 /**
  * {@inheritDoc}
  */
