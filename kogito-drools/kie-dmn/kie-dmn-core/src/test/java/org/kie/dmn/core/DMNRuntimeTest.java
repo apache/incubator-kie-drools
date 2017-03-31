@@ -1018,6 +1018,30 @@ public class DMNRuntimeTest {
         assertThat( dmnModel.getMessages().get( 2 ).getSourceId(), is( "_31911de7-e184-411c-99d1-f33977971270" ) );
         assertThat( dmnModel.getMessages().get( 2 ).getMessageType(), is( DMNMessageType.MISSING_TYPE_REF ) );
     }
+    
+    @Test
+    public void testResolutionOfVariableWithLeadingOrTrailingSpaces() {
+        // DROOLS-1504
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "variableLeadingTrailingSpaces.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "https://www.drools.org/kie-dmn/definitions",
+                "definitions" );
+        assertThat( dmnModel, notNullValue() );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        Map<String, String> person = new HashMap<>();
+        person.put("Name", "John");
+        person.put("Surname", "Doe");
+        context.set("Input Person", person);
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Further Decision" ), is( "The person was greeted with: 'Ciao John Doe'" ) );
+    }
 
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );

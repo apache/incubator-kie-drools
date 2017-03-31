@@ -47,7 +47,7 @@ public class EvalHelper {
     private static final Pattern SPACES_PATTERN = Pattern.compile( "[\\s\u00A0]+" );
 
     public static String normalizeVariableName(String name) {
-        return SPACES_PATTERN.matcher( name ).replaceAll( " " );
+        return SPACES_PATTERN.matcher( name.trim() ).replaceAll( " " );
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {

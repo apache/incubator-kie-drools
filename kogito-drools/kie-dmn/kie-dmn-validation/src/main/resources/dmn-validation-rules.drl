@@ -136,6 +136,15 @@ then
   reporter.report( DMNMessage.Severity.WARN,  $ce1 , Msg.MISSING_TYPEREF_FOR_VARIABLE, $ce1.getName(), $ce1.getParentDRGElement().getName() );
 end
 
+rule VARIABLE_LEADING_TRAILING_SPACES
+when
+  $ce1 : InformationItem( name != null, 
+                          name str[startsWith] " " || name str[endsWith] " ",
+                          !(parent instanceof Binding || parent instanceof FunctionDefinition || parent instanceof Relation ) )
+then
+  reporter.report( DMNMessage.Severity.WARN,  $ce1 , Msg.VARIABLE_LEADING_TRAILING_SPACES, $ce1.getName(), $ce1.getParentDRGElement().getName() );
+end
+
 rule PARAMETER_NOTYPEREF
 when
   $ce1 : InformationItem( typeRef == null, parent instanceof FunctionDefinition )
