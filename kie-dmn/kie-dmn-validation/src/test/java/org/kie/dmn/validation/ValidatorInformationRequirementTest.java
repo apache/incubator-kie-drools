@@ -31,7 +31,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
 
     @Test
     public void testINFOREQ_MISSING_INPUT() {
-        List<DMNMessage> validate = validator.validate(
+        final List<DMNMessage> validate = validator.validate(
                 getReader( "informationrequirement/INFOREQ_MISSING_INPUT.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
@@ -41,7 +41,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
 
     @Test
     public void testINFOREQ_INPUT_NOT_INPUTDATA() {
-        List<DMNMessage> validate = validator.validate(
+        final List<DMNMessage> validate = validator.validate(
                 getReader( "informationrequirement/INFOREQ_INPUT_NOT_INPUTDATA.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
@@ -51,7 +51,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
 
     @Test
     public void testINFOREQ_MISSING_DECISION() {
-        List<DMNMessage> validate = validator.validate(
+        final List<DMNMessage> validate = validator.validate(
                 getReader( "informationrequirement/INFOREQ_MISSING_DECISION.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
@@ -61,7 +61,7 @@ public class ValidatorInformationRequirementTest extends AbstractValidatorTest {
 
     @Test
     public void testINFOREQ_DECISION_NOT_DECISION() {
-        List<DMNMessage> validate = validator.validate(
+        final List<DMNMessage> validate = validator.validate(
                 getReader( "informationrequirement/INFOREQ_DECISION_NOT_DECISION.dmn" ),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );

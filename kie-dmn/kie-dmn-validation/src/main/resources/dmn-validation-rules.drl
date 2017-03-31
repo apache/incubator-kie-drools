@@ -71,20 +71,6 @@ then
   reporter.report( DMNMessage.Severity.ERROR,  $x , Msg.DUPLICATE_DRG_ELEMENT, $x.getName() );
 end
 
-rule ELEMREF_NOHASH_p1
-when
-  $oc : DMNElementReference( !href.startsWith("#"), !( href contains ":" ) )
-then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH, $oc.getParentDRDElement().getIdentifierString() );
-end
-
-rule ELEMREF_NOHASH_p2
-when
-  $oc : DMNElementReference( href contains ":", !href.substring(href.indexOf(":")+1).startsWith('#') )
-then
-  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH, $oc.getParentDRDElement().getIdentifierString() );
-end
-
 rule FORMAL_PARAM_DUPLICATED
 when
     $fp1 : InformationItem( parent instanceof FunctionDefinition )

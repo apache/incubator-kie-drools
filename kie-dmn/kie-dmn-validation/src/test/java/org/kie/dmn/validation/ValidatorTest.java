@@ -93,13 +93,6 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testDECISION_MISSING_EXPR() {
-        List<DMNMessage> validate = validator.validate( getReader( "DECISION_MISSING_EXPR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertThat( validate.get( 0 ).toString(), validate.get( 0 ).getMessageType(), is( DMNMessageType.MISSING_EXPRESSION ) );
-    }
-
-    @Test
     public void testINVOCATION_MISSING_EXPR() {
         List<DMNMessage> validate = validator.validate( getReader( "INVOCATION_MISSING_EXPR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
@@ -139,20 +132,6 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testDECISION_MISSING_VAR() {
-        List<DMNMessage> validate = validator.validate( getReader( "DECISION_MISSING_VAR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_VARIABLE ) ) );
-    }
-
-    @Test
-    public void testDECISION_MISSING_VARbis() {
-        List<DMNMessage> validate = validator.validate( getReader( "DECISION_MISSING_VARbis.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_VARIABLE ) ) );
-    }
-
-    @Test
     public void testINPUT_MISSING_VAR() {
         List<DMNMessage> validate = validator.validate( getReader( "INPUTDATA_MISSING_VAR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
@@ -162,13 +141,6 @@ public class ValidatorTest extends AbstractValidatorTest {
     @Test
     public void testBKM_MISMATCH_VAR() {
         List<DMNMessage> validate = validator.validate( getReader( "BKM_MISMATCH_VAR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.VARIABLE_NAME_MISMATCH ) ) );
-    }
-
-    @Test
-    public void testDECISION_MISMATCH_VAR() {
-        List<DMNMessage> validate = validator.validate( getReader( "DECISION_MISMATCH_VAR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.VARIABLE_NAME_MISMATCH ) ) );
     }

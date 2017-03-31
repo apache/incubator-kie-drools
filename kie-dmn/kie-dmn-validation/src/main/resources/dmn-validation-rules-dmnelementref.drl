@@ -29,23 +29,24 @@ import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
-rule DECISION_MISSING_EXPR
+rule ELEMREF_NOHASH_p1
 when
-    $d : Decision(expression == null)
+  $oc : DMNElementReference(!href.startsWith("#"), !(href contains ":"))
 then
-    reporter.report(DMNMessage.Severity.ERROR, $d, Msg.MISSING_EXPRESSION_FOR_DECISION, $d.getIdentifierString());
+  reporter.report(DMNMessage.Severity.ERROR, $oc, Msg.ELEMREF_NOHASH, $oc.getParentDRDElement().getIdentifierString());
 end
 
-rule DECISION_MISSING_VAR
+rule ELEMREF_NOHASH_p2
 when
-    $d : Decision(variable == null)
+  $oc : DMNElementReference(href contains ":", !href.substring(href.indexOf(":") + 1).startsWith('#'))
 then
-    reporter.report(DMNMessage.Severity.ERROR, $d ,Msg.MISSING_VARIABLE_FOR_DECISION, $d.getIdentifierString());
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH, $oc.getParentDRDElement().getIdentifierString() );
 end
 
-rule DECISION_VAR_MISMATCH
-when
-    $d : Decision(variable != null, name != variable.name)
-then
-    reporter.report(DMNMessage.Severity.ERROR, $d, Msg.VARIABLE_NAME_MISMATCH_FOR_DECISION, $d.getVariable().getName(), $d.getName());
-end
+//rule ELEMREF_MISSING
+//when
+//  $elemRef: DMNElementReference(href.startsWith("#"), $targetId : rightOfHash(href))
+//  not (DMNElement(id == $targetId))
+//then
+//  reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $elemRef.getParentDRDElement().getIdentifierString());
+//end

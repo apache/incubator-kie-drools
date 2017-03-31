@@ -27,25 +27,17 @@ import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 
-public class ValidatorKnowledgeRequirementTest extends AbstractValidatorTest {
+public class ValidatorDMNElementReferenceTest extends AbstractValidatorTest {
 
     @Test
-    public void testKNOWREQ_MISSING_BKM() {
+    public void testELEMREF_NOHASH() {
         final List<DMNMessage> validate = validator.validate(
-                getReader( "knowledgerequirement/KNOWREQ_MISSING_BKM.dmn" ),
+                getReader("dmnelementref/ELEMREF_NOHASH.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
-    }
-
-    @Test
-    public void testKNOWREQ_REQ_DECISION_NOT_BKM() {
-        final List<DMNMessage> validate = validator.validate(
-                getReader( "knowledgerequirement/KNOWREQ_REQ_DECISION_NOT_BKM.dmn" ),
-                VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
+        System.out.println(ValidatorUtil.formatMessages(validate));
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(3));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_HREF_SYNTAX)));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
     }
 }
