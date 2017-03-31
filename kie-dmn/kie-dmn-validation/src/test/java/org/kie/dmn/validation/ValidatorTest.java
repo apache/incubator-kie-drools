@@ -370,48 +370,6 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_AUTH() {
-        List<DMNMessage> validate = validator.validate( getReader( "AUTHREQ_MISSING_DEPENDENCY_REQ_AUTH.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 3 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
-    }
-
-    @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_DEC() {
-        List<DMNMessage> validate = validator.validate( getReader( "AUTHREQ_MISSING_DEPENDENCY_REQ_DEC.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 3 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
-    }
-
-    @Test
-    public void testAUTH_REQ_MISSING_DEPENDENCY_REQ_INPUT() {
-        List<DMNMessage> validate = validator.validate( getReader( "AUTHREQ_MISSING_DEPENDENCY_REQ_INPUT.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 3 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
-    }
-
-    @Test
-    public void testAUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE() {
-        List<DMNMessage> validate = validator.validate( getReader( "AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 3 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
-    }
-
-    @Test
-    public void testAUTHREQ_DEP_REQ_DEC_NOT_DECISION() {
-        List<DMNMessage> validate = validator.validate( getReader( "AUTHREQ_DEP_REQ_DEC_NOT_DECISION.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 3 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
-    }
-
-    @Test
-    public void testAUTHREQ_DEP_REQ_INPUT_NOT_INPUT() {
-        List<DMNMessage> validate = validator.validate( getReader( "AUTHREQ_DEP_REQ_INPUT_NOT_INPUT.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 3 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
-    }
-
-    @Test
     public void testMortgageRecommender() {
         // This file has a gazillion errors. The goal of this test is simply check that the validator itself is not blowing up
         // and raising an exception. The errors in the file itself are irrelevant.
