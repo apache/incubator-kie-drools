@@ -85,28 +85,6 @@ then
   reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH, $oc.getParentDRDElement().getIdentifierString() );
 end
 
-rule ELEMREF_MISSING_INPUT
-when
-  $infoReq: InformationRequirement( requiredInput != null,
-                                    $elemRef: requiredInput,
-                                    $targetId : rightOfHash( requiredInput.href ),
-                                    $elemRef.parentDRDElement == this)
-  not ( InputData( id == $targetId ) )
-then
-  reporter.report( DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_INPUT_NOT_FOUND_FOR_NODE, $targetId, $infoReq.getIdentifierString() );
-end
-
-rule ELEMREF_MISSING_DECISION
-when
-  $infoReq: InformationRequirement( requiredDecision != null,
-                                    $elemRef: requiredDecision,
-                                    $targetId : rightOfHash( requiredDecision.href ),
-                                    $elemRef.parentDRDElement == this)
-  not ( Decision( id == $targetId ) )
-then
-  reporter.report( DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_DECISION_NOT_FOUND_FOR_NODE, $targetId, $infoReq.getIdentifierString() );
-end
-
 rule ELEMREF_MISSING_BKM
 when
   $knowReq: KnowledgeRequirement( requiredKnowledge != null,
@@ -199,15 +177,4 @@ then
   reporter.report( DMNMessage.Severity.ERROR,  $row , Msg.RELATION_CELL_COUNT_MISMATCH,
                    $rel.getRow().indexOf($row)+1,
                    $rel.getParentDRDElement().getIdentifierString() );
-end
-
-rule KNOW_SOURCE_MISSING_OWNER
-when
-  $knowSource: KnowledgeSource( owner != null,
-                                $elemRef: owner,
-                                $targetId : rightOfHash( owner.href ),
-                                $elemRef.parentDRDElement == this)
-  not ( OrganizationUnit( id == $targetId ) )
-then
-  reporter.report( DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $knowSource.getIdentifierString() );
 end

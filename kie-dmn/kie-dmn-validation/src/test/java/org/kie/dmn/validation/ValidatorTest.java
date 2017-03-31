@@ -26,11 +26,8 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.List;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNMessage;
@@ -79,10 +76,6 @@ public class ValidatorTest extends AbstractValidatorTest {
             fail("Unable for the test suite to locate the file for validation.");
         }
         return null;
-    }
-
-    private Reader getReader( String filename ) {
-        return new InputStreamReader( getClass().getResourceAsStream( filename ) );
     }
         
     @Test
@@ -285,15 +278,7 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.ILLEGAL_USE_OF_NAME ) ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.ILLEGAL_USE_OF_TYPEREF ) ) );
     }
-    
-    @Test
-    public void testELEMREF_MISSING_TARGET() {
-        List<DMNMessage> validate = validator.validate( getReader( "ELEMREF_MISSING_TARGET.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
-    }
-    
+
     @Test
     public void testELEMREF_NOHASH() {
         List<DMNMessage> validate = validator.validate( getReader( "ELEMREF_NOHASH.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);

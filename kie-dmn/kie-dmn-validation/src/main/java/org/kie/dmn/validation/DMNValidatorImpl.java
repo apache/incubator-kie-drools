@@ -84,7 +84,9 @@ public class DMNValidatorImpl implements DMNValidator {
                 ks.getResources().newClassPathResource("dmn-validation-rules-context.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-decision.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-dtable.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-info-req.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-input.drl", getClass() ),
+                ks.getResources().newClassPathResource("dmn-validation-rules-know-source.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-typeref.drl", getClass() ));
         if( kieContainer != null ) {
             this.kieContainer = Optional.of( kieContainer );
