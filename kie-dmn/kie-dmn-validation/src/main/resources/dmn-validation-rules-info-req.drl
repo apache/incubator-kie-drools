@@ -29,21 +29,6 @@ import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
-// We must match DMNElement instances instead of InputData
-// because there can be an element with $targetId, but of different type,
-// so in such case the requiredInput ref. IS there, but is of different type.
-// Same with other similar rules here.
-rule INFOREQ_MISSING_INPUT
-when
-  $infoReq: InformationRequirement(requiredInput != null,
-                                   $elemRef: requiredInput,
-                                   $targetId : rightOfHash(requiredInput.href),
-                                   $elemRef.parentDRDElement == this)
-  not (DMNElement(id == $targetId))
-then
-  reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_INPUT_NOT_FOUND_FOR_NODE, $targetId, $infoReq.getIdentifierString());
-end
-
 rule INFOREQ_INPUT_NOT_INPUTDATA
 when
   $infoReq: InformationRequirement(requiredInput != null,
@@ -52,17 +37,6 @@ when
   DMNElement(id == $targetId, !(this instanceof InputData))
 then
   reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $targetId, $infoReq.getIdentifierString());
-end
-
-rule INFOREQ_MISSING_DECISION
-when
-  $infoReq: InformationRequirement(requiredDecision != null,
-                                   $elemRef: requiredDecision,
-                                   $targetId : rightOfHash(requiredDecision.href),
-                                   $elemRef.parentDRDElement == this)
-  not (DMNElement(id == $targetId))
-then
-  reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DECISION_NOT_FOUND_FOR_NODE, $targetId, $infoReq.getIdentifierString());
 end
 
 rule INFOREQ_DECISION_NOT_DECISION

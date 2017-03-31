@@ -78,7 +78,6 @@ public class DMNValidatorImpl implements DMNValidator {
         final KieContainer kieContainer = KieHelper.getKieContainer(
                 ks.newReleaseId( "org.kie", "kie-dmn-validation", Drools.getFullVersion() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules.drl", getClass() ),
-                ks.getResources().newClassPathResource("dmn-validation-rules-artifact.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-auth-req.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-bkm.drl", getClass() ),
                 ks.getResources().newClassPathResource("dmn-validation-rules-context.drl", getClass() ),

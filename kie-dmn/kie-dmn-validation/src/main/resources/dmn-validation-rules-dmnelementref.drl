@@ -43,10 +43,10 @@ then
   reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH, $oc.getParentDRDElement().getIdentifierString() );
 end
 
-//rule ELEMREF_MISSING
-//when
-//  $elemRef: DMNElementReference(href.startsWith("#"), $targetId : rightOfHash(href))
-//  not (DMNElement(id == $targetId))
-//then
-//  reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $elemRef.getParentDRDElement().getIdentifierString());
-//end
+rule ELEMREF_MISSING
+when
+  $elemRef: DMNElementReference(href.startsWith("#"), $targetId : rightOfHash(href))
+  not (DMNElement(id == $targetId))
+then
+  reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $elemRef.getParentDRDElement().getIdentifierString());
+end

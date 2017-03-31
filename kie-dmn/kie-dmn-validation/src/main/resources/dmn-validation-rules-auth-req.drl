@@ -29,40 +29,6 @@ import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
-// We must match DMNElement instances instead of KnowledgeSource
-// because there can be an element with $targetId, but of different type,
-// so in such case the requiredAuthority ref. IS there, but is of different type.
-// Same with other similar rules here.
-rule AUTHREQ_MISSING_DEPENDENCY_REQ_AUTH
-when
-  $authReq : AuthorityRequirement(requiredAuthority != null,
-                                  $elemRef: requiredAuthority,
-                                  $targetId : rightOfHash(requiredAuthority.href))
-  not (DMNElement(id == $targetId))
-then
-  reporter.report(DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $authReq.getIdentifierString());
-end
-
-rule AUTHREQ_MISSING_DEPENDENCY_REQ_DEC
-when
-  $authReq : AuthorityRequirement(requiredDecision != null,
-                                  $elemRef: requiredDecision,
-                                  $targetId: rightOfHash(requiredDecision.href))
-  not (DMNElement(id == $targetId))
-then
-  reporter.report(DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $authReq.getIdentifierString());
-end
-
-rule AUTHREQ_MISSING_DEPENDENCY_REQ_INPUT
-when
-  $authReq : AuthorityRequirement(requiredInput != null,
-                                  $elemRef: requiredInput,
-                                  $targetId: rightOfHash(requiredInput.href))
-  not (DMNElement(id == $targetId))
-then
-  reporter.report(DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $authReq.getIdentifierString());
-end
-
 rule AUTHREQ_DEP_REQ_AUTH_NOT_KNOWLEDGESOURCE
 when
   $authReq : AuthorityRequirement(requiredAuthority != null,

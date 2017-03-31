@@ -29,21 +29,6 @@ import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
-// We must match DMNElement instances instead of BusinessKnowledgeModel
-// because there can be an element with $targetId, but of different type,
-// so in such case the requiredKnowledge ref. IS there, but is of different type.
-// Same with other similar rules here.
-rule KNOWREQ_MISSING_BKM
-when
-  $knowReq: KnowledgeRequirement(requiredKnowledge != null,
-                                 $elemRef: requiredKnowledge,
-                                 $targetId : rightOfHash(requiredKnowledge.href),
-                                 $elemRef.parentDRDElement == this)
-  not (DMNElement(id == $targetId))
-then
-  reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_BKM_NOT_FOUND_FOR_NODE, $targetId, $knowReq.getIdentifierString());
-end
-
 rule KNOWREQ_REQ_DECISION_NOT_BKM
 when
   $knowReq: KnowledgeRequirement(requiredKnowledge != null,

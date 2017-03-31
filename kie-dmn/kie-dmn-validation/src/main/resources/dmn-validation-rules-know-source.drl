@@ -29,20 +29,6 @@ import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
-// We must match DMNElement instances instead of OrganizationUnit
-// because there can be an element with $targetId, but of different type,
-// so in such case the owner IS there, but is of different type.
-rule KNOW_SOURCE_MISSING_OWNER
-when
-  $knowSource: KnowledgeSource(owner != null,
-                               $elemRef: owner,
-                               $targetId : rightOfHash(owner.href),
-                               $elemRef.parentDRDElement == this)
-  not (DMNElement(id == $targetId))
-then
-  reporter.report(DMNMessage.Severity.ERROR, $elemRef, Msg.REQ_DEP_NOT_FOUND_FOR_NODE, $targetId, $knowSource.getIdentifierString());
-end
-
 rule KNOW_SOURCE_OWNER_NOT_ORG_UNIT
 when
   $knowSource : KnowledgeSource(owner != null,
