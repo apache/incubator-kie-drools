@@ -34,6 +34,7 @@ public class Msg {
     public static final Message2 VARIABLE_NAME_MISMATCH_FOR_INPUT                    = new Message2( DMNMessageType.VARIABLE_NAME_MISMATCH, "Variable name '%s' does not match the Input Data node name '%s'" );
     public static final Message1 DUPLICATE_CONTEXT_ENTRY                             = new Message1( DMNMessageType.DUPLICATE_NAME, "Duplicate context entry with variables named '%s'" );
     public static final Message2 MISSING_TYPEREF_FOR_VARIABLE                        = new Message2( DMNMessageType.MISSING_TYPE_REF, "Variable named '%s' is missing typeRef on node '%s'" );
+    public static final Message2 VARIABLE_LEADING_TRAILING_SPACES                    = new Message2( DMNMessageType.INVALID_NAME, "Variable name contains leading or traling spaces '%s' on node '%s'" );
     public static final Message2 MISSING_TYPEREF_FOR_PARAMETER                       = new Message2( DMNMessageType.MISSING_TYPE_REF, "Parameter named '%s' is missing typeRef on node '%s'" );
     public static final Message2 MISSING_TYPEREF_FOR_COLUMN                          = new Message2( DMNMessageType.MISSING_TYPE_REF, "Column named '%s' is missing typeRef on node '%s'" );
     public static final Message1 DUPLICATE_DRG_ELEMENT                               = new Message1( DMNMessageType.DUPLICATE_NAME, "Duplicate node name '%s' in the model" );
