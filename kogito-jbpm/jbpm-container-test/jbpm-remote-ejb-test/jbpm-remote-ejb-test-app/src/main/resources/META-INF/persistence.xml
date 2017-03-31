@@ -54,6 +54,8 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
 		<class>org.jbpm.kie.services.impl.store.DeploymentStoreEntry</class>
 		<!-- queries -->
 		<class>org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity</class>
+        <!-- error handling -->
+        <class>org.jbpm.runtime.manager.impl.jpa.ExecutionErrorInfo</class>
 		<properties>
 			<property name="hibernate.dialect" value="${org.jbpm.persistence.dialect}" />
 			<property name="hibernate.max_fetch_depth" value="3" />

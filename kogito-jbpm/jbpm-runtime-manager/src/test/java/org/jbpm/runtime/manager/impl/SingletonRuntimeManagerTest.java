@@ -23,6 +23,7 @@ import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.drools.persistence.jta.TransactionLockInterceptor;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
+import org.jbpm.runtime.manager.impl.error.ExecutionErrorHandlerInterceptor;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -762,6 +763,9 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
 
 
         ChainableRunner internalCommandService = ((PersistableRunner)commandService).getChainableRunner();
+        assertEquals(ExecutionErrorHandlerInterceptor.class, internalCommandService.getClass());
+        
+        internalCommandService = (ChainableRunner) ((ExecutionErrorHandlerInterceptor) internalCommandService).getNext();
         assertEquals(TransactionLockInterceptor.class, internalCommandService.getClass());
 
         TaskService taskService = runtime.getTaskService();
@@ -779,8 +783,10 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         result.put("output1", "ok");
         taskService.complete(taskIds.get(0), "john", result); // this time, execute normally
 
-        
         internalCommandService =  ((PersistableRunner)commandService).getChainableRunner();
+        assertEquals(ExecutionErrorHandlerInterceptor.class, internalCommandService.getClass());
+        
+        internalCommandService =  (ChainableRunner) ((ExecutionErrorHandlerInterceptor) internalCommandService).getNext();
         assertEquals(TransactionLockInterceptor.class, internalCommandService.getClass());
         
         internalCommandService = (ChainableRunner) ((TransactionLockInterceptor) internalCommandService).getNext();

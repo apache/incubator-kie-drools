@@ -162,6 +162,25 @@
         element varchar2(255 char)
     );
     
+    create table ExecutionErrorInfo (
+        id number(19,0) not null,
+        ERROR_ACK number(1,0),
+        ERROR_ACK_AT timestamp,
+        ERROR_ACK_BY varchar2(255 char),
+        ACTIVITY_ID number(19,0),
+        ACTIVITY_NAME varchar2(255 char),
+        DEPLOYMENT_ID varchar2(255 char),
+        ERROR_INFO clob,
+        ERROR_DATE timestamp,
+        ERROR_ID varchar2(255 char),
+        ERROR_MSG varchar2(255 char),
+        JOB_ID number(19,0),
+        PROCESS_ID varchar2(255 char),
+        PROCESS_INST_ID number(19,0),
+        ERROR_TYPE varchar2(255 char),
+        primary key (id)
+    );
+
     create table I18NText (
         id number(19,0) not null,
         language varchar2(255 char),

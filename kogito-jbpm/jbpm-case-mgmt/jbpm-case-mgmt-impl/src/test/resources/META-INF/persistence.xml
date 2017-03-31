@@ -70,6 +70,9 @@
     <class>org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog</class>
     <class>org.jbpm.casemgmt.impl.audit.CaseFileDataLog</class>
     
+    <!-- error handling -->
+    <class>org.jbpm.runtime.manager.impl.jpa.ExecutionErrorInfo</class>
+    
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
       <property name="hibernate.connection.autocommit" value="false" />

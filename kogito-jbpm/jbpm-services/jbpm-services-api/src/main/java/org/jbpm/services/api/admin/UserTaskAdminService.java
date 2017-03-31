@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.services.api.TaskNotFoundException;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.internal.runtime.error.ExecutionError;
 import org.kie.internal.task.api.model.EmailNotification;
 import org.kie.internal.task.api.model.Notification;
 
@@ -202,4 +204,66 @@ public interface UserTaskAdminService {
      * @throws TaskNotFoundException thrown when there is no task with given id
      */
     void cancelReassignment(long taskId, long reassignmentId) throws TaskNotFoundException;
+    
+    /**
+     * Returns execution errors for given task id
+     * @param taskId unique task id
+     * @param includeAcknowledged indicates whether to include acknowledged errors or not
+     * @param queryContext control parameters for pagination 
+     * @return list of found errors
+     */
+    List<ExecutionError> getErrorsByTaskId(long taskId, boolean includeAcknowledged, QueryContext queryContext);
+    
+    /**
+     * Returns execution errors for given task name
+     * @param taskName name of the task
+     * @param includeAcknowledged indicates whether to include acknowledged errors or not
+     * @param queryContext control parameters for pagination 
+     * @return list of found errors
+     */
+    List<ExecutionError> getErrorsByTaskName(String taskName, boolean includeAcknowledged, QueryContext queryContext);
+    
+    /**
+     * Returns execution errors for given task name and process id
+     * @param processId process id of the process that task belongs to
+     * @param taskName name of the task
+     * @param includeAcknowledged indicates whether to include acknowledged errors or not
+     * @param queryContext control parameters for pagination 
+     * @return list of found errors
+     */
+    List<ExecutionError> getErrorsByTaskName(String processId, String taskName, boolean includeAcknowledged, QueryContext queryContext);
+    
+    /**
+     * Returns execution errors for given task name, process id and deployment id
+     * @param deploymentId deployment id that contains given process
+     * @param processId process id of the process that task belongs to
+     * @param taskName name of the task
+     * @param includeAcknowledged indicates whether to include acknowledged errors or not
+     * @param queryContext control parameters for pagination 
+     * @return list of found errors
+     */
+    List<ExecutionError> getErrorsByTaskName(String deploymentId, String processId, String taskName, boolean includeAcknowledged, QueryContext queryContext);
+    
+    /**
+     * Acknowledge given error that it was reviewed and understood
+     * @param errorId unique id of the error
+     * @throws ExecutionErrorNotFoundException thrown when there is no unacknowledged error with that id
+     */
+    void acknowledgeError(String... errorId) throws ExecutionErrorNotFoundException;
+    
+    /**
+     * Returns execution error identified by given error id
+     * @param errorId unique id of the error
+     * @return returns execution error instance
+     * @throws ExecutionErrorNotFoundException is thrown in case no error was found for given error id
+     */
+    ExecutionError getError(String errorId) throws ExecutionErrorNotFoundException;
+    
+    /**
+     * Returns execution errors that are classified as task type errors
+     * @param includeAcknowledged indicates whether to include acknowledged errors or not
+     * @param queryContext control parameters for pagination
+     * @return list of found errors
+     */
+    List<ExecutionError> getErrors(boolean includeAcknowledged, QueryContext queryContext);
 }

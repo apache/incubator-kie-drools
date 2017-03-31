@@ -77,6 +77,8 @@
     <!-- Task Audit Classes --> 
     <class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
     <class>org.jbpm.services.task.audit.impl.model.TaskVariableImpl</class>
+    
+    <class>org.jbpm.runtime.manager.impl.jpa.ExecutionErrorInfo</class>
 
     <properties>
       <property name="hibernate.max_fetch_depth" value="3" />
@@ -145,6 +147,8 @@
     <!-- Task Audit Classes --> 
     <class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
     <class>org.jbpm.services.task.audit.impl.model.TaskVariableImpl</class>
+    
+    <class>org.jbpm.runtime.manager.impl.jpa.ExecutionErrorInfo</class>
 
     <properties>
       <property name="hibernate.max_fetch_depth" value="3" />

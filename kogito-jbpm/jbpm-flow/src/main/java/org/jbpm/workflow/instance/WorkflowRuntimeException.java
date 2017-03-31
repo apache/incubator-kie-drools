@@ -39,6 +39,7 @@ public class WorkflowRuntimeException extends RuntimeException {
     private long nodeInstanceId;
     private long nodeId;
     private String nodeName;
+    private String deploymentId;
 
     private Map<String, Object> variables;
 
@@ -60,6 +61,7 @@ public class WorkflowRuntimeException extends RuntimeException {
     private void initialize(NodeInstance nodeInstance, ProcessInstance processInstance) {
         this.processInstanceId = processInstance.getId();
         this.processId = processInstance.getProcessId();
+        this.setDeploymentId(((ProcessInstanceImpl)processInstance).getDeploymentId());
         if( nodeInstance != null ) { 
             this.nodeInstanceId = nodeInstance.getId();
             this.nodeId = nodeInstance.getNodeId();
@@ -161,6 +163,14 @@ public class WorkflowRuntimeException extends RuntimeException {
                 (getNodeId() == 0 ? "?" : getNodeId()), 
                 (getCause() == null ? getMessage() : getCause().getMessage()), 
                 getProcessInstanceId());
+    }
+
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
     }
 
 }

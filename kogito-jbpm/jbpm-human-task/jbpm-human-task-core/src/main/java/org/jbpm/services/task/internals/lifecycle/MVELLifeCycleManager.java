@@ -31,11 +31,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.util.MVELSafeHelper;
+import org.jbpm.process.instance.impl.NoOpExecutionErrorHandler;
 import org.jbpm.services.task.assignment.AssignmentService;
 import org.jbpm.services.task.assignment.AssignmentServiceProvider;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -44,6 +46,8 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskData;
 import org.kie.api.task.model.User;
+import org.kie.internal.runtime.error.ExecutionErrorHandler;
+import org.kie.internal.runtime.error.ExecutionErrorManager;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskModelProvider;
@@ -298,7 +302,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
             if (targetEntityId != null && !targetEntityId.equals("")) {
                 targetEntity = persistenceContext.findOrgEntity(targetEntityId);
             }
-
+            getExecutionErrorHandler().processing(task);
             switch (operation) {    
                 case Activate: {
                 	taskEventSupport.fireBeforeTaskActivated(task, context);
@@ -436,7 +440,9 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 	taskEventSupport.fireAfterTaskSuspended(task, context);
                     break;
                 }
+                
             }
+            getExecutionErrorHandler().processed(task);
         } catch (RuntimeException re) {
             throw re;
         }
@@ -573,5 +579,13 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         }
 
         return assignedStatus;
+    }
+    
+    protected ExecutionErrorHandler getExecutionErrorHandler() {
+        ExecutionErrorManager errorManager = (ExecutionErrorManager) ((org.jbpm.services.task.commands.TaskContext) context).get(EnvironmentName.EXEC_ERROR_MANAGER);
+        if (errorManager == null) {
+            return new NoOpExecutionErrorHandler();
+        }
+        return errorManager.getHandler();
     }
 }

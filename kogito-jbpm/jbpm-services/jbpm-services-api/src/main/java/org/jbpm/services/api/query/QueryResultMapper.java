@@ -110,5 +110,21 @@ public interface QueryResultMapper<T> extends Serializable {
     public static final String COLUMN_JOB_COMMANDNAME = "commandName";
     public static final String COLUMN_JOB_MESSAGE = "message";
     public static final String COLUMN_JOB_BUSINESSKEY = "businessKey";
+    
+    // execution error
+    public static final String COLUMN_ERROR_ID = "ERROR_ID";
+    public static final String COLUMN_ERROR_TYPE = "ERROR_TYPE";
+    public static final String COLUMN_ERROR_DEPLOYMENT_ID = "DEPLOYMENT_ID";
+    public static final String COLUMN_ERROR_PROCESS_INST_ID = "PROCESS_INST_ID";
+    public static final String COLUMN_ERROR_PROCESS_ID = "PROCESS_ID";
+    public static final String COLUMN_ERROR_ACTIVITY_ID = "ACTIVITY_ID";
+    public static final String COLUMN_ERROR_ACTIVITY_NAME = "ACTIVITY_NAME";
+    public static final String COLUMN_ERROR_JOB_ID = "JOB_ID";
+    public static final String COLUMN_ERROR_MSG = "ERROR_MSG";
+    public static final String COLUMN_ERROR = "ERROR_INFO";
+    public static final String COLUMN_ERROR_ACK = "ERROR_ACK";
+    public static final String COLUMN_ERROR_ACK_BY = "ERROR_ACK_BY";
+    public static final String COLUMN_ERROR_ACK_AT = "ERROR_ACK_AT";
+    public static final String COLUMN_ERROR_DATE = "ERROR_DATE";
    
 }

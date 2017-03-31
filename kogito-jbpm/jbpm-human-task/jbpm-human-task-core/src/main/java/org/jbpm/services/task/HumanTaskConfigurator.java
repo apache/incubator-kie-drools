@@ -65,6 +65,7 @@ public class HumanTaskConfigurator {
 	private static final String DEFAULT_INTERCEPTOR = "org.jbpm.services.task.persistence.TaskTransactionInterceptor";
 	private static final String TX_LOCK_INTERCEPTOR = "org.drools.persistence.jta.TransactionLockInterceptor";
 	private static final String OPTIMISTIC_LOCK_INTERCEPTOR = "org.drools.persistence.jpa.OptimisticLockRetryInterceptor";
+	private static final String ERROR_HANDLING_INTERCEPTOR = "org.jbpm.runtime.manager.impl.error.ExecutionErrorHandlerInterceptor";
 
     private TaskService service;
     private TaskCommandExecutorImpl commandExecutor;
@@ -141,10 +142,11 @@ public class HumanTaskConfigurator {
         	if (userInfo == null) {
         		userInfo = new DefaultUserInfo(true);
         	}
-        	environment.set(EnvironmentName.TASK_USER_INFO, userInfo);
-        	addDefaultInterceptor();
+        	environment.set(EnvironmentName.TASK_USER_INFO, userInfo);        	
+        	addDefaultInterceptor();        	
         	addTransactionLockInterceptor();
         	addOptimisticLockInterceptor();
+        	addErrorHandlingInterceptor();
         	for (PriorityInterceptor pInterceptor : interceptors) {
         		this.commandExecutor.addInterceptor(pInterceptor.getInterceptor());
         	}        	
@@ -209,6 +211,21 @@ public class HumanTaskConfigurator {
     		logger.warn("No optimistic lock interceptor found of type {} might be mssing drools-persistence-jpa module on classpath (error {}",
     				OPTIMISTIC_LOCK_INTERCEPTOR, e.getMessage(), e);
     	}
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected void addErrorHandlingInterceptor() {
+        // add error handling interceptor if present
+        try {
+            Class<ChainableRunner> defaultInterceptorClass = (Class<ChainableRunner>) Class.forName(ERROR_HANDLING_INTERCEPTOR);
+            Constructor<ChainableRunner> constructor = defaultInterceptorClass.getConstructor(new Class[] {Environment.class});
+
+            ChainableRunner defaultInterceptor = constructor.newInstance(this.environment);
+            interceptor(8, defaultInterceptor);
+        } catch (Exception e) {
+            logger.debug("No error handling interceptor found of type {} might be missing jbpm-runtime-manager module on classpath (error {}",
+                    ERROR_HANDLING_INTERCEPTOR, e.getMessage(), e);
+        }
     }
    
     private static class PriorityInterceptor implements Comparable<PriorityInterceptor> {

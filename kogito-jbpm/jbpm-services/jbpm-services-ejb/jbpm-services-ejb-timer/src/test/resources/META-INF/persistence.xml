@@ -56,7 +56,8 @@
     <class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
     <class>org.jbpm.services.task.audit.impl.model.TaskVariableImpl</class>
 
-
+    <!-- error handling -->
+    <class>org.jbpm.runtime.manager.impl.jpa.ExecutionErrorInfo</class>
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
 

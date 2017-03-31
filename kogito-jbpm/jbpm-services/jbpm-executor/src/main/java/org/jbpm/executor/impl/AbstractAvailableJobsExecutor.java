@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.jbpm.executor.AsyncJobException;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.executor.impl.event.ExecutorEventSupport;
@@ -254,10 +255,10 @@ public abstract class AbstractAvailableJobsExecutor {
             request.setExecutions(request.getExecutions() + 1);
             
             executorStoreService.updateRequest(request);
-            
+            AsyncJobException wrappedException = new AsyncJobException(request.getId(), request.getCommandName(), e);
             if (callbacks != null) {
                 for (CommandCallback handler : callbacks) {                        
-                    handler.onCommandError(ctx, e);                        
+                    handler.onCommandError(ctx, wrappedException);                        
                 }
             }
             return true;

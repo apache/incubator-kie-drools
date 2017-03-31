@@ -45,3 +45,22 @@ create table CaseFileDataLog (
     lastModifiedBy varchar(255) null,
     primary key (id)
 ) lock datarows;
+
+create table ExecutionErrorInfo (
+    id bigint identity not null,
+    ERROR_ACK tinyint null,
+    ERROR_ACK_AT datetime null,
+    ERROR_ACK_BY varchar(255) null,
+    ACTIVITY_ID bigint null,
+    ACTIVITY_NAME varchar(255) null,
+    DEPLOYMENT_ID varchar(255) null,
+    ERROR_INFO text null,
+    ERROR_DATE datetime null,
+    ERROR_ID varchar(255) null,
+    ERROR_MSG varchar(255) null,
+    JOB_ID bigint null,
+    PROCESS_ID varchar(255) null,
+    PROCESS_INST_ID bigint null,
+    ERROR_TYPE varchar(255) null,
+    primary key (id)
+) lock datarows;

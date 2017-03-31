@@ -18,6 +18,7 @@ package org.jbpm.runtime.manager.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
@@ -98,6 +99,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 	        ((RuntimeEngineImpl) runtime).setManager(this);
     	}
         local.get().put(identifier, runtime);
+        ((ExecutionErrorManagerImpl)executionErrorManager).createHandler();
         return runtime;
     }
     
@@ -129,22 +131,29 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	if (isClosed()) {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
-    	if (canDispose(runtime)) {
-    	    local.get().remove(identifier);
-            try {
-                if (canDestroy(runtime)) {
-                    runtime.getKieSession().destroy();
-                } else {
+    	try {
+        	if (canDispose(runtime)) {
+        	    local.get().remove(identifier);
+        	    ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
+                try {
+                    if (canDestroy(runtime)) {
+                        runtime.getKieSession().destroy();
+                    } else {
+                        if (runtime instanceof Disposable) {
+                            ((Disposable) runtime).dispose();
+                        }
+                    }
+                } catch (Exception e) {
+                    // do nothing
                     if (runtime instanceof Disposable) {
                         ((Disposable) runtime).dispose();
                     }
                 }
-            } catch (Exception e) {
-                // do nothing
-                if (runtime instanceof Disposable) {
-                    ((Disposable) runtime).dispose();
-                }
-            }
+        	}
+    	} catch (Exception e) {
+    	    local.get().remove(identifier);
+    	    ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
+    	    throw new RuntimeException(e);
     	}
     }
 

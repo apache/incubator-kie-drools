@@ -17,6 +17,7 @@
 package org.jbpm.executor.impl.wih;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -37,6 +38,7 @@ import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.objects.IncrementService;
 import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.process.core.async.AsyncExecutionMarker;
+import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
@@ -61,6 +63,9 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.error.ExecutionError;
+import org.kie.internal.runtime.error.ExecutionErrorManager;
+import org.kie.internal.runtime.error.ExecutionErrorStorage;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -639,6 +644,134 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         
         requests = executorService.getRequestsByProcessInstance(processInstanceId, Arrays.asList(STATUS.DONE), new QueryContext());
         assertEquals(1, requests.size());
+    }
+    
+    @Test(timeout=10000)
+    public void testRunProcessWithAsyncHandlerRecordExecutionError() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        ((ExecutorServiceImpl) executorService).setRetries(0);
+        
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new AsyncWorkItemHandler(executorService, "org.jbpm.executor.ThrowExceptionCommand"));
+                        return handlers;
+                    }
+              
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        countDownListener.waitTillCompleted();
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        
+        List<RequestInfo> errorJobs = executorService.getInErrorRequests(new QueryContext());
+        assertEquals(1, errorJobs.size());
+        
+        RequestInfo errorJob = errorJobs.get(0);
+        assertEquals(errorJob.getProcessInstanceId().longValue(), processInstance.getId());
+        
+        ExecutionErrorManager errorManager = ((AbstractRuntimeManager) manager).getExecutionErrorManager();
+        assertNotNull("ErrorManager is null", errorManager);
+        ExecutionErrorStorage errorStorage = errorManager.getStorage();
+        assertNotNull("ErrorStorage is null", errorStorage);
+        
+        List<ExecutionError> errors = errorStorage.list(0, 10);
+        assertEquals(1, errors.size());
+        
+        ExecutionError error = errors.get(0);
+        assertNotNull(error);
+        assertEquals("Job", error.getType());
+        assertEquals(errorJob.getId(), error.getJobId());
+        assertEquals("ScriptTask", error.getProcessId());
+        assertEquals("", error.getActivityName());
+        assertEquals(manager.getIdentifier(), error.getDeploymentId());
+        assertNotNull(error.getError());
+        assertNotNull(error.getErrorMessage());
+        assertNotNull(error.getActivityId());
+        assertNotNull(error.getProcessInstanceId());
+        
+        assertNull(error.getAcknowledgedAt());
+        assertNull(error.getAcknowledgedBy());
+        assertFalse(error.isAcknowledged());
+        
+    }
+    
+    @Test(timeout=10000)
+    public void testRunProcessWithAsyncHandlerSkipExecutionError() throws Exception {
+        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Handling error", 1);
+        ((ExecutorServiceImpl) executorService).setRetries(0);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTaskErrorHandling.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new AsyncWorkItemHandler(executorService, "org.jbpm.executor.ThrowExceptionCommand"));
+                        return handlers;
+                    }
+                    @Override
+                    public List<ProcessEventListener> getProcessEventListeners( RuntimeEngine runtime) {
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(countDownListener);
+                        return listeners;
+                    }
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        Map<String, Object> params = new HashMap<>();
+        params.put("command", "org.jbpm.executor.ThrowExceptionCommand");
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask", params);
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        countDownListener.waitTillCompleted();
+        
+
+        List<RequestInfo> errorJobs = executorService.getInErrorRequests(new QueryContext());
+        assertEquals(1, errorJobs.size());
+        RequestInfo errorJob = errorJobs.get(0);
+        assertEquals(errorJob.getProcessInstanceId().longValue(), processInstance.getId());
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNull(processInstance);               
+        
+        ExecutionErrorManager errorManager = ((AbstractRuntimeManager) manager).getExecutionErrorManager();
+        assertNotNull("ErrorManager is null", errorManager);
+        ExecutionErrorStorage errorStorage = errorManager.getStorage();
+        assertNotNull("ErrorStorage is null", errorStorage);
+        
+        List<ExecutionError> errors = errorStorage.list(0, 10);
+        assertEquals(0, errors.size());
+        
+        
     }
     
     private ExecutorService buildExecutorService() {        

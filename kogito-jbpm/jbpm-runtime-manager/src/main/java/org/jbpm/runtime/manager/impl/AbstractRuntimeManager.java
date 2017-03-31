@@ -33,6 +33,8 @@ import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
+import org.jbpm.runtime.manager.impl.error.DefaultExecutionErrorStorage;
+import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.kie.api.event.process.ProcessEventListener;
@@ -48,6 +50,8 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.error.ExecutionErrorManager;
+import org.kie.internal.runtime.error.ExecutionErrorStorage;
 import org.kie.internal.runtime.manager.CacheManager;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
@@ -93,7 +97,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     protected boolean closed = false;
     
     protected SecurityManager securityManager = null;
-    
+    protected ExecutionErrorManager executionErrorManager;
+        
     protected ConcurrentMap<Long, ReentrantLock> engineLocks = new ConcurrentHashMap<Long, ReentrantLock>(); 
     
     public AbstractRuntimeManager(RuntimeEnvironment environment, String identifier) {
@@ -109,6 +114,12 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         if (eagerInit != null) {
         	engineInitEager = Boolean.parseBoolean(eagerInit);
         }
+        ExecutionErrorStorage storage = (ExecutionErrorStorage) ((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().get("ExecutionErrorStorage");
+        if (storage == null) {
+            storage = new DefaultExecutionErrorStorage(environment.getEnvironment());
+        }
+        this.executionErrorManager = new ExecutionErrorManagerImpl(storage);
+        ((SimpleRuntimeEnvironment)environment).getEnvironmentTemplate().set(EnvironmentName.EXEC_ERROR_MANAGER, executionErrorManager);
     }
     
     private void internalSetDeploymentDescriptor() {
@@ -514,4 +525,9 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         ((SimpleRuntimeEnvironment) environment).addToEnvironment("Active", false);
         
     }
+    
+    public ExecutionErrorManager getExecutionErrorManager() {
+        return executionErrorManager;
+    }
+
 }

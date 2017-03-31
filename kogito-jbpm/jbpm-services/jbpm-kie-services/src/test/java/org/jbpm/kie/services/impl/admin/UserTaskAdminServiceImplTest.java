@@ -38,6 +38,7 @@ import org.jbpm.services.api.admin.TaskNotification;
 import org.jbpm.services.api.admin.TaskReassignment;
 import org.jbpm.services.api.admin.UserTaskAdminService;
 import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,6 +100,7 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         ((UserTaskAdminServiceImpl) userTaskAdminService).setUserTaskService(userTaskService);
         ((UserTaskAdminServiceImpl) userTaskAdminService).setRuntimeDataService(runtimeDataService);
         ((UserTaskAdminServiceImpl) userTaskAdminService).setIdentityProvider(identityProvider);
+        ((UserTaskAdminServiceImpl) userTaskAdminService).setCommandService(new TransactionalCommandService(emf));
         
         // now let's deploy to runtime both kjars
         deploymentUnit = new KModuleDeploymentUnit(ADMIN_GROUP_ID, ADMIN_ARTIFACT_ID, ADMIN_VERSION_V1);

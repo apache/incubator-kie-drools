@@ -31,16 +31,25 @@ import org.jbpm.kie.services.impl.admin.commands.ListTaskReassignmentsCommand;
 import org.jbpm.kie.services.impl.admin.commands.RemovePeopleAssignmentsCommand;
 import org.jbpm.kie.services.impl.admin.commands.RemoveTaskDataCommand;
 import org.jbpm.kie.services.impl.admin.commands.ScheduleTaskDeadlineCommand;
+import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.TaskNotFoundException;
 import org.jbpm.services.api.UserTaskService;
+import org.jbpm.services.api.admin.ExecutionErrorNotFoundException;
 import org.jbpm.services.api.admin.TaskNotification;
 import org.jbpm.services.api.admin.TaskReassignment;
 import org.jbpm.services.api.admin.UserTaskAdminService;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
+import org.jbpm.shared.services.impl.QueryManager;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.shared.services.impl.commands.QueryNameCommand;
+import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.identity.IdentityProvider;
+import org.kie.internal.runtime.error.ExecutionError;
+import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.TaskDeadlinesService.DeadlineType;
 import org.kie.internal.task.api.TaskModelProvider;
@@ -65,6 +74,8 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
     private RuntimeDataService runtimeDataService;
     private IdentityProvider identityProvider;
     
+    private TransactionalCommandService commandService;
+    
     public void setUserTaskService(UserTaskService userTaskService) {
         this.userTaskService = userTaskService;
     }
@@ -77,6 +88,10 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
         this.identityProvider = identityProvider;
     }
 
+    public void setCommandService(TransactionalCommandService commandService) {
+        this.commandService = commandService;
+    }
+    
     @Override
     public void addPotentialOwners(long taskId, boolean removeExisting, OrganizationalEntity... orgEntities) throws TaskNotFoundException {
         addPeopleAssignment(taskId, removeExisting, POT_OWNER, orgEntities);
@@ -253,6 +268,105 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
     }
     
     /*
+     * Error handling related
+     */
+    
+    @Override
+    public List<ExecutionError> getErrors(boolean includeAcknowledged, QueryContext queryContext) {
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ack", getAckMode(includeAcknowledged));
+        applyQueryContext(params, queryContext);        
+        
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getTaskErrors",params));
+        return execErrors;
+    }
+    
+    @Override
+    public List<ExecutionError> getErrorsByTaskId(long taskId, boolean includeAcknowledged, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("taskId", taskId);
+        params.put("ack", getAckMode(includeAcknowledged));
+        applyQueryContext(params, queryContext);        
+        
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorsByTaskId",params));        
+        return execErrors;
+    }
+
+    @Override
+    public List<ExecutionError> getErrorsByTaskName(String taskName, boolean includeAcknowledged, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("taskName", taskName);
+        params.put("ack", getAckMode(includeAcknowledged));
+        applyQueryContext(params, queryContext);        
+        
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorsByTaskName",params));
+        return execErrors;
+    }
+
+    @Override
+    public List<ExecutionError> getErrorsByTaskName(String processId, String taskName, boolean includeAcknowledged, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processId", processId);
+        params.put("taskName", taskName);
+        params.put("ack", getAckMode(includeAcknowledged));
+        applyQueryContext(params, queryContext);   
+        
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorsByTaskNameProcessId",params));
+
+        return execErrors;
+    }
+
+    @Override
+    public List<ExecutionError> getErrorsByTaskName(String deploymentId, String processId, String taskName, boolean includeAcknowledged, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("deploymentId", deploymentId);
+        params.put("processId", processId);
+        params.put("taskName", taskName);
+        params.put("ack", getAckMode(includeAcknowledged));
+        applyQueryContext(params, queryContext);  
+        
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorsByTaskNameProcessIdDeploymentId",params));
+
+        return execErrors;
+    }
+
+    @Override
+    public void acknowledgeError(String... errorId) throws ExecutionErrorNotFoundException {
+        
+        for (String error : errorId) {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("errorId", error);               
+            params.put("ack", false);
+            List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorById",params));
+            
+            if (execErrors.isEmpty()) {
+                throw new ExecutionErrorNotFoundException("No execution error found for id " + errorId);
+            }
+            
+            ExecutionError errorInstance = execErrors.get(0);
+            RuntimeManager runtimeManager = RuntimeManagerRegistry.get().getManager(errorInstance.getDeploymentId());
+            if (runtimeManager != null) {
+                ((AbstractRuntimeManager) runtimeManager).getExecutionErrorManager().getStorage().acknowledge(identityProvider.getName(), errorInstance.getErrorId());
+            }
+        }
+    }
+    
+    
+    @Override
+    public ExecutionError getError(String errorId) throws ExecutionErrorNotFoundException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("errorId", errorId);               
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorByIdSkipAckCheck",params));
+        
+        if (execErrors.isEmpty()) {
+            throw new ExecutionErrorNotFoundException("No execution error found for id " + errorId);
+        }
+        ExecutionError error = execErrors.get(0);
+        return error;
+    }
+    
+    /*
      * Internal methods
      */
     
@@ -324,5 +438,30 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
                 new ScheduleTaskDeadlineCommand(identityProvider.getName(), taskId, type, taskDeadline, timeExpression));
     }
 
+    protected void applyQueryContext(Map<String, Object> params, QueryContext queryContext) {
+        if (queryContext != null) {
+            params.put("firstResult", queryContext.getOffset());
+            params.put("maxResults", queryContext.getCount());
 
+            if (queryContext.getOrderBy() != null && !queryContext.getOrderBy().isEmpty()) {
+                params.put(QueryManager.ORDER_BY_KEY, queryContext.getOrderBy());
+
+                if (queryContext.isAscending()) {
+                    params.put(QueryManager.ASCENDING_KEY, "true");
+                } else {
+                    params.put(QueryManager.DESCENDING_KEY, "true");
+                }
+            }
+        }
+    }
+
+    protected List<Boolean> getAckMode(boolean includeAcknowledged) {
+        List<Boolean> ackMode = new ArrayList<>();
+        ackMode.add(false);
+        if (includeAcknowledged) {
+            ackMode.add(true);
+        }
+        
+        return ackMode;
+    }
 }

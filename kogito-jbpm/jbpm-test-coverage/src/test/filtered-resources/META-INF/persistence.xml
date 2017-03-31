@@ -60,6 +60,9 @@
     <class>org.jbpm.services.task.audit.impl.model.TaskVariableImpl</class>
 
     <class>org.jbpm.test.entity.DocumentVariable</class>
+    
+    <!-- error handling -->
+    <class>org.jbpm.runtime.manager.impl.jpa.ExecutionErrorInfo</class>
 
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

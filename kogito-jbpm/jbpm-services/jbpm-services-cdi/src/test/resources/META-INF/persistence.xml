@@ -61,6 +61,9 @@
     
     <!--  query service storage -->
     <class>org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity</class>
+    
+    <!-- error handling -->
+    <class>org.jbpm.runtime.manager.impl.jpa.ExecutionErrorInfo</class>
 
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />

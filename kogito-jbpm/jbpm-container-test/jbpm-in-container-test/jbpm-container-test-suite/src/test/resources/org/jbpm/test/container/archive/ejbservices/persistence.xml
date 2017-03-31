@@ -54,6 +54,8 @@ http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistenc
     <!-- Executor Service -->
     <class>org.jbpm.executor.entities.ErrorInfo</class>
     <class>org.jbpm.executor.entities.RequestInfo</class>
+    <!-- error handling -->
+    <class>org.jbpm.runtime.manager.impl.jpa.ExecutionErrorInfo</class>
     <properties>
       <property name="hibernate.dialect" value="${org.jbpm.persistence.dialect}" />
       <property name="hibernate.max_fetch_depth" value="3" />

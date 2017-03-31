@@ -43,15 +43,18 @@ import org.jbpm.services.api.admin.TimerInstance;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.ObjectModel;
+import org.kie.internal.runtime.error.ExecutionError;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +83,9 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
         ReleaseId releaseId = ks.newReleaseId(ADMIN_GROUP_ID, ADMIN_ARTIFACT_ID, ADMIN_VERSION_V1);
         List<String> processes = new ArrayList<String>();
         processes.add("repo/processes/general/humanTask.bpmn");
-        processes.add("repo/processes/general/BPMN2-IntermediateCatchEventTimerDuration.bpmn2"); 
+        processes.add("repo/processes/general/BPMN2-IntermediateCatchEventTimerDuration.bpmn2");
+        processes.add("repo/processes/errors/BPMN2-BrokenScriptTask.bpmn2");
+        processes.add("repo/processes/errors/BPMN2-UserTaskWithRollback.bpmn2");
 
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/admin", "pom.xml");
@@ -98,6 +103,8 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
         processAdminService = new ProcessInstanceAdminServiceImpl();
         ((ProcessInstanceAdminServiceImpl) processAdminService).setProcessService(processService);
         ((ProcessInstanceAdminServiceImpl) processAdminService).setRuntimeDataService(runtimeDataService);
+        ((ProcessInstanceAdminServiceImpl) processAdminService).setCommandService(new TransactionalCommandService(emf));
+        ((ProcessInstanceAdminServiceImpl) processAdminService).setIdentityProvider(identityProvider);
         
         // now let's deploy to runtime both kjars
         deploymentUnit = new KModuleDeploymentUnit(ADMIN_GROUP_ID, ADMIN_ARTIFACT_ID, ADMIN_VERSION_V1);
@@ -382,6 +389,20 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
         assertEquals(ProcessInstance.STATE_COMPLETED, pi.getState().intValue());
         
         processInstanceId = null;
+    }
+    
+    @Test
+    public void testErrorHandlingOnScriptTask() {
+        
+        try {
+            processService.startProcess(deploymentUnit.getIdentifier(), "BrokenScriptTask");
+        } catch (Exception e) {
+            // expected as this is broken script process
+        }
+        
+        List<ExecutionError> errors = processAdminService.getErrors(true, new QueryContext());
+        assertNotNull(errors);
+        assertEquals(1, errors.size());
     }
 
     /*

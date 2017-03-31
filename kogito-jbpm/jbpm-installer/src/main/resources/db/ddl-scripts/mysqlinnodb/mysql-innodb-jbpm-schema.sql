@@ -173,6 +173,27 @@
         element varchar(255)
     ) ENGINE=InnoDB;
     
+    create table ExecutionErrorInfo (
+        id bigint not null auto_increment,
+        ERROR_ACK boolean,
+        ERROR_ACK_AT datetime,
+        -- ERROR_ACK_AT datetime(6), to be used with mysql 5.6.4 that supports millis precision
+        ERROR_ACK_BY varchar(255),
+        ACTIVITY_ID bigint,
+        ACTIVITY_NAME varchar(255),
+        DEPLOYMENT_ID varchar(255),
+        ERROR_INFO longtext,
+        ERROR_DATE datetime,
+        -- ERROR_DATE datetime(6), to be used with mysql 5.6.4 that supports millis precision
+        ERROR_ID varchar(255),
+        ERROR_MSG varchar(255),
+        JOB_ID bigint,
+        PROCESS_ID varchar(255),
+        PROCESS_INST_ID bigint,
+        ERROR_TYPE varchar(255),
+        primary key (id)
+    ) ENGINE=InnoDB;
+
     create table I18NText (
         id bigint not null auto_increment,
         language varchar(255),

@@ -27,6 +27,7 @@ import org.drools.core.event.AbstractEventSupport;
 import org.drools.persistence.api.OrderedTransactionSynchronization;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerHelper;
+import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.mapper.EnvironmentAwareProcessInstanceContext;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
@@ -112,7 +113,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         if (!(context instanceof ProcessInstanceIdContext || context instanceof CaseContext)) {
             logger.warn("ProcessInstanceIdContext or CaseContext shall be used when interacting with PerCase runtime manager");
         }
-
+        
         if (engineInitEager) {
             KieSession ksession = null;
             Long ksessionId = null;
@@ -183,6 +184,8 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         Long ksessionId = mapper.findMapping(context, this.identifier);
         createLockOnGetEngine(ksessionId, runtime);
         saveLocalRuntime(caseId, processInstanceId, runtime);
+        
+        ((ExecutionErrorManagerImpl)executionErrorManager).createHandler();
 
         return runtime;
     }
@@ -241,6 +244,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         try {
             if (canDispose(runtime)) {
                 removeLocalRuntime(runtime);
+                ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
                 releaseAndCleanLock(((RuntimeEngineImpl)runtime).getKieSessionId(), runtime);
                 if (runtime instanceof Disposable) {
                     // special handling for in memory to not allow to dispose if there is any context in the mapper
@@ -252,6 +256,8 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
             }
         } catch (Exception e) {
             releaseAndCleanLock(runtime);
+            removeLocalRuntime(runtime);
+            ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();            
             throw new RuntimeException(e);
         }            
     }

@@ -24,6 +24,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.persistence.api.OrderedTransactionSynchronization;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerHelper;
+import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.mapper.EnvironmentAwareProcessInstanceContext;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
@@ -151,6 +152,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	createLockOnGetEngine(context, runtime);
         saveLocalRuntime(contextId, runtime);
         
+        ((ExecutionErrorManagerImpl)executionErrorManager).createHandler();
+        
         return runtime;
     }
     
@@ -220,6 +223,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	try {
         	if (canDispose(runtime)) {
             	removeLocalRuntime(runtime);
+            	((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
             	if (runtime instanceof Disposable) {
                 	// special handling for in memory to not allow to dispose if there is any context in the mapper
                 	if (mapper instanceof InMemoryMapper && ((InMemoryMapper)mapper).hasContext(runtime.getKieSession().getIdentifier())){
@@ -232,6 +236,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         	}
     	} catch (Exception e) {
     	    releaseAndCleanLock(runtime);
+    	    removeLocalRuntime(runtime);
+    	    ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();    	    
     	    throw new RuntimeException(e);
     	}
     }

@@ -17,11 +17,14 @@
 package org.jbpm.services.api.admin;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.jbpm.services.api.NodeInstanceNotFoundException;
 import org.jbpm.services.api.NodeNotFoundException;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.NodeInstanceDesc;
+import org.kie.api.runtime.query.QueryContext;
+import org.kie.internal.runtime.error.ExecutionError;
 
 /**
  * Administrative operations for process instances to allow runtime modifications
@@ -109,5 +112,57 @@ public interface ProcessInstanceAdminService {
      * @throws ProcessInstanceNotFoundException in case process instance id with given id was not found
      */
     void triggerNode(long processInstanceId, long nodeId) throws NodeNotFoundException, ProcessInstanceNotFoundException;
+    
+    /**
+     * Acknowledge given error that it was reviewed and understood
+     * @param errorId unique id of the error
+     * @throws ExecutionErrorNotFoundException thrown when there is no unacknowledged error with that id
+     */
+    void acknowledgeError(String... errorId) throws ExecutionErrorNotFoundException;
+    
+    /**
+     * Returns execution error identified by given error id
+     * @param errorId unique id of the error
+     * @return returns execution error instance
+     * @throws ExecutionErrorNotFoundException is thrown in case no error was found for given error id
+     */
+    ExecutionError getError(String errorId) throws ExecutionErrorNotFoundException;
+    
+    /**
+     * Returns execution errors for given process id and deployment id
+     * @param deploymentId deployment id that contains given process
+     * @param processId process id of the process
+     * @param includeAcknowledged indicates whether to include acknowledged errors or not
+     * @param queryContext control parameters for pagination 
+     * @return list of found errors
+     */
+    List<ExecutionError> getErrorsByProcessId(String deploymentId, String processId, boolean includeAcknowledged, QueryContext queryContext);
+    
+    /**
+     * Returns execution errors for given process instance id
+     * @param processInstanceId process instance id of the process
+     * @param includeAcknowledged indicates whether to include acknowledged errors or not
+     * @param queryContext control parameters for pagination 
+     * @return list of found errors
+     */
+    List<ExecutionError> getErrorsByProcessInstanceId(long processInstanceId, boolean includeAcknowledged, QueryContext queryContext);
+    
+    /**
+     * Returns execution errors for given process instance id and node
+     * @param processInstanceId process instance id of the process
+     * @param nodeName name of the node that error should be found for
+     * @param includeAcknowledged indicates whether to include acknowledged errors or not
+     * @param queryContext control parameters for pagination 
+     * @return list of found errors
+     */
+    List<ExecutionError> getErrorsByProcessInstanceId(long processInstanceId, String nodeName, boolean includeAcknowledged, QueryContext queryContext);
+    
+    /**
+     * Returns all execution errors regardless of their type
+     * @param includeAcknowledged indicates whether to include acknowledged errors or not
+     * @param queryContext control parameters for pagination
+     * @return list of found errors
+     */
+    List<ExecutionError> getErrors(boolean includeAcknowledged, QueryContext queryContext);
     
 }

@@ -172,6 +172,25 @@
         element varchar(255)
     );
     
+    create table ExecutionErrorInfo (
+        id bigint not null auto_increment,
+        ERROR_ACK boolean,
+        ERROR_ACK_AT datetime,
+        ERROR_ACK_BY varchar(255),
+        ACTIVITY_ID bigint,
+        ACTIVITY_NAME varchar(255),
+        DEPLOYMENT_ID varchar(255),
+        ERROR_INFO longtext,
+        ERROR_DATE datetime,
+        ERROR_ID varchar(255),
+        ERROR_MSG varchar(255),
+        JOB_ID bigint,
+        PROCESS_ID varchar(255),
+        PROCESS_INST_ID bigint,
+        ERROR_TYPE varchar(255),
+        primary key (id)
+    );
+
     create table I18NText (
         id bigint not null auto_increment,
         language varchar(255),

@@ -50,4 +50,25 @@ create table CaseFileDataLog (
     primary key (id)
 );
 
+create table ExecutionErrorInfo (
+    id int8 not null,
+    ERROR_ACK boolean,
+    ERROR_ACK_AT timestamp,
+    ERROR_ACK_BY varchar(255),
+    ACTIVITY_ID int8,
+    ACTIVITY_NAME varchar(255),
+    DEPLOYMENT_ID varchar(255),
+    ERROR_INFO text,
+    ERROR_DATE timestamp,
+    ERROR_ID varchar(255),
+    ERROR_MSG varchar(255),
+    JOB_ID int8,
+    PROCESS_ID varchar(255),
+    PROCESS_INST_ID int8,
+    ERROR_TYPE varchar(255),
+    primary key (id)
+);
+
 create sequence CASE_FILE_DATA_LOG_ID_SEQ;
+
+create sequence EXEC_ERROR_INFO_ID_SEQ;

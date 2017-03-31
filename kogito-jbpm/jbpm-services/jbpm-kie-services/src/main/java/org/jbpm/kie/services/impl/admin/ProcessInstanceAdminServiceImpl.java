@@ -16,7 +16,11 @@
 
 package org.jbpm.kie.services.impl.admin;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.jbpm.kie.services.impl.admin.commands.CancelNodeInstanceCommand;
 import org.jbpm.kie.services.impl.admin.commands.ListNodesCommand;
@@ -25,23 +29,34 @@ import org.jbpm.kie.services.impl.admin.commands.RetriggerNodeInstanceCommand;
 import org.jbpm.kie.services.impl.admin.commands.TriggerNodeCommand;
 import org.jbpm.process.instance.command.RelativeUpdateTimerCommand;
 import org.jbpm.process.instance.command.UpdateTimerCommand;
+import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.services.api.NodeInstanceNotFoundException;
 import org.jbpm.services.api.NodeNotFoundException;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
+import org.jbpm.services.api.admin.ExecutionErrorNotFoundException;
 import org.jbpm.services.api.admin.ProcessInstanceAdminService;
 import org.jbpm.services.api.admin.ProcessNode;
 import org.jbpm.services.api.admin.TimerInstance;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.shared.services.impl.QueryManager;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.shared.services.impl.commands.QueryNameCommand;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.query.QueryContext;
+import org.kie.internal.identity.IdentityProvider;
+import org.kie.internal.runtime.error.ExecutionError;
+import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 public class ProcessInstanceAdminServiceImpl implements ProcessInstanceAdminService {
 
     private ProcessService processService;    
     private RuntimeDataService runtimeDataService;
+    private IdentityProvider identityProvider;
+    private TransactionalCommandService commandService;
     
     public void setProcessService(ProcessService processService) {
         this.processService = processService;
@@ -49,6 +64,14 @@ public class ProcessInstanceAdminServiceImpl implements ProcessInstanceAdminServ
     
     public void setRuntimeDataService(RuntimeDataService runtimeDataService) {
         this.runtimeDataService = runtimeDataService;
+    }
+
+    public void setIdentityProvider(IdentityProvider identityProvider) {
+        this.identityProvider = identityProvider;
+    }
+    
+    public void setCommandService(TransactionalCommandService commandService) {
+        this.commandService = commandService;
     }
 
     @Override
@@ -123,6 +146,118 @@ public class ProcessInstanceAdminServiceImpl implements ProcessInstanceAdminServ
     @Override
     public Collection<NodeInstanceDesc> getActiveNodeInstances(long processInstanceId) throws ProcessInstanceNotFoundException {
         return runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext(0, 1000));
+    }
+    
+    @Override
+    public void acknowledgeError(String... errorId) throws ExecutionErrorNotFoundException {
+        for (String error : errorId) {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("errorId", error);               
+            params.put("ack", false);
+            List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorById",params));
+            
+            if (execErrors.isEmpty()) {
+                throw new ExecutionErrorNotFoundException("No execution error found for id " + errorId);
+            }
+            
+            ExecutionError errorInstance = execErrors.get(0);
+            RuntimeManager runtimeManager = RuntimeManagerRegistry.get().getManager(errorInstance.getDeploymentId());
+            if (runtimeManager != null) {
+                ((AbstractRuntimeManager) runtimeManager).getExecutionErrorManager().getStorage().acknowledge(identityProvider.getName(), errorInstance.getErrorId());
+            }
+        }
+    }
+    
+    
+    @Override
+    public ExecutionError getError(String errorId) throws ExecutionErrorNotFoundException {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("errorId", errorId);               
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorByIdSkipAckCheck",params));
+        
+        if (execErrors.isEmpty()) {
+            throw new ExecutionErrorNotFoundException("No execution error found for id " + errorId);
+        }
+        ExecutionError error = execErrors.get(0);
+        return error;
+    }
+    
+    @Override
+    public List<ExecutionError> getErrors(boolean includeAcknowledged, QueryContext queryContext) {
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ack", getAckMode(includeAcknowledged));
+        applyQueryContext(params, queryContext);        
+        
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrors",params));
+        return execErrors;
+    }
+
+
+    @Override
+    public List<ExecutionError> getErrorsByProcessId(String deploymentId, String processId, boolean includeAcknowledged, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("deploymentId", deploymentId);
+        params.put("processId", processId);
+        params.put("ack", getAckMode(includeAcknowledged));
+        applyQueryContext(params, queryContext);        
+        
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorsByProcessId",params));
+        return execErrors;
+    }
+
+    @Override
+    public List<ExecutionError> getErrorsByProcessInstanceId(long processInstanceId, boolean includeAcknowledged, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processInstanceId", processInstanceId);
+        params.put("ack", getAckMode(includeAcknowledged));
+        applyQueryContext(params, queryContext);        
+        
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorsByProcessInstanceId",params));
+        return execErrors;
+    }
+
+    @Override
+    public List<ExecutionError> getErrorsByProcessInstanceId(long processInstanceId, String nodeName, boolean includeAcknowledged, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processInstanceId", processInstanceId);
+        params.put("nodeName", nodeName);
+        params.put("ack", getAckMode(includeAcknowledged));
+        applyQueryContext(params, queryContext);        
+        
+        List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorsByProcessInstanceIdNodeName",params));
+        return execErrors;
+    }
+    
+    /*
+     * Helper methods
+     */
+    
+    protected void applyQueryContext(Map<String, Object> params, QueryContext queryContext) {
+        if (queryContext != null) {
+            params.put("firstResult", queryContext.getOffset());
+            params.put("maxResults", queryContext.getCount());
+
+            if (queryContext.getOrderBy() != null && !queryContext.getOrderBy().isEmpty()) {
+                params.put(QueryManager.ORDER_BY_KEY, queryContext.getOrderBy());
+
+                if (queryContext.isAscending()) {
+                    params.put(QueryManager.ASCENDING_KEY, "true");
+                } else {
+                    params.put(QueryManager.DESCENDING_KEY, "true");
+                }
+            }
+        }
+    }
+    
+    protected List<Boolean> getAckMode(boolean includeAcknowledged) {
+        List<Boolean> ackMode = new ArrayList<>();
+        ackMode.add(false);
+        if (includeAcknowledged) {
+            ackMode.add(true);
+        }
+        
+        return ackMode;
     }
 
 }
