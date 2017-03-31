@@ -103,15 +103,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <!-- TODO: Upgrade to newest version of checkstyle once we move to Java 7+ -->
-          <!-- https://maven.apache.org/components/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html -->
-          <!--<dependencies>-->
-            <!--<dependency>-->
-              <!--<groupId>com.puppycrawl.tools</groupId>-->
-              <!--<artifactId>checkstyle</artifactId>-->
-              <!--<version>6.9</version>-->
-            <!--</dependency>-->
-          <!--</dependencies>-->
           <executions>
             <execution>
               <id>validate</id>
