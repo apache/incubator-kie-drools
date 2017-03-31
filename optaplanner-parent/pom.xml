@@ -141,7 +141,6 @@
                       <!-- TODO: Enable NonEmptyAtclauseDescription after https://github.com/checkstyle/checkstyle/issues/1064 is fixed -->
                       <!--<module name="NonEmptyAtclauseDescription"/>-->
                       <!-- Checks for imports. -->
-                      <!--<module name="UnusedImports"/>-->
                       <module name="RedundantImport"/>
                       <!-- defaults to sun.* packages -->
                       <module name="IllegalImport"/>
