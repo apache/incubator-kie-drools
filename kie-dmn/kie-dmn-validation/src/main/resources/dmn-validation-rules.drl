@@ -85,17 +85,6 @@ then
   reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.ELEMREF_NOHASH, $oc.getParentDRDElement().getIdentifierString() );
 end
 
-rule ELEMREF_MISSING_BKM
-when
-  $knowReq: KnowledgeRequirement( requiredKnowledge != null,
-                                  $elemRef: requiredKnowledge,
-                                  $targetId : rightOfHash( requiredKnowledge.href ),
-                                  $elemRef.parentDRDElement == this)
-  not ( BusinessKnowledgeModel( id == $targetId ) )
-then
-  reporter.report( DMNMessage.Severity.ERROR,  $elemRef , Msg.REQ_BKM_NOT_FOUND_FOR_NODE, $targetId, $knowReq.getIdentifierString() );
-end
-
 rule FORMAL_PARAM_DUPLICATED
 when
     $fp1 : InformationItem( parent instanceof FunctionDefinition )
