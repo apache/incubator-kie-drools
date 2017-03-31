@@ -509,7 +509,7 @@ But despite that, both can benefit if the human planner becomes the supervisor o
 ** Some examples expose a `\*Parametrization` object, which defines the weight for each score constraint. The human planner can then tweak those weights at runtime.
 ** When the business changes, the score function often needs to change too. The human planner can notify the developers to add, change or remove score constraints.
 * *The human planner is always in control of Planner.*
-** As shown in the course scheduling example, the human planner can lock 1 or more planning variables to a specific planning value and make those immovable. Because they are <<immovablePlanningEntities,immovable>>, Planner does not change them: it optimizes the planning around the enforcements made by the human. If the human planner locks all planning variables, he/she sidelines Planner completely.
+** As shown in the course scheduling example, the human planner can lock one or more planning variables to a specific planning value and make those immovable. Because they are <<immovablePlanningEntities,immovable>>, Planner does not change them: it optimizes the planning around the enforcements made by the human. If the human planner locks all planning variables, he/she sidelines Planner completely.
 ** In a prototype implementation, the human planner might use this occasionally. But as the implementation matures, it must become obsolete. But do keep the feature alive: as a reassurance for the humans. Or in case that one day the business changes dramatically before the score constraints can be adjusted.
 
 Therefore, it's often a good idea to involve the human planner in your project.
@@ -532,9 +532,9 @@ Understand these guidelines to decide the hardware for a Planner service:
 ** The problem dataset, loaded before Planner is called, often consumes the most memory. It depends on the problem scale.
 *** For example, in the Machine Reassignment example some datasets use over 1GB in memory. But in most examples, they use just a few MB.
 *** If this is a problem, review the domain class structure: remove classes or fields that Planner doesn't need during solving.
-*** Planner usually has up to 3 solution instances: the internal working solution, the best solution and the old best solution (when it's being replaced). However, these are all a <<cloningASolution,planning clone>> of each other, so many problem fact instances are shared between those solution instances.
+*** Planner usually has up to three solution instances: the internal working solution, the best solution and the old best solution (when it's being replaced). However, these are all a <<cloningASolution,planning clone>> of each other, so many problem fact instances are shared between those solution instances.
 ** During solving, the memory is very volatile, because solving creates many short-lived objects. The Garbage Collector deletes these in bulk and therefore needs some heap space as a buffer.
-** The maximum size of the JVM heap space can be in 3 states:
+** The maximum size of the JVM heap space can be in three states:
 *** **Insufficient**: An `OutOfMemoryException` is thrown (often because the Garbage Collector is using more than 98% of the CPU time).
 *** **Narrow**: The heap buffer for those short-lived instances is too small, therefore the Garbage Collector needs to run more than it would like to, which causes a performance loss.
 **** Profiling shows that in the heap chart, the used heap space frequently touches the max heap space during solving. It also shows that the Garbage Collector has a significant CPU usage impact.
@@ -547,18 +547,18 @@ Understand these guidelines to decide the hardware for a Planner service:
 *** If the CPU power is twice as fast, it takes half the time to find the same result. However, this does not guarantee that it finds a better result in the same time, nor that it finds a similar result for a problem twice as a big in the same time.
 *** Increasing CPU power usually does not resolve scaling issues, because planning problems scale exponentially. Power tweaking the solver configuration has far better results for scaling issues than throwing hardware at it.
 ** During the `solve()` method, the CPU power will max out until it returns (except in <<daemon,daemon mode>> or if your <<SolverEventListener,SolverEventListener>> writes the best solution to disk or the network).
-* **Number of CPU cores**: 1 CPU core per active Solver, plus at least one 1 for the operating system.
-** So in a multitenant application, which has 1 Solver per tenant, this means 1 CPU core per tenant, unless the number of solver threads is limited, as that limits the number of tenants being solved in parallel.
-** With Partitioned Search, presume 1 CPU core per partition (per active tenant), unless the number of partition threads is limited.
+* **Number of CPU cores**: one CPU core per active Solver, plus at least one one for the operating system.
+** So in a multitenant application, which has one Solver per tenant, this means one CPU core per tenant, unless the number of solver threads is limited, as that limits the number of tenants being solved in parallel.
+** With Partitioned Search, presume one CPU core per partition (per active tenant), unless the number of partition threads is limited.
 *** To reduce the number of used cores, it can be better to reduce the partition threads (so solve some partitions sequentially) than to reduce the number of partitions.
 ** In use cases with many tenants (such as scheduling Software as a Service) or many partitions, it might not be affordable to provision that many CPU's.
-*** Reduce the number of active Solvers at a time. For example: give each tenant only 1 minute of machine time and use a `ExecutorService` with a fixed thread pool to queue requests.
+*** Reduce the number of active Solvers at a time. For example: give each tenant only one minute of machine time and use a `ExecutorService` with a fixed thread pool to queue requests.
 *** Distribute the Solver runs across the day (or night). This is especially an opportunity in SaaS that's used across the globe, due to timezones: UK and India can use the same CPU core when scheduling at night.
 ** The SolverManager will take care of the orchestration, especially in those underfunded environments in which solvers (and partitions) are forced to share CPU cores or wait in line.
 * **I/O (network, disk, ...)**: Not used during solving.
 ** Planner is not a web server: a solver thread does not block (unlike a servlet thread), each one fully drains a CPU.
-*** A web server can handle 24 active servlets threads with 8 cores without performance loss, because most servlets threads are blocking on I/O.
-*** However, 24 active solver threads with 8 cores will cause each solver's <<scoreCalculationSpeed,score calculation speed>> to be 3 times slower, causing a big performance loss.
+*** A web server can handle 24 active servlets threads with eight cores without performance loss, because most servlets threads are blocking on I/O.
+*** However, 24 active solver threads with eight cores will cause each solver's <<scoreCalculationSpeed,score calculation speed>> to be three times slower, causing a big performance loss.
 ** Note that calling any I/O during solving, for example a remote service in your score calculation, causes a huge performance loss because it's called thousands of times per second, so it should complete in microseconds. So no good implementation does that.
 
 Keep these guidelines in mind when selecting and configuring the software.

@@ -102,7 +102,7 @@ A benchmark configuration file looks like this:
 </plannerBenchmark>
 ----
 
-This `PlannerBenchmark` will try 3 configurations (Tabu Search, Simulated Annealing and Late Acceptance) on 2 data sets (32queens and 64queens), so it will run 6 solvers.
+This `PlannerBenchmark` will try three configurations (Tabu Search, Simulated Annealing and Late Acceptance) on two data sets (32queens and 64queens), so it will run six solvers.
 
 Every `<solverBenchmark>` element contains a solver configuration and one or more `<inputSolutionFile>` elements.
 It will run the solver configuration on each of those unsolved solution files.
@@ -126,7 +126,7 @@ Usually that directory is called ``local``.
 ====
 
 If an `Exception` or `Error` occurs in a single benchmark, the entire Benchmarker will not fail-fast (unlike everything else in Planner).
-Instead, the Benchmarker will continue to run all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single benchmark).
+Instead, the Benchmarker will continue to run all other benchmarks, write the benchmark report and then fail (if there is at least one failing single benchmark).
 The failing benchmarks will be clearly marked as such in the benchmark report.
 
 
@@ -217,7 +217,7 @@ A `SolutionFileIO` implementation must be thread-safe.
 ==== Reading An Input Solution From A Database (Or Other Repository)
 
 The benchmark configuration currently expects an `<inputSolutionFile>` element, so a separate file, for each dataset.
-There are 2 ways to deal with this if your dataset is in a relational database or another type of repository:
+There are two ways to deal with this if your dataset is in a relational database or another type of repository:
 
 * Extract the datasets from the database and serialize them to a local file (for example as XML with `XStreamSolutionFileIO` if XML isn't too verbose).
 Then use those files an `<inputSolutionFile>` elements.
@@ -729,7 +729,7 @@ The memory use statistic has been seen to affect the solver noticeably.
 [[enableASingleStatistic]]
 === Enable A Single Statistic
 
-A single statistic is a statics for 1 dataset for 1 solver configuration.
+A single statistic is a statics for one dataset for one solver configuration.
 Unlike a problem statistic, it does not aggregate over solver configurations.
 
 The benchmarker supports outputting single statistics as graphs and CSV (comma separated values) files to the ``benchmarkDirectory``.
@@ -899,7 +899,7 @@ If it's higher, it will be automatically decreased.
 
 [NOTE]
 ====
-If you have a computer with slow or unreliable cooling, increasing the `parallelBenchmarkCount` above 1 (even on ``AUTO``) may overheat your CPU.
+If you have a computer with slow or unreliable cooling, increasing the `parallelBenchmarkCount` above one (even on ``AUTO``) may overheat your CPU.
 
 The `sensors` command can help you detect if this is the case.
 It is available in the package `lm_sensors` or `lm-sensors` in most Linux distributions.
@@ -962,7 +962,7 @@ If `subSingleCount` is higher than ``1``, the benchmarker will automatically use
 === Template Based Benchmarking And Matrix Benchmarking
 
 Matrix benchmarking is benchmarking a combination of value sets.
-For example: benchmark 4 `entityTabuSize` values (``5``, ``7``, `11` and ``13``) combined with 3 `acceptedCountLimit` values (``500``, `1000` and ``2000``), resulting in 12 solver configurations.
+For example: benchmark four `entityTabuSize` values (``5``, ``7``, `11` and ``13``) combined with three `acceptedCountLimit` values (``500``, `1000` and ``2000``), resulting in 12 solver configurations.
 
 To reduce the verbosity of such a benchmark configuration, you can use a http://freemarker.org//[Freemarker] template for the benchmark configuration instead:
 
@@ -1041,7 +1041,7 @@ And build it with the class ``PlannerBenchmarkFactory``:
 [[benchmarkReportAggregation]]
 === Benchmark Report Aggregation
 
-The `BenchmarkAggregator` takes 1 or more existing benchmarks and merges them into new benchmark report, without actually running the benchmarks again.
+The `BenchmarkAggregator` takes one or more existing benchmarks and merges them into new benchmark report, without actually running the benchmarks again.
 
 image::BenchmarkingAndTweaking/benchmarkAggregator.png[align="center"]
 

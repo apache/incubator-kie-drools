@@ -32,7 +32,7 @@ Therefore it's pretty natural to implement.
 A step is the winning ``Move``.
 Local Search tries a number of moves on the current solution and picks the best accepted move as the step:
 
-.Decide the next step at step 0 (4 queens example)
+.Decide the next step at step 0 (four queens example)
 image::LocalSearch/decideNextStepNQueens04.png[align="center"]
 
 Because the move _B0 to B3_ has the highest score (``-3``), it is picked as the next step.
@@ -43,7 +43,7 @@ The step is applied on the solution.
 From that new solution, Local Search tries every move again, to decide the next step after that.
 It continually does this in a loop, and we get something like this:
 
-.All steps (4 queens example)
+.All steps (four queens example)
 image::LocalSearch/allStepsNQueens04.png[align="center"]
 
 Notice that Local Search doesn't use a search tree, but a search path.
@@ -51,7 +51,7 @@ The search path is highlighted by the green arrows.
 At each step it tries all selected moves, but unless it's the step, it doesn't investigate that solution further.
 This is one of the reasons why Local Search is very scalable.
 
-As shown above, Local Search solves the 4 queens problem by starting with the starting solution and make the following steps sequentially:
+As shown above, Local Search solves the four queens problem by starting with the starting solution and make the following steps sequentially:
 
 . _B0 to B3_
 . _D0 to B2_
@@ -71,7 +71,7 @@ INFO  Solving ended: time spent (41), best score (0), score calculation speed (5
 
 Notice that a log message includes the `toString()` method of the `Move` implementation which returns for example $$"$$``Queen-1 {Row-0 -> Row-3}``".
 
-A naive Local Search configuration solves the 4 queens problem in 3 steps, by evaluating only 37 possible solutions (3 steps with 12 moves each + 1 starting solution), which is only fraction of all 256 possible solutions.
+A naive Local Search configuration solves the four queens problem in three steps, by evaluating only 37 possible solutions (three steps with 12 moves each + one starting solution), which is only fraction of all 256 possible solutions.
 It solves 16 queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible solutions.
 By using a <<constructionHeuristics,Construction Heuristics>> phase first, it's even a lot more efficient.
 
@@ -79,7 +79,7 @@ By using a <<constructionHeuristics,Construction Heuristics>> phase first, it's 
 [[localSearchConceptsDecideTheNextStep]]
 === Decide the Next Step
 
-Local Search decides the next step with the aid of 3 configurable components:
+Local Search decides the next step with the aid of three configurable components:
 
 * A `MoveSelector` which selects the possible moves of the current solution. See the chapter <<moveAndNeighborhoodSelection,move and neighborhood selection>>.
 * An `Acceptor` which filters out unacceptable moves.
@@ -177,7 +177,7 @@ To evaluate only a random subset of all the moves, use:
 ----
 
 Unlike the n queens problem, real world problems require the use of ``acceptedCountLimit``.
-Start from an `acceptedCountLimit` that takes a step in less then 2 seconds. <<logging,Turn on INFO logging>> to see the step times.
+Start from an `acceptedCountLimit` that takes a step in less then two seconds. <<logging,Turn on INFO logging>> to see the step times.
 Use the <<benchmarker,Benchmarker>> to tweak the value.
 
 [IMPORTANT]
@@ -190,7 +190,7 @@ With a low `acceptedCountLimit` (so a fast stepping algorithm), it is recommende
 ==== Pick Early Type
 
 A forager can pick a move early during a step, ignoring subsequent selected moves.
-There are 3 pick early types for Local Search:
+There are three pick early types for Local Search:
 
 * ``NEVER``: A move is never picked early: all accepted moves are evaluated that the selection allows. This is the default.
 +
@@ -291,7 +291,7 @@ Tabu Search works like Hill Climbing, but it maintains a tabu list to avoid gett
 The tabu list holds recently used objects that are _taboo_ to use for now.
 Moves that involve an object in the tabu list, are not accepted.
 The tabu list objects can be anything related to the move, such as the planning entity, planning value, move, solution, ...
-Here's an example with entity tabu for 4 queens, so the queens are put in the tabu list:
+Here's an example with entity tabu for four queens, so the queens are put in the tabu list:
 
 image::LocalSearch/entityTabuSearch.png[align="center"]
 

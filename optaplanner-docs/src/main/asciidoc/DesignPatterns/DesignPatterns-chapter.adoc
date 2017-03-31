@@ -25,7 +25,7 @@ These guidelines help to design a good model:
 *** For example in employee rostering, the samples for the `Employee` class are _Ann_, _Bert_ and _Carl_.
 
 . *Determine which relationships (or fields) change during planning*. Color them orange.
-Often there is only 1 such relationship (or field).
+Often there is only one such relationship (or field).
 One side of these relationships will become a planning variable later on.
 ** For example in employee rostering, the `Shift` to `Employee` relationship changes during planning,
 so it is orange.
@@ -121,7 +121,7 @@ There are also several designs for assigning a planning entity to a starting tim
 ** This is common in <<multiStagePlanning,multi stage planning>>, when the starting time has been decided already in an earlier planning stage.
 * The starting time is not fixed, it is a planning variable (genuine or shadow).
 ** If all planning entities have the same duration, use the <<timeslotPattern,Timeslot pattern>>.
-*** For example in course scheduling, all lectures take 1 hour. Therefore, each timeslot is 1 hour.
+*** For example in course scheduling, all lectures take one hour. Therefore, each timeslot is one hour.
 ** If the duration differs and time is rounded to a specifc time granularity (for example 5 minutes) use the <<timeGrainPattern,TimeGrain pattern>>.
 *** For example in meeting scheduling, all meetings start at 15 minute intervals. All meetings take 15, 30, 45, 60, 90 or 120 minutes.
 ** If the duration differs and one task starts immediately after the previous task (assigned to the same executor) finishes, use the <<chainedThroughTimePattern,Chained Through Time pattern>>.
@@ -137,7 +137,7 @@ image::DesignPatterns/assigningTimeToPlanningEntities.png[align="center"]
 
 If all planning entities have *the same duration* (or can be inflated to the same duration), the Timeslot pattern is useful.
 The planning entities are assigned to a timeslot rather than time.
-For example in <<curriculumCourse,course timetabling>>, all lectures take 1 hour.
+For example in <<curriculumCourse,course timetabling>>, all lectures take one hour.
 
 The timeslots can start at any time.
 For example, the timeslots start at 8:00, 9:00, 10:15 (after a 15-minute break), 11:15, ... They can even overlap, but that is unusual.
@@ -154,9 +154,9 @@ However, in exam timetabling, that is allowed, if there is enough seating capaci
 [[timeGrainPattern]]
 === TimeGrain Pattern: Assign to a Starting TimeGrain
 
-Assigning humans to start a meeting at 4 seconds after 9 o'clock is pointless because most human activities have a time granularity of 5 minutes or 15 minutes.
-Therefore it is not necessary to allow a planning entity to be assigned subsecond, second or even 1 minute accuracy.
-The 5 minute or 15 minutes accuracy suffices.
+Assigning humans to start a meeting at four seconds after 9 o'clock is pointless because most human activities have a time granularity of five minutes or 15 minutes.
+Therefore it is not necessary to allow a planning entity to be assigned subsecond, second or even one minute accuracy.
+The five minute or 15 minutes accuracy suffices.
 The TimeGrain pattern models such *time accuracy* by partitioning time as time grains.
 For example in <<meetingScheduling,meeting scheduling>>, all meetings start/end in hour, half hour, or 15-minute intervals before or after each hour, therefore the optimal settings for time grains is 15 minutes.
 
@@ -172,7 +172,7 @@ However, such solution is not impossible, as shown in <<cheapTimeScheduling,chea
 [[chainedThroughTimePattern]]
 === Chained Through Time Pattern: Assign in a Chain that Determines Starting Time
 
-If a person or a machine continuously works on **1 task at a time in sequence**,
+If a person or a machine continuously works on **one task at a time in sequence**,
 which means starting a task when the previous is finished (or with a deterministic delay), the Chained Through Time pattern is useful.
 For example, in the vehicle routing with time windows example, a vehicle drives from customer to customer (thus it handles one customer at a time).
 
@@ -191,7 +191,7 @@ Between planning entities, there are three ways to create gaps:
 
 * No gaps: This is common when the anchor is a machine. For example, a build server always starts the next job when the previous finishes, without a break.
 * Only deterministic gaps: This is common for humans. For example, any task that crosses the 10:00 barrier gets an extra 15 minutes duration so the human can take a break.
-** A deterministic gap can be subjected to complex business logic. For example in vehicle routing, a cross-continent truck driver needs to rest 15 minutes after 2 hours of driving (which may also occur during loading or unloading time at a customer location) and also needs to rest 10 hours after 14 hours of work.
+** A deterministic gap can be subjected to complex business logic. For example in vehicle routing, a cross-continent truck driver needs to rest 15 minutes after two hours of driving (which may also occur during loading or unloading time at a customer location) and also needs to rest 10 hours after 14 hours of work.
 * Planning variable gaps: This is uncommon, because an extra planning variable (which impacts the <<searchSpaceSize,search space>>) reduces efficiency and scalability.
 
 

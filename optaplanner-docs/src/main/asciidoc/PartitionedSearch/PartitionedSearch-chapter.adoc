@@ -248,7 +248,7 @@ other processes (such as an SSH connection in production or your IDE in developm
 or other threads (such as the servlet threads that handle REST requests).
 
 As explained in <<sizingHardwareAndSoftware, sizing hardware and software>>,
-each solver (including each child solver) does no IO during `solve()` and therefore saturates 1 CPU core completely.
+each solver (including each child solver) does no IO during `solve()` and therefore saturates one CPU core completely.
 In Partitioned Search, every partition always has its own thread, called a part thread.
 It is impossible for two partitions to share a thread,
 because of <<asynchronousTermination,asynchronous termination>>: the second thread would never run.

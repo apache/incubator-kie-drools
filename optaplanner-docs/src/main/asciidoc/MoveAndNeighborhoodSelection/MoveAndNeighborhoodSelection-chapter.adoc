@@ -26,12 +26,12 @@ For example, on that original solution, these are all possible ``changeMove``'s:
 
 image::MoveAndNeighborhoodSelection/possibleMovesNQueens04.png[align="center"]
 
-If we ignore the 4 ``changeMove``'s that have not impact and are therefore not doable, we can see that number of moves is ``n * (n - 1) = 12``.
+If we ignore the four ``changeMove``'s that have not impact and are therefore not doable, we can see that number of moves is ``n * (n - 1) = 12``.
 This is far less than the number of possible solutions, which is ``n ^ n = 256``.
 As the problem scales out, the number of possible moves increases far less than the number of possible solutions.
 
-Yet, in 4 ``changeMove``'s or less we can reach any solution.
-For example we can reach a very different solution in 3 ``changeMove``'s:
+Yet, in four ``changeMove``'s or less we can reach any solution.
+For example we can reach a very different solution in three ``changeMove``'s:
 
 image::MoveAndNeighborhoodSelection/sequentialMovesNQueens04.png[align="center"]
 
@@ -72,7 +72,7 @@ For example: you might want to configure a <<filteredSelection,filter>> to disca
 [[subselectingOfEntitiesValuesAndOtherMoves]]
 === Subselecting of Entities, Values and Other Moves
 
-To create a ``Move``, a `MoveSelector` needs to select 1 or more planning entities and/or planning values to move.
+To create a ``Move``, a `MoveSelector` needs to select one or more planning entities and/or planning values to move.
 Just like ``MoveSelector``s, ``EntitySelector``s and ``ValueSelector``s need to support a similar feature set (such as scalable just-in-time selection). Therefore, they all implement a common interface `Selector` and they are configured similarly.
 
 A MoveSelector is often composed out of ``EntitySelector``s, ``ValueSelector``s or even other ``MoveSelector``s, which can be configured individually if desired:
@@ -109,7 +109,7 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 [[changeMoveSelector]]
 === changeMoveSelector
 
-For 1 planning variable, the `ChangeMove` selects 1 planning entity and 1 planning value and assigns the entity's variable to that value.
+For one planning variable, the `ChangeMove` selects one planning entity and one planning value and assigns the entity's variable to that value.
 
 image::MoveAndNeighborhoodSelection/changeMove.png[align="center"]
 
@@ -120,7 +120,7 @@ Simplest configuration:
     <changeMoveSelector/>
 ----
 
-If there are multiple entity classes or multiple planning variables for 1 entity class, a simple configuration will automatically unfold into a <<unionMoveSelector,union>> of `ChangeMove` selectors for every planning variable.
+If there are multiple entity classes or multiple planning variables for one entity class, a simple configuration will automatically unfold into a <<unionMoveSelector,union>> of `ChangeMove` selectors for every planning variable.
 
 Advanced configuration:
 
@@ -152,12 +152,12 @@ This guarantees that every possible `Solution` can be reached through applying a
 [[swapMoveSelector]]
 === swapMoveSelector
 
-The `SwapMove` selects 2 different planning entities and swaps the planning values of all their planning variables.
+The `SwapMove` selects two different planning entities and swaps the planning values of all their planning variables.
 
 image::MoveAndNeighborhoodSelection/swapMove.png[align="center"]
 
-Although a `SwapMove` on a single variable is essentially just 2 ``ChangeMove``s, it's often the winning step where the first of the 2 ``ChangeMove``s would not be the winning step because it leaves the solution in a state with broken hard constraints.
-For example: swapping the room of 2 lectures doesn't bring the solution in a intermediate state where both lectures are in the same room which breaks a hard constraint.
+Although a `SwapMove` on a single variable is essentially just two ``ChangeMove``s, it's often the winning step where the first of the two ``ChangeMove``s would not be the winning step because it leaves the solution in a state with broken hard constraints.
+For example: swapping the room of two lectures doesn't bring the solution in a intermediate state where both lectures are in the same room which breaks a hard constraint.
 
 Simplest configuration:
 
@@ -197,7 +197,7 @@ For example for course scheduling, specifying only `variableNameInclude` room wi
 [[pillarChangeMoveSelector]]
 === pillarChangeMoveSelector
 
-A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarChangeMove` selects 1 entity pillar (or subset of those) and changes the value of 1 variable (which is the same for all entities) to another value.
+A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarChangeMove` selects one entity pillar (or subset of those) and changes the value of one variable (which is the same for all entities) to another value.
 
 image::MoveAndNeighborhoodSelection/pillarChangeMove.png[align="center"]
 
@@ -250,7 +250,7 @@ The other properties are explained in <<changeMoveSelector,changeMoveSelector>>.
 [[pillarSwapMoveSelector]]
 === pillarSwapMoveSelector
 
-A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarSwapMove` selects 2 different entity pillars and swaps the values of all their variables for all their entities.
+A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarSwapMove` selects two different entity pillars and swaps the values of all their variables for all their entities.
 
 image::MoveAndNeighborhoodSelection/pillarSwapMove.png[align="center"]
 
@@ -386,7 +386,7 @@ The `selectReversingMoveToo` property (defaults to true) enables selecting the r
 [[subChainSwapMoveSelector]]
 === subChainSwapMoveSelector (chained variables only)
 
-The `subChainSwapMoveSelector` selects 2 different subChains and moves them to another place in a different or the same anchor chain.
+The `subChainSwapMoveSelector` selects two different subChains and moves them to another place in a different or the same anchor chain.
 
 Simplest configuration:
 
@@ -434,7 +434,7 @@ The other properties are explained in <<subChainChangeMoveSelector,subChainChang
 [[unionMoveSelector]]
 === unionMoveSelector
 
-A `unionMoveSelector` selects a `Move` by selecting 1 of its `MoveSelector` children to supply the next ``Move``.
+A `unionMoveSelector` selects a `Move` by selecting one of its `MoveSelector` children to supply the next ``Move``.
 
 Simplest configuration:
 
@@ -510,7 +510,7 @@ To give each individual `Move` the same selection chance (as opposed to each ``M
 === cartesianProductMoveSelector
 
 A `cartesianProductMoveSelector` selects a new ``CompositeMove``.
-It builds that `CompositeMove` by selecting 1 `Move` per `MoveSelector` child and adding it to the ``CompositeMove``.
+It builds that `CompositeMove` by selecting one `Move` per `MoveSelector` child and adding it to the ``CompositeMove``.
 
 Simplest configuration:
 
@@ -547,7 +547,7 @@ Advanced configuration:
 The `ignoreEmptyChildIterators` property (true by default) will ignore every empty `childMoveSelector` to avoid returning no moves.
 For example: a cartesian product of `changeMoveSelector` A and B, for which B is empty (because all it's entities are immovable) returns no move if `ignoreEmptyChildIterators` is `false` and the moves of A if `ignoreEmptyChildIterators` is ``true``.
 
-To enforce that 2 child selectors use the same entity or value efficiently, use <<mimicSelection,mimic selection>>, not move filtering.
+To enforce that two child selectors use the same entity or value efficiently, use <<mimicSelection,mimic selection>>, not move filtering.
 
 
 [[entitySelector]]
@@ -784,7 +784,7 @@ This combination is often a worthy competitor for medium use cases, especially w
 
 There can be certain moves that you don't want to select, because:
 
-* The move is pointless and would only waste CPU time. For example, swapping 2 lectures of the same course will result in the same score and the same schedule because all lectures of 1 course are interchangeable (same teacher, same students, same topic).
+* The move is pointless and would only waste CPU time. For example, swapping two lectures of the same course will result in the same score and the same schedule because all lectures of one course are interchangeable (same teacher, same students, same topic).
 * Doing the move would break <<buildInHardConstraint,a built-in hard constraint>>, so the solution would be infeasible but the score function doesn't check built-in hard constraints (for performance gain). For example, don't change a gym lecture to a room which is not a gym room.
 +
 
@@ -1107,7 +1107,7 @@ public interface SelectionProbabilityWeightFactory<Solution_, T> {
     </entitySelector>
 ----
 
-For example, if there are 3 entities: process A (probabilityWeight 2.0), process B (probabilityWeight 0.5) and process C (probabilityWeight 0.5), then process A will be selected 4 times more than B and C.
+For example, if there are three entities: process A (probabilityWeight 2.0), process B (probabilityWeight 0.5) and process C (probabilityWeight 0.5), then process A will be selected four times more than B and C.
 
 
 [[limitedSelection]]
@@ -1133,7 +1133,7 @@ To scale Local Search, setting <<acceptedCountLimit,acceptedCountLimit>> is usua
 [[mimicSelection]]
 === Mimic Selection (Record/Replay)
 
-During mimic selection, 1 normal selector records its selection and 1 or multiple other special selectors replay that selection.
+During mimic selection, one normal selector records its selection and one or multiple other special selectors replay that selection.
 The recording selector acts as a normal selector and supports all other configuration properties.
 A replaying selector mimics the recording selection and support no other configuration properties.
 
@@ -1158,7 +1158,7 @@ A replaying selector must reference a recorder's id with a ``mimicSelectorRef``:
       </cartesianProductMoveSelector>
 ----
 
-Mimic selection is useful to create <<cartesianProductMoveSelector,a composite move>> from 2 moves that affect the same entity.
+Mimic selection is useful to create <<cartesianProductMoveSelector,a composite move>> from two moves that affect the same entity.
 
 
 [[nearbySelection]]
@@ -1172,7 +1172,7 @@ Nearby selection increases the probability of selecting an entity or value which
 
 image::MoveAndNeighborhoodSelection/nearbySelectionRandomDistribution.png[align="center"]
 
-The distance between 2 entities or values is domain specific.
+The distance between two entities or values is domain specific.
 Therefore, implement the `NearbyDistanceMeter` interface:
 
 [source,java,options="nowrap"]
@@ -1337,7 +1337,7 @@ public interface Move<Solution_> {
 
 To implement a custom move, it's recommend to extend `AbstractMove` instead implementing `Move` directly.
 Planner calls `AbstractMove.doMove(ScoreDirector)`, which calls `doMoveOnGenuineVariables(ScoreDirector)`.
-For example in cloud balancing, this move changes 1 process to another computer:
+For example in cloud balancing, this move changes one process to another computer:
 
 [source,java,options="nowrap"]
 ----
@@ -1367,10 +1367,10 @@ The implementation must notify the `ScoreDirector` of any changes it makes to pl
 Call the `scoreDirector.beforeVariableChanged(Object, String)` and `scoreDirector.afterVariableChanged(Object, String)`
 methods directly before and after modifying an entity's planning variable.
 
-The example move above is a fine-grained move because changes only 1 planning variable.
+The example move above is a fine-grained move because changes only one planning variable.
 On the other hand, a coarse-grained move changes multiple entities or multiple planning variables
 in a single move, usually to avoid breaking hard constraints by making multiple related changes at once.
-For example, a swap move is really just 2 change moves, but it keeps those 2 changes together.
+For example, a swap move is really just two change moves, but it keeps those two changes together.
 
 [WARNING]
 ====

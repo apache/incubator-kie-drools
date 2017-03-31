@@ -15,7 +15,7 @@ Solving a planning problem with Planner consists of the following steps:
 
 . *Model your planning problem* as a class that implements the interface ``Solution``, for example the class ``NQueens``.
 . **Configure a ``**Solver**``**, for example a First Fit and Tabu Search solver for any `NQueens` instance.
-. *Load a problem data set* from your data layer, for example a 4 Queens instance. That is the planning problem.
+. *Load a problem data set* from your data layer, for example a Four Queens instance. That is the planning problem.
 . *Solve it* with `Solver.solve(planningProblem)` which returns the best solution found.
 
 image::PlannerConfiguration/inputOutputOverview.png[align="center"]
@@ -227,7 +227,7 @@ There are several ways to deliver this information:
 * Add class annotations and field annotations on the domain model. Such a field does not need to be public.
 * No annotations: externalize the domain configuration in an XML file. This is https://issues.jboss.org/browse/PLANNER-151[not yet supported].
 
-This manual focuses on the first manner, but every features supports all 3 manners, even if it's not explicitly mentioned.
+This manual focuses on the first manner, but every features supports all three manners, even if it's not explicitly mentioned.
 
 
 [[modelAPlanningProblem]]
@@ -592,7 +592,7 @@ This set can be a countable (for example row ``1``, ``2``, `3` or ``4``) or unco
 The value range of a planning variable is defined with the `@ValueRangeProvider` annotation.
 A `@ValueRangeProvider` annotation always has a property ``id``, which is referenced by the ``@PlanningVariable``'s property ``valueRangeProviderRefs``.
 
-This annotation can be located on 2 types of methods:
+This annotation can be located on two types of methods:
 
 * On the Solution: All planning entities share the same value range.
 * On the planning entity: The value range differs per planning entity. This is less common.
@@ -604,7 +604,7 @@ A @ValueRangeProvider annotation needs to be on a member in a class with a @Plan
 It is ignored on parent classes or subclasses without those annotations.
 ====
 
-The return type of that method can be 2 types:
+The return type of that method can be two types:
 
 * ``Collection``: The value range is defined by a `Collection` (usually a ``List``) of its possible values.
 * ``ValueRange``: The value range is defined by its bounds. This is less common.
@@ -1202,7 +1202,7 @@ Planner guarantees that:
 Planner does not guarantee the order in which the `after*()` methods are called for the _same_``VariableListener`` with different parameters (such as A1 and A2 in the example above), although they are likely to be in the order in which they were affected.
 
 By default, Planner does not guarantee that the events are unique.
-For example, if a shadow variable on an entity is changed twice in the same move (for example by 2 different genuine variables), then that will cause the same event twice on the ``VariableListener``s that are listening to that original shadow variable.
+For example, if a shadow variable on an entity is changed twice in the same move (for example by two different genuine variables), then that will cause the same event twice on the ``VariableListener``s that are listening to that original shadow variable.
 To avoid dealing with that complexity, overwrite the method `requiresUniqueEntityEvents()` to receive unique events at the cost of a small performance penalty:
 
 [source,java,options="nowrap"]
@@ -1592,7 +1592,7 @@ For example in n queens, an `NQueens` instance is created with the required `Col
     }
 ----
 
-.Uninitialized Solution for the 4 Queens Puzzle
+.Uninitialized Solution for the Four Queens Puzzle
 image::PlannerConfiguration/uninitializedNQueens04.png[align="left"]
 
 Usually, most of this data comes from your data layer, and your `Solution` implementation just aggregates that data and creates the uninitialized planning entity instances to plan:
@@ -1660,7 +1660,7 @@ Just provide the planning problem as argument to the `solve()` method and it wil
 
 For example in n queens, the `solve()` method will return an `NQueens` instance with every `Queen` assigned to a ``Row``.
 
-.Best Solution for the 4 Queens Puzzle in 8ms (Also an Optimal Solution)
+.Best Solution for the Four Queens Puzzle in 8ms (Also an Optimal Solution)
 image::PlannerConfiguration/solvedNQueens04.png[align="left"]
 
 The `solve(Solution)` method can take a long time (depending on the problem size and the solver configuration). The `Solver` intelligently wades through <<searchSpaceSize,the search space>> of possible solutions and remembers the best solution it encounters during solving.

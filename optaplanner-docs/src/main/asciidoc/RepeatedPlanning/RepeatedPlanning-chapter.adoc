@@ -16,8 +16,8 @@ The problem facts used to create a solution, might change before or during the e
 There are different situations (which can be combined):
 
 * __Unforeseen fact changes__: For example: an employee assigned to a shift calls in sick, an airplane scheduled to take off has a technical delay, one of the machines or vehicles break down, ... Use **backup planning**.
-* __Impossible to assign all entities now__: Leave some unassigned. For example: there are 10 shifts at the same time to assign but only 9 employees to handle shifts. Use **overconstrained planning**.
-* __Unknown long term future facts__: For example: The hospital admissions for the next 2 weeks are reliable, but those for week 3 and 4 are less reliable and for week 5 and beyond are not worth planning yet. Use **continuous planning**.
+* __Impossible to assign all entities now__: Leave some unassigned. For example: there are 10 shifts at the same time to assign but only nine employees to handle shifts. Use **overconstrained planning**.
+* __Unknown long term future facts__: For example: The hospital admissions for the next two weeks are reliable, but those for week three and four are less reliable and for week five and beyond are not worth planning yet. Use **continuous planning**.
 * __Constantly changing problem facts__: Use **real-time planning**.
 
 Waiting to start planning - to lower the risk of problem facts changing - usually isn't a good way to deal with that.
@@ -32,7 +32,7 @@ Luckily, the optimization algorithms support planning a solution that's already 
 
 Backup planning is the technique of adding extra score constraints to create space in the planning for when things go wrong.
 That creates a backup plan in the plan.
-For example: try to assign an employee as the spare employee (1 for every 10 shifts at the same time), keep 1 hospital bed open in each department, ...
+For example: try to assign an employee as the spare employee (one for every 10 shifts at the same time), keep one hospital bed open in each department, ...
 
 Then, when things go wrong (one of the employees calls in sick), change the problem facts on the original solution (delete the sick employee leave his/her shifts unassigned) and just restart the planning, starting from that solution, which has a different score now.
 The construction heuristics will fill in the newly created gaps (probably with the spare employee) and the metaheuristics will even improve it further.
@@ -45,7 +45,7 @@ When there is no feasible solution to assign all planning entities, it's often d
 This is called overconstrained planning.
 
 By default, Planner will assign all planning entities, overload the planning values and therefore break hard constraints.
-There are 2 ways to avoid that:
+There are two ways to avoid that:
 
 * Use <<nullablePlanningVariable,nullable>> planning variables, so some entities are unassigned.
 * Add virtual values to catch the unassigned entities.
@@ -91,7 +91,7 @@ Instead, plan a planning window of a fixed number of upcoming planning time peri
 The planning window can be split up in several parts:
 
 * **History**: Past time periods that immutable. It contains only immovable entities.
-** Historic entities can affect score constraints that apply to movable entities too. For example in nurse rostering, a nurse that has worked the last 5 historic days in a row, should not be assigned on the first tentative day of the planning window because then she's work too many days in a row.
+** Historic entities can affect score constraints that apply to movable entities too. For example in nurse rostering, a nurse that has worked the last five historic days in a row, should not be assigned on the first tentative day of the planning window because then she's work too many days in a row.
 ** Do not load all historic entities in memory: even though immovable entities don't affect solving performance, they can cause out of memory problems when the data grows to years. Only load those that might still affect the current constraints with a good safety margin, for example load the past year.
 * **Tentative**: The first few time periods that are being planned freely for the last time. After this planning, their planning entities become <<immovablePlanningEntities,immovable>> or <<nonvolatileReplanning,semi-immovable>>.
 ** The result of the tentative planning is usually shared with the business. For example in nurse rostering, the nurses will use this schedule to plan their personal lives. Changing that schedule later becomes disruptive (but if exceptions force us to do so, <<nonvolatileReplanning,we minimize disruption>>).
@@ -103,8 +103,8 @@ The planning window can be split up in several parts:
 
 image::RepeatedPlanning/continuousPlanningEmployeeRostering.png[align="center"]
 
-In the employee rostering example above, we replan every 4 days.
-Each time, we actually plan a window of 12 days, but we only share the tentative roster of the next 4 days with the employees.
+In the employee rostering example above, we replan every four days.
+Each time, we actually plan a window of 12 days, but we only share the tentative roster of the next four days with the employees.
 
 [NOTE]
 ====
@@ -210,7 +210,7 @@ As time passes, the problem itself changes:
 
 image::RepeatedPlanning/realTimePlanningVehicleRouting.png[align="center"]
 
-In the example above, 3 customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55` and in some cases after the vehicles already left.
+In the example above, three customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55` and in some cases after the vehicles already left.
 Planner can handle such scenario's with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable planning entities>>).
 
 
