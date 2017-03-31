@@ -29,6 +29,7 @@
         status varchar(255),
         taskId numeric(19,0),
         workItemId numeric(19,0),
+        lastModificationDate datetime,
         primary key (id)
     );
 

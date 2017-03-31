@@ -28,3 +28,8 @@ ALTER TABLE NodeInstanceLog ADD COLUMN referenceId bigint;
 ALTER TABLE NodeInstanceLog ADD COLUMN nodeContainerId varchar(255);    
 
 ALTER TABLE RequestInfo ADD COLUMN processInstanceId bigint;
+
+ALTER TABLE AuditTaskImpl ADD COLUMN lastModificationDate timestamp;
+update AuditTaskImpl ati set lastModificationDate = (
+    select max(logTime) from TaskEvent where taskId=ati.taskId group by taskId
+);

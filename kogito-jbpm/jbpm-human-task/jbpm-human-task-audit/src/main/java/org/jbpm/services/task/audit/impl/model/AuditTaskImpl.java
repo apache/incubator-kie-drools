@@ -57,6 +57,8 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     private long parentId;
     private String deploymentId;
     private Long workItemId;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date lastModificationDate;
    
 
     public AuditTaskImpl() {
@@ -82,6 +84,7 @@ public class AuditTaskImpl implements Serializable, AuditTask {
         this.deploymentId = deploymentId;
         this.parentId = parentId;
         this.workItemId = workItemId;
+        this.lastModificationDate = new Date();
     }
 
     public Long getId() {
@@ -246,6 +249,16 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     @Override
     public void setWorkItemId(long workItemId) {
         this.workItemId = workItemId;
+    }
+
+    
+    public Date getLastModificationDate() {
+        return lastModificationDate;
+    }
+
+    
+    public void setLastModificationDate(Date lastModificationDate) {
+        this.lastModificationDate = lastModificationDate;
     }
 
 }

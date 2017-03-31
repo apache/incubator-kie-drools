@@ -37,6 +37,7 @@ import org.jbpm.services.task.audit.commands.DeleteAuditEventsCommand;
 import org.jbpm.services.task.audit.commands.DeleteBAMTaskSummariesCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
 import org.jbpm.services.task.audit.commands.GetBAMTaskSummariesCommand;
+import org.jbpm.services.task.audit.impl.model.AuditTaskImpl;
 import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
 import org.jbpm.services.task.audit.service.objects.Person;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
@@ -59,6 +60,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
 
     @Test
     public void testComplete() {
+        long initTimeMs = new Date().getTime();
         Task task = new TaskFluent().setName("This is my task name")
                 .addPotentialGroup("Knights Templer")
                 .setAdminUser("Administrator")
@@ -154,6 +156,16 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
 
         List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 0));
         assertEquals(2, allHistoryAuditTasks.size());
+        
+        // test last modification date was generated
+        long currentTimeMs = new Date().getTime();
+        for(AuditTask at : allHistoryAuditTasks){
+            Date modDate = ((AuditTaskImpl)at).getLastModificationDate();
+            assertNotNull(modDate);
+            long modDateMs = modDate.getTime();
+            assertTrue("Task " + at.getTaskId() + " modification date is not too much in the past", modDateMs >= initTimeMs);
+            assertTrue("Task " + at.getTaskId() + " modification date is not in the future", modDateMs <= currentTimeMs);
+        }
     }
 
     @Test

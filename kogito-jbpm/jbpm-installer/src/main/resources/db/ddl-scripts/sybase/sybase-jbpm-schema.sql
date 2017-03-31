@@ -30,6 +30,7 @@
         status varchar(255) null,
         taskId numeric(19,0) null,
         workItemId numeric(19,0) null,
+        lastModificationDate datetime,
         primary key (id)
     ) lock datarows
     go
