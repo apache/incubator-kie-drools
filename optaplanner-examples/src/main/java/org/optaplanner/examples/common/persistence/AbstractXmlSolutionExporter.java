@@ -52,7 +52,7 @@ public abstract class AbstractXmlSolutionExporter<Solution_> extends AbstractSol
 
     @Override
     public void writeSolution(Solution_ solution, File outputFile) {
-        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(outputFile))){
+        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(outputFile))) {
             Document document = new Document();
             XmlOutputBuilder<Solution_> xmlOutputBuilder = createXmlOutputBuilder();
             xmlOutputBuilder.setDocument(document);

@@ -55,8 +55,8 @@ public class JaxbTestdataSolution extends JaxbTestdataObject {
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
-    @XmlElementWrapper(name="valueList")
-    @XmlElement(name="jaxbTestdataValue")
+    @XmlElementWrapper(name = "valueList")
+    @XmlElement(name = "jaxbTestdataValue")
     public List<JaxbTestdataValue> getValueList() {
         return valueList;
     }
@@ -66,8 +66,8 @@ public class JaxbTestdataSolution extends JaxbTestdataObject {
     }
 
     @PlanningEntityCollectionProperty
-    @XmlElementWrapper(name="entityList")
-    @XmlElement(name="jaxbTestdataEntity")
+    @XmlElementWrapper(name = "entityList")
+    @XmlElement(name = "jaxbTestdataEntity")
     public List<JaxbTestdataEntity> getEntityList() {
         return entityList;
     }

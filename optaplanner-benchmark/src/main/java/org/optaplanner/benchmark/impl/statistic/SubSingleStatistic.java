@@ -118,7 +118,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
 
     private void writeCsvStatisticFile() {
         File csvFile = getCsvFile();
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8")){
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8")) {
             writer.append(getCsvHeader()).append("\n");
             for (StatisticPoint point : getPointList()) {
                 writer.append(point.toCsvLine()).append("\n");

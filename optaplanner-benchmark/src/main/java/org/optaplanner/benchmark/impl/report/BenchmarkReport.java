@@ -809,7 +809,7 @@ public class BenchmarkReport {
         model.put("benchmarkReport", this);
         model.put("reportHelper", new ReportHelper());
 
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "UTF-8")){
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "UTF-8")) {
             Template template = freemarkerCfg.getTemplate(templateFilename);
             template.process(model, writer);
         } catch (IOException e) {

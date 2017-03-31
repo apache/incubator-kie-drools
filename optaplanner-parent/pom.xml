@@ -147,12 +147,10 @@
                       <module name="ParenPad"/>
                       <module name="TypecastParenPad"/>
                       <module name="WhitespaceAfter"/>
-                      <!-- TODO: Enable the WhitespaceAround once checkstyle supports allowEmptyBlocks -->
-                      <!--<module name="WhitespaceAround">-->
-                        <!--<property name="allowEmptyConstructors" value="true"/>-->
-                        <!--<property name="allowEmptyTypes" value="true"/>-->
-                        <!--<property name="allowEmptyBlocks" value="true"/>-->
-                      <!--</module>-->
+                      <module name="WhitespaceAround">
+                        <property name="allowEmptyConstructors" value="true"/>
+                        <property name="allowEmptyTypes" value="true"/>
+                      </module>
                       <!-- Checks for blocks. -->
                       <module name="LeftCurly"/>
                       <module name="NeedBraces"/>
