@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+  
+<definitions id="NAME_INVALID" name="NAME_INVALID"
+    namespace="https://www.drools.org/kie-dmn/definitions"
+    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+    xmlns:kie="https://www.drools.org/kie-dmn/definitions"
+    xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
+  <itemDefinition label="Person" name="Person">
+    <itemComponent id="_387b5a3c-484d-4de6-81bc-cad30986439c" name="Name">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+    <itemComponent id="_3af23f80-c9d7-4741-b7c8-0725d0d31b75" name="Surname">
+      <typeRef>feel:string</typeRef>
+    </itemComponent>
+  </itemDefinition>
+  <inputData id="_e026e26d-7806-45c8-811e-a4408eee8a31" name="Input Person" triso:displayName="Input Person">
+    <variable id="_20d1791d-7df5-4579-b6af-ac235ec38c9e" name="Input Person" typeRef="kie:Person"/>
+  </inputData>
+  <decision id="_1f54fd51-6805-4280-b576-607450f85edd" name=" Greet Person" triso:displayName=" Greet Person">
+    <variable id="_dd662d27-7896-42cb-9d14-bd74203bdbec" name=" Greet Person" typeRef="feel:string"/> <!-- TEST please notice trailing space -->
+    <informationRequirement>
+      <requiredInput href="#_e026e26d-7806-45c8-811e-a4408eee8a31"/>
+    </informationRequirement>
+    <literalExpression id="_899864a9-2fdb-4082-a0e4-7f334530dd99">
+      <text>"Ciao " + Input Person.Name + " " + Input Person.Surname</text>
+    </literalExpression>
+  </decision>
+  <decision id="_63d40353-2662-4062-9649-c593ee7f15e8" name="Further Decision" triso:displayName="Further Decision">
+    <variable id="_8e27d92a-7cbe-4ff4-9e00-932ded9bc18b" name="Further Decision" typeRef="feel:string"/>
+    <informationRequirement>
+      <requiredDecision href="#_1f54fd51-6805-4280-b576-607450f85edd"/>
+    </informationRequirement>
+    <literalExpression id="_d462717a-5aeb-4ba8-afc1-e8f76de61b74">
+      <text>"The person was greeted with: '" +  Greet Person + "'"</text>
+    </literalExpression>
+  </decision>
+</definitions>

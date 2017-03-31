@@ -428,6 +428,14 @@ public class ValidatorTest {
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.TYPE_REF_NOT_FOUND ) ) );
     }
     
+    @Test
+    public void testVARIABLE_LEADING_TRAILING_SPACES() {
+        List<DMNMessage> validate = validator.validate( getReader( "VARIABLE_LEADING_TRAILING_SPACES.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( formatMessages( validate ), validate.size(), is( 1 ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVALID_NAME ) ) );
+        assertThat( validate.get(0).getSourceId(), is("_dd662d27-7896-42cb-9d14-bd74203bdbec") );
+    }
+    
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
