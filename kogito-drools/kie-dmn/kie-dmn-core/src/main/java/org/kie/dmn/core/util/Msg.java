@@ -72,7 +72,7 @@ public class Msg {
     public static final Message3 ERR_EVAL_ROW_ELEMENT_ON_POSITION_ON_ROW_OF_RELATION = new Message3( DMNMessageType.FEEL_EVALUATION_ERROR, "Error evaluating row element on position '%s' on row '%s' of relation '%s'" );
     public static final Message2 ERR_INVOKING_PARAM_EXPR_FOR_PARAM_ON_NODE           = new Message2( DMNMessageType.INVOCATION_ERROR, "Error invoking parameter expression for parameter '%s' on node '%s'." );
     public static final Message2 ERR_INVOKING_FUNCTION_ON_NODE                       = new Message2( DMNMessageType.INVOCATION_ERROR, "Error invoking function '%s' on node '%s'" );
-    public static final Message0 FAILED_VALIDATOR                                    = new Message0( DMNMessageType.FAILED_VALIDATOR, "The Validator Was unable to compile embedded DMN validation rules, validation of the DMN Model cannot be performed." );
+    public static final Message0 FAILED_VALIDATOR                                    = new Message0( DMNMessageType.FAILED_VALIDATOR, "The validator was unable to compile the embedded DMN validation rules. Validation of the DMN Model cannot be performed." );
     public static final Message0 FAILED_NO_XML_SOURCE                                = new Message0( DMNMessageType.FAILED_VALIDATOR, "Schema validation not supported for in memory object. Please use the validate method with the file or reader signature." );
     public static final Message1 FAILED_XML_VALIDATION                               = new Message1( DMNMessageType.FAILED_XML_VALIDATION, "Failed XML validation of DMN file: %s" );
 
