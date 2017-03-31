@@ -38,8 +38,6 @@ import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.DMNInputRuntimeTest;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.model.v1_1.Context;
-import org.kie.dmn.model.v1_1.ContextEntry;
 import org.kie.dmn.model.v1_1.Definitions;
 
 public class ValidatorTest extends AbstractValidatorTest {
@@ -93,31 +91,6 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
 
     @Test
-    public void testCONTEXT_MISSING_EXPR() {
-        List<DMNMessage> validate = validator.validate( getReader( "CONTEXT_MISSING_EXPR.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.FAILED_XML_VALIDATION ) ) ); // this is schema validation
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
-    }
-
-    @Test
-    public void testCONTEXT_MISSING_ENTRIES() {
-        List<DMNMessage> validate = validator.validate( getReader( "CONTEXT_MISSING_ENTRIES.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
-    }
-
-    @Test
-    public void testCONTEXT_ENTRY_MISSING_VARIABLE() {
-        List<DMNMessage> validate = validator.validate( getReader( "CONTEXT_ENTRY_MISSING_VARIABLE.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_VARIABLE ) ) );
-        // check that it reports and error for the second context entry, but not for the last one
-        ContextEntry ce = (ContextEntry) validate.get( 0 ).getSourceReference();
-        assertThat( ((Context)ce.getParent()).getContextEntry().indexOf( ce ), is( 1 ) );
-    }
-
-    @Test
     public void testNAME_INVALID() {
         List<DMNMessage> validate = validator.validate( getReader( "NAME_INVALID.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
@@ -144,20 +117,6 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.VARIABLE_NAME_MISMATCH ) ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVALID_NAME ) && p.getSourceId().equals( "_5e43b55c-888e-443c-b1b9-80e4aa6746bd" ) ) );
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVALID_NAME ) && p.getSourceId().equals( "_b1e4588e-9ce1-4474-8e4e-48dbcdb7524b" ) ) );
-    }
-
-    @Test
-    public void testCONTEXT_DUP_ENTRY() {
-        List<DMNMessage> validate = validator.validate( getReader( "CONTEXT_DUP_ENTRY.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.DUPLICATE_NAME ) ) );
-    }
-    
-    @Test
-    public void testCONTEXT_ENTRY_NOTYPEREF() {
-        List<DMNMessage> validate = validator.validate( getReader( "CONTEXT_ENTRY_NOTYPEREF.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 2 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_TYPE_REF ) ) );
     }
     
     @Test
