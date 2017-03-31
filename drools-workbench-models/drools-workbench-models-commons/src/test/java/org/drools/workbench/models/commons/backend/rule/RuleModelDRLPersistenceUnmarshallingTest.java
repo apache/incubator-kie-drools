@@ -8853,7 +8853,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         when( dmo.getPackageName() ).thenReturn( "org.test" );
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                                                                                 Collections.emptyList(),
+                                                                                 Collections.EMPTY_LIST,
                                                                                  dmo );
 
         //Check round-trip
