@@ -130,6 +130,8 @@
                       <!-- Checks for Javadoc comments. -->
                       <module name="JavadocStyle"/>
                       <!-- TODO: Enable NonEmptyAtclauseDescription after https://github.com/checkstyle/checkstyle/issues/1064 is fixed -->
+                      <!-- Update: #1064 is resolved and the performance has greatly improved but this check still adds ~2 seconds -->
+                      <!-- to the build time -> always measure build time before enabling this module (use github.com/jcgay/maven-profiler) -->
                       <!--<module name="NonEmptyAtclauseDescription"/>-->
                       <!-- Checks for imports. -->
                       <module name="RedundantImport"/>
