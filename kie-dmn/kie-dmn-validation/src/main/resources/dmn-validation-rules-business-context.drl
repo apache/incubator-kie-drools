@@ -29,50 +29,29 @@ import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
-rule DECISION_MISSING_EXPR
+rule ORG_UNIT_DECISION_MADE_WRONG_TYPE
 when
-    $d : Decision(expression == null)
-then
-    reporter.report(DMNMessage.Severity.ERROR, $d, Msg.MISSING_EXPRESSION_FOR_DECISION, $d.getIdentifierString());
-end
-
-rule DECISION_MISSING_VAR
-when
-    $d : Decision(variable == null)
-then
-    reporter.report(DMNMessage.Severity.ERROR, $d ,Msg.MISSING_VARIABLE_FOR_DECISION, $d.getIdentifierString());
-end
-
-rule DECISION_VAR_MISMATCH
-when
-    $d : Decision(variable != null, name != variable.name)
-then
-    reporter.report(DMNMessage.Severity.ERROR, $d, Msg.VARIABLE_NAME_MISMATCH_FOR_DECISION, $d.getVariable().getName(), $d.getName());
-end
-
-rule DECISION_PERF_INDICATOR_WRONG_TYPE
-when
-    $d: Decision(impactedPerformanceIndicator != null,
-                 $elemRef: /impactedPerformanceIndicator)
-    $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof PerformanceIndicator))
+    $d: OrganizationUnit(decisionMade != null,
+                         $elemRef: /decisionMade)
+    $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof Decision))
 then
     reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
 end
 
-rule DECISION_DECISION_MAKER_WRONG_TYPE
+rule ORG_UNIT_DECISION_OWNED_WRONG_TYPE
 when
-    $d: Decision(decisionMaker != null,
-                 $elemRef: /decisionMaker)
-    $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof OrganizationUnit))
+    $d: OrganizationUnit(decisionOwned != null,
+                         $elemRef: /decisionOwned)
+    $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof Decision))
 then
     reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
 end
 
-rule DECISION_DECISION_OWNER_WRONG_TYPE
+rule PERF_INDICATOR_IMP_DECISION_WRONG_TYPE
 when
-    $d: Decision(decisionOwner != null,
-                 $elemRef: /decisionOwner)
-    $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof OrganizationUnit))
+    $d: PerformanceIndicator(impactingDecision != null,
+                             $elemRef: /impactingDecision)
+    $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof Decision))
 then
     reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
 end

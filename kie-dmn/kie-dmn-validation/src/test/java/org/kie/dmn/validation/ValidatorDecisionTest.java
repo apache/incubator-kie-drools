@@ -62,4 +62,36 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.VARIABLE_NAME_MISMATCH)));
     }
+
+    @Test
+    public void testDECISION_MULTIPLE_EXPRESSIONS() {
+        final List<DMNMessage> validate = validator.validate(
+                getReader("decision/DECISION_MULTIPLE_EXPRESSIONS.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.FAILED_XML_VALIDATION)));
+    }
+
+    @Test
+    public void testDECISION_PERF_INDICATOR_WRONG_TYPE() {
+        final List<DMNMessage> validate = validator.validate(
+                getReader("decision/DECISION_PERF_INDICATOR_WRONG_TYPE.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+    }
+
+    @Test
+    public void testDECISION_DECISION_MAKER_WRONG_TYPE() {
+        final List<DMNMessage> validate = validator.validate(
+                getReader("decision/DECISION_DECISION_MAKER_WRONG_TYPE.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+    }
+
+    @Test
+    public void testDECISION_DECISION_OWNER_WRONG_TYPE() {
+        final List<DMNMessage> validate = validator.validate(
+                getReader("decision/DECISION_DECISION_OWNER_WRONG_TYPE.dmn"), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(2));
+        assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+    }
 }

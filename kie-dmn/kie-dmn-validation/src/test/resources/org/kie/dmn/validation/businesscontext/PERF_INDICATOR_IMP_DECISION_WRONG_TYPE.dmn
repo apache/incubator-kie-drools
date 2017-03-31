@@ -15,22 +15,16 @@
   ~ limitations under the License.
   -->
 
-<definitions id="DECISION_MISSING_EXPR" name="DECISION_MISSING_EXPR"
+<definitions id="PERF_INDICATOR_IMP_DECISION_WRONG_TYPE" name="PERF_INDICATOR_IMP_DECISION_WRONG_TYPE"
              namespace="https://github.com/kiegroup/kie-dmn"
              xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
              xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
-  <decision name="Greeting Message" id="d_GreetingMessage">
-    <variable name="Greeting Message" typeRef="feel:string"/>
-    <informationRequirement>
-      <requiredInput href="#someInput1"/>
-    </informationRequirement>
-    <informationRequirement>
-      <requiredInput href="#someInput2"/>
-    </informationRequirement>
-    <literalExpression>
-      <text>"Hello something!"</text>
-    </literalExpression>
-  </decision>
+  <textAnnotation id="someDecision1"/>
+  <textAnnotation id="someDecision2"/>
+  <performanceIndicator name="someIndicator" id="someIndicator">
+    <impactingDecision href="#someDecision1"/>
+    <impactingDecision href="#someDecision2"/>
+  </performanceIndicator>
 </definitions>
