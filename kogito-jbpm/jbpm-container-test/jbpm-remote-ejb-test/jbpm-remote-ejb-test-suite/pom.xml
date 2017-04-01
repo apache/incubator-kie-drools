@@ -329,7 +329,7 @@
               <home>${container.profile.dir}</home>
               <properties>
                 <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
-                <cargo.jvmargs>-Xmx1024m</cargo.jvmargs>
+                <cargo.jvmargs>-Xmx1024m -Dkie.maven.settings.custom=${org.apache.maven.user-settings}</cargo.jvmargs>
                 <cargo.servlet.port>${container.port}</cargo.servlet.port>
                 <!-- Datasource -->
                 <cargo.datasource.datasource.jbpm>
