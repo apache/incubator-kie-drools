@@ -315,6 +315,7 @@
               <id>myExecution</id>
               <goals>
                 <goal>integration-test</goal>
+                <goal>verify</goal>
               </goals>
             </execution>
             <execution>
