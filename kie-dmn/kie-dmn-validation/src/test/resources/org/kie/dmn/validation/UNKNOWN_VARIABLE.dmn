@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+  
+<definitions id="NAME_INVALID" name="NAME_INVALID"
+    namespace="https://www.drools.org/kie-dmn/definitions"
+    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
+  <inputData id="_e026e26d-7806-45c8-811e-a4408eee8a31" name="Annual Salary">
+    <variable id="_20d1791d-7df5-4579-b6af-ac235ec38c9e" name="Annual Salary" typeRef="feel:number"/>
+  </inputData>
+  <decision id="_1f54fd51-6805-4280-b576-607450f85edd" name="Monthly Salary">
+    <variable id="_dd662d27-7896-42cb-9d14-bd74203bdbec" name="Monthly Salary" typeRef="feel:number"/>
+    <literalExpression id="_899864a9-2fdb-4082-a0e4-7f334530dd99">
+      <text>Annual Salary / 12</text>
+    </literalExpression>
+  </decision>
+</definitions>
