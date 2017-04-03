@@ -477,17 +477,37 @@
         </pluginManagement>
       </build>
     </profile>
-
     <profile>
-      <id>skipTests</id>
+      <id>custom-container</id>
       <activation>
+        <!-- The tests are not executed unless specific container profile is used. Disable cargo by default. -->
+        <activeByDefault>true</activeByDefault>
         <property>
-          <name>skipTests</name>
+          <name>custom-container</name>
         </property>
       </activation>
       <properties>
         <cargo.maven.skip>true</cargo.maven.skip>
       </properties>
+    </profile>
+    <profile>
+      <!-- Integration tests are skipped by default. They are activated when specific container profile is used. -->
+      <id>skipITs-by-default</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <configuration>
+                <skipITs>true</skipITs>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 

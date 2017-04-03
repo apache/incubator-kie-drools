@@ -1020,7 +1020,6 @@
         </dependency>
       </dependencies>
     </profile>
-
     <profile>
       <id>custom-container</id>
       <activation>
@@ -1030,28 +1029,10 @@
           <name>custom-container</name>
         </property>
       </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>start-container</id>
-                <phase>none</phase>
-                <!-- do nothing, container is not managed by cargo -->
-              </execution>
-              <execution>
-                <id>stop-container</id>
-                <phase>none</phase>
-                <!-- do nothing, container is not managed by cargo -->
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
+      <properties>
+        <cargo.maven.skip>true</cargo.maven.skip>
+      </properties>
     </profile>
-
     <profile>
       <!-- Integration tests are skipped by default. They are activated when specific container profile is used. -->
       <id>skipITs-by-default</id>
