@@ -35,6 +35,10 @@ public class NameRefNode
     @Override
     public Object evaluate(EvaluationContext ctx) {
         String varName = EvalHelper.normalizeVariableName( getText() );
+        if( ! ctx.isDefined( varName ) ) {
+            ctx.notifyEvt( astEvent( FEELEvent.Severity.ERROR, Msg.createMessage( Msg.UNKNOWN_VARIABLE_REFERENCE, getText()), null) );
+            return null;
+        }
         return ctx.getValue( varName );
     }
 }

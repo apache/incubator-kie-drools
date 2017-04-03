@@ -1,5 +1,6 @@
 package org.kie.dmn.core.compiler;
 
+import org.antlr.v4.runtime.CommonToken;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
@@ -14,7 +15,6 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
-import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.function.Function;
 
 public class DMNFEELHelper
         implements FEELEventListener {
@@ -130,6 +129,19 @@ public class DMNFEELHelper
                                 msgParams[0],
                                 msgParams[1],
                                 msgParams[2] );
+                    } else if ( msg instanceof Msg.Message4 ) {
+                        MsgUtil.reportMessage(
+                                logger,
+                                DMNMessage.Severity.ERROR,
+                                element,
+                                model,
+                                null,
+                                event,
+                                (Msg.Message4) msg,
+                                msgParams[0],
+                                msgParams[1],
+                                msgParams[2],
+                                "syntax error near '" + ((CommonToken)event.getOffendingSymbol()).getText() + "'" );
                     }
                 }
             }
