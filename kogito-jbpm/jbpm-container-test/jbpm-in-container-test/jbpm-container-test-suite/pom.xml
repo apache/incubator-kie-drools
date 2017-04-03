@@ -30,9 +30,6 @@
     <bitronix.resources.properties>${project.build.testOutputDirectory}/bitronix/btm-resources.properties
     </bitronix.resources.properties>
 
-    <version.tomcat8>8.0.33</version.tomcat8>
-    <version.wildfly10>10.0.0.Final</version.wildfly10>
-
     <!-- WebLogic and WebSphere containers need to be already installed -->
     <weblogic.home>valid-path-has-to-be-specified-here-or-via-cmd-line</weblogic.home><!-- Example: /home/Servers/wls12130 -->
     <websphere.home>valid-path-has-to-be-specified-here-or-via-cmd-line</websphere.home><!-- Example: /home/Servers/WebSphere/AppServer -->
