@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -95,7 +96,11 @@ public class DMNCompilerImpl
     }
 
     private void processItemDefinitions(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
-        for ( ItemDefinition id : dmndefs.getItemDefinition() ) {
+        List<ItemDefinition> ordered = new ArrayList<>(); 
+        // naive implementation, have simple type first and complex type afterwards
+        dmndefs.getItemDefinition().stream().filter(x->x.getTypeRef() != null).forEach(x->ordered.add(x));
+        dmndefs.getItemDefinition().stream().filter(x->x.getTypeRef() == null).forEach(x->ordered.add(x));
+        for ( ItemDefinition id : ordered ) {
             ItemDefNodeImpl idn = new ItemDefNodeImpl( id );
             DMNType type = buildTypeDef( ctx, feel, model, idn, id, true );
             idn.setType( type );
