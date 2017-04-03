@@ -11,9 +11,17 @@
 [[examplesOverview]]
 == Examples Overview
 
-Planner has several examples.
-In this manual we explain mainly using the n queens example and cloud balancing example.
-So it's advisable to read at least those sections.
+Planner has several examples. In this manual we explain mainly using the _n_ queens example and cloud balancing example. So it is advisable to read at least those sections.
+
+The `Competition?` column in the following table identifies an example as being either realistic or unrealistic. A _realistic competition_ is _an official, independent competition_:
+
+* that clearly defines a real-word use case.
+* with real-world constraints.
+* with multiple, real-world datasets.
+* that expects reproducible results within a specific time limit on specific hardware.
+* that has had serious participation from the academic and/or enterprise Operations Research community.
+
+These realistic competitions provide an objective comparison of Planner with competitive software and academic research.
 
 The source code of all these examples is available in the distribution zip under [path]_examples/sources_
 and also in git under [path]_optaplanner/optaplanner-examples_.
@@ -222,16 +230,6 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 
 |===
 
-A _realistic competition_ is **an official, independent competition**:
-
-* that clearly defines a real-word use case
-* with real-world constraints
-* with multiple, real-world datasets
-* that expects reproducible results within a specific time limit on specific hardware
-* that has had serious participation from the academic and/or enterprise Operations Research community
-
-These realistic competitions provide an objective comparison of Planner with competitive software and academic research.
-
 
 [[basicExamples]]
 == Basic Examples
@@ -244,8 +242,8 @@ These realistic competitions provide an objective comparison of Planner with com
 [[nQueensProblemDescription]]
 ==== Problem Description
 
-Place n queens on a n sized chessboard so no 2 queens can attack each other.
-The most common n queens puzzle is the 8 queens puzzle, with __n = 8__:
+Place _n_ queens on a _n_ sized chessboard so that no two queens can attack each other.
+The most common _n_ queens puzzle is the eight queens puzzle, with __n = 8__:
 
 image::UseCasesAndExamples/nQueensScreenshot.png[align="center"]
 
@@ -253,25 +251,26 @@ Constraints:
 
 * Use a chessboard of _n_ columns and _n_ rows.
 * Place _n_ queens on the chessboard.
-* No 2 queens can attack each other. A queen can attack any other queen on the same horizontal, vertical or diagonal line.
+* No two queens can attack each other. A queen can attack any other queen on the same horizontal, vertical or diagonal line.
 
-This documentation heavily uses the 4 queens puzzle as the primary example.
+This documentation heavily uses the four queens puzzle as the primary example.
 
 A proposed solution could be:
 
 .A Wrong Solution for the 4 Queens Puzzle
 image::UseCasesAndExamples/partiallySolvedNQueens04Explained.png[align="center"]
 
-The above solution is wrong because queens `A1` and `B0` can attack each other (so can queens `B0` and ``D0``). Removing queen `B0` would respect the "no 2 queens can attack each other" constraint, but would break the "place n queens" constraint.
+The above solution is wrong because queens `A1` and `B0` can attack each other (so can queens `B0` and ``D0``). Removing queen `B0` would respect the "no two queens can attack each other" constraint, but would break the "place _n_ queens" constraint.
 
 Below is a correct solution:
 
 .A Correct Solution for the 4 Queens Puzzle
 image::UseCasesAndExamples/solvedNQueens04.png[align="center"]
 
-All the constraints have been met, so the solution is correct.
-Note that most n queens puzzles have multiple correct solutions.
-We'll focus on finding a single correct solution for a given n, not on finding the number of possible correct solutions for a given n.
+All the constraints have been met, so the solution is correct. 
+
+Note that most _n_ queens puzzles have multiple correct solutions.
+We will focus on finding a single correct solution for a given _n_, not on finding the number of possible correct solutions for a given _n_.
 
 
 [[nQueensProblemSize]]
@@ -287,17 +286,20 @@ We'll focus on finding a single correct solution for a given n, not on finding t
 256queens has 256 queens with a search space of 10^616.
 ----
 
-The implementation of the N queens example has not been optimized because it functions as a beginner example.
-Nevertheless, it can easily handle 64 queens.
+The implementation of the _n_ queens example has not been optimized because it functions as a beginner example. Nevertheless, it can easily handle 64 queens.
 With a few changes it has been shown to easily handle 5000 queens and more.
 
 
 [[nQueensDomainModel]]
 ==== Domain Model
 
-Use a good domain model: it will be easier to understand and solve your planning problem.
-This is the domain model for the n queens example:
+This example uses the domain model to solve the four queens problem.
 
+. *Creating a Domain Model* 
+A good domain model will make it easier to understand and solve your planning problem.
++
+This is the domain model for the _n_ queens example:
++
 [source,java,options="nowrap"]
 ----
 public class Column {
@@ -307,7 +309,7 @@ public class Column {
     // ... getters and setters
 }
 ----
-
++
 [source,java,options="nowrap"]
 ----
 public class Row {
@@ -317,7 +319,7 @@ public class Row {
     // ... getters and setters
 }
 ----
-
++
 [source,java,options="nowrap"]
 ----
 public class Queen {
@@ -332,9 +334,15 @@ public class Queen {
 }
 ----
 
-A `Queen` instance has a `Column` (for example: 0 is column A, 1 is column B, ...) and a `Row` (its row, for example: 0 is row 0, 1 is row 1, ...). Based on the column and the row, the ascending diagonal line as well as the descending diagonal line can be calculated.
-The column and row indexes start from the upper left corner of the chessboard.
 
+. *Calculating the Search Space.*
++
+A `Queen` instance has a `Column` (for example: 0 is column A, 1 is column B, ...) and a `Row` (its row, for example: 0 is row 0, 1 is row 1, ...). 
++
+The ascending diagonal line and the descending diagonal line can be calculated based on the column and the row.
++
+The column and row indexes start from the upper left corner of the chessboard.
++
 [source,java,options="nowrap"]
 ----
 public class NQueens {
@@ -350,12 +358,15 @@ public class NQueens {
     // ... getters and setters
 }
 ----
-
++
+. *Finding the Solution*
++
 A single `NQueens` instance contains a list of all `Queen` instances.
-It is the `Solution` implementation which will be supplied to, solved by and retrieved from the Solver.
-Notice that in the 4 queens example, NQueens's `getN()` method will always return 4.
+It is the `Solution` implementation which will be supplied to, solved by, and retrieved from the Solver.
 
-.A Solution for 4 Queens Shown in the Domain Model
+Notice that in the four queens example, NQueens's `getN()` method will always return four.
+
+.A Solution for Four Queens Shown in the Domain Model
 [cols="6a,1,1,1,1,1", options="header"]
 |===
 | A solution
@@ -392,7 +403,7 @@ Notice that in the 4 queens example, NQueens's `getN()` method will always retur
 |3
 |===
 
-When 2 queens share the same column, row or diagonal line, such as ($$*$$) and ($$**$$), they can attack each other.
+When two queens share the same column, row or diagonal line, such as ($$*$$) and ($$**$$), they can attack each other.
 
 
 [[cloudBalancing]]
@@ -412,7 +423,7 @@ Given a list of cities, find the shortest tour for a salesman that visits each c
 
 The problem is defined by http://en.wikipedia.org/wiki/Travelling_salesman_problem[Wikipedia].
 It is http://www.math.uwaterloo.ca/tsp/[one of the most intensively studied problems] in computational mathematics.
-Yet, in the real world, it's often only part of a planning problem, along with other constraints, such as employee shift rostering constraints.
+Yet, in the real world, it is often only part of a planning problem, along with other constraints, such as employee shift rostering constraints.
 
 
 [[tspProblemSize]]
@@ -432,7 +443,7 @@ lu980    has 980 cities with a search space of 10^2927.
 ==== Problem Difficulty
 
 Despite TSP's simple definition, the problem is surprisingly hard to solve.
-Because it's an NP-hard problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when that problem dataset is slightly altered:
+Because it is an NP-hard problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when that problem dataset is slightly altered:
 
 image::UseCasesAndExamples/tspOptimalSolutionVolatility.png[align="center"]
 
@@ -449,8 +460,8 @@ Miss Manners is throwing another dinner party.
 * This time she invited 144 guests and prepared 12 round tables with 12 seats each.
 * Every guest should sit next to someone (left and right) of the opposite gender.
 * And that neighbour should have at least one hobby in common with the guest.
-* At every table, there should be 2 politicians, 2 doctors, 2 socialites, 2 coaches, 2 teachers and 2 programmers.
-* And the 2 politicians, 2 doctors, 2 coaches and 2 programmers shouldn't be the same kind at a table.
+* At every table, there should be two politicians, two doctors, two socialites, two coaches, two teachers and two programmers.
+* And the two politicians, two doctors, two coaches and two programmers should not be the same kind at a table.
 
 Drools Expert also has the normal Miss Manners example (which is much smaller) and employs an exhaustive heuristic to solve it.
 Planner's implementation is far more scalable because it uses heuristics to find the best solution and Drools Expert to calculate the score of each solution.
@@ -472,8 +483,8 @@ wedding01 has 18 jobs, 144 guests, 288 hobby practicians, 12 tables and 144 seat
 [[tennisProblemDescription]]
 ==== Problem Description
 
-Every week the tennis club has 4 teams playing round robin against each other.
-Assign those 4 spots to the teams fairly.
+Every week the tennis club has four teams playing round robin against each other.
+Assign those four spots to the teams fairly.
 
 Hard constraints:
 
@@ -516,12 +527,12 @@ Meetings have different durations.
 
 Hard constraints:
 
-* Room conflict: 2 meetings must not use the same room at the same time.
-* Required attendance: A person cannot have 2 required meetings at the same time.
+* Room conflict: two meetings must not use the same room at the same time.
+* Required attendance: A person cannot have two required meetings at the same time.
 
 Medium constraints:
 
-* Preferred attendance: A person cannot have 2 preferred meetings at the same time, nor a preferred and a required meeting at the same time.
+* Preferred attendance: A person cannot have two preferred meetings at the same time, nor a preferred and a required meeting at the same time.
 
 Soft constraints:
 
@@ -553,9 +564,9 @@ Schedule each lecture into a timeslot and into a room.
 
 Hard constraints:
 
-* Teacher conflict: A teacher must not have 2 lectures in the same period.
-* Curriculum conflict: A curriculum must not have 2 lectures in the same period.
-* Room occupancy: 2 lectures must not be in the same room in the same period.
+* Teacher conflict: A teacher must not have two lectures in the same period.
+* Curriculum conflict: A curriculum must not have two lectures in the same period.
+* Room occupancy: two lectures must not be in the same room in the same period.
 * Unavailable period (specified per dataset): A specific lecture must not be assigned to a specific period.
 
 Soft constraints:
@@ -803,12 +814,12 @@ This allows it to express its constraints more naturally, because properties suc
 [[roadDistancesInsteadOfAirDistances]]
 ==== Road Distances Instead of Air Distances
 
-In the real world, vehicles can't follow a straight line from location to location: they have to use roads and highways.
+In the real world, vehicles cannot follow a straight line from location to location: they have to use roads and highways.
 From a business point of view, this matters a lot:
 
 image::UseCasesAndExamples/vehicleRoutingDistanceType.png[align="center"]
 
-For the optimization algorithm, this doesn't matter much, as long as the distance between 2 points can be looked up (and are preferably precalculated). The road cost doesn't even need to be a distance, it can also be travel time, fuel cost, or a weighted function of those.
+For the optimization algorithm, this does not matter much, as long as the distance between two points can be looked up (and are preferably precalculated). The road cost does not even need to be a distance, it can also be travel time, fuel cost, or a weighted function of those.
 There are several technologies available to precalculate road costs, such as https://graphhopper.com/[GraphHopper] (embeddable, offline Java engine), http://open.mapquestapi.com/directions/#matrix[Open MapQuest] (web service) and https://developers.google.com/maps/documentation/webservices/client-library[Google Maps Client API] (web service).
 
 image::UseCasesAndExamples/integrationWithRealMaps.png[align="center"]
@@ -817,17 +828,17 @@ There are also several technologies to render it, such as http://leafletjs.com[L
 
 image::UseCasesAndExamples/vehicleRoutingLeafletAndGoogleMaps.png[align="center"]
 
-It's even possible to render the actual road routes with GraphHopper or Google Map Directions, but because of route overlaps on highways, it can become harder to see the standstill order:
+It is even possible to render the actual road routes with GraphHopper or Google Map Directions, but because of route overlaps on highways, it can become harder to see the standstill order:
 
 image::UseCasesAndExamples/vehicleRoutingGoogleMapsDirections.png[align="center"]
 
-Take special care that the road costs between 2 points use the same optimization criteria as the one used in Planner.
+Take special care that the road costs between two points use the same optimization criteria as the one used in Planner.
 For example, GraphHopper etc will by default return the fastest route, not the shortest route.
 Don't use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in Planner: this leads to a suboptimal solution as shown below:
 
 image::UseCasesAndExamples/roadDistanceTriangleInequality.png[align="center"]
 
-Contrary to popular belief, most users don't want the shortest route: they want the fastest route instead.
+Contrary to popular belief, most users do not want the shortest route: they want the fastest route instead.
 They prefer highways over normal roads.
 They prefer normal roads over dirt roads.
 In the real world, the fastest and shortest route are rarely the same.
@@ -910,7 +921,7 @@ image::UseCasesAndExamples/patientAdmissionScheduleUseCase.png[align="center"]
 
 Hard constraints:
 
-* 2 patients must not be assigned to the same bed in the same night. Weight: ``-1000hard * conflictNightCount``.
+* Two patients must not be assigned to the same bed in the same night. Weight: ``-1000hard * conflictNightCount``.
 * A room can have a gender limitation: only females, only males, the same gender in the same night or no gender limitation at all. Weight: ``-50hard * nightCount``.
 * A department can have a minimum or maximum age. Weight: ``-100hard * nightCount``.
 * A patient can require a room with specific equipment(s). Weight: ``-50hard * nightCount``.
@@ -1025,22 +1036,22 @@ image::UseCasesAndExamples/examinationTimetablingUseCase.png[align="center"]
 
 Hard constraints:
 
-* Exam conflict: 2 exams that share students must not occur in the same period.
+* Exam conflict: two exams that share students must not occur in the same period.
 * Room capacity: A room's seating capacity must suffice at all times.
 * Period duration: A period's duration must suffice for all of its exams.
 * Period related hard constraints (specified per dataset):
-** Coincidence: 2 specified exams must use the same period (but possibly another room).
-** Exclusion: 2 specified exams must not use the same period.
+** Coincidence: two specified exams must use the same period (but possibly another room).
+** Exclusion: two specified exams must not use the same period.
 ** After: A specified exam must occur in a period after another specified exam's period.
 * Room related hard constraints (specified per dataset):
-** Exclusive: 1 specified exam should not have to share its room with any other exam.
+** Exclusive: one specified exam should not have to share its room with any other exam.
 
 Soft constraints (each of which has a parametrized penalty):
 
-* The same student should not have 2 exams in a row.
-* The same student should not have 2 exams on the same day.
-* Period spread: 2 exams that share students should be a number of periods apart.
-* Mixed durations: 2 exams that share a room should not have different durations.
+* The same student should not have two exams in a row.
+* The same student should not have two exams on the same day.
+* Period spread: two exams that share students should be a number of periods apart.
+* Mixed durations: two exams that share a room should not have different durations.
 * Front load: Large exams should be scheduled earlier in the schedule.
 * Period penalty (specified per dataset): Some periods have a penalty when used.
 * Room penalty (specified per dataset): Some rooms have a penalty when used.
@@ -1095,7 +1106,7 @@ image::UseCasesAndExamples/employeeShiftRosteringUseCase.png[align="center"]
 Hard constraints:
 
 * *No unassigned shifts* (built-in): Every shift need to be assigned to an employee.
-* **Shift conflict**: An employee can have only 1 shift per day.
+* **Shift conflict**: An employee can have only one shift per day.
 
 Soft constraints:
 
@@ -1126,7 +1137,7 @@ image::UseCasesAndExamples/employeeRosteringValueProposition.png[align="center"]
 [[employeeRosteringProblemSize]]
 ==== Problem Size
 
-There are 3 dataset types:
+There are three dataset types:
 
 * sprint: must be solved in seconds.
 * medium: must be solved in minutes.
@@ -1212,9 +1223,9 @@ image::UseCasesAndExamples/travelingTournamentUseCase.png[align="center"]
 Hard constraints:
 
 * Each team plays twice against every other team: once home and once away.
-* Each team has exactly 1 match on each timeslot.
-* No team must have more than 3 consecutive home or 3 consecutive away matches.
-* No repeaters: no 2 consecutive matches of the same 2 opposing teams.
+* Each team has exactly one match on each timeslot.
+* No team must have more than three consecutive home or three consecutive away matches.
+* No repeaters: no two consecutive matches of the same two opposing teams.
 
 Soft constraints:
 
