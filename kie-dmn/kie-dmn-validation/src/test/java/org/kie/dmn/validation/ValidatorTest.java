@@ -435,7 +435,14 @@ public class ValidatorTest {
         assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVALID_NAME ) ) );
         assertThat( validate.get(0).getSourceId(), is("_dd662d27-7896-42cb-9d14-bd74203bdbec") );
     }
-    
+
+    @Test
+    public void testUNKNOWN_VARIABLE() {
+        List<DMNMessage> validate = validator.validate( getReader( "UNKNOWN_VARIABLE.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat( formatMessages( validate ), validate.size(), is( 1 ) );
+        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.ERR_COMPILING_FEEL ) ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
