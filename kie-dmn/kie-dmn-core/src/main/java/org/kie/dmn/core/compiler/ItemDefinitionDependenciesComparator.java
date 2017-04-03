@@ -46,14 +46,17 @@ public class ItemDefinitionDependenciesComparator implements Comparator<ItemDefi
     }
 
     private boolean recurseFind(ItemDefinition o1, QName qname2) {
-        boolean found = false;
         if ( o1.getTypeRef() != null ) {
-            found |= o1.getTypeRef().equals(qname2);
+            if ( o1.getTypeRef().equals(qname2) ) {
+                return true;
+            }
         }
         for ( ItemDefinition ic : o1.getItemComponent() ) {
-            found |= recurseFind(ic, qname2);
+            if ( recurseFind(ic, qname2) ) {
+                return true;
+            }
         }
-        return found;
+        return false;
     }
 
 }
