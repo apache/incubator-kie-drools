@@ -41,6 +41,7 @@ public class BooleanValueRangeTest {
     public void contains() {
         assertEquals(true, new BooleanValueRange().contains(Boolean.FALSE));
         assertEquals(true, new BooleanValueRange().contains(Boolean.TRUE));
+        assertEquals(false, new BooleanValueRange().contains(null));
     }
 
     @Test
@@ -55,6 +56,16 @@ public class BooleanValueRangeTest {
         when(workingRandom.nextBoolean()).thenReturn(true, true, false, true);
         assertElementsOfIterator(new BooleanValueRange().createRandomIterator(workingRandom),
                 Boolean.TRUE, Boolean.TRUE, Boolean.FALSE, Boolean.TRUE);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void getIndexNegative() {
+        new BooleanValueRange().get(-1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void getIndexGreaterThanSize() {
+        new BooleanValueRange().get(2);
     }
 
 }
