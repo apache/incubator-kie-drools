@@ -1043,6 +1043,16 @@ public class DMNRuntimeTest {
         assertThat( result.get( "Further Decision" ), is( "The person was greeted with: 'Ciao John Doe'" ) );
     }
 
+    @Test
+    public void testOutOfOrderItemsNPE() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "out-of-order-items.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "https://github.com/kiegroup/kie-dmn",
+                "out-of-order" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.FAILED_VALIDATOR ) ), is( false ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }

@@ -32,6 +32,7 @@ import org.kie.dmn.core.ast.*;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.core.util.Msg;
@@ -329,16 +330,6 @@ public class DMNCompilerImpl
                                                itemDef.getName() );
                     }
                 }
-            } else {
-                MsgUtil.reportMessage( logger,
-                                       DMNMessage.Severity.ERROR,
-                                       ((DMNBaseNode)node).getSource(),
-                                       dmnModel,
-                                       null,
-                                       null,
-                                       Msg.UNKNOWN_TYPE_REF_ON_NODE,
-                                       itemDef.getTypeRef(),
-                                       node.getName() );
             }
         } else {
             // this is a composite type
@@ -347,6 +338,7 @@ public class DMNCompilerImpl
             for ( ItemDefinition fieldDef : itemDef.getItemComponent() ) {
                 DMNCompilerHelper.checkVariableName( dmnModel, fieldDef, fieldDef.getName() );
                 DMNType fieldType = buildTypeDef( ctx, feel, dmnModel, node, fieldDef, false );
+                fieldType = fieldType != null ? fieldType : DMNTypeRegistry.UNKNOWN;
                 compType.addField( fieldDef.getName(), fieldType );
             }
             type = compType;
