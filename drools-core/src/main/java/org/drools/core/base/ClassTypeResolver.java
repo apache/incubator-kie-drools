@@ -16,11 +16,16 @@
 
 package org.drools.core.base;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -238,11 +243,63 @@ public class ClassTypeResolver
             throw new ClassNotFoundException( "Unable to find class '" + className + "'" );
         }
 
+        importDependentEnums( clazz );
+
         this.cachedImports.put( clazz.getSimpleName(),
                                 clazz );
 
         return clazz;
     }
+
+    private void importDependentEnums( final Class<?> clazz ) throws ClassNotFoundException {
+        for ( final Class declaredClass : getDeclaredClasses( clazz ) ) {
+            registerEnum( declaredClass );
+        }
+    }
+
+    private void registerEnum( final Class<?> clazz ) {
+        if ( clazz.isEnum() ) {
+            registerClass( clazz.getSimpleName(), clazz );
+        }
+    }
+
+    private List<Class<?>> getDeclaredClasses( final Class<?> clazz ) {
+        final List<Class<?>> fields = new ArrayList<Class<?>>();
+
+        try {
+            fields.addAll( getTypes( clazz.getDeclaredFields() ) );
+            fields.addAll( getReturnTypes( clazz.getDeclaredMethods() ) );
+
+            if ( clazz.getSuperclass() != null ) {
+                fields.addAll( getDeclaredClasses( clazz.getSuperclass() ) );
+            }
+
+            return fields;
+        } catch ( NoClassDefFoundError e ) {
+            return fields;
+        }
+    }
+
+    private List<Class<?>> getReturnTypes( final Method[] methods ) {
+        final List<Class<?>> types = new ArrayList<Class<?>>();
+
+        for ( Method method : methods ) {
+            types.add( method.getReturnType() );
+        }
+
+        return types;
+    }
+
+    private List<Class<?>> getTypes( final Field[] fields ) {
+        final List<Class<?>> types = new ArrayList<Class<?>>();
+
+        for ( Field field : fields ) {
+            types.add( field.getType() );
+        }
+
+        return types;
+    }
+
 
     private Class<?> getClassFromImports(String className, ClassFilter classFilter, Collection<String> usedImports) {
         final Set<Class<?>> validClazzCandidates = new HashSet<Class<?>>();
