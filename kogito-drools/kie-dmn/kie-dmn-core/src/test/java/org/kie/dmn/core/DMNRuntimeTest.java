@@ -1044,6 +1044,16 @@ public class DMNRuntimeTest {
     }
 
     @Test
+    public void testOutOfOrderItemsNPE() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "out-of-order-items.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "https://github.com/kiegroup/kie-dmn",
+                "out-of-order" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.FAILED_VALIDATOR ) ), is( false ) );
+    }
+  
+    @Test
     public void testItemDefDependencies() {
         // DROOLS-1505
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "itemDef-dependency.dmn", this.getClass() );
