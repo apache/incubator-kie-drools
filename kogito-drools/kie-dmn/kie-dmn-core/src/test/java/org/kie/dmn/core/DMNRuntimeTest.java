@@ -1043,6 +1043,30 @@ public class DMNRuntimeTest {
         assertThat( result.get( "Further Decision" ), is( "The person was greeted with: 'Ciao John Doe'" ) );
     }
 
+    @Test
+    public void testItemDefDependencies() {
+        // DROOLS-1505
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "itemDef-dependency.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_2374ee6d-75ed-4e9d-95d3-a88c135e1c43",
+                "Drawing 1a" );
+        assertThat( dmnModel, notNullValue() );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        Map<String, String> person = new HashMap<>();
+        person.put("Full Name", "John Doe");
+        person.put("Address", "100 East Davie Street");
+        context.set("Input Person", person);
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "My Decision" ), is( "The person John Doe is located at 100 East Davie Street" ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
