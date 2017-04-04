@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.api.marshalling.v1_1;
+package org.kie.dmn.api.core;
 
-import com.thoughtworks.xstream.XStream;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 
+import java.util.List;
 
-public interface DMNExtensionElementRegister {
+public interface DMNCompilerConfiguration {
 
-    public void registerExtensionConverters(XStream xstream);
+    public List<DMNExtensionRegister> getRegisteredExtensions ();
+    public void addExtensions (List<DMNExtensionRegister> extensions);
+    public void addExtension (DMNExtensionRegister extension);
 
 }
