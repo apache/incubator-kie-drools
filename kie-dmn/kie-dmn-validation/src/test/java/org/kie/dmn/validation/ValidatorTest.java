@@ -151,15 +151,6 @@ public class ValidatorTest extends AbstractValidatorTest {
     }
     
     @Test
-    public void testELEMREF_NOHASH() {
-        List<DMNMessage> validate = validator.validate( getReader( "ELEMREF_NOHASH.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 3 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.MISSING_EXPRESSION ) ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.INVALID_HREF_SYNTAX ) ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
-    }
-    
-    @Test
     public void testFORMAL_PARAM_DUPLICATED() {
         List<DMNMessage> validate = validator.validate( getReader( "FORMAL_PARAM_DUPLICATED.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 3 ) );
@@ -253,20 +244,6 @@ public class ValidatorTest extends AbstractValidatorTest {
         // DROOLS-1435
         List<DMNMessage> validate = validator.validate( getReader( "REQAUTH_NOT_KNOWLEDGESOURCEbis.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
         assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-    }
-    
-    @Test
-    public void testTYPEREF_NO_FEEL_TYPE() {
-        List<DMNMessage> validate = validator.validate( getReader( "TYPEREF_NO_FEEL_TYPE.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.TYPE_REF_NOT_FOUND ) ) );
-    }
-
-    @Test
-    public void testKNOW_SOURCE_MISSING_OWNER() {
-        List<DMNMessage> validate = validator.validate( getReader( "KNOW_SOURCE_MISSING_OWNER.dmn" ), VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertThat( ValidatorUtil.formatMessages( validate ), validate.size(), is( 1 ) );
-        assertTrue( validate.stream().anyMatch( p -> p.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ) );
     }
 
     @Test

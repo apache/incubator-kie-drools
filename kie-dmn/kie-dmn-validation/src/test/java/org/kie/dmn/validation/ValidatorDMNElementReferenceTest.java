@@ -34,7 +34,6 @@ public class ValidatorDMNElementReferenceTest extends AbstractValidatorTest {
         final List<DMNMessage> validate = validator.validate(
                 getReader("dmnelementref/ELEMREF_NOHASH.dmn"),
                 VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        System.out.println(ValidatorUtil.formatMessages(validate));
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(3));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION)));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.INVALID_HREF_SYNTAX)));
