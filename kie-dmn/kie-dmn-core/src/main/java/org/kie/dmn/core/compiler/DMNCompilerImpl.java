@@ -21,8 +21,9 @@ import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.*;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionElementRegister;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -55,10 +56,17 @@ public class DMNCompilerImpl
     private static final Logger logger = LoggerFactory.getLogger( DMNCompilerImpl.class );
     private final DMNEvaluatorCompiler evaluatorCompiler;
     private final DMNFEELHelper feel;
+    private DMNCompilerConfiguration dmnCompilerConfig;
 
     public DMNCompilerImpl() {
         this.feel = new DMNFEELHelper();
         this.evaluatorCompiler = new DMNEvaluatorCompiler( this, feel );
+    }
+
+    public DMNCompilerImpl(DMNCompilerConfiguration dmnCompilerConfig) {
+        this.feel = new DMNFEELHelper();
+        this.evaluatorCompiler = new DMNEvaluatorCompiler( this, feel );
+        this.dmnCompilerConfig = dmnCompilerConfig;
     }
 
     @Override
@@ -72,31 +80,16 @@ public class DMNCompilerImpl
     }
 
     @Override
-    public DMNModel compile(Resource resource, DMNExtensionElementRegister extensionElementRegister) {
-        try {
-            return compile( resource.getReader(), extensionElementRegister );
-        } catch ( IOException e ) {
-            logger.error( "Error retrieving reader for resource: " + resource.getSourcePath(), e );
-        }
-        return null;
-    }
-
-    @Override
     public DMNModel compile(Reader source) {
         try {
-            Definitions dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( source );
-            DMNModel model = compile( dmndefs );
-            return model;
-        } catch ( Exception e ) {
-            logger.error( "Error compiling model from source.", e );
-        }
-        return null;
-    }
-
-    @Override
-    public DMNModel compile(Reader source, DMNExtensionElementRegister extensionElementRegister) {
-        try {
-            Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(extensionElementRegister).unmarshal( source );
+            Definitions dmndefs = null;
+            if(dmnCompilerConfig != null) {
+                if (dmnCompilerConfig.getRegisteredExtensions().isEmpty()) {
+                    dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(getDmnCompilerConfig().getRegisteredExtensions()).unmarshal( source );
+                }
+            }else {
+                dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(source);
+            }
             DMNModel model = compile( dmndefs );
             return model;
         } catch ( Exception e ) {
@@ -446,6 +439,10 @@ public class DMNCompilerImpl
     private String getNamespace(DMNModelInstrumentedBase localElement, QName typeRef) {
         String prefix = typeRef.getPrefix();
         return localElement.getNamespaceURI( prefix );
+    }
+
+    private DMNCompilerConfiguration getDmnCompilerConfig() {
+        return this.dmnCompilerConfig;
     }
 
 }

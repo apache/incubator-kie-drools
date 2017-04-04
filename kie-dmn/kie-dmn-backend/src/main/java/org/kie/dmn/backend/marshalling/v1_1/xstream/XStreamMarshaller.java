@@ -23,6 +23,8 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -40,7 +42,7 @@ import com.thoughtworks.xstream.io.xml.AbstractPullReader;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.StaxWriter;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionElementRegister;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
@@ -88,7 +90,7 @@ public class XStreamMarshaller
         implements DMNMarshaller {
 
     private static Logger logger = LoggerFactory.getLogger( XStreamMarshaller.class );
-    private DMNExtensionElementRegister extensionElementRegister;
+    private List<DMNExtensionRegister> extensionRegisters;
 
 
     private static StaxDriver staxDriver;
@@ -115,8 +117,9 @@ public class XStreamMarshaller
 
     }
 
-    public XStreamMarshaller (DMNExtensionElementRegister extensionElementRegister) {
-        this.extensionElementRegister = extensionElementRegister;
+    public XStreamMarshaller (List<DMNExtensionRegister> extensionRegisters) {
+        this.extensionRegisters = new ArrayList<DMNExtensionRegister>();
+        this.extensionRegisters.addAll(extensionRegisters);
     }
 
 
@@ -351,8 +354,10 @@ public class XStreamMarshaller
         
         xStream.ignoreUnknownElements();
 
-        if(extensionElementRegister != null) {
-            extensionElementRegister.registerExtensionConverters(xStream);
+        if(extensionRegisters != null && !extensionRegisters.isEmpty()) {
+            for(DMNExtensionRegister extensionRegister : extensionRegisters) {
+                extensionRegister.registerExtensionConverters(xStream);
+            }
         }
 
 
