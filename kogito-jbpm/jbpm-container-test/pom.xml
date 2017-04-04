@@ -40,9 +40,8 @@
      referencing the zip from local filesystem). -->
     <eap7.download.url>file:///valid-url-for-eap-7-needs-to-be-specified-here-or-via-cmd-line</eap7.download.url>
 
-    <!-- Wildfly container version -->
     <version.wildfly10>10.1.0.Final</version.wildfly10>
-    <version.tomcat8>8.5.13</version.tomcat8>
+    <version.tomcat8>8.0.43</version.tomcat8>
   </properties>
 
   <modules>
