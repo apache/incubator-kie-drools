@@ -1061,20 +1061,37 @@ public class DMNRuntimeTest {
                 "http://www.trisotech.com/definitions/_2374ee6d-75ed-4e9d-95d3-a88c135e1c43",
                 "Drawing 1a" );
         assertThat( dmnModel, notNullValue() );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
+        System.out.println( formatMessages( dmnModel.getMessages() ) );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
-        
+
         DMNContext context = runtime.newContext();
         Map<String, String> person = new HashMap<>();
-        person.put("Full Name", "John Doe");
-        person.put("Address", "100 East Davie Street");
-        context.set("Input Person", person);
+        person.put( "Full Name", "John Doe" );
+        person.put( "Address", "100 East Davie Street" );
+        context.set( "Input Person", person );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        
+
         assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "My Decision" ), is( "The person John Doe is located at 100 East Davie Street" ) );
+    }
+
+    @Test
+    public void testNPE() {
+        // DROOLS-1512
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "NPE.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/dmn/definitions/_95b7ee22-1964-4be5-b7db-7db66692c707",
+                "Dessin 1" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = runtime.newContext();
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
+        assertThat( dmnResult.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {
