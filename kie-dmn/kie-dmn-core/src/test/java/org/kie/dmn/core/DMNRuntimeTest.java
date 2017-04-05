@@ -1076,6 +1076,31 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "My Decision" ), is( "The person John Doe is located at 100 East Davie Street" ) );
     }
+    
+    @Test
+    public void testDecisionResultTypeCheck() {
+        // DROOLS-1513
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "LoanRecommendationWrongOutputType.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/dmn/definitions/_591d49d0-26e1-4a1c-9f72-b65bec09964a",
+                "Loan Recommendation Multi-step" );
+        assertThat( dmnModel, notNullValue() );
+        System.out.println(formatMessages( dmnModel.getMessages() ));
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        Map<String, Number> loan = new HashMap<>();
+        loan.put("Amount", 100);
+        loan.put("Rate", 12);
+        loan.put("Term", 1);
+        context.set("Loan", loan);
+
+        DMNResult dmnResult = runtime.evaluateDecisionByName( dmnModel, "Loan Payment", context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
+        assertThat( dmnResult.getMessages().size(), is( 1 ) );
+        assertThat( dmnResult.getMessages().get( 0 ).getSourceId(), is("_93062144-ebc7-4ef7-a156-c342aeffac49") );
+        assertThat( dmnResult.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERROR_EVAL_NODE ) );
+    }
 
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );

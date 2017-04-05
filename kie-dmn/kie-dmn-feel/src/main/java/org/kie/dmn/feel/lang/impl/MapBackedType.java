@@ -5,6 +5,7 @@ import org.kie.dmn.feel.lang.Type;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * A map-based type descriptor
@@ -42,5 +43,25 @@ public class MapBackedType
     @Override
     public Map<String, Type> getFields() {
         return fields;
+    }
+
+    @Override
+    public boolean isInstanceOf(Object o) {
+        Map<String, Object> instance = null;
+        try {
+            instance = (Map<String, Object>) o;
+        } catch ( Exception e ) {
+            return false;
+        }
+        for ( Entry<String, Type> f : fields.entrySet() ) {
+            if ( instance.get(f.getKey()) == null ) {
+                return false;
+            } else {
+                if ( !f.getValue().isInstanceOf(instance.get(f.getKey())) ) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

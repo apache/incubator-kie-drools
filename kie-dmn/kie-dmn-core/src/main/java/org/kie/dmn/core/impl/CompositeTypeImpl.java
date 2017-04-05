@@ -77,4 +77,9 @@ public class CompositeTypeImpl
     public CompositeTypeImpl clone() {
         return new CompositeTypeImpl( getNamespace(), getName(), getId(), isCollection(), new LinkedHashMap<>( fields), getBaseType(), getFeelType() );
     }
+
+    @Override
+    public boolean isInstanceOf(Object o) {
+        return getFeelType().isInstanceOf(o);
+    }
 }

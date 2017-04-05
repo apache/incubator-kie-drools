@@ -71,4 +71,12 @@ public class ItemDefinition extends NamedElement {
         this.isCollection = value;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ItemDefinition [").append(getName()).append("]");
+        return builder.toString();
+    }
+
+    
 }

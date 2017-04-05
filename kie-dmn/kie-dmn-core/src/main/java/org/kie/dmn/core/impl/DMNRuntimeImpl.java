@@ -327,6 +327,22 @@ public class DMNRuntimeImpl
                         // and vice-versa
                         value = ((Collection)value).toArray()[0];
                     }
+                    
+                    if ( !d.getResultType().isInstanceOf(value) ) {
+                        DMNMessage message = MsgUtil.reportMessage( logger,
+                                DMNMessage.Severity.ERROR,
+                                decision.getSource(),
+                                result,
+                                null,
+                                null,
+                                Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
+                                getIdentifier( decision ),
+                                decision.getResultType(),
+                                value);
+                        reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED );
+                        return false;
+                    }
+                    
                     result.getContext().set( decision.getDecision().getVariable().getName(), value );
                     dr.setResult( value );
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED );
