@@ -32,7 +32,7 @@ global org.kie.dmn.validation.MessageReporter reporter;
 rule CONTEXT_DUP_ENTRY
 when
   $ce1 : ContextEntry( parent instanceof Context, variable != null )
-  $ce2 : ContextEntry( variable != null, variable!.name == $ce1.variable!.name, parent == $ce1.parent,
+  $ce2 : ContextEntry( variable!.name == $ce1.variable!.name, parent == $ce1.parent,
                        this != $ce1 )
 then
   reporter.report( DMNMessage.Severity.ERROR,  $ce1 , Msg.DUPLICATE_CONTEXT_ENTRY, $ce1.getVariable().getName() );

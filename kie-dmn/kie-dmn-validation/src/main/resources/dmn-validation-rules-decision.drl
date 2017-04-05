@@ -52,8 +52,7 @@ end
 
 rule DECISION_PERF_INDICATOR_WRONG_TYPE
 when
-    $d: Decision(impactedPerformanceIndicator != null,
-                 $elemRef: /impactedPerformanceIndicator)
+    $d: Decision($elemRef: /impactedPerformanceIndicator)
     $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof PerformanceIndicator))
 then
     reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
@@ -61,8 +60,7 @@ end
 
 rule DECISION_DECISION_MAKER_WRONG_TYPE
 when
-    $d: Decision(decisionMaker != null,
-                 $elemRef: /decisionMaker)
+    $d: Decision($elemRef: /decisionMaker)
     $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof OrganizationUnit))
 then
     reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
@@ -70,8 +68,7 @@ end
 
 rule DECISION_DECISION_OWNER_WRONG_TYPE
 when
-    $d: Decision(decisionOwner != null,
-                 $elemRef: /decisionOwner)
+    $d: Decision($elemRef: /decisionOwner)
     $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof OrganizationUnit))
 then
     reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());

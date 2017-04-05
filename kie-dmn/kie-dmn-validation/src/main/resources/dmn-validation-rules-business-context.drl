@@ -31,8 +31,7 @@ global org.kie.dmn.validation.MessageReporter reporter;
 
 rule ORG_UNIT_DECISION_MADE_WRONG_TYPE
 when
-    $d: OrganizationUnit(decisionMade != null,
-                         $elemRef: /decisionMade)
+    $d: OrganizationUnit($elemRef: /decisionMade)
     $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof Decision))
 then
     reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
@@ -40,8 +39,7 @@ end
 
 rule ORG_UNIT_DECISION_OWNED_WRONG_TYPE
 when
-    $d: OrganizationUnit(decisionOwned != null,
-                         $elemRef: /decisionOwned)
+    $d: OrganizationUnit($elemRef: /decisionOwned)
     $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof Decision))
 then
     reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
@@ -49,8 +47,7 @@ end
 
 rule PERF_INDICATOR_IMP_DECISION_WRONG_TYPE
 when
-    $d: PerformanceIndicator(impactingDecision != null,
-                             $elemRef: /impactingDecision)
+    $d: PerformanceIndicator($elemRef: /impactingDecision)
     $element: DMNElement(id == rightOfHash($elemRef.href), !(this instanceof Decision))
 then
     reporter.report(DMNMessage.Severity.ERROR, $elemRef , Msg.REQ_DEP_INVALID_TYPE, $element.getId(), $d.getIdentifierString());
