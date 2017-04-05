@@ -15,16 +15,18 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.base.ValueType;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.InternalReadAccessor;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+
+import org.drools.core.base.ClassFieldReader;
+import org.drools.core.base.ValueType;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.spi.InternalReadAccessor;
 
 import static org.drools.core.util.ClassUtils.canonicalName;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
@@ -123,7 +125,7 @@ public class Declaration
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         identifier = (String) in.readObject();
-        readAccessor = (InternalReadAccessor) in.readObject();
+        ( (DroolsObjectInputStream) in ).readExtractor( this::setReadAccessor );
         pattern = (Pattern) in.readObject();
         internalFact = in.readBoolean();
         bindingName = (String) in.readObject();
@@ -131,7 +133,13 @@ public class Declaration
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( identifier );
-        out.writeObject( readAccessor );
+
+        if (readAccessor instanceof ClassFieldReader ) {
+            out.writeObject( ( (ClassFieldReader) readAccessor ).getAccessorKey() );
+        } else {
+            out.writeObject( readAccessor );
+        }
+
         out.writeObject( pattern );
         out.writeBoolean( internalFact );
         out.writeObject( bindingName );

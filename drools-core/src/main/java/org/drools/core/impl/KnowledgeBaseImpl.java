@@ -498,6 +498,8 @@ public class KnowledgeBaseImpl
         
         this.resolvedReleaseId = (ReleaseId) droolsStream.readObject();
 
+        ( (DroolsObjectInputStream) droolsStream ).bindAllExtractors(this);
+
         if (!isDrools) {
             droolsStream.close();
         }

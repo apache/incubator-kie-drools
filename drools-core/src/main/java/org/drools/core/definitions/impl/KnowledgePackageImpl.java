@@ -16,6 +16,23 @@
 
 package org.drools.core.definitions.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TypeResolver;
@@ -41,28 +58,10 @@ import org.kie.api.definition.rule.Global;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.definition.type.Role;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.io.ResourceTypePackage;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class KnowledgePackageImpl
     implements
@@ -245,9 +244,11 @@ public class KnowledgePackageImpl
             bytes = new ByteArrayOutputStream();
             out = new DroolsObjectOutputStream( bytes );
         }
+
+        out.writeObject( this.name );
+        out.writeObject( this.classFieldAccessorStore );
         out.writeObject( this.dialectRuntimeRegistry );
         out.writeObject( this.typeDeclarations );
-        out.writeObject( this.name );
         out.writeObject( this.imports );
         out.writeObject( this.staticImports );
         out.writeObject( this.functions );
@@ -258,7 +259,6 @@ public class KnowledgePackageImpl
         out.writeBoolean( this.valid );
         out.writeBoolean( this.needStreamMode );
         out.writeObject( this.rules );
-        out.writeObject( this.classFieldAccessorStore );
         out.writeObject( this.entryPointsIds );
         out.writeObject( this.windowDeclarations );
         out.writeObject( this.traitRegistry );
@@ -291,11 +291,12 @@ public class KnowledgePackageImpl
                 new ByteArrayInputStream(
                         (byte[]) stream.readObject() ) );
 
-        // setting parent classloader for dialect datas
-        this.dialectRuntimeRegistry = (DialectRuntimeRegistry) in.readObject();
-
-        this.typeDeclarations = (LinkedHashMap) in.readObject();
         this.name = (String) in.readObject();
+        this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
+        in.setStore( this.classFieldAccessorStore );
+
+        this.dialectRuntimeRegistry = (DialectRuntimeRegistry) in.readObject();
+        this.typeDeclarations = (LinkedHashMap) in.readObject();
         this.imports = (Map<String, ImportDeclaration>) in.readObject();
         this.staticImports = (Set) in.readObject();
         this.functions = (Map<String, Function>) in.readObject();
@@ -306,10 +307,12 @@ public class KnowledgePackageImpl
         this.valid = in.readBoolean();
         this.needStreamMode = in.readBoolean();
         this.rules = (Map<String, RuleImpl>) in.readObject();
-        this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
         this.entryPointsIds = (Set<String>) in.readObject();
         this.windowDeclarations = (Map<String, WindowDeclaration>) in.readObject();
         this.traitRegistry = (TraitRegistry) in.readObject();
+
+        in.setStore( null );
+
         if (!isDroolsStream) {
             in.close();
         }

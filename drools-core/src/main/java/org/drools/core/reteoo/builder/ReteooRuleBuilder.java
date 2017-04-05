@@ -112,7 +112,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
         final GroupElement[] subrules = rule.getTransformedLhs( kBase.getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer(),
                                                                 kBase.getGlobals() );
 
+        GroupElement lhs = new GroupElement();
         for (int i = 0; i < subrules.length; i++) {
+            lhs.addChild( subrules[i] );
 
             // creates a clean build context for each subrule
             final BuildContext context = new BuildContext( kBase );
@@ -140,6 +142,10 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
             // adds the terminal node to the list of terminal nodes
             nodes.add( node );
+        }
+
+        if (rule.isQuery()) {
+            rule.setLhs( lhs );
         }
 
         return nodes;
