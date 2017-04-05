@@ -19,6 +19,7 @@ package org.kie.dmn.core.api;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNContextImpl;
 
@@ -30,8 +31,12 @@ public class DMNFactory {
 
     public static DMNCompiler newCompiler() { return new DMNCompilerImpl(); }
 
-    public static DMNCompiler newCompilerWithConfiguration(DMNCompilerConfiguration dmnCompilerConfig) {
+    public static DMNCompiler newCompiler(DMNCompilerConfiguration dmnCompilerConfig) {
         return new DMNCompilerImpl(dmnCompilerConfig);
+    }
+
+    public static DMNCompilerConfiguration newCompilerConfiguration() {
+        return new DMNCompilerConfigurationImpl();
     }
 
 }
