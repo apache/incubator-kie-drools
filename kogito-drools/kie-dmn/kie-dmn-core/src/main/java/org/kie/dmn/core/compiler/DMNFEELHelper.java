@@ -60,7 +60,10 @@ public class DMNFEELHelper
             for ( UnaryTest t : unaryTests ) {
                 try {
                     Boolean applyT = t.apply(ctx, value);
-                    if ( applyT ) {
+                    // the unary test above can actually return null, so we have to handle it here
+                    if ( applyT == null ) {
+                        return false;
+                    } else if ( applyT ) {
                         return true;
                     }
                 } catch ( Throwable e ) {
