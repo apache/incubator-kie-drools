@@ -62,15 +62,20 @@ public class DMNAssemblerService implements KieAssemblerService {
         DMNCompiler dmnCompiler = null;
         if(!extensionProperties.isEmpty()) {
             List<DMNExtensionRegister> extensionRegisters = new ArrayList<DMNExtensionRegister>();
-            for(Map.Entry<String, String> extensionProperty : extensionProperties.entrySet()) {
-                String extRegClassName = extensionProperty.getValue();
-                DMNExtensionRegister extRegister = (DMNExtensionRegister)( (KnowledgeBuilderImpl) kbuilder ).getRootClassLoader()
-                        .loadClass(extRegClassName).newInstance();
-                extensionRegisters.add(extRegister);
+            try {
+                for (Map.Entry<String, String> extensionProperty : extensionProperties.entrySet()) {
+                    String extRegClassName = extensionProperty.getValue();
+                    DMNExtensionRegister extRegister = (DMNExtensionRegister) ((KnowledgeBuilderImpl) kbuilder).getRootClassLoader()
+                            .loadClass(extRegClassName).newInstance();
+                    extensionRegisters.add(extRegister);
+                }
+                DMNCompilerConfiguration compilerConfig = DMNFactory.newCompilerConfiguration();
+                compilerConfig.addExtensions(extensionRegisters);
+                dmnCompiler = DMNFactory.newCompiler(compilerConfig);
+            } catch(ClassNotFoundException e) {
+                ((KnowledgeBuilderImpl) kbuilder).addBuilderResult(new DMNKnowledgeBuilderError(resource, "Trying to load an non-existing extension element register"));
+                logger.error( "Trying to load a non-existing extension element register {}", e.getLocalizedMessage());
             }
-            DMNCompilerConfiguration compilerConfig = new DMNCompilerConfigurationImpl();
-            compilerConfig.addExtensions(extensionRegisters);
-            dmnCompiler = DMNFactory.newCompilerWithConfiguration(compilerConfig);
 
         } else {
             dmnCompiler = DMNFactory.newCompiler();
