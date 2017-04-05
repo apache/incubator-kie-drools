@@ -58,9 +58,10 @@ public class HumanTaskSpecification implements TaskSpecification {
         if (taskName == null) {
             throw new IllegalArgumentException("Missing manadatory parameter - taskName");
         }
-        Map<String, Object> workParams = new HashMap<String, Object>();       
-        workParams.putAll(parameters);
-    
+        Map<String, Object> workParams = new HashMap<String, Object>();
+        if (parameters != null) {
+            workParams.putAll(parameters);
+        }
         workParams.put("NodeName", taskName);
         workParams.put("TaskName", taskName);
         workParams.put("ActorId", actorIds);
