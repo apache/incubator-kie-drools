@@ -37,7 +37,7 @@ public final class ValidatorUtil {
     }
 
     public static String formatMessages(final List<DMNMessage> messages) {
-        return messages.stream().map(Object::toString).collect( Collectors.joining( "\n" ) );
+        return messages.stream().map(Object::toString).collect( Collectors.joining( System.lineSeparator() ) );
     }
 
     private ValidatorUtil() {
