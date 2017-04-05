@@ -22,13 +22,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.process.core.Context;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.AbstractContext;
+import org.jbpm.process.core.impl.ContextContainerImpl;
 import org.kie.api.definition.process.Connection;
 
 /**
  * Default implementation of a RuleSet node.
  * 
  */
-public class RuleSetNode extends StateBasedNode {
+public class RuleSetNode extends StateBasedNode implements ContextContainer {
 
     private static final long serialVersionUID = 510l;
     
@@ -36,6 +40,9 @@ public class RuleSetNode extends StateBasedNode {
     public static final String DMN_LANG = "http://www.jboss.org/drools/dmn";
 
     private String language = DRL_LANG;
+
+    // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
+    private ContextContainer contextContainer = new ContextContainerImpl();
     
     // drl related properties
     private String ruleFlowGroup;
@@ -206,5 +213,36 @@ public class RuleSetNode extends StateBasedNode {
     
     public boolean isDMN() {
         return DMN_LANG.equals(language);
+    }
+
+    public List<Context> getContexts(String contextType) {
+        return contextContainer.getContexts(contextType);
+    }
+
+    public void addContext(Context context) {
+        ((AbstractContext) context).setContextContainer(this);
+        contextContainer.addContext(context);
+    }
+
+    public Context getContext(String contextType, long id) {
+        return contextContainer.getContext(contextType, id);
+    }
+
+    public void setDefaultContext(Context context) {
+        ((AbstractContext) context).setContextContainer(this);
+        contextContainer.setDefaultContext(context);
+    }
+
+    public Context getDefaultContext(String contextType) {
+        return contextContainer.getDefaultContext(contextType);
+    }
+
+    @Override
+    public Context getContext(String contextId) {
+        Context context = getDefaultContext(contextId);
+        if (context != null) {
+            return context;
+        }
+        return super.getContext(contextId);
     }
 }

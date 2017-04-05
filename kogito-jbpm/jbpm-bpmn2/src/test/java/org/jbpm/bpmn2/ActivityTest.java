@@ -38,6 +38,7 @@ import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.CountDownProcessEventListener;
+import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
@@ -1923,7 +1924,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         try {
             ksession.startProcess("BPMN2-BusinessRuleTask", params);
         } catch (Exception e) {
-            assertTrue(e.getMessage().contains("DMN result errors"));
+            assertTrue(e instanceof WorkflowRuntimeException);
+            assertTrue(e.getCause() instanceof RuntimeException);
+            assertTrue(e.getCause().getMessage().contains("DMN result errors"));
         }
     }
     

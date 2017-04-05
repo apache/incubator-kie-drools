@@ -26,7 +26,9 @@ import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
 import org.jbpm.bpmn2.objects.ExceptionOnPurposeHandler;
 import org.jbpm.bpmn2.objects.MyError;
+import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -295,6 +297,47 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstance.getId(), "start", "split", "User Task", "Service task error attached", "end0",
                 "Script Task", "error2");
+
+        assertNotNodeTriggered(processInstance.getId(), "end");
+    }
+
+    @Test
+    public void testErrorBoundaryEventOnBusinessRuleTask() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ErrorBoundaryEventOnBusinessRuleTask.bpmn2",
+                "BPMN2-ErrorBoundaryEventOnBusinessRuleTask.drl");
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(new RuleAwareProcessEventLister());
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-ErrorBoundaryEventOnBusinessRuleTask");
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "business rule task error attached", "error1");
+    }
+
+    @Test
+    public void testMultiErrorBoundaryEventsOnBusinessRuleTask() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiErrorBoundaryEventsOnBusinessRuleTask.bpmn2",
+                "BPMN2-MultiErrorBoundaryEventsOnBusinessRuleTask.drl");
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(new RuleAwareProcessEventLister());
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", new Person());
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-MultiErrorBoundaryEventeOnBusinessRuleTask", params);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "business rule task error attached",
+                "NPE Script Task", "error1");
+
+        ksession.dispose();
+
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(new RuleAwareProcessEventLister());
+        params = new HashMap<String, Object>();
+        params.put("person", new Person("unsupported"));
+        ProcessInstance processInstance2 = ksession.startProcess("BPMN2-MultiErrorBoundaryEventeOnBusinessRuleTask", params);
+        assertProcessInstanceFinished(processInstance2, ksession);
+        assertNodeTriggered(processInstance2.getId(), "start", "business rule task error attached",
+                "UOE Script Task", "error2");
     }
     
     @Test

@@ -47,7 +47,7 @@ public class WorkflowRuntimeException extends RuntimeException {
         initialize(nodeInstance, processInstance);
     }
 
-    public WorkflowRuntimeException(NodeInstance nodeInstance, ProcessInstance processInstance, String message, Exception e) {
+    public WorkflowRuntimeException(NodeInstance nodeInstance, ProcessInstance processInstance, String message, Throwable e) {
         super(message, e);
         initialize(nodeInstance, processInstance);
     }

@@ -16,29 +16,39 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.util.MVELSafeHelper;
+import org.jbpm.process.core.Context;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
+import org.jbpm.process.instance.ContextInstance;
+import org.jbpm.process.instance.ContextInstanceContainer;
+import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.ContextInstanceFactory;
+import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.Transformation;
+import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.rule.ConsequenceException;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage.Severity;
@@ -55,7 +65,7 @@ import org.slf4j.LoggerFactory;
  * Runtime counterpart of a ruleset node.
  * 
  */
-public class RuleSetNodeInstance extends StateBasedNodeInstance implements EventListener {
+public class RuleSetNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(RuleSetNodeInstance.class);
@@ -65,83 +75,108 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     private Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
     private String ruleFlowGroup;
 
+    // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
+    private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
+    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
+
     protected RuleSetNode getRuleSetNode() {
         return (RuleSetNode) getNode();
     }
 
     public void internalTrigger(final NodeInstance from, String type) {
-    	super.internalTrigger(from, type);
-    	// if node instance was cancelled, abort
-		if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
-			return;
-		}
-    	if ( !org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals( type ) ) {
-            throw new IllegalArgumentException( "A RuleSetNode only accepts default incoming connections!" );
-        }
-    	RuleSetNode ruleSetNode = getRuleSetNode();
-    	KnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
-    	Map<String, Object> inputs = evaluateParameters(ruleSetNode);
-    	
-    	if (ruleSetNode.isDMN()) {
-    	    String namespace = resolveVariable(ruleSetNode.getNamespace());
-    	    String model = resolveVariable(ruleSetNode.getModel());
-    	    String decision = resolveVariable(ruleSetNode.getDecision());
-    	    
-    	    DMNRuntime runtime = ((KieSession) kruntime).getKieRuntime(DMNRuntime.class);
-    	    DMNModel dmnModel = runtime.getModel(namespace, model);
-    	    if (dmnModel == null) {
-    	        throw new IllegalArgumentException("DMN model '" + model + "' not found with namespace '" + namespace + "'");
-    	    }
-    	    DMNResult dmnResult = null;
-    	    DMNContext context = runtime.newContext();
-    	    
-    	    for (Entry<String, Object> entry : inputs.entrySet()) {
-    	        context.set(entry.getKey(), entry.getValue());
-    	    }
-    	    
-    	    if (decision != null && !decision.isEmpty()) {
-    	        dmnResult = runtime.evaluateDecisionByName(dmnModel, decision, context);
-    	    } else {
-    	        dmnResult = runtime.evaluateAll(dmnModel, context);
-    	    }
-    	    
-    	    if (dmnResult.hasErrors()) {
-    	        String errors = dmnResult.getMessages(Severity.ERROR).stream()
-    	                .map(message -> message.toString())
-    	                .collect(Collectors.joining(", "));
-    	        
-    	        throw new RuntimeException("DMN result errors:: " + errors);
-    	    }
-    	    processOutputs(dmnResult.getContext().getAll());
-    	    triggerCompleted();
-    	} else {
-    	
-        	// first set rule flow group
-        	setRuleFlowGroup(resolveRuleFlowGroup(ruleSetNode.getRuleFlowGroup()));
-        	
-        	//proceed        	        	
-        	for (Entry<String, Object> entry : inputs.entrySet()) {
-        	    String inputKey = getRuleFlowGroup() + "_" +getProcessInstance().getId() +"_"+entry.getKey();
-        	    
-        	    factHandles.put(inputKey, kruntime.insert(entry.getValue()));
-        	}
-        	
-        	if (actAsWaitState()) {
-            	addRuleSetListener();
-                ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-                	.activateRuleFlowGroup( getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
-                
-        	} else {
-        	    ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-                .activateRuleFlowGroup( getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
-            
-        	    ((KieSession)getProcessInstance().getKnowledgeRuntime()).fireAllRules();
-                
-                removeEventListeners();
-                retractFacts();
+        try {
+            super.internalTrigger(from, type);
+            // if node instance was cancelled, abort
+            if (getNodeInstanceContainer().getNodeInstance(getId()) == null) {
+                return;
+            }
+            if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
+                throw new IllegalArgumentException("A RuleSetNode only accepts default incoming connections!");
+            }
+            RuleSetNode ruleSetNode = getRuleSetNode();
+            KnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+            Map<String, Object> inputs = evaluateParameters(ruleSetNode);
+
+            if (ruleSetNode.isDMN()) {
+                String namespace = resolveVariable(ruleSetNode.getNamespace());
+                String model = resolveVariable(ruleSetNode.getModel());
+                String decision = resolveVariable(ruleSetNode.getDecision());
+
+                DMNRuntime runtime = ((KieSession) kruntime).getKieRuntime(DMNRuntime.class);
+                DMNModel dmnModel = runtime.getModel(namespace, model);
+                if (dmnModel == null) {
+                    throw new IllegalArgumentException("DMN model '" + model + "' not found with namespace '" + namespace + "'");
+                }
+                DMNResult dmnResult = null;
+                DMNContext context = runtime.newContext();
+
+                for (Entry<String, Object> entry : inputs.entrySet()) {
+                    context.set(entry.getKey(), entry.getValue());
+                }
+
+                if (decision != null && !decision.isEmpty()) {
+                    dmnResult = runtime.evaluateDecisionByName(dmnModel, decision, context);
+                } else {
+                    dmnResult = runtime.evaluateAll(dmnModel, context);
+                }
+
+                if (dmnResult.hasErrors()) {
+                    String errors = dmnResult.getMessages(Severity.ERROR).stream()
+                            .map(message -> message.toString())
+                            .collect(Collectors.joining(", "));
+
+                    throw new RuntimeException("DMN result errors:: " + errors);
+                }
+                processOutputs(dmnResult.getContext().getAll());
                 triggerCompleted();
-        	}
-    	}
+            } else {
+
+                // first set rule flow group
+                setRuleFlowGroup(resolveRuleFlowGroup(ruleSetNode.getRuleFlowGroup()));
+
+                //proceed
+                for (Entry<String, Object> entry : inputs.entrySet()) {
+                    String inputKey = getRuleFlowGroup() + "_" + getProcessInstance().getId() + "_" + entry.getKey();
+
+                    factHandles.put(inputKey, kruntime.insert(entry.getValue()));
+                }
+
+                if (actAsWaitState()) {
+                    addRuleSetListener();
+                    ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                            .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId());
+
+                } else {
+                    ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+                            .activateRuleFlowGroup(getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId());
+
+                    ((KieSession) getProcessInstance().getKnowledgeRuntime()).fireAllRules();
+
+                    removeEventListeners();
+                    retractFacts();
+                    triggerCompleted();
+                }
+            }
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+
+    private void handleException(Throwable e) {
+        ExceptionScopeInstance exceptionScopeInstance = getExceptionScopeInstance(e);
+        if(exceptionScopeInstance != null) {
+            exceptionScopeInstance.handleException(e.getClass().getName(), e);
+        } else {
+            if(ExceptionUtils.getRootCause(e) != null) {
+                handleException(ExceptionUtils.getRootCause(e));
+            } else {
+                throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
+            }
+        }
+    }
+
+    private ExceptionScopeInstance getExceptionScopeInstance(Throwable e) {
+        return (ExceptionScopeInstance) resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, e.getClass().getName());
     }
    
     
@@ -389,5 +424,59 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
         }
         
         return false;
+    }
+
+    @Override
+    public List<ContextInstance> getContextInstances(String contextId) {
+        return this.subContextInstances.get(contextId);
+    }
+
+    @Override
+    public void addContextInstance(String contextId, ContextInstance contextInstance) {
+        List<ContextInstance> list = this.subContextInstances.get(contextId);
+        if (list == null) {
+            list = new ArrayList<ContextInstance>();
+            this.subContextInstances.put(contextId, list);
+        }
+        list.add(contextInstance);
+    }
+
+    @Override
+    public void removeContextInstance(String contextId, ContextInstance contextInstance) {
+        List<ContextInstance> list = this.subContextInstances.get(contextId);
+        if (list != null) {
+            list.remove(contextInstance);
+        }
+    }
+
+    @Override
+    public ContextInstance getContextInstance(String contextId, long id) {
+        List<ContextInstance> contextInstances = subContextInstances.get(contextId);
+        if (contextInstances != null) {
+            for (ContextInstance contextInstance: contextInstances) {
+                if (contextInstance.getContextId() == id) {
+                    return contextInstance;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ContextInstance getContextInstance(Context context) {
+        ContextInstanceFactory conf = ContextInstanceFactoryRegistry.INSTANCE.getContextInstanceFactory(context);
+        if (conf == null) {
+            throw new IllegalArgumentException("Illegal context type (registry not found): " + context.getClass());
+        }
+        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this, (ProcessInstance) getProcessInstance());
+        if (contextInstance == null) {
+            throw new IllegalArgumentException("Illegal context type (instance not found): " + context.getClass());
+        }
+        return contextInstance;
+    }
+
+    @Override
+    public ContextContainer getContextContainer() {
+        return getRuleSetNode();
     }
 }
