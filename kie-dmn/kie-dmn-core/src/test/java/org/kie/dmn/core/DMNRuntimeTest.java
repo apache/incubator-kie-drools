@@ -214,7 +214,6 @@ public class DMNRuntimeTest {
         assertThat( dmnModel, notNullValue() );
 
         assertThat( dmnModel.hasErrors(), is( true ) );
-        System.out.println(dmnModel.getMessages().stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) ));
     }
 
     @Test
@@ -228,7 +227,6 @@ public class DMNRuntimeTest {
         context.set( "Requested Product", "Fixed30" );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        System.out.println( dmnResult.getMessages() );
         assertThat( dmnResult.hasErrors(), is( false ) );
 
         DMNContext result = dmnResult.getContext();
@@ -245,7 +243,6 @@ public class DMNRuntimeTest {
         context.set( "Occupation", "Student" );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        System.out.println( dmnResult.getMessages() );
         assertThat( dmnResult.hasErrors(), is( false ) );
 
         DMNContext result = dmnResult.getContext();
@@ -262,7 +259,6 @@ public class DMNRuntimeTest {
         context.set( "Occupation", "Engineer" );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        System.out.println( dmnResult.getMessages() );
         assertThat( dmnResult.hasErrors(), is( false ) );
 
         DMNContext result = dmnResult.getContext();
@@ -488,9 +484,7 @@ public class DMNRuntimeTest {
         context.set( "BureauData", bureau );
         context.set( "SupportingDocuments", "yes" );
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        System.out.println( formatMessages( dmnResult.getMessages() ) );
         DMNContext ctx = dmnResult.getContext();
-        System.out.println( ctx );
 
         assertThat( ctx.get( "ApplicationRiskScore" ), is( BigDecimal.valueOf( 130 ) ) );
         assertThat( ctx.get( "Pre-bureauRiskCategory" ), is( "LOW" ) );
@@ -528,9 +522,7 @@ public class DMNRuntimeTest {
         context.set( "oneHour", "PT1H" );
         context.set( "durationString", "P13DT2H14S" );
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        System.out.println( formatMessages( dmnResult.getMessages() ) );
         DMNContext ctx = dmnResult.getContext();
-        System.out.println( ctx );
 
         assertThat( ctx.get("Date-Time"), is( ZonedDateTime.of( 2016, 12, 24, 23, 59, 0, 0, ZoneOffset.ofHours( -5 ) ) ) );
         assertThat( ctx.get("Date"), is( new HashMap<String, Object>(  ) {{
@@ -571,8 +563,6 @@ public class DMNRuntimeTest {
         DMNContext context = DMNFactory.newContext();
         context.set( "Min Age", 50 );
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        System.out.println(formatMessages( dmnResult.getMessages() ));
-        System.out.println( dmnResult.getContext());
         assertThat( formatMessages( dmnResult.getMessages() ), ((List)dmnResult.getContext().get("Filtering")).size(), is( 2 ) );
     }
 
@@ -597,15 +587,12 @@ public class DMNRuntimeTest {
         runtime.addListener( DMNRuntimeUtil.createListener() );
 
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_ecf4ea54-2abc-4e2f-a101-4fe14e356a46", "Dessin 1" );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( dmnModel, notNullValue() );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
         DMNContext context = DMNFactory.newContext();
         context.set( "datetimestring", "2016-07-29T05:48:23" );
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        System.out.println(formatMessages( dmnResult.getMessages() ));
-        System.out.println( dmnResult.getContext());
         assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getContext().get("time"), is( LocalTime.of( 5, 48, 23 ) ) );
     }
 
@@ -809,7 +796,6 @@ public class DMNRuntimeTest {
                 "http://www.trisotech.com/definitions/_ba68fb9d-7421-4f3a-a7ab-f785ea0bae6b",
                 "Loan Prequalification Condensed" );
         assertThat( dmnModel, notNullValue() );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
         assertThat( dmnModel.getMessages().size(), is( 2 ) );
         assertThat( dmnModel.getMessages().get( 0 ).getSourceId(), is( "_8b5cac9e-c8ca-4817-b05a-c70fa79a8d48" ) );
@@ -881,7 +867,6 @@ public class DMNRuntimeTest {
                 "https://www.drools.org/kie-dmn/definitions",
                 "definitions" );
         assertThat( dmnModel, notNullValue() );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
         
         DMNContext context = runtime.newContext();
@@ -901,7 +886,6 @@ public class DMNRuntimeTest {
                 "https://www.drools.org/kie-dmn/definitions",
                 "definitions" );
         assertThat( dmnModel, notNullValue() );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
         
         DMNContext context = runtime.newContext();
@@ -956,7 +940,6 @@ public class DMNRuntimeTest {
                 "https://github.com/kiegroup/kie-dmn",
                 "DTABLE_PRIORITY_MISSING_OUTVALS" );
         assertThat( dmnModel, notNullValue() );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
         assertThat( dmnModel.getMessages().size(), is( 1 ) );
         assertThat( dmnModel.getMessages().get( 0 ).getSourceId(), is( "_oApprovalStatus" ) );
@@ -969,7 +952,6 @@ public class DMNRuntimeTest {
                 "https://www.drools.org/kie-dmn/definitions",
                 "definitions" );
         assertThat( dmnModel, notNullValue() );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
         
         DMNContext context = runtime.newContext();
@@ -989,7 +971,6 @@ public class DMNRuntimeTest {
                 "https://www.drools.org/kie-dmn/definitions",
                 "definitions" );
         assertThat( dmnModel, notNullValue() );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
         
         DMNContext context = runtime.newContext();
@@ -1010,7 +991,6 @@ public class DMNRuntimeTest {
                 "http://www.trisotech.com/dmn/definitions/_81d8fefe-9cd7-43b8-922a-ff245c434457",
                 "Dessin 1" );
         assertThat( dmnModel, notNullValue() );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
         assertThat( dmnModel.getMessages().size(), is( 3 ) );
         assertThat( dmnModel.getMessages().get( 0 ).getSourceReference(), is( instanceOf( ItemDefinition.class ) ) );
@@ -1031,7 +1011,6 @@ public class DMNRuntimeTest {
                 "https://www.drools.org/kie-dmn/definitions",
                 "definitions" );
         assertThat( dmnModel, notNullValue() );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
         
         DMNContext context = runtime.newContext();
@@ -1065,17 +1044,16 @@ public class DMNRuntimeTest {
                 "http://www.trisotech.com/definitions/_2374ee6d-75ed-4e9d-95d3-a88c135e1c43",
                 "Drawing 1a" );
         assertThat( dmnModel, notNullValue() );
-        System.out.println(formatMessages( dmnModel.getMessages() ));
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
-        
+
         DMNContext context = runtime.newContext();
         Map<String, String> person = new HashMap<>();
-        person.put("Full Name", "John Doe");
-        person.put("Address", "100 East Davie Street");
-        context.set("Input Person", person);
+        person.put( "Full Name", "John Doe" );
+        person.put( "Address", "100 East Davie Street" );
+        context.set( "Input Person", person );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        
+
         assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "My Decision" ), is( "The person John Doe is located at 100 East Davie Street" ) );
@@ -1104,6 +1082,23 @@ public class DMNRuntimeTest {
         assertThat( dmnResult.getMessages().size(), is( 1 ) );
         assertThat( dmnResult.getMessages().get( 0 ).getSourceId(), is("_93062144-ebc7-4ef7-a156-c342aeffac49") );
         assertThat( dmnResult.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERROR_EVAL_NODE ) );
+    }
+
+    @Test
+    public void testNPE() {
+        // DROOLS-1512
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "NPE.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/dmn/definitions/_95b7ee22-1964-4be5-b7db-7db66692c707",
+                "Dessin 1" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = runtime.newContext();
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
+        assertThat( dmnResult.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {

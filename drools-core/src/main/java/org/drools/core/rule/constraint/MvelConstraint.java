@@ -35,6 +35,7 @@ import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -494,9 +495,15 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         super.writeExternal(out);
         out.writeObject(packageNames);
         out.writeObject(expression);
-        out.writeObject(declarations);
+
+        if (extractor instanceof ClassFieldReader) {
+            out.writeObject( ( (ClassFieldReader) extractor ).getAccessorKey() );
+        } else {
+            out.writeObject( extractor );
+        }
+
         out.writeObject(indexingDeclaration);
-        out.writeObject(extractor);
+        out.writeObject(declarations);
         out.writeObject(constraintType);
         out.writeBoolean(isUnification);
         out.writeBoolean(isDynamic);
@@ -510,9 +517,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         super.readExternal(in);
         packageNames = (Set<String>)in.readObject();
         expression = (String)in.readObject();
-        declarations = (Declaration[]) in.readObject();
+        ( (DroolsObjectInputStream) in ).readExtractor( this::setReadAccessor );
         indexingDeclaration = (Declaration) in.readObject();
-        extractor = (InternalReadAccessor) in.readObject();
+        declarations = (Declaration[]) in.readObject();
         constraintType = (IndexUtil.ConstraintType) in.readObject();
         isUnification = in.readBoolean();
         isDynamic = in.readBoolean();

@@ -15,10 +15,11 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,15 +29,20 @@ import java.util.List;
 import java.util.Locale;
 
 import org.drools.compiler.Message;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
+
+import static org.junit.Assert.*;
 
 public class SerializedPackageMergeTest {
     private static final DateFormat DF   = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
@@ -113,4 +119,68 @@ public class SerializedPackageMergeTest {
         return kbase.newStatelessKnowledgeSession();
     }
 
+    @Test
+    public void testBuildAndSerializePackagesWithSamePackageName() throws IOException, ClassNotFoundException    {
+        // RHBRMS-2773
+        String str1 =
+                "package com.sample\n" +
+                "import org.drools.compiler.Person\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "  $p : Person( name == \"John\" )\n" +
+                "then\n" +
+                "  list.add($p);" +
+                "end\n";
+
+        String str2 =
+                "package com.sample\n" +
+                "import org.drools.compiler.Person\n" +
+                "global java.util.List list\n" +
+                "rule R2 when\n" +
+                "  $p : Person( name == \"Paul\" )\n" +
+                "then\n" +
+                "  list.add($p);" +
+                "end\n";
+
+        // Create 2 knowledgePackages separately (but these rules have the same package name)
+        KnowledgeBuilder builder1 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder1.add( ResourceFactory.newByteArrayResource( str1.getBytes() ), ResourceType.DRL );
+        Collection<KnowledgePackage> knowledgePackages1 = builder1.getKnowledgePackages();
+
+        KnowledgeBuilder builder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
+        Collection<KnowledgePackage> knowledgePackages2 = builder2.getKnowledgePackages();
+
+        // Combine the knowledgePackages
+        KnowledgeBase knowledgeBase1 = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase1.addKnowledgePackages( knowledgePackages1 );
+        knowledgeBase1.addKnowledgePackages( knowledgePackages2 );
+        Collection<KnowledgePackage> knowledgePackagesCombined = knowledgeBase1.getKnowledgePackages();
+
+        // serialize
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new DroolsObjectOutputStream( baos );
+        out.writeObject( knowledgePackagesCombined );
+        out.flush();
+        out.close();
+
+        // deserialize
+        ObjectInputStream in = new DroolsObjectInputStream( new ByteArrayInputStream( baos.toByteArray() ) );
+        Collection<KnowledgePackage> deserializedPackages = (Collection<KnowledgePackage>) in.readObject();
+
+        // Use the deserialized knowledgePackages
+        KnowledgeBase knowledgeBase2 = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase2.addKnowledgePackages(deserializedPackages);
+
+        KieSession ksession = knowledgeBase2.newKieSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        ksession.insert(new org.drools.compiler.Person("John"));
+        ksession.insert(new org.drools.compiler.Person("Paul"));
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+
+        ksession.dispose();
+    }
 }

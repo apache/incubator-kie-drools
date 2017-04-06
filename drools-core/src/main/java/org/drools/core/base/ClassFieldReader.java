@@ -16,11 +16,6 @@
 
 package org.drools.core.base;
 
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.ClassUtils;
-
-import java.beans.Introspector;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,6 +23,10 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.ClassUtils;
 
 /**
  * This provides access to fields, and what their numerical index/object type is.
@@ -298,4 +297,7 @@ public class ClassFieldReader
         return reader.getBigIntegerValue( object );
     }
 
+    public AccessorKey getAccessorKey() {
+        return new AccessorKey( className, fieldName, AccessorKey.AccessorType.FieldAccessor );
+    }
 }
