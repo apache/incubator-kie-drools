@@ -96,12 +96,16 @@ public class DMNRuntimeTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "trisotech_namespace.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_b8feec86-dadf-4051-9feb-8e6093bbb530", "Solution 3" );
         assertThat( dmnModel, notNullValue() );
-
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
         DMNContext context = DMNFactory.newContext();
         context.set( "IsDoubleHulled", true );
         context.set( "Residual Cargo Size", new BigDecimal( 0.1 ) );
         context.set( "Ship Size", new BigDecimal( 50 ) );
+        
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "Ship can enter a Dutch port" ), is( true ) );
     }
