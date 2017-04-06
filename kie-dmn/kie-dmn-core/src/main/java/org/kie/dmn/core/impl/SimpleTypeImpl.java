@@ -18,13 +18,10 @@ package org.kie.dmn.core.impl;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
 
 public class SimpleTypeImpl
         extends BaseDMNTypeImpl {
@@ -52,19 +49,10 @@ public class SimpleTypeImpl
     }
 
     @Override
-    public boolean isInstanceOf(Object o) {
-        if ( isCollection() ) {
-            if ( o instanceof Collection ) {
-                Collection c = (Collection) o;
-                Stream<Boolean> asd = c.stream().<Stream<Boolean>>map( elem -> isInstanceOf( elem ) );
-                return true;
-            } else {
-                // FIXME fallback?
-                return getFeelType().isInstanceOf(o);
-            }
-        } else {
-            return getFeelType().isInstanceOf(o);
+    protected boolean internalIsInstanceOf(Object o) {
+        if ( o == null ) {
+            return true; // null is instance of any type
         }
+        return getFeelType().isInstanceOf(o);
     }
-
 }
