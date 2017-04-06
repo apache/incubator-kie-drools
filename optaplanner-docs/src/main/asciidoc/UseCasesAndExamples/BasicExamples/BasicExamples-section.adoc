@@ -1,0 +1,316 @@
+[[basicExamples]]
+= Basic Examples
+
+
+[[nQueens]]
+== N Queens
+
+
+[[nQueensProblemDescription]]
+=== Problem Description
+
+Place _n_ queens on a _n_ sized chessboard so that no two queens can attack each other.
+The most common _n_ queens puzzle is the eight queens puzzle, with __n = 8__:
+
+image::UseCasesAndExamples/BasicExamples/nQueensScreenshot.png[align="center"]
+
+Constraints:
+
+* Use a chessboard of _n_ columns and _n_ rows.
+* Place _n_ queens on the chessboard.
+* No two queens can attack each other. A queen can attack any other queen on the same horizontal, vertical or diagonal line.
+
+This documentation heavily uses the four queens puzzle as the primary example.
+
+A proposed solution could be:
+
+.A Wrong Solution for the Four Queens Puzzle
+image::UseCasesAndExamples/BasicExamples/partiallySolvedNQueens04Explained.png[align="center"]
+
+The above solution is wrong because queens `A1` and `B0` can attack each other (so can queens `B0` and ``D0``). Removing queen `B0` would respect the "no two queens can attack each other" constraint, but would break the "place _n_ queens" constraint.
+
+Below is a correct solution:
+
+.A Correct Solution for the Four Queens Puzzle
+image::UseCasesAndExamples/BasicExamples/solvedNQueens04.png[align="center"]
+
+All the constraints have been met, so the solution is correct. 
+
+Note that most _n_ queens puzzles have multiple correct solutions.
+We will focus on finding a single correct solution for a given _n_, not on finding the number of possible correct solutions for a given _n_.
+
+
+[[nQueensProblemSize]]
+=== Problem Size
+
+[source,options="nowrap"]
+----
+4queens   has   4 queens with a search space of    256.
+8queens   has   8 queens with a search space of   10^7.
+16queens  has  16 queens with a search space of  10^19.
+32queens  has  32 queens with a search space of  10^48.
+64queens  has  64 queens with a search space of 10^115.
+256queens has 256 queens with a search space of 10^616.
+----
+
+The implementation of the _n_ queens example has not been optimized because it functions as a beginner example. Nevertheless, it can easily handle 64 queens.
+With a few changes it has been shown to easily handle 5000 queens and more.
+
+
+[[nQueensDomainModel]]
+=== Domain Model
+
+This example uses the domain model to solve the four queens problem.
+
+. *Creating a Domain Model* 
+A good domain model will make it easier to understand and solve your planning problem.
++
+This is the domain model for the _n_ queens example:
++
+[source,java,options="nowrap"]
+----
+public class Column {
+    
+    private int index;
+
+    // ... getters and setters
+}
+----
++
+[source,java,options="nowrap"]
+----
+public class Row {
+    
+    private int index;
+
+    // ... getters and setters
+}
+----
++
+[source,java,options="nowrap"]
+----
+public class Queen {
+    
+    private Column column;
+    private Row row;
+
+    public int getAscendingDiagonalIndex() {...}
+    public int getDescendingDiagonalIndex() {...}
+
+    // ... getters and setters
+}
+----
+
+
+. *Calculating the Search Space.*
++
+A `Queen` instance has a `Column` (for example: 0 is column A, 1 is column B, ...) and a `Row` (its row, for example: 0 is row 0, 1 is row 1, ...). 
++
+The ascending diagonal line and the descending diagonal line can be calculated based on the column and the row.
++
+The column and row indexes start from the upper left corner of the chessboard.
++
+[source,java,options="nowrap"]
+----
+public class NQueens {
+    
+    private int n;
+    private List<Column> columnList;
+    private List<Row> rowList;
+
+    private List<Queen> queenList;
+
+    private SimpleScore score;
+
+    // ... getters and setters
+}
+----
++
+. *Finding the Solution*
++
+A single `NQueens` instance contains a list of all `Queen` instances.
+It is the `Solution` implementation which will be supplied to, solved by, and retrieved from the Solver.
+
+Notice that in the four queens example, NQueens's `getN()` method will always return four.
+
+.A Solution for Four Queens Shown in the Domain Model
+[cols="6a,1,1,1,1,1", options="header"]
+|===
+| A solution
+| Queen
+| columnIndex
+| rowIndex
+| ascendingDiagonalIndex (columnIndex + rowIndex)
+| descendingDiagonalIndex (columnIndex - rowIndex)
+
+.4+| image::UseCasesAndExamples/BasicExamples/partiallySolvedNQueens04Explained.png[align="center"]
+
+|A1
+|0
+|1
+|**1 ($$**$$)**
+|-1
+
+|B0
+|1
+|**0 (*)**
+|**1 ($$**$$)**
+|1
+
+|C2
+|2
+|2
+|4
+|0
+
+|D0
+|3
+|**0 (*)**
+|3
+|3
+|===
+
+When two queens share the same column, row or diagonal line, such as ($$*$$) and ($$**$$), they can attack each other.
+
+
+[[cloudBalancing]]
+== Cloud Balancing
+
+This example is explained in <<cloudBalancingTutorial,a tutorial>>.
+
+
+[[tsp]]
+== Traveling Salesman (TSP - Traveling Salesman Problem)
+
+
+[[tspProblemDescription]]
+=== Problem Description
+
+Given a list of cities, find the shortest tour for a salesman that visits each city exactly once.
+
+The problem is defined by http://en.wikipedia.org/wiki/Travelling_salesman_problem[Wikipedia].
+It is http://www.math.uwaterloo.ca/tsp/[one of the most intensively studied problems] in computational mathematics.
+Yet, in the real world, it is often only part of a planning problem, along with other constraints, such as employee shift rostering constraints.
+
+
+[[tspProblemSize]]
+=== Problem Size
+
+[source,options="nowrap"]
+----
+dj38     has  38 cities with a search space of   10^58.
+europe40 has  40 cities with a search space of   10^62.
+st70     has  70 cities with a search space of  10^126.
+pcb442   has 442 cities with a search space of 10^1166.
+lu980    has 980 cities with a search space of 10^2927.
+----
+
+
+[[tspProblemDifficulty]]
+=== Problem Difficulty
+
+Despite TSP's simple definition, the problem is surprisingly hard to solve.
+Because it is an NP-hard problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when that problem dataset is slightly altered:
+
+image::UseCasesAndExamples/BasicExamples/tspOptimalSolutionVolatility.png[align="center"]
+
+
+[[dinnerParty]]
+== Dinner Party
+
+
+[[dinnerPartyProblemDescription]]
+=== Problem Description
+
+Miss Manners is throwing another dinner party.
+
+* This time she invited 144 guests and prepared 12 round tables with 12 seats each.
+* Every guest should sit next to someone (left and right) of the opposite gender.
+* And that neighbour should have at least one hobby in common with the guest.
+* At every table, there should be two politicians, two doctors, two socialites, two coaches, two teachers and two programmers.
+* And the two politicians, two doctors, two coaches and two programmers should not be the same kind at a table.
+
+Drools Expert also has the normal Miss Manners example (which is much smaller) and employs an exhaustive heuristic to solve it.
+Planner's implementation is far more scalable because it uses heuristics to find the best solution and Drools Expert to calculate the score of each solution.
+
+
+[[dinnerPartyProblemSize]]
+=== Problem Size
+
+[source,options="nowrap"]
+----
+wedding01 has 18 jobs, 144 guests, 288 hobby practicians, 12 tables and 144 seats with a search space of 10^310.
+----
+
+
+[[tennis]]
+== Tennis Club Scheduling
+
+
+[[tennisProblemDescription]]
+=== Problem Description
+
+Every week the tennis club has four teams playing round robin against each other.
+Assign those four spots to the teams fairly.
+
+Hard constraints:
+
+* Conflict: A team can only play once per day.
+* Unavailability: Some teams are unavailable on some dates.
+
+Medium constraints:
+
+* Fair assignment: All teams should play an (almost) equal number of times.
+
+Soft constraints:
+
+* Evenly confrontation: Each team should play against every other team an equal number of times.
+
+
+[[tennisProblemSize]]
+=== Problem Size
+
+[source,options="nowrap"]
+----
+munich-7teams has 7 teams, 18 days, 12 unavailabilityPenalties and 72 teamAssignments with a search space of 10^60.
+----
+
+
+[[tennisDomainModel]]
+=== Domain Model
+
+image::UseCasesAndExamples/BasicExamples/tennisClassDiagram.png[align="center"]
+
+
+[[meetingScheduling]]
+== Meeting Scheduling
+
+
+[[meetingSchedulingProblemDescription]]
+=== Problem Description
+
+Assign each meeting to a starting time and a room.
+Meetings have different durations.
+
+Hard constraints:
+
+* Room conflict: two meetings must not use the same room at the same time.
+* Required attendance: A person cannot have two required meetings at the same time.
+
+Medium constraints:
+
+* Preferred attendance: A person cannot have two preferred meetings at the same time, nor a preferred and a required meeting at the same time.
+
+Soft constraints:
+
+* Sooner rather than later: Schedule all meetings as soon as possible.
+
+
+[[meetingSchedulingProblemSize]]
+=== Problem Size
+
+[source,options="nowrap"]
+----
+50meetings-160timegrains-5rooms  has  50 meetings, 160 timeGrains and 5 rooms with a search space of 10^145.
+100meetings-320timegrains-5rooms has 100 meetings, 320 timeGrains and 5 rooms with a search space of 10^320.
+----
