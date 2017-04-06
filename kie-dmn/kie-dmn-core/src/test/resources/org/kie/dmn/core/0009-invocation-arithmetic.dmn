@@ -43,7 +43,7 @@
         <text>(p*r/12)/(1-(1+r/12)**-n)</text>
       </literalExpression>
     </encapsulatedLogic>
-    <variable name="PMT" typeRef="feel:function"/>
+    <variable name="PMT" typeRef="feel:number"/>
   </businessKnowledgeModel>
   <inputData id="i_Loan" name="Loan">
     <variable name="Loan" typeRef="tns:tLoan"/>
