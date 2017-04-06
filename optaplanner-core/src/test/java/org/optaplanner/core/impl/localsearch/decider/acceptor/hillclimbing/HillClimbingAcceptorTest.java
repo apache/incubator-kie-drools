@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.junit.Assert.*;
 
@@ -32,17 +33,17 @@ public class HillClimbingAcceptorTest extends AbstractAcceptorTest {
     public void hillClimbingEnabled() {
         HillClimbingAcceptor acceptor = new HillClimbingAcceptor();
 
-        DefaultSolverScope solverScope = new DefaultSolverScope();
+        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
         solverScope.setBestScore(SimpleScore.valueOf(-1000));
-        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
-        LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
+        LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
+        LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
         lastCompletedStepScope.setScore(SimpleScore.valueOf(-1000));
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         acceptor.phaseStarted(phaseScope);
 
         // lastCompletedStepScore = -1000
-        LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
-        LocalSearchMoveScope moveScope0 = buildMoveScope(stepScope0, -500);
+        LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
+        LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -500);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900)));
         assertEquals(true, acceptor.isAccepted(moveScope0));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -800)));
@@ -56,8 +57,8 @@ public class HillClimbingAcceptorTest extends AbstractAcceptorTest {
         phaseScope.setLastCompletedStepScope(stepScope0);
 
         // lastCompletedStepScore = -500
-        LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
-        LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope1, 600);
+        LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
+        LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope1, 600);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -900)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -2000)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -700)));

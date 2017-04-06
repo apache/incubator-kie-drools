@@ -25,9 +25,10 @@ import static org.mockito.Mockito.*;
 
 public abstract class AbstractAcceptorTest {
 
-    protected LocalSearchMoveScope buildMoveScope(LocalSearchStepScope stepScope, int score) {
-        LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
-        Move move = mock(Move.class);
+    protected <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
+            LocalSearchStepScope<Solution_> stepScope, int score) {
+        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope);
+        Move<Solution_> move = mock(Move.class);
         moveScope.setMove(move);
         moveScope.setScore(SimpleScore.valueOf(score));
         return moveScope;

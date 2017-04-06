@@ -130,7 +130,7 @@ public class LocalSearchDecider<Solution_> {
         scoreDirector.setAllChangesWillBeUndoneBeforeStepEnds(false);
         LocalSearchMoveScope<Solution_> pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {
-            Move<?> step = pickedMoveScope.getMove();
+            Move<Solution_> step = pickedMoveScope.getMove();
             stepScope.setStep(step);
             if (logger.isDebugEnabled()) {
                 stepScope.setStepString(step.toString());

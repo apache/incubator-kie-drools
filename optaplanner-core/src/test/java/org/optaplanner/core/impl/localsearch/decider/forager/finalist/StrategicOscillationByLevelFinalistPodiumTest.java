@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.*;
@@ -35,17 +36,17 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
     public void referenceLastStepScore() {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
-        DefaultSolverScope solverScope = new DefaultSolverScope();
+        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
         solverScope.setBestScore(HardSoftScore.valueOf(-200, -5000));
-        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
-        LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
+        LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
+        LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         finalistPodium.phaseStarted(phaseScope);
 
-        LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
         finalistPodium.stepStarted(stepScope0);
-        LocalSearchMoveScope moveScope0 = buildMoveScope(stepScope0, -100, -7000);
+        LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -100, -7000);
         finalistPodium.addMove(buildMoveScope(stepScope0, -150, -2000));
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100));
@@ -55,9 +56,9 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
 
-        LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
         finalistPodium.stepStarted(stepScope1);
-        LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope1, -120, -4000);
+        LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope1, -120, -4000);
         finalistPodium.addMove(buildMoveScope(stepScope1, -100, -8000));
         finalistPodium.addMove(buildMoveScope(stepScope1, -100, -7000));
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -3000));
@@ -69,9 +70,9 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
 
-        LocalSearchStepScope stepScope2 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
         finalistPodium.stepStarted(stepScope2);
-        LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope2, -150, -1000);
+        LocalSearchMoveScope<TestdataSolution> moveScope2 = buildMoveScope(stepScope2, -150, -1000);
         finalistPodium.addMove(buildMoveScope(stepScope2, -120, -4000));
         finalistPodium.addMove(buildMoveScope(stepScope2, -120, -5000));
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -3000));
@@ -88,17 +89,17 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
     public void referenceBestScore() {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(true);
 
-        DefaultSolverScope solverScope = new DefaultSolverScope();
+        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
         solverScope.setBestScore(HardSoftScore.valueOf(-200, -5000));
-        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
-        LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
+        LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
+        LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         finalistPodium.phaseStarted(phaseScope);
 
-        LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
         finalistPodium.stepStarted(stepScope0);
-        LocalSearchMoveScope moveScope0 = buildMoveScope(stepScope0, -100, -7000);
+        LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -100, -7000);
         finalistPodium.addMove(buildMoveScope(stepScope0, -150, -2000));
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100));
@@ -109,9 +110,9 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         phaseScope.setLastCompletedStepScope(stepScope0);
         solverScope.setBestScore(stepScope0.getScore());
 
-        LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
         finalistPodium.stepStarted(stepScope1);
-        LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope1, -120, -4000);
+        LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope1, -120, -4000);
         finalistPodium.addMove(buildMoveScope(stepScope1, -100, -8000));
         finalistPodium.addMove(buildMoveScope(stepScope1, -100, -7000));
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -3000));
@@ -124,9 +125,9 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         phaseScope.setLastCompletedStepScope(stepScope1);
         // do not change bestScore
 
-        LocalSearchStepScope stepScope2 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
         finalistPodium.stepStarted(stepScope2);
-        LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope2, -110, -6000);
+        LocalSearchMoveScope<TestdataSolution> moveScope2 = buildMoveScope(stepScope2, -110, -6000);
         finalistPodium.addMove(buildMoveScope(stepScope2, -110, -8000));
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -3000));
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -1000));
@@ -140,9 +141,10 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         // do not change bestScore
     }
 
-    protected LocalSearchMoveScope buildMoveScope(LocalSearchStepScope stepScope, int hardScore, int softScore) {
-        LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
-        Move move = mock(Move.class);
+    protected <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
+            LocalSearchStepScope<Solution_> stepScope, int hardScore, int softScore) {
+        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope);
+        Move<Solution_> move = mock(Move.class);
         moveScope.setAccepted(true);
         moveScope.setMove(move);
         moveScope.setScore(HardSoftScore.valueOf(hardScore, softScore));
@@ -153,17 +155,17 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
     public void referenceLastStepScore3Levels() {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
-        DefaultSolverScope solverScope = new DefaultSolverScope();
+        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
         solverScope.setBestScore(HardMediumSoftScore.valueOf(-200, -5000, -10));
-        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
-        LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
+        LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
+        LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         finalistPodium.phaseStarted(phaseScope);
 
-        LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
         finalistPodium.stepStarted(stepScope0);
-        LocalSearchMoveScope moveScope0 = buildMoveScope(stepScope0, -100, -7000, -20);
+        LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -100, -7000, -20);
         finalistPodium.addMove(buildMoveScope(stepScope0, -150, -2000, -10));
         finalistPodium.addMove(moveScope0);
         finalistPodium.addMove(buildMoveScope(stepScope0, -100, -7100, -5));
@@ -173,9 +175,9 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
 
-        LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
         finalistPodium.stepStarted(stepScope1);
-        LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope1, -120, -4000, -40);
+        LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope1, -120, -4000, -40);
         finalistPodium.addMove(buildMoveScope(stepScope1, -100, -8000, -10));
         finalistPodium.addMove(buildMoveScope(stepScope1, -100, -7000, -10));
         finalistPodium.addMove(buildMoveScope(stepScope1, -150, -3000, -10));
@@ -187,9 +189,9 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         finalistPodium.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
 
-        LocalSearchStepScope stepScope2 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
         finalistPodium.stepStarted(stepScope2);
-        LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope2, -150, -1000, -20);
+        LocalSearchMoveScope<TestdataSolution> moveScope2 = buildMoveScope(stepScope2, -150, -1000, -20);
         finalistPodium.addMove(buildMoveScope(stepScope2, -120, -4000, -10));
         finalistPodium.addMove(buildMoveScope(stepScope2, -120, -5000, -10));
         finalistPodium.addMove(buildMoveScope(stepScope2, -150, -3000, -10));
@@ -202,10 +204,10 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         phaseScope.setLastCompletedStepScope(stepScope2);
     }
 
-    protected LocalSearchMoveScope buildMoveScope(LocalSearchStepScope stepScope,
-            int hardScore, int mediumScore, int softScore) {
-        LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
-        Move move = mock(Move.class);
+    protected <Solution_> LocalSearchMoveScope<Solution_> buildMoveScope(
+            LocalSearchStepScope<Solution_> stepScope, int hardScore, int mediumScore, int softScore) {
+        LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope);
+        Move<Solution_> move = mock(Move.class);
         moveScope.setAccepted(true);
         moveScope.setMove(move);
         moveScope.setScore(HardMediumSoftScore.valueOf(hardScore, mediumScore, softScore));

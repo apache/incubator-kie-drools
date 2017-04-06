@@ -31,8 +31,8 @@ public class LocalSearchMoveScope<Solution_> {
     private final LocalSearchStepScope<Solution_> stepScope;
 
     private int moveIndex;
-    private Move move = null;
-    private Move undoMove = null;
+    private Move<Solution_> move = null;
+    private Move<Solution_> undoMove = null;
     private Score score = null;
     private Boolean accepted = null;
 
@@ -52,19 +52,19 @@ public class LocalSearchMoveScope<Solution_> {
         this.moveIndex = moveIndex;
     }
 
-    public Move getMove() {
+    public Move<Solution_> getMove() {
         return move;
     }
 
-    public void setMove(Move move) {
+    public void setMove(Move<Solution_> move) {
         this.move = move;
     }
 
-    public Move getUndoMove() {
+    public Move<Solution_> getUndoMove() {
         return undoMove;
     }
 
-    public void setUndoMove(Move undoMove) {
+    public void setUndoMove(Move<Solution_> undoMove) {
         this.undoMove = undoMove;
     }
 

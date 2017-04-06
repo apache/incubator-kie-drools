@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -37,20 +38,20 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
         acceptor.setStartingTemperature(SimpleScore.valueOf(200));
 
-        DefaultSolverScope solverScope = new DefaultSolverScope();
+        DefaultSolverScope<TestdataSolution> solverScope = new DefaultSolverScope<>();
         solverScope.setBestScore(SimpleScore.valueOf(-1000));
         Random workingRandom = mock(Random.class);
         solverScope.setWorkingRandom(workingRandom);
-        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
-        LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
+        LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
+        LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
         lastCompletedStepScope.setScore(SimpleScore.valueOf(-1000));
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         acceptor.phaseStarted(phaseScope);
 
-        LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope0 = new LocalSearchStepScope<>(phaseScope);
         stepScope0.setTimeGradient(0.0);
         acceptor.stepStarted(stepScope0);
-        LocalSearchMoveScope moveScope0 = buildMoveScope(stepScope0, -500);
+        LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -500);
         when(workingRandom.nextDouble()).thenReturn(0.3);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope0, -1300)));
         when(workingRandom.nextDouble()).thenReturn(0.3);
@@ -64,10 +65,10 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         acceptor.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
 
-        LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope1 = new LocalSearchStepScope<>(phaseScope);
         stepScope1.setTimeGradient(0.5);
         acceptor.stepStarted(stepScope1);
-        LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope1, -800);
+        LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope1, -800);
         when(workingRandom.nextDouble()).thenReturn(0.13);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -700)));
         when(workingRandom.nextDouble()).thenReturn(0.14);
@@ -80,10 +81,10 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         acceptor.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
 
-        LocalSearchStepScope stepScope2 = new LocalSearchStepScope(phaseScope);
+        LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
         stepScope2.setTimeGradient(1.0);
         acceptor.stepStarted(stepScope2);
-        LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope1, -400);
+        LocalSearchMoveScope<TestdataSolution> moveScope2 = buildMoveScope(stepScope1, -400);
         when(workingRandom.nextDouble()).thenReturn(0.01);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, -800)));
         when(workingRandom.nextDouble()).thenReturn(0.01);
