@@ -127,6 +127,9 @@ public abstract class BaseDMNTypeImpl
 
     @Override
     public boolean isInstanceOf(Object o) {
+        if ( o == null ) {
+            return true;
+        }
         // try first to recurse in case of Collection..
         if ( isCollection() && o instanceof Collection ) {
             Collection<Object> elements = (Collection) o;

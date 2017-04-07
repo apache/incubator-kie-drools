@@ -40,6 +40,7 @@ import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.internal.io.ResourceTypePackage;
 import org.slf4j.Logger;
@@ -218,7 +219,9 @@ public class DMNRuntimeImpl
 
             EvaluatorResult er = bkm.getEvaluator().evaluate( eventManager, result );
             if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
-                result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), er.getResult() );
+                FEELFunction resultFn = (FEELFunction) er.getResult();
+                // TODO check of the return type will need calculation/inference of function return type.
+                result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), resultFn );
             }
         } catch( Throwable t ) {
             MsgUtil.reportMessage( logger,
