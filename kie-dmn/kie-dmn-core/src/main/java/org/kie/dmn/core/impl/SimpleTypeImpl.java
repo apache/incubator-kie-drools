@@ -50,9 +50,6 @@ public class SimpleTypeImpl
 
     @Override
     protected boolean internalIsInstanceOf(Object o) {
-        if ( o == null ) {
-            return true; // null is instance of any type
-        }
         return getFeelType().isInstanceOf(o);
     }
 }
