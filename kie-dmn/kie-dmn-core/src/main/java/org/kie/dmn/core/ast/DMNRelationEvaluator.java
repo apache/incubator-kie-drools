@@ -121,7 +121,17 @@ public class DMNRelationEvaluator
         }
         
         if ( relationType != null && !relationType.isInstanceOf(results) ) {
-            System.out.println("problem");
+            MsgUtil.reportMessage( logger,
+                    DMNMessage.Severity.ERROR,
+                    node,
+                    result,
+                    null,
+                    null,
+                    Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
+                    name,
+                    relationType,
+                    results);
+            return new EvaluatorResultImpl( results, ResultType.FAILURE );
         }
         
         return new EvaluatorResultImpl( results, ResultType.SUCCESS );
