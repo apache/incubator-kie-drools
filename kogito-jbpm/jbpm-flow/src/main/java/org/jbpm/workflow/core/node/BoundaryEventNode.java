@@ -15,6 +15,9 @@
  */
 package org.jbpm.workflow.core.node;
 
+import org.jbpm.process.core.event.EventFilter;
+import java.util.function.Function;
+
 public class BoundaryEventNode extends EventNode {
 
     private static final long serialVersionUID = 3448981074702415561L;
@@ -29,4 +32,17 @@ public class BoundaryEventNode extends EventNode {
         this.attachedToNodeId = attachedToNodeId;
     }
 
+    @Override
+    public boolean acceptsEvent(String type, Object event, Function<String, String> resolver) {
+        if (resolver == null) {
+            return acceptsEvent(type, event);
+        }
+
+        for( EventFilter filter : getEventFilters() ) {
+            if( filter.acceptsEvent(type, event, resolver) ) {
+                return true;
+            }
+        }
+        return super.acceptsEvent(type, event);
+    }
 }

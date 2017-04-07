@@ -86,7 +86,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 { false, false },
                 { true, false },
                 { true, true }
-                };
+        };
         return Arrays.asList(data);
     };
 
@@ -98,6 +98,30 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     public IntermediateEventTest(boolean persistence, boolean locking) {
         super(persistence, locking);
     }
+
+    private ProcessEventListener LOGGING_EVENT_LISTENER = new DefaultProcessEventListener() {
+
+        @Override
+        public void afterNodeLeft(ProcessNodeLeftEvent event) {
+            logger.info("After node left {}", event.getNodeInstance().getNodeName());
+        }
+
+        @Override
+        public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+            logger.info("After node triggered {}", event.getNodeInstance().getNodeName());
+        }
+
+        @Override
+        public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+            logger.info("Before node left {}", event.getNodeInstance().getNodeName());
+        }
+
+        @Override
+        public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+            logger.info("Before node triggered {}", event.getNodeInstance().getNodeName());
+        }
+
+    };
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -154,32 +178,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new TestWorkItemHandler());
-        ksession.addEventListener(new DefaultProcessEventListener() {
-
-            @Override
-            public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                logger.info("After node left {}", event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                logger.info("After node triggered {}"
-                        , event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-                logger.info("Before node left {}"
-                        , event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-                logger.info("Before node triggered {}"
-                        , event.getNodeInstance().getNodeName());
-            }
-
-        });
+        ksession.addEventListener(LOGGING_EVENT_LISTENER);
         ProcessInstance processInstance = ksession
                 .startProcess("BoundarySignalOnTask");
         ksession.signalEvent("MySignal", "value");
@@ -193,32 +192,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new TestWorkItemHandler());
-        ksession.addEventListener(new DefaultProcessEventListener() {
-
-            @Override
-            public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                logger.info("After node left {}", event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                logger.info("After node triggered {}"
-                        , event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-                logger.info("Before node left {}"
-                        , event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-                logger.info("Before node triggered {}"
-                        , event.getNodeInstance().getNodeName());
-            }
-
-        });
+        ksession.addEventListener(LOGGING_EVENT_LISTENER);
         ProcessInstance processInstance = ksession
                 .startProcess("BoundarySignalOnTask");
         ksession.signalEvent("MySignal", "value");
@@ -233,33 +207,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 handler);
-        ksession.addEventListener(new DefaultProcessEventListener() {
-
-            @Override
-            public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                logger.info("After node left {}"
-                        , event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                logger.info("After node triggered {}"
-                        , event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-                logger.info("Before node left {}"
-                        , event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-                logger.info("Before node triggered {}"
-                        , event.getNodeInstance().getNodeName());
-            }
-
-        });
+        ksession.addEventListener(LOGGING_EVENT_LISTENER);
         ProcessInstance processInstance = ksession
                 .startProcess("BoundarySignalOnTask");
         ksession.getWorkItemManager().completeWorkItem(
@@ -2714,5 +2662,22 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         pi = ksession.getProcessInstance(pi.getId());
         assertNull(pi);
         
+    }
+
+    @Test
+    public void testBoundarySignalEventOnSubprocessWithVariableResolution() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-SubprocessWithSignalEndEventAndSignalBoundaryEvent.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(LOGGING_EVENT_LISTENER);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("document-ref", "signalling");
+        params.put("message", "hello");
+        ProcessInstance processInstance = ksession.startProcess("SubprocessWithSignalEndEventAndSignalBoundaryEvent", params);
+
+        assertNodeTriggered(processInstance.getId(), "sysout from boundary", "end2");
+        assertNotNodeTriggered(processInstance.getId(),"end1");
+
+        assertProcessInstanceFinished(processInstance, ksession);
     }
 }
