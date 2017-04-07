@@ -83,7 +83,7 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-xstream</artifactId>
     </dependency>
-    <dependency><!-- Few examples use the JAXB integration -->
+    <dependency><!-- TODO add examples that use the JAXB integration -->
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-jaxb</artifactId>
     </dependency>
@@ -103,6 +103,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <!-- External dependencies -->
     <dependency>

@@ -59,6 +59,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <!-- External dependencies -->
     <!-- Common utils -->
@@ -69,10 +70,6 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
     </dependency>
     <!-- Logging -->
     <dependency>
