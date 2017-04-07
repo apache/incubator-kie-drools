@@ -155,7 +155,8 @@ public class DMNEvaluatorCompiler {
 
     private DMNExpressionEvaluator compileList(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String listName, org.kie.dmn.model.v1_1.List expression) {
         org.kie.dmn.model.v1_1.List listDef = expression;
-        DMNListEvaluator listEval = new DMNListEvaluator( node.getName(), node.getSource(), listDef );
+        DMNType listType = compiler.resolveTypeRef( model, node, null, listDef, listDef.getTypeRef() );
+        DMNListEvaluator listEval = new DMNListEvaluator( node.getName(), node.getSource(), listDef, listType );
         for ( Expression expr : listDef.getExpression() ) {
             listEval.addElement( compileExpression( ctx, model, node, listName, expr ) );
         }
