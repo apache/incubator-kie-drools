@@ -19,6 +19,7 @@ package org.kie.dmn.core.ast;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
@@ -41,13 +42,15 @@ public class DMNRelationEvaluator
     private final String   name;
     private final DMNElement node;
     private final Relation relationDef;
+    private final DMNType relationType;
     private final List<String> columns = new ArrayList<>(  );
     private final List<List<DMNExpressionEvaluator>> rows = new ArrayList<>();
 
-    public DMNRelationEvaluator(String name, DMNElement node, Relation relationDef) {
+    public DMNRelationEvaluator(String name, DMNElement node, Relation relationDef, DMNType relationType) {
         this.name = name;
         this.node = node;
         this.relationDef = relationDef;
+        this.relationType = relationType;
     }
 
     public void addColumn(String name) {
@@ -116,6 +119,11 @@ public class DMNRelationEvaluator
         } finally {
             result.setContext( previousContext );
         }
+        
+        if ( relationType != null && !relationType.isInstanceOf(results) ) {
+            System.out.println("problem");
+        }
+        
         return new EvaluatorResultImpl( results, ResultType.SUCCESS );
     }
 

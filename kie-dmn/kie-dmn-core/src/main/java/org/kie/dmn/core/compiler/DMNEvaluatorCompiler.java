@@ -137,7 +137,8 @@ public class DMNEvaluatorCompiler {
 
     private DMNExpressionEvaluator compileRelation(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String relationName, Relation expression) {
         Relation relationDef = expression;
-        DMNRelationEvaluator relationEval = new DMNRelationEvaluator( node.getName(), node.getSource(), relationDef );
+        DMNType relationType = compiler.resolveTypeRef( model, node, null, relationDef, relationDef.getTypeRef() );
+        DMNRelationEvaluator relationEval = new DMNRelationEvaluator( node.getName(), node.getSource(), relationDef, relationType );
         for ( InformationItem col : relationDef.getColumn() ) {
             DMNCompilerHelper.checkVariableName( model, col, col.getName() );
             relationEval.addColumn( col.getName() );
