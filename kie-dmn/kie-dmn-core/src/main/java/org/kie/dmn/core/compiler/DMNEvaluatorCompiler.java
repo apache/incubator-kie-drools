@@ -137,8 +137,7 @@ public class DMNEvaluatorCompiler {
 
     private DMNExpressionEvaluator compileRelation(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String relationName, Relation expression) {
         Relation relationDef = expression;
-        DMNType relationType = compiler.resolveTypeRef( model, node, null, relationDef, relationDef.getTypeRef() );
-        DMNRelationEvaluator relationEval = new DMNRelationEvaluator( node.getName(), node.getSource(), relationDef, relationType );
+        DMNRelationEvaluator relationEval = new DMNRelationEvaluator( node.getName(), node.getSource(), relationDef );
         for ( InformationItem col : relationDef.getColumn() ) {
             DMNCompilerHelper.checkVariableName( model, col, col.getName() );
             relationEval.addColumn( col.getName() );
@@ -155,8 +154,7 @@ public class DMNEvaluatorCompiler {
 
     private DMNExpressionEvaluator compileList(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String listName, org.kie.dmn.model.v1_1.List expression) {
         org.kie.dmn.model.v1_1.List listDef = expression;
-        DMNType listType = compiler.resolveTypeRef( model, node, null, listDef, listDef.getTypeRef() );
-        DMNListEvaluator listEval = new DMNListEvaluator( node.getName(), node.getSource(), listDef, listType );
+        DMNListEvaluator listEval = new DMNListEvaluator( node.getName(), node.getSource(), listDef );
         for ( Expression expr : listDef.getExpression() ) {
             listEval.addElement( compileExpression( ctx, model, node, listName, expr ) );
         }

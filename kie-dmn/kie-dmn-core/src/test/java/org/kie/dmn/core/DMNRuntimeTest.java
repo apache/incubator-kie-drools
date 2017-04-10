@@ -430,30 +430,6 @@ public class DMNRuntimeTest {
         assertThat( e.get( "Dept" ), is( "Finances" ) );
         assertThat( e.get( "Salary" ), is( BigDecimal.valueOf( 120000 ) ) );
     }
-    
-    @Test
-    public void testRelation2() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "relation-expression2.dmn", getClass() );
-//        runtime.addListener( DMNRuntimeUtil.createListener() );
-
-        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_791a6350-db1b-45c7-ba69-82640f4af94b", "Drawing 1" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
-
-        DMNContext context = DMNFactory.newContext();
-        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        assertThat( dmnResult.hasErrors(), is( false ) );
-        assertThat( dmnResult.getContext().get( "My Decision" ), is( instanceOf( List.class ) ) );
-
-        List<Map<String, Object>> myDecisionResult = (List<Map<String, Object>>) dmnResult.getContext().get( "My Decision" );
-        assertThat( myDecisionResult, hasSize(3) );
-        assertThat( myDecisionResult.get(0), hasEntry("Shortname", "red") );
-        assertThat( myDecisionResult.get(0), hasEntry("RGB", "FF0000") );
-        assertThat( myDecisionResult.get(1), hasEntry("Shortname", "green") );
-        assertThat( myDecisionResult.get(1), hasEntry("RGB", "00FF00") );
-        assertThat( myDecisionResult.get(2), hasEntry("Shortname", "blue") );
-        assertThat( myDecisionResult.get(2), hasEntry("RGB", "0000FF") );
-    }
 
     @Test
     public void testMissingInputData() {

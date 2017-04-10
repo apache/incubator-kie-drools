@@ -19,7 +19,6 @@ package org.kie.dmn.core.ast;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
@@ -42,15 +41,13 @@ public class DMNRelationEvaluator
     private final String   name;
     private final DMNElement node;
     private final Relation relationDef;
-    private final DMNType relationType;
     private final List<String> columns = new ArrayList<>(  );
     private final List<List<DMNExpressionEvaluator>> rows = new ArrayList<>();
 
-    public DMNRelationEvaluator(String name, DMNElement node, Relation relationDef, DMNType relationType) {
+    public DMNRelationEvaluator(String name, DMNElement node, Relation relationDef) {
         this.name = name;
         this.node = node;
         this.relationDef = relationDef;
-        this.relationType = relationType;
     }
 
     public void addColumn(String name) {
@@ -119,21 +116,6 @@ public class DMNRelationEvaluator
         } finally {
             result.setContext( previousContext );
         }
-        
-        if ( relationType != null && !relationType.isInstanceOf(results) ) {
-            MsgUtil.reportMessage( logger,
-                    DMNMessage.Severity.ERROR,
-                    node,
-                    result,
-                    null,
-                    null,
-                    Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
-                    name,
-                    relationType,
-                    results);
-            return new EvaluatorResultImpl( results, ResultType.FAILURE );
-        }
-        
         return new EvaluatorResultImpl( results, ResultType.SUCCESS );
     }
 

@@ -19,7 +19,6 @@ package org.kie.dmn.core.ast;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
@@ -42,16 +41,12 @@ public class DMNListEvaluator
     private final String                           name;
     private final DMNElement                       node;
     private final org.kie.dmn.model.v1_1.List listDef;
-    private final DMNType                     listType;
     private final List<DMNExpressionEvaluator> elements = new ArrayList<>();
 
-    
-
-    public DMNListEvaluator(String name, DMNElement node, org.kie.dmn.model.v1_1.List listDef, DMNType listType) {
+    public DMNListEvaluator(String name, DMNElement node, org.kie.dmn.model.v1_1.List listDef) {
         this.name = name;
         this.node = node;
         this.listDef = listDef;
-        this.listType = listType;
     }
 
     public void addElement(DMNExpressionEvaluator evaluator) {
@@ -107,21 +102,6 @@ public class DMNListEvaluator
         } finally {
             result.setContext( previousContext );
         }
-        
-        if ( listType != null && !listType.isInstanceOf(results) ) {
-            MsgUtil.reportMessage( logger,
-                    DMNMessage.Severity.ERROR,
-                    node,
-                    result,
-                    null,
-                    null,
-                    Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
-                    name,
-                    listType,
-                    results);
-            return new EvaluatorResultImpl( results, ResultType.FAILURE );
-        }
-        
         return new EvaluatorResultImpl( results, ResultType.SUCCESS );
     }
 
