@@ -55,6 +55,7 @@ public class Msg {
     public static final Message2 ERROR_EVAL_BKM_NODE                                 = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Business Knowledge Model node '%s': %s" );
     public static final Message2 ERROR_EVAL_DECISION_NODE                            = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Error evaluating Decision node '%s': %s" );
     public static final Message3 ERROR_EVAL_NODE_DEP_WRONG_TYPE                      = new Message3( DMNMessageType.ERROR_EVAL_NODE, "Error while evaluating node '%s' for dependency '%s': the dependency value '%s' is not allowed by the declared type" );
+    public static final Message3 ERROR_EVAL_NODE_RESULT_WRONG_TYPE                   = new Message3( DMNMessageType.ERROR_EVAL_NODE, "Error while evaluating node '%s': the declared result type is '%s' but the actual value '%s' is not an instance of that type" );
     public static final Message2 EXPR_TYPE_NOT_SUPPORTED_IN_NODE                     = new Message2( DMNMessageType.EXPR_TYPE_NOT_SUPPORTED_IN_NODE, "Expression type '%s' not supported in node '%s'" );
     public static final Message3 ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX      = new Message3( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling FEEL expression '%s' on decision table '%s', input clause #%s" );
     public static final Message3 ERR_COMPILING_FEEL_EXPR_ON_DT_OUTPUT_CLAUSE_IDX     = new Message3( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling FEEL expression '%s' on decision table '%s', output clause #%s" );

@@ -27,7 +27,7 @@ import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.model.v1_1.ItemDefinition;
 
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 
@@ -63,7 +63,8 @@ public class ItemDefinitionDependenciesComparatorTest {
         List<ItemDefinition> orderedList = new ArrayList<>(originalList);
         orderedList.sort(new ItemDefinitionDependenciesComparator(TEST_NS));
 
-        assertThat(orderedList, contains(a,b,c,d));
+        assertThat(orderedList.subList(0, 2), containsInAnyOrder(a,b));
+        assertThat(orderedList.subList(2, 4), contains(c,d));
     }
     
     

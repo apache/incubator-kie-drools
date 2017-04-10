@@ -40,6 +40,7 @@ import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.internal.io.ResourceTypePackage;
 import org.slf4j.Logger;
@@ -218,7 +219,9 @@ public class DMNRuntimeImpl
 
             EvaluatorResult er = bkm.getEvaluator().evaluate( eventManager, result );
             if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
-                result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), er.getResult() );
+                FEELFunction resultFn = (FEELFunction) er.getResult();
+                // TODO check of the return type will need calculation/inference of function return type.
+                result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), resultFn );
             }
         } catch( Throwable t ) {
             MsgUtil.reportMessage( logger,
@@ -327,6 +330,22 @@ public class DMNRuntimeImpl
                         // and vice-versa
                         value = ((Collection)value).toArray()[0];
                     }
+                    
+                    if ( !d.getResultType().isInstanceOf(value) ) {
+                        DMNMessage message = MsgUtil.reportMessage( logger,
+                                DMNMessage.Severity.ERROR,
+                                decision.getSource(),
+                                result,
+                                null,
+                                null,
+                                Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
+                                getIdentifier( decision ),
+                                decision.getResultType(),
+                                value);
+                        reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED );
+                        return false;
+                    }
+                    
                     result.getContext().set( decision.getDecision().getVariable().getName(), value );
                     dr.setResult( value );
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED );

@@ -22,6 +22,10 @@ import javax.xml.namespace.QName;
 
 import org.kie.dmn.model.v1_1.ItemDefinition;
 
+/**
+ * Note: this comparator imposes orderings that are inconsistent with equals.
+ *
+ */
 public class ItemDefinitionDependenciesComparator implements Comparator<ItemDefinition> {
     
     private final String modelNamespace;
@@ -29,7 +33,10 @@ public class ItemDefinitionDependenciesComparator implements Comparator<ItemDefi
     public ItemDefinitionDependenciesComparator(String modelNamespace) {
         this.modelNamespace = modelNamespace;
     }
-
+    
+    /**
+     * Note: this comparator imposes orderings that are inconsistent with equals.
+     */
     @Override
     public int compare(ItemDefinition o1, ItemDefinition o2) {
         QName qname1 = new QName(modelNamespace, o1.getName());
@@ -39,9 +46,7 @@ public class ItemDefinitionDependenciesComparator implements Comparator<ItemDefi
         } else if ( recurseFind(o2, qname1) ) {
             return -1;
         } else { 
-            // although 0 would be correct, in order to have this comparison stable across several potential context
-            // in the case the two ItemDefinition are not dependent on one-another, order them alphabetically by name. (also helps for testing)
-            return o1.getName().compareTo(o2.getName());
+            return 0;
         }
     }
 

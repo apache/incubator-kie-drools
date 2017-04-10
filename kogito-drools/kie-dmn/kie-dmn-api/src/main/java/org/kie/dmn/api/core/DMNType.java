@@ -37,4 +37,6 @@ public interface DMNType
 
     DMNType clone();
 
+    boolean isInstanceOf(Object o);
+    
 }

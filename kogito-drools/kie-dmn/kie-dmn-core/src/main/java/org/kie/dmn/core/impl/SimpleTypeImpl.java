@@ -20,6 +20,7 @@ import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
+import java.util.Collection;
 import java.util.List;
 
 public class SimpleTypeImpl
@@ -47,4 +48,8 @@ public class SimpleTypeImpl
         return new SimpleTypeImpl( getNamespace(), getName(), getId(), isCollection(), getAllowedValues(), getBaseType(), getFeelType() );
     }
 
+    @Override
+    protected boolean internalIsInstanceOf(Object o) {
+        return getFeelType().isInstanceOf(o);
+    }
 }

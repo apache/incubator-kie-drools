@@ -22,5 +22,6 @@ package org.kie.dmn.feel.lang;
 public interface Type {
 
     String getName();
-
+    
+    boolean isInstanceOf(Object o);
 }

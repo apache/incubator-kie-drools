@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.impl;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -123,4 +124,25 @@ public abstract class BaseDMNTypeImpl
     public String toString() {
         return "DMNType{ "+getNamespace()+" : "+getName()+" }";
     }
+
+    @Override
+    public boolean isInstanceOf(Object o) {
+        if ( o == null ) {
+            return true; // null is instance of any type
+        }
+        // try first to recurse in case of Collection..
+        if ( isCollection() && o instanceof Collection ) {
+            Collection<Object> elements = (Collection) o;
+            for ( Object e : elements ) {
+                if ( !internalIsInstanceOf(e) ) {
+                    return false;
+                }
+            }
+            return true;
+        } 
+        // .. normal case, or collection of 1 element:
+        return internalIsInstanceOf(o);
+    }
+    
+    protected abstract boolean internalIsInstanceOf(Object o);
 }

@@ -146,11 +146,19 @@ public enum BuiltInType implements SimpleType {
     }
 
     public static boolean isInstanceOf( Object o, Type t ) {
+        if ( t == UNKNOWN ) {
+            return true;
+        }
         return determineTypeFromInstance( o ) == t;
     }
 
     public static boolean isInstanceOf( Object o, String name ) {
         return determineTypeFromInstance( o ) == determineTypeFromName( name );
+    }
+
+    @Override
+    public boolean isInstanceOf(Object o) {
+        return isInstanceOf(o, this);
     }
 
 

@@ -33,7 +33,7 @@ public class DMNTypeRegistry {
                     // already added, skip it
                     continue;
                 } else if( type == BuiltInType.LIST ) {
-                    feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, true, null, UNKNOWN, type );
+                    feelPrimitiveType = new SimpleTypeImpl( feelNamespace, name, null, false, null, UNKNOWN, type );
                 } else if( type == BuiltInType.CONTEXT ) {
                     feelPrimitiveType = new CompositeTypeImpl( feelNamespace, name, null, false, Collections.emptyMap(), null, type );
                 } else {

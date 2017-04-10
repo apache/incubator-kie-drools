@@ -22,13 +22,13 @@
 	</itemDefinition>
 	<itemDefinition id="tDateVariants" name="tDateVariants">
 		<itemComponent id="_02d44cc2-24ac-4f64-a61f-7044684dc438" name="fromString">
-			<typeRef>feel:string</typeRef>
+			<typeRef>feel:date</typeRef>
 		</itemComponent>
 		<itemComponent id="_13da5f5e-8fdd-4a33-9500-ceeaaeaccc91" name="fromDateTime">
-			<typeRef>feel:string</typeRef>
+			<typeRef>feel:date</typeRef>
 		</itemComponent>
 		<itemComponent id="_c4e03aa1-d8f3-4ffa-aab2-42a17a4fb707" name="fromYearMonthDay">
-			<typeRef>feel:string</typeRef>
+			<typeRef>feel:date</typeRef>
 		</itemComponent>
 	</itemDefinition>
 	<inputData id="_74a9c3ad-a813-444e-88ee-8a91096ee233" name="dateString">

@@ -10,7 +10,7 @@
                       namespace="http://www.trisotech.com/dmn/definitions/_b8feec86-dadf-4051-9feb-8e6093bbb530"
                       triso:logoChoice="Default">
   <semantic:decision id="_42806504-8ed5-488f-b274-de98c1bc67b9" name="Ship can enter a Dutch port">
-    <semantic:variable id="_5e5f1d3a-2476-4688-82c6-796f23ab1b38" name="Ship can enter a Dutch port" typeRef="feel:string"/>
+    <semantic:variable id="_5e5f1d3a-2476-4688-82c6-796f23ab1b38" name="Ship can enter a Dutch port" typeRef="feel:boolean"/>
     <semantic:informationRequirement>
       <semantic:requiredInput href="#_b932dcf4-5462-42bb-8c6b-9280ec229d7a"/>
     </semantic:informationRequirement>

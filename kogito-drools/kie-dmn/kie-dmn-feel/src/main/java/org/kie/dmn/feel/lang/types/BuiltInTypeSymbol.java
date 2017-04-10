@@ -35,4 +35,9 @@ public class BuiltInTypeSymbol
         return getId();
     }
 
+    @Override
+    public boolean isInstanceOf(Object o) {
+        return getType().isInstanceOf(o);
+    }
+
 }
