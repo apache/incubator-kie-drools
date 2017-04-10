@@ -174,7 +174,8 @@ public class HardMediumSoftBigDecimalScoreTest extends AbstractScoreTest {
         );
         assertScoresNotEquals(
                 HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-10.0"), new BigDecimal("-30.0"), new BigDecimal("-200.0")),
-                HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-30.0"), new BigDecimal("-10.0"), new BigDecimal("-200.0")),
+                HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-30.0"), new BigDecimal("-30.0"), new BigDecimal("-200.0")),
+                HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-10.0"), new BigDecimal("-10.0"), new BigDecimal("-200.0")),
                 HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-10.0"), new BigDecimal("-30.0"), new BigDecimal("-400.0")),
                 HardMediumSoftBigDecimalScore.valueOf(new BigDecimal("-10.0"), new BigDecimal("-400.0"), new BigDecimal("-30.0")),
                 HardMediumSoftBigDecimalScore.valueOfUninitialized(-7, new BigDecimal("-10.0"), new BigDecimal("-30.0"), new BigDecimal("-200.0"))
