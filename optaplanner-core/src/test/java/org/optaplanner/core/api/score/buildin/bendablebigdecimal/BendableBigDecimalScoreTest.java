@@ -102,9 +102,14 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
         assertEquals("[-147]hard/[-258/-369]soft",
                 scoreDefinitionHSS.createScore(
                 BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString());
+        assertEquals("[-147/-258]hard/[-369]soft",
+                new BendableBigDecimalScoreDefinition(2, 1).createScore(
+                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString());
         assertEquals("-7init/[-147]hard/[-258/-369]soft",
                 scoreDefinitionHSS.createScoreUninitialized(-7,
                 BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString());
+        assertEquals("[]hard/[]soft",
+                new BendableBigDecimalScoreDefinition(0, 0).createScore().toString());
     }
 
     @Test(expected = IllegalArgumentException.class)

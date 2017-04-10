@@ -61,6 +61,7 @@ public class BendableScoreTest extends AbstractScoreTest {
         assertEquals("[-147/-258/-369]hard/[]soft", scoreDefinitionHHH.createScore(-147, -258, -369).toString());
         assertEquals("[]hard/[-147/-258/-369]soft", scoreDefinitionSSS.createScore(-147, -258, -369).toString());
         assertEquals("-7init/[]hard/[-147/-258/-369]soft", scoreDefinitionSSS.createScoreUninitialized(-7, -147, -258, -369).toString());
+        assertEquals("[]hard/[]soft", new BendableScoreDefinition(0, 0).createScore().toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
