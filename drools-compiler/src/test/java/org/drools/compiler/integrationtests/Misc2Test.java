@@ -9091,4 +9091,27 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals("42000", list.get(0));
     }
+    
+    @Test(timeout=5_000L)
+    public void testDeadlock() throws Exception {
+        Object lock1 = 1L;
+        Object lock2 = 2L;
+        Runnable task1 = () -> {
+            synchronized(lock1) {
+              try { Thread.sleep(50); } catch (InterruptedException e) {}
+              synchronized(lock2) {
+              }
+            }
+        };
+        Runnable task2 = () -> {
+            synchronized(lock2) {
+              try { Thread.sleep(50); } catch (InterruptedException e) {}
+              synchronized(lock1) {
+              }
+            }
+        };
+        
+        new Thread(task1).start();
+        task2.run();
+    }
 }
