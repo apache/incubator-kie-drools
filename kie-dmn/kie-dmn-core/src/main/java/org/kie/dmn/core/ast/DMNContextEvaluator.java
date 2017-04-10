@@ -29,6 +29,9 @@ import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.v1_1.Context;
+import org.kie.dmn.model.v1_1.ContextEntry;
+import org.kie.dmn.model.v1_1.FunctionDefinition;
+import org.kie.dmn.model.v1_1.LiteralExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +51,8 @@ public class DMNContextEvaluator
         this.contextDef = contextDef;
     }
 
-    public void addEntry(String name, DMNType type, DMNExpressionEvaluator evaluator) {
-        this.entries.add( new ContextEntryDef( name, type, evaluator ) );
+    public void addEntry(String name, DMNType type, DMNExpressionEvaluator evaluator, ContextEntry ce) {
+        this.entries.add( new ContextEntryDef( name, type, evaluator, ce ) );
     }
 
     public List<ContextEntryDef> getEntries() {
@@ -79,6 +82,26 @@ public class DMNContextEvaluator
                             // and vice-versa
                             value = ((Collection)value).toArray()[0];
                         }
+                        
+                        if ( ! (ed.getContextEntry().getExpression() instanceof FunctionDefinition) ) {
+                            // checking directly the result type...
+                            if ( ed.getType() != null && !ed.getType().isInstanceOf(value) ) {
+                            MsgUtil.reportMessage( logger,
+                                    DMNMessage.Severity.ERROR,
+                                    contextDef,
+                                    result,
+                                    null,
+                                    null,
+                                    Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
+                                    ed.getName(),
+                                    ed.getType(),
+                                    value);
+                            return new EvaluatorResultImpl( results, ResultType.FAILURE );
+                            }
+                        } else {
+                            // TODO ...will need calculation/inference of function return type.
+                        } 
+                        
                         results.put( ed.getName(), value );
                         dmnContext.set( ed.getName(), value );
                     } else {
@@ -112,11 +135,13 @@ public class DMNContextEvaluator
         private String                 name;
         private DMNType                type;
         private DMNExpressionEvaluator evaluator;
+        private ContextEntry           ce;
 
-        public ContextEntryDef(String name, DMNType type, DMNExpressionEvaluator evaluator) {
+        public ContextEntryDef(String name, DMNType type, DMNExpressionEvaluator evaluator, ContextEntry ce) {
             this.name = name;
             this.type = type;
             this.evaluator = evaluator;
+            this.ce = ce;
         }
 
         public String getName() {
@@ -141,6 +166,14 @@ public class DMNContextEvaluator
 
         public void setEvaluator(DMNExpressionEvaluator evaluator) {
             this.evaluator = evaluator;
+        }
+        
+        public ContextEntry getContextEntry() {
+            return ce;
+        }
+        
+        public void setContextEntry(ContextEntry ce) {
+            this.ce = ce;
         }
     }
 

@@ -16,9 +16,11 @@
 
 package org.kie.dmn.core.impl;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.Type;
@@ -76,5 +78,25 @@ public class CompositeTypeImpl
     @Override
     public CompositeTypeImpl clone() {
         return new CompositeTypeImpl( getNamespace(), getName(), getId(), isCollection(), new LinkedHashMap<>( fields), getBaseType(), getFeelType() );
+    }
+    
+    @Override
+    protected boolean internalIsInstanceOf(Object o) {
+        Map<String, Object> instance = null;
+        try {
+            instance = (Map<String, Object>) o;
+        } catch ( Exception e ) {
+            return false;
+        }
+        for ( Entry<String, DMNType> f : fields.entrySet() ) {
+            if ( !instance.containsKey(f.getKey()) ) {
+                return false;
+            } else {
+                if ( !f.getValue().isInstanceOf(instance.get(f.getKey())) ) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
