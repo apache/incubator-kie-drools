@@ -59,27 +59,6 @@ public class FlightRebookingTest {
 
         assertThat( result.get( "Rebooked Passengers" ), is( loadExpectedResult() ) );
     }
-    
-    @Test
-    public void testSolution1_usingFEELdateTime() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking.dmn", this.getClass() );
-        DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
-        assertThat( dmnModel, notNullValue() );
-
-        DMNContext context = DMNFactory.newContext();
-
-        List passengerList = loadPassengerList();
-        List flightList = loadFlightListFEEL();
-
-        context.set( "Passenger List", passengerList );
-        context.set( "Flight List", flightList );
-
-        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-
-        DMNContext result = dmnResult.getContext();
-        
-        assertThat( result.get( "Rebooked Passengers" ), is( loadExpectedResult() ) );
-    }
 
     @Test
     public void testSolutionAlternate() {
@@ -193,10 +172,6 @@ public class FlightRebookingTest {
                 {"UA1111", "SFO", "LAX", date("2017-01-01T23:00:00"), date("2017-01-02T05:00:00"), 2, "scheduled"}
         };
 
-        return flightDataToFlightList(flightData);
-    }
-
-    private List flightDataToFlightList(Object[][] flightData) {
         List<Map<String,Object>> flightList = new ArrayList<>(  );
         for( Object[] pd : flightData ) {
             Map<String, Object> p = new HashMap<>(  );
@@ -210,21 +185,6 @@ public class FlightRebookingTest {
             flightList.add( p );
         }
         return flightList;
-    }
-    
-    /**
-     * Same as {@link #loadFlightList()} but instead of using Java LocalDateTime, using FEEL "date and time" datatype.
-     */
-    private List loadFlightListFEEL() {
-        Object[][] flightData = new Object[][] {
-                {"UA123", "SFO", "SNA", "date and time(\"2017-01-01T18:00:00\")", "date and time(\"2017-01-01T19:00:00\")", 5, "cancelled"},
-                {"UA456", "SFO", "SNA", "date and time(\"2017-01-01T19:00:00\")", "date and time(\"2017-01-01T20:00:00\")", 2, "scheduled"},
-                {"UA789", "SFO", "SNA", "date and time(\"2017-01-01T21:00:00\")", "date and time(\"2017-01-01T23:00:00\")", 2, "scheduled"},
-                {"UA1001", "SFO", "SNA", "date and time(\"2017-01-01T23:00:00\")", "date and time(\"2017-01-02T05:00:00\")", 0, "scheduled"},
-                {"UA1111", "SFO", "LAX", "date and time(\"2017-01-01T23:00:00\")", "date and time(\"2017-01-02T05:00:00\")", 2, "scheduled"}
-        };
-
-        return flightDataToFlightList(flightData);
     }
 
     private List loadExpectedResult() {

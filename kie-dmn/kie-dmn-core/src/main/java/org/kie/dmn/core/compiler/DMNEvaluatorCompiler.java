@@ -175,7 +175,8 @@ public class DMNEvaluatorCompiler {
                     ctxEval.addEntry(
                             entryName,
                             entryType,
-                            evaluator );
+                            evaluator,
+                            ce );
 
                     // add context entry to the list of available variables for the following entries
                     ctx.setVariable( entryName, entryType );
@@ -194,7 +195,8 @@ public class DMNEvaluatorCompiler {
                     ctxEval.addEntry(
                             DMNContextEvaluator.RESULT_ENTRY,
                             type,
-                            compileExpression( ctx, model, node, contextName, ce.getExpression() ) );
+                            compileExpression( ctx, model, node, contextName, ce.getExpression() ),
+                            ce );
                 }
             }
         } finally {
