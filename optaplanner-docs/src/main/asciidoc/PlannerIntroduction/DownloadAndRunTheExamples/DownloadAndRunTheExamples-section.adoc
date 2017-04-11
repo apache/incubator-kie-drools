@@ -160,11 +160,15 @@ Check the maven repository [path]_pom.xml_
 [[buildFromSource]]
 == Build OptaPlanner from Source
 
-It's easy to build OptaPlanner from source.
 
 *Prerequisites*
 
-https://help.github.com/articles/set-up-git/[Set up Git].
+* Set up Git.
+* Authenticate with GitHub using either HTTPS or SSH. 
++
+See https://help.github.com/articles/set-up-git/[GitHub] for more information about setting up and authenticating Git. 
+
+Build and run the examples from source.
 
 . Clone `optaplanner` from GitHub (or alternatively, download https://github.com/kiegroup/optaplanner/zipball/master[the zipball]):
 +
