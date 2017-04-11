@@ -67,7 +67,7 @@ public class HardMediumSoftScoreVerifier<Solution_> extends AbstractScoreVerifie
      * @param solution never null, the actual {@link PlanningSolution}
      */
     public void assertMediumWeight(String constraintName, int expectedWeight, Solution_ solution) {
-        assertHardWeight(null, constraintName, expectedWeight, solution);
+        assertMediumWeight(null, constraintName, expectedWeight, solution);
     }
 
     /**
