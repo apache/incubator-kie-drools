@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +46,6 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
-import org.kie.api.time.SessionPseudoClock;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -69,6 +67,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -80,8 +79,10 @@ import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.mockito.Mockito.*;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class AccumulateTest extends CommonTestMethodBase {
 
@@ -2260,15 +2261,15 @@ public class AccumulateTest extends CommonTestMethodBase {
         map.put( "count", 0 );
 
         MyPerson josJr = new MyPerson( "Jos Jr Jr", 20,
-                                       Arrays.asList( new MyPerson( "John Jr 1st", 10,
-                                                                    Arrays.asList( new MyPerson( "John Jr Jrx", 4, Collections.<MyPerson>emptyList() ) ) ),
+                                       asList( new MyPerson( "John Jr 1st", 10,
+                                                                    asList( new MyPerson( "John Jr Jrx", 4, Collections.<MyPerson>emptyList() ) ) ),
                                                       new MyPerson( "John Jr 2nd", 8, Collections.<MyPerson>emptyList() ) ) );
 
         MyPerson jos = new MyPerson( "Jos", 30,
-                                     Arrays.asList( new MyPerson( "Jeff Jr 1st", 10, Collections.<MyPerson>emptyList() ),
+                                     asList( new MyPerson( "Jeff Jr 1st", 10, Collections.<MyPerson>emptyList() ),
                                                     new MyPerson( "Jeff Jr 2nd", 8, Collections.<MyPerson>emptyList() ) ) );
 
-        ksession.execute( new InsertElementsCommand( Arrays.asList( new Object[]{josJr, jos} ) ) );
+        ksession.execute( new InsertElementsCommand( asList( new Object[]{josJr, jos} ) ) );
 
         ksession.fireAllRules();
 
@@ -2521,27 +2522,27 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         ksession.insert( new Integer( 20 ) );
         ksession.fireAllRules();
-        assertEquals( list, Arrays.asList( 1, 1 ) );
+        assertEquals( list, asList( 1, 1 ) );
 
         ksession.insert( new Integer( 20 ) );
         ksession.fireAllRules();
-        assertEquals( list, Arrays.asList( 2, 2 ) );
+        assertEquals( list, asList( 2, 2 ) );
 
         ksession.insert( new Integer( 20 ) );
         ksession.fireAllRules();
-        assertEquals( list, Arrays.asList( 2, 3 ) );
+        assertEquals( list, asList( 2, 3 ) );
 
         ksession.insert( new Integer( 2 ) );
         ksession.fireAllRules();
-        assertEquals( list, Arrays.asList( 2, 4 ) );
+        assertEquals( list, asList( 2, 4 ) );
 
         ksession.insert( new Integer( 2 ) );
         ksession.fireAllRules();
-        assertEquals( list, Arrays.asList( 2, 5 ) );
+        assertEquals( list, asList( 2, 5 ) );
 
         ksession.insert( new Integer( 2 ) );
         ksession.fireAllRules();
-        assertEquals( list, Arrays.asList( 2, 5 ) );
+        assertEquals( list, asList( 2, 5 ) );
 
     }
 
@@ -2864,18 +2865,18 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         // init data
         ks.fireAllRules();
-        assertEquals( Arrays.asList( 8.0 ), list );
-        assertEquals( Arrays.asList( 8.0 ), list2 );
+        assertEquals( asList( 8.0 ), list );
+        assertEquals( asList( 8.0 ), list2 );
 
         ks.insert( 1 );
         ks.fireAllRules();
-        assertEquals( Arrays.asList( 8.0, 10.0 ), list );
-        assertEquals( Arrays.asList( 8.0, 10.0 ), list2 );
+        assertEquals( asList( 8.0, 10.0 ), list );
+        assertEquals( asList( 8.0, 10.0 ), list2 );
 
         ks.insert( 2 );
         ks.fireAllRules();
-        assertEquals( Arrays.asList( 8.0, 10.0, 12.0 ), list );
-        assertEquals( Arrays.asList( 8.0, 10.0, 12.0 ), list2 );
+        assertEquals( asList( 8.0, 10.0, 12.0 ), list );
+        assertEquals( asList( 8.0, 10.0, 12.0 ), list2 );
     }
 
     public static class ExpectedMessage {
@@ -3377,4 +3378,103 @@ public class AccumulateTest extends CommonTestMethodBase {
         return list.get(0);
     }
 
+    @Test
+    public void testConcurrentLeftAndRightUpdate() {
+        // DROOLS-1517
+        String drl = "package P;\n"
+                     + "import " + Visit.class.getCanonicalName() + ";\n"
+                     + "global java.util.List list\n"
+                     + "rule OvercommittedMechanic\n"
+                     + "when\n"
+                     + "  Visit($bucket : bucket)\n"
+                     + "  $weeklyCommitment : Number() from accumulate(\n"
+                     + "	     Visit($duration : duration, bucket == $bucket),\n"
+                     + "	          sum($duration)\n"
+                     + "      )\n"
+                     + "then\n"
+                     + "  list.add($weeklyCommitment);"
+                     + "end";
+
+        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        List list = new ArrayList();
+        kieSession.setGlobal( "list", list );
+
+        Visit visit1 = new Visit(1.0);
+        Visit visit2 = new Visit(2.0);
+        Visit visit3 = new Visit(3.0);
+        Visit visit4 = new Visit(4.0);
+        int bucketA = 1;
+        int bucketB = 2;
+        visit1.setBucket(bucketA);
+        visit2.setBucket(bucketB);
+        visit3.setBucket(bucketB);
+        visit4.setBucket(bucketB);
+
+        FactHandle fhVisit1 = kieSession.insert(visit1);
+        FactHandle fhVisit2 = kieSession.insert(visit2);
+        FactHandle fhVisit3 = kieSession.insert(visit3);
+        FactHandle fhVisit4 = kieSession.insert(visit4);
+
+        kieSession.fireAllRules();
+        assertTrue( containsExactlyAndClear( list, 9.0, 9.0, 9.0, 1.0 ) );
+
+        kieSession.update(fhVisit4, visit4);
+        kieSession.update(fhVisit3, visit3.setBucket(bucketA));
+        kieSession.update(fhVisit1, visit1.setBucket(bucketB));
+
+        kieSession.fireAllRules();
+        assertTrue( containsExactlyAndClear( list, 7.0, 7.0, 3.0, 7.0 ) );
+
+        kieSession.update(fhVisit1, visit1.setBucket(bucketA));
+
+        kieSession.fireAllRules();
+        assertTrue( list.containsAll( asList( 6.0, 4.0, 6.0, 4.0 ) ) );
+    }
+
+    public static class Visit {
+
+        private static int TAG = 1;
+
+        private final double duration;
+        private int bucket;
+
+        private final int tag;
+
+        public Visit(double duration) {
+            this.duration = duration;
+            this.tag = TAG++;
+        }
+
+        public int getBucket() {
+            return bucket;
+        }
+
+        public Visit setBucket(int bucket) {
+            this.bucket = bucket;
+            return this;
+        }
+
+        public double getDuration() {
+            return duration;
+        }
+
+        @Override
+        public String toString() {
+            return "Visit[" + tag + "]";
+        }
+    }
+
+    private <T> boolean containsExactlyAndClear(List<T> list, T... values) {
+        if (list.size() != values.length) {
+            return false;
+        }
+        for (T value : values) {
+            if (!list.remove( value )) {
+                System.err.println(value + " not present");
+                return false;
+            }
+        }
+        return list.isEmpty();
+    }
 }
