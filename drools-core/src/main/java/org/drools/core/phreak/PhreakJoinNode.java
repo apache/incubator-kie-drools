@@ -47,21 +47,13 @@ public class PhreakJoinNode {
             doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
-        if (srcLeftTuples.getUpdateFirst() != null ) {
-            RuleNetworkEvaluator.doUpdatesReorderLeftMemory(bm,
-                                                            srcLeftTuples);
-        }
-
         if (srcRightTuples.getUpdateFirst() != null) {
-            RuleNetworkEvaluator.doUpdatesReorderRightMemory(bm,
-                                                             srcRightTuples);
-        }
-
-        if (srcRightTuples.getUpdateFirst() != null) {
+            RuleNetworkEvaluator.doUpdatesReorderRightMemory(bm, srcRightTuples);
             doRightUpdates(joinNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
         }
 
-        if (srcLeftTuples.getUpdateFirst() != null) {
+        if (srcLeftTuples.getUpdateFirst() != null ) {
+            RuleNetworkEvaluator.doUpdatesReorderLeftMemory(bm, srcLeftTuples);
             doLeftUpdates(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
