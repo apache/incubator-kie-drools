@@ -9091,4 +9091,36 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals("42000", list.get(0));
     }
+    
+    /**
+     * This test deliberately creates a deadlock, failing the test with a timeout.
+     * Helpful to test thread dump when a timeout occur on the JUnit listener.
+     * See {@link org.kie.test.util.TestStatusListener#testFailure(org.junit.runner.notification.Failure)}
+     * @throws Exception
+     */
+    @Ignore("This test deliberately creates a deadlock, failing the test with a timeout.\n" + 
+            "Helpful to test thread dump when a timeout occur on the JUnit listener.\n" + 
+            "See org.kie.test.util.TestStatusListener#testFailure()")
+    @Test(timeout=5_000L)
+    public void testDeadlock() throws Exception {
+        final Object see_also = org.kie.test.util.TestStatusListener.class;
+        Object lock1 = 1L;
+        Object lock2 = 2L;
+        Runnable task1 = () -> {
+            synchronized(lock1) {
+              try { Thread.sleep(50); } catch (InterruptedException e) {}
+              synchronized(lock2) {
+              }
+            }
+        };
+        Runnable task2 = () -> {
+            synchronized(lock2) {
+              try { Thread.sleep(50); } catch (InterruptedException e) {}
+              synchronized(lock1) {
+              }
+            }
+        };
+        new Thread(task1).start();
+        task2.run();
+    }
 }

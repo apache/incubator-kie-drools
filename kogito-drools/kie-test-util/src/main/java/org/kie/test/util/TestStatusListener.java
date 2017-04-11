@@ -19,6 +19,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -26,6 +28,7 @@ import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
+import org.junit.runners.model.TestTimedOutException;
 
 public class TestStatusListener extends RunListener {
     
@@ -67,6 +70,15 @@ public class TestStatusListener extends RunListener {
         writer.newLine();
         writer.flush();
     }
+    
+    private static synchronized void writeThreadDump() throws IOException {
+        ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
+        for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
+            writer.write(ti.toString());
+        }
+        writer.newLine();
+        writer.flush();
+    }
 
     @Override
     public void testRunStarted(Description description) throws Exception {
@@ -90,6 +102,9 @@ public class TestStatusListener extends RunListener {
 
     @Override
     public void testFailure(Failure failure) throws Exception {
+        if ( failure.getException() instanceof TestTimedOutException ) {
+            writeThreadDump();
+        }
         write("testFailure", failure);
     }
 
