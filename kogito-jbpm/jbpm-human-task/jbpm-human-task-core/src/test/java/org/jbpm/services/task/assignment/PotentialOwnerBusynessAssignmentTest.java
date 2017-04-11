@@ -173,7 +173,9 @@ public class PotentialOwnerBusynessAssignmentTest extends AbstractAssignmentTest
         
         createAndAssertTask(str, "Bobba Fet", 1, "Crusaders");        
         // yet another task
-        createAndAssertTask(str, "Luke Cage", 1, "Crusaders"); 
+        createAndAssertTask(str, "Luke Cage", 1, "Crusaders");
+        // and one more...
+        createAndAssertTask(str, "Tony Stark", 1, "Crusaders");
         // and we are back...
         createAndAssertTask(str, "Bobba Fet", 1, "Crusaders");
     }
@@ -187,7 +189,10 @@ public class PotentialOwnerBusynessAssignmentTest extends AbstractAssignmentTest
         createAndAssertTask(str, "Bobba Fet", 3, "Darth Vader", "Luke Cage", "Crusaders");  
         createAndAssertTask(str, "Darth Vader", 3, "Darth Vader", "Luke Cage", "Crusaders");
         createAndAssertTask(str, "Luke Cage", 3, "Darth Vader", "Luke Cage", "Crusaders"); 
-        
+
+        // and one for Tony since he is also a crusader
+        createAndAssertTask(str, "Tony Stark", 3, "Darth Vader", "Luke Cage", "Crusaders");  
+
         createAndAssertTask(str, "Bobba Fet", 3, "Darth Vader", "Luke Cage", "Crusaders");  
         createAndAssertTask(str, "Darth Vader", 3, "Darth Vader", "Luke Cage", "Crusaders");
         createAndAssertTask(str, "Luke Cage", 3, "Darth Vader", "Luke Cage", "Crusaders");
