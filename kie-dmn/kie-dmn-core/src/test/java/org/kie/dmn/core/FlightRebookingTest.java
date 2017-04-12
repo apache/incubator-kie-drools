@@ -43,6 +43,7 @@ public class FlightRebookingTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
+        System.out.println( formatMessages( dmnModel.getMessages() ) );
         //assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) ); // need proper type support to enable this
 
         DMNContext context = DMNFactory.newContext();

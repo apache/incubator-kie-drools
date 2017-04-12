@@ -180,7 +180,7 @@ public class ParserHelper {
     }
 
     public boolean followUp(Token t, boolean isPredict) {
-        boolean follow = this.currentScope.followUp( t.getText(), isPredict );
+        boolean follow = ( isDynamicResolution() && FEELParser.isVariableNameValid( t.getText() ) ) || this.currentScope.followUp( t.getText(), isPredict );
         return follow;
     }
 
