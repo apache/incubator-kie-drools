@@ -33,6 +33,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.LeftTuple;
@@ -1321,7 +1322,7 @@ public class DefaultAgenda
                     group = null; // set the group to null in case the fire limit has been reached
                 }
 
-                if ( returnedFireCount == 0 && head == null && ( group == null || !group.isAutoDeactivate() ) && !flushExpirations() ) {
+                if ( returnedFireCount == 0 && head == null && ( group == null || !group.isAutoDeactivate() ) && !flushExpirations(this.workingMemory.getPropagationList()) ) {
                     // if true, the engine is now considered potentially at rest
                     head = restHandler.handleRest( workingMemory, this );
                 }
@@ -1562,8 +1563,8 @@ public class DefaultAgenda
         expirationContexts.add(ectx);
     }
 
-    private boolean flushExpirations() {
-        if (expirationContexts.isEmpty()) {
+    private boolean flushExpirations( PropagationList propagationList ) {
+        if (expirationContexts.isEmpty() || propagationList.hasEntriesDeferringExpiration()) {
             return false;
         }
         for (PropagationContext ectx : expirationContexts) {

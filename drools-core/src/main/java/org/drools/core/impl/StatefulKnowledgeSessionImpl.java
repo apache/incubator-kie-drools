@@ -2116,6 +2116,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return propagationList.takeAll();
     }
 
+    public PropagationList getPropagationList() {
+        return propagationList;
+    }
+
     @Override
     public PropagationEntry handleRestOnFireUntilHalt(DefaultAgenda.ExecutionState currentState) {
         // this must use the same sync target as takeAllPropagations, to ensure this entire block is atomic, up to the point of wait

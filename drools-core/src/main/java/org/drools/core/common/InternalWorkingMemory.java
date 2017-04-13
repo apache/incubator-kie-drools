@@ -16,12 +16,18 @@
 
 package org.drools.core.common;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.PropagationList;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
@@ -34,11 +40,6 @@ import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
 
 public interface InternalWorkingMemory
     extends WorkingMemory, InternalWorkingMemoryEntryPoint {
@@ -213,6 +214,8 @@ public interface InternalWorkingMemory
 
     boolean hasPendingPropagations();
     PropagationEntry takeAllPropagations();
+
+    PropagationList getPropagationList();
 
     Iterator<? extends PropagationEntry> getActionsIterator();
 

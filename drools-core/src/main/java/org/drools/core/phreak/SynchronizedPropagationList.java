@@ -15,11 +15,11 @@
 
 package org.drools.core.phreak;
 
+import java.util.Iterator;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Iterator;
 
 public class SynchronizedPropagationList implements PropagationList {
 
@@ -29,6 +29,8 @@ public class SynchronizedPropagationList implements PropagationList {
 
     protected volatile PropagationEntry head;
     protected volatile PropagationEntry tail;
+
+    private volatile int entriesDeferringExpirationCounter = 0;
 
     public SynchronizedPropagationList(InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
@@ -69,6 +71,9 @@ public class SynchronizedPropagationList implements PropagationList {
             tail.setNext( entry );
         }
         tail = entry;
+        if (entry.defersExpiration()) {
+            entriesDeferringExpirationCounter++;
+        }
     }
 
     @Override
@@ -76,15 +81,22 @@ public class SynchronizedPropagationList implements PropagationList {
         flush( workingMemory, takeAll() );
     }
 
-    @Override public void flush(PropagationEntry currentHead)
-    {
+    @Override
+    public void flush(PropagationEntry currentHead) {
         flush( workingMemory, currentHead );
     }
 
-    public static void flush( InternalWorkingMemory workingMemory, PropagationEntry currentHead ) {
+    public void flush( InternalWorkingMemory workingMemory, PropagationEntry currentHead ) {
         for (PropagationEntry entry = currentHead; entry != null; entry = entry.getNext()) {
             entry.execute(workingMemory);
+            if (entry.defersExpiration()) {
+                entriesDeferringExpirationCounter--;
+            }
         }
+    }
+
+    public boolean hasEntriesDeferringExpiration() {
+        return entriesDeferringExpirationCounter > 0;
     }
 
     @Override
