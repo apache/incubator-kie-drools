@@ -16,12 +16,12 @@
 
 package org.drools.reteoo.common;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
-
-import java.util.Collections;
-import java.util.Iterator;
 
 public class RetePropagationList implements PropagationList {
 
@@ -71,6 +71,11 @@ public class RetePropagationList implements PropagationList {
 
     @Override
     public boolean isEmpty() {
+        return true;
+    }
+
+    @Override
+    public boolean hasEntriesDeferringExpiration() {
         return true;
     }
 
