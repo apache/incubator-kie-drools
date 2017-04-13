@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -100,8 +101,19 @@ public class BasicPlumbingTermination extends AbstractTermination {
      * @param problemFactChange never null
      * @return as specified by {@link Collection#add}
      */
-    public synchronized boolean addProblemFactChange(ProblemFactChange problemFactChange) {
+    public synchronized <Solution_> boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
         boolean added = problemFactChangeQueue.add(problemFactChange);
+        notifyAll();
+        return added;
+    }
+
+    /**
+     * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
+     * @param problemFactChangeList never null
+     * @return as specified by {@link Collection#add}
+     */
+    public synchronized <Solution_> boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList) {
+        boolean added = problemFactChangeQueue.addAll(problemFactChangeList);
         notifyAll();
         return added;
     }

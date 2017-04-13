@@ -141,6 +141,11 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
+    public boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList) {
+        return basicPlumbingTermination.addProblemFactChanges(problemFactChangeList);
+    }
+
+    @Override
     public boolean isEveryProblemFactChangeProcessed() {
         return basicPlumbingTermination.isEveryProblemFactChangeProcessed();
     }

@@ -94,6 +94,11 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     @Override
+    public boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChanges) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public boolean isEveryProblemFactChangeProcessed() {
         throw new UnsupportedOperationException();
     }

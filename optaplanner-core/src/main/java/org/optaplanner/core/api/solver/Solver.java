@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.solver;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 
@@ -118,8 +119,24 @@ public interface Solver<Solution_> {
      * a capacity of {@link Integer#MAX_VALUE}.
      * @param problemFactChange never null
      * @return true (as specified by {@link Collection#add})
+     * @see #addProblemFactChanges(List)
      */
     boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
+
+    /**
+     * Schedules multiple {@link ProblemFactChange}s to be processed.
+     * <p>
+     * As a side-effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * but not {@link #terminateEarly()}.
+     * <p>
+     * This method is thread-safe.
+     * Follows specifications of {@link BlockingQueue#addAll(Collection)} with by default
+     * a capacity of {@link Integer#MAX_VALUE}.
+     * @param problemFactChangeList never null
+     * @return true (as specified by {@link Collection#add})
+     * @see #addProblemFactChange(ProblemFactChange)
+     */
+    boolean addProblemFactChanges(List<ProblemFactChange<Solution_>> problemFactChangeList);
 
     /**
      * Checks if all scheduled {@link ProblemFactChange}s have been processed.
