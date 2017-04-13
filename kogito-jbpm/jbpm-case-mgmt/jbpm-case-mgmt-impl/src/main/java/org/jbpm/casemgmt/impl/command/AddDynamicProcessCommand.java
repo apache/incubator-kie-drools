@@ -22,6 +22,7 @@ import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.api.runtime.Context;
 
 import java.util.Map;
@@ -38,7 +39,8 @@ public class AddDynamicProcessCommand extends CaseCommand<Long> {
     private long processInstanceId;
     private Map<String, Object> parameters;
     
-    public AddDynamicProcessCommand(String caseId, Long processInstanceId, String processId, Map<String, Object> parameters) {        
+    public AddDynamicProcessCommand(IdentityProvider identityProvider, String caseId, Long processInstanceId, String processId, Map<String, Object> parameters) {        
+        super(identityProvider);
         this.caseId = caseId;
         this.processInstanceId = processInstanceId;
         this.processId = processId;

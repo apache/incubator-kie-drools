@@ -23,6 +23,7 @@ import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.api.runtime.Context;
 
 import java.util.Collections;
@@ -31,7 +32,13 @@ public abstract class CaseCommand<T> implements ExecutableCommand<T> {
 
     private static final long serialVersionUID = 4116744986913465571L;
     
-    private CaseEventSupport emptyCaseEventSupport = new CaseEventSupport(Collections.emptyList());
+    private CaseEventSupport emptyCaseEventSupport;
+    private IdentityProvider identityProvider;
+    
+    public CaseCommand(IdentityProvider identityProvider) {
+        this.identityProvider = identityProvider;
+        this.emptyCaseEventSupport = new CaseEventSupport(identityProvider, Collections.emptyList());
+    }
 
     protected CaseEventSupport getCaseEventSupport(Context context) {        
         RuntimeManager runtimeManager = getRuntimeManager(context);
@@ -50,5 +57,9 @@ public abstract class CaseCommand<T> implements ExecutableCommand<T> {
         RuntimeManager runtimeManager = (RuntimeManager) ksession.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
         
         return runtimeManager;
+    }
+    
+    public IdentityProvider getIdentityProvider() {
+        return this.identityProvider;
     }
 }

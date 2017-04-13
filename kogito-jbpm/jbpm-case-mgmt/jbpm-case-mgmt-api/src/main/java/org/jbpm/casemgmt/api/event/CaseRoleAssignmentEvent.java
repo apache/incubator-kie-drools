@@ -26,8 +26,8 @@ public class CaseRoleAssignmentEvent extends CaseEvent {
     private String role;
     private OrganizationalEntity entity;
     
-    public CaseRoleAssignmentEvent(String caseId, String role, OrganizationalEntity entity) {
-        super(caseId);
+    public CaseRoleAssignmentEvent(String user, String caseId, String role, OrganizationalEntity entity) {
+        super(user, caseId);
         this.role = role;
         this.entity = entity;
     }

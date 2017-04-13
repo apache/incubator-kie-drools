@@ -22,6 +22,7 @@ import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.api.runtime.Context;
 
 import java.util.Collection;
@@ -36,7 +37,8 @@ public class AddDataCaseFileInstanceCommand extends CaseCommand<Void> {
 
     private Map<String, Object> parameters;
     
-    public AddDataCaseFileInstanceCommand(Map<String, Object> parameters) {                
+    public AddDataCaseFileInstanceCommand(IdentityProvider identityProvider, Map<String, Object> parameters) {
+        super(identityProvider);
         this.parameters = parameters;        
     }
 
@@ -52,9 +54,9 @@ public class AddDataCaseFileInstanceCommand extends CaseCommand<Void> {
         FactHandle factHandle = ksession.getFactHandle(caseFile);
         
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
-        caseEventSupport.fireBeforeCaseDataAdded(caseFile.getCaseId(), parameters);
+        caseEventSupport.fireBeforeCaseDataAdded(caseFile.getCaseId(), caseFile.getDefinitionId(), parameters);
         caseFile.addAll(parameters);
-        caseEventSupport.fireAfterCaseDataAdded(caseFile.getCaseId(), parameters);
+        caseEventSupport.fireAfterCaseDataAdded(caseFile.getCaseId(), caseFile.getDefinitionId(), parameters);
         
         ksession.update(factHandle, caseFile);
         return null;

@@ -28,15 +28,15 @@ public class CaseDynamicSubprocessEvent extends CaseEvent {
     private long processInstanceId;
     private long subProcessInstanceId;
 
-    public CaseDynamicSubprocessEvent(String caseId, String processId, Map<String, Object> data, long processInstanceId) {
-        super(caseId);
+    public CaseDynamicSubprocessEvent(String user, String caseId, String processId, Map<String, Object> data, long processInstanceId) {
+        super(user, caseId);
         this.data = data;
         this.processId = processId;
         this.processInstanceId = processInstanceId;
     }
     
-    public CaseDynamicSubprocessEvent(String caseId, String processId, Map<String, Object> data, long processInstanceId, long subProcessInstanceId) {
-        super(caseId);
+    public CaseDynamicSubprocessEvent(String user, String caseId, String processId, Map<String, Object> data, long processInstanceId, long subProcessInstanceId) {
+        super(user, caseId);
         this.data = data;
         this.processId = processId;
         this.processInstanceId = processInstanceId;

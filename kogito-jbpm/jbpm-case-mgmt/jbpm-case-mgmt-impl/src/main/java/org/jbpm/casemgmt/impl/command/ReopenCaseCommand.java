@@ -27,6 +27,7 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KieInternalServices;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.api.runtime.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
@@ -53,7 +54,8 @@ public class ReopenCaseCommand extends CaseCommand<Void> {
     
     private transient ProcessService processService;
 
-    public ReopenCaseCommand(String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data, ProcessService processService) {
+    public ReopenCaseCommand(IdentityProvider identityProvider, String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data, ProcessService processService) {
+        super(identityProvider);
         this.caseId = caseId;
         this.deploymentId = deploymentId;
         this.caseDefinitionId = caseDefinitionId;

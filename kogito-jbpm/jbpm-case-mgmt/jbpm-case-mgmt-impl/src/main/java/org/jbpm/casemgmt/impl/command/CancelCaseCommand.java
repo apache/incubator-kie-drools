@@ -27,6 +27,7 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.KieInternalServices;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.manager.context.CaseContext;
@@ -51,7 +52,8 @@ public class CancelCaseCommand extends CaseCommand<Void> {
     
     private boolean destroy;
 
-    public CancelCaseCommand(String caseId, ProcessService processService, RuntimeDataService runtimeDataService, boolean destroy) {
+    public CancelCaseCommand(IdentityProvider identityProvider, String caseId, ProcessService processService, RuntimeDataService runtimeDataService, boolean destroy) {
+        super(identityProvider);
         this.caseId = caseId;
         this.processService = processService;
         this.runtimeDataService = runtimeDataService;

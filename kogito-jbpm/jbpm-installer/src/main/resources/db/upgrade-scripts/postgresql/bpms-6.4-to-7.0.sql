@@ -37,3 +37,17 @@ ALTER TABLE AuditTaskImpl ADD COLUMN lastModificationDate timestamp;
 update AuditTaskImpl ati set lastModificationDate = (
     select max(logTime) from TaskEvent where taskId=ati.taskId group by taskId
 );
+
+create table CaseFileDataLog (
+    id int8 not null,
+    caseDefId varchar(255),
+    caseId varchar(255),
+    itemName varchar(255),
+    itemType varchar(255),
+    itemValue varchar(255),
+    lastModified timestamp,
+    lastModifiedBy varchar(255),
+    primary key (id)
+);
+
+create sequence CASE_FILE_DATA_LOG_ID_SEQ;

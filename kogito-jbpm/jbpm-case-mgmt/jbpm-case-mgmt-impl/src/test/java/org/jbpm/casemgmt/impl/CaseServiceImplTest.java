@@ -44,6 +44,7 @@ import org.jbpm.casemgmt.api.CaseCommentNotFoundException;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
+import org.jbpm.casemgmt.api.model.CaseFileItem;
 import org.jbpm.casemgmt.api.model.CaseStage;
 import org.jbpm.casemgmt.api.model.CaseStatus;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
@@ -1848,4 +1849,149 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         }
     }
 
+    
+    @Test
+    public void testUserTaskToCaseWithStageCompleteCaseDataItem() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
+        Map<String, Object> data = new HashMap<>();
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            Collection<CaseFileItem> caseFileItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            assertNotNull(caseFileItems);
+            assertEquals(0,  caseFileItems.size());
+            
+            Collection<CaseStageInstance> activeStages = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext());
+            assertNotNull(activeStages);
+            assertEquals(1,  activeStages.size());
+            
+            caseService.addDataToCaseFile(caseId, "dataComplete", true);
+            
+            activeStages = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext());
+            assertNotNull(activeStages);
+            assertEquals(0,  activeStages.size());
+            
+            caseFileItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            assertNotNull(caseFileItems);
+            assertEquals(1,  caseFileItems.size());
+            
+            CaseFileItem dataItem = caseFileItems.iterator().next();
+            assertNotNull(dataItem);
+            assertEquals(caseId, dataItem.getCaseId());
+            assertEquals("dataComplete", dataItem.getName());
+            assertEquals("true", dataItem.getValue());
+            assertEquals(Boolean.class.getName(), dataItem.getType());
+            assertEquals(identityProvider.getName(), dataItem.getLastModifiedBy());
+            assertNotNull(dataItem.getLastModified());
+            
+            caseService.addDataToCaseFile(caseId, "anotherDataItem", "first version");
+            
+            caseFileItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            assertNotNull(caseFileItems);
+            assertEquals(2,  caseFileItems.size());
+            
+            dataItem = caseFileItems.iterator().next();
+            assertNotNull(dataItem);
+            assertEquals(caseId, dataItem.getCaseId());
+            assertEquals("anotherDataItem", dataItem.getName());
+            assertEquals("first version", dataItem.getValue());
+            assertEquals(String.class.getName(), dataItem.getType());
+            assertEquals(identityProvider.getName(), dataItem.getLastModifiedBy());
+            assertNotNull(dataItem.getLastModified());
+            
+            caseService.addDataToCaseFile(caseId, "anotherDataItem", "second version");
+            
+            caseFileItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            assertNotNull(caseFileItems);
+            assertEquals(2,  caseFileItems.size());
+            
+            dataItem = caseFileItems.iterator().next();
+            assertNotNull(dataItem);
+            assertEquals(caseId, dataItem.getCaseId());
+            assertEquals("anotherDataItem", dataItem.getName());
+            assertEquals("second version", dataItem.getValue());
+            assertEquals(String.class.getName(), dataItem.getType());
+            assertEquals(identityProvider.getName(), dataItem.getLastModifiedBy());
+            assertNotNull(dataItem.getLastModified());
+            
+            caseService.removeDataFromCaseFile(caseId, "anotherDataItem");
+            caseFileItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            assertNotNull(caseFileItems);
+            assertEquals(1,  caseFileItems.size());
+            
+            identityProvider.setName("mary");
+            caseFileItems = caseRuntimeDataService.getCaseInstanceDataItems(caseId, new QueryContext());
+            assertNotNull(caseFileItems);
+            // mary is not involved in case isntance
+            assertEquals(0,  caseFileItems.size());
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            identityProvider.setName("john");
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testUserTaskToCaseSearchByCaseFileData() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+        
+        Map<String, Object> data = new HashMap<>();
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+                        
+            caseService.addDataToCaseFile(caseId, "dataComplete", true);
+            
+            Collection<CaseInstance> byCaseData = caseRuntimeDataService.getCaseInstancesByDateItem("dataComplete", Arrays.asList(CaseStatus.OPEN), new QueryContext());
+            assertNotNull(byCaseData);
+            assertEquals(1, byCaseData.size());
+            
+            byCaseData = caseRuntimeDataService.getCaseInstancesByDateItemAndValue("dataComplete", "false", Arrays.asList(CaseStatus.OPEN), new QueryContext());
+            assertNotNull(byCaseData);
+            assertEquals(0, byCaseData.size());
+            
+            byCaseData = caseRuntimeDataService.getCaseInstancesByDateItemAndValue("dataComplete", "true", Arrays.asList(CaseStatus.OPEN), new QueryContext());
+            assertNotNull(byCaseData);
+            assertEquals(1, byCaseData.size());
+            
+            identityProvider.setName("mary");
+            byCaseData = caseRuntimeDataService.getCaseInstancesByDateItem("dataComplete", Arrays.asList(CaseStatus.OPEN), new QueryContext());
+            assertNotNull(byCaseData);
+            // mary is not part of the case instance
+            assertEquals(0, byCaseData.size());
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            identityProvider.setName("john");
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+            
 }

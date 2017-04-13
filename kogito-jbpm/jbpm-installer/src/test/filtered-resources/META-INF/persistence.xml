@@ -99,6 +99,8 @@
     <!-- case mgmt -->
     <class>org.jbpm.casemgmt.impl.generator.CaseIdInfo</class>
     <class>org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog</class>
+    <class>org.jbpm.casemgmt.impl.audit.CaseFileDataLog</class>
+    
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>
@@ -175,6 +177,8 @@
     <!-- case mgmt -->
     <class>org.jbpm.casemgmt.impl.generator.CaseIdInfo</class>
     <class>org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog</class>
+    <class>org.jbpm.casemgmt.impl.audit.CaseFileDataLog</class>
+    
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>
@@ -248,6 +252,8 @@
     <!-- case mgmt -->
     <class>org.jbpm.casemgmt.impl.generator.CaseIdInfo</class>
     <class>org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog</class>
+    <class>org.jbpm.casemgmt.impl.audit.CaseFileDataLog</class>
+    
 
     <class>org.jbpm.persistence.scripts.quartzmockentities.QrtzBlobTriggers</class>
     <class>org.jbpm.persistence.scripts.quartzmockentities.QrtzCalendars</class>

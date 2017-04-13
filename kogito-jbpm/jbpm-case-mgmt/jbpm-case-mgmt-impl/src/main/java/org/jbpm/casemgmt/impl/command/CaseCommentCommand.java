@@ -26,6 +26,7 @@ import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;
 import org.jbpm.casemgmt.impl.model.instance.CommentInstanceImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.api.runtime.Context;
 
 import java.util.Collection;
@@ -47,18 +48,21 @@ public class CaseCommentCommand extends CaseCommand<Void> {
 
     private String updatedText;
 
-    public CaseCommentCommand(String author, String comment) {
+    public CaseCommentCommand(IdentityProvider identityProvider, String author, String comment) {
+        super(identityProvider);
         this.author = author;
         this.comment = comment;
         this.add = true;
     }
 
-    public CaseCommentCommand(String commentId) {
+    public CaseCommentCommand(IdentityProvider identityProvider, String commentId) {
+        super(identityProvider);
         this.commentId = commentId;
         this.remove = true;
     }
 
-    public CaseCommentCommand(String commentId, String author, String updatedText) {
+    public CaseCommentCommand(IdentityProvider identityProvider, String commentId, String author, String updatedText) {
+        super(identityProvider);
         this.commentId = commentId;
         this.author = author;
         this.updatedText = updatedText;

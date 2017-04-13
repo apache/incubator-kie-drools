@@ -106,7 +106,7 @@ public class CaseServiceImpl implements CaseService {
     private AuthorizationManager authorizationManager;
     private IdentityProvider identityProvider;
     
-    private CaseEventSupport emptyCaseEventSupport = new CaseEventSupport(Collections.emptyList());
+    private CaseEventSupport emptyCaseEventSupport = new CaseEventSupport(null, Collections.emptyList());
     
     public void setProcessService(ProcessService processService) {
         this.processService = processService;
@@ -138,6 +138,7 @@ public class CaseServiceImpl implements CaseService {
     
     public void setIdentityProvider(IdentityProvider identityProvider) {
         this.identityProvider = identityProvider;
+        this.emptyCaseEventSupport = new CaseEventSupport(identityProvider, Collections.emptyList());
     }
 
     @Override
@@ -171,7 +172,7 @@ public class CaseServiceImpl implements CaseService {
             ((CaseFileInstanceImpl)caseFile).assignOwner(newUser(identityProvider.getName()));
         }
 
-        processService.execute(deploymentId, CaseContext.get(caseId), new StartCaseCommand(caseId, deploymentId, caseDefinitionId, caseFile, processService));
+        processService.execute(deploymentId, CaseContext.get(caseId), new StartCaseCommand(identityProvider, caseId, deploymentId, caseDefinitionId, caseFile, processService));
         
         return caseId;
     }
@@ -224,7 +225,7 @@ public class CaseServiceImpl implements CaseService {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.CANCEL_CASE);
         logger.debug("About to abort case {}", caseId);        
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);        
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CancelCaseCommand(caseId, processService, runtimeDataService, false));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CancelCaseCommand(identityProvider, caseId, processService, runtimeDataService, false));
     }
 
     @Override
@@ -232,7 +233,7 @@ public class CaseServiceImpl implements CaseService {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.DESTROY_CASE);
         logger.debug("About to destroy permanently case {}", caseId);  
         ProcessInstanceDesc pi = verifyCaseIdExisted(caseId);        
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CancelCaseCommand(caseId, processService, runtimeDataService, true));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CancelCaseCommand(identityProvider, caseId, processService, runtimeDataService, true));
     }
     
 
@@ -261,7 +262,7 @@ public class CaseServiceImpl implements CaseService {
         logger.debug("About to reopen case {} by starting process instance {} from deployment {} with additional data {}", 
                 caseId, caseDefinitionId, deploymentId, data);
         
-        processService.execute(deploymentId, CaseContext.get(caseId), new ReopenCaseCommand(caseId, deploymentId, caseDefinitionId, data, processService));
+        processService.execute(deploymentId, CaseContext.get(caseId), new ReopenCaseCommand(identityProvider, caseId, deploymentId, caseDefinitionId, data, processService));
         
     }
 
@@ -277,7 +278,7 @@ public class CaseServiceImpl implements CaseService {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_TASK_TO_CASE);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicTaskCommand(caseId, taskSpecification.getNodeType(), pi.getId(), taskSpecification.getParameters()));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicTaskCommand(identityProvider, caseId, taskSpecification.getNodeType(), pi.getId(), taskSpecification.getParameters()));
     }
     
     @Override
@@ -289,7 +290,7 @@ public class CaseServiceImpl implements CaseService {
         String caseId = pi.getCorrelationKey();
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_TASK_TO_CASE);
         
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicTaskCommand(caseId, taskSpecification.getNodeType(), pi.getId(), taskSpecification.getParameters()));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicTaskCommand(identityProvider, caseId, taskSpecification.getNodeType(), pi.getId(), taskSpecification.getParameters()));
     }
 
     @Override
@@ -299,7 +300,7 @@ public class CaseServiceImpl implements CaseService {
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + pi.getId() + " or it's not active anymore");
         }
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicTaskToStageCommand(caseId, taskSpecification.getNodeType(), pi.getId(), stageId, taskSpecification.getParameters()));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicTaskToStageCommand(identityProvider, caseId, taskSpecification.getNodeType(), pi.getId(), stageId, taskSpecification.getParameters()));
     }
     
 
@@ -312,7 +313,7 @@ public class CaseServiceImpl implements CaseService {
         String caseId = pi.getCorrelationKey();
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_TASK_TO_CASE);
         
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicTaskToStageCommand(caseId, taskSpecification.getNodeType(), pi.getId(), stageId, taskSpecification.getParameters()));        
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicTaskToStageCommand(identityProvider, caseId, taskSpecification.getNodeType(), pi.getId(), stageId, taskSpecification.getParameters()));        
     }
     
 
@@ -323,7 +324,7 @@ public class CaseServiceImpl implements CaseService {
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + pi.getId() + " or it's not active anymore");
         }
-        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessCommand(caseId, pi.getId(), processId, parameters));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessCommand(identityProvider, caseId, pi.getId(), processId, parameters));
     }
 
     @Override
@@ -336,7 +337,7 @@ public class CaseServiceImpl implements CaseService {
         String caseId = pi.getCorrelationKey();
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_PROCESS_TO_CASE);
         
-        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessCommand(caseId, pi.getId(), processId, parameters));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessCommand(identityProvider, caseId, pi.getId(), processId, parameters));
     }
     
     @Override
@@ -344,7 +345,7 @@ public class CaseServiceImpl implements CaseService {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_PROCESS_TO_CASE);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
-        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessToStageCommand(caseId, pi.getId(), stageId, processId, parameters));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessToStageCommand(identityProvider, caseId, pi.getId(), stageId, processId, parameters));
     }
 
     @Override
@@ -356,7 +357,7 @@ public class CaseServiceImpl implements CaseService {
         String caseId = pi.getCorrelationKey();
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_PROCESS_TO_CASE);
         
-        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessToStageCommand(caseId, pi.getId(), stageId, processId, parameters));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessToStageCommand(identityProvider, caseId, pi.getId(), stageId, processId, parameters));
     }
     
     @Override
@@ -385,7 +386,7 @@ public class CaseServiceImpl implements CaseService {
         
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(name, value);
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(parameters));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(identityProvider, parameters));
         
     }
 
@@ -394,7 +395,7 @@ public class CaseServiceImpl implements CaseService {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.ADD_DATA);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(data));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(identityProvider, data));
     }
     
     @Override
@@ -403,7 +404,7 @@ public class CaseServiceImpl implements CaseService {
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
         
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new RemoveDataCaseFileInstanceCommand(Arrays.asList(name)));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new RemoveDataCaseFileInstanceCommand(identityProvider, Arrays.asList(name)));
         
     }
 
@@ -412,7 +413,7 @@ public class CaseServiceImpl implements CaseService {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.REMOVE_DATA);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new RemoveDataCaseFileInstanceCommand(variableNames));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new RemoveDataCaseFileInstanceCommand(identityProvider, variableNames));
     }
 
     /*
@@ -423,14 +424,14 @@ public class CaseServiceImpl implements CaseService {
     public void assignToCaseRole(String caseId, String role, OrganizationalEntity entity) throws CaseNotFoundException {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_ROLE_ASSIGNMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new ModifyRoleAssignmentCommand(role, entity, true));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new ModifyRoleAssignmentCommand(identityProvider, role, entity, true));
     }
 
     @Override
     public void removeFromCaseRole(String caseId, String role, OrganizationalEntity entity) throws CaseNotFoundException {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_ROLE_ASSIGNMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new ModifyRoleAssignmentCommand(role, entity, false));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new ModifyRoleAssignmentCommand(identityProvider, role, entity, false));
     }
 
     @Override
@@ -482,14 +483,14 @@ public class CaseServiceImpl implements CaseService {
     public void addCaseComment(String caseId, String author, String comment) throws CaseNotFoundException {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_COMMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(author, comment));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(identityProvider, author, comment));
     }
     
     @Override
     public void updateCaseComment(String caseId, String commentId, String author, String text) throws CaseNotFoundException {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_COMMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(commentId, author, text));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(identityProvider, commentId, author, text));
         
     }
 
@@ -497,7 +498,7 @@ public class CaseServiceImpl implements CaseService {
     public void removeCaseComment(String caseId, String commentId) throws CaseNotFoundException {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_COMMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(commentId));
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CaseCommentCommand(identityProvider, commentId));
     }
 
     /*

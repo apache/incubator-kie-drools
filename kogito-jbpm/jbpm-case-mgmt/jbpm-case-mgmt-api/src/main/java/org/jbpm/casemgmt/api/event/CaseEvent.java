@@ -22,8 +22,10 @@ package org.jbpm.casemgmt.api.event;
 public class CaseEvent {
 
     private String caseId;
+    private String user; 
     
-    public CaseEvent(String caseId) {
+    public CaseEvent(String user, String caseId) {
+        this.user = user;
         this.caseId = caseId;
     }
 
@@ -32,5 +34,12 @@ public class CaseEvent {
      */
     public String getCaseId() {
         return this.caseId;
+    }
+    
+    /**
+     * Returns user who performed that operation
+     */
+    public String getUser() {
+        return this.user;
     }
 }

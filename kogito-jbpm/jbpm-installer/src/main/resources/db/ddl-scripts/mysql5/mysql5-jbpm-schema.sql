@@ -69,6 +69,18 @@
         currentValue bigint,
         primary key (id)
     );
+    
+    create table CaseFileDataLog (
+        id bigint not null auto_increment,
+        caseDefId varchar(255),
+        caseId varchar(255),
+        itemName varchar(255),
+        itemType varchar(255),
+        itemValue varchar(255),
+        lastModified datetime,
+        lastModifiedBy varchar(255),
+        primary key (id)
+    );
 
     create table CaseRoleAssignmentLog (
         id bigint not null auto_increment,
@@ -159,7 +171,7 @@
         InstanceId bigint not null,
         element varchar(255)
     );
-
+    
     create table I18NText (
         id bigint not null auto_increment,
         language varchar(255),

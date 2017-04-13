@@ -33,3 +33,16 @@ ALTER TABLE AuditTaskImpl ADD COLUMN lastModificationDate datetime;
 update AuditTaskImpl ati set lastModificationDate = (
     select max(logTime) from TaskEvent where taskId=ati.taskId group by taskId
 );
+
+create table CaseFileDataLog (
+    id bigint not null auto_increment,
+    caseDefId varchar(255),
+    caseId varchar(255),
+    itemName varchar(255),
+    itemType varchar(255),
+    itemValue varchar(255),
+    lastModified datetime,
+    -- lastModified datetime(6), to be used with mysql 5.6.4 that supports millis precision
+    lastModifiedBy varchar(255),
+    primary key (id)
+) ENGINE=InnoDB;

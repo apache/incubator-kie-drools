@@ -68,6 +68,7 @@
     <!-- case id generation -->
     <class>org.jbpm.casemgmt.impl.generator.CaseIdInfo</class>
     <class>org.jbpm.casemgmt.impl.audit.CaseRoleAssignmentLog</class>
+    <class>org.jbpm.casemgmt.impl.audit.CaseFileDataLog</class>
     
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
+import org.jbpm.casemgmt.api.model.CaseFileItem;
 import org.jbpm.casemgmt.api.model.CaseStatus;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
@@ -28,9 +29,9 @@ import org.jbpm.casemgmt.api.model.instance.CaseStageInstance;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.api.runtime.query.QueryContext;
 
 /**
  * Provides access to case(s) and its runtime data such as:
@@ -234,6 +235,23 @@ public interface CaseRuntimeDataService {
     Collection<CaseInstance> getCaseInstancesAnyRole(List<CaseStatus> statuses, QueryContext queryContext);
     
     /**
+     * Returns all available active case instances that match given statuses and has case file data item with given name
+     * @param dataItemName name of the case file data item
+     * @param statuses list of statuses that case should be in to match
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     */
+    Collection<CaseInstance> getCaseInstancesByDateItem(String dataItemName, List<CaseStatus> statuses, QueryContext queryContext);
+    
+    /**
+     * Returns all available active case instances that match given statuses and has case file data item with given name and value
+     * @param dataItemName name of the case file data item
+     * @param dataItemValue expected value of the data item
+     * @param statuses list of statuses that case should be in to match
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     */
+    Collection<CaseInstance> getCaseInstancesByDateItemAndValue(String dataItemName, String dataItemValue, List<CaseStatus> statuses, QueryContext queryContext);
+    
+    /**
      * Returns all tasks associated with given case id that are eligible for user to see.
      * @param caseId unique id of the case 
      * @param userId user id that the tasks should be available for
@@ -262,5 +280,31 @@ public interface CaseRuntimeDataService {
      * @return list of tasks found for given case id and user
      */
     List<TaskSummary> getCaseTasksAssignedAsStakeholder(String caseId, String userId, List<Status> status, QueryContext queryContext);
+    
+    /**
+     * Returns case file data items (as simple descriptions not actual values) for given case instance
+     * @param caseId unique id of the case
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     * @return list of found case file data items
+     */
+    Collection<CaseFileItem> getCaseInstanceDataItems(String caseId, QueryContext queryContext);
+    
+    /**
+     * Returns case file data items (as simple descriptions not actual values) for given case instance filtered by item names
+     * @param caseId unique id of the case
+     * @param names name of data items to be found
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     * @return list of found case file data items
+     */
+    Collection<CaseFileItem> getCaseInstanceDataItemsByName(String caseId, List<String> names, QueryContext queryContext);
+    
+    /**
+     * Returns case file data items (as simple descriptions not actual values) for given case instance filtered by item types
+     * @param caseId unique id of the case
+     * @param types type of data items to be found
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     * @return list of found case file data items
+     */
+    Collection<CaseFileItem> getCaseInstanceDataItemsByType(String caseId, List<String> types, QueryContext queryContext);
     
 }

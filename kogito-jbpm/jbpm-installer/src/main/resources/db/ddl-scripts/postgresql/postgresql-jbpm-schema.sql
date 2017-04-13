@@ -62,6 +62,18 @@
         currentValue int8,
         primary key (id)
     );
+    
+    create table CaseFileDataLog (
+        id int8 not null,
+        caseDefId varchar(255),
+        caseId varchar(255),
+        itemName varchar(255),
+        itemType varchar(255),
+        itemValue varchar(255),
+        lastModified timestamp,
+        lastModifiedBy varchar(255),
+        primary key (id)
+    );
 
     create table CaseRoleAssignmentLog (
         id int8 not null,
@@ -681,6 +693,8 @@
     create sequence BOOLEANEXPR_ID_SEQ;
     
     create sequence CASE_ID_INFO_ID_SEQ;
+    
+    create sequence CASE_FILE_DATA_LOG_ID_SEQ;
 
     create sequence CASE_ROLE_ASSIGN_LOG_ID_SEQ;    
 
@@ -703,6 +717,8 @@
     create sequence ERROR_INFO_ID_SEQ;
 
     create sequence ESCALATION_ID_SEQ;
+    
+    create sequence EXEC_ERROR_INFO_ID_SEQ;
 
     create sequence I18NTEXT_ID_SEQ;
 

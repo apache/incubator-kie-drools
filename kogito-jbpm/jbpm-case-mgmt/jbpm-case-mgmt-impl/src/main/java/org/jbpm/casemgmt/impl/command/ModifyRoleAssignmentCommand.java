@@ -24,6 +24,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.api.runtime.Context;
 
 import java.util.Collection;
@@ -39,7 +40,8 @@ public class ModifyRoleAssignmentCommand extends CaseCommand<Void> {
     private OrganizationalEntity entity;
     private boolean add;
     
-    public ModifyRoleAssignmentCommand(String roleName, OrganizationalEntity entity, boolean add) {
+    public ModifyRoleAssignmentCommand(IdentityProvider identityProvider, String roleName, OrganizationalEntity entity, boolean add) {
+        super(identityProvider);
         this.roleName = roleName;
         this.entity = entity;
         this.add = add;

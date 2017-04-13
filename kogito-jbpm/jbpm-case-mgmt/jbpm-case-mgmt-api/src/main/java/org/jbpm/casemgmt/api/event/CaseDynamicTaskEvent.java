@@ -27,8 +27,8 @@ public class CaseDynamicTaskEvent extends CaseEvent {
     private Map<String, Object> data;
     private long processInstanceId;
 
-    public CaseDynamicTaskEvent(String caseId, String nodeType, Map<String, Object> data, long processInstanceId) {
-        super(caseId);
+    public CaseDynamicTaskEvent(String user, String caseId, String nodeType, Map<String, Object> data, long processInstanceId) {
+        super(user, caseId);
         this.data = data;
         this.nodeType = nodeType;
         this.processInstanceId = processInstanceId;

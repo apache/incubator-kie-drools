@@ -22,6 +22,7 @@ import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.api.runtime.Context;
 
 import java.util.Collection;
@@ -38,7 +39,8 @@ public class RemoveDataCaseFileInstanceCommand extends CaseCommand<Void> {
 
     private List<String> variableNames;
     
-    public RemoveDataCaseFileInstanceCommand(List<String> variableNames) {                
+    public RemoveDataCaseFileInstanceCommand(IdentityProvider identityProvider, List<String> variableNames) {                
+        super(identityProvider);
         this.variableNames = variableNames;        
     }
 
@@ -57,11 +59,11 @@ public class RemoveDataCaseFileInstanceCommand extends CaseCommand<Void> {
         variableNames.forEach(p -> remove.put(p, caseFile.getData(p)));
         
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
-        caseEventSupport.fireBeforeCaseDataRemoved(caseFile.getCaseId(), remove);
+        caseEventSupport.fireBeforeCaseDataRemoved(caseFile.getCaseId(), caseFile.getDefinitionId(), remove);
         
         variableNames.forEach(p -> caseFile.remove(p));
         
-        caseEventSupport.fireAfterCaseDataRemoved(caseFile.getCaseId(), remove);
+        caseEventSupport.fireAfterCaseDataRemoved(caseFile.getCaseId(), caseFile.getDefinitionId(), remove);
         
         ksession.update(factHandle, caseFile);
         return null;

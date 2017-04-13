@@ -39,6 +39,7 @@ import org.jbpm.casemgmt.api.auth.AuthorizationManager;
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
+import org.jbpm.casemgmt.api.model.CaseFileItem;
 import org.jbpm.casemgmt.api.model.CaseMilestone;
 import org.jbpm.casemgmt.api.model.CaseRole;
 import org.jbpm.casemgmt.api.model.CaseStage;
@@ -501,6 +502,34 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     }
     
     @Override
+    public Collection<CaseInstance> getCaseInstancesByDateItem(String dataItemName, List<CaseStatus> statuses, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("itemName", dataItemName);
+        params.put("entities", collectUserAuthInfo());
+        params.put("statuses", resolveCaseStatuses(statuses));
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+        List<CaseInstance> processInstances =  commandService.execute(new QueryNameCommand<List<CaseInstance>>("getCaseInstancesByVariableName", params));
+
+        return processInstances;
+    }
+
+
+    @Override
+    public Collection<CaseInstance> getCaseInstancesByDateItemAndValue(String dataItemName, String dataItemValue, List<CaseStatus> statuses, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("itemName", dataItemName);
+        params.put("itemValue", dataItemValue);
+        params.put("entities", collectUserAuthInfo());
+        params.put("statuses", resolveCaseStatuses(statuses));
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+        List<CaseInstance> processInstances =  commandService.execute(new QueryNameCommand<List<CaseInstance>>("getCaseInstancesByVariableNameAndValue", params));
+
+        return processInstances;
+    }
+    
+    @Override
     public CaseInstance getCaseInstanceById(String caseId) {
                 
         Map<String, Object> params = new HashMap<String, Object>();
@@ -793,4 +822,43 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     protected List<Integer> resolveCaseStatuses(List<CaseStatus> caseStatusesList) {
         return caseStatusesList != null ? caseStatusesList.stream().map(event -> event.getId()).collect(Collectors.toList()) : null;
     }
+
+
+    @Override
+    public Collection<CaseFileItem> getCaseInstanceDataItems(String caseId, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("caseId", caseId);        
+        params.put("entities", collectUserAuthInfo());
+        applyQueryContext(params, queryContext);
+        List<CaseFileItem> caseFileItems = commandService.execute(new QueryNameCommand<List<CaseFileItem>>("getCaseInstanceDataItems", params));
+
+        return caseFileItems;
+    }
+
+
+    @Override
+    public Collection<CaseFileItem> getCaseInstanceDataItemsByName(String caseId, List<String> names, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("caseId", caseId);
+        params.put("itemNames", names); 
+        params.put("entities", collectUserAuthInfo());
+        applyQueryContext(params, queryContext);
+        List<CaseFileItem> caseFileItems = commandService.execute(new QueryNameCommand<List<CaseFileItem>>("getCaseInstanceDataItemsByName", params));
+
+        return caseFileItems;
+    }
+
+
+    @Override
+    public Collection<CaseFileItem> getCaseInstanceDataItemsByType(String caseId, List<String> types, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("caseId", caseId); 
+        params.put("itemTypes", types); 
+        params.put("entities", collectUserAuthInfo());
+        applyQueryContext(params, queryContext);
+        List<CaseFileItem> caseFileItems = commandService.execute(new QueryNameCommand<List<CaseFileItem>>("getCaseInstanceDataItemsByType", params));
+
+        return caseFileItems;
+    }
+
 }

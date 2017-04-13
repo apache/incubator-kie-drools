@@ -62,6 +62,18 @@
         currentValue numeric(19,0),
         primary key (id)
     );
+    
+    create table CaseFileDataLog (
+        id numeric(19,0) identity not null,
+        caseDefId varchar(255),
+        caseId varchar(255),
+        itemName varchar(255),
+        itemType varchar(255),
+        itemValue varchar(255),
+        lastModified datetime,
+        lastModifiedBy varchar(255),
+        primary key (id)
+    );
 
     create table CaseRoleAssignmentLog (
         id numeric(19,0) identity not null,
@@ -149,7 +161,7 @@
         InstanceId numeric(19,0) not null,
         element varchar(255)
     );
-
+    
     create table I18NText (
         id numeric(19,0) identity not null,
         language varchar(255),

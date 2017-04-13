@@ -25,8 +25,8 @@ public class CaseCancelEvent extends CaseEvent {
 
     private List<Long> processInstanceIds;
     
-    public CaseCancelEvent(String caseId, List<Long> processInstanceIds) {
-        super(caseId);
+    public CaseCancelEvent(String user, String caseId, List<Long> processInstanceIds) {
+        super(user, caseId);
         this.processInstanceIds = processInstanceIds;
     }
     

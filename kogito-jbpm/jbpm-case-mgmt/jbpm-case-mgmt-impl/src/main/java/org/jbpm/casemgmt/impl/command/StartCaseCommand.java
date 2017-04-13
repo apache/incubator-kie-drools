@@ -30,6 +30,7 @@ import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KieInternalServices;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.api.runtime.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
@@ -58,7 +59,8 @@ public class StartCaseCommand extends CaseCommand<Void> {
     
     private transient ProcessService processService;
 
-    public StartCaseCommand(String caseId, String deploymentId, String caseDefinitionId, CaseFileInstance caseFile, ProcessService processService) {
+    public StartCaseCommand(IdentityProvider identityProvider, String caseId, String deploymentId, String caseDefinitionId, CaseFileInstance caseFile, ProcessService processService) {
+        super(identityProvider);
         this.caseId = caseId;
         this.deploymentId = deploymentId;
         this.caseDefinitionId = caseDefinitionId;

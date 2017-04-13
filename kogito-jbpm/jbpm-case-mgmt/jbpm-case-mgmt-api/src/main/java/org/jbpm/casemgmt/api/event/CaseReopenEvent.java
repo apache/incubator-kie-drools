@@ -28,15 +28,15 @@ public class CaseReopenEvent extends CaseEvent {
     private Map<String, Object> data;
     private Long processInstanceId;
     
-    public CaseReopenEvent(String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data) {
-        super(caseId);
+    public CaseReopenEvent(String user, String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data) {
+        super(user, caseId);
         this.deploymentId = deploymentId;
         this.caseDefinitionId = caseDefinitionId;
         this.data = data;
     }
     
-    public CaseReopenEvent(String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data, Long processInstanceId) {
-        super(caseId);
+    public CaseReopenEvent(String user, String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data, Long processInstanceId) {
+        super(user, caseId);
         this.deploymentId = deploymentId;
         this.caseDefinitionId = caseDefinitionId;
         this.data = data;

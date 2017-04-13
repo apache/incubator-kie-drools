@@ -24,9 +24,11 @@ import java.util.Map;
 public class CaseDataEvent extends CaseEvent {
 
     private Map<String, Object> data;
+    private String definitionId;
 
-    public CaseDataEvent(String caseId, Map<String, Object> data) {
-        super(caseId);
+    public CaseDataEvent(String user, String caseId, String definitionId, Map<String, Object> data) {
+        super(user, caseId);
+        this.definitionId = definitionId;
         this.data = data;
     }
     
@@ -35,6 +37,11 @@ public class CaseDataEvent extends CaseEvent {
      */
     public Map<String, Object> getData() {
         return data;
+    }
+
+    
+    public String getDefinitionId() {
+        return definitionId;
     }
 
     @Override

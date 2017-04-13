@@ -216,7 +216,7 @@ public abstract class AbstractCaseServicesBaseTest {
         ((CaseServiceImpl) caseService).setAuthorizationManager(authorizationManager);
         ((CaseServiceImpl) caseService).setIdentityProvider(identityProvider);
 
-        CaseConfigurationDeploymentListener configurationListener = new CaseConfigurationDeploymentListener();
+        CaseConfigurationDeploymentListener configurationListener = new CaseConfigurationDeploymentListener(identityProvider);
 
         // set runtime data service as listener on deployment service
         ((KModuleDeploymentService) deploymentService).addListener((RuntimeDataServiceImpl) runtimeDataService);

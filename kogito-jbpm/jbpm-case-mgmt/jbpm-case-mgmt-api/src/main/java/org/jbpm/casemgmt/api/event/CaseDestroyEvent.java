@@ -25,8 +25,8 @@ public class CaseDestroyEvent extends CaseEvent {
 
     private List<Long> processInstanceIds;
     
-    public CaseDestroyEvent(String caseId, List<Long> processInstanceIds) {
-        super(caseId);
+    public CaseDestroyEvent(String user, String caseId, List<Long> processInstanceIds) {
+        super(user, caseId);
         this.processInstanceIds = processInstanceIds;
     }
     

@@ -68,6 +68,18 @@
     ) lock datarows
     go
 
+    create table CaseFileDataLog (
+        id bigint identity not null,
+        caseDefId varchar(255) null,
+        caseId varchar(255) null,
+        itemName varchar(255) null,
+        itemType varchar(255) null,
+        itemValue varchar(255) null,
+        lastModified datetime null,
+        lastModifiedBy varchar(255) null,
+        primary key (id)
+    ) lock datarows
+    go
     create table CaseRoleAssignmentLog (
         id bigint identity not null,
         caseId varchar(255) null,

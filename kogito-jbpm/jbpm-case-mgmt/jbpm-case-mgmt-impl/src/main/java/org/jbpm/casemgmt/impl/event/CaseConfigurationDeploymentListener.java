@@ -28,6 +28,7 @@ import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.Cacheable;
 import org.kie.internal.runtime.Closeable;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
@@ -46,6 +47,12 @@ import org.slf4j.LoggerFactory;
 public class CaseConfigurationDeploymentListener implements DeploymentEventListener {
     
     private static final Logger logger = LoggerFactory.getLogger(CaseConfigurationDeploymentListener.class);
+    
+    private IdentityProvider identityProvider;
+     
+    public CaseConfigurationDeploymentListener(IdentityProvider identityProvider) {
+        this.identityProvider = identityProvider;
+    }
 
     @Override
     public void onDeploy(DeploymentEvent event) {
@@ -57,7 +64,7 @@ public class CaseConfigurationDeploymentListener implements DeploymentEventListe
             CaseInstanceAuditEventListener auditEventListener = new CaseInstanceAuditEventListener(new TransactionalCommandService(((SimpleRuntimeEnvironment) runtimeManager.getEnvironment()).getEmf()));
             caseEventListeners.add(auditEventListener);
             
-            CaseEventSupport caseEventSupport = new CaseEventSupport(caseEventListeners);
+            CaseEventSupport caseEventSupport = new CaseEventSupport(identityProvider, caseEventListeners);
             ((PerCaseRuntimeManager) runtimeManager).setCaseEventSupport(caseEventSupport);
             logger.debug("CaseEventSupport configured for deployment {}", event.getDeploymentId());
         }

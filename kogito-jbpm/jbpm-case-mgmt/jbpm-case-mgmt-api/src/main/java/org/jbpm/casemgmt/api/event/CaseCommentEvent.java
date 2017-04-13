@@ -25,8 +25,8 @@ public class CaseCommentEvent extends CaseEvent {
 
     private CommentInstance comment;
     
-    public CaseCommentEvent(String caseId, CommentInstance comment) {
-        super(caseId);
+    public CaseCommentEvent(String user, String caseId, CommentInstance comment) {
+        super(user, caseId);
         this.comment = comment;
     }
     
