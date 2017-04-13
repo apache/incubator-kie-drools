@@ -16,6 +16,9 @@
 
 package org.jbpm.kie.services.impl.query;
 
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_DEPLOYMENTID;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_EXTERNALID;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,50 +60,46 @@ import org.jbpm.services.api.query.model.QueryParam;
 import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
+import org.kie.api.runtime.query.AdvancedQueryContext;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.identity.IdentityProvider;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_EXTERNALID;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_DEPLOYMENTID;;
-
+import org.slf4j.LoggerFactory;;
 
 public class QueryServiceImpl implements QueryService, DeploymentEventListener {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(QueryServiceImpl.class);
 
     private DataSetDefRegistry dataSetDefRegistry;
     private DataSetManager dataSetManager;
-    
+
     private DataSetProviderRegistry providerRegistry;
-    
+
     private IdentityProvider identityProvider;
     private TransactionalCommandService commandService;
-    
+
     private DeploymentRolesManager deploymentRolesManager = new DeploymentRolesManager();
 
-    
     public void setDeploymentRolesManager(DeploymentRolesManager deploymentRolesManager) {
         this.deploymentRolesManager = deploymentRolesManager;
     }
 
     public void setIdentityProvider(IdentityProvider identityProvider) {
         this.identityProvider = identityProvider;
-    }    
-    
+    }
+
     public void setCommandService(TransactionalCommandService commandService) {
         this.commandService = commandService;
     }
-    
+
     public void setDataSetDefRegistry(DataSetDefRegistry dataSetDefRegistry) {
         this.dataSetDefRegistry = dataSetDefRegistry;
     }
-    
+
     public void setProviderRegistry(DataSetProviderRegistry providerRegistry) {
         this.providerRegistry = providerRegistry;
     }
-    
+
     public void setDataSetManager(DataSetManager dataSetManager) {
         this.dataSetManager = dataSetManager;
     }
@@ -110,38 +109,38 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
             dataSetDefRegistry = DataSetCore.get().getDataSetDefRegistry();
             dataSetManager = DataSetCore.get().getDataSetManager();
             providerRegistry = DataSetCore.get().getDataSetProviderRegistry();
-            
+
             providerRegistry.registerDataProvider(SQLDataSetProvider.get());
-            
+
             dataSetDefRegistry.addListener(new PersistDataSetListener(commandService));
         }
-        
+
         // load previously registered query definitions
         if (commandService != null) {
-            
+
             List<QueryDefinitionEntity> queries = commandService.execute(new QueryNameCommand<List<QueryDefinitionEntity>>("getQueryDefinitions"));
-            
+
             for (QueryDefinitionEntity entity : queries) {
                 QueryDefinition definition = entity.toQueryDefinition();
                 try {
-                    
+
                     registerQuery(definition);
                 } catch (QueryAlreadyRegisteredException e) {
                     logger.debug("Query {} already registered, skipping...", definition.getName());
                 }
             }
-            
+
         }
 
     }
-    
+
     @Override
     public void registerQuery(QueryDefinition queryDefinition) throws QueryAlreadyRegisteredException {
-        
+
         if (dataSetDefRegistry.getDataSetDef(queryDefinition.getName()) != null) {
             throw new QueryAlreadyRegisteredException("Query" + queryDefinition.getName() + " is already registered");
-        }        
-        replaceQuery(queryDefinition);        
+        }
+        replaceQuery(queryDefinition);
     }
 
     @Override
@@ -149,17 +148,13 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
         logger.debug("About to register {} query...", queryDefinition);
         if (queryDefinition instanceof SqlQueryDefinition) {
             SqlQueryDefinition sqlQueryDefinition = (SqlQueryDefinition) queryDefinition;
-            
-            SQLDataSetDefBuilder<?> builder = DataSetDefFactory.newSQLDataSetDef()
-                    .uuid(sqlQueryDefinition.getName())
-                    .name(sqlQueryDefinition.getName() + "::" + sqlQueryDefinition.getTarget().toString())
-                    .dataSource(sqlQueryDefinition.getSource())
-                    .dbSQL(sqlQueryDefinition.getExpression(), true);                       
-            
+
+            SQLDataSetDefBuilder<?> builder = DataSetDefFactory.newSQLDataSetDef().uuid(sqlQueryDefinition.getName()).name(sqlQueryDefinition.getName() + "::" + sqlQueryDefinition.getTarget().toString()).dataSource(sqlQueryDefinition.getSource()).dbSQL(sqlQueryDefinition.getExpression(), true);
+
             DataSetDef sqlDef = builder.buildDef();
-            
+
             dataSetDefRegistry.registerDataSetDef(sqlDef);
-            
+
             if (queryDefinition.getTarget().equals(Target.BA_TASK)) {
                 dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider));
             } else if (queryDefinition.getTarget().equals(Target.PO_TASK)) {
@@ -185,18 +180,18 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
 
     @Override
     public void unregisterQuery(final String uniqueQueryName) throws QueryNotFoundException {
-        
+
         DataSetDef def = dataSetDefRegistry.removeDataSetDef(uniqueQueryName);
-        
+
         if (def == null) {
             throw new QueryNotFoundException("Query " + uniqueQueryName + " not found");
         }
-        
+
         logger.info("Unregistered {} query successfully", uniqueQueryName);
     }
 
     @Override
-    public <T> T query(String queryName, QueryResultMapper<T> mapper, QueryContext queryContext, QueryParam...filterParams) throws QueryNotFoundException {
+    public <T> T query(String queryName, QueryResultMapper<T> mapper, QueryContext queryContext, QueryParam... filterParams) throws QueryNotFoundException {
         return query(queryName, mapper, queryContext, new CoreFunctionQueryParamBuilder(filterParams));
     }
 
@@ -205,15 +200,11 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
         if (dataSetDefRegistry.getDataSetDef(queryName) == null) {
             throw new QueryNotFoundException("Query " + queryName + " not found");
         }
-        logger.debug("About to query using {} definition with number of rows {} and starting at {} offset", 
-                                queryName, queryContext.getCount(), queryContext.getOffset());
-        
-        DataSetLookupBuilder<?> builder = DataSetLookupFactory.newDataSetLookupBuilder()
-        .dataset(queryName)
-        .rowNumber(queryContext.getCount())
-        .rowOffset(queryContext.getOffset());
+        logger.debug("About to query using {} definition with number of rows {} and starting at {} offset", queryName, queryContext.getCount(), queryContext.getOffset());
+
+        DataSetLookupBuilder<?> builder = DataSetLookupFactory.newDataSetLookupBuilder().dataset(queryName).rowNumber(queryContext.getCount()).rowOffset(queryContext.getOffset());
         Object filter = paramBuilder.build();
-        while (filter != null ) {
+        while (filter != null) {
             if (filter instanceof ColumnFilter) {
                 // add filter
                 builder.filter((ColumnFilter) filter);
@@ -232,20 +223,33 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
             // call builder again in case more parameters are available
             filter = paramBuilder.build();
         }
-        
-        if (queryContext.getOrderBy() != null) {
-            String[] oderByItems = queryContext.getOrderBy().split(",");
-            
-            for (String orderBy : oderByItems) {
-                logger.debug("Applying order by {} and ascending {}", orderBy, queryContext.isAscending());
-                builder.sort(orderBy.trim(), queryContext.isAscending()?"asc":"desc");
+
+        // if advanced ordering is used process the ORDER BY clause into order by and sort order pairs
+        if (queryContext instanceof AdvancedQueryContext && ((AdvancedQueryContext) queryContext).getOrderByClause() != null && !((AdvancedQueryContext) queryContext).getOrderByClause().isEmpty()) {
+            String[] orderBySortOrderItems = ((AdvancedQueryContext) queryContext).getOrderByClause().split(",");
+
+            for (String orderBySortOrderItem : orderBySortOrderItems) {
+                String[] orderBySortOrder = orderBySortOrderItem.trim().split(" ");
+                //check that sort order is given.  default to 'asc'.
+                String sortOrder = orderBySortOrder.length == 1 ? "asc" : orderBySortOrder[1].trim();
+                logger.debug("Applying order by clause '{}' with {}ending sort order", orderBySortOrder[0].trim(), sortOrder);
+                builder.sort(orderBySortOrder[0].trim(), sortOrder);
             }
-        }              
-        
+        } else { // use default simple ordering
+            if (queryContext.getOrderBy() != null) {
+                String[] oderByItems = queryContext.getOrderBy().split(",");
+
+                for (String orderBy : oderByItems) {
+                    logger.debug("Applying order by {} and ascending {}", orderBy, queryContext.isAscending());
+                    builder.sort(orderBy.trim(), queryContext.isAscending() ? "asc" : "desc");
+                }
+            }
+        }
+
         DataSet result = dataSetManager.lookupDataSet(builder.buildLookup());
         logger.debug("Query result is {}", result);
         T mappedResult = mapper.map(result);
-        
+
         logger.debug("Mapped result is {}", mappedResult);
         return mappedResult;
     }
@@ -255,7 +259,7 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", uniqueQueryName);
         List<QueryDefinitionEntity> queries = commandService.execute(new QueryNameCommand<List<QueryDefinitionEntity>>("getQueryDefinitionByName", params));
-        
+
         if (queries.size() == 1) {
             return queries.get(0).toQueryDefinition();
         }
@@ -265,16 +269,16 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
     @Override
     public List<QueryDefinition> getQueries(QueryContext queryContext) {
         List<QueryDefinition> result = new ArrayList<QueryDefinition>();
-        
+
         Map<String, Object> params = new HashMap<String, Object>();
         applyQueryContext(params, queryContext);
         List<QueryDefinitionEntity> queries = commandService.execute(new QueryNameCommand<List<QueryDefinitionEntity>>("getQueryDefinitions", params));
-        
+
         for (QueryDefinitionEntity entity : queries) {
             QueryDefinition definition = entity.toQueryDefinition();
             result.add(definition);
         }
-        
+
         return result;
     }
 
@@ -294,12 +298,12 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
             }
         }
     }
-    
+
     public void onDeploy(DeploymentEvent event) {
         Collection<DeployedAsset> assets = event.getDeployedUnit().getDeployedAssets();
         List<String> roles = null;
-        for( DeployedAsset asset : assets ) {
-            if( asset instanceof ProcessAssetDesc ) {                
+        for (DeployedAsset asset : assets) {
+            if (asset instanceof ProcessAssetDesc) {
                 if (roles == null) {
                     roles = ((ProcessAssetDesc) asset).getRoles();
                 }
@@ -324,6 +328,6 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
     @Override
     public void onDeactivate(DeploymentEvent event) {
         // no op
-        
+
     }
 }
