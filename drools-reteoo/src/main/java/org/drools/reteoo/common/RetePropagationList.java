@@ -76,7 +76,7 @@ public class RetePropagationList implements PropagationList {
 
     @Override
     public boolean hasEntriesDeferringExpiration() {
-        return true;
+        return false;
     }
 
     @Override
