@@ -209,4 +209,10 @@ public class TypesTest {
         
         System.out.println(result);
     }
+    
+    @Test
+    public void mario() {
+        System.out.println(null instanceof Object);
+//        Object.class.isAssignableFrom(null.getClass());
+    }
 }
