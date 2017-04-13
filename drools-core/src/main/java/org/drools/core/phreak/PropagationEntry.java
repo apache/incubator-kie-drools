@@ -42,8 +42,10 @@ public interface PropagationEntry {
     void setNext(PropagationEntry next);
 
     boolean requiresImmediateFlushing();
-    
+
     boolean isCalledFromRHS();
+
+    boolean defersExpiration();
 
     abstract class AbstractPropagationEntry implements PropagationEntry {
         private PropagationEntry next;
@@ -60,7 +62,7 @@ public interface PropagationEntry {
         public boolean requiresImmediateFlushing() {
             return false;
         }
-        
+
         @Override
         public boolean isCalledFromRHS() {
             return false;
@@ -74,6 +76,11 @@ public interface PropagationEntry {
         @Override
         public void executeForMarshalling(InternalWorkingMemory wm) {
             execute( wm );
+        }
+
+        @Override
+        public boolean defersExpiration() {
+            return false;
         }
     }
 
@@ -157,7 +164,7 @@ public interface PropagationEntry {
 
             WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
             if (nextTimestamp < workingMemory.getTimerService().getCurrentTime()) {
-                  workingMemory.addPropagation( action );
+                workingMemory.addPropagation( action );
             } else {
                 JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, workingMemory );
                 JobHandle jobHandle = workingMemory.getTimerService()

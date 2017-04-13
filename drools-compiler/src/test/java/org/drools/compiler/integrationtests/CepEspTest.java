@@ -6605,4 +6605,71 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertEquals(0, ksession.getFactCount());
     }
+
+    @Test
+    public void testFireExpiredEventOnInactiveGroup() throws Exception {
+        // DROOLS-1523
+        String DRL = "global java.util.List list;\n" +
+                     "declare String  @role(event) @expires( 6d ) end\n" +
+                     "declare Integer @role(event) @expires( 3d ) end\n" +
+                     "\n" +
+                     "rule \"RG_1\"\n" +
+                     "    agenda-group \"rf-grp1\"\n" +
+                     "    when\n" +
+                     "        $event: Integer()\n" +
+                     "        not String(this after [1ms, 48h] $event)\n" +
+                     "    then\n" +
+                     "      System.out.println(\"RG_1 fired\");\n" +
+                     "      retract($event);\n" +
+                     "      list.add(\"RG_1\");\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"RG_2\"\n" +
+                     "    agenda-group \"rf-grp1\"\n" +
+                     "    when\n" +
+                     "        $event: String()\n" +
+                     "        not Integer(this after [1ms, 144h] $event)\n" +
+                     "    then\n" +
+                     "      System.out.println(\"RG_2 fired\");\n" +
+                     "      list.add(\"RG_2\");\n" +
+                     "end\n";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( DRL, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession kieSession = kbase.newKieSession( sessionConfig, null );
+
+        kieSession.addEventListener(new DefaultAgendaEventListener() {
+            public void agendaGroupPopped(AgendaGroupPoppedEvent event ) {
+                if (event.getAgendaGroup().getName().equals("rf-grp0")) {
+                    event.getKieRuntime().getAgenda().getAgendaGroup("rf-grp1").setFocus();
+                }
+            }
+        });
+
+        List<String> list = new ArrayList<>();
+        kieSession.setGlobal("list", list);
+
+        PseudoClockScheduler sessionClock = kieSession.getSessionClock();
+
+        kieSession.insert("DummyEvent");
+        kieSession.insert(1); //<- OtherDummyEvent
+        kieSession.getAgenda().getAgendaGroup( "rf-grp0" ).setFocus();
+        kieSession.fireAllRules(); // OK nothing happens
+
+        assertEquals(2, kieSession.getFactCount());
+
+        sessionClock.advanceTime(145, TimeUnit.HOURS);
+        kieSession.getAgenda().getAgendaGroup( "rf-grp0" ).setFocus();
+        kieSession.fireAllRules();
+
+        assertEquals("Expiration occured => no more fact in WM", 0, kieSession.getFactCount());
+
+        assertEquals("2 rules should fire", 2, list.size());
+        assertTrue("RG_1 should fire once", list.contains("RG_1"));
+        assertTrue("RG_2 should fire once", list.contains("RG_2"));
+    }
 }
