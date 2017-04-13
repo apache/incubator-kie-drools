@@ -6679,4 +6679,66 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals("RG_1 should fire once", 1, list.stream().filter(r->r.equals("RG_1")).count());
         assertEquals("RG_2 should fire once", 1, list.stream().filter(r->r.equals("RG_2")).count());
     }
+
+    @Test
+    public void testExpireUnusedDeclaredTypeEvent() {
+        // DROOLS-1524
+        String drl = "declare String @role( event ) @expires( 1s ) end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "then\n" +
+                     "    System.out.println(\"fired\");\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+
+        ksession.insert("test");
+
+        ksession.fireAllRules();
+        assertEquals(1, ksession.getFactCount());
+
+        sessionClock.advanceTime(2, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+
+        assertEquals(0, ksession.getFactCount());
+    }
+
+    @Test
+    public void testExpireUnusedDeclaredTypeClass() throws Exception {
+        // DROOLS-1524
+        String drl = "rule R when\n"
+                     + "then\n"
+                     + "  System.out.println(\"fired\");\n"
+                     + "end\n";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+
+        ksession.insert(new EventWithoutRule());
+        ksession.fireAllRules();
+        sessionClock.advanceTime(2, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals(0, ksession.getFactCount());
+
+        ksession.dispose();
+    }
+
+    @Role(Role.Type.EVENT)
+    @Expires("1s")
+    public class EventWithoutRule { }
 }

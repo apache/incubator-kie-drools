@@ -16,18 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DroolsQuery;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.Traitable;
-import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.ObjectType;
-import org.kie.api.definition.type.Role;
-
 import java.beans.PropertyChangeListener;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -39,6 +27,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.evaluators.TimeIntervalParser;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Traitable;
+import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.ObjectType;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Role.Type;
 
 public class ClassObjectTypeConf
     implements
@@ -82,9 +85,20 @@ public class ClassObjectTypeConf
         this.entryPoint = entryPoint;
 
         this.typeDecl = kBase.getTypeDeclaration( clazz );
-        isEvent = typeDecl != null && typeDecl.getRole() == Role.Type.EVENT;
-        if (isEvent) {
-            expirationOffset = typeDecl.getExpirationOffset();
+        if (typeDecl != null) {
+            isEvent = typeDecl.getRole() == Role.Type.EVENT;
+            if (isEvent) {
+                expirationOffset = typeDecl.getExpirationOffset();
+            }
+        } else {
+            Role role = clazz.getAnnotation(Role.class);
+            if (role != null) {
+                isEvent = role.value() == Type.EVENT;
+                if (isEvent) {
+                    Expires expires = clazz.getAnnotation(Expires.class);
+                    expirationOffset = TimeIntervalParser.parseSingle( expires.value() );
+                }
+            }
         }
 
         isTrait = determineTraitStatus();
