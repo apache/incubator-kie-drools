@@ -1489,7 +1489,7 @@ public class DefaultAgenda
     }
 
     private boolean flushExpirations() {
-        if (expirationContexts.isEmpty()) {
+        if (expirationContexts.isEmpty() || propagationList.hasEntriesDeferringExpiration()) {
             return false;
         }
         for (PropagationContext ectx : expirationContexts) {

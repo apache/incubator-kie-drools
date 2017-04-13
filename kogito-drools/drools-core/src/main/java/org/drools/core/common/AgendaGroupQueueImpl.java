@@ -16,6 +16,11 @@
 
 package org.drools.core.common;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -25,11 +30,6 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BinaryHeapQueue;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -143,6 +143,11 @@ public class AgendaGroupQueueImpl
         @Override
         public void execute( InternalWorkingMemory wm ) {
             wm.getAgenda().setFocus(this.name);
+        }
+
+        @Override
+        public boolean defersExpiration() {
+            return true;
         }
     }
 

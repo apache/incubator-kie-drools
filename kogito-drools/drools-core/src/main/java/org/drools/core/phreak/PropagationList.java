@@ -29,6 +29,8 @@ public interface PropagationList {
 
     boolean isEmpty();
 
+    boolean hasEntriesDeferringExpiration();
+
     Iterator<PropagationEntry> iterator();
 
     void waitOnRest();
