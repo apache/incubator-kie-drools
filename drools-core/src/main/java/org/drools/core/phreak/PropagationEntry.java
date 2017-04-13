@@ -51,6 +51,8 @@ public interface PropagationEntry {
     boolean isPartitionSplittable();
     PropagationEntry getSplitForPartition(int partitionNr);
 
+    boolean defersExpiration();
+
     abstract class AbstractPropagationEntry implements PropagationEntry {
         private PropagationEntry next;
 
@@ -79,6 +81,11 @@ public interface PropagationEntry {
 
         @Override
         public boolean isPartitionSplittable() {
+            return false;
+        }
+
+        @Override
+        public boolean defersExpiration() {
             return false;
         }
 
