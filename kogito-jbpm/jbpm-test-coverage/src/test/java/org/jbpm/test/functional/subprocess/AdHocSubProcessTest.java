@@ -50,6 +50,11 @@ public class AdHocSubProcessTest extends JbpmTestCase {
     private static final String ADHOC_AUTOCOMPLETE2_ID =
             "org.jbpm.test.functional.subprocess.AdHocSubProcess-autocomplete2";
 
+    private static final String ADHOC_AUTOCOMPLETE3 =
+            "org/jbpm/test/functional/subprocess/AdHocSubProcess-autocomplete3.bpmn";
+    private static final String ADHOC_AUTOCOMPLETE3_ID =
+            "org.jbpm.test.functional.subprocess.AdHocSubProcess-autocomplete3";
+
     public AdHocSubProcessTest() {
         super(false);
     }
@@ -116,10 +121,10 @@ public class AdHocSubProcessTest extends JbpmTestCase {
     }
 
     /**
-     * Tests if adhoc subprocess autocompletes when numberOfActiveInstances ==
-     * 0. Signals 2 tasks inside subprocess; the first completes, the second
-     * stays active, then completes the second one => (activeInstances == 0) =>
-     * subprocess is also completed.
+     * Tests if adhoc subprocess autocompletes when "autocomplete" is set as
+     * completion condition. Signals 2 tasks inside subprocess;
+     * the first completes, the second stays active, then completes
+     * the second one => "autocomplete" => subprocess is also completed.
      */
     @Test(timeout = 30000)
     public void testAdHocSubprocessAutocomplete() {
@@ -189,6 +194,48 @@ public class AdHocSubProcessTest extends JbpmTestCase {
 
         assertLeft(eventListener, "adhoc");
         assertProcessCompleted(eventListener, ADHOC_AUTOCOMPLETE2_ID);
+    }
+
+    /**
+     * Same as {@link #testAdHocSubprocessAutocomplete()} but BPMN contains the
+     * old autocomplete constant:
+     * getActivityInstanceAttribute("numberOfActiveInstances") == 0
+     */
+    @Test(timeout = 30000)
+    public void testAdHocSubprocessAutocomplete3() {
+        KieSession kieSession = createKSession(ADHOC_AUTOCOMPLETE3);
+
+        TrackingProcessEventListener eventListener = new TrackingProcessEventListener();
+        kieSession.addEventListener(eventListener);
+
+        TestUserWorkItemHandler handler = new TestUserWorkItemHandler();
+
+        List<Command<?>> commands = new ArrayList<Command<?>>();
+        commands.add(new RegisterWorkItemHandlerCommand("Human Task", handler));
+
+        kieSession.execute(CommandFactory.newBatchExecution(commands));
+        WorkflowProcessInstance pi = (WorkflowProcessInstance) kieSession.execute((Command<?>) CommandFactory
+                .newStartProcess(ADHOC_AUTOCOMPLETE3_ID));
+
+        assertProcessStarted(eventListener, ADHOC_AUTOCOMPLETE3_ID);
+        assertTriggeredAndLeft(eventListener, "start");
+        assertTriggered(eventListener, "adhoc");
+
+        kieSession.execute((Command<?>) CommandFactory.newSignalEvent(pi.getId(), "task1", null));
+        assertTriggered(eventListener, "task1");
+
+        kieSession.execute((Command<?>) CommandFactory.newSignalEvent(pi.getId(), "task2", null));
+        assertTriggered(eventListener, "task2");
+
+        WorkItem wi1 = handler.getWorkItems().get(0);
+        WorkItem wi2 = handler.getWorkItems().get(1);
+        kieSession.getWorkItemManager().completeWorkItem(wi1.getId(), null);
+
+        assertFalse(eventListener.wasNodeLeft("adhoc"));
+
+        kieSession.getWorkItemManager().completeWorkItem(wi2.getId(), null);
+        assertLeft(eventListener, "adhoc");
+        assertProcessCompleted(eventListener, ADHOC_AUTOCOMPLETE3_ID);
     }
 
     class TestUserWorkItemHandler implements WorkItemHandler {

@@ -16,6 +16,7 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.core.xml.ExtensibleXmlParser;
@@ -28,7 +29,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
-    
+
+	public static final String AUTOCOMPLETE_COMPLETION_CONDITION = "autocomplete";
+	public static final List<String> AUTOCOMPLETE_EXPRESSIONS = Arrays.asList(
+			"getActivityInstanceAttribute(\"numberOfActiveInstances\") == 0", AUTOCOMPLETE_COMPLETION_CONDITION);
+
     protected Node createNode(Attributes attrs) {
         DynamicNode result = new DynamicNode();
         VariableScope variableScope = new VariableScope();
@@ -58,11 +63,11 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
         	String nodeName = xmlNode.getNodeName();
         	if ("completionCondition".equals(nodeName)) {
         		String expression = xmlNode.getTextContent();
-        		if ("getActivityInstanceAttribute(\"numberOfActiveInstances\") == 0".equals(expression)) {
-        			dynamicNode.setAutoComplete(true);
-        		} else {
-        			dynamicNode.setCompletionExpression(expression == null?"":expression);
-        		}
+        		if(AUTOCOMPLETE_EXPRESSIONS.contains(expression)) {
+					dynamicNode.setAutoComplete(true);
+				} else {
+					dynamicNode.setCompletionExpression(expression == null?"":expression);
+				}
         		org.w3c.dom.Node languageNode = xmlNode.getAttributes().getNamedItem("language");
                 if (languageNode != null) {
                     String language = languageNode.getNodeValue();
@@ -104,7 +109,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
         visitConnectionsAndAssociations(dynamicNode, xmlDump, metaDataType);
         
         if (dynamicNode.isAutoComplete()) {
-        	xmlDump.append("    <completionCondition xsi:type=\"tFormalExpression\">getActivityInstanceAttribute(\"numberOfActiveInstances\") == 0</completionCondition>" + EOL);
+        	xmlDump.append("    <completionCondition xsi:type=\"tFormalExpression\">" + AUTOCOMPLETE_COMPLETION_CONDITION  + "</completionCondition>" + EOL);
         }
 		endNode("adHocSubProcess", xmlDump);
 	}
