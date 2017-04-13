@@ -16,22 +16,36 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 
-import java.util.List;
-
 public interface RuleModelPersistence {
 
-    String marshal( final RuleModel model );
+    String marshal(final RuleModel model);
 
-    RuleModel unmarshal( final String str,
-                         final List<String> globals,
-                         final PackageDataModelOracle dmo );
+    String marshal(final RuleModel model,
+                   final Collection<RuleModelIActionPersistenceExtension> extensions);
 
-    RuleModel unmarshalUsingDSL( final String str,
-                                 final List<String> globals,
-                                 final PackageDataModelOracle dmo,
-                                 final String... dsls );
+    RuleModel unmarshal(final String str,
+                        final List<String> globals,
+                        final PackageDataModelOracle dmo);
+
+    RuleModel unmarshal(final String str,
+                        final List<String> globals,
+                        final PackageDataModelOracle dmo,
+                        final Collection<RuleModelIActionPersistenceExtension> extensions);
+
+    RuleModel unmarshalUsingDSL(final String str,
+                                final List<String> globals,
+                                final PackageDataModelOracle dmo,
+                                final String... dsls);
+
+    RuleModel unmarshalUsingDSL(final String str,
+                                final List<String> globals,
+                                final PackageDataModelOracle dmo,
+                                final Collection<RuleModelIActionPersistenceExtension> extensions,
+                                final String... dsls);
 }
