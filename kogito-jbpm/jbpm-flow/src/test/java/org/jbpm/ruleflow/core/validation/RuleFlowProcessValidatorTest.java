@@ -125,4 +125,27 @@ public class RuleFlowProcessValidatorTest {
         assertEquals("Node 'MyDynamicNode' [1] Dynamic has no completion condition set", errors2[0].getMessage());
 
     }
+
+    @Test
+    public void testEmptyPackageName() throws Exception {
+        RuleFlowProcess process = new RuleFlowProcess();
+        process.setId("org.drools.core.process");
+        process.setName("Empty Package Name Process");
+        process.setPackageName("");
+        process.setDynamic(true);
+
+        ProcessValidationError[] errors = validator.validateProcess(process);
+        assertNotNull(errors);
+    }
+
+    @Test
+    public void testNoPackageName() throws Exception {
+        RuleFlowProcess process = new RuleFlowProcess();
+        process.setId("org.drools.core.process");
+        process.setName("No Package Name Process");
+        process.setDynamic(true);
+
+        ProcessValidationError[] errors = validator.validateProcess(process);
+        assertNotNull(errors);
+    }
 }

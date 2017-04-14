@@ -358,10 +358,10 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     }
 
     @Test
-    public void testLoadingRuleFlowInPackage7() throws Exception {
-        // loading a ruleflow with errors
+    public void testLoadingRuleFlowNoPackageName() throws Exception {
+        // loading a ruleflow with errors (null package name cause 3 errors)
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "error_ruleflow.rfm" ) ) );
-        assertEquals( 1,
+        assertEquals( 3,
                       builder.getErrors().getErrors().length );
     }
 

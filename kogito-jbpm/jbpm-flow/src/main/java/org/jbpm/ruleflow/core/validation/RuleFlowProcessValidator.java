@@ -113,11 +113,6 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 "Process has no id."));
         }
 
-        if ( process.getPackageName() == null || "".equals( process.getPackageName() ) ) {
-            errors.add(new ProcessValidationErrorImpl(process,
-                "Process has no package name."));
-        }
-
         // check start node of process
         if ( process.getStartNodes().isEmpty() && !process.isDynamic()) {
             errors.add(new ProcessValidationErrorImpl(process,
