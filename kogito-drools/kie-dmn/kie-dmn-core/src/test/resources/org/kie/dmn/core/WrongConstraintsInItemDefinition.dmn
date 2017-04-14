@@ -24,10 +24,10 @@
       <semantic:output id="_6c09b12a-73d5-4f8f-b583-b007d58881ad"/>
       <semantic:rule id="_0403ec9a-51e9-4b3c-883a-fe6584919036">
         <semantic:inputEntry id="_fca031ec-9a37-4795-b06b-8b4c9044c8eb">
-          <semantic:text/>
+          <semantic:text>-</semantic:text>
         </semantic:inputEntry>
         <semantic:outputEntry id="_aef76a51-de39-488c-bf54-fdb3e193613b">
-          <semantic:text/>
+          <semantic:text>-</semantic:text>
         </semantic:outputEntry>
       </semantic:rule>
     </semantic:decisionTable>

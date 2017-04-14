@@ -308,6 +308,18 @@ public class DMNEvaluatorCompiler {
         for ( DecisionRule dr : dt.getRule() ) {
             DTDecisionRule rule = new DTDecisionRule( index );
             for( UnaryTests ut : dr.getInputEntry() ) {
+                if( ut == null || ut.getText() == null || ut.getText().isEmpty() ) {
+                    MsgUtil.reportMessage( logger,
+                                           DMNMessage.Severity.ERROR,
+                                           ut,
+                                           model,
+                                           null,
+                                           null,
+                                           Msg.DTABLE_EMPTY_ENTRY,
+                                           dt.getRule().indexOf( dr ) + 1,
+                                           dr.getInputEntry().indexOf( ut ) + 1,
+                                           dt.getParentDRDElement().getIdentifierString() );
+                }
                 java.util.List<UnaryTest> tests = textToUnaryTestList( ctx,
                                                                        ut.getText(),
                                                                        model,

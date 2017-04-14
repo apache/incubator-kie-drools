@@ -698,7 +698,7 @@
       </semantic:rule>
       <semantic:rule id="_317797a6-756e-4359-a7fc-dde584eda4b4">
         <semantic:inputEntry id="_0aede350-64ed-4df2-a046-de3692195101">
-          <semantic:text/>
+          <semantic:text>-</semantic:text>
         </semantic:inputEntry>
         <semantic:inputEntry id="_a13f638e-ddb2-4c4a-abce-8d2191e76da7">
           <semantic:text>"Employed"</semantic:text>
@@ -715,7 +715,7 @@
       </semantic:rule>
       <semantic:rule id="_4218cd3b-c337-4a00-8d1c-94d82671a83c">
         <semantic:inputEntry id="_bd9919b0-2182-4c96-a393-6d5be89b9865">
-          <semantic:text/>
+          <semantic:text>-</semantic:text>
         </semantic:inputEntry>
         <semantic:inputEntry id="_f6305661-3f54-4f10-bf84-2b2520273244">
           <semantic:text>"Employed"</semantic:text>
@@ -732,7 +732,7 @@
       </semantic:rule>
       <semantic:rule id="_b2bf5c43-fde1-41b4-b969-ce5bf6e9b519">
         <semantic:inputEntry id="_ab7a64ef-c111-477d-a448-4b917b26dd3c">
-          <semantic:text/>
+          <semantic:text>-</semantic:text>
         </semantic:inputEntry>
         <semantic:inputEntry id="_89098272-9687-47a5-8eff-fc112b07eca3">
           <semantic:text>"Employed"</semantic:text>
@@ -749,7 +749,7 @@
       </semantic:rule>
       <semantic:rule id="_f370914c-5569-488a-bdca-c03c70e4003d">
         <semantic:inputEntry id="_3f968f13-3397-49bb-ac22-8016808f4c80">
-          <semantic:text/>
+          <semantic:text>-</semantic:text>
         </semantic:inputEntry>
         <semantic:inputEntry id="_3440f8ef-4ea4-47dc-b5ed-b3f8c7105ab0">
           <semantic:text>"Self-employed"</semantic:text>
@@ -766,7 +766,7 @@
       </semantic:rule>
       <semantic:rule id="_deb10acb-ae90-453f-bac7-fff2a89ad123">
         <semantic:inputEntry id="_dcbd293d-2d76-41ef-986e-c077cc44c934">
-          <semantic:text/>
+          <semantic:text>-</semantic:text>
         </semantic:inputEntry>
         <semantic:inputEntry id="_0950364a-b781-4ecd-882f-6ec091fb80db">
           <semantic:text>"Self-employed"</semantic:text>
@@ -783,7 +783,7 @@
       </semantic:rule>
       <semantic:rule id="_2d798cd3-a77f-4a37-ae00-8d7a4ca8950d">
         <semantic:inputEntry id="_9c302a8c-896c-491f-864a-e9b64c6eb619">
-          <semantic:text/>
+          <semantic:text>-</semantic:text>
         </semantic:inputEntry>
         <semantic:inputEntry id="_b5ebd290-6085-4f31-a777-4697fef47d8b">
           <semantic:text>"Self-employed"</semantic:text>
@@ -800,7 +800,7 @@
       </semantic:rule>
       <semantic:rule id="_1bf448df-1f01-45fb-a900-d05b8f4b6541">
         <semantic:inputEntry id="_ab0bf38e-bd13-4e63-8433-fccf3178779b">
-          <semantic:text/>
+          <semantic:text>-</semantic:text>
         </semantic:inputEntry>
         <semantic:inputEntry id="_3b670331-7f7b-4493-b6e0-71c49058e5fd">
           <semantic:text>"Retired"</semantic:text>
@@ -817,7 +817,7 @@
       </semantic:rule>
       <semantic:rule id="_c87d02f4-f5bf-49f9-97aa-423a2380c015">
         <semantic:inputEntry id="_ee61805e-d530-4b8d-b5a2-3fb00fac3ddf">
-          <semantic:text/>
+          <semantic:text>-</semantic:text>
         </semantic:inputEntry>
         <semantic:inputEntry id="_78bf3d95-0bbd-45f0-a199-4702bdcc1c4f">
           <semantic:text>"Unemployed"</semantic:text>
