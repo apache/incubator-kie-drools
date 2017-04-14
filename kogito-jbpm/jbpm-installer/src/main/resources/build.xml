@@ -571,6 +571,7 @@
 
   <target name="clean.jboss.repository" if="clean.repository" depends="check.clean.repository">
   	<delete dir="${install.home}/.niogit"/>
+  	<delete dir="${install.home}/.niogit-caseapp"/>
     <delete dir="${install.home}/.index"/>
     <delete dir="${install.home}/.security"/>
     <delete dir="${install.home}/repositories"/>
