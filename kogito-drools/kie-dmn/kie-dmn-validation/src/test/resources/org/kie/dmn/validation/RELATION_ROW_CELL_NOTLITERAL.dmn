@@ -15,27 +15,37 @@
   ~ limitations under the License.
   -->
 <definitions id="RELATION_ROW_CELL_NOTLITERAL" name="RELATION_ROW_CELL_NOTLITERAL"
-    namespace="https://github.com/kiegroup/kie-dmn"
-    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
-	<decision name="Employee Relation" id="d_EmployeeRelation">
-		<variable name="Employee Relation" typeRef="feel:list"/>
-		<relation>
-			<column name="Name" typeRef="feel:string"/>
-			<column name="Department" typeRef="feel:string"/>  
-			<column name="Salary" typeRef="feel:number"/>
-			<row>
-				<literalExpression><text>"Mary"</text></literalExpression>
-				<literalExpression><text>"Finances"</text></literalExpression>
-				<literalExpression><text>120000</text></literalExpression>
-			</row>
-			<row>
-				<literalExpression><text>"John"</text></literalExpression>
-				<literalExpression><text>"Sales"</text></literalExpression>
-				<context></context> <!-- TEST -->
-			</row>
-		</relation>
-	</decision>
+             namespace="https://github.com/kiegroup/kie-dmn"
+             xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+             xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
+  <decision name="Employee Relation" id="d_EmployeeRelation">
+    <variable name="Employee Relation" typeRef="feel:list"/>
+    <relation>
+      <column name="Name" typeRef="feel:string"/>
+      <column name="Department" typeRef="feel:string"/>
+      <column name="Salary" typeRef="feel:number"/>
+      <row>
+        <literalExpression>
+          <text>"Mary"</text>
+        </literalExpression>
+        <literalExpression>
+          <text>"Finances"</text>
+        </literalExpression>
+        <literalExpression>
+          <text>120000</text>
+        </literalExpression>
+      </row>
+      <row>
+        <literalExpression>
+          <text>"John"</text>
+        </literalExpression>
+        <literalExpression>
+          <text>"Sales"</text>
+        </literalExpression>
+        <context></context> <!-- TEST -->
+      </row>
+    </relation>
+  </decision>
 </definitions>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
+  ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
   ~ You may obtain a copy of the License at
@@ -13,17 +15,17 @@
   ~ limitations under the License.
   -->
 
-<definitions id="REQAUTH_NOT_KNOWLEDGESOURCE" name="REQAUTH_NOT_KNOWLEDGESOURCE"
+<definitions id="KNOWREQ_REQ_DECISION_NOT_BKM" name="KNOWREQ_REQ_DECISION_NOT_BKM"
     namespace="https://github.com/kiegroup/kie-dmn"
     xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
     xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd http://www.omg.org/spec/DMN/20151101/dmn.xsd ">
-  <businessKnowledgeModel name="bkm1">
-    <authorityRequirement>
-        <requiredAuthority href="#auth1"/> 
-    </authorityRequirement>
-  </businessKnowledgeModel>
-  <knowledgeSource id="auth2" name="auth2"></knowledgeSource>
-  <textAnnotation id="auth1"></textAnnotation> <!-- TEST, should be a KnowledgeSource -->
+  <decision id="_0004-simpletable-U" name="simpletable-U">
+    <variable name="simpletable-U" typeRef="feel:string"/>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#someKnowledge1"/>
+    </knowledgeRequirement>
+  </decision>
+  <textAnnotation id="someKnowledge1"/>
 </definitions>
