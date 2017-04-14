@@ -992,7 +992,7 @@ public class DMNRuntimeTest {
                 "Dessin 1" );
         assertThat( dmnModel, notNullValue() );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
-        assertThat( dmnModel.getMessages().size(), is( 3 ) );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 3 ) );
         assertThat( dmnModel.getMessages().get( 0 ).getSourceReference(), is( instanceOf( ItemDefinition.class ) ) );
         assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
         assertThat( dmnModel.getMessages().get( 1 ).getSourceId(), is( "_e794c655-4fdf-45d1-b7b7-d990df513f92" ) );
