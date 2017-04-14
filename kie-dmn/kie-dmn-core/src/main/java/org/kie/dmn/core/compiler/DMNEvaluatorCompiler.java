@@ -398,7 +398,7 @@ public class DMNEvaluatorCompiler {
                     null,
                     null,
                     Msg.UNKNOWN_OUTPUT_TYPE_FOR_DT_ON_NODE,
-                    originalElement.getParentDRGElement().getIdentifierString() );
+                    originalElement.getParentDRDElement().getIdentifierString() );
             return null;
         }
     }
@@ -421,7 +421,7 @@ public class DMNEvaluatorCompiler {
                     null,
                     Msg.MISSING_TYPEREF_FOR_VARIABLE,
                     variable.getName(),
-                    variable.getParentDRGElement().getIdentifierString() );
+                    variable.getParentDRDElement().getIdentifierString() );
             return null;
         }
     }

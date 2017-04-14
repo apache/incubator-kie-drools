@@ -1,0 +1,65 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.kie.dmn.validation;
+
+import org.kie.dmn.model.v1_1.*;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.core.impl.DMNMessageImpl;
+import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.FEELParser;
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.core.util.Msg;
+
+import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
+
+global org.kie.dmn.validation.MessageReporter reporter;
+
+rule DTABLE_MULTIPLEOUT_NAME
+when
+  $oc : OutputClause( parent instanceof DecisionTable, parent.output.size > 1, this.name == null )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.MISSING_NAME_FOR_DT_OUTPUT, $oc.getParentDRDElement().getIdentifierString() );
+end
+
+rule DTABLE_MULTIPLEOUT_TYPEREF
+when
+  $oc : OutputClause( parent instanceof DecisionTable, parent.output.size > 1, this.typeRef == null )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.MISSING_TYPEREF_FOR_DT_OUTPUT, $oc.getParentDRDElement().getIdentifierString() );
+end
+
+rule DTABLE_PRIORITY_MISSING_OUTVALS
+when
+  $oc : OutputClause( parent instanceof DecisionTable, parent#DecisionTable.hitPolicy == HitPolicy.PRIORITY, outputValues == null )
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $oc , Msg.MISSING_OUTPUT_VALUES, $oc.getParentDRDElement().getIdentifierString() );
+end
+
+rule DTABLE_SINGLEOUT_NONAME
+when
+  $oc : OutputClause( parent instanceof DecisionTable, parent.output.size == 1, this.name != null )
+then
+  reporter.report( DMNMessage.Severity.WARN,  $oc , Msg.DTABLE_SINGLEOUT_NONAME, $oc.getParentDRDElement().getIdentifierString() );
+end
+
+rule DTABLE_SINGLEOUT_TYPEREF
+when
+  $oc : OutputClause( parent instanceof DecisionTable, parent.output.size == 1, this.typeRef != null )
+then
+  reporter.report( DMNMessage.Severity.WARN,  $oc , Msg.DTABLE_SINGLEOUT_NOTYPEREF, $oc.getParentDRDElement().getIdentifierString() );
+end
