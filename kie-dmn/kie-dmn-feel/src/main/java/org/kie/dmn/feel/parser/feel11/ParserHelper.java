@@ -60,7 +60,6 @@ public class ParserHelper {
     private Scope         currentScope = symbols.getGlobalScope();
     private Stack<String> currentName  = new Stack<>();
     private int dynamicResolution = 0;
-    private StringBuilder tokensSB = new StringBuilder();
 
     public ParserHelper() {
         this( null );
@@ -177,13 +176,11 @@ public class ParserHelper {
     }
 
     public void startVariable(Token t) {
-        this.tokensSB = new StringBuilder( t.getText() );
         this.currentScope.start( t.getText() );
     }
 
     public boolean followUp(Token t, boolean isPredict) {
-        this.tokensSB.append( t.getText() );
-        boolean follow = ( isDynamicResolution() && FEELParser.isVariableNameValid( tokensSB.toString() ) ) || this.currentScope.followUp( t.getText(), isPredict );
+        boolean follow = ( isDynamicResolution() && FEELParser.isVariableNamePartValid( t.getText() ) ) || this.currentScope.followUp( t.getText(), isPredict );
         return follow;
     }
 
