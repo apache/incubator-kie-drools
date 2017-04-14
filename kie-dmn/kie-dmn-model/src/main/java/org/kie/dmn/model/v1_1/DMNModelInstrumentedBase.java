@@ -44,13 +44,13 @@ public abstract class DMNModelInstrumentedBase {
         }
     }
 
-    public DMNModelInstrumentedBase getParentDRGElement() {
-        if( this instanceof DRGElement ) {
-            return this;
-        } else if( this instanceof ItemDefinition && parent != null && parent instanceof Definitions ) {
+    public DMNModelInstrumentedBase getParentDRDElement() {
+        if( this instanceof DRGElement
+                || (this instanceof Artifact)
+                || (this instanceof ItemDefinition && parent != null && parent instanceof Definitions)) {
             return this;
         } else if( parent != null ) {
-            return parent.getParentDRGElement();
+            return parent.getParentDRDElement();
         } else {
             return null;
         }
