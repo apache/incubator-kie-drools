@@ -32,7 +32,7 @@ public class SynchronizedPropagationList implements PropagationList {
 
     private volatile boolean disposed = false;
 
-    private volatile int entriesDeferringExpirationCounter = 0;
+    private volatile boolean hasEntriesDeferringExpiration = false;
 
     public SynchronizedPropagationList(InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
@@ -73,9 +73,7 @@ public class SynchronizedPropagationList implements PropagationList {
             tail.setNext( entry );
         }
         tail = entry;
-        if (entry.defersExpiration()) {
-            entriesDeferringExpirationCounter++;
-        }
+        hasEntriesDeferringExpiration |= entry.defersExpiration();
     }
 
     @Override
@@ -93,17 +91,14 @@ public class SynchronizedPropagationList implements PropagationList {
         flush( workingMemory, currentHead );
     }
 
-    void flush( InternalWorkingMemory workingMemory, PropagationEntry currentHead ) {
+    private void flush( InternalWorkingMemory workingMemory, PropagationEntry currentHead ) {
         for (PropagationEntry entry = currentHead; !disposed && entry != null; entry = entry.getNext()) {
             entry.execute(workingMemory);
-            if (entry.defersExpiration()) {
-                entriesDeferringExpirationCounter--;
-            }
         }
     }
 
     public boolean hasEntriesDeferringExpiration() {
-        return entriesDeferringExpirationCounter > 0;
+        return hasEntriesDeferringExpiration;
     }
 
     @Override
@@ -111,6 +106,7 @@ public class SynchronizedPropagationList implements PropagationList {
         PropagationEntry currentHead = head;
         head = null;
         tail = null;
+        hasEntriesDeferringExpiration = false;
         return currentHead;
     }
 

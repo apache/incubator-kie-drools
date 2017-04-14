@@ -15,9 +15,9 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.common.InternalWorkingMemory;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.drools.core.common.InternalWorkingMemory;
 
 public class SynchronizedBypassPropagationList extends SynchronizedPropagationList {
 
@@ -61,7 +61,7 @@ public class SynchronizedBypassPropagationList extends SynchronizedPropagationLi
         if (!executing.get()) {
             PropagationEntry head = takeAll();
             while (head != null) {
-                flush( workingMemory, head );
+                flush( head );
                 head = takeAll();
             }
         }
