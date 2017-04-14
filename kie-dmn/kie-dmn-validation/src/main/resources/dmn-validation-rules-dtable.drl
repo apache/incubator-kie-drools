@@ -63,3 +63,12 @@ when
 then
   reporter.report( DMNMessage.Severity.WARN,  $oc , Msg.DTABLE_SINGLEOUT_NOTYPEREF, $oc.getParentDRDElement().getIdentifierString() );
 end
+
+rule DTABLE_EMPTY_ENTRY
+when
+  $ie : UnaryTests( text == null || text.isEmpty(), parent instanceof DecisionRule )
+  $dr : DecisionRule( ) from $ie.parent
+  $dt : DecisionTable( ) from $dr.parent
+then
+  reporter.report( DMNMessage.Severity.ERROR,  $ie , Msg.DTABLE_EMPTY_ENTRY, $dt.getRule().indexOf( $dr )+1, $dr.getInputEntry().indexOf($ie)+1, $dt.getParentDRDElement().getIdentifierString() );
+end
