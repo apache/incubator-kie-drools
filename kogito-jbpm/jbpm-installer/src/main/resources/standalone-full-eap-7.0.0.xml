@@ -361,6 +361,7 @@
                             <module-option name="password-stacking" value="useFirstPass"/>
                         </login-module>
                         <login-module code="org.kie.security.jaas.KieLoginModule" flag="optional" module="deployment.jbpm-console.war"/>
+                        <login-module code="org.kie.security.jaas.KieLoginModule" flag="optional" module="deployment.jbpm-casemgmt.war"/>
                     </authentication>
                 </security-domain>
                 <security-domain name="jboss-web-policy" cache-type="default">

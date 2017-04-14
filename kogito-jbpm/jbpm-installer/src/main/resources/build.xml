@@ -249,6 +249,23 @@
   	<get src="${jBPM.console.url}" dest="${install.home}/lib/jbpm-console-${jBPM.version}-${jboss.war.type}.war"  />
   </target>
 	
+  <!-- Download jBPM case mgmt console -->
+  <target name="download.jBPM.casemgmt.check">
+    <echo message="Checking jBPM case mgmt console download ..." />
+    <condition property="jBPM.casemgmt.not.available">
+      <and>
+    	<not>
+          <available file="${install.home}/lib/jbpm-casemgmt-${jBPM.version}-${jboss.war.type}.war" />
+        </not>
+      </and>
+    </condition>
+  </target>
+  <target name="download.jBPM.casemgmt" depends="download.jBPM.casemgmt.check" if="jBPM.casemgmt.not.available">
+    <echo message="Getting jBPM case mgmt console ..." />
+    <mkdir dir="${install.home}/lib"/>
+  	<get src="${jBPM.casemgmt.url}" dest="${install.home}/lib/jbpm-casemgmt-${jBPM.version}-${jboss.war.type}.war"  />
+  </target>
+		
   <!-- Download kie-server -->
   <target name="download.kie.server.check">
     <echo message="Checking KIE Server download ..." />
@@ -279,25 +296,9 @@
 	
   <!-- Install jBPM console -->
   <target name="install.jBPM-console.into.jboss" depends="download.db.driver,download.jBPM.console,install.configuration.into.jboss">
-    <mkdir dir="${install.home}/target"/>
-    <mkdir dir="${install.home}/target/jbpm-console-war"/>
-    <unzip src="${install.home}/lib/jbpm-console-${jBPM.version}-${jboss.war.type}.war"
-           dest="${install.home}/target/jbpm-console-war"/>
-    <copy todir="${install.home}/target/jbpm-console-war/WEB-INF/lib" overwrite="true">
-      <fileset dir="${install.home}/db/driver"/>
-    </copy>
-    <!-- Other configuration like work item handlers -->
-    <copy todir="${install.home}/target/jbpm-console-war/WEB-INF/classes" overwrite="true">
-      <fileset dir="${install.home}/conf"/>
-    </copy>
-  	<!-- install dependencies -->
-  	<antcall target="install.dependencies" />
-    <zip basedir="${install.home}/target/jbpm-console-war"
-         destfile="${install.home}/target/jbpm-console-${jBPM.version}-${jboss.war.type}.war"/>
-    <copy file="${install.home}/target/jbpm-console-${jBPM.version}-${jboss.war.type}.war"
+    <copy file="${install.home}/lib/jbpm-console-${jBPM.version}-${jboss.war.type}.war"
           tofile="${jboss.server.deploy.dir}/jbpm-console.war"
           overwrite="true" />
-    <delete dir="${install.home}/target"/>
   </target>
   <target name="install.configuration.into.jboss">
     <copy file="${install.home}/standalone-${jboss.server.version}.xml"
@@ -314,22 +315,19 @@
           tofile="${jboss.server.conf.dir}/roles.properties"
           overwrite="true" />
   </target>
-  <!-- Install jBPM console -->
+  <!-- Install jBPM case mgmt console -->
+  <target name="install.jBPM-casemgmt.into.jboss" depends="download.jBPM.casemgmt,install.configuration.into.jboss">
+    <copy file="${install.home}/lib/jbpm-casemgmt-${jBPM.version}-${jboss.war.type}.war"
+          tofile="${jboss.server.deploy.dir}/jbpm-casemgmt.war"
+          overwrite="true" />
+  </target>
+  <!-- Install kie-server -->
   <target name="install.kie-server.into.jboss" depends="download.kie.server,install.configuration.into.jboss">
     <copy file="${install.home}/lib/kie-server-${jBPM.version}-${jboss.war.type}.war"
           tofile="${jboss.server.deploy.dir}/kie-server.war"
           overwrite="true" />
   </target>
 
-  <!-- Install dependencies -->
-  <target name="install.dependencies">	
-  	<copy todir="${install.home}/target/jbpm-console-war/WEB-INF/lib">
-  		<fileset dir="${install.home}/dependencies">
-  		  <include name="**/*.jar"/>
-  		</fileset>
-    </copy>
-  </target>
-	
   <!-- Install Eclipse -->
   <target name="install.eclipse" depends="download.eclipse,download.eclipse.gef">   
     <antcall target="unzipEclipse" />	
@@ -413,13 +411,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.kie-server.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.jBPM-casemgmt.into.jboss,install.kie-server.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (Eclipse) -->
   <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.kie-server.into.jboss" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.jBPM-casemgmt.into.jboss,install.kie-server.into.jboss" />
   
   <!-- ############ START/STOP ############ -->
   <target name="start.h2.check">
