@@ -43,6 +43,7 @@ public class Msg {
     public static final Message1 MISSING_OUTPUT_VALUES                               = new Message1( DMNMessageType.MISSING_OUTPUT_VALUES, "Decision table with hit policy Priority on node '%s' requires output elements to specify the output values list" );
     public static final Message1 DTABLE_SINGLEOUT_NONAME                             = new Message1( DMNMessageType.ILLEGAL_USE_OF_NAME, "Decision table with single output on node '%s' should not have output name" );
     public static final Message1 DTABLE_SINGLEOUT_NOTYPEREF                          = new Message1( DMNMessageType.ILLEGAL_USE_OF_TYPEREF, "Decision table with single output on node '%s' should not have an output type reference" );
+    public static final Message3 DTABLE_EMPTY_ENTRY                                  = new Message3( DMNMessageType.MISSING_EXPRESSION, "Missing test on decision table input entry (row %d, column %d) on node '%s'" );
     public static final Message1 ELEMREF_NOHASH                                      = new Message1( DMNMessageType.INVALID_HREF_SYNTAX, "The 'href' reference on node '%s' requires the use of the anchor syntax" );
     public static final Message2 DUPLICATE_FORMAL_PARAM                              = new Message2( DMNMessageType.DUPLICATED_PARAM, "The formal parameter '%s' on function definition on node '%s' is duplicated" );
     public static final Message3 UNKNOWN_PARAMETER                                   = new Message3( DMNMessageType.PARAMETER_MISMATCH, "Unknown parameter '%s' invoking function '%s' on node '%s'" );
