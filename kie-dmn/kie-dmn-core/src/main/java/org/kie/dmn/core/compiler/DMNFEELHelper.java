@@ -18,6 +18,7 @@ import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
+import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,6 +134,16 @@ public class DMNFEELHelper
                                 msgParams[1],
                                 msgParams[2] );
                     } else if ( msg instanceof Msg.Message4 ) {
+                        String message = null;
+                        if( event.getOffendingSymbol() == null ) {
+                            message = "";
+                        } else if( event instanceof UnknownVariableErrorEvent ) {
+                            message = event.getMessage();
+                        } else if( event.getOffendingSymbol() instanceof CommonToken ) {
+                            message = "syntax error near '" + ((CommonToken)event.getOffendingSymbol()).getText() + "'";
+                        } else {
+                            message = "syntax error near '" + event.getOffendingSymbol() + "'";
+                        }
                         MsgUtil.reportMessage(
                                 logger,
                                 DMNMessage.Severity.ERROR,
@@ -144,7 +155,7 @@ public class DMNFEELHelper
                                 msgParams[0],
                                 msgParams[1],
                                 msgParams[2],
-                                "syntax error near '" + ((CommonToken)event.getOffendingSymbol()).getText() + "'" );
+                                message );
                     }
                 }
             }
