@@ -95,7 +95,7 @@
 						<text> status priority( Passenger1.Status ) &lt; status priority( Passenger2.Status ) or
 							   ( status priority( Passenger1.Status ) = status priority( Passenger2.Status ) and 
 							     Passenger1.Miles > Passenger2.Miles ) 
-							   )</text>
+						</text>
 					</literalExpression>
 				</functionDefinition>
 			</contextEntry>
@@ -198,7 +198,7 @@
 				<contextEntry>
 					<variable name="Best Alternate Flight" typeRef="kie:tFlight"/>
 					<literalExpression>
-						<text>Flight List[ From = Original Flight.From and 
+						<text>Flights[ From = Original Flight.From and 
 							               To = Original Flight.To and
 							               Departure > Original Flight.Departure and
 							               Status = "scheduled" and

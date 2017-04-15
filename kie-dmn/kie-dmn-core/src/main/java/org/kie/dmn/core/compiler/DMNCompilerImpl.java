@@ -201,6 +201,8 @@ public class DMNCompilerImpl
                         ctx.setVariable( dep.getName(), ((BusinessKnowledgeModelNode)dep).getResultType() );
                     }
                 }
+                // to allow recursive call from inside a BKM node, a variable for self must be available for the compiler context:
+                ctx.setVariable(bkm.getName(), bkm.getResultType());
                 FunctionDefinition funcDef = bkm.getBusinessKnowledModel().getEncapsulatedLogic();
                 DMNExpressionEvaluator exprEvaluator = evaluatorCompiler.compileExpression( ctx, model, bkmi, bkm.getName(), funcDef );
                 bkmi.setEvaluator( exprEvaluator );
