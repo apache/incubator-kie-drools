@@ -24,6 +24,7 @@ import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.util.Msg;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class FEELParser {
 
@@ -31,6 +32,7 @@ public class FEELParser {
             "for", "return", "if", "then", "else", "some", "every", "satisfies", "instance", "of",
             "function", "external", "or", "and", "between", "not", "null", "true", "false"
     );
+    private static final Pattern DIGITS_PATTERN = Pattern.compile( "[0-9]*" );
 
     public static FEEL_1_1Parser parse(FEELEventListenersManager eventsManager, String source, Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables) {
         ANTLRInputStream input = new ANTLRInputStream(source);
@@ -46,6 +48,13 @@ public class FEELParser {
         defineVariables( inputVariableTypes, inputVariables, parser );
         
         return parser;
+    }
+    
+    /**
+     * Either namePart is a string of digits, or it must be a valid name itself 
+     */
+    public static boolean isVariableNamePartValid( String namePart ) {
+        return DIGITS_PATTERN.matcher(namePart).matches() || isVariableNameValid(namePart);
     }
 
     public static boolean isVariableNameValid( String source ) {

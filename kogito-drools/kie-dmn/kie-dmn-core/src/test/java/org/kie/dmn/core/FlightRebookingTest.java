@@ -43,7 +43,7 @@ public class FlightRebookingTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
-        //assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) ); // need proper type support to enable this
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) ); // need proper type support to enable this
 
         DMNContext context = DMNFactory.newContext();
 
@@ -65,6 +65,7 @@ public class FlightRebookingTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking-alternative.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
 
         DMNContext context = DMNFactory.newContext();
 
@@ -86,7 +87,8 @@ public class FlightRebookingTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking-singleton-lists.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
-
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
+        
         DMNContext context = DMNFactory.newContext();
 
         List passengerList = loadPassengerList();
@@ -107,6 +109,7 @@ public class FlightRebookingTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking-bad-example.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
 
         DMNContext context = DMNFactory.newContext();
 
@@ -129,6 +132,7 @@ public class FlightRebookingTest {
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08", "0019-flight-rebooking" );
         runtime.addListener( DMNRuntimeUtil.createListener() );
         assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
 
         DMNContext context = DMNFactory.newContext();
 
