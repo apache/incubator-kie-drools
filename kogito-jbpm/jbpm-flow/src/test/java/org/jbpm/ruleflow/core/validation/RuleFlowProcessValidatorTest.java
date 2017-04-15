@@ -136,6 +136,7 @@ public class RuleFlowProcessValidatorTest {
 
         ProcessValidationError[] errors = validator.validateProcess(process);
         assertNotNull(errors);
+        assertEquals(0, errors.length);
     }
 
     @Test
@@ -147,5 +148,6 @@ public class RuleFlowProcessValidatorTest {
 
         ProcessValidationError[] errors = validator.validateProcess(process);
         assertNotNull(errors);
+        assertEquals(0, errors.length);
     }
 }
