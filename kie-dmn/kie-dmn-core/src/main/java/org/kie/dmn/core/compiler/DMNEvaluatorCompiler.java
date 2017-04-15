@@ -461,8 +461,8 @@ public class DMNEvaluatorCompiler {
                                            e,
                                            null,
                                            Msg.ERR_COMPILING_FEEL_EXPR_FOR_NAME_ON_NODE,
+                                           exprText,
                                            exprName,
-                                           expression,
                                            node.getIdentifierString(),
                                            "Exception raised: "+e.getClass().getSimpleName());
                 }
