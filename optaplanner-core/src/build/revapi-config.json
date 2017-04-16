@@ -1144,6 +1144,15 @@
           "methodName": "getIndictmentMap",
           "elementKind": "method",
           "justification": "Add Indictment support."
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method boolean org.optaplanner.core.api.solver.Solver<Solution_>::addProblemFactChanges(java.util.List<org.optaplanner.core.impl.solver.ProblemFactChange<Solution_>>)",
+          "package": "org.optaplanner.core.api.solver",
+          "classSimpleName": "Solver",
+          "methodName": "addProblemFactChanges",
+          "elementKind": "method",
+          "justification": "Support scheduling multiple ProblemFactChanges to be processed."
         }
       ]
     }
