@@ -1064,7 +1064,6 @@ public class AddRemoveRule {
                 return;
             }
 
-            boolean   isRootLt = removingLt.getLeftParent() == null; // is the LT for the LIAN, if so we need to process the FH too.
             InternalFactHandle fh = removingLt.getFactHandle();
 
             // This is the first LT in a peer chain. Only this LT is hooked into the left and right parent LT and RT and
@@ -1075,13 +1074,12 @@ public class AddRemoveRule {
             LeftTuple rightPrevious = removingLt.getRightParentPrevious();
             LeftTuple rightNext     = removingLt.getRightParentNext();
 
-            LeftTuple          leftParent  = removingLt.getLeftParent();
-            RightTuple         rightParent = removingLt.getRightParent();
+            LeftTuple  leftParent  = removingLt.getLeftParent();
+            RightTuple rightParent = removingLt.getRightParent();
 
             // This tuple is the first peer and thus is linked into the left parent LT.
 
             nextPeerLt.setFactHandle(removingLt.getFactHandle());
-
 
             // correct the linked list
             if (leftPrevious != null) {
@@ -1116,10 +1114,9 @@ public class AddRemoveRule {
                 if (leftParent.getLastChild() == removingLt) {
                     leftParent.setLastChild(nextPeerLt);
                 }
-            } else if ( isRootLt ) {
-                if (fh.getFirstLeftTuple() == removingLt) {
-                    fh.setFirstLeftTuple(nextPeerLt);
-                }
+            } else {
+                // is the LT for the LIAN, if so we need to process the FH too
+                fh.removeLeftTuple(removingLt);
             }
 
             if ( rightParent != null ) {
