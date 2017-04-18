@@ -18,11 +18,16 @@ package org.kie.test.util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.LockInfo;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MonitorInfo;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -74,10 +79,29 @@ public class TestStatusListener extends RunListener {
     private static synchronized void writeThreadDump() throws IOException {
         ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
         for (ThreadInfo ti : threadMxBean.dumpAllThreads(true, true)) {
-            writer.write(ti.toString());
+            writer.write( ti.toString() );
+            if ( ti.getStackTrace().length > 8 ) { writer.write("full stacktrace:\n"); writer.write(fullStackTrace(ti)); writer.write("\n"); }
         }
         writer.newLine();
         writer.flush();
+    }
+    
+    private static String fullStackTrace(ThreadInfo ti) {
+        StringBuilder sb = new StringBuilder();
+        Stream.of( ti.getStackTrace() )
+            .forEach( ste -> {
+                sb.append(" ");
+                sb.append(ste.toString());
+                sb.append("\n");
+                Stream.of( ti.getLockedMonitors() )
+                    .filter( m -> ste.equals(m.getLockedStackFrame()) )
+                    .forEach( lm -> {
+                        sb.append("  (locked: ");
+                        sb.append(lm);
+                        sb.append(" )\n");
+                    });
+            });
+        return sb.toString();
     }
 
     @Override
