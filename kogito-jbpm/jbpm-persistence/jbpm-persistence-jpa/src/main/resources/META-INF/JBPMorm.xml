@@ -21,13 +21,8 @@ where
     key.processInstanceId 
 from 
     CorrelationKeyInfo key 
-    left join key.properties props 
 where 
-    cast(:elem_count as integer) = 
-	(select count(id) from CorrelationPropertyInfo cpi where cpi.correlationKey.id = key.id) and 
-    props.value in :properties 
-    group by key.id,key.processInstanceId 
-having count(key.id) = :elem_count
+    key.name = :ckey
     </query>
   </named-query>
   <named-query name="GetCorrelationKeysByProcessInstanceId">

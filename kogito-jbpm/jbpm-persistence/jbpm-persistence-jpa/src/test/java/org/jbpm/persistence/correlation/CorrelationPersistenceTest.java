@@ -101,8 +101,7 @@ public class CorrelationPersistenceTest extends AbstractBaseTest {
         EntityManager em = emf.createEntityManager();
 
         Query query = em.createNamedQuery("GetProcessInstanceIdByCorrelation");
-        query.setParameter("properties", Arrays.asList(new String[] {"test123"}));
-        query.setParameter("elem_count", new Long(1));
+        query.setParameter("ckey", "test123");        
         
         List<Long> processInstances = query.getResultList();
         em.close();
@@ -116,8 +115,7 @@ public class CorrelationPersistenceTest extends AbstractBaseTest {
         EntityManager em = emf.createEntityManager();
         
         Query query = em.createNamedQuery("GetProcessInstanceIdByCorrelation");
-        query.setParameter("properties", Arrays.asList(new String[] {"test123"}));
-        query.setParameter("elem_count", new Long(2));
+        query.setParameter("ckey", "test1234"); 
         
         List<Long> processInstances = query.getResultList();
         em.close();
@@ -131,8 +129,7 @@ public class CorrelationPersistenceTest extends AbstractBaseTest {
         EntityManager em = emf.createEntityManager();
         
         Query query = em.createNamedQuery("GetProcessInstanceIdByCorrelation");
-        query.setParameter("properties", Arrays.asList(new String[] {"test123", "123test"}));
-        query.setParameter("elem_count", new Long(2));
+        query.setParameter("ckey", "test123:123test");
         
         List<Long> processInstances = query.getResultList();
         em.close();

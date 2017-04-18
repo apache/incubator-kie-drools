@@ -29,7 +29,7 @@ public class JPACorrelationKeyFactory implements CorrelationKeyFactory {
 
         CorrelationKeyInfo correlationKey = new CorrelationKeyInfo();
         correlationKey.addProperty(new CorrelationPropertyInfo(null, businessKey));
-
+        correlationKey.setName(correlationKey.toExternalForm());
         return correlationKey;
     }
 
@@ -42,7 +42,7 @@ public class JPACorrelationKeyFactory implements CorrelationKeyFactory {
         for (String businessKey : properties) {
             correlationKey.addProperty(new CorrelationPropertyInfo(null, businessKey));
         }
-
+        correlationKey.setName(correlationKey.toExternalForm());
         return correlationKey;
     }
 }

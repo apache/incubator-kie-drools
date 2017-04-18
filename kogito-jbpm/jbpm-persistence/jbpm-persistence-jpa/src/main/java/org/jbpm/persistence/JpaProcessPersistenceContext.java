@@ -138,12 +138,8 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
      */
     public Long getProcessInstanceByCorrelationKey(CorrelationKey correlationKey) {
         Query processInstancesForEvent = getEntityManager().createNamedQuery( "GetProcessInstanceIdByCorrelation" );
-        processInstancesForEvent.setParameter( "elem_count", new Long(correlationKey.getProperties().size()) );
-        List<Object> properties = new ArrayList<Object>();
-        for (CorrelationProperty<?> property : correlationKey.getProperties()) {
-            properties.add(property.getValue());
-        }
-        processInstancesForEvent.setParameter( "properties", properties );
+        processInstancesForEvent.setParameter( "ckey", correlationKey.toExternalForm());
+        
         try {
             return (Long) processInstancesForEvent.getSingleResult();
         } catch (NonUniqueResultException e) {
