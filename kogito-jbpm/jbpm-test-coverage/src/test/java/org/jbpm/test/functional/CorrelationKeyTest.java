@@ -151,4 +151,15 @@ public class CorrelationKeyTest extends JbpmTestCase {
         Assertions.assertThat(variables.get(0).getValue()).isEqualTo(VARIABLE_VALUE);
     }
 
+    @Test
+    public void testMultiValuedKeyUniqueButInclusive() {
+        // JBPM-5897
+        CorrelationKey key1 = keyFactory.newCorrelationKey(Arrays.asList("ABC", "DEF", "DEF"));
+        ProcessInstance processInstance = ksession.startProcess(PROCESS, key1, null);
+        assertProcessInstanceActive(processInstance.getId());
+
+        CorrelationKey key2 = keyFactory.newCorrelationKey(Arrays.asList("ABC", "DEF", "GHI"));
+        ProcessInstance processInstance2 = ksession.startProcess(PROCESS, key2, null);
+        assertProcessInstanceActive(processInstance2.getId());
+    }
 }
