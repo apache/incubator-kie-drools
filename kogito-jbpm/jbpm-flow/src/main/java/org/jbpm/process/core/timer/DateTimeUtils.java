@@ -57,8 +57,6 @@ public class DateTimeUtils extends TimeUtils {
     public static long parseDuration(String durationStr) {
         if (isPeriod(durationStr)) {
             return Duration.parse(durationStr).toMillis();
-        } else if (DateTimeUtils.isNumeric(durationStr)) {
-            return Long.valueOf(durationStr);
         } else {
             return TimeUtils.parseTimeString(durationStr);
         }
@@ -101,23 +99,31 @@ public class DateTimeUtils extends TimeUtils {
             String periodIn = parsed[2];
  
             Duration startAtDelayDur = null;
-            if (DateTimeUtils.isNumeric(delayIn)) {
-                startAtDelayDur = Duration.of(Long.valueOf(delayIn), ChronoUnit.MILLIS);
+            Duration period = null;
+
+            if (DateTimeUtils.isPeriod(delayIn)) {
+                // If delay is specified as duration then period variable carry end time information
+                OffsetDateTime endTime = OffsetDateTime.parse(periodIn, DateTimeFormatter.ISO_DATE_TIME);
+                period = Duration.parse(delayIn);
+                startAtDelayDur = Duration.between(OffsetDateTime.now(), endTime.minus(period));
+
+            } else if (DateTimeUtils.isPeriod(periodIn)) {
+                // If period is specified as duration then delay variable carry start time information
+                OffsetDateTime startTime = OffsetDateTime.parse(delayIn, DateTimeFormatter.ISO_DATE_TIME);
+                period = Duration.parse(periodIn);
+                startAtDelayDur = Duration.between(OffsetDateTime.now(), startTime);
+
             } else {
-                OffsetDateTime startAtDelay = OffsetDateTime.parse(delayIn, DateTimeFormatter.ISO_DATE_TIME);
-                startAtDelayDur = Duration.between(OffsetDateTime.now(), startAtDelay);
+                // Both delay and period are specified as start and end times
+                OffsetDateTime startTime = OffsetDateTime.parse(delayIn, DateTimeFormatter.ISO_DATE_TIME);
+                OffsetDateTime endTime = OffsetDateTime.parse(periodIn, DateTimeFormatter.ISO_DATE_TIME);
+                startAtDelayDur = Duration.between(OffsetDateTime.now(), startTime);
+                period = Duration.between(startTime, endTime);
             }
 
             if (startAtDelayDur.isNegative() || startAtDelayDur.isZero()) {
                 // need to introduce delay to allow all initialization
                 startAtDelayDur = Duration.of(1, ChronoUnit.SECONDS);
-            }
-
-            Duration period = null;
-            if (DateTimeUtils.isNumeric(periodIn)) {
-                period = Duration.of(Long.valueOf(periodIn), ChronoUnit.MILLIS);
-            } else {
-                period = Duration.parse(periodIn);
             }
 
             result[0] = Long.parseLong(repeats.length()==0?"-1":repeats);

@@ -179,7 +179,7 @@ public class ConcurrentGlobalTimerServiceTest extends TimerBaseTest {
                 logger.debug("Starting process on ksession {}", runtime.getKieSession().getIdentifier());
                 Map<String, Object> params = new HashMap<String, Object>();
 
-                params.put("x", "R2/" + wait + "/PT1S");
+                params.put("x", "R2/PT1S");
                 ProcessInstance processInstance = runtime.getKieSession().startProcess("IntermediateCatchEvent", params);
                 logger.debug("Started process instance {} on ksession {}", processInstance.getId(), runtime.getKieSession().getIdentifier());
                 ut.commit();
