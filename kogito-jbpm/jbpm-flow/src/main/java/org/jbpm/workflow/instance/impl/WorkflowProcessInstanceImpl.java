@@ -46,6 +46,7 @@ import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
+import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
@@ -229,13 +230,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 		return result;
 	}
-
+	
 	public NodeInstance getNodeInstance(final Node node) {
 	    Node actualNode = node;
 	    // async continuation handling
 	    if (node instanceof AsyncEventNode) {
             actualNode = ((AsyncEventNode) node).getActualNode();
-        } else if (Boolean.parseBoolean((String)node.getMetaData().get("customAsync"))) {
+        } else if (useAsync(node)) {
             actualNode = new AsyncEventNode(node);
         }
 
@@ -748,5 +749,17 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         }
 
         return true;
+    }    
+
+    protected boolean useAsync(final Node node) {
+        if (node instanceof StartNode) {
+            return false;
+        }
+        boolean asyncMode = Boolean.parseBoolean((String)node.getMetaData().get("customAsync"));
+        if (asyncMode) {
+            return asyncMode;
+        }
+        
+        return Boolean.parseBoolean((String)getKnowledgeRuntime().getEnvironment().get("AsyncMode"));
     }
 }

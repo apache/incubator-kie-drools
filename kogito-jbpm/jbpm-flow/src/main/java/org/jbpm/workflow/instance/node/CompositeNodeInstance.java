@@ -259,7 +259,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         // async continuation handling
         if (node instanceof AsyncEventNode) {
             actualNode = ((AsyncEventNode) node).getActualNode();
-        } else if (Boolean.parseBoolean((String)node.getMetaData().get("customAsync"))) {
+        } else if (useAsync(node)) {
             actualNode = new AsyncEventNode(node);
         }
 
@@ -425,6 +425,16 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return iterationLevels;
     }
 
-
+    protected boolean useAsync(final Node node) {
+        if (node instanceof StartNode) {
+            return false;
+        }
+        boolean asyncMode = Boolean.parseBoolean((String)node.getMetaData().get("customAsync"));
+        if (asyncMode) {
+            return asyncMode;
+        }
+        
+        return Boolean.parseBoolean((String)getProcessInstance().getKnowledgeRuntime().getEnvironment().get("AsyncMode"));
+    }
 
 }
