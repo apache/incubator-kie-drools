@@ -99,4 +99,24 @@ public class CompositeTypeImpl
         }
         return true;
     }
+
+    @Override
+    protected boolean internalIsAssignableValue(Object o) {
+        Map<String, Object> instance = null;
+        try {
+            instance = (Map<String, Object>) o;
+        } catch ( Exception e ) {
+            return false;
+        }
+        for ( Entry<String, DMNType> f : fields.entrySet() ) {
+            if ( !instance.containsKey(f.getKey()) ) {
+                return false;
+            } else {
+                if ( !f.getValue().isAssignableValue(instance.get(f.getKey())) ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
