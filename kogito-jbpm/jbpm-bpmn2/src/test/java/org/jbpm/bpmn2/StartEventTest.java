@@ -16,6 +16,7 @@ limitations under the License.*/
 package org.jbpm.bpmn2;
 
 import java.io.StringReader;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +31,6 @@ import org.jbpm.bpmn2.objects.NotAvailableGoodsReport;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.test.util.CountDownProcessEventListener;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -148,10 +148,9 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         byte[] content = IoUtils.readBytesFromInputStream(this.getClass().getResourceAsStream("/BPMN2-TimerStartDate.bpmn2"));
         String processContent = new String(content, "UTF-8");
 
-        DateTime now = new DateTime(System.currentTimeMillis());
-        now = now.plus(2000);
+        OffsetDateTime plusTwoSeconds = OffsetDateTime.now().plusSeconds(2);
 
-        processContent = processContent.replaceFirst("#\\{date\\}", now.toString());
+        processContent = processContent.replaceFirst("#\\{date\\}", plusTwoSeconds.toString());
         Resource resource = ResourceFactory.newReaderResource(new StringReader(processContent));
         resource.setSourcePath("/BPMN2-TimerStartDate.bpmn2");
         resource.setTargetPath("/BPMN2-TimerStartDate.bpmn2");

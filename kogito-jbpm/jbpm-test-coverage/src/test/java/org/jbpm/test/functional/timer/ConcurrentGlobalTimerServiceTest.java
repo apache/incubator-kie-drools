@@ -22,7 +22,6 @@ import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -179,8 +178,6 @@ public class ConcurrentGlobalTimerServiceTest extends TimerBaseTest {
                 ut.begin();
                 logger.debug("Starting process on ksession {}", runtime.getKieSession().getIdentifier());
                 Map<String, Object> params = new HashMap<String, Object>();
-                DateTime now = new DateTime();
-                now.plus(1000);
 
                 params.put("x", "R2/" + wait + "/PT1S");
                 ProcessInstance processInstance = runtime.getKieSession().startProcess("IntermediateCatchEvent", params);

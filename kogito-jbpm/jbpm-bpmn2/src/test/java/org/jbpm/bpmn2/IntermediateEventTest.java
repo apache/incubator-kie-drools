@@ -15,6 +15,7 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,7 +50,6 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.test.util.CountDownProcessEventListener;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -1058,9 +1058,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         HashMap<String, Object> params = new HashMap<String, Object>();
-        DateTime now = new DateTime(System.currentTimeMillis());
-        now.plus(2000);
-        params.put("date", now.toString());
+        OffsetDateTime plusTwoSeconds = OffsetDateTime.now().plusSeconds(2);
+        params.put("date", plusTwoSeconds.toString());
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent", params);
         assertProcessInstanceActive(processInstance);
         countDownListener.waitTillCompleted();
@@ -1280,9 +1279,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.addEventListener(countDownListener);
 
         HashMap<String, Object> params = new HashMap<String, Object>();
-        DateTime now = new DateTime(System.currentTimeMillis());
-        now.plus(2000);
-        params.put("date", now.toString());
+        OffsetDateTime plusTwoSeconds = OffsetDateTime.now().plusSeconds(2);
+        params.put("date", plusTwoSeconds.toString());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent", params);
         assertProcessInstanceActive(processInstance);
         // now wait for 1 second for timer to trigger

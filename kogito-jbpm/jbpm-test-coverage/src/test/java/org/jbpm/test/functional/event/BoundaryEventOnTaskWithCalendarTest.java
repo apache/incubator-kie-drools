@@ -15,6 +15,7 @@
 
 package org.jbpm.test.functional.event;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -22,7 +23,6 @@ import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendarImpl;
 import org.jbpm.test.JbpmTestCase;
 import org.jbpm.test.listener.CountDownProcessEventListener;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -47,9 +47,8 @@ public class BoundaryEventOnTaskWithCalendarTest extends JbpmTestCase {
         ksession.getEnvironment().set("jbpm.business.calendar", new BusinessCalendarImpl());
         
         HashMap<String, Object> params = new HashMap<String, Object>();
-        DateTime now = new DateTime(System.currentTimeMillis());
-        now.plus(2000);
-        params.put("date", now.toString());
+        OffsetDateTime plusTwoSeconds = OffsetDateTime.now().plusSeconds(2);
+        params.put("date", plusTwoSeconds.toString());
 
 
         ProcessInstance processInstance = ksession.startProcess("boundaryTimer", params);

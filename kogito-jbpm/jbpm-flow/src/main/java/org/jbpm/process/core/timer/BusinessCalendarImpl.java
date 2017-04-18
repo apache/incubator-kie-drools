@@ -18,6 +18,10 @@ package org.jbpm.process.core.timer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,11 +33,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.core.time.TimeUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.Period;
-import org.joda.time.format.ISODateTimeFormat;
-import org.joda.time.format.ISOPeriodFormat;
 import org.kie.api.time.SessionClock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,44 +156,45 @@ public class BusinessCalendarImpl implements BusinessCalendar {
     }
     
     protected String adoptISOFormat(String timeExpression) {
-    	
-    	try {
-    		Period p = null;
-    		if (DateTimeUtils.isPeriod(timeExpression)) {
-    			p = ISOPeriodFormat.standard().parsePeriod(timeExpression);
-    		} else {
-    			DateTime dt = ISODateTimeFormat.dateTimeParser().parseDateTime(timeExpression);
-                Duration duration = new Duration(System.currentTimeMillis(), dt.getMillis());
-                
-                p = duration.toPeriod();
-    		}
-	        int days = p.getDays();
-	        int hours = p.getHours();
-	        int minutes = p.getMinutes();
-	        int seconds = p.getSeconds();
-	        int milis = p.getMillis();
-	        
-	        StringBuffer time = new StringBuffer();
-	        if (days > 0) {
-	        	time.append(days+"d");
-	        }
-	        if (hours > 0) {
-	        	time.append(hours+"h");
-	        }
-	        if (minutes > 0) {
-	        	time.append(minutes+"m");
-	        }
-	        if (seconds > 0) {
-	        	time.append(seconds+"s");
-	        }
-	        if (milis > 0) {
-	        	time.append(milis+"ms");
-	        }
-	        
-	        return time.toString();
-    	} catch (Exception e) {
-    		return timeExpression;
-    	}
+
+        try {
+            Duration p = null;
+            if (DateTimeUtils.isPeriod(timeExpression)) {
+                p = Duration.parse(timeExpression);
+            } else if (DateTimeUtils.isNumeric(timeExpression)) {
+                p = Duration.of(Long.valueOf(timeExpression), ChronoUnit.MILLIS);
+            } else {
+                OffsetDateTime dateTime = OffsetDateTime.parse(timeExpression, DateTimeFormatter.ISO_DATE_TIME);
+                p = Duration.between(OffsetDateTime.now(), dateTime);
+            }
+
+            long days = p.toDays();
+            long hours = p.toHours() % 24;
+            long minutes = p.toMinutes() % 60;
+            long seconds = p.getSeconds() % 60;
+            long milis = p.toMillis() % 1000;
+
+            StringBuffer time = new StringBuffer();
+            if (days > 0) {
+                time.append(days + "d");
+            }
+            if (hours > 0) {
+                time.append(hours + "h");
+            }
+            if (minutes > 0) {
+                time.append(minutes + "m");
+            }
+            if (seconds > 0) {
+                time.append(seconds + "s");
+            }
+            if (milis > 0) {
+                time.append(milis + "ms");
+            }
+
+            return time.toString();
+        } catch (Exception e) {
+            return timeExpression;
+        }
     }
     
     public long calculateBusinessTimeAsDuration(String timeExpression) {

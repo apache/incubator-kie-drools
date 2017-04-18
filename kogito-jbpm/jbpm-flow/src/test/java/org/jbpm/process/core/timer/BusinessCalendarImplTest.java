@@ -310,6 +310,19 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
 		Date result = businessCalendarImpl.calculateBusinessTimeAsDate("4d");
 		assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm", result));
     }
+
+    @Test
+    public void testCalculateMillisecondsAsDefault() {
+        Properties config = new Properties();
+        String expectedDate = "2012-05-04 16:45:10.000";
+        SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTimeAndMillis("2012-05-04 16:45:00.000").getTime());
+
+        BusinessCalendarImpl businessCal = new BusinessCalendarImpl(config, clock);
+
+        Date result = businessCal.calculateBusinessTimeAsDate("10000");
+
+        assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm:ss.SSS", result));
+    }
     
     private Date parseToDate(String dateString) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
