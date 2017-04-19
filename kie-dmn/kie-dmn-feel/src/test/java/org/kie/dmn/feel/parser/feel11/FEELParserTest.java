@@ -19,6 +19,7 @@ package org.kie.dmn.feel.parser.feel11;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Msg;
 
 import java.util.Collections;
@@ -38,6 +39,7 @@ public class FEELParserTest {
         BaseNode number = parse( inputExpression );
 
         assertThat( number, is( instanceOf( NumberNode.class ) ) );
+        assertThat( number.getResultType(), is( BuiltInType.NUMBER ) );
         assertLocation( inputExpression, number );
     }
 
@@ -47,6 +49,7 @@ public class FEELParserTest {
         BaseNode number = parse( inputExpression );
 
         assertThat( number, is( instanceOf( SignedUnaryNode.class ) ) );
+        assertThat( number.getResultType(), is( BuiltInType.NUMBER ) );
         assertLocation( inputExpression, number );
 
         SignedUnaryNode sun = (SignedUnaryNode) number;
@@ -61,6 +64,7 @@ public class FEELParserTest {
         BaseNode number = parse( inputExpression );
 
         assertThat( number, is( instanceOf( SignedUnaryNode.class ) ) );
+        assertThat( number.getResultType(), is( BuiltInType.NUMBER ) );
         assertLocation( inputExpression, number );
 
         SignedUnaryNode sun = (SignedUnaryNode) number;
@@ -75,6 +79,7 @@ public class FEELParserTest {
         BaseNode number = parse( inputExpression );
 
         assertThat( number, is( instanceOf( NumberNode.class ) ) );
+        assertThat( number.getResultType(), is( BuiltInType.NUMBER ) );
         assertLocation( inputExpression, number );
     }
 
@@ -84,6 +89,7 @@ public class FEELParserTest {
         BaseNode number = parse( inputExpression );
 
         assertThat( number, is( instanceOf( SignedUnaryNode.class ) ) );
+        assertThat( number.getResultType(), is( BuiltInType.NUMBER ) );
         assertLocation( inputExpression, number );
 
         SignedUnaryNode sun = (SignedUnaryNode) number;
@@ -98,6 +104,7 @@ public class FEELParserTest {
         BaseNode number = parse( inputExpression );
 
         assertThat( number, is( instanceOf( SignedUnaryNode.class ) ) );
+        assertThat( number.getResultType(), is( BuiltInType.NUMBER ) );
         assertLocation( inputExpression, number );
 
         SignedUnaryNode sun = (SignedUnaryNode) number;
@@ -112,6 +119,7 @@ public class FEELParserTest {
         BaseNode bool = parse( inputExpression );
 
         assertThat( bool, is( instanceOf( BooleanNode.class ) ) );
+        assertThat( bool.getResultType(), is( BuiltInType.BOOLEAN ) );
         assertLocation( inputExpression, bool );
     }
 
@@ -121,6 +129,7 @@ public class FEELParserTest {
         BaseNode bool = parse( inputExpression );
 
         assertThat( bool, is( instanceOf( BooleanNode.class ) ) );
+        assertThat( bool.getResultType(), is( BuiltInType.BOOLEAN ) );
         assertLocation( inputExpression, bool );
     }
 
@@ -130,25 +139,36 @@ public class FEELParserTest {
         BaseNode nullLit = parse( inputExpression );
 
         assertThat( nullLit, is( instanceOf( NullNode.class ) ) );
+        assertThat( nullLit.getResultType(), is( BuiltInType.UNKNOWN ) );
         assertLocation( inputExpression, nullLit );
     }
 
     @Test
     public void testStringLiteral() {
         String inputExpression = "\"some string\"";
-        BaseNode nullLit = parse( inputExpression );
+        BaseNode stringLit = parse( inputExpression );
 
-        assertThat( nullLit, is( instanceOf( StringNode.class ) ) );
-        assertLocation( inputExpression, nullLit );
+        assertThat( stringLit, is( instanceOf( StringNode.class ) ) );
+        assertThat( stringLit.getResultType(), is( BuiltInType.STRING ) );
+        assertLocation( inputExpression, stringLit );
     }
 
     @Test
     public void testNameReference() {
         String inputExpression = "someSimpleName";
-        BaseNode nullLit = parse( inputExpression );
+        BaseNode nameRef = parse( inputExpression );
 
-        assertThat( nullLit, is( instanceOf( NameRefNode.class ) ) );
-        assertLocation( inputExpression, nullLit );
+        assertThat( nameRef, is( instanceOf( NameRefNode.class ) ) );
+        assertLocation( inputExpression, nameRef );
+    }
+    
+    @Test
+    public void testQualifiedName() {
+        String inputExpression = "My Person.Full Name";
+        BaseNode qualRef = parse( inputExpression );
+
+        assertThat( qualRef, is( instanceOf( QualifiedNameNode.class ) ) );
+        assertLocation( inputExpression, qualRef );
     }
 
     @Test
@@ -157,6 +177,7 @@ public class FEELParserTest {
         BaseNode number = parse( inputExpression );
 
         assertThat( number, is( instanceOf( NumberNode.class ) ) );
+        assertThat( number.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( number.getText(), is( "10.5" ) );
     }
 

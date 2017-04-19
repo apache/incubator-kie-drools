@@ -18,6 +18,8 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
@@ -75,4 +77,8 @@ public class ContextNode
         }
     }
 
+    @Override
+    public Type getResultType() {
+        return BuiltInType.CONTEXT;
+    }
 }
