@@ -125,16 +125,20 @@ public class EJBTimerScheduler {
 	
 	public TimerJobInstance getTimerByName(String jobName) {
 		for (Timer timer : timerService.getTimers()) {
-			Serializable info = timer.getInfo();
-			if (info instanceof EjbTimerJob) {
-				EjbTimerJob job = (EjbTimerJob) info;
-				
-				EjbGlobalJobHandle handle = (EjbGlobalJobHandle) job.getTimerJobInstance().getJobHandle();
-				if (handle.getUuid().equals(jobName)) {
-					logger.debug("Job  {} does match timer and is going to be returned", jobName);
-					return handle.getTimerJobInstance();
-				}
-			}
+		    try {
+    			Serializable info = timer.getInfo();
+    			if (info instanceof EjbTimerJob) {
+    				EjbTimerJob job = (EjbTimerJob) info;
+    				
+    				EjbGlobalJobHandle handle = (EjbGlobalJobHandle) job.getTimerJobInstance().getJobHandle();
+    				if (handle.getUuid().equals(jobName)) {
+    					logger.debug("Job  {} does match timer and is going to be returned", jobName);
+    					return handle.getTimerJobInstance();
+    				}
+    			}
+		    } catch (NoSuchObjectLocalException e) {
+                logger.debug("Timer info for {} was not found ", timer);
+            }
 		}	
 		
 		return null;
