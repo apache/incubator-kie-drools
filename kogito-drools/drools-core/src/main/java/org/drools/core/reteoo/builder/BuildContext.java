@@ -150,7 +150,7 @@ public class BuildContext {
     /**
      * @return the currentPatternOffset
      */
-    int getCurrentPatternOffset() {
+    public int getCurrentPatternOffset() {
         return this.currentPatternOffset;
     }
 
@@ -219,11 +219,11 @@ public class BuildContext {
         this.tupleSource = tupleSource;
     }
 
-    void incrementCurrentPatternOffset() {
+    public void incrementCurrentPatternOffset() {
         this.currentPatternOffset++;
     }
 
-    void decrementCurrentPatternOffset() {
+    public void decrementCurrentPatternOffset() {
         this.currentPatternOffset--;
         this.syncObjectTypesWithPatternOffset();
     }
@@ -468,7 +468,7 @@ public class BuildContext {
         return rootObjectTypeNode;
     }
 
-    void setRootObjectTypeNode(ObjectTypeNode source) {
+    public void setRootObjectTypeNode(ObjectTypeNode source) {
         rootObjectTypeNode = source;
     }
 
