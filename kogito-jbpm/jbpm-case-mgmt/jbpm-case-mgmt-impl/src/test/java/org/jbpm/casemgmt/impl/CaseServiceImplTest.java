@@ -60,7 +60,7 @@ import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
 import org.jbpm.document.Document;
 import org.jbpm.document.service.impl.DocumentImpl;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.VariableDesc;
@@ -78,6 +78,9 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.conf.NamedObjectModel;
+import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +91,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(CaseServiceImplTest.class);
     private static final String TEST_DOC_STORAGE = "target/docs";
     
-    private DeploymentUnit deploymentUnit;
+    private KModuleDeploymentUnit deploymentUnit;
 
     @Before
     public void prepare() {
@@ -128,6 +131,15 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
 
         assertNotNull(deploymentService);
         deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        final DeploymentDescriptor descriptor = new DeploymentDescriptorImpl();
+        descriptor.getBuilder().addEventListener(new NamedObjectModel(
+                "mvel",
+                "processIdentity",
+                "new org.jbpm.kie.services.impl.IdentityProviderAwareProcessListener(ksession)"
+        ));
+        deploymentUnit.setDeploymentDescriptor(descriptor);
+        deploymentUnit.setStrategy(RuntimeStrategy.PER_CASE);
 
         deploymentService.deploy(deploymentUnit);
     }
@@ -220,10 +232,11 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             
             Collection<VariableDesc> vars = runtimeDataService.getVariablesCurrentState(((CaseInstanceImpl)cInstance).getProcessInstanceId());
             assertNotNull(vars);
-            assertEquals(2, vars.size());
+            assertEquals(3, vars.size());
             Map<String, Object> mappedVars = vars.stream().collect(toMap(v-> v.getVariableId(), v -> v.getNewValue()));
             assertEquals("my first case", mappedVars.get("caseFile_name"));
             assertEquals(FIRST_CASE_ID, mappedVars.get("CaseId"));
+            assertEquals("john", mappedVars.get("initiator"));
             
             caseService.cancelCase(caseId);            
             try {
@@ -1748,6 +1761,8 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertNotNull(cInstance);
             assertEquals("mary", cInstance.getOwner());
             assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            String initiator = (String) processService.getProcessInstanceVariable(((CaseInstanceImpl) cInstance).getProcessInstanceId(), "initiator");
+            assertEquals("mary", initiator);
 
             caseService.cancelCase(caseId);
             try {
@@ -1783,6 +1798,8 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertNotNull(cInstance);
             assertEquals("mary", cInstance.getOwner());
             assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            String initiator = (String) processService.getProcessInstanceVariable(((CaseInstanceImpl) cInstance).getProcessInstanceId(), "initiator");
+            assertEquals("mary", initiator);
 
             caseService.removeFromCaseRole(caseId, "owner", new UserImpl("mary"));
             caseService.assignToCaseRole(caseId, "owner", new UserImpl("john"));
@@ -1792,6 +1809,8 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals("john", cInstance.getOwner());
+            initiator = (String) processService.getProcessInstanceVariable(((CaseInstanceImpl) cInstance).getProcessInstanceId(), "initiator");
+            assertEquals("mary", initiator);
 
             caseService.cancelCase(caseId);
             try {
@@ -1830,6 +1849,47 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertNotNull(cInstance);
             assertEquals("john", cInstance.getOwner());
             assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            String initiator = (String) processService.getProcessInstanceVariable(((CaseInstanceImpl) cInstance).getProcessInstanceId(), "initiator");
+            assertEquals("mary", initiator);
+
+            caseService.cancelCase(caseId);
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+
+    @Test
+    public void testStartEmptyCaseUsingCaseFileOwnerAsLoggedInUser() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("mary"));
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", "my first case");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data, roleAssignments);
+
+        identityProvider.setName("mary");
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals("mary", cInstance.getOwner());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            String initiator = (String) processService.getProcessInstanceVariable(((CaseInstanceImpl) cInstance).getProcessInstanceId(), "initiator");
+            assertEquals("mary", initiator);
 
             caseService.cancelCase(caseId);
             try {
