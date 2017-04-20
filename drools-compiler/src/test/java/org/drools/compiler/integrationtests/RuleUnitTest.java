@@ -22,6 +22,7 @@ import java.util.concurrent.Semaphore;
 
 import org.drools.compiler.Person;
 import org.drools.compiler.util.debug.DebugList;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.ruleunit.RuleUnitFactory;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -104,10 +105,42 @@ public class RuleUnitTest {
         executor.bindVariable( "persons", persons );
 
         // explicitly create unit
-        assertEquals(2, executor.run( new AdultUnit(persons) ) );
+        assertEquals(2, executor.run( AdultUnit.class ) );
 
         // let RuleUnitExecutor internally create and wire the unit instance
         assertEquals(1, executor.run( NotAdultUnit.class ) );
+    }
+
+    @Test
+    public void testUnboundDataSource() throws Exception {
+        // DROOLS-1533
+        String drl1 =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                "import " + NotAdultUnit.class.getCanonicalName() + "\n" +
+                "rule Adult @Unit( AdultUnit.class ) when\n" +
+                "    Person(age >= 18, $name : name) from persons\n" +
+                "then\n" +
+                "    System.out.println($name + \" is adult\");\n" +
+                "end\n" +
+                "rule NotAdult @Unit( NotAdultUnit.class ) when\n" +
+                "    Person(age < 18, $name : name) from persons\n" +
+                "then\n" +
+                "    System.out.println($name + \" is NOT adult\");\n" +
+                "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        DataSource<Person> persons = DataSource.create( new Person( "Mario", 42 ),
+                                                        new Person( "Marilena", 44 ),
+                                                        new Person( "Sofia", 4 ) );
+
+        // explicitly create unit
+        assertEquals(2, executor.run( new AdultUnit(persons) ) );
+
+        // let RuleUnitExecutor internally create and wire the unit instance
+        assertEquals(1, executor.run( new NotAdultUnit(persons) ) );
     }
 
     @Test
@@ -544,7 +577,7 @@ public class RuleUnitTest {
                                                              new Person( "Mario", 42 ) );
 
         RuleUnit ruleUnit = new RuleUnitFactory().bindVariable( "persons", persons )
-                                                 .getOrCreateRuleUnit( "org.kie.test.MyRuleUnit", kcontainer.getClassLoader() );
+                                                 .getOrCreateRuleUnit( ( (InternalRuleUnitExecutor) executor ), "org.kie.test.MyRuleUnit", kcontainer.getClassLoader() );
 
         assertEquals(1, executor.run( ruleUnit ) );
 
