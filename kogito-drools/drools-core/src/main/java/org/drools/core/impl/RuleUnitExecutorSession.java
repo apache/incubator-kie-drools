@@ -113,11 +113,11 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     }
 
     public int run( Class<? extends RuleUnit> ruleUnitClass ) {
-        return internalRun( getRuleUnitFactory().getOrCreateRuleUnit( ruleUnitClass ) );
+        return internalRun( getRuleUnitFactory().getOrCreateRuleUnit( this, ruleUnitClass ) );
     }
 
     public int run( RuleUnit ruleUnit ) {
-        return internalRun( getRuleUnitFactory().injectUnitVariables( ruleUnit ) );
+        return internalRun( getRuleUnitFactory().injectUnitVariables( this, ruleUnit ) );
     }
 
     private int internalRun( RuleUnit ruleUnit ) {
@@ -134,7 +134,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     }
 
     public void runUntilHalt( Class<? extends RuleUnit> ruleUnitClass ) {
-        runUntilHalt( getRuleUnitFactory().getOrCreateRuleUnit( ruleUnitClass ) );
+        runUntilHalt( getRuleUnitFactory().getOrCreateRuleUnit( this, ruleUnitClass ) );
     }
 
     public void runUntilHalt( RuleUnit ruleUnit ) {
@@ -150,7 +150,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
     @Override
     public RuleUnitDescr switchToRuleUnit( Class<? extends RuleUnit> ruleUnitClass ) {
-        return switchToRuleUnit( getRuleUnitFactory().getOrCreateRuleUnit( ruleUnitClass ) );
+        return switchToRuleUnit( getRuleUnitFactory().getOrCreateRuleUnit( this, ruleUnitClass ) );
     }
 
     @Override
@@ -164,12 +164,12 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
     @Override
     public void guardRuleUnit( Class<? extends RuleUnit> ruleUnitClass, Activation activation) {
-        ruleUnitGuardSystem.registerGuard( getRuleUnitFactory().getOrCreateRuleUnit( ruleUnitClass ), activation );
+        ruleUnitGuardSystem.registerGuard( getRuleUnitFactory().getOrCreateRuleUnit( this, ruleUnitClass ), activation );
     }
 
     @Override
     public void guardRuleUnit( RuleUnit ruleUnit, Activation activation ) {
-        ruleUnitGuardSystem.registerGuard( getRuleUnitFactory().registerUnit( ruleUnit ), activation );
+        ruleUnitGuardSystem.registerGuard( getRuleUnitFactory().registerUnit( this, ruleUnit ), activation );
     }
 
     @Override
@@ -219,9 +219,14 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
     public RuleUnitExecutor bindVariable( String name, Object value ) {
         getRuleUnitFactory().bindVariable( name, value );
         if (value instanceof InternalDataSource) {
-            ( (InternalDataSource) value ).setWorkingMemory( session );
+            bindDataSource( (InternalDataSource) value );
         }
         return this;
+    }
+
+    @Override
+    public void bindDataSource(InternalDataSource dataSource) {
+        dataSource.setWorkingMemory( session );
     }
 
     @Override

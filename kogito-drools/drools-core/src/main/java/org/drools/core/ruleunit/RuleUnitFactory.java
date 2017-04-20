@@ -20,7 +20,10 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.datasources.InternalDataSource;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.kie.api.definition.rule.UnitVar;
+import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 
 import static org.drools.core.util.ClassUtils.isAssignable;
@@ -35,51 +38,64 @@ public class RuleUnitFactory {
         return this;
     }
 
-    public RuleUnit getOrCreateRuleUnit( String name, ClassLoader classLoader ) {
+    public RuleUnit getOrCreateRuleUnit( InternalRuleUnitExecutor executor, String name, ClassLoader classLoader ) {
         try {
-            return getOrCreateRuleUnit( (Class<? extends RuleUnit>) Class.forName( name, true, classLoader ) );
+            return getOrCreateRuleUnit( executor, (Class<? extends RuleUnit>) Class.forName( name, true, classLoader ) );
         } catch (Exception e) {
             throw new RuntimeException( "Cannot find RuleUnit class " + name, e );
         }
     }
 
-    public <T extends RuleUnit> T getOrCreateRuleUnit( Class<T> ruleUnitClass ) {
-        return (T)units.computeIfAbsent( new RuleUnit.Identity(ruleUnitClass), id -> createRuleUnit( ruleUnitClass ) );
+    public <T extends RuleUnit> T getOrCreateRuleUnit( InternalRuleUnitExecutor executor, Class<T> ruleUnitClass ) {
+        return (T)units.computeIfAbsent( new RuleUnit.Identity(ruleUnitClass), id -> createRuleUnit( executor, ruleUnitClass ) );
     }
 
-    public RuleUnit registerUnit(RuleUnit ruleUnit ) {
-        return units.computeIfAbsent( ruleUnit.getUnitIdentity(), id -> injectUnitVariables( ruleUnit ) );
+    public RuleUnit registerUnit( InternalRuleUnitExecutor executor, RuleUnit ruleUnit ) {
+        return units.computeIfAbsent( ruleUnit.getUnitIdentity(), id -> injectUnitVariables( executor, ruleUnit ) );
     }
 
-    private <T extends RuleUnit> T createRuleUnit( Class<T> ruleUnitClass ) {
+    private <T extends RuleUnit> T createRuleUnit( InternalRuleUnitExecutor executor, Class<T> ruleUnitClass ) {
         try {
-            return injectUnitVariables( ruleUnitClass, (T) ruleUnitClass.newInstance() );
+            return injectUnitVariables( executor, ruleUnitClass, ruleUnitClass.newInstance() );
         } catch (Exception e) {
             throw new RuntimeException( "Unable to instance RuleUnit " + ruleUnitClass.getName(), e );
         }
     }
 
-    public <T extends RuleUnit> T injectUnitVariables( T ruleUnit ) {
-        return injectUnitVariables( (Class<T>) ruleUnit.getClass(), ruleUnit );
+    public <T extends RuleUnit> T injectUnitVariables( InternalRuleUnitExecutor executor, T ruleUnit ) {
+        return injectUnitVariables( executor, (Class<T>) ruleUnit.getClass(), ruleUnit );
     }
 
-    private <T extends RuleUnit> T injectUnitVariables( Class<T> ruleUnitClass, T ruleUnit ) {
+    private <T extends RuleUnit> T injectUnitVariables( InternalRuleUnitExecutor executor, Class<T> ruleUnitClass, T ruleUnit ) {
         for (Field field : ruleUnitClass.getDeclaredFields()) {
             String fieldName = getInjectingName(field);
             Object var = variables.get( getInjectingName(field) );
             if ( isAssignable( field.getType(), var ) ) {
-                field.setAccessible( true );
-                try {
-                    Object existingValue = field.get( ruleUnit );
-                    if (existingValue == null || (existingValue instanceof Number && ( (Number) existingValue ).intValue() == 0)) {
+                Object existingValue = readFieldValue(field, ruleUnit);
+                if (existingValue == null || (existingValue instanceof Number && ( (Number) existingValue ).intValue() == 0)) {
+                    try {
                         field.set( ruleUnit, var );
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException( "Unable to inject field " + fieldName + " into " + ruleUnitClass.getName(), e );
                     }
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException( "Unable to inject field " + fieldName + " into " + ruleUnitClass.getName(), e );
+                }
+            } else if (var == null && DataSource.class.isAssignableFrom( field.getType() )) {
+                Object existingValue = readFieldValue(field, ruleUnit);
+                if (existingValue instanceof InternalDataSource) {
+                    executor.bindDataSource( (InternalDataSource) existingValue );
                 }
             }
         }
         return ruleUnit;
+    }
+
+    private Object readFieldValue(Field field, Object obj) {
+        field.setAccessible( true );
+        try {
+            return field.get( obj );
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException( "Unable to read field " + field.getName() + " from " + obj, e );
+        }
     }
 
     private String getInjectingName(Field field) {
