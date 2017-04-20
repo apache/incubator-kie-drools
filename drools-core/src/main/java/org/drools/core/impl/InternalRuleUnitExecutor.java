@@ -16,6 +16,7 @@
 
 package org.drools.core.impl;
 
+import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.ruleunit.RuleUnitDescr;
 import org.drools.core.spi.Activation;
 import org.kie.api.runtime.rule.RuleUnit;
@@ -35,4 +36,6 @@ public interface InternalRuleUnitExecutor extends RuleUnitExecutor {
     void guardRuleUnit( RuleUnit ruleUnit, Activation activation );
 
     RuleUnit getCurrentRuleUnit();
+
+    void bindDataSource(InternalDataSource dataSource );
 }
