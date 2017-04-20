@@ -231,7 +231,40 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkMode>always</forkMode>
+          <!-- Properties for Byteman which allows it to run on IBM Java as well -->
+          <argLine>
+            -javaagent:${project.build.directory}/agents/byteman.jar=port:9091,boot:${project.build.directory}/agents/byteman.jar
+          </argLine>
+          <systemPropertyVariables>
+            <org.jboss.byteman.contrib.bmunit.agent.inhibit>true</org.jboss.byteman.contrib.bmunit.agent.inhibit>
+            <org.jboss.byteman.allow.config.update>true</org.jboss.byteman.allow.config.update>
+          </systemPropertyVariables>
         </configuration>
+      </plugin>
+
+      <!-- Byteman jar is copied to target/agents directory so Java is able to bootstrap it -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-agent</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.jboss.byteman</groupId>
+                  <artifactId>byteman</artifactId>
+                  <outputDirectory>${project.build.directory}/agents</outputDirectory>
+                  <destFileName>byteman.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>

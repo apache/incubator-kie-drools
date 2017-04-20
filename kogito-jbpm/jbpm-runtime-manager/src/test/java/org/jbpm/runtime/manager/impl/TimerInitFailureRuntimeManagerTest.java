@@ -89,7 +89,7 @@ public class TimerInitFailureRuntimeManagerTest extends AbstractBaseTest {
     }
  
     
-    @Test(timeout=10000)
+    @Test(timeout=15000)
     @BMScript(value = "byteman-scripts/failOnRuntimeManagerInitRules.btm")
     public void testPerProcessInstanceRuntimeManager() throws Exception {
         final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Intermediate Catch Event 1", 1);
@@ -101,7 +101,7 @@ public class TimerInitFailureRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         // start a new process instance
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         ProcessInstance pi = ksession.startProcess("TimerInitFailure", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, pi.getState());
 
@@ -144,7 +144,7 @@ public class TimerInitFailureRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         // start a new process instance
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         ProcessInstance pi = ksession.startProcess("TimerInitFailure", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, pi.getState());
 
