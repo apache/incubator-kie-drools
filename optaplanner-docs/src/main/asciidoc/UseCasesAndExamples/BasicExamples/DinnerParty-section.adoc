@@ -1,0 +1,26 @@
+[[dinnerParty]]
+== Dinner Party
+
+
+[[dinnerPartyProblemDescription]]
+=== Problem Description
+
+Miss Manners is throwing another dinner party.
+
+* This time she invited 144 guests and prepared 12 round tables with 12 seats each.
+* Every guest should sit next to someone (left and right) of the opposite gender.
+* And that neighbour should have at least one hobby in common with the guest.
+* At every table, there should be two politicians, two doctors, two socialites, two coaches, two teachers and two programmers.
+* And the two politicians, two doctors, two coaches and two programmers should not be the same kind at a table.
+
+Drools Expert also has the normal Miss Manners example (which is much smaller) and employs an exhaustive heuristic to solve it.
+Planner's implementation is far more scalable because it uses heuristics to find the best solution and Drools Expert to calculate the score of each solution.
+
+
+[[dinnerPartyProblemSize]]
+=== Problem Size
+
+[source,options="nowrap"]
+----
+wedding01 has 18 jobs, 144 guests, 288 hobby practicians, 12 tables and 144 seats with a search space of 10^310.
+----

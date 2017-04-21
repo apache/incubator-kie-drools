@@ -1,0 +1,32 @@
+[[meetingScheduling]]
+== Meeting Scheduling
+
+
+[[meetingSchedulingProblemDescription]]
+=== Problem Description
+
+Assign each meeting to a starting time and a room.
+Meetings have different durations.
+
+Hard constraints:
+
+* Room conflict: two meetings must not use the same room at the same time.
+* Required attendance: A person cannot have two required meetings at the same time.
+
+Medium constraints:
+
+* Preferred attendance: A person cannot have two preferred meetings at the same time, nor a preferred and a required meeting at the same time.
+
+Soft constraints:
+
+* Sooner rather than later: Schedule all meetings as soon as possible.
+
+
+[[meetingSchedulingProblemSize]]
+=== Problem Size
+
+[source,options="nowrap"]
+----
+50meetings-160timegrains-5rooms  has  50 meetings, 160 timeGrains and 5 rooms with a search space of 10^145.
+100meetings-320timegrains-5rooms has 100 meetings, 320 timeGrains and 5 rooms with a search space of 10^320.
+----
