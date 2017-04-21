@@ -98,14 +98,6 @@ public class RuleRenderTest {
     }
 
     @Test
-    public void testSalienceCalculator() {
-        final int rowNumber = 2;
-        final int salience = Rule.calcSalience(rowNumber);
-        assertEquals(65533,
-                     salience);
-    }
-
-    @Test
     public void testNotEscapeChars() {
         //bit of a legacy from the olde XML dayes of yesteryeare
         final Condition cond = new Condition();

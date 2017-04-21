@@ -16,15 +16,10 @@
 
 package org.drools.decisiontable.parser;
 
-import static org.junit.Assert.*;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Locale;
-
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
 import org.drools.template.model.Condition;
@@ -35,6 +30,10 @@ import org.drools.template.model.Package;
 import org.drools.template.model.Rule;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -440,12 +439,12 @@ public class RuleWorksheetParseTest {
         System.out.println(drl);
         
         // check rules
-        Rule rule = (Rule) ruleset.getRules().get( 0 );
-        Condition cond = (Condition) rule.getConditions().get( 0 );
+        Rule rule = ruleset.getRules().get( 0 );
+        Condition cond = rule.getConditions().get( 0 );
         assertEquals( "Foo(myObject.getColour().equals(red), myObject.size () > 12\\\")",
                 cond.getSnippet() );
     }
-    
+
     @Test
     public void testQuoteEscapingDisabled() throws Exception {
         final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/QuoteEscapeDisabledWorkbook.xls" );
@@ -463,10 +462,41 @@ public class RuleWorksheetParseTest {
         Condition cond = (Condition) rule.getConditions().get( 0 );
         assertEquals( "Foo(myObject.getColour().equals(red), myObject.size () > \"12\")",
                 cond.getSnippet() );
-        rule = (Rule) ruleset.getRules().get( 1 );
-        cond = (Condition) rule.getConditions().get( 0 );
+        rule = ruleset.getRules().get( 1 );
+        cond = rule.getConditions().get( 0 );
         assertEquals( "Foo(myObject.getColour().equals(blue), myObject.size () > 12\")",
                 cond.getSnippet() );
+    }
+
+    @Test
+    public void testSalienceRange() throws Exception {
+        // DROOLS-1225
+        final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/SalienceRangeWorkbook.xls" );
+        final RuleSheetListener listener = getRuleSheetListener( stream );
+
+        final Package ruleset = listener.getRuleSet();
+        assertNotNull( ruleset );
+        DRLOutput dout = new DRLOutput();
+        ruleset.renderDRL(dout);
+        String drl = dout.getDRL();
+        System.out.println(drl);
+
+        // check rules
+        List<Rule> rules = ruleset.getRules();
+        assertEquals( "10000",
+                      rules.get(0).getSalience() );
+        assertEquals( "9999",
+                      rules.get(1).getSalience() );
+    }
+
+    @Test
+    public void testSalienceOutOfRange() throws Exception {
+        // DROOLS-1225
+        final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/SalienceOutOfRangeWorkbook.xls" );
+        try {
+            final RuleSheetListener listener = getRuleSheetListener( stream );
+            fail( "should have failed" );
+        } catch (DecisionTableParseException e) { }
     }
 
     /**
