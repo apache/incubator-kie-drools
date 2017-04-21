@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package nl.rws.dso.inception.backend.extension.model;
+package org.kie.dmn.core.compiler.extensions;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.converters.extended.ToAttributedValueConverter;
 
-@XStreamAlias("uitvoeringsregelRef")
+@XStreamAlias("lastNameDescription")
 @XStreamConverter(value = ToAttributedValueConverter.class, strings = { "content" })
-public class UitvoeringsregelRef {
+public class LastNameDescription {
 
     private String content;
 

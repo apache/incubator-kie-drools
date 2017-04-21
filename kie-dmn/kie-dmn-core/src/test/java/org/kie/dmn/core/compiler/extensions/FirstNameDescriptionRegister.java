@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package nl.rws.dso.inception.backend.extension;
+package org.kie.dmn.core.compiler.extensions;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import nl.rws.dso.inception.backend.extension.model.UitvoeringsregelRef;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 
-public class UitvoeringsregelRefRegister implements DMNExtensionRegister {
+public class FirstNameDescriptionRegister implements DMNExtensionRegister {
 
+
+    @Override
     public void registerExtensionConverters(XStream xStream) {
-
-        xStream.processAnnotations(UitvoeringsregelRef.class);
-
+        xStream.processAnnotations(FirstNameDescription.class);
     }
-
 }
