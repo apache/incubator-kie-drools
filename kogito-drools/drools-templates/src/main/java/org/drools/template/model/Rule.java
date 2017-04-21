@@ -25,7 +25,7 @@ import java.util.List;
 public class Rule extends AttributedDRLElement
         implements DRLJavaEmitter {
 
-    private static final int MAX_ROWS = 65535;
+    public static final int MAX_ROWS = 65535;
 
     private String _name;
     private String _description;
@@ -98,13 +98,6 @@ public class Rule extends AttributedDRLElement
         for (DRLJavaEmitter item : list) {
             item.renderDRL(out);
         }
-    }
-
-    public static int calcSalience(final int rowNumber) {
-        if (rowNumber > Rule.MAX_ROWS) {
-            throw new IllegalArgumentException("That row number is above the max: " + Rule.MAX_ROWS);
-        }
-        return Rule.MAX_ROWS - rowNumber;
     }
 
     public List<String> getMetadata() {
