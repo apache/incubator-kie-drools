@@ -411,7 +411,7 @@ implements RuleSheetListener {
         try {
             return Integer.parseInt( getProperties().getSingleProperty( name, "" + defaultValue ) );
         } catch (NumberFormatException nfe) {
-            return defaultValue;
+            throw new DecisionTableParseException( "Invalid numeric value for option: " + name, nfe );
         }
     }
 
@@ -686,7 +686,7 @@ implements RuleSheetListener {
         if ( this._currentSequentialFlag ) {
             salience = _currentSalience--;
             if (salience < _minSalienceTag) {
-                throw new DecisionTableParseException( "Row number is above the max" );
+                throw new DecisionTableParseException( "Salience less than the minimum specified on row: " + row );
             }
         }
         final int spreadsheetRow = row + 1;
