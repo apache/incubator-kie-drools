@@ -19,6 +19,7 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.runtime.process.InternalProcessRuntime;
+import org.drools.persistence.api.TransactionManager;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.kie.api.runtime.KieSession;
@@ -82,33 +83,48 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     }
     
     public void init() {
-
+        
         // TODO should we proxy/wrap the ksession so we capture dispose.destroy method calls?
         String location = getLocation();
         Long knownSessionId = getPersistedSessionId(location, identifier);
         InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
         
-        
-        if (knownSessionId > 0) {
-            try {
-                this.singleton = new SynchronizedRuntimeImpl(factory.findKieSessionById(knownSessionId), internalTaskService);
-            } catch (RuntimeException e) {
-                // in case session with known id was found
-            }
-        } 
-        
-        if (this.singleton == null) {
-            
-            this.singleton = new SynchronizedRuntimeImpl(factory.newKieSession(), internalTaskService);            
-            persistSessionId(location, identifier, singleton.getKieSession().getIdentifier());
+        boolean owner = false;
+        TransactionManager tm = null;
+        if (environment.usePersistence()) {
+            tm = getTransactionManagerInternal(environment.getEnvironment());
+            owner = tm.begin();
         }
-        ((RuntimeEngineImpl) singleton).setManager(this);
-        TaskContentRegistry.get().addMarshallerContext(getIdentifier(), 
-    			new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
-        configureRuntimeOnTaskService(internalTaskService, singleton);
-        registerItems(this.singleton);
-        attachManager(this.singleton);
-        this.registry.register(this);
+        try {
+            if (knownSessionId > 0) {
+                try {
+                    this.singleton = new SynchronizedRuntimeImpl(factory.findKieSessionById(knownSessionId), internalTaskService);
+                } catch (RuntimeException e) {
+                    // in case session with known id was found
+                }
+            } 
+            
+            if (this.singleton == null) {
+                
+                this.singleton = new SynchronizedRuntimeImpl(factory.newKieSession(), internalTaskService);            
+                persistSessionId(location, identifier, singleton.getKieSession().getIdentifier());
+            }
+            ((RuntimeEngineImpl) singleton).setManager(this);
+            TaskContentRegistry.get().addMarshallerContext(getIdentifier(), 
+        			new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
+            configureRuntimeOnTaskService(internalTaskService, singleton);
+            registerItems(this.singleton);
+            attachManager(this.singleton);
+            this.registry.register(this);
+            if (tm != null) {
+                tm.commit(owner);
+            }
+        } catch (Exception e) {
+            if (tm != null) {
+                tm.rollback(owner);
+            }
+            throw new RuntimeException("Exception while initializing runtime manager " + this.identifier, e);
+        }
     }
     
     @Override
