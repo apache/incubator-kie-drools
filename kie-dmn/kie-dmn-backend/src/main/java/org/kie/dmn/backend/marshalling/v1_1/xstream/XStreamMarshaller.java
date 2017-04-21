@@ -350,7 +350,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new QNameConverter());
         xStream.registerConverter(new DMNListConverter( xStream ) );
         xStream.registerConverter(new ElementCollectionConverter( xStream ) );
-        xStream.registerConverter(new ExtensionElementsConverter( xStream ) );
+        xStream.registerConverter(new ExtensionElementsConverter( xStream, extensionRegisters ) );
         
         xStream.ignoreUnknownElements();
 
