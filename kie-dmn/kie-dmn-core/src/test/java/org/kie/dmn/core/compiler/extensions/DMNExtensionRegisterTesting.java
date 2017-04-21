@@ -16,10 +16,7 @@
 
 package org.kie.dmn.core.compiler.extensions;
 
-import nl.rws.dso.inception.backend.extension.UitvoeringsregelRefRegister;
-import nl.rws.dso.inception.backend.extension.model.UitvoeringsregelRef;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -46,13 +43,10 @@ import static org.junit.Assert.assertTrue;
 
 public class DMNExtensionRegisterTesting {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     private void setProperties() {
         System.setProperty("foo", "bar");
-        System.setProperty("org.kie.dmn.marshaller.extension.conversie", "nl.rws.dso.inception.backend.extension.ConversieregelRefRegister");
-        System.setProperty("org.kie.dmn.marshaller.extension.uitvoeringsregel", "nl.rws.dso.inception.backend.extension.UitvoeringsregelRefRegister");
+        System.setProperty("org.kie.dmn.marshaller.extension.firstname", "org.kie.dmn.core.compiler.extensions.FirstNameDescriptionRegister");
+        System.setProperty("org.kie.dmn.marshaller.extension.lastname", "org.kie.dmn.core.compiler.extensions.LastNameDescriptionRegister");
     }
 
     private Map<String, String> loadExtensionProperties() {
@@ -64,8 +58,8 @@ public class DMNExtensionRegisterTesting {
 
     private void clearProperties() {
         System.clearProperty("foo");
-        System.clearProperty("org.kie.dmn.marshaller.extension.geo");
-        System.clearProperty("org.kie.dmn.marshaller.extension.question");
+        System.clearProperty("org.kie.dmn.marshaller.extension.firstname");
+        System.clearProperty("org.kie.dmn.marshaller.extension.lastname");
     }
 
     private DMNCompilerConfiguration loadDMNCompilerConfig() {
@@ -96,41 +90,42 @@ public class DMNExtensionRegisterTesting {
         DMNCompilerConfiguration compilerConfig = loadDMNCompilerConfig();
         assertEquals(2, compilerConfig.getRegisteredExtensions().size());
         assertTrue(compilerConfig.getRegisteredExtensions().get(0) instanceof DMNExtensionRegister);
-        assertEquals(UitvoeringsregelRefRegister.class, compilerConfig.getRegisteredExtensions().get(0).getClass());
+        assertEquals(FirstNameDescriptionRegister.class, compilerConfig.getRegisteredExtensions().get(0).getClass());
         clearProperties();
     }
 
     @Test
-    public void testUitvoeringsregelRef() {
+    public void testFirstNameConverter() {
         setProperties();
         DMNCompilerConfiguration compilerConfig = loadDMNCompilerConfig();
         final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(compilerConfig.getRegisteredExtensions());
-        final InputStream is = this.getClass().getResourceAsStream( "dakkapel_uitvoering_en_conversie.xml" );
+        final InputStream is = this.getClass().getResourceAsStream( "0001-input-data-string-with-extensions.dmn" );
         final InputStreamReader isr = new InputStreamReader( is );
         final Definitions def = DMNMarshaller.unmarshal( isr );
-        InputData inputData = (InputData)def.getDrgElement().get(3);
+        InputData inputData = (InputData)def.getDrgElement().get(1);
         DMNElement.ExtensionElements elements = inputData.getExtensionElements();
         assertTrue(elements != null);
         assertEquals(1, elements.getAny().size());
-        UitvoeringsregelRef uitvoeringsregelRef = (UitvoeringsregelRef)elements.getAny().get(0);
-        assertEquals(uitvoeringsregelRef.getContent(), "UitvId0002");
+        FirstNameDescription desription = (FirstNameDescription) elements.getAny().get(0);
+        assertTrue(desription.getContent().contains("First"));
         clearProperties();
     }
 
+
     @Test
-    public void testConversieRegelRef() {
+    public void testLastNameConverter() {
         setProperties();
         DMNCompilerConfiguration compilerConfig = loadDMNCompilerConfig();
         final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newMarshallerWithExtensions(compilerConfig.getRegisteredExtensions());
-        final InputStream is = this.getClass().getResourceAsStream( "dakkapel_uitvoering_en_conversie.xml" );
+        final InputStream is = this.getClass().getResourceAsStream( "0001-input-data-string-with-extensions.dmn" );
         final InputStreamReader isr = new InputStreamReader( is );
         final Definitions def = DMNMarshaller.unmarshal( isr );
-        InputData inputData = (InputData)def.getDrgElement().get(4);
+        InputData inputData = (InputData)def.getDrgElement().get(2);
         DMNElement.ExtensionElements elements = inputData.getExtensionElements();
         assertTrue(elements != null);
         assertEquals(1, elements.getAny().size());
-        String uitvoeringsregelRef = (String)elements.getAny().get(0);
-        assertEquals(uitvoeringsregelRef, "Output3");
+        LastNameDescription desription = (LastNameDescription) elements.getAny().get(0);
+        assertTrue(desription.getContent().contains("Last"));
         clearProperties();
     }
 

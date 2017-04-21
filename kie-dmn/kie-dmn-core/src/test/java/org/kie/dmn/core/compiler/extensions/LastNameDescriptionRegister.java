@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package nl.rws.dso.inception.backend.extension;
+package org.kie.dmn.core.compiler.extensions;
 
 import com.thoughtworks.xstream.XStream;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 
-public class ConversieregelRefRegister implements DMNExtensionRegister {
+public class LastNameDescriptionRegister implements DMNExtensionRegister {
 
+    @Override
     public void registerExtensionConverters(XStream xStream) {
-        xStream.alias("conversieregelRef", String.class);
+        xStream.processAnnotations(LastNameDescription.class);
     }
-
 }
