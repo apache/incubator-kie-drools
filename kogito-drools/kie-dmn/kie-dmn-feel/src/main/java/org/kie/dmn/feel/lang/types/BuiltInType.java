@@ -146,6 +146,9 @@ public enum BuiltInType implements SimpleType {
     }
 
     public static boolean isInstanceOf( Object o, Type t ) {
+        if ( o == null ) {
+            return false; // See FEEL specifications Table 49.
+        }
         if ( t == UNKNOWN ) {
             return true;
         }
@@ -161,5 +164,11 @@ public enum BuiltInType implements SimpleType {
         return isInstanceOf(o, this);
     }
 
-
+    @Override
+    public boolean isAssignableValue(Object value) {
+        if ( value == null ) {
+            return true; // a null-value can be assigned to any type.
+        }
+        return isInstanceOf(value, this);
+    }
 }

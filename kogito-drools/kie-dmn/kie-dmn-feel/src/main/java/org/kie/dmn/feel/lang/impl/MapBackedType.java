@@ -64,4 +64,27 @@ public class MapBackedType
         }
         return true;
     }
+
+    @Override
+    public boolean isAssignableValue(Object value) {
+        if ( value == null ) {
+            return true;
+        }
+        Map<String, Object> instance = null;
+        try {
+            instance = (Map<String, Object>) value;
+        } catch ( Exception e ) {
+            return false;
+        }
+        for ( Entry<String, Type> f : fields.entrySet() ) {
+            if ( instance.get(f.getKey()) == null ) {
+                return false;
+            } else {
+                if ( !f.getValue().isAssignableValue(instance.get(f.getKey())) ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

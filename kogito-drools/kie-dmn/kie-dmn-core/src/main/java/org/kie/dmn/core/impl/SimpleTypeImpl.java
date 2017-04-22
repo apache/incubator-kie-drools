@@ -52,4 +52,9 @@ public class SimpleTypeImpl
     protected boolean internalIsInstanceOf(Object o) {
         return getFeelType().isInstanceOf(o);
     }
+
+    @Override
+    protected boolean internalIsAssignableValue(Object o) {
+        return getFeelType().isAssignableValue(o);
+    }
 }

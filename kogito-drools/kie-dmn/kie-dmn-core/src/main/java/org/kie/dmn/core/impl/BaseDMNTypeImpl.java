@@ -128,7 +128,7 @@ public abstract class BaseDMNTypeImpl
     @Override
     public boolean isInstanceOf(Object o) {
         if ( o == null ) {
-            return true; // null is instance of any type
+            return false; // See FEEL specifications Table 49.
         }
         // try first to recurse in case of Collection..
         if ( isCollection() && o instanceof Collection ) {
@@ -145,4 +145,25 @@ public abstract class BaseDMNTypeImpl
     }
     
     protected abstract boolean internalIsInstanceOf(Object o);
+    
+    @Override
+    public boolean isAssignableValue(Object value) {
+        if ( value == null ) {
+            return true; // a null-value can be assigned to any type.
+        } 
+        // try first to recurse in case of Collection..
+        if ( isCollection() && value instanceof Collection ) {
+            Collection<Object> elements = (Collection) value;
+            for ( Object e : elements ) {
+                if ( !internalIsAssignableValue(e) ) {
+                    return false;
+                }
+            }
+            return true;
+        } 
+        // .. normal case, or collection of 1 element:
+        return internalIsAssignableValue( value );
+    }
+    
+    protected abstract boolean internalIsAssignableValue(Object o);
 }

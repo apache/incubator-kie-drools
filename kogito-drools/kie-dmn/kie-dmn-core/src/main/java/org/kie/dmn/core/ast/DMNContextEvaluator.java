@@ -85,7 +85,7 @@ public class DMNContextEvaluator
                         
                         if ( ! (ed.getContextEntry().getExpression() instanceof FunctionDefinition) ) {
                             // checking directly the result type...
-                            if ( ed.getType() != null && !ed.getType().isInstanceOf(value) ) {
+                            if ( ed.getType() != null && !ed.getType().isAssignableValue(value) ) {
                             MsgUtil.reportMessage( logger,
                                     DMNMessage.Severity.ERROR,
                                     contextDef,

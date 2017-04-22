@@ -331,7 +331,7 @@ public class DMNRuntimeImpl
                         value = ((Collection)value).toArray()[0];
                     }
                     
-                    if ( !d.getResultType().isInstanceOf(value) ) {
+                    if ( !d.getResultType().isAssignableValue(value) ) {
                         DMNMessage message = MsgUtil.reportMessage( logger,
                                 DMNMessage.Severity.ERROR,
                                 decision.getSource(),
