@@ -53,6 +53,6 @@ public class InstanceOfNode
     public Object evaluate(EvaluationContext ctx) {
         Object value = expression.evaluate( ctx );
         Type t = type.evaluate( ctx );
-        return BuiltInType.isInstanceOf( value, t );
+        return t.isInstanceOf( value );
     }
 }

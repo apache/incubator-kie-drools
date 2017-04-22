@@ -89,6 +89,11 @@ public class JavaBackedType implements CompositeType {
 
     @Override
     public boolean isInstanceOf(Object o) {
-        return wrapped.getClass().isAssignableFrom(o.getClass());
+        return wrapped.getClass().isInstance(o);
+    }
+
+    @Override
+    public boolean isAssignableValue(Object value) {
+        return value == null || wrapped.getClass().isAssignableFrom(value.getClass());
     }
 }

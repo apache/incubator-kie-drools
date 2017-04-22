@@ -40,4 +40,9 @@ public class BuiltInTypeSymbol
         return getType().isInstanceOf(o);
     }
 
+    @Override
+    public boolean isAssignableValue(Object value) {
+        return getType().isAssignableValue(value);
+    }
+
 }
