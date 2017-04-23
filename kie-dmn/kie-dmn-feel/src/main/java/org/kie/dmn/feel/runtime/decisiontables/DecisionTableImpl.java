@@ -113,7 +113,7 @@ public class DecisionTableImpl {
         Map<String, Object> variables = ctx.getAllValues();
         Object[] actualInputs = new Object[ inputs.size() ];
         for( int i = 0; i < inputs.size(); i++ ) {
-            actualInputs[i] = feel.evaluate( inputs.get( i ).getInputExpression(), variables );
+            actualInputs[i] = feel.evaluate( inputs.get( i ).getCompiledInput(), variables );
         }
         return actualInputs;
     }

@@ -1101,6 +1101,30 @@ public class DMNRuntimeTest {
         assertThat( dmnResult.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );
     }
 
+    @Test
+    public void testUnknownVariable1() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "unknown_variable1.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_9105d4a6-6049-4ace-a9cd-88f18d29bc8f",
+                "Loan Recommendation - context" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 1 ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessage(), containsString( "Unknown variable 'NonSalaryPct'" ) );
+    }
+
+    @Test
+    public void testUnknownVariable2() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "unknown_variable2.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_9105d4a6-6049-4ace-a9cd-88f18d29bc8f",
+                "Loan Recommendation - context" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 1 ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessage(), containsString( "Unknown variable 'NonSalaryPct'" ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }

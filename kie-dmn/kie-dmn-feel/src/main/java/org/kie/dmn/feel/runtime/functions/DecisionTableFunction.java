@@ -16,12 +16,9 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,10 +75,10 @@ public class DecisionTableFunction
             }
             // zip inputExpression with its inputValue
             inputs = IntStream.range( 0, inputExpressions.size() )
-                    .mapToObj( i -> new DTInputClause( inputExpressions.get( i ), inputValuesList.toString(), Collections.singletonList( inputValues.get( i ) ) ) )
+                    .mapToObj( i -> new DTInputClause( inputExpressions.get( i ), inputValuesList.toString(), Collections.singletonList( inputValues.get( i ) ), compiledInput ) )
                     .collect( Collectors.toList() );
         } else {
-            inputs = inputExpressions.stream().map( ie -> new DTInputClause( ie, null, null ) ).collect( Collectors.toList() );
+            inputs = inputExpressions.stream().map( ie -> new DTInputClause( ie, null, null, compiledInput ) ).collect( Collectors.toList() );
         }
 
         List<String> parseOutputs = outputs instanceof List ? (List) outputs : Collections.singletonList( (String) outputs );
