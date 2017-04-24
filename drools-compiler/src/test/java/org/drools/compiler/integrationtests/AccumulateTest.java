@@ -3506,16 +3506,18 @@ public class AccumulateTest extends CommonTestMethodBase {
                      + "        result.add($result);\n"
                      + "end";
 
-        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSession kieSession = kieBase.newKieSession();
 
         ArrayList<Integer> result = new ArrayList<Integer>();
         kieSession.setGlobal("result", result);
 
-        Coach coach1 = new Coach();
-        Coach coach2 = new Coach();
-        Shuttle shuttle = new Shuttle();
-        BusStop stop1 = new BusStop();
-        BusStop stop2 = new BusStop();
+        int id = 1;
+        Coach coach1 = new Coach( id++ );
+        Coach coach2 = new Coach( id++ );
+        Shuttle shuttle = new Shuttle( id++ );
+        BusStop stop1 = new BusStop( id++ );
+        BusStop stop2 = new BusStop( id++ );
 
         stop2.setBus(coach2);
 
@@ -3542,8 +3544,9 @@ public class AccumulateTest extends CommonTestMethodBase {
         ArrayList<Integer> actual = new ArrayList<Integer>(result);
         Collections.sort(actual);
         result.clear();
+        kieSession.dispose();
 
-        kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        kieSession = kieBase.newKieSession();
         kieSession.setGlobal("result", result);
 
         // Insert everything into a fresh session to see the uncorrupted score
@@ -3556,18 +3559,56 @@ public class AccumulateTest extends CommonTestMethodBase {
         kieSession.fireAllRules();
         ArrayList<Integer> expected = new ArrayList<Integer>(result);
         Collections.sort(expected);
+        System.out.println("expected = " + expected);
+        System.out.println("actual = " + actual);
         assertEquals(expected, actual);
     }
 
     public interface Bus { }
 
-    public static class Coach implements Bus { }
+    public static class Coach implements Bus {
+        private final int id;
 
-    public static class Shuttle implements Bus { }
+        public Coach( int id ) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return "Coach[" + id + "]";
+        }
+    }
+
+    public static class Shuttle implements Bus {
+        private final int id;
+
+        public Shuttle( int id ) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return "Shuttle[" + id + "]";
+        }
+    }
 
     public static class BusStop {
+        private final int id;
 
         private Bus bus;
+
+        public BusStop( int id ) {
+            this.id = id;
+        }
+
 
         public Bus getBus() {
             return bus;
@@ -3575,6 +3616,15 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         public void setBus(Bus bus) {
             this.bus = bus;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return "BusStop[" + id + "]";
         }
     }
 }
