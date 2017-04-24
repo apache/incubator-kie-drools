@@ -112,7 +112,7 @@ public class DMNAssemblerService implements KieAssemblerService {
                 compilerConfig.addExtensions(extensionRegisters);
                 dmnCompiler = DMNFactory.newCompiler(compilerConfig);
             } catch(Exception e) {
-                ((KnowledgeBuilderImpl) kbuilder).addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.ERROR, "Trying to load a non-existing extension element register "+e.getLocalizedMessage()));
+                ((KnowledgeBuilderImpl) kbuilder).addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "Trying to load a non-existing extension element register "+e.getLocalizedMessage()));
                 logger.error( "Trying to load a non-existing extension element register {}", e.getLocalizedMessage(), e);
                 ((KnowledgeBuilderImpl) kbuilder).addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "DMN Compiler configuration contained errors, fall-back using empty-configuration compiler."));
                 logger.warn( "DMN Compiler configuration contained errors, fall-back using empty-configuration compiler." );
