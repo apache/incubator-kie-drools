@@ -16,12 +16,6 @@
 
 package org.drools.core.base;
 
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.util.MathUtils;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -29,6 +23,12 @@ import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Trait;
+import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.util.MathUtils;
 
 public class ValueType<T>
     implements
