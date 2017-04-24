@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverter {
 
-    private List<DMNExtensionRegister> extensionRegisters;
+    private List<DMNExtensionRegister> extensionRegisters = new ArrayList<>();
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
@@ -44,9 +44,9 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
 
     public ExtensionElementsConverter(XStream xStream, List<DMNExtensionRegister> extensionRegisters) {
         super(xStream);
-        this.extensionRegisters = new ArrayList<DMNExtensionRegister>();
-        if(extensionRegisters != null && extensionRegisters.size() > 0)
+        if ( !extensionRegisters.isEmpty() ) {
             this.extensionRegisters.addAll(extensionRegisters);
+        }
     }
 
 

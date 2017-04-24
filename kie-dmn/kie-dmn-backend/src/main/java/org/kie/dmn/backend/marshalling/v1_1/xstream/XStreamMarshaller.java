@@ -90,7 +90,7 @@ public class XStreamMarshaller
         implements DMNMarshaller {
 
     private static Logger logger = LoggerFactory.getLogger( XStreamMarshaller.class );
-    private List<DMNExtensionRegister> extensionRegisters;
+    private List<DMNExtensionRegister> extensionRegisters = new ArrayList<>();
 
 
     private static StaxDriver staxDriver;
@@ -118,7 +118,6 @@ public class XStreamMarshaller
     }
 
     public XStreamMarshaller (List<DMNExtensionRegister> extensionRegisters) {
-        this.extensionRegisters = new ArrayList<DMNExtensionRegister>();
         this.extensionRegisters.addAll(extensionRegisters);
     }
 
