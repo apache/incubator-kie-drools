@@ -1050,7 +1050,10 @@ public class PatternBuilder
         if ( isDateType( context, pattern, leftValue ) ) {
             String rightValue = findRightExpressionValue( subDescr );
             FieldValue fieldValue = getFieldValue(context, ValueType.DATE_TYPE, rightValue);
-            return fieldValue != null ? normalizeDate( fieldValue, leftValue, operator ) : subExpr;
+            if (fieldValue != null) {
+                subExpr = subExpr.replace( rightValue, getNormalizeDate( fieldValue ) );
+            }
+            return subExpr;
         }
 
         if (operator.equals( "str" )) {

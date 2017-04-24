@@ -48,6 +48,11 @@ public class TemporalOperatorTest {
     }
 
     @Test
+    public void testAfterWithDateUsingOr() {
+        checkTemporalConstraint( "date == null || date after $t1.date" );
+    }
+
+    @Test
     public void testAfterMixDateAndLocaldateTime() {
         checkTemporalConstraint( "date after $t1.localDateTime" );
     }
@@ -103,5 +108,46 @@ public class TemporalOperatorTest {
         public Date getDate() {
             return Date.from(localDateTime.atZone( ZoneId.systemDefault() ).toInstant() );
         }
+    }
+
+    @Test
+    public void testAfterWithConstant() {
+        checkConstantTemporalConstraint( "date after \"1-Jan-1970\"" );
+    }
+
+    @Test
+    public void testAfterWithConstantUsingOR() {
+        // RHBRMS-2799
+        checkConstantTemporalConstraint( "date == null || date after \"1-Jan-1970\"" );
+    }
+
+    @Test
+    public void testAfterWithLocalDateTimeUsingOr() {
+        // RHBRMS-2799
+        checkConstantTemporalConstraint( "localDateTime == null || localDateTime after \"1-Jan-1970\"" );
+    }
+
+    public void checkConstantTemporalConstraint(String constraint) {
+        String str = "import " + TimestampedObject.class.getCanonicalName() + ";\n" +
+                     "global java.util.List list;\n" +
+                     "rule R when\n" +
+                     "  $t1 : TimestampedObject( " + constraint + " )\n" +
+                     "then\n" +
+                     "  list.add($t1.getName());\n" +
+                     "end\n";
+
+        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        TimestampedObject t1 = new TimestampedObject( "t1", LocalDateTime.now() );
+
+        ksession.insert( t1 );
+        ksession.fireAllRules();
+
+        assertEquals(t1.getName(), list.get(0));
     }
 }
