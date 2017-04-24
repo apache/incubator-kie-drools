@@ -217,7 +217,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                            String rightValue,
                                                            LiteralRestrictionDescr restrictionDescr) {
         if (vtype == ValueType.DATE_TYPE) {
-            return normalizeDate( field, leftValue, operator );
+            return leftValue + " " + operator + getNormalizeDate( field );
         }
         if (operator.equals("str")) {
             return normalizeStringOperator( leftValue, rightValue, restrictionDescr );
@@ -226,9 +226,9 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return normalizeEmptyKeyword( expr, operator );
     }
 
-    protected static String normalizeDate( FieldValue field, String leftValue, String operator ) {
+    protected static String getNormalizeDate( FieldValue field ) {
         Date date = (Date)field.getValue();
-        return leftValue + " " + operator + (date != null ? " new java.util.Date(" + date.getTime() + ")" : " null");
+        return date != null ? " new java.util.Date(" + date.getTime() + ")" : " null";
     }
 
     protected static String normalizeStringOperator( String leftValue, String rightValue, LiteralRestrictionDescr restrictionDescr ) {
