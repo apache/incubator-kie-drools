@@ -84,11 +84,9 @@ public class DMNCompilerImpl
     public DMNModel compile(Reader source) {
         try {
             Definitions dmndefs = null;
-            if(dmnCompilerConfig != null) {
-                if (dmnCompilerConfig.getRegisteredExtensions().isEmpty()) {
-                    dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(getDmnCompilerConfig().getRegisteredExtensions()).unmarshal( source );
-                }
-            }else {
+            if(dmnCompilerConfig != null && !dmnCompilerConfig.getRegisteredExtensions().isEmpty()) {
+                dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(getDmnCompilerConfig().getRegisteredExtensions()).unmarshal( source );
+            } else {
                 dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(source);
             }
             DMNModel model = compile( dmndefs );
