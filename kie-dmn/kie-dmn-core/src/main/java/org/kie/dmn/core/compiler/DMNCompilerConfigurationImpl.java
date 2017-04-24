@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,23 +25,17 @@ import java.util.List;
 
 public class DMNCompilerConfigurationImpl implements DMNCompilerConfiguration {
 
-    private List<DMNExtensionRegister> registeredExtensions;
+    private List<DMNExtensionRegister> registeredExtensions = new ArrayList<>();
 
     public void addExtensions(List<DMNExtensionRegister> extensionRegisters) {
-        this.registeredExtensions = new ArrayList<DMNExtensionRegister>();
-        registeredExtensions.addAll(extensionRegisters);
+        this.registeredExtensions.addAll(extensionRegisters);
     }
 
     public void addExtension(DMNExtensionRegister extensionRegister) {
-        if(this.registeredExtensions != null) {
-            this.registeredExtensions.add(extensionRegister);
-        }
+        this.registeredExtensions.add(extensionRegister);
     }
 
     public List<DMNExtensionRegister> getRegisteredExtensions() {
-        if(this.registeredExtensions == null) {
-            this.registeredExtensions = new ArrayList<DMNExtensionRegister>();
-        }
         return this.registeredExtensions;
     }
 
