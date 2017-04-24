@@ -57,7 +57,7 @@ public class TemporalOperatorTest {
         ksession.setGlobal( "list", list );
 
         TimestampedObject t1 = new TimestampedObject( "t1", new Date() );
-        TimestampedObject t2 = new TimestampedObject( "t2", new Date() );
+        TimestampedObject t2 = new TimestampedObject( "t2", new Date(System.currentTimeMillis() + 60000L) );
 
         ksession.insert( t1 );
         ksession.insert( t2 );
