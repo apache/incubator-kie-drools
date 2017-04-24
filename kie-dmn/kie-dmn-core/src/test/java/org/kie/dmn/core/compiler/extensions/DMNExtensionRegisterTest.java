@@ -41,6 +41,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 public class DMNExtensionRegisterTest {
     private static final Logger LOG = LoggerFactory.getLogger(DMNExtensionRegisterTest.class);
@@ -49,7 +50,9 @@ public class DMNExtensionRegisterTest {
     public void testUsingSystemProperty() {
         try {
             System.setProperty("org.kie.dmn.marshaller.extension.firstname", "org.kie.dmn.core.compiler.extensions.FirstNameDescriptionRegister");
-            System.setProperty("org.kie.dmn.marshaller.extension.lastname", "org.kie.dmn.core.compiler.extensions.LastNameDescriptionRegister");            
+            System.setProperty("org.kie.dmn.marshaller.extension.lastname", "org.kie.dmn.core.compiler.extensions.LastNameDescriptionRegister");   
+            assertEquals("org.kie.dmn.core.compiler.extensions.FirstNameDescriptionRegister", System.getProperty("org.kie.dmn.marshaller.extension.firstname"));
+            assertEquals("org.kie.dmn.core.compiler.extensions.LastNameDescriptionRegister", System.getProperty("org.kie.dmn.marshaller.extension.lastname"));
             
             DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string-with-extensions.dmn", this.getClass() );
             DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
@@ -79,6 +82,8 @@ public class DMNExtensionRegisterTest {
         } finally {
             System.clearProperty("org.kie.dmn.marshaller.extension.firstname");
             System.clearProperty("org.kie.dmn.marshaller.extension.lastname");
+            assertNull(System.getProperty("org.kie.dmn.marshaller.extension.firstname"));
+            assertNull(System.getProperty("org.kie.dmn.marshaller.extension.lastname"));
         }
     }
     
