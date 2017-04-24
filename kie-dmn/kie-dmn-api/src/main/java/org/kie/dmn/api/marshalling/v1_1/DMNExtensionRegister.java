@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.api.core;
+package org.kie.dmn.api.marshalling.v1_1;
 
-import org.kie.api.io.Resource;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-import org.kie.dmn.model.v1_1.Definitions;
+import com.thoughtworks.xstream.XStream;
 
-import java.io.Reader;
 
-public interface DMNCompiler {
+public interface DMNExtensionRegister {
 
-    DMNModel compile( Resource resource );
+    public void registerExtensionConverters(XStream xstream);
 
-    DMNModel compile( Reader source );
-
-    DMNModel compile(Definitions dmndefs);
 }

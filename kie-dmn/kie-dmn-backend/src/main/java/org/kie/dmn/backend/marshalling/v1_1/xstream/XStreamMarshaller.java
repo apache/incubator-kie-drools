@@ -23,6 +23,8 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -40,6 +42,7 @@ import com.thoughtworks.xstream.io.xml.AbstractPullReader;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.StaxWriter;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
@@ -87,6 +90,8 @@ public class XStreamMarshaller
         implements DMNMarshaller {
 
     private static Logger logger = LoggerFactory.getLogger( XStreamMarshaller.class );
+    private List<DMNExtensionRegister> extensionRegisters = new ArrayList<>();
+
 
     private static StaxDriver staxDriver;
     static {
@@ -107,6 +112,15 @@ public class XStreamMarshaller
         staxDriver.setQnameMap(qmap);
         staxDriver.setRepairingNamespace(false);
     }
+
+    public XStreamMarshaller() {
+
+    }
+
+    public XStreamMarshaller (List<DMNExtensionRegister> extensionRegisters) {
+        this.extensionRegisters.addAll(extensionRegisters);
+    }
+
 
     @Override
     public Definitions unmarshal(String xml) {
@@ -335,10 +349,17 @@ public class XStreamMarshaller
         xStream.registerConverter(new QNameConverter());
         xStream.registerConverter(new DMNListConverter( xStream ) );
         xStream.registerConverter(new ElementCollectionConverter( xStream ) );
-        xStream.registerConverter(new ExtensionElementsConverter( xStream ) );
+        xStream.registerConverter(new ExtensionElementsConverter( xStream, extensionRegisters ) );
         
         xStream.ignoreUnknownElements();
-        
+
+        if(extensionRegisters != null && !extensionRegisters.isEmpty()) {
+            for(DMNExtensionRegister extensionRegister : extensionRegisters) {
+                extensionRegister.registerExtensionConverters(xStream);
+            }
+        }
+
+
         return xStream;
     }
 
