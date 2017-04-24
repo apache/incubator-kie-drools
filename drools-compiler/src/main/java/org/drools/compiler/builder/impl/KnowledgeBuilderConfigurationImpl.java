@@ -303,6 +303,11 @@ public class KnowledgeBuilderConfigurationImpl
             } catch (IllegalArgumentException e) {
                 log.warn("Invalid value " + value + " for option " + LanguageLevelOption.PROPERTY_NAME);
             }
+        } else {
+            // if the property from the kmodule was not intercepted above, just add it to the chained properties.
+            Properties additionalProperty = new Properties();
+            additionalProperty.setProperty(name, value);
+            chainedProperties.addProperties(additionalProperty);
         }
     }
 
