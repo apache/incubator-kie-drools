@@ -47,7 +47,6 @@ public class DMNAssemblerService implements KieAssemblerService {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNAssemblerService.class );
     public static final String DMN_EXTENSION_REGISTER_PREFIX = "org.kie.dmn.marshaller.extension.";
-    private DMNCompiler dmnCompiler;
 
     @Override
     public ResourceType getResourceType() {
@@ -90,12 +89,9 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     private DMNCompiler getCompiler(KnowledgeBuilder kbuilder) {
-        // either use the cached compiler...
-        if ( dmnCompiler != null ) {
-            return dmnCompiler;
-        }
+        // TODO currently because KieAssembler is a singleton it is not possible to cache the compiler inside this KieAssembler
+        DMNCompiler dmnCompiler;
         
-        // ... or build it for the first time and cache it.
         Map<String, String> extensionProperties = new HashMap<>();
         ( (KnowledgeBuilderImpl) kbuilder ).getBuilderConfiguration().getChainedProperties()
                 .mapStartsWith(extensionProperties, DMN_EXTENSION_REGISTER_PREFIX, false);
