@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -22,10 +22,13 @@
 	<decision name="Greeting Message" id="d_GreetingMessage">
 		<variable name="Greeting Message" typeRef="feel:string"/>
 		<informationRequirement>
-			<requiredInput href="#i_FullName"/>
+			<requiredInput href="#i_FirstName"/>
 		</informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#i_LastName"/>
+        </informationRequirement>
 		<literalExpression>
-			<text>"Hello " + Full Name</text>
+			<text>"Hello " + First Name + " " + Last Name</text>
 		</literalExpression>
 	</decision>
 	<inputData name="First Name" id="i_FirstName">
