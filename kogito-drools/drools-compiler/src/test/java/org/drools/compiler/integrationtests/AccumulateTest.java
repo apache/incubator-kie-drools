@@ -3477,4 +3477,154 @@ public class AccumulateTest extends CommonTestMethodBase {
         }
         return list.isEmpty();
     }
+
+    @Test
+    public void testDoubleAccumulate() {
+        // DROOLS-1530
+        String drl = "package P;"
+                     + "import " + BusStop.class.getCanonicalName() + ";\n"
+                     + "import " + Coach.class.getCanonicalName() + ";\n"
+                     + "import " + Shuttle.class.getCanonicalName() + ";\n"
+                     + "\n"
+                     + "global java.util.List result;\n"
+                     + "\n"
+                     + "rule coachCapacity\n"
+                     + "    when\n"
+                     + "        $coach : Coach()\n"
+                     + "        accumulate(\n"
+                     + "            BusStop(bus == $coach);\n"
+                     + "            count()\n"
+                     + "        )\n"
+                     + "\n"
+                     + "        $shuttle : Shuttle()\n"
+                     + "        accumulate(\n"
+                     + "            BusStop(bus == $coach)\n"
+                     + "            and BusStop(bus == $shuttle);\n"
+                     + "            $result : count()\n"
+                     + "        )\n"
+                     + "    then\n"
+                     + "        result.add($result);\n"
+                     + "end";
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieSession kieSession = kieBase.newKieSession();
+
+        ArrayList<Integer> result = new ArrayList<Integer>();
+        kieSession.setGlobal("result", result);
+
+        int id = 1;
+        Coach coach1 = new Coach( id++ );
+        Coach coach2 = new Coach( id++ );
+        Shuttle shuttle = new Shuttle( id++ );
+        BusStop stop1 = new BusStop( id++ );
+        BusStop stop2 = new BusStop( id++ );
+
+        stop2.setBus(coach2);
+
+        FactHandle fhCoach1 = kieSession.insert(coach1);
+        FactHandle fhCoach2 = kieSession.insert(coach2);
+        FactHandle fhShuttle = kieSession.insert(shuttle);
+        FactHandle fhStop1 = kieSession.insert(stop1);
+        FactHandle fhStop2 = kieSession.insert(stop2);
+
+        kieSession.fireAllRules();
+        result.clear();
+
+        kieSession.update(fhShuttle, shuttle);
+        kieSession.update(fhStop2, stop2);
+
+        kieSession.fireAllRules();
+        result.clear();
+
+        kieSession.update(fhShuttle, shuttle);
+        stop1.setBus(shuttle);
+        kieSession.update(fhStop1, stop1);
+
+        kieSession.fireAllRules();
+        ArrayList<Integer> actual = new ArrayList<Integer>(result);
+        Collections.sort(actual);
+        result.clear();
+        kieSession.dispose();
+
+        kieSession = kieBase.newKieSession();
+        kieSession.setGlobal("result", result);
+
+        // Insert everything into a fresh session to see the uncorrupted score
+        kieSession.insert(coach1);
+        kieSession.insert(coach2);
+        kieSession.insert(shuttle);
+        kieSession.insert(stop1);
+        kieSession.insert(stop2);
+
+        kieSession.fireAllRules();
+        ArrayList<Integer> expected = new ArrayList<Integer>(result);
+        Collections.sort(expected);
+        System.out.println("expected = " + expected);
+        System.out.println("actual = " + actual);
+        assertEquals(expected, actual);
+    }
+
+    public interface Bus { }
+
+    public static class Coach implements Bus {
+        private final int id;
+
+        public Coach( int id ) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return "Coach[" + id + "]";
+        }
+    }
+
+    public static class Shuttle implements Bus {
+        private final int id;
+
+        public Shuttle( int id ) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return "Shuttle[" + id + "]";
+        }
+    }
+
+    public static class BusStop {
+        private final int id;
+
+        private Bus bus;
+
+        public BusStop( int id ) {
+            this.id = id;
+        }
+
+
+        public Bus getBus() {
+            return bus;
+        }
+
+        public void setBus(Bus bus) {
+            this.bus = bus;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return "BusStop[" + id + "]";
+        }
+    }
 }
