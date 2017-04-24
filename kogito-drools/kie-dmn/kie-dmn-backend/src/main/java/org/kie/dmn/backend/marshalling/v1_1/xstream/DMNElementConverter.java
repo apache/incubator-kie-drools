@@ -28,6 +28,7 @@ public abstract class DMNElementConverter
     public static final String ID          = "id";
     public static final String LABEL       = "label";
     public static final String DESCRIPTION = "description";
+    public static final String EXTENSION_ELEMENTS = "extensionElements";
 
     public DMNElementConverter(XStream xstream) {
         super( xstream );
@@ -37,6 +38,9 @@ public abstract class DMNElementConverter
     protected void assignChildElement(Object parent, String nodeName, Object child) {
         if ( DESCRIPTION.equals( nodeName ) && child instanceof String ) {
             ((DMNElement) parent).setDescription( (String) child );
+        } else if(EXTENSION_ELEMENTS.equals(nodeName)
+                && child instanceof DMNElement.ExtensionElements) {
+            ((DMNElement)parent).setExtensionElements((DMNElement.ExtensionElements)child);
         } else {
             super.assignChildElement(parent, nodeName, child);
         }

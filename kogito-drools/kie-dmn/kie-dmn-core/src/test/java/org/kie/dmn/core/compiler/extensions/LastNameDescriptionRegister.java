@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.api.core;
+package org.kie.dmn.core.compiler.extensions;
 
-import org.kie.api.io.Resource;
+import com.thoughtworks.xstream.XStream;
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-import org.kie.dmn.model.v1_1.Definitions;
 
-import java.io.Reader;
+public class LastNameDescriptionRegister implements DMNExtensionRegister {
 
-public interface DMNCompiler {
-
-    DMNModel compile( Resource resource );
-
-    DMNModel compile( Reader source );
-
-    DMNModel compile(Definitions dmndefs);
+    @Override
+    public void registerExtensionConverters(XStream xStream) {
+        xStream.processAnnotations(LastNameDescription.class);
+    }
 }
