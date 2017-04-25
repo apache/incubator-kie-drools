@@ -40,4 +40,5 @@ public class EnvironmentName {
     public static final String RUNTIME_MANAGER                      = "RuntimeManager";
     public static final String DEPLOYMENT_ID                        = "deploymentId";
     public static final String CASE_ID                              = "CaseId";
+    public static final String EXEC_ERROR_MANAGER                   = "ExecutionErrorManager";
 }
