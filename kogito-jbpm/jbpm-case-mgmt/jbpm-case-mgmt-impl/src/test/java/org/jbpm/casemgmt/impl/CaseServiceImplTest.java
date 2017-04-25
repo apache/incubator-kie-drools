@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.casemgmt.api.AdHocFragmentNotFoundException;
 import org.jbpm.casemgmt.api.CaseActiveException;
@@ -61,6 +62,7 @@ import org.jbpm.document.Document;
 import org.jbpm.document.service.impl.DocumentImpl;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
+import org.jbpm.services.api.TaskNotFoundException;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.VariableDesc;
@@ -71,12 +73,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.NamedObjectModel;
@@ -367,7 +369,14 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             task = tasks.get(0);
             assertTask(task, "mary", "Second task", Status.Reserved);
             assertEquals("another test", task.getDescription());
-            
+
+            // User john cannot work with task assigned to mary
+            try {
+                userTaskService.start(task.getId(), "john");
+            } catch (TaskNotFoundException e) {
+                // expected
+            }
+
             userTaskService.start(task.getId(), "mary");
             userTaskService.complete(task.getId(), "mary", null);
             
@@ -1540,7 +1549,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             }
         }
     }  
-    
+
     @Test
     public void testCaseRolesWithQueries() {
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
@@ -1558,32 +1567,51 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(HR_CASE_ID, cInstance.getCaseId());
+            assertEquals(CaseStatus.OPEN.getId(), cInstance.getStatus().intValue());
             assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             // only john is now included in case roles
             Collection<CaseInstance> instances = caseRuntimeDataService.getCaseInstancesAnyRole(null, new QueryContext());
             assertNotNull(instances);
             assertEquals(0, instances.size());
-            
-            List<CaseStatus> status = Arrays.asList(CaseStatus.OPEN);
-                        
-            identityProvider.setRoles(Arrays.asList("HR"));
+
+            List<CaseStatus> status = Arrays.asList(CaseStatus.CANCELLED);
+
+            instances = caseRuntimeDataService.getCaseInstancesAnyRole(status, new QueryContext());
+            assertNotNull(instances);
+            assertFalse("Opened case was returned when searching for cancelled case instances.", instances.stream().anyMatch(n -> n.getCaseId().equals(caseId)));
+
+            status = Arrays.asList(CaseStatus.OPEN);
+
             instances = caseRuntimeDataService.getCaseInstancesAnyRole(status, new QueryContext());
             assertNotNull(instances);
             assertEquals(1, instances.size());
-            
+
+            instances = caseRuntimeDataService.getCaseInstancesByRole(null, status, new QueryContext());
+            assertNotNull(instances);
+            assertEquals(0, instances.size());
+
             instances = caseRuntimeDataService.getCaseInstancesByRole("owner", status, new QueryContext());
             assertNotNull(instances);
             assertEquals(1, instances.size());
-            
+
+            identityProvider.setName("mary");
+
+            instances = caseRuntimeDataService.getCaseInstancesByRole("owner", status, new QueryContext());
+            assertNotNull(instances);
+            assertEquals("Mary shouldn't be owner of any opened case instance.", 0, instances.size());
+
+            identityProvider.setRoles(Arrays.asList("HR"));
+
             instances = caseRuntimeDataService.getCaseInstancesByRole("contact", status, new QueryContext());
             assertNotNull(instances);
             assertEquals(1, instances.size());
-            
+
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
-        } finally {            
+        } finally {
+            identityProvider.setName("john");
             if (caseId != null) {
                 caseService.cancelCase(caseId);
             }
@@ -2053,5 +2081,28 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             }
         }
     }
-            
+
+    @Test
+    public void testCaseRolesCardinality() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("s", "description");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, caseFile);
+
+        try {
+            caseService.assignToCaseRole(caseId, "contact", new UserImpl("mary"));
+            caseService.assignToCaseRole(caseId, "contact", new UserImpl("steve"));
+
+            Throwable error = Assertions.catchThrowable(() -> caseService.assignToCaseRole(caseId, "contact", new UserImpl("jack")));
+            Assertions.assertThat(error).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Cannot add more users for role contact, maximum cardinality 2 already reached");
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
 }
