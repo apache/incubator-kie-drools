@@ -47,19 +47,14 @@ public class MapBackedType
 
     @Override
     public boolean isInstanceOf(Object o) {
-        Map<String, Object> instance = null;
-        try {
-            instance = (Map<String, Object>) o;
-        } catch ( Exception e ) {
+        if ( o == null || !(o instanceof Map) ) {
             return false;
         }
+        Map<?, ?> instance = (Map<?, ?>) o;
         for ( Entry<String, Type> f : fields.entrySet() ) {
-            if ( instance.get(f.getKey()) == null ) {
+            Object instanceValueForKey = instance.get(f.getKey());
+            if ( instance.get(f.getKey()) == null || !f.getValue().isInstanceOf(instanceValueForKey) ) {
                 return false;
-            } else {
-                if ( !f.getValue().isInstanceOf(instance.get(f.getKey())) ) {
-                    return false;
-                }
             }
         }
         return true;
@@ -70,19 +65,14 @@ public class MapBackedType
         if ( value == null ) {
             return true;
         }
-        Map<String, Object> instance = null;
-        try {
-            instance = (Map<String, Object>) value;
-        } catch ( Exception e ) {
+        if ( !(value instanceof Map) ) {
             return false;
         }
+        Map<?, ?> instance = (Map<?, ?>) value;
         for ( Entry<String, Type> f : fields.entrySet() ) {
-            if ( instance.get(f.getKey()) == null ) {
+            Object instanceValueForKey = instance.get(f.getKey());
+            if ( instanceValueForKey == null || !f.getValue().isAssignableValue(instanceValueForKey) ) {
                 return false;
-            } else {
-                if ( !f.getValue().isAssignableValue(instance.get(f.getKey())) ) {
-                    return false;
-                }
             }
         }
         return true;
