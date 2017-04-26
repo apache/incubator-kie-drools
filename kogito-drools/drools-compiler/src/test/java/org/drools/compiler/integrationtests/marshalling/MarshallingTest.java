@@ -15,6 +15,23 @@
 
 package org.drools.compiler.integrationtests.marshalling;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.Cell;
 import org.drools.compiler.Cheese;
@@ -52,7 +69,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MapBackedClassLoader;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
-import org.kie.api.time.SessionPseudoClock;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.KeyStoreHelper;
@@ -66,6 +82,7 @@ import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
@@ -75,9 +92,11 @@ import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionClock;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
@@ -86,23 +105,6 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 
 import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 
@@ -2863,12 +2865,17 @@ public class MarshallingTest extends CommonTestMethodBase {
     }
 
     public static KieSession marshallAndUnmarshall(KieBase kbase, KieSession ksession, KieSessionConfiguration sessionConfig) {
+        return marshallAndUnmarshall(kbase, kbase, ksession, sessionConfig);
+    }
+
+    public static KieSession marshallAndUnmarshall(KieBase kbase1, KieBase kbase2, KieSession ksession, KieSessionConfiguration sessionConfig) {
         // Serialize and Deserialize
         try {
-            Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(kbase);
+            KieMarshallers kieMarshallers = KieServices.Factory.get().getMarshallers();
+            Marshaller marshaller = kieMarshallers.newMarshaller( kbase1 );
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             marshaller.marshall(baos, ksession);
-            marshaller = MarshallerFactory.newMarshaller( kbase );
+            marshaller = kieMarshallers.newMarshaller( kbase2 );
             ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
             baos.close();
             ksession = marshaller.unmarshall(bais, sessionConfig, null);
@@ -2878,5 +2885,71 @@ public class MarshallingTest extends CommonTestMethodBase {
             fail("unexpected exception :" + e.getMessage());
         }
         return ksession;
+    }
+
+    @Test
+    public void testSnapshotRecoveryScheduledRulesPlain() throws Exception {
+        // DROOLS-1537
+        String drl = "package com.drools.restore.reproducer\n" +
+                     "global java.util.List list;\n" +
+                     "global java.util.List list2;\n" +
+                     "rule R1\n" +
+                     " timer (int: 20s)\n" +
+                     " when\n" +
+                     "   $m : String( this == \"Hello World1\" )\n" +
+                     " then\n" +
+                     "   list.add( $m );\n" +
+                     "   retract( $m );\n" +
+                     "end\n" +
+                     "rule R2\n" +
+                     " timer (int: 30s)\n" +
+                     " when\n" +
+                     "   $m : String( this == \"Hello World2\" )\n" +
+                     " then\n" +
+                     "   list2.add( $m );\n" +
+                     "   retract( $m );\n" +
+                     "end\n";
+
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        ksconf.setOption( TimedRuleExecutionOption.YES );
+        ksconf.setOption(TimerJobFactoryOption.get("trackable"));
+        ksconf.setOption(ClockTypeOption.get("pseudo"));
+
+        KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL )
+                                        .build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase1.newKieSession( ksconf, null );
+
+        PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+        List list2 = new ArrayList();
+        ksession.setGlobal("list2", list2);
+
+        ksession.insert("Hello World1");
+        ksession.insert("Hello World2");
+
+        ksession.fireAllRules();
+        timeService.advanceTime(10500, TimeUnit.MILLISECONDS);
+
+        KieBase kbase2 = new KieHelper().addContent( drl, ResourceType.DRL )
+                                        .build( EventProcessingOption.STREAM );
+
+        ksession = marshallAndUnmarshall( kbase1, kbase2, ksession, ksconf );
+        ksession.setGlobal("list", list);
+        ksession.setGlobal("list2", list2);
+
+        PseudoClockScheduler timeService2 = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
+
+        ksession.fireAllRules();
+
+        long accumulatedSleepTime = 0;
+        for (int i = 0; i < 6; i++) {
+            timeService2.advanceTime(5050, TimeUnit.MILLISECONDS);
+            accumulatedSleepTime += 5050;
+            assertEquals( i < 1 ? 0 : 1, list.size() );
+            assertEquals( i < 3 ? 0 : 1, list2.size() );
+        }
     }
 }

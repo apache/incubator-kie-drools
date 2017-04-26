@@ -54,7 +54,6 @@ public class RuleExecutor {
     private volatile boolean                  dirty;
     private final boolean                     declarativeAgendaEnabled;
     private boolean                           fireExitedEarly;
-    private KnowledgeHelper                   knowledgeHelper;
 
     public RuleExecutor(final PathMemory pmem,
             RuleAgendaItem ruleAgendaItem,
@@ -365,9 +364,7 @@ public class RuleExecutor {
         // we need to make sure it re-activates
         wm.startOperation();
         try {
-            final EventSupport eventsupport = (EventSupport) wm;
-
-            eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation, wm );
+            wm.getAgendaEventSupport().fireBeforeActivationFired( activation, wm );
 
             if ( activation.getActivationGroupNode() != null ) {
                 // We know that this rule will cancel all other activations in the group
@@ -400,7 +397,7 @@ public class RuleExecutor {
                 }
             }
 
-            eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation, wm );
+            wm.getAgendaEventSupport().fireAfterActivationFired( activation, wm );
         } finally {
             wm.endOperation();
         }
@@ -424,6 +421,7 @@ public class RuleExecutor {
 
     private void innerFireActivation( InternalWorkingMemory wm, InternalAgenda agenda, Activation activation, Consequence consequence ) {
         try {
+            KnowledgeHelper knowledgeHelper = agenda.getKnowledgeHelper();
             knowledgeHelper.setActivation( activation );
             if ( log.isTraceEnabled() ) {
                 log.trace( "Fire event {} for rule \"{}\" \n{}", consequence.getName(), activation.getRule().getName(), activation.getTuple() );
@@ -446,9 +444,5 @@ public class RuleExecutor {
                 activation.getPropagationContext().evaluateActionQueue( wm );
             }
         }
-    }
-
-    public void setKnowledgeHelper( KnowledgeHelper knowledgeHelper ) {
-        this.knowledgeHelper = knowledgeHelper;
     }
 }

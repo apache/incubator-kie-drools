@@ -16,6 +16,12 @@
 
 package org.drools.core.concurrent;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.RuleBasePartitionId;
@@ -24,12 +30,6 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ParallelRuleEvaluator extends AbstractRuleEvaluator implements RuleEvaluator {
 
@@ -114,7 +114,7 @@ public class ParallelRuleEvaluator extends AbstractRuleEvaluator implements Rule
                     if (item == POISON_PILL) {
                         break;
                     }
-                    count += internalEvaluateAndFire( knowledgeHelper, filter, fireCount, fireLimit, item );
+                    count += internalEvaluateAndFire( filter, fireCount, fireLimit, item );
                 } catch (InterruptedException e) {
                     throw new RuntimeException( e );
                 }
