@@ -39,6 +39,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.InternalActivationGroup;
+import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.spi.Tuple;
@@ -584,6 +585,11 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public void registerExpiration( PropagationContext expirationContext ) {
+        throw new UnsupportedOperationException( "This method has to be called on the single partitioned agendas" );
+    }
+
+    @Override
+    public KnowledgeHelper getKnowledgeHelper() {
         throw new UnsupportedOperationException( "This method has to be called on the single partitioned agendas" );
     }
 
