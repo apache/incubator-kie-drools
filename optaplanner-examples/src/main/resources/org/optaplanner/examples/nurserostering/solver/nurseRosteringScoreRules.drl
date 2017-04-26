@@ -242,7 +242,7 @@ rule "insertEntireEmployeeFreeSequence"
         salience 1 // Do these rules first (optional, for performance)
     when
         $employee : Employee()
-        // There are no working days after the last day
+        // There are no working days at all
         not EmployeeConsecutiveAssignmentStart(
             employee == $employee
         )
