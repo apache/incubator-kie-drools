@@ -82,6 +82,7 @@ import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
@@ -2864,12 +2865,17 @@ public class MarshallingTest extends CommonTestMethodBase {
     }
 
     public static KieSession marshallAndUnmarshall(KieBase kbase, KieSession ksession, KieSessionConfiguration sessionConfig) {
+        return marshallAndUnmarshall(kbase, kbase, ksession, sessionConfig);
+    }
+
+    public static KieSession marshallAndUnmarshall(KieBase kbase1, KieBase kbase2, KieSession ksession, KieSessionConfiguration sessionConfig) {
         // Serialize and Deserialize
         try {
-            Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(kbase);
+            KieMarshallers kieMarshallers = KieServices.Factory.get().getMarshallers();
+            Marshaller marshaller = kieMarshallers.newMarshaller( kbase1 );
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             marshaller.marshall(baos, ksession);
-            marshaller = MarshallerFactory.newMarshaller( kbase );
+            marshaller = kieMarshallers.newMarshaller( kbase2 );
             ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
             baos.close();
             ksession = marshaller.unmarshall(bais, sessionConfig, null);
@@ -2910,10 +2916,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksconf.setOption(TimerJobFactoryOption.get("trackable"));
         ksconf.setOption(ClockTypeOption.get("pseudo"));
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( drl, ResourceType.DRL );
-        KieBase kbase = helper.build( EventProcessingOption.STREAM );
-        KieSession ksession = kbase.newKieSession( ksconf, null );
+        KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL )
+                                        .build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase1.newKieSession( ksconf, null );
 
         PseudoClockScheduler timeService = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
 
@@ -2928,7 +2933,10 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         timeService.advanceTime(10500, TimeUnit.MILLISECONDS);
 
-        ksession = marshallAndUnmarshall( kbase, ksession, ksconf );
+        KieBase kbase2 = new KieHelper().addContent( drl, ResourceType.DRL )
+                                        .build( EventProcessingOption.STREAM );
+
+        ksession = marshallAndUnmarshall( kbase1, kbase2, ksession, ksconf );
         ksession.setGlobal("list", list);
         ksession.setGlobal("list2", list2);
 
