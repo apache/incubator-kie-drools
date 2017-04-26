@@ -47,7 +47,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
 
-public class BusinessRuleAssignmentTest extends AbstractAssignmentTests {
+public class BusinessRuleAssignmentTest extends AbstractAssignmentTest {
     
     private static final Logger logger = LoggerFactory.getLogger(BusinessRuleAssignmentTest.class); 
 

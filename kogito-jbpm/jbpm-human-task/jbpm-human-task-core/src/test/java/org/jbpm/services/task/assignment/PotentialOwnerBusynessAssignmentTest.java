@@ -38,7 +38,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
 
-public class PotentialOwnerBusynessAssignmentTest extends AbstractAssignmentTests {
+public class PotentialOwnerBusynessAssignmentTest extends AbstractAssignmentTest {
 
 	private PoolingDataSource pds;
 	private EntityManagerFactory emf;

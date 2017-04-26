@@ -1,4 +1,4 @@
-usersgroups = [ new User('Darth Vader') : [new Group( "Knights Templer" ),  new Group( "Crusaders" ),  new Group( "analyst" )],  
+usersgroups = [ new User('Darth Vader') : [new Group( "Knights Templer" ),  new Group( "Crusaders" ),  new Group( "analyst" ),  new Group( "Wrong Crusaders" )],
                 new User( 'Bobba Fet') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],     
                 new User('Jabba Hutt') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
                 new User('Dalai Lama') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],     

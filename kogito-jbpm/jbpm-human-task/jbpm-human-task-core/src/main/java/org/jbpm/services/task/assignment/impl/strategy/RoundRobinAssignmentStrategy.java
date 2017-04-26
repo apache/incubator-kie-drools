@@ -15,6 +15,7 @@
 
 package org.jbpm.services.task.assignment.impl.strategy;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +37,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RoundRobinAssignmentStrategy implements AssignmentStrategy {
+
     private static final Logger logger = LoggerFactory.getLogger(RoundRobinAssignmentStrategy.class);
     private static final String IDENTIFIER = "RoundRobin";
 
-    private Map<String,CircularQueue<OrganizationalEntity>> circularQueueMap = new ConcurrentHashMap();
+    private Map<String, CircularQueue<OrganizationalEntity>> circularQueueMap = new ConcurrentHashMap<>();
 
     private class CircularQueue<T> extends LinkedBlockingQueue<T> {
+
         @Override
         public synchronized T take() {
             T headValue = null;
@@ -50,7 +53,7 @@ public class RoundRobinAssignmentStrategy implements AssignmentStrategy {
                 super.offer(headValue);
             } catch (InterruptedException e) {
                 logger.error("Thread interrupted during the 'take' from a circular queue in the " +
-                                     "RoundRobinAssignmentStrategy",e);
+                        "RoundRobinAssignmentStrategy", e);
             }
             return headValue;
         }
@@ -62,9 +65,9 @@ public class RoundRobinAssignmentStrategy implements AssignmentStrategy {
     }
 
     @Override
-    public Assignment apply(Task task, TaskContext taskContext, String s) {
-        List<OrganizationalEntity> excluded = ((InternalPeopleAssignments)task.getPeopleAssignments()).getExcludedOwners();
-        UserInfo userInfo = (UserInfo) ((org.jbpm.services.task.commands.TaskContext)taskContext).get(EnvironmentName.TASK_USER_INFO);
+    public Assignment apply(Task task, TaskContext taskContext, String excludedUser) {
+        UserInfo userInfo = (UserInfo) ((org.jbpm.services.task.commands.TaskContext) taskContext).get(EnvironmentName.TASK_USER_INFO);
+        List<OrganizationalEntity> excluded = getExcludedEntities(task, userInfo);
 
         // Get the the users from the task's the potential owners
         List<OrganizationalEntity> potentialOwners = task.getPeopleAssignments().getPotentialOwners().stream()
@@ -74,7 +77,7 @@ public class RoundRobinAssignmentStrategy implements AssignmentStrategy {
         // Get the users belonging to groups that are potential owners
         task.getPeopleAssignments().getPotentialOwners().stream().filter(oe -> oe instanceof Group)
                 .forEach(oe -> {
-                    Iterator<OrganizationalEntity> groupUsers = userInfo.getMembersForGroup((Group)oe);
+                    Iterator<OrganizationalEntity> groupUsers = userInfo.getMembersForGroup((Group) oe);
                     if (groupUsers != null) {
                         groupUsers.forEachRemaining(user -> {
                             if (user != null && !excluded.contains(user) && !potentialOwners.contains(user)) {
@@ -83,8 +86,14 @@ public class RoundRobinAssignmentStrategy implements AssignmentStrategy {
                         });
                     }
                 });
+
+        if (excludedUser != null) {
+            logger.debug("Removing excluded user {} from the list of eligible users", excludedUser);
+            potentialOwners.removeIf(entity -> entity.getId().equals(excludedUser));
+        }
+
         String queueName = getQueueName(task);
-        CircularQueue<OrganizationalEntity> mappedQueue = synchronizedQueue(queueName,potentialOwners);
+        CircularQueue<OrganizationalEntity> mappedQueue = synchronizedQueue(queueName, potentialOwners);
         OrganizationalEntity owner = mappedQueue.take();
         return new Assignment(owner.getId());
     }
@@ -97,14 +106,12 @@ public class RoundRobinAssignmentStrategy implements AssignmentStrategy {
      * @return The CircularQueue that contains all potential owners
      */
     private synchronized CircularQueue<OrganizationalEntity> synchronizedQueue(String queueName,
-                                                                              List<OrganizationalEntity> potentialOwners) {
-    	CircularQueue<OrganizationalEntity> existingQueue = (queueName == null || queueName.trim().length() == 0) ? null:circularQueueMap.get(queueName);
-    	//
-    	// If the queue does not exist then a new CircularQueue should be created
-    	//
-        final CircularQueue<OrganizationalEntity> workingQueue = existingQueue != null ? existingQueue:new CircularQueue();
+                                                                               List<OrganizationalEntity> potentialOwners) {
+        CircularQueue<OrganizationalEntity> existingQueue = (queueName == null || queueName.trim().length() == 0) ? null : circularQueueMap.get(queueName);
+        // If the queue does not exist then a new CircularQueue should be created
+        final CircularQueue<OrganizationalEntity> workingQueue = existingQueue != null ? existingQueue : new CircularQueue();
         potentialOwners.forEach(po -> {
-            if (!queueContainsUser(workingQueue,po)) {
+            if (!queueContainsUser(workingQueue, po)) {
                 workingQueue.add(po);
             }
         });
@@ -112,9 +119,9 @@ public class RoundRobinAssignmentStrategy implements AssignmentStrategy {
         circularQueueMap.put(queueName, workingQueue);
         return workingQueue;
     }
-    
+
     protected boolean queueContainsUser(CircularQueue<OrganizationalEntity> queue, OrganizationalEntity oe) {
-    	return queue.contains(oe);
+        return queue.contains(oe);
     }
 
     /**
@@ -124,6 +131,20 @@ public class RoundRobinAssignmentStrategy implements AssignmentStrategy {
      * @return The generated queue name
      */
     protected String getQueueName(Task task) {
-        return task.getTaskData().getProcessId()+"_"+task.getTaskData().getDeploymentId()+"_"+task.getName();
+        return task.getTaskData().getProcessId() + "_" + task.getTaskData().getDeploymentId() + "_" + task.getName();
+    }
+
+    private static List<OrganizationalEntity> getExcludedEntities(Task task, UserInfo userInfo) {
+        List<OrganizationalEntity> excluded = ((InternalPeopleAssignments) task.getPeopleAssignments()).getExcludedOwners();
+
+        List<OrganizationalEntity> excludedUsers = new ArrayList<>();
+        for (OrganizationalEntity entity : excluded) {
+            if (entity instanceof Group) {
+                userInfo.getMembersForGroup((Group) entity).forEachRemaining(excludedUsers::add);
+            }
+        }
+        excluded.addAll(excludedUsers);
+
+        return excluded;
     }
 }
