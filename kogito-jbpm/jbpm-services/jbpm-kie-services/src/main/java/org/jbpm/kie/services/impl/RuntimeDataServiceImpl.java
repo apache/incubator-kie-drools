@@ -20,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
 import static org.jbpm.kie.services.impl.CommonUtils.*;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,6 +42,7 @@ import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.RuntimeDataService;
+import org.jbpm.services.api.TaskNotFoundException;
 import org.jbpm.services.api.model.DeployedAsset;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
@@ -68,6 +70,7 @@ import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEventListener {
 
     private static final String DEPLOYMENT_ID_MUST_NOT_BE_NULL = "DeploymentId must not be null";
+    private static final String TASK_NOT_FOUND ="No task found with id {0}";
 
     protected Set<String> deploymentIds = new HashSet<String>();
     protected Set<ProcessDefinition> availableProcesses = new HashSet<ProcessDefinition>();
@@ -1101,6 +1104,10 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         applyQueryFilter(params, filter);
         List<TaskEvent> taskEvents = commandService.execute(
     				new QueryNameCommand<List<TaskEvent>>("getAllTasksEvents", params));
+
+        if(taskEvents == null || taskEvents.size() < 1) {
+            throw new TaskNotFoundException( MessageFormat.format(TASK_NOT_FOUND, taskId) );
+        }
         return taskEvents;
     }
 

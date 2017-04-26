@@ -38,6 +38,7 @@ import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.RuntimeDataService.EntryType;
+import org.jbpm.services.api.TaskNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
@@ -1615,4 +1616,10 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processService.abortProcessInstance(processInstanceId2);
 
     }
+
+	@Test(expected=TaskNotFoundException.class)
+	public void testGetTaskEventsForNotExistingId() {
+	    // should throw TaskNotFoundException
+	    runtimeDataService.getTaskEvents(-9999l, new QueryFilter());
+	}
 }
