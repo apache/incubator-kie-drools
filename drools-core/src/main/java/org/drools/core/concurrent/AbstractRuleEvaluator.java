@@ -19,7 +19,6 @@ package org.drools.core.concurrent;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.api.runtime.rule.AgendaFilter;
 
@@ -30,11 +29,9 @@ public class AbstractRuleEvaluator {
         this.agenda = agenda;
     }
 
-    protected int internalEvaluateAndFire( KnowledgeHelper knowledgeHelper, AgendaFilter filter, int fireCount, int fireLimit, RuleAgendaItem item ) {
+    protected int internalEvaluateAndFire( AgendaFilter filter, int fireCount, int fireLimit, RuleAgendaItem item ) {
         agenda.evaluateQueriesForRule( item );
-        RuleExecutor ruleExecutor = item.getRuleExecutor();
-        ruleExecutor.setKnowledgeHelper(knowledgeHelper);
-        return ruleExecutor.evaluateNetworkAndFire(agenda, filter, fireCount, fireLimit);
+        return item.getRuleExecutor().evaluateNetworkAndFire(agenda, filter, fireCount, fireLimit);
     }
 
     protected KnowledgeHelper newKnowledgeHelper() {
