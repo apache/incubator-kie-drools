@@ -40,7 +40,7 @@ public class SequentialRuleEvaluator extends AbstractRuleEvaluator implements Ru
                                 int fireLimit,
                                 InternalAgendaGroup group ) {
         RuleAgendaItem item = sequential ? (RuleAgendaItem) group.remove() : (RuleAgendaItem) group.peek();
-        return item != null ? internalEvaluateAndFire( knowledgeHelper, filter, fireCount, fireLimit, item ) : 0;
+        return item != null ? internalEvaluateAndFire( filter, fireCount, fireLimit, item ) : 0;
     }
 
     public KnowledgeHelper getKnowledgeHelper() {

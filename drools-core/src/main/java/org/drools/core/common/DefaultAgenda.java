@@ -1259,6 +1259,7 @@ public class DefaultAgenda
         }
     }
 
+    @Override
     public KnowledgeHelper getKnowledgeHelper() {
         return ruleEvaluator.getKnowledgeHelper();
     }

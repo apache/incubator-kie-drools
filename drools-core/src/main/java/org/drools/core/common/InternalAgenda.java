@@ -32,6 +32,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.InternalActivationGroup;
+import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.spi.Tuple;
@@ -292,6 +293,8 @@ public interface InternalAgenda
     void handleException(InternalWorkingMemory wm, Activation activation, Exception e);
 
     boolean isParallelAgenda();
+
+    KnowledgeHelper getKnowledgeHelper();
 
     default PropagationList getPropagationList() {
         throw new UnsupportedOperationException();
