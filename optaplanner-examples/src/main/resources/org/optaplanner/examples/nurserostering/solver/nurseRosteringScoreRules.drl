@@ -154,10 +154,9 @@ rule "minimumConsecutiveWorkingDays"
             contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, minimumEnabled == true,
             $contract : contract, $minimumValue : minimumValue
         )
-        $employee : Employee(contract == $contract)
 
         EmployeeWorkSequence(
-            employee == $employee,
+            getEmployee().getContract() == $contract,
             dayLength < $minimumValue,
             $dayLength : dayLength
         )
@@ -172,10 +171,9 @@ rule "maximumConsecutiveWorkingDays"
             contractLineType == ContractLineType.CONSECUTIVE_WORKING_DAYS, maximumEnabled == true,
             $contract : contract, $maximumValue : maximumValue
         )
-        $employee : Employee(contract == $contract)
 
         EmployeeWorkSequence(
-            employee == $employee,
+            getEmployee().getContract() == $contract,
             dayLength > $maximumValue,
             $dayLength : dayLength
         )
@@ -260,10 +258,9 @@ rule "minimumConsecutiveFreeDays"
             contractLineType == ContractLineType.CONSECUTIVE_FREE_DAYS, minimumEnabled == true,
             $contract : contract, $minimumValue : minimumValue
         )
-        $employee : Employee(contract == $contract)
 
         EmployeeFreeSequence(
-            employee == $employee,
+            getEmployee().getContract() == $contract,
             dayLength < $minimumValue,
             $dayLength : dayLength
         )
@@ -278,10 +275,9 @@ rule "maximumConsecutiveFreeDays"
             contractLineType == ContractLineType.CONSECUTIVE_FREE_DAYS, maximumEnabled == true,
             $contract : contract, $maximumValue : maximumValue
         )
-        $employee : Employee(contract == $contract)
 
         EmployeeFreeSequence(
-            employee == $employee,
+            getEmployee().getContract() == $contract,
             dayLength > $maximumValue,
             $dayLength : dayLength
         )
@@ -354,10 +350,9 @@ rule "minimumConsecutiveWorkingWeekends"
             contractLineType == ContractLineType.CONSECUTIVE_WORKING_WEEKENDS, minimumEnabled == true,
             $contract : contract, $minimumValue : minimumValue
         )
-        $employee : Employee(contract == $contract)
 
         EmployeeWeekendSequence(
-            employee == $employee,
+            getEmployee().getContract() == $contract,
             weekendLength < $minimumValue,
             $weekendLength : weekendLength
         )
@@ -373,10 +368,9 @@ rule "maximumConsecutiveWorkingWeekends"
             contractLineType == ContractLineType.CONSECUTIVE_WORKING_WEEKENDS, maximumEnabled == true,
             $contract : contract, $maximumValue : maximumValue
         )
-        $employee : Employee(contract == $contract)
 
         EmployeeWeekendSequence(
-            employee == $employee,
+            getEmployee().getContract() == $contract,
             weekendLength > $maximumValue,
             $weekendLength : weekendLength
         )
