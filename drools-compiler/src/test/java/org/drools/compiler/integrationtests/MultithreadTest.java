@@ -42,6 +42,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,6 +63,7 @@ import java.util.concurrent.TimeUnit;
  * This is a test case for multi-thred issues
  */
 public class MultithreadTest extends CommonTestMethodBase {
+    private static final Logger LOG = LoggerFactory.getLogger(MultithreadTest.class);
 
     @Test(timeout = 10000)
     public void testConcurrentInsertionsFewObjectsManyThreads() {
@@ -789,19 +792,25 @@ public class MultithreadTest extends CommonTestMethodBase {
         ksconf.setOption( TimedRuleExecutionOption.YES );
         final KieSession ksession = kbase.newKieSession(ksconf, null);
 
-        new Thread() {
+        Thread t1 = new Thread() {
             @Override
             public void run() {
+                LOG.info("before: sleep, dispose().");
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException _e) {
                 }
+                LOG.info("before: dispose().");
                 ksession.dispose();
+                LOG.info("after: dispose().");
             }
-        }.start();
+        };
+        t1.setDaemon(true);
+        t1.start();
 
         try {
             int i = 0;
+            LOG.info("before: while.");
             while (true) {
                 ksession.insert("" + i++);
                 ksession.fireAllRules();
@@ -809,10 +818,12 @@ public class MultithreadTest extends CommonTestMethodBase {
         } catch (IllegalStateException e) {
             // java.lang.IllegalStateException: Illegal method call. This session was previously disposed.
             // ignore and exit
+            LOG.info("after: while.");
         } catch (java.util.concurrent.RejectedExecutionException e) {
             e.printStackTrace();
             fail( "java.util.concurrent.RejectedExecutionException should not happen" );
         }
+        LOG.info("last line of test.");
     }
 
     @Test(timeout = 10000)
