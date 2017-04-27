@@ -20,6 +20,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
@@ -39,6 +42,17 @@ public class PongUI extends GameUI {
     public PongUI(KieSession ksession, GameConfiguration conf) {
         super(ksession, conf);
         this.pconf = (PongConfiguration) conf;
+    }
+    
+    @Override
+    public void init() {
+        super.init();
+        registerWindowListenerOnFrame(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                getKieSession().halt();
+            }
+        });
     }
 
     public void drawGame(Ball ball, Bat bat1, Bat bat2, Player p1, Player p2) {
