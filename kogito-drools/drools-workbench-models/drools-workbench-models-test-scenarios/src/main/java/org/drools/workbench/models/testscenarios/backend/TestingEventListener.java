@@ -58,7 +58,7 @@ public class TestingEventListener
                 if ( ruleNames.isEmpty() ) {
                     return true;
                 }
-                String ruleName = activation.getRule().getName();
+                String ruleName = getFullyQualifiedRuleName(activation.getRule());
 
                 if ( inclusive ) {
                     return ruleNames.contains( ruleName );
@@ -89,12 +89,17 @@ public class TestingEventListener
     private void record( Rule rule,
                          Map<String, Integer> counts ) {
         this.totalFires++;
-        String name = rule.getName();
+        String name = getFullyQualifiedRuleName(rule);
         if ( !counts.containsKey( name ) ) {
             counts.put( name, 1 );
         } else {
             counts.put( name, counts.get( name ) + 1 );
         }
+    }
+
+    private String getFullyQualifiedRuleName(final Rule rule) {
+        String packageName = rule.getPackageName();
+        return (packageName.isEmpty()?rule.getName():packageName+"."+rule.getName());
     }
 
     /**

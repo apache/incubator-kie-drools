@@ -424,8 +424,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         ExecutionTrace executionTrace = new ExecutionTrace();
 
-        sc.getRules().add("rule1");
-        sc.getRules().add("rule2");
+        sc.getRules().add("foo.bar.rule1");
+        sc.getRules().add("foo.bar.rule2");
         sc.setInclusive(true);
         sc.getFixtures().add(executionTrace);
 
@@ -448,13 +448,13 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         );
 
-        assertions[2] = new VerifyRuleFired("rule1",
+        assertions[2] = new VerifyRuleFired("foo.bar.rule1",
                 1,
                 null);
-        assertions[3] = new VerifyRuleFired("rule2",
+        assertions[3] = new VerifyRuleFired("foo.bar.rule2",
                 1,
                 null);
-        assertions[4] = new VerifyRuleFired("rule3",
+        assertions[4] = new VerifyRuleFired("foo.bar.rule3",
                 0,
                 null);
 
@@ -502,8 +502,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         ExecutionTrace executionTrace = new ExecutionTrace();
 
-        sc.getRules().add("rule1");
-        sc.getRules().add("rule2");
+        sc.getRules().add("foo.bar.rule1");
+        sc.getRules().add("foo.bar.rule2");
         sc.setInclusive(true);
         sc.getFixtures().add(executionTrace);
 
@@ -526,13 +526,13 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         );
 
-        assertions[2] = new VerifyRuleFired("rule1",
+        assertions[2] = new VerifyRuleFired("foo.bar.rule1",
                 1,
                 null);
-        assertions[3] = new VerifyRuleFired("rule2",
+        assertions[3] = new VerifyRuleFired("foo.bar.rule2",
                 1,
                 null);
-        assertions[4] = new VerifyRuleFired("rule3",
+        assertions[4] = new VerifyRuleFired("foo.bar.rule3",
                 0,
                 null);
 
@@ -565,7 +565,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         ExecutionTrace executionTrace = new ExecutionTrace();
 
-        scenario.getRules().add("rule1");
+        scenario.getRules().add("foo.bar.rule1");
         scenario.setInclusive(true);
         scenario.getFixtures().add(executionTrace);
 
@@ -578,7 +578,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
                 ));
 
-        assertions[1] = new VerifyRuleFired("rule1",
+        assertions[1] = new VerifyRuleFired("foo.bar.rule1",
                 1,
                 null);
 
@@ -867,8 +867,8 @@ public class ScenarioRunnerTest extends RuleUnit {
                 false));
 
         ExecutionTrace executionTrace = new ExecutionTrace();
-        sc.getRules().add("rule1");
-        sc.getRules().add("rule2");
+        sc.getRules().add("foo.bar.rule1");
+        sc.getRules().add("foo.bar.rule2");
         sc.setInclusive(true);
         sc.getFixtures().add(executionTrace);
 
@@ -886,18 +886,18 @@ public class ScenarioRunnerTest extends RuleUnit {
                         "XXX",
                         "=="),
                         new VerifyField("status",
-                                "rule2",
+                                "foo.bar.rule2",
                                 "==")
 
                 ));
 
-        assertions[2] = new VerifyRuleFired("rule1",
+        assertions[2] = new VerifyRuleFired("foo.bar.rule1",
                 1,
                 null);
-        assertions[3] = new VerifyRuleFired("rule2",
+        assertions[3] = new VerifyRuleFired("foo.bar.rule2",
                 1,
                 null);
-        assertions[4] = new VerifyRuleFired("rule3",
+        assertions[4] = new VerifyRuleFired("foo.bar.rule3",
                 2,
                 null);
 
