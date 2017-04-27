@@ -27,7 +27,7 @@ public class MapBackedType
 
     public MapBackedType(String typeName, Map<String, Type> fields) {
         this.name = typeName;
-        fields.putAll( fields );
+        this.fields.putAll( fields );
     }
 
     @Override
@@ -52,8 +52,11 @@ public class MapBackedType
         }
         Map<?, ?> instance = (Map<?, ?>) o;
         for ( Entry<String, Type> f : fields.entrySet() ) {
+            if ( !instance.containsKey(f.getKey()) ) {
+                return false;
+            }
             Object instanceValueForKey = instance.get(f.getKey());
-            if ( instance.get(f.getKey()) == null || !f.getValue().isInstanceOf(instanceValueForKey) ) {
+            if ( instanceValueForKey != null && !f.getValue().isInstanceOf(instanceValueForKey) ) {
                 return false;
             }
         }
@@ -70,8 +73,11 @@ public class MapBackedType
         }
         Map<?, ?> instance = (Map<?, ?>) value;
         for ( Entry<String, Type> f : fields.entrySet() ) {
+            if ( !instance.containsKey(f.getKey()) ) {
+                return false;
+            }
             Object instanceValueForKey = instance.get(f.getKey());
-            if ( instanceValueForKey == null || !f.getValue().isAssignableValue(instanceValueForKey) ) {
+            if ( instanceValueForKey != null && !f.getValue().isAssignableValue(instanceValueForKey) ) {
                 return false;
             }
         }
