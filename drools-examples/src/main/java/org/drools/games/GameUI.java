@@ -69,7 +69,14 @@ public class GameUI extends Canvas{
         createBufferStrategy(2);
         bufferStrategy = getBufferStrategy();
     }
-
+    
+    protected void registerWindowListenerOnFrame(WindowListener listener) {
+        frame.addWindowListener(listener);
+    }
+    
+    protected KieSession getKieSession() {
+        return this.ksession;
+    }
 
     public JPanel getCanvas() {
         return panel;
