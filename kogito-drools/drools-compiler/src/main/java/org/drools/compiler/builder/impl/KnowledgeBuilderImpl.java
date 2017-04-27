@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
@@ -209,6 +210,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     private AssetFilter                                       assetFilter        = null;
 
     private final TypeDeclarationBuilder                      typeBuilder;
+
+    private Map<String, Object>                               builderCache;
 
     /**
      * Use this when package is starting from scratch.
@@ -2440,5 +2443,16 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             addBuilderResult(new AnnotationDeclarationError(annotationDescr,
                                                             "Unknown annotation: " + annotationDescr.getName()));
         }
+    }
+
+    private Map<String, Object> getBuilderCache() {
+        if (builderCache == null) {
+            builderCache = new HashMap<>();
+        }
+        return builderCache;
+    }
+
+    public <T> T getCachedOrCreate( String key, Supplier<T> creator ) {
+        return (T) getBuilderCache().computeIfAbsent( key, k -> creator.get() );
     }
 }
