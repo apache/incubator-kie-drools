@@ -1,8 +1,8 @@
 package org.kie.dmn.feel.lang.examples;
 
-
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.*;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -46,19 +46,6 @@ public class CompileEvaluateTest {
                 LOG.warn("{}", evt);
             }
         } );
-    }
-    
-    public static <K, V> Map.Entry<K, V> entry(K key, V value) {
-        return new AbstractMap.SimpleEntry<>(key, value);
-    }
-
-    public static <K, U> Collector<Map.Entry<K, U>, ?, Map<K, U>> toMap() {
-        return Collectors.toMap(x -> x.getKey(), x -> x.getValue());
-    }
-    
-    @SafeVarargs
-    public static <K, V> Map<K, V> prototype(Map.Entry<K, V>... attributes) {
-        return Stream.of(attributes).collect(toMap());
     }
     
     @Test
