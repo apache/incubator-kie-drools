@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import org.drools.compiler.LongAddress;
 import org.drools.compiler.Person;
 import org.drools.compiler.util.debug.DebugList;
 import org.drools.core.impl.InternalRuleUnitExecutor;
@@ -1088,5 +1089,59 @@ public class RuleUnitTest {
         sofia.setSex( 'F' );
         persons.update( sofiaFh, sofia, "sex" );
         assertEquals( 0, executor.run( AdultUnit.class ) );
+    }
+
+    @Test
+    public void testTwoPartsOOPath() throws Exception {
+        // DROOLS-1539
+        String drl1 =
+                "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName( AdultUnit.class ) + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + LongAddress.class.getCanonicalName() + "\n" +
+                "rule Adult when\n" +
+                "    $a: /persons{ age > 18 }/addresses{ #LongAddress, country == \"it\" }\n" +
+                "then\n" +
+                "    System.out.println($a.getCountry());\n" +
+                "end";
+
+        KieBase kbase = new KieHelper( PropertySpecificOption.ALWAYS ).addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        Person mario = new Person( "Mario", 43 );
+        mario.setAddresses(asList( new LongAddress( "street", "suburb", "zipCode", "it") ) );
+        Person mark = new Person( "Mark", 40 );
+        mark.setAddresses(asList( new LongAddress( "street", "suburb", "zipCode", "uk") ) );
+
+        DataSource<Person> persons = executor.newDataSource( "persons", mario, mark );
+
+        assertEquals( 1, executor.run( AdultUnit.class ) );
+    }
+
+    @Test
+    public void testNestedOOPath() throws Exception {
+        // DROOLS-1539
+        String drl1 =
+                "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName( AdultUnit.class ) + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + LongAddress.class.getCanonicalName() + "\n" +
+                "rule Adult when\n" +
+                "    $p: /persons{ age > 18, $a: /addresses{ #LongAddress, country == \"it\" } }\n" +
+                "then\n" +
+                "    System.out.println($p.getName() + \" is in \" + $a.getCountry());\n" +
+                "end";
+
+        KieBase kbase = new KieHelper( PropertySpecificOption.ALWAYS ).addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        Person mario = new Person( "Mario", 43 );
+        mario.setAddresses(asList( new LongAddress( "street", "suburb", "zipCode", "it") ) );
+        Person mark = new Person( "Mark", 40 );
+        mark.setAddresses(asList( new LongAddress( "street", "suburb", "zipCode", "uk") ) );
+
+        DataSource<Person> persons = executor.newDataSource( "persons", mario, mark );
+
+        assertEquals( 1, executor.run( AdultUnit.class ) );
     }
 }

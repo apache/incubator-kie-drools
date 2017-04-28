@@ -237,6 +237,10 @@ public class PatternBuilder
             patternDescr.removeAllConstraint();
             firstXpathChunk.getConstraints()
                            .forEach( s -> patternDescr.addConstraint( new ExprConstraintDescr( s ) ) );
+            if (!xpathAnalysis.isSinglePart()) {
+                patternDescr.addConstraint( new ExprConstraintDescr( patternDescr.getIdentifier() + " : " + expr.substring( xpathAnalysis.getPart( 1 ).getStart() ) ) );
+                patternDescr.setIdentifier( "$void$" );
+            }
         }
     }
 
