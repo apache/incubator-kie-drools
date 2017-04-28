@@ -39,6 +39,10 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-api</artifactId>      
+    </dependency>
     <!-- Email -->
     <dependency>
       <groupId>javax.mail</groupId>
@@ -287,6 +291,24 @@
       <artifactId>jbpm-runtime-manager</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-ci</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>jsr250-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency> 
   </dependencies>
 
   <build>
