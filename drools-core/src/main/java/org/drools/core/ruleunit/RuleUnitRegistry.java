@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.drools.core.base.TypeResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -89,7 +90,7 @@ public class RuleUnitRegistry {
         String unitClassName = rule.getRuleUnitClassName();
         state = state.hasUnit( unitClassName != null );
         return Optional.ofNullable( unitClassName )
-                       .map( name -> ruleUnits.computeIfAbsent( name, s -> findRuleUnitDescr(s) ) );
+                       .map( name -> ruleUnits.computeIfAbsent( name, this::findRuleUnitDescr ) );
     }
 
     private RuleUnitDescr findRuleUnitDescr( String ruleUnit ) {
@@ -102,6 +103,10 @@ public class RuleUnitRegistry {
             nonExistingUnits.add( ruleUnit );
             return null;
         }
+    }
+
+    public void registerRuleUnit( String unitName, Supplier<Class<? extends RuleUnit>> unitSupplier) {
+        ruleUnits.computeIfAbsent( unitName, n -> new RuleUnitDescr( unitSupplier.get() ) );
     }
 
     public void add( RuleUnitRegistry other ) {
