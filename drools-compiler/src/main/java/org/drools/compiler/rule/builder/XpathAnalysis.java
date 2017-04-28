@@ -46,6 +46,10 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
         return parts.get( i );
     }
 
+    public boolean isSinglePart() {
+        return parts.size() == 1;
+    }
+
     public static class XpathPart {
         private final String field;
         private final boolean iterate;
@@ -53,14 +57,16 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
         private final List<String> constraints;
         private final String inlineCast;
         private final int index;
+        private final int start;
 
-        public XpathPart(String field, boolean iterate, boolean lazy, List<String> constraints, String inlineCast, int index) {
+        public XpathPart(String field, boolean iterate, boolean lazy, List<String> constraints, String inlineCast, int index, int start) {
             this.field = field;
             this.iterate = iterate;
             this.lazy = lazy;
             this.constraints = constraints;
             this.inlineCast = inlineCast;
             this.index = index;
+            this.start = start;
         }
 
         public String getField() {
@@ -87,7 +93,11 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
             return index;
         }
 
-        public void addInlineCastConstraint(Class<?> clazz) {
+        public int getStart() {
+            return start;
+        }
+
+        public void addInlineCastConstraint( Class<?> clazz ) {
             constraints.add(0, "this instanceof " + clazz.getCanonicalName());
         }
 
@@ -98,12 +108,17 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
                 sb.append( "[" ).append( index ).append( "]" );
             }
             if (!constraints.isEmpty()) {
-                sb.append( "{" );
+                sb.append( "{ " );
+                if (inlineCast != null) {
+                    sb.append( "#" ).append( inlineCast ).append( ", " );
+                }
                 sb.append( constraints.get(0) );
                 for (int i = 1; i < constraints.size(); i++) {
                     sb.append( ", " ).append( constraints.get( i ) );
                 }
-                sb.append( "}" );
+                sb.append( " }" );
+            } else if (inlineCast != null) {
+                sb.append( "{ #" ).append( inlineCast ).append( " }" );
             }
             return sb.toString();
         }
@@ -136,6 +151,7 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
 
         String field = null;
         String error = null;
+        int partStart = 0;
 
         for (; i < xpath.length() && error == null; i++) {
             switch (xpath.charAt(i)) {
@@ -145,7 +161,8 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
                         if (field == null) {
                             field = xpath.substring(lastStart, xpath.charAt(i-1) == '?' ? i-1 : i).trim();
                         }
-                        parts.add(new XpathPart(field, iterate, lazyPath, constraints, inlineCast, index));
+                        parts.add(new XpathPart(field, iterate, lazyPath, constraints, inlineCast, index, partStart));
+                        partStart = i;
 
                         iterate = xpath.charAt(i) == '/';
                         if (xpath.charAt(i-1) == '?') {
@@ -248,7 +265,7 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
         if (field == null) {
             field = xpath.substring(lastStart).trim();
         }
-        parts.add(new XpathPart(field, iterate, lazyPath, constraints, inlineCast, index));
+        parts.add(new XpathPart(field, iterate, lazyPath, constraints, inlineCast, index, partStart));
 
         return new XpathAnalysis(parts, error);
     }

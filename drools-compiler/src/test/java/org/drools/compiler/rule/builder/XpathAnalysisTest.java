@@ -15,16 +15,13 @@
 
 package org.drools.compiler.rule.builder;
 
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for syntactic analysis of XPath constraints.
@@ -60,7 +57,7 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -73,7 +70,7 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("", true, true, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("", true, true, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -86,7 +83,7 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -99,8 +96,8 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -113,8 +110,8 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("", false, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("", false, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -127,9 +124,9 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", false, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("name", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", false, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("name", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -142,10 +139,10 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", false, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("name", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", false, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("name", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -158,11 +155,11 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", false, false, new ArrayList<String>(Arrays.asList("../city == \"The City\"")), null, -1),
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", false, false, new ArrayList<String>(Arrays.asList("../city == \"The City\"")), null, -1, 0),
                         iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("name", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("name", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -175,10 +172,10 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("ulička", false, false, new ArrayList<String>(Arrays.asList("name == 'ěščřžýáíé'")), null, -1),
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("ulička", false, false, new ArrayList<String>(Arrays.asList("name == 'ěščřžýáíé'")), null, -1, 0),
                         iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -191,7 +188,7 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, 0, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -204,8 +201,8 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, 0), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, 0, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -218,8 +215,8 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name == \"Elm\"")), null, -1),
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name == \"Elm\"")), null, -1, 0),
                         iterator.next());
         assertEquals(false, iterator.hasNext());
     }
@@ -233,11 +230,11 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name == \"Elm\"",
                                                                                                                "length <= 10",
                                                                                                                "code == \"Something, \\\"and\\\" other thing\"")),
-                                                    null, -1),
+                                                    null, -1, 0),
                 iterator.next());
         assertEquals(false, iterator.hasNext());
     }
@@ -251,10 +248,10 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name == \"Elm\"")), null, -1),
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name == \"Elm\"")), null, -1, 0),
                 iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -267,10 +264,10 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name == \"Elm\"")), null, 1),
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name == \"Elm\"")), null, 1, 0),
                 iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("city", false, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("city", false, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -283,10 +280,10 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name.value == \"Elm\"")), "MyStreetType", -1),
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name.value == \"Elm\"")), "MyStreetType", -1, 0),
                 iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("city", false, false, new ArrayList<String>(), null, -1), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("city", false, false, new ArrayList<String>(), null, -1, 0), iterator.next());
         assertEquals(false, iterator.hasNext());
     }
 
@@ -299,10 +296,10 @@ public class XpathAnalysisTest {
         assertNull(result.getError());
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name.value == \"Elm\"")), "MyStreetType", 1),
+        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name.value == \"Elm\"")), "MyStreetType", 1, 0),
                 iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("city", false, false, new ArrayList<String>(Arrays.asList("value")), "MyCityMoreSpecificType", -1),
+        verifyXpathPart(new XpathAnalysis.XpathPart("city", false, false, new ArrayList<String>(Arrays.asList("value")), "MyCityMoreSpecificType", -1, 0),
                 iterator.next());
         assertEquals(false, iterator.hasNext());
     }
