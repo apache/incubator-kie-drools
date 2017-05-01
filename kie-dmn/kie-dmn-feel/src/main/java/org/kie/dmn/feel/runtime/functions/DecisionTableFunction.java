@@ -75,10 +75,10 @@ public class DecisionTableFunction
             }
             // zip inputExpression with its inputValue
             inputs = IntStream.range( 0, inputExpressions.size() )
-                    .mapToObj( i -> new DTInputClause( inputExpressions.get( i ), inputValuesList.toString(), Collections.singletonList( inputValues.get( i ) ), compiledInput ) )
+                    .mapToObj( i -> new DTInputClause( inputExpressions.get( i ), inputValuesList.toString(), Collections.singletonList( inputValues.get( i ) ), null ) )
                     .collect( Collectors.toList() );
         } else {
-            inputs = inputExpressions.stream().map( ie -> new DTInputClause( ie, null, null, compiledInput ) ).collect( Collectors.toList() );
+            inputs = inputExpressions.stream().map( ie -> new DTInputClause( ie, null, null, null ) ).collect( Collectors.toList() );
         }
 
         List<String> parseOutputs = outputs instanceof List ? (List) outputs : Collections.singletonList( (String) outputs );

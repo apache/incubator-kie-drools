@@ -434,20 +434,10 @@ public class DMNRuntimeTest {
     @Test
     public void testMissingInputData() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "missing_input_data.dmn", getClass() );
-//        runtime.addListener( DMNRuntimeUtil.createListener() );
-
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_4047acf3-fce2-42f3-abf2-fb06282c1ea0", "Upgrade Based On Promotions" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
-
-        DMNContext context = DMNFactory.newContext();
-        context.set( "Requested Vehicle Class", "Compact" );
-        context.set( "Membership Level", "Silver" );
-        context.set( "Calendar Promotion", "None" );
-        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        //        System.out.println(formatMessages( dmnResult.getMessages() ));
-        // work in progress... later we will check the actual messages...
-        //        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getMessages( DMNMessage.Severity.ERROR ).size(), is( 4 ) );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
     }
 
     @Test

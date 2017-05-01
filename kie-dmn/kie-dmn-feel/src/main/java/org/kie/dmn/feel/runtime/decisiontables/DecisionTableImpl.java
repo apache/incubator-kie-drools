@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime.decisiontables;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -113,7 +114,12 @@ public class DecisionTableImpl {
         Map<String, Object> variables = ctx.getAllValues();
         Object[] actualInputs = new Object[ inputs.size() ];
         for( int i = 0; i < inputs.size(); i++ ) {
-            actualInputs[i] = feel.evaluate( inputs.get( i ).getCompiledInput(), variables );
+            CompiledExpression compiledInput = inputs.get( i ).getCompiledInput();
+            if( compiledInput != null ) {
+                actualInputs[i] = feel.evaluate( compiledInput, variables );
+            } else {
+                actualInputs[i] = feel.evaluate( inputs.get( i ).getInputExpression(), variables );
+            }
         }
         return actualInputs;
     }
