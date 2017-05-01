@@ -135,6 +135,9 @@ public class MVELExprAnalyzer {
                                                    context.getParentDescr(),
                                                    null,
                                                    "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
+            if (e.getCause() != null) {
+                log.error("Exception was thrown in Mvel", e);
+            }
             return null;
         }
 
