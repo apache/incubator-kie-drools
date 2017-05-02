@@ -113,8 +113,7 @@ public class DMNCompilerImpl
     private void processItemDefinitions(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
         dmndefs.getItemDefinition().stream().forEach(x->processItemDefQNameURIs(x));
         
-        List<ItemDefinition> ordered = new ArrayList<>( dmndefs.getItemDefinition() );
-        ordered.sort( new ItemDefinitionDependenciesComparator(model.getNamespace()) );
+        List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition());
         
         for ( ItemDefinition id : ordered ) {
             ItemDefNodeImpl idn = new ItemDefNodeImpl( id );
