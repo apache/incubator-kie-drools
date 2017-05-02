@@ -1112,7 +1112,7 @@ public class DMNRuntimeTest {
         assertThat( dmnModel, notNullValue() );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 1 ) );
         assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getMessage(), containsString( "Unknown variable 'NonSalaryPct'" ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessage(), containsString( "Unknown variable 'liquidAssetsAmt'" ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {
