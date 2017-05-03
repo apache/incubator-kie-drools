@@ -36,9 +36,11 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -289,5 +291,48 @@ public class FromTest {
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertFalse( results.getMessages().isEmpty() );
+    }
+    
+    public static class Container2 {
+        private Number wrapped;
+        public Container2(Number wrapped) {
+            this.wrapped = wrapped;
+        }
+        public Number getSingleValue() {
+            return this.wrapped;
+        }
+    }
+    @Test
+    public void testFromWithInterfaceAndAbstractClass() {
+        String drl =
+                "import " + Container2.class.getCanonicalName() + "\n" +
+                "import " + Comparable.class.getCanonicalName() + "\n" +
+                "global java.util.List out;\n" +
+                "rule R1 when\n" +
+                "    $c2 : Container2( )\n" +
+                "    $s : Comparable() from $c2.singleValue\n" +
+                "then\n" +
+                "    out.add($s);\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        KieSession ksession = kbase.newKieSession();
+
+        List<Integer> out = new ArrayList<Integer>();
+        ksession.setGlobal( "out", out );
+
+        ksession.insert( new Container2( new Integer(1) ) );
+        ksession.fireAllRules();
+
+        assertEquals( 1, out.size() );
+        assertEquals( 1, (int)out.get(0) );
+        
+        
+        out.clear();
+        
+        ksession.insert( new Container2( new AtomicInteger(1) ) );
+        ksession.fireAllRules();
+        
+        assertEquals( 0, out.size() );
     }
 }
