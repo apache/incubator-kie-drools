@@ -47,6 +47,8 @@ import org.drools.core.spi.SelfNumberExtractor;
 
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.isIterable;
+import static org.drools.core.util.ClassUtils.isFinal;
+import static org.drools.core.util.ClassUtils.isInterface;;
 
 public class Pattern
     implements
@@ -558,7 +560,7 @@ public class Pattern
                isIterable( returnType ) ||
                ( objectType instanceof ClassObjectType && 
                        ( returnType.isAssignableFrom( ((ClassObjectType)objectType).getClassType()) || 
-                         ( Modifier.isAbstract( returnType.getModifiers() ) && Modifier.isInterface(((ClassObjectType)objectType).getClassType().getModifiers()))   
+                         ( !isFinal( returnType ) && isInterface(((ClassObjectType)objectType).getClassType()))   
                          ) );
     }
 }

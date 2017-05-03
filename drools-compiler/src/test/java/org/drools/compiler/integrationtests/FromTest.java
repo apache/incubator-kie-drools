@@ -335,4 +335,83 @@ public class FromTest {
         
         assertEquals( 0, out.size() );
     }
+    
+    public static class Container2b {
+        private AtomicInteger wrapped;
+        public Container2b(AtomicInteger wrapped) {
+            this.wrapped = wrapped;
+        }
+        public AtomicInteger getSingleValue() {
+            return this.wrapped;
+        }
+    }
+    public static interface CustomIntegerMarker {}
+    public static class CustomInteger extends AtomicInteger implements CustomIntegerMarker {
+        public CustomInteger(int initialValue) {
+            super(initialValue);
+        }
+    }
+    @Test
+    public void testFromWithInterfaceAndConcreteClass() {
+        String drl =
+                "import " + Container2b.class.getCanonicalName() + "\n" +
+                "import " + CustomIntegerMarker.class.getCanonicalName() + "\n" +
+                "global java.util.List out;\n" +
+                "rule R1 when\n" +
+                "    $c2 : Container2b( )\n" +
+                "    $s : CustomIntegerMarker() from $c2.singleValue\n" +
+                "then\n" +
+                "    out.add($s);\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        KieSession ksession = kbase.newKieSession();
+
+        List<AtomicInteger> out = new ArrayList<>();
+        ksession.setGlobal( "out", out );
+
+        ksession.insert( new Container2b( new CustomInteger(1) ) );
+        ksession.fireAllRules();
+
+        assertEquals( 1, out.size() );
+        assertEquals( 1, ((CustomInteger)out.get(0)).get() );
+        
+        
+        out.clear();
+        
+        ksession.insert( new Container2b( new AtomicInteger(1) ) );
+        ksession.fireAllRules();
+        
+        assertEquals( 0, out.size() );
+    }
+    
+    public static class Container3 {
+        private Integer wrapped;
+        public Container3(Integer wrapped) {
+            this.wrapped = wrapped;
+        }
+        public Integer getSingleValue() {
+            return this.wrapped;
+        }
+    }
+    @Test
+    public void testFromWithInterfaceAndFinalClass() {
+        String drl =
+                "import " + Container3.class.getCanonicalName() + "\n" +
+                "import " + CustomIntegerMarker.class.getCanonicalName() + "\n" +
+                "global java.util.List out;\n" +
+                "rule R1 when\n" +
+                "    $c3 : Container3( )\n" +
+                "    $s : CustomIntegerMarker() from $c3.singleValue\n" +
+                "then\n" +
+                "    out.add($s);\n" +
+                "end\n";
+        
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        
+        // Integer is final class, so there cannot be ever the case of pattern matching in the `from` on a non-extended interface to ever match.
+        assertFalse( results.getMessages().isEmpty() );
+    }
 }
