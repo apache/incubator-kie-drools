@@ -166,4 +166,44 @@ public class DTColumnConfig52
         return header;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DTColumnConfig52 that = (DTColumnConfig52) o;
+
+        if (hideColumn != that.hideColumn) {
+            return false;
+        }
+        if (width != that.width) {
+            return false;
+        }
+        if (defaultValue != null ? !defaultValue.equals(that.defaultValue) : that.defaultValue != null) {
+            return false;
+        }
+        if (typedDefaultValue != null ? !typedDefaultValue.equals(that.typedDefaultValue) : that.typedDefaultValue != null) {
+            return false;
+        }
+        return header != null ? header.equals(that.header) : that.header == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = defaultValue != null ? defaultValue.hashCode() : 0;
+        result=~~result;
+        result = 31 * result + (typedDefaultValue != null ? typedDefaultValue.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (hideColumn ? 1 : 0);
+        result=~~result;
+        result = 31 * result + width;
+        result=~~result;
+        result = 31 * result + (header != null ? header.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }

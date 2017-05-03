@@ -68,4 +68,29 @@ public class MetadataCol52 extends DTColumnConfig52 {
         return cloned;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        MetadataCol52 that = (MetadataCol52) o;
+
+        return metadata != null ? metadata.equals(that.metadata) : that.metadata == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result=~~result;
+        result = 31 * result + (metadata != null ? metadata.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }

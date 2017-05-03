@@ -94,4 +94,39 @@ public class ActionWorkItemSetFieldCol52 extends ActionSetFieldCol52 {
         this.parameterClassName = parameterClassName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        ActionWorkItemSetFieldCol52 that = (ActionWorkItemSetFieldCol52) o;
+
+        if (workItemName != null ? !workItemName.equals(that.workItemName) : that.workItemName != null) {
+            return false;
+        }
+        if (workItemResultParameterName != null ? !workItemResultParameterName.equals(that.workItemResultParameterName) : that.workItemResultParameterName != null) {
+            return false;
+        }
+        return parameterClassName != null ? parameterClassName.equals(that.parameterClassName) : that.parameterClassName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result=~~result;
+        result = 31 * result + (workItemName != null ? workItemName.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (workItemResultParameterName != null ? workItemResultParameterName.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (parameterClassName != null ? parameterClassName.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }
