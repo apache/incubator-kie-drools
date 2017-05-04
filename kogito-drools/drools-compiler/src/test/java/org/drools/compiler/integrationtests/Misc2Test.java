@@ -9123,4 +9123,48 @@ public class Misc2Test extends CommonTestMethodBase {
         new Thread(task1).start();
         task2.run();
     }
+    
+    public static class ElementOperation {
+        private AbstractElement element;
+        public ElementOperation(AbstractElement element) {
+            this.element = element;
+        }
+        public AbstractElement getElement() {
+            return element;
+        }
+    }
+    public static abstract class AbstractElement {
+    }
+    public static interface MyInterface {
+        public void nothing();
+    }
+    public static class MyElement extends AbstractElement implements MyInterface {
+        @Override
+        public void nothing() {}
+    }
+    
+    @Test
+    public void test01841522() {
+        String str = "package com.sample\n" +
+                "import " + ElementOperation.class.getCanonicalName() + ";\n" +
+                "import " + AbstractElement.class.getCanonicalName() + ";\n" +
+                "import " + MyInterface.class.getCanonicalName() + ";\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "  ElementOperation( $e : element )      \n" +
+                "  $my: MyInterface( ) from $e           \n" +
+                "then\n" +
+                "  list.add(\"\" );" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+                
+        ksession.insert( new ElementOperation(new MyElement()) );
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
 }
