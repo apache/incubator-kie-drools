@@ -33,6 +33,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,6 +46,8 @@ import java.util.Set;
 
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.isIterable;
+import static org.drools.core.util.ClassUtils.isFinal;
+import static org.drools.core.util.ClassUtils.isInterface;;
 
 public class Pattern
     implements
@@ -545,6 +548,9 @@ public class Pattern
     public boolean isCompatibleWithFromReturnType( Class<?> returnType ) {
         return isCompatibleWithAccumulateReturnType( returnType ) ||
                isIterable( returnType ) ||
-               ( objectType instanceof ClassObjectType && returnType.isAssignableFrom(((ClassObjectType)objectType).getClassType()) );
+               ( objectType instanceof ClassObjectType && 
+                       ( returnType.isAssignableFrom( ((ClassObjectType)objectType).getClassType()) || 
+                         ( !isFinal( returnType ) && isInterface(((ClassObjectType)objectType).getClassType()))   
+                         ) );
     }
 }
