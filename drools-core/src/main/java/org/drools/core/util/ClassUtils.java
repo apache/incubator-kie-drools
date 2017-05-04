@@ -552,6 +552,14 @@ public final class ClassUtils {
     public static boolean isIterable(Class<?> clazz) {
         return Iterable.class.isAssignableFrom( clazz ) || clazz.isArray();
     }
+    
+    public static boolean isFinal(Class<?> clazz) {
+        return Modifier.isFinal( clazz.getModifiers() );
+    }
+    
+    public static boolean isInterface(Class<?> clazz) {
+        return Modifier.isInterface( clazz.getModifiers() );
+    }
 
     private static class PropertyInClass implements Comparable {
         private final String setter;
