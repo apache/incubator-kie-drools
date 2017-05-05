@@ -108,4 +108,39 @@ public class PortableWorkDefinition {
         return results.get( name );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        PortableWorkDefinition that = (PortableWorkDefinition) o;
+
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (displayName != null ? !displayName.equals(that.displayName) : that.displayName != null) {
+            return false;
+        }
+        if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) {
+            return false;
+        }
+        return results != null ? results.equals(that.results) : that.results == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result=~~result;
+        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (results != null ? results.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }

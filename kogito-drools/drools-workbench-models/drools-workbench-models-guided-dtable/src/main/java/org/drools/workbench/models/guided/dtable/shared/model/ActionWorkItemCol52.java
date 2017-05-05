@@ -158,4 +158,22 @@ public class ActionWorkItemCol52 extends ActionCol52 {
         this.workItemDefinition = workItemDefinition;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ActionWorkItemCol52 that = (ActionWorkItemCol52) o;
+
+        return workItemDefinition != null ? workItemDefinition.equals(that.workItemDefinition) : that.workItemDefinition == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return workItemDefinition != null ? workItemDefinition.hashCode() : 0;
+    }
 }

@@ -111,4 +111,34 @@ public class AttributeCol52 extends DTColumnConfig52 {
         this.reverseOrder = reverseOrder;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AttributeCol52 that = (AttributeCol52) o;
+
+        if (reverseOrder != that.reverseOrder) {
+            return false;
+        }
+        if (useRowNumber != that.useRowNumber) {
+            return false;
+        }
+        return attribute != null ? attribute.equals(that.attribute) : that.attribute == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = attribute != null ? attribute.hashCode() : 0;
+        result=~~result;
+        result = 31 * result + (reverseOrder ? 1 : 0);
+        result=~~result;
+        result = 31 * result + (useRowNumber ? 1 : 0);
+        result=~~result;
+        return result;
+    }
 }

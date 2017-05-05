@@ -422,4 +422,90 @@ public class GuidedDecisionTable52 implements HasImports,
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        GuidedDecisionTable52 that = (GuidedDecisionTable52) o;
+
+        if (tableName != null ? !tableName.equals(that.tableName) : that.tableName != null) {
+            return false;
+        }
+        if (parentName != null ? !parentName.equals(that.parentName) : that.parentName != null) {
+            return false;
+        }
+        if (rowNumberCol != null ? !rowNumberCol.equals(that.rowNumberCol) : that.rowNumberCol != null) {
+            return false;
+        }
+        if (descriptionCol != null ? !descriptionCol.equals(that.descriptionCol) : that.descriptionCol != null) {
+            return false;
+        }
+        if (metadataCols != null ? !metadataCols.equals(that.metadataCols) : that.metadataCols != null) {
+            return false;
+        }
+        if (attributeCols != null ? !attributeCols.equals(that.attributeCols) : that.attributeCols != null) {
+            return false;
+        }
+        if (conditionPatterns != null ? !conditionPatterns.equals(that.conditionPatterns) : that.conditionPatterns != null) {
+            return false;
+        }
+        if (actionCols != null ? !actionCols.equals(that.actionCols) : that.actionCols != null) {
+            return false;
+        }
+        if (auditLog != null ? !auditLog.equals(that.auditLog) : that.auditLog != null) {
+            return false;
+        }
+        if (imports != null ? !imports.equals(that.imports) : that.imports != null) {
+            return false;
+        }
+        if (packageName != null ? !packageName.equals(that.packageName) : that.packageName != null) {
+            return false;
+        }
+        if (getTableFormat() != that.getTableFormat()) {
+            return false;
+        }
+        if (getHitPolicy() != that.getHitPolicy()) {
+            return false;
+        }
+        return data != null ? data.equals(that.data) : that.data == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = tableName != null ? tableName.hashCode() : 0;
+        result=~~result;
+        result = 31 * result + (parentName != null ? parentName.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (rowNumberCol != null ? rowNumberCol.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (descriptionCol != null ? descriptionCol.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (metadataCols != null ? metadataCols.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (attributeCols != null ? attributeCols.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (conditionPatterns != null ? conditionPatterns.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (actionCols != null ? actionCols.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (auditLog != null ? auditLog.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (imports != null ? imports.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (packageName != null ? packageName.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (getTableFormat() != null ? getTableFormat().hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (getHitPolicy() != null ? getHitPolicy().hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (data != null ? data.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }

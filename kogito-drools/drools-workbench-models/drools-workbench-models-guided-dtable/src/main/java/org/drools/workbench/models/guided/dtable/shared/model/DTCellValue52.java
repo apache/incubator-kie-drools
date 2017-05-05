@@ -445,9 +445,15 @@ public class DTCellValue52 {
     public int hashCode() {
         int hash = 0;
         hash = hash + 31 * ( valueBoolean == null ? 0 : valueBoolean.hashCode() );
+        hash=~~hash;
         hash = hash + 31 * ( valueDate == null ? 0 : valueDate.hashCode() );
+        hash=~~hash;
         hash = hash + 31 * ( valueNumeric == null ? 0 : valueNumeric.hashCode() );
+        hash=~~hash;
+        hash = hash + 31 * ( valueString == null ? 0 : valueString.hashCode() );
+        hash=~~hash;
         hash = hash + 31 * dataType.hashCode();
+        hash=~~hash;
         return hash;
     }
 

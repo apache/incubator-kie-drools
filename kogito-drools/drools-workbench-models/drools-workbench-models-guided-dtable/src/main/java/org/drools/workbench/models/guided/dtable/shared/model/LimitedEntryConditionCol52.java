@@ -62,4 +62,29 @@ public class LimitedEntryConditionCol52 extends ConditionCol52
         this.value = value;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        LimitedEntryConditionCol52 that = (LimitedEntryConditionCol52) o;
+
+        return value != null ? value.equals(that.value) : that.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result=~~result;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }

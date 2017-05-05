@@ -154,4 +154,44 @@ public class ActionSetFieldCol52 extends ActionCol52 {
         return update;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ActionSetFieldCol52 that = (ActionSetFieldCol52) o;
+
+        if (update != that.update) {
+            return false;
+        }
+        if (boundName != null ? !boundName.equals(that.boundName) : that.boundName != null) {
+            return false;
+        }
+        if (factField != null ? !factField.equals(that.factField) : that.factField != null) {
+            return false;
+        }
+        if (type != null ? !type.equals(that.type) : that.type != null) {
+            return false;
+        }
+        return valueList != null ? valueList.equals(that.valueList) : that.valueList == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = boundName != null ? boundName.hashCode() : 0;
+        result=~~result;
+        result = 31 * result + (factField != null ? factField.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (valueList != null ? valueList.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (update ? 1 : 0);
+        result=~~result;
+        return result;
+    }
 }

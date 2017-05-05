@@ -231,4 +231,49 @@ public class Pattern52
         throw new UnsupportedOperationException( "Operation only supported by child columns" );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Pattern52 pattern52 = (Pattern52) o;
+
+        if (isNegated != pattern52.isNegated) {
+            return false;
+        }
+        if (factType != null ? !factType.equals(pattern52.factType) : pattern52.factType != null) {
+            return false;
+        }
+        if (boundName != null ? !boundName.equals(pattern52.boundName) : pattern52.boundName != null) {
+            return false;
+        }
+        if (conditions != null ? !conditions.equals(pattern52.conditions) : pattern52.conditions != null) {
+            return false;
+        }
+        if (window != null ? !window.equals(pattern52.window) : pattern52.window != null) {
+            return false;
+        }
+        return entryPointName != null ? entryPointName.equals(pattern52.entryPointName) : pattern52.entryPointName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = factType != null ? factType.hashCode() : 0;
+        result=~~result;
+        result = 31 * result + (boundName != null ? boundName.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (isNegated ? 1 : 0);
+        result=~~result;
+        result = 31 * result + (conditions != null ? conditions.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (window != null ? window.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (entryPointName != null ? entryPointName.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }

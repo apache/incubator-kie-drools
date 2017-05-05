@@ -237,4 +237,54 @@ public class ConditionCol52 extends DTColumnConfig52
         return ( this.binding != null && !"".equals( this.binding ) );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ConditionCol52 that = (ConditionCol52) o;
+
+        if (constraintValueType != that.constraintValueType) {
+            return false;
+        }
+        if (factField != null ? !factField.equals(that.factField) : that.factField != null) {
+            return false;
+        }
+        if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) {
+            return false;
+        }
+        if (operator != null ? !operator.equals(that.operator) : that.operator != null) {
+            return false;
+        }
+        if (valueList != null ? !valueList.equals(that.valueList) : that.valueList != null) {
+            return false;
+        }
+        if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) {
+            return false;
+        }
+        return binding != null ? binding.equals(that.binding) : that.binding == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = constraintValueType;
+        result=~~result;
+        result = 31 * result + (factField != null ? factField.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (fieldType != null ? fieldType.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (operator != null ? operator.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (valueList != null ? valueList.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (binding != null ? binding.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }

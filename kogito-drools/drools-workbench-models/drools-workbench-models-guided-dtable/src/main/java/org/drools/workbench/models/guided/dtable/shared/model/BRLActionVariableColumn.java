@@ -122,4 +122,39 @@ public class BRLActionVariableColumn extends ActionCol52
         return factField;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BRLActionVariableColumn that = (BRLActionVariableColumn) o;
+
+        if (varName != null ? !varName.equals(that.varName) : that.varName != null) {
+            return false;
+        }
+        if (fieldType != null ? !fieldType.equals(that.fieldType) : that.fieldType != null) {
+            return false;
+        }
+        if (factType != null ? !factType.equals(that.factType) : that.factType != null) {
+            return false;
+        }
+        return factField != null ? factField.equals(that.factField) : that.factField == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = varName != null ? varName.hashCode() : 0;
+        result=~~result;
+        result = 31 * result + (fieldType != null ? fieldType.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (factType != null ? factType.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (factField != null ? factField.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }

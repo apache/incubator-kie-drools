@@ -68,4 +68,34 @@ public class PortableFloatParameterDefinition extends PortableParameterDefinitio
         return ( this.getBinding() != null && !"".equals( this.getBinding() ) );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        PortableFloatParameterDefinition that = (PortableFloatParameterDefinition) o;
+
+        if (binding != null ? !binding.equals(that.binding) : that.binding != null) {
+            return false;
+        }
+        return value != null ? value.equals(that.value) : that.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result=~~result;
+        result = 31 * result + (binding != null ? binding.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }
