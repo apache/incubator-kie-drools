@@ -39,7 +39,12 @@ public class DateTimeFunction
         }
         
         try {
-            return FEELFnResult.ofResult( DateTimeFormatter.ISO_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from ) );
+            if( val.contains( "T" ) ) {
+                return FEELFnResult.ofResult( DateTimeFormatter.ISO_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from ) );
+            } else {
+                TemporalAccessor value = DateTimeFormatter.ISO_DATE.parse( val, LocalDate::from );
+                return FEELFnResult.ofResult( LocalDateTime.of( (LocalDate)value, LocalTime.of( 0, 0 ) ) );
+            }
         } catch ( Exception e ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
         }
