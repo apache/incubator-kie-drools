@@ -117,4 +117,29 @@ public class BRLConditionColumn extends ConditionCol52
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BRLConditionColumn that = (BRLConditionColumn) o;
+
+        if (definition != null ? !definition.equals(that.definition) : that.definition != null) {
+            return false;
+        }
+        return childColumns != null ? childColumns.equals(that.childColumns) : that.childColumns == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = definition != null ? definition.hashCode() : 0;
+        result=~~result;
+        result = 31 * result + (childColumns != null ? childColumns.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }

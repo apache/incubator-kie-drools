@@ -70,4 +70,23 @@ public class ActionInsertFactFieldsPattern extends Pattern52 {
         super.update( other );
         setInsertedLogically( ( (ActionInsertFactFieldsPattern) other ).isInsertedLogically );
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ActionInsertFactFieldsPattern that = (ActionInsertFactFieldsPattern) o;
+
+        return isInsertedLogically == that.isInsertedLogically;
+    }
+
+    @Override
+    public int hashCode() {
+        return (isInsertedLogically ? 1 : 0);
+    }
 }

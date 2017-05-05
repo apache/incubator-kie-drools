@@ -58,4 +58,34 @@ public class PortableObjectParameterDefinition
         return ( this.getBinding() != null && !"".equals( this.getBinding() ) );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        PortableObjectParameterDefinition that = (PortableObjectParameterDefinition) o;
+
+        if (className != null ? !className.equals(that.className) : that.className != null) {
+            return false;
+        }
+        return binding != null ? binding.equals(that.binding) : that.binding == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result=~~result;
+        result = 31 * result + (className != null ? className.hashCode() : 0);
+        result=~~result;
+        result = 31 * result + (binding != null ? binding.hashCode() : 0);
+        result=~~result;
+        return result;
+    }
 }
