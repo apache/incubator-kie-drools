@@ -344,8 +344,17 @@ public class DMNEvaluatorCompiler {
                 } ) );
             }
             for ( LiteralExpression le : dr.getOutputEntry() ) {
-                // we might want to compile and save the compiled expression here
-                rule.getOutputEntry().add( le.getText() );
+                String expressionText = le.getText();
+                CompiledExpression compiledExpression = feel.compileFeelExpression(
+                        ctx,
+                        expressionText,
+                        model,
+                        dr,
+                        Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX,
+                        expressionText,
+                        dtName,
+                        index+1 );
+                rule.getOutputEntry().add( compiledExpression );
             }
             rules.add( rule );
             index++;

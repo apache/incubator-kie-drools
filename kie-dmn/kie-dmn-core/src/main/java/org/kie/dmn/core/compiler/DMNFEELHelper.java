@@ -94,8 +94,7 @@ public class DMNFEELHelper
         try {
             Map<String, Type> variableTypes = new HashMap<>();
             for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
-                // TODO: need to properly resolve types here
-                variableTypes.put( entry.getKey(), BuiltInType.UNKNOWN );
+                variableTypes.put( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
             }
             result = feel.evaluateUnaryTests( unaryTests, variableTypes );
         } catch( Throwable t ) {

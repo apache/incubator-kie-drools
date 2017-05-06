@@ -215,7 +215,7 @@ public class DecisionTableImpl {
      *  Each hit results in one output value (multiple outputs are collected into a single context value)
      */
     private Object hitToOutput(EvaluationContext ctx, FEEL feel, DTDecisionRule rule) {
-        List<String> outputEntries = rule.getOutputEntry();
+        List<CompiledExpression> outputEntries = rule.getOutputEntry();
         Map<String, Object> values = ctx.getAllValues();
         if ( outputEntries.size() == 1 ) {
             Object value = feel.evaluate( outputEntries.get( 0 ), values );
