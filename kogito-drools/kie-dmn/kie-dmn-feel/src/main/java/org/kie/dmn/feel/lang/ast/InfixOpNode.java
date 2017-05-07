@@ -26,6 +26,7 @@ import org.kie.dmn.feel.util.EvalHelper;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -210,6 +211,8 @@ public class InfixOpNode
                 if( left instanceof LocalDateTime ) {
                     left = ZonedDateTime.of( (LocalDateTime) left, ZoneId.systemDefault() );
                 }
+            } else if( right instanceof LocalDate && left instanceof LocalDate ) {
+                return Duration.ofDays( ChronoUnit.DAYS.between( (LocalDate) right, (LocalDate) left ) );
             }
             return Duration.between( (Temporal) right, (Temporal) left);
         } else if ( left instanceof Period && right instanceof Period ) {
