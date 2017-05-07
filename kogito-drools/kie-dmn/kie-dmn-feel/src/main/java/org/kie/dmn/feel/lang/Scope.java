@@ -106,4 +106,9 @@ public interface Scope {
 
     Map<String, Symbol> getSymbols();
 
+    /**
+     * maybe null.
+     */
+    Type getType();
+
 }

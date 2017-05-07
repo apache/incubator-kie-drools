@@ -16,12 +16,16 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.DecisionTable;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
+import org.kie.dmn.feel.util.Msg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +62,7 @@ public class DecisionTableFunction
      composed of outputs and output values; else default output value is one
      of the output values.
      */
-    public Object invoke(
+    public Object invoke(@ParameterName("ctx") EvaluationContext ctx, 
             @ParameterName("outputs") Object outputs,
             @ParameterName("input expression list") Object inputExpressionList,
             @ParameterName("input values list") List<?> inputValuesList,
@@ -78,10 +82,10 @@ public class DecisionTableFunction
             }
             // zip inputExpression with its inputValue
             inputs = IntStream.range( 0, inputExpressions.size() )
-                    .mapToObj( i -> new DTInputClause( inputExpressions.get( i ), inputValuesList.toString(), Collections.singletonList( inputValues.get( i ) ) ) )
+                    .mapToObj( i -> new DTInputClause( inputExpressions.get( i ), inputValuesList.toString(), Collections.singletonList( inputValues.get( i ) ), null ) )
                     .collect( Collectors.toList() );
         } else {
-            inputs = inputExpressions.stream().map( ie -> new DTInputClause( ie, null, null ) ).collect( Collectors.toList() );
+            inputs = inputExpressions.stream().map( ie -> new DTInputClause( ie, null, null, null ) ).collect( Collectors.toList() );
         }
 
         List<String> parseOutputs = outputs instanceof List ? (List) outputs : Collections.singletonList( (String) outputs );
@@ -103,8 +107,9 @@ public class DecisionTableFunction
         }
 
         // TODO parse default output value.
+        FEEL feel = FEEL.newInstance();
         List<DTDecisionRule> decisionRules = IntStream.range( 0, ruleList.size() )
-                .mapToObj( index -> DecisionTableFunction.toDecisionRule( index, ruleList.get( index ), inputExpressions.size() ) )
+                .mapToObj( index -> toDecisionRule( ctx, feel, index, ruleList.get( index ), inputExpressions.size() ) )
                 .collect( Collectors.toList() );
 
         // TODO is there a way to avoid UUID and get from _evaluation_ ctx the name of the wrapping context? 
@@ -127,7 +132,16 @@ public class DecisionTableFunction
         return tests;
     }
 
-    public static DTDecisionRule toDecisionRule(int index, List<?> rule, int inputSize) {
+    /**
+     * Convert row to DTDecisionRule
+     * @param mainCtx the main context is used to identify the hosted FEELEventManager
+     * @param embeddedFEEL a possibly cached embedded FEEL to compile the output expression, error will be reported up to the mainCtx
+     * @param index
+     * @param rule
+     * @param inputSize
+     * @return
+     */
+    private static DTDecisionRule toDecisionRule(EvaluationContext mainCtx, FEEL embeddedFEEL, int index, List<?> rule, int inputSize) {
         // TODO should be check indeed block of inputSize n inputs, followed by block of outputs.
         DTDecisionRule dr = new DTDecisionRule( index );
         for ( int i = 0; i < rule.size(); i++ ) {
@@ -135,8 +149,13 @@ public class DecisionTableFunction
             if ( i < inputSize ) {
                 dr.getInputEntry().add( toUnaryTest( o ) );
             } else {
-                // TODO: should we pre-compile the expression? probably...
-                dr.getOutputEntry().add( (String) o );
+                FEELEventListener ruleListener = event -> mainCtx.notifyEvt( () -> new FEELEventBase(event.getSeverity(),
+                                                                                                     Msg.createMessage(Msg.ERROR_COMPILE_EXPR_DT_FUNCTION_RULE_IDX, index+1, event.getMessage()),
+                                                                                                     event.getSourceException()));
+                embeddedFEEL.addListener(ruleListener);
+                CompiledExpression compiledExpression = embeddedFEEL.compile((String) o, embeddedFEEL.newCompilerContext());
+                dr.getOutputEntry().add( compiledExpression );
+                embeddedFEEL.removeListener(ruleListener);
             }
         }
         return dr;

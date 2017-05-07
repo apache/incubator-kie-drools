@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 public class DTInputClause {
     private final String inputExpression;
+    private final CompiledExpression compiledInput;
     private final String inputValuesText;
     private final List<UnaryTest> inputValues;
 
-    public DTInputClause(String inputExpression, String inputValuesText, List<UnaryTest> inputValues) {
+    public DTInputClause(String inputExpression, String inputValuesText, List<UnaryTest> inputValues, CompiledExpression compiledInput) {
         super();
         this.inputExpression = inputExpression;
         this.inputValuesText = inputValuesText;
@@ -20,6 +22,7 @@ public class DTInputClause {
         } else {
             this.inputValues = Collections.emptyList();
         }
+        this.compiledInput = compiledInput;
     }
    
     public String getInputExpression() {
@@ -32,5 +35,9 @@ public class DTInputClause {
 
     public String getInputValuesText() {
         return inputValuesText;
+    }
+
+    public CompiledExpression getCompiledInput() {
+        return compiledInput;
     }
 }

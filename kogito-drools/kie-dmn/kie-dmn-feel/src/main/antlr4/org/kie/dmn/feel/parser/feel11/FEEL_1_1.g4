@@ -133,7 +133,7 @@ functionDefinition
 @after {
     helper.popScope();
 }
-    : function_key '(' formalParameters? ')' external=external_key? body=expression
+    : function_key '(' formalParameters? ')' external=external_key? {helper.enableDynamicResolution();} body=expression {helper.disableDynamicResolution();}
     ;
 
 formalParameters
@@ -332,7 +332,7 @@ qualifiedName
         ( '.'
             {helper.recoverScope( name ); count++;}
             n2=nameRef
-            {name=getOriginalText( $n2.ctx );}
+            {name=getOriginalText( $n2.ctx );  qn.add( name ); helper.validateVariable( $n1.ctx, qn, name ); }
         )*
     ;
 

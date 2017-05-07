@@ -21,6 +21,7 @@ import org.antlr.v4.runtime.Token;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Lexer;
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.TokenTree;
 import org.slf4j.Logger;
@@ -41,6 +42,8 @@ public class ScopeImpl
 
     private TokenTree tokenTree;
 
+    private Type type;
+
     public ScopeImpl() {
     }
 
@@ -50,6 +53,11 @@ public class ScopeImpl
         if ( parentScope != null ) {
             parentScope.addChildScope( this );
         }
+    }
+
+    public ScopeImpl(String name, Scope parentScope, Type type) {
+        this(name, parentScope);
+        this.type = type;
     }
 
     public String getName() {
@@ -166,5 +174,10 @@ public class ScopeImpl
                " name='" + name + '\'' +
                ", parentScope='" + ( parentScope != null ? parentScope.getName() : "<null>" ) +
                "' }";
+    }
+
+    @Override
+    public Type getType() {
+        return this.type;
     }
 }
