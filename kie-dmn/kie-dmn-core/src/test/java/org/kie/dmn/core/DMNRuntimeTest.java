@@ -46,6 +46,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -434,20 +435,10 @@ public class DMNRuntimeTest {
     @Test
     public void testMissingInputData() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "missing_input_data.dmn", getClass() );
-//        runtime.addListener( DMNRuntimeUtil.createListener() );
-
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_4047acf3-fce2-42f3-abf2-fb06282c1ea0", "Upgrade Based On Promotions" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
-
-        DMNContext context = DMNFactory.newContext();
-        context.set( "Requested Vehicle Class", "Compact" );
-        context.set( "Membership Level", "Silver" );
-        context.set( "Calendar Promotion", "None" );
-        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        //        System.out.println(formatMessages( dmnResult.getMessages() ));
-        // work in progress... later we will check the actual messages...
-        //        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getMessages( DMNMessage.Severity.ERROR ).size(), is( 4 ) );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
     }
 
     @Test
@@ -1101,6 +1092,48 @@ public class DMNRuntimeTest {
         assertThat( dmnResult.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );
     }
 
+    @Test
+    public void testUnknownVariable1() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "unknown_variable1.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_9105d4a6-6049-4ace-a9cd-88f18d29bc8f",
+                "Loan Recommendation - context" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 2 ) );
+        assertEquals(1, dmnModel.getMessages().stream().filter( m -> m.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL) )
+                                                       .filter( m -> m.getMessage().contains("Unknown variable 'NonSalaryPct'") )
+                                                       .count());
+    }
+
+    @Test
+    public void testUnknownVariable2() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "unknown_variable2.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_9105d4a6-6049-4ace-a9cd-88f18d29bc8f",
+                "Loan Recommendation - context" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 1 ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessage(), containsString( "Unknown variable 'Borrower.liquidAssetsAmt'" ) );
+    }
+
+    @Test
+    public void testSingleDecisionWithContext() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "SingleDecisionWithContext.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_71af58db-e1df-4b0f-aee2-48e0e8d89672",
+                "SingleDecisionWithContext" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext emptyContext = runtime.newContext();
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, emptyContext );
+       
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "MyDecision" ), is( "Hello John Doe" ) );
+    }
+    
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }

@@ -44,6 +44,7 @@ public class Msg {
     public static final Message2 INVALID_VARIABLE_NAME = new Message2( "A variable name cannot contain the %s '%s'");
     public static final Message2 INVALID_VARIABLE_NAME_START = new Message2( "A variable name cannot start with the %s '%s'");
     public static final Message0 INVALID_VARIABLE_NAME_EMPTY = new Message0( "A variable name cannot be null or empty");
+    public static final Message2 ERROR_COMPILE_EXPR_DT_FUNCTION_RULE_IDX = new Message2( "Error compiling output expression in decision table FEEL function, rule index %s: '%s'");
 
     public static String createMessage( Message0 message) {
         return Msg.buildMessage(message);

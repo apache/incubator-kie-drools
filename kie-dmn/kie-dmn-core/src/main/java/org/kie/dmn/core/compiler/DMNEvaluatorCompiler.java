@@ -239,6 +239,7 @@ public class DMNEvaluatorCompiler {
         java.util.List<DTInputClause> inputs = new ArrayList<>();
         int index = 0;
         for ( InputClause ic : dt.getInput() ) {
+            index++;
             String inputExpressionText = ic.getInputExpression().getText();
             String inputValuesText =  Optional.ofNullable( ic.getInputValues() ).map( UnaryTests::getText).orElse( null);
             java.util.List<UnaryTest> inputValues = null;
@@ -250,13 +251,22 @@ public class DMNEvaluatorCompiler {
                                                    Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX,
                                                    inputValuesText,
                                                    node.getIdentifierString(),
-                                                   ++index );
+                                                   index );
             } else if ( ic.getInputExpression().getTypeRef() != null ) {
                 QName inputExpressionTypeRef = ic.getInputExpression().getTypeRef();
                 BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef, ic.getInputExpression()), inputExpressionTypeRef.getLocalPart());
                 inputValues = typeRef.getAllowedValues();
             }
-            inputs.add( new DTInputClause(inputExpressionText, inputValuesText, inputValues) );
+            CompiledExpression compiledInput = feel.compileFeelExpression(
+                    ctx,
+                    inputExpressionText,
+                    model,
+                    dt,
+                    Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_INPUT_CLAUSE_IDX,
+                    inputExpressionText,
+                    dtName,
+                    index );
+            inputs.add( new DTInputClause(inputExpressionText, inputValuesText, inputValues, compiledInput ) );
         }
         java.util.List<DTOutputClause> outputs = new ArrayList<>();
         index = 0;
@@ -334,8 +344,17 @@ public class DMNEvaluatorCompiler {
                 } ) );
             }
             for ( LiteralExpression le : dr.getOutputEntry() ) {
-                // we might want to compile and save the compiled expression here
-                rule.getOutputEntry().add( le.getText() );
+                String expressionText = le.getText();
+                CompiledExpression compiledExpression = feel.compileFeelExpression(
+                        ctx,
+                        expressionText,
+                        model,
+                        dr,
+                        Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX,
+                        expressionText,
+                        dtName,
+                        index+1 );
+                rule.getOutputEntry().add( compiledExpression );
             }
             rules.add( rule );
             index++;
