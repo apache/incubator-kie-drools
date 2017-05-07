@@ -93,6 +93,14 @@ according to the FEEL grammar, these are not valid function names, as `and` and 
   function on page 114, it is not implementable as defined. 
   * `string( mask, p... )` : returns a string formatted as per the mask. See Java String.format() for 
   details on the mask syntax.
+  
+6. __Support for additional date and time arithmetics__: 
+
+  * subtracting two dates will return a days and time duration with the number of days between the two 
+  dates, ignoring daylight savings. E.g.: 
+  ```
+  date( "2017-05-12" ) - date( "2017-04-25" ) = duration( "P17D" )
+  ```
 
 # DMN engine implementation notes
 

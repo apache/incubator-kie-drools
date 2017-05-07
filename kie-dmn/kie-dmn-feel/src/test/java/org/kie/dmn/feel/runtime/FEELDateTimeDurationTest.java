@@ -95,7 +95,10 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P2DT20H14M\" ).minutes", BigDecimal.valueOf(14) },
                 { "duration( \"P2DT20H14M5S\" ).seconds", BigDecimal.valueOf(5) },
                 { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).years", BigDecimal.valueOf(1) },
-                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).months", BigDecimal.valueOf(8) }
+                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).months", BigDecimal.valueOf(8) },
+                { "date and time(\"2017-05-14\")", LocalDateTime.of( 2017, 5, 14, 0, 0, 0, 0 ) },
+                { "date(\"2017-05-12\")-date(\"2017-04-25\")", Duration.ofDays( 17 ) }
+
         };
         return Arrays.asList( cases );
     }
