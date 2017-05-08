@@ -16,8 +16,6 @@
 
 package org.drools.compiler.lang.descr;
 
-import java.util.List;
-
 public class ReturnValueRestrictionDescr extends EvaluatorBasedRestrictionDescr {
 
     private static final long serialVersionUID = 510l;
@@ -28,36 +26,14 @@ public class ReturnValueRestrictionDescr extends EvaluatorBasedRestrictionDescr 
     public ReturnValueRestrictionDescr(){
     }
 
-    public ReturnValueRestrictionDescr(final String evaluator ) {
+    public ReturnValueRestrictionDescr(String evaluator,
+                                       RelationalExprDescr relDescr,
+                                       Object content) {
         super( evaluator,
-               false,
-               (List<String>)null );
-    }
-
-    public ReturnValueRestrictionDescr(final String evaluator, 
-                                       final Object content ) {
-        super( evaluator,
-               false,
-               (List<String>)null );
+               relDescr.isNegated(),
+               relDescr.getParametersText() );
         this.content = content;
-    }
-
-    public ReturnValueRestrictionDescr(final String evaluator, 
-                                       final boolean isNegated,
-                                       final String parameterText ) {
-        super( evaluator,
-               isNegated,
-               parameterText );
-    }
-
-    public ReturnValueRestrictionDescr(final String evaluator,
-                                       final boolean isNegated,
-                                       final String parameterText, 
-                                       final Object content) {
-        super( evaluator,
-               isNegated,
-               parameterText );
-        this.content = content;
+        setResource( relDescr.getResource() );
     }
 
     public String getClassMethodName() {
