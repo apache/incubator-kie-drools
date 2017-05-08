@@ -122,7 +122,10 @@ public class BRLConditionColumn extends ConditionCol52
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof BRLConditionColumn)) {
+            return false;
+        }
+        if (!super.equals(o)) {
             return false;
         }
 
@@ -136,10 +139,9 @@ public class BRLConditionColumn extends ConditionCol52
 
     @Override
     public int hashCode() {
-        int result = definition != null ? definition.hashCode() : 0;
-        result=~~result;
+        int result = super.hashCode();
+        result = 31 * result + (definition != null ? definition.hashCode() : 0);
         result = 31 * result + (childColumns != null ? childColumns.hashCode() : 0);
-        result=~~result;
         return result;
     }
 }

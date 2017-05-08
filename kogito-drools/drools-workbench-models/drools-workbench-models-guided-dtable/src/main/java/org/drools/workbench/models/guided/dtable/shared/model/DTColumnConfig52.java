@@ -171,7 +171,10 @@ public class DTColumnConfig52
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof DTColumnConfig52)) {
+            return false;
+        }
+        if (!super.equals(o)) {
             return false;
         }
 

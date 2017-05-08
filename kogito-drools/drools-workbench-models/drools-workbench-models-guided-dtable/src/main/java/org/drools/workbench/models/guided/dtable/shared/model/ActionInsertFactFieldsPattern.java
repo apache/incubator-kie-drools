@@ -76,7 +76,10 @@ public class ActionInsertFactFieldsPattern extends Pattern52 {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ActionInsertFactFieldsPattern)) {
+            return false;
+        }
+        if (!super.equals(o)) {
             return false;
         }
 

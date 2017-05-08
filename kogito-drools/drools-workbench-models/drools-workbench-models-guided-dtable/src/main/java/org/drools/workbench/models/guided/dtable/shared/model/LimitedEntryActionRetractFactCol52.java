@@ -68,7 +68,7 @@ public class LimitedEntryActionRetractFactCol52 extends ActionRetractFactCol52
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof LimitedEntryActionRetractFactCol52)) {
             return false;
         }
         if (!super.equals(o)) {

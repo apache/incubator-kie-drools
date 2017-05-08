@@ -122,7 +122,10 @@ public class BRLActionColumn extends ActionCol52
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof BRLActionColumn)) {
+            return false;
+        }
+        if (!super.equals(o)) {
             return false;
         }
 

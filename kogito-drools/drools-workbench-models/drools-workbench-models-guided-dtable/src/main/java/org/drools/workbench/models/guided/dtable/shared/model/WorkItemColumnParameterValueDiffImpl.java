@@ -43,22 +43,4 @@ public class WorkItemColumnParameterValueDiffImpl extends BaseColumnFieldDiffImp
         this.parameterName = parameterName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        WorkItemColumnParameterValueDiffImpl that = (WorkItemColumnParameterValueDiffImpl) o;
-
-        return parameterName != null ? parameterName.equals(that.parameterName) : that.parameterName == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return parameterName != null ? parameterName.hashCode() : 0;
-    }
 }

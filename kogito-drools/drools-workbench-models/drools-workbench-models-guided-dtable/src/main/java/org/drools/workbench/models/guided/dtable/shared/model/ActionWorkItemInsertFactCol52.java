@@ -105,7 +105,7 @@ public class ActionWorkItemInsertFactCol52 extends ActionInsertFactCol52 {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ActionWorkItemInsertFactCol52)) {
             return false;
         }
         if (!super.equals(o)) {
