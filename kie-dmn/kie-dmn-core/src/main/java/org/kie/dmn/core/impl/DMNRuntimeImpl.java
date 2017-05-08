@@ -40,14 +40,17 @@ import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.internal.io.ResourceTypePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.List;
+import java.util.Map.Entry;
 
 public class DMNRuntimeImpl
         implements DMNRuntime {
@@ -184,7 +187,7 @@ public class DMNRuntimeImpl
         try {
             eventManager.fireBeforeEvaluateBKM( bkm, result );
             for( DMNNode dep : bkm.getDependencies().values() ) {
-                if ( !checkDependencyValueIsValid(b, dep, result.getContext()) ) {
+                if ( !checkDependencyValueIsValid(dep, result.getContext()) ) {
                     DMNMessage message = MsgUtil.reportMessage( logger,
                                                                 DMNMessage.Severity.ERROR,
                                                                 ((DMNBaseNode) dep).getSource(),
@@ -256,7 +259,7 @@ public class DMNRuntimeImpl
             boolean missingInput = false;
             DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById( decision.getId() );
             for( DMNNode dep : decision.getDependencies().values() ) {
-                if ( !checkDependencyValueIsValid(d, dep, result.getContext()) ) {
+                if ( !checkDependencyValueIsValid(dep, result.getContext()) ) {
                     missingInput = true;
                     DMNMessage message = MsgUtil.reportMessage( logger,
                             DMNMessage.Severity.ERROR,
@@ -371,13 +374,44 @@ public class DMNRuntimeImpl
         }
     }
 
-    private boolean checkDependencyValueIsValid(DMNNode currentNode, DMNNode dep, DMNContext context) {
+    private boolean checkDependencyValueIsValid(DMNNode dep, DMNContext context) {
         if (dep instanceof InputDataNode) {
             InputDataNode inputDataNode = (InputDataNode) dep;
             BaseDMNTypeImpl dmnType = (BaseDMNTypeImpl) inputDataNode.getType();
-            if ( dmnType.getAllowedValues() != null && !dmnType.getAllowedValues().isEmpty() ) {
-                List<UnaryTest> allowedValues = dmnType.getAllowedValues();
-                return DMNFEELHelper.valueMatchesInUnaryTests(allowedValues, context.get( dep.getName() ), context);
+            return checkValueIsValid(dmnType, context.get( dep.getName() ), context);
+        }
+        return true;
+    }
+    
+    private boolean checkValueIsValid(BaseDMNTypeImpl dmnType, Object v, DMNContext context) {
+        if ( dmnType instanceof SimpleTypeImpl && dmnType.getAllowedValues() != null && !dmnType.getAllowedValues().isEmpty() ) {
+            List<UnaryTest> allowedValues = dmnType.getAllowedValues();
+            if ( dmnType.isCollection() ) {
+                if ( v instanceof Collection) {
+                    Collection<?> elements = (Collection<?>) v;
+                    for ( Object e : elements ) {
+                       if ( !DMNFEELHelper.valueMatchesInUnaryTests(allowedValues, e, context) ) {
+                           return false;
+                       }
+                    }
+                    return true;
+                } else {
+                    return false; // <itemComponent isCollection="true" ..> hence the actual input value MUST be a Collection.
+                }
+            } 
+            return DMNFEELHelper.valueMatchesInUnaryTests(allowedValues, v, context);
+        } else if ( dmnType instanceof CompositeTypeImpl ) {
+            CompositeTypeImpl compositeDMNType = (CompositeTypeImpl) dmnType;
+            for ( Entry<String, DMNType> f : compositeDMNType.getFields().entrySet() ) {
+                Object value;
+                try {
+                    value = EvalHelper.getValue(v, f.getKey());
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    return false;
+                }
+                if ( !checkValueIsValid((BaseDMNTypeImpl) f.getValue(), value, context) ) {
+                    return false;
+                }
             }
         }
         return true;
