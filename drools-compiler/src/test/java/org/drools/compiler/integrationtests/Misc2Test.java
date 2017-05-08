@@ -9123,7 +9123,7 @@ public class Misc2Test extends CommonTestMethodBase {
         new Thread(task1).start();
         task2.run();
     }
-    
+
     public static class ElementOperation {
         private AbstractElement element;
         public ElementOperation(AbstractElement element) {
@@ -9146,25 +9146,46 @@ public class Misc2Test extends CommonTestMethodBase {
     @Test
     public void test01841522() {
         String str = "package com.sample\n" +
-                "import " + ElementOperation.class.getCanonicalName() + ";\n" +
-                "import " + AbstractElement.class.getCanonicalName() + ";\n" +
-                "import " + MyInterface.class.getCanonicalName() + ";\n" +
-                "global java.util.List list\n" +
-                "rule R when\n" +
-                "  ElementOperation( $e : element )      \n" +
-                "  $my: MyInterface( ) from $e           \n" +
-                "then\n" +
-                "  list.add(\"\" );" +
-                "end\n";
+                     "import " + ElementOperation.class.getCanonicalName() + ";\n" +
+                     "import " + AbstractElement.class.getCanonicalName() + ";\n" +
+                     "import " + MyInterface.class.getCanonicalName() + ";\n" +
+                     "global java.util.List list\n" +
+                     "rule R when\n" +
+                     "  ElementOperation( $e : element )      \n" +
+                     "  $my: MyInterface( ) from $e           \n" +
+                     "then\n" +
+                     "  list.add(\"\" );" +
+                     "end\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build().newKieSession();
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
-                
-        ksession.insert( new ElementOperation(new MyElement()) );
+
+        ksession.insert( new ElementOperation( new MyElement() ) );
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertEquals( 1, list.size() );
+    }
+
+    @Test
+    public void testStackOverflowInMvel() {
+        // DROOLS-1542
+        String str1 = "import " + Person.class.getName() + ";\n" +
+                     "rule R1 when\n" +
+                     " $p : Person( ";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 10000; i ++) {
+            sb.append("name == \"John-" + i + "\" || " );
+        }
+        String str2 = " age == 20 )\n" +
+                     "then end\n";
+
+        String drl = str1 + sb.toString() + str2;
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+
+        assertTrue( kbuilder.getErrors().toString().contains( "StackOverflowError" ) );
     }
 }
