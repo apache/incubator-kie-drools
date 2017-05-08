@@ -43,7 +43,7 @@
 
   "ignores": {
     "revapi": {
-      "_comment": "Changes between 6.5.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
+      "_comment": "Changes between 6.5.0.Final and the current branch. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
       "ignore": [
         {
           "code": "java.method.parameterTypeChanged",
