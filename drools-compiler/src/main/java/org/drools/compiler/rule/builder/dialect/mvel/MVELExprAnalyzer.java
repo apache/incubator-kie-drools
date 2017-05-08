@@ -136,6 +136,10 @@ public class MVELExprAnalyzer {
                 e = new CompileException(e.getCause().toString(), ( (CompileException) e ).getExpr(), ( (CompileException) e ).getCursor(), e.getCause());
             }
             DialectUtil.copyErrorLocation(e, context.getParentDescr());
+            if (e instanceof CompileException && e.getCause() != null && e.getMessage().startsWith( "[Error: null]" )) {
+                // rewrite error message in cause original message is null
+                e = new CompileException(e.getCause().toString(), ( (CompileException) e ).getExpr(), ( (CompileException) e ).getCursor(), e.getCause());
+            }
             context.addError( new DescrBuildError( base,
                                                    context.getParentDescr(),
                                                    null,
