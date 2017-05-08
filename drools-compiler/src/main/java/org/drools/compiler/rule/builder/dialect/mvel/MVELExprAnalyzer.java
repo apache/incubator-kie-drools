@@ -16,6 +16,13 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -28,6 +35,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.RuleConditionElement;
 import org.kie.api.definition.rule.Rule;
+import org.mvel2.CompileException;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -35,13 +43,6 @@ import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.PropertyTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Expression analyzer.
@@ -131,13 +132,14 @@ public class MVELExprAnalyzer {
         } catch ( Exception e ) {
             BaseDescr base = (context instanceof RuleBuildContext) ? ((RuleBuildContext)context).getRuleDescr() : context.getParentDescr();
             DialectUtil.copyErrorLocation(e, context.getParentDescr());
+            if (e instanceof CompileException && e.getCause() != null && e.getMessage().startsWith( "[Error: null]" )) {
+                // rewrite error message in cause original message is null
+                e = new CompileException(e.getCause().toString(), ( (CompileException) e ).getExpr(), ( (CompileException) e ).getCursor(), e.getCause());
+            }
             context.addError( new DescrBuildError( base,
                                                    context.getParentDescr(),
                                                    null,
                                                    "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
-            if (e.getCause() != null) {
-                log.error("Exception was thrown in Mvel", e);
-            }
             return null;
         }
 

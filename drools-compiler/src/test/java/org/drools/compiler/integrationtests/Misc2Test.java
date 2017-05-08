@@ -130,7 +130,6 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
@@ -9125,7 +9124,6 @@ public class Misc2Test extends CommonTestMethodBase {
         task2.run();
     }
 
-    @Ignore
     @Test
     public void testStackOverflowInMvel() {
         // DROOLS-1542
@@ -9133,7 +9131,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "rule R1 when\n" +
                      " $p : Person( ";
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 10000; i ++) {
+        for (int i = 0; i < 5000; i ++) {
             sb.append("name == \"John-" + i + "\" || " );
         }
         String str2 = " age == 20 )\n" +
@@ -9144,8 +9142,6 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
 
-        // Rout cause Exception is not included in KnowledgeBuilderErrors
-        // Users should be able to know the root cause from ERROR log
-        System.out.println(kbuilder.getErrors().toString());
+        assertTrue( kbuilder.getErrors().toString().contains( "StackOverflowError" ) );
     }
 }
