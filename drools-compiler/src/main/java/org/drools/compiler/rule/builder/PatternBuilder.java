@@ -1232,10 +1232,7 @@ public class PatternBuilder
 
     private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String operator, String value2) {
         Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
-        ReturnValueRestrictionDescr returnValueRestrictionDescr = new ReturnValueRestrictionDescr( operator,
-                                                                                                   relDescr.isNegated(),
-                                                                                                   relDescr.getParametersText(),
-                                                                                                   value2 );
+        ReturnValueRestrictionDescr returnValueRestrictionDescr = new ReturnValueRestrictionDescr( operator, relDescr, value2 );
 
         Class< ? > thisClass = pattern.getObjectType() instanceof ClassObjectType ?
                                ((ClassObjectType) pattern.getObjectType()).getClassType() :

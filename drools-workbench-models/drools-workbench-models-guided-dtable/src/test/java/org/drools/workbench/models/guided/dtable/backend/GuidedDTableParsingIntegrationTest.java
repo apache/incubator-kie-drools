@@ -18,7 +18,6 @@ package org.drools.workbench.models.guided.dtable.backend;
 import java.util.Collections;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -31,7 +30,7 @@ import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class GuidedDTableParsingIntegrationTest {
 
@@ -297,8 +296,8 @@ public class GuidedDTableParsingIntegrationTest {
     }
 
     @Test
-    @Ignore("Failing unit test.. please remove this line when fixing!")
     public void testGuidedDTableWithNoDSLIncrementalCompilation() {
+        // DROOLS-1544
         String typeDrl = "package org.drools.test\n" +
                 "declare LoanApplication\n" +
                 "  amount : int\n" +
@@ -507,17 +506,15 @@ public class GuidedDTableParsingIntegrationTest {
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         Results buildResults = kieBuilder.getResults();
-        Assert.assertTrue("Expected build failure",
-                          buildResults.getMessages(Message.Level.ERROR).size() > 0);
+        int errorsNr = buildResults.getMessages(Message.Level.ERROR).size();
+        Assert.assertTrue("Expected build failure", errorsNr > 0);
 
         //Fix the DRL file
         kfs.write("src/main/resources/dt1.gdst",
                   correctDrlGenerated);
         IncrementalResults results = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/dt1.gdst").build();
 
-        assertEquals(0,
-                     results.getAddedMessages().size());
-        assertEquals(1,
-                     results.getRemovedMessages().size());
+        assertEquals(0, results.getAddedMessages().size());
+        assertEquals(errorsNr, results.getRemovedMessages().size());
     }
 }

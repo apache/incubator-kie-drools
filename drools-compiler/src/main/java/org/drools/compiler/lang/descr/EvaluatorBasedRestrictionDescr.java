@@ -58,7 +58,7 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
      * 
      * @param evaluator the evaluator ID to be used in this restriction
      * @param isNegated true if the evaluator is boolean negated
-     * @param parameterText the list of parameters texts, in case there is any. null otherwise.
+     * @param parameters the list of parameters texts, in case there is any. null otherwise.
      */
     public EvaluatorBasedRestrictionDescr(final String evaluator,
                                           final boolean isNegated,
