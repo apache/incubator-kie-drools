@@ -1,9 +1,9 @@
 [[tsp]]
-== Traveling Salesman (TSP - Traveling Salesman Problem)
+= Traveling Salesman (TSP - Traveling Salesman Problem)
 
 
 [[tspProblemDescription]]
-=== Problem Description
+== Problem Description
 
 Given a list of cities, find the shortest tour for a salesman that visits each city exactly once.
 
@@ -13,7 +13,7 @@ Yet, in the real world, it is often only part of a planning problem, along with 
 
 
 [[tspProblemSize]]
-=== Problem Size
+== Problem Size
 
 [source,options="nowrap"]
 ----
@@ -26,7 +26,7 @@ lu980    has 980 cities with a search space of 10^2927.
 
 
 [[tspProblemDifficulty]]
-=== Problem Difficulty
+== Problem Difficulty
 
 Despite TSP's simple definition, the problem is surprisingly hard to solve.
 Because it is an NP-hard problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when that problem dataset is slightly altered:

@@ -1,0 +1,68 @@
+[[machineReassignment]]
+= Machine Reassignment (Google ROADEF 2012)
+
+
+[[machineReassignmentProblemDescription]]
+== Problem Description
+
+Assign each process to a machine.
+All processes already have an original (unoptimized) assignment.
+Each process requires an amount of each resource (such as CPU, RAM, ...). This is a more complex version of the Cloud Balancing example.
+
+Hard constraints:
+
+* Maximum capacity: The maximum capacity for each resource for each machine must not be exceeded.
+* Conflict: Processes of the same service must run on distinct machines.
+* Spread: Processes of the same service must be spread out across locations.
+* Dependency: The processes of a service depending on another service must run in the neighborhood of a process of the other service.
+* Transient usage: Some resources are transient and count towards the maximum capacity of both the original machine as the newly assigned machine.
+
+Soft constraints:
+
+* Load: The safety capacity for each resource for each machine should not be exceeded.
+* Balance: Leave room for future assignments by balancing the available resources on each machine.
+* Process move cost: A process has a move cost.
+* Service move cost: A service has a move cost.
+* Machine move cost: Moving a process from machine A to machine B has another A-B specific move cost.
+
+The problem is defined by http://challenge.roadef.org/2012/en/[the Google ROADEF/EURO Challenge 2012].
+
+image::UseCasesAndExamples/RealExamples/cloudOptimizationIsLikeTetris.png[align="center"]
+
+[[machineReassignmentValueProposition]]
+== Value Proposition
+
+image::shared/cloudOptimizationValueProposition.png[align="center"]
+
+[[machineReassignmentProblemSize]]
+== Problem Size
+
+[source,options="nowrap"]
+----
+model_a1_1 has  2 resources,  1 neighborhoods,   4 locations,    4 machines,    79 services,   100 processes and 1 balancePenalties with a search space of     10^60.
+model_a1_2 has  4 resources,  2 neighborhoods,   4 locations,  100 machines,   980 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
+model_a1_3 has  3 resources,  5 neighborhoods,  25 locations,  100 machines,   216 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
+model_a1_4 has  3 resources, 50 neighborhoods,  50 locations,   50 machines,   142 services,  1000 processes and 1 balancePenalties with a search space of   10^1698.
+model_a1_5 has  4 resources,  2 neighborhoods,   4 locations,   12 machines,   981 services,  1000 processes and 1 balancePenalties with a search space of   10^1079.
+model_a2_1 has  3 resources,  1 neighborhoods,   1 locations,  100 machines,  1000 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
+model_a2_2 has 12 resources,  5 neighborhoods,  25 locations,  100 machines,   170 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
+model_a2_3 has 12 resources,  5 neighborhoods,  25 locations,  100 machines,   129 services,  1000 processes and 0 balancePenalties with a search space of   10^2000.
+model_a2_4 has 12 resources,  5 neighborhoods,  25 locations,   50 machines,   180 services,  1000 processes and 1 balancePenalties with a search space of   10^1698.
+model_a2_5 has 12 resources,  5 neighborhoods,  25 locations,   50 machines,   153 services,  1000 processes and 0 balancePenalties with a search space of   10^1698.
+model_b_1  has 12 resources,  5 neighborhoods,  10 locations,  100 machines,  2512 services,  5000 processes and 0 balancePenalties with a search space of  10^10000.
+model_b_2  has 12 resources,  5 neighborhoods,  10 locations,  100 machines,  2462 services,  5000 processes and 1 balancePenalties with a search space of  10^10000.
+model_b_3  has  6 resources,  5 neighborhoods,  10 locations,  100 machines, 15025 services, 20000 processes and 0 balancePenalties with a search space of  10^40000.
+model_b_4  has  6 resources,  5 neighborhoods,  50 locations,  500 machines,  1732 services, 20000 processes and 1 balancePenalties with a search space of  10^53979.
+model_b_5  has  6 resources,  5 neighborhoods,  10 locations,  100 machines, 35082 services, 40000 processes and 0 balancePenalties with a search space of  10^80000.
+model_b_6  has  6 resources,  5 neighborhoods,  50 locations,  200 machines, 14680 services, 40000 processes and 1 balancePenalties with a search space of  10^92041.
+model_b_7  has  6 resources,  5 neighborhoods,  50 locations, 4000 machines, 15050 services, 40000 processes and 1 balancePenalties with a search space of 10^144082.
+model_b_8  has  3 resources,  5 neighborhoods,  10 locations,  100 machines, 45030 services, 50000 processes and 0 balancePenalties with a search space of 10^100000.
+model_b_9  has  3 resources,  5 neighborhoods, 100 locations, 1000 machines,  4609 services, 50000 processes and 1 balancePenalties with a search space of 10^150000.
+model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  4896 services, 50000 processes and 1 balancePenalties with a search space of 10^184948.
+----
+
+
+[[machineReassignmentDomainModel]]
+== Domain Model
+
+image::UseCasesAndExamples/RealExamples/machineReassignmentClassDiagram.png[align="center"]

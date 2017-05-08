@@ -1,9 +1,9 @@
 [[dinnerParty]]
-== Dinner Party
+= Dinner Party
 
 
 [[dinnerPartyProblemDescription]]
-=== Problem Description
+== Problem Description
 
 Miss Manners is throwing another dinner party.
 
@@ -18,7 +18,7 @@ Planner's implementation is far more scalable because it uses heuristics to find
 
 
 [[dinnerPartyProblemSize]]
-=== Problem Size
+== Problem Size
 
 [source,options="nowrap"]
 ----

@@ -1,9 +1,9 @@
 [[nQueens]]
-== N Queens
+= N Queens
 
 
 [[nQueensProblemDescription]]
-=== Problem Description
+== Problem Description
 
 Place _n_ queens on a _n_ sized chessboard so that no two queens can attack each other.
 The most common _n_ queens puzzle is the eight queens puzzle, with __n = 8__:
@@ -37,7 +37,7 @@ We will focus on finding a single correct solution for a given _n_, not on findi
 
 
 [[nQueensProblemSize]]
-=== Problem Size
+== Problem Size
 
 [source,options="nowrap"]
 ----
@@ -54,7 +54,7 @@ With a few changes it has been shown to easily handle 5000 queens and more.
 
 
 [[nQueensDomainModel]]
-=== Domain Model
+== Domain Model
 
 This example uses the domain model to solve the four queens problem.
 
