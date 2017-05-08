@@ -45,12 +45,14 @@ import java.util.stream.Collectors;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
+import static org.kie.dmn.core.util.DynamicTypeUtils.*;
 
 public class DMNRuntimeTest {
 
@@ -1090,6 +1092,64 @@ public class DMNRuntimeTest {
 
         assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
         assertThat( dmnResult.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );
+    }
+    
+    @Test
+    public void testAllowedValuesChecks() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "AllowedValuesChecks.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442",
+                "AllowedValuesChecks" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext ctx1 = runtime.newContext();
+        ctx1.set("p1", prototype(entry("Name", "P1"), entry("Interests", Arrays.asList(new String[]{"Golf"}))));
+        DMNResult dmnResult1 = runtime.evaluateAll( dmnModel, ctx1 );
+        assertThat( formatMessages( dmnResult1.getMessages() ), dmnResult1.hasErrors(), is( false ) );
+        assertThat( dmnResult1.getContext().get( "MyDecision" ), is( "The Person P1 likes 1 thing(s)." ) );
+        
+        DMNContext ctx2 = runtime.newContext();
+        ctx2.set("p1", prototype(entry("Name", "P2"), entry("Interests", Arrays.asList(new String[]{"x"}))));
+        DMNResult dmnResult2 = runtime.evaluateAll( dmnModel, ctx2 );
+        assertThat( formatMessages( dmnResult2.getMessages() ), dmnResult2.hasErrors(), is( true ) );
+        assertThat( dmnResult2.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );
+        
+        DMNContext ctx3 = runtime.newContext();
+        ctx3.set("p1", prototype(entry("Name", "P3"), entry("Interests", Arrays.asList(new String[]{"Golf", "Computer"}))));
+        DMNResult dmnResult3 = runtime.evaluateAll( dmnModel, ctx3 );
+        assertThat( formatMessages( dmnResult3.getMessages() ), dmnResult3.hasErrors(), is( false ) );
+        assertThat( dmnResult3.getContext().get( "MyDecision" ), is( "The Person P3 likes 2 thing(s)." ) );
+        
+        DMNContext ctx4 = runtime.newContext();
+        ctx4.set("p1", prototype(entry("Name", "P4"), entry("Interests", Arrays.asList(new String[]{"Golf", "x"}))));
+        DMNResult dmnResult4 = runtime.evaluateAll( dmnModel, ctx4 );
+        assertThat( formatMessages( dmnResult4.getMessages() ), dmnResult4.hasErrors(), is( true ) );
+        assertThat( dmnResult4.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );
+    }
+    
+    @Test
+    public void testUnionofLetters() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Union_of_letters.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_76362694-41e8-400c-8dea-e5f033d4f405",
+                "Union of letters" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext ctx1 = runtime.newContext();
+        ctx1.set("A1", Arrays.asList(new String[]{"a", "b"}));
+        ctx1.set("A2", Arrays.asList(new String[]{"b", "c"}));
+        DMNResult dmnResult1 = runtime.evaluateAll( dmnModel, ctx1 );
+        assertThat( formatMessages( dmnResult1.getMessages() ), dmnResult1.hasErrors(), is( false ) );
+        assertThat( (List<?>) dmnResult1.getContext().get( "D1" ), contains( "a", "b", "c" ) );
+        
+        DMNContext ctx2 = runtime.newContext();
+        ctx2.set("A1", Arrays.asList(new String[]{"a", "b"}));
+        ctx2.set("A2", Arrays.asList(new String[]{"b", "x"}));
+        DMNResult dmnResult2 = runtime.evaluateAll( dmnModel, ctx2 );
+        assertThat( formatMessages( dmnResult2.getMessages() ), dmnResult2.hasErrors(), is( true ) );
+        assertThat( dmnResult2.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );
     }
 
     @Test

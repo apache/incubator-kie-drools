@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+    xmlns="http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442"
+    xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+    xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    exporter="DMN Modeler" exporterVersion="5.1.10.201705011622"
+    id="_238bd96d-47cd-4746-831b-504f3e77b442" name="AllowedValuesChecks"
+    namespace="http://www.trisotech.com/definitions/_238bd96d-47cd-4746-831b-504f3e77b442"
+    triso:logoChoice="Default">
+    <semantic:itemDefinition isCollection="false" label="Person" name="Person">
+        <semantic:itemComponent id="_7939ee65-737d-4ea9-b912-448dd5fb2cf1" isCollection="false" name="Name">
+            <semantic:typeRef>feel:string</semantic:typeRef>
+        </semantic:itemComponent>
+        <semantic:itemComponent id="_19ef99ee-1d53-4185-aa9d-8fe58a7834ce" isCollection="true" name="Interests">
+            <semantic:typeRef>tInterest</semantic:typeRef>
+        </semantic:itemComponent>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition label="tInterest" name="tInterest">
+        <semantic:typeRef>feel:string</semantic:typeRef>
+        <semantic:allowedValues triso:constraintsType="enumeration">
+            <semantic:text>"Golf","Computer","Hockey","Jogging"</semantic:text>
+        </semantic:allowedValues>
+    </semantic:itemDefinition>
+    <semantic:itemDefinition isCollection="true" label="tInterests" name="tInterests">
+        <semantic:typeRef>tInterest</semantic:typeRef>
+    </semantic:itemDefinition>
+    <semantic:decision id="_ed3b9794-9306-4b6a-b4f9-5486be3c5515" name="MyDecision" triso:displayName="MyDecision">
+        <semantic:variable id="_2e39fe17-4902-40ba-a36c-7fe0d3d992b9" name="MyDecision" typeRef="feel:string" />
+        <semantic:informationRequirement>
+            <semantic:requiredInput href="#_27453770-68e3-48da-8605-d33a653c09ef" />
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_71df1866-2b74-4d40-b4fd-0ebe860b27f1">
+            <semantic:text>"The Person " + p1.Name + " likes " + string(count( p1.Interests )) + " thing(s)."</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <semantic:inputData id="_27453770-68e3-48da-8605-d33a653c09ef" name="p1" triso:displayName="p1">
+        <semantic:variable id="_1c6c0e02-8b82-4d1f-88a6-a2e35b4eedc7" name="p1" typeRef="Person" />
+    </semantic:inputData>
+</semantic:definitions>
