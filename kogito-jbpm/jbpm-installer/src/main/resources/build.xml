@@ -452,7 +452,7 @@
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="--server-config=standalone-full.xml" />
-      <arg value="-Dorg.kie.demo=true" />
+      <arg value="-Dorg.kie.demo=false" />
       <arg value="-Dorg.kie.example=false" />
       <arg value="-Dorg.kie.server.id=default-kieserver" />
       <arg value="-Dorg.kie.server.persistence.ds=java:jboss/datasources/jbpmDS" />
@@ -470,7 +470,7 @@
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="--server-config=standalone-full.xml" />
-      <arg value="-Dorg.kie.demo=true" />
+      <arg value="-Dorg.kie.demo=false" />
       <arg value="-Dorg.kie.example=false" />
       <arg value="-Dorg.kie.server.id=default-kieserver" />
       <arg value="-Dorg.kie.server.persistence.ds=java:jboss/datasources/jbpmDS" />
