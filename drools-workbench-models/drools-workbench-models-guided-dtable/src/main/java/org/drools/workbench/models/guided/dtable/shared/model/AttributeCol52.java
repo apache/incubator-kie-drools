@@ -116,7 +116,10 @@ public class AttributeCol52 extends DTColumnConfig52 {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof AttributeCol52)) {
+            return false;
+        }
+        if (!super.equals(o)) {
             return false;
         }
 
