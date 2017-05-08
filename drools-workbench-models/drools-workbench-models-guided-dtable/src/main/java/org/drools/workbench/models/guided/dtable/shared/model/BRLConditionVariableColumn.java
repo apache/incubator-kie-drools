@@ -96,7 +96,10 @@ public class BRLConditionVariableColumn extends ConditionCol52
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof BRLConditionVariableColumn)) {
+            return false;
+        }
+        if (!super.equals(o)) {
             return false;
         }
 

@@ -159,7 +159,10 @@ public class ActionSetFieldCol52 extends ActionCol52 {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ActionSetFieldCol52)) {
+            return false;
+        }
+        if (!super.equals(o)) {
             return false;
         }
 

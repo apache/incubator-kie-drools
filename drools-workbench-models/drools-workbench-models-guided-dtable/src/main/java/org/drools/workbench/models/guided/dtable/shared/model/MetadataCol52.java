@@ -73,7 +73,7 @@ public class MetadataCol52 extends DTColumnConfig52 {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof MetadataCol52)) {
             return false;
         }
         if (!super.equals(o)) {

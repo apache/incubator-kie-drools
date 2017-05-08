@@ -177,7 +177,10 @@ public class ActionInsertFactCol52 extends ActionCol52 {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ActionInsertFactCol52)) {
+            return false;
+        }
+        if (!super.equals(o)) {
             return false;
         }
 
