@@ -9175,7 +9175,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "rule R1 when\n" +
                      " $p : Person( ";
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 5000; i ++) {
+        for (int i = 0; i < 10000; i ++) {
             sb.append("name == \"John-" + i + "\" || " );
         }
         String str2 = " age == 20 )\n" +
