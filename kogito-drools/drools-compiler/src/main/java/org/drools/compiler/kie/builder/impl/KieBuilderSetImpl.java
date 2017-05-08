@@ -15,17 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.io.impl.BaseResource;
-import org.kie.api.KieServices;
-import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.internal.builder.IncrementalResults;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.internal.builder.KieBuilderSet;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.api.io.Resource;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -40,6 +29,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.io.impl.BaseResource;
+import org.kie.api.KieServices;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.io.Resource;
+import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.IncrementalResults;
+import org.kie.internal.builder.KieBuilderSet;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderError;
 
 import static java.util.Arrays.asList;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
@@ -64,9 +64,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         for (KieBaseModel kBaseModel : kieModule.getKieModuleModel().getKieBaseModels().values()) {
             KnowledgeBuilder kBuilder = kieModule.getKnowledgeBuilderForKieBase( kBaseModel.getName() );
             if (kBuilder != null) {
-                for ( KnowledgeBuilderError error : kBuilder.getErrors() ) {
-                    previousErrors.add(error);
-                }
+                previousErrors.addAll( kBuilder.getErrors() );
                 resourcesWithErrors.put(kBaseModel.getName(), findResourcesWithErrors(kBuilder));
             }
         }
