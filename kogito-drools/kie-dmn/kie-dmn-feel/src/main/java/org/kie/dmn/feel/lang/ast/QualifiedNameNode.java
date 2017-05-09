@@ -22,6 +22,8 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class QualifiedNameNode
@@ -53,7 +55,17 @@ public class QualifiedNameNode
             if ( current != null ) {
                 for ( int i = 1; i < parts.size(); i++ ) {
                     String n = parts.get( i ).getText();
-                    current = EvalHelper.getValue( current, EvalHelper.normalizeVariableName( n ) );
+                    if ( current instanceof Collection ) {
+                        // e.g.: FEEL: MyList.property1
+                        // can't use Stream API as from EvalHelper.getValue I need to listen for checked exception
+                        Collection<Object> result = new ArrayList<>();
+                        for ( Object e : (Collection<?>) current ) {
+                            result.add( EvalHelper.getValue( e, EvalHelper.normalizeVariableName( n ) ) );
+                        }
+                        current = result;
+                    } else {
+                        current = EvalHelper.getValue( current, EvalHelper.normalizeVariableName( n ) );
+                    }
                 }
                 return current;
             }
