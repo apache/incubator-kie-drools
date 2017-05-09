@@ -1150,11 +1150,13 @@ public class DMNRuntimeTest {
         t1.put("name", "Los Angeles");
         t1.put("wins", 0);
         t1.put("losses", 1);
+        t1.put("bonus points", 40);
         Map<String, Object> t2 = new HashMap<>();
         t2.put("city", "San Francisco");
         t2.put("name", "San Francisco");
         t2.put("wins", 1);
         t2.put("losses", 0);
+        t2.put("bonus points", 7);
         ctx.set("NBA Pacific", Arrays.asList(new Map[]{t1, t2}));
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, ctx );
        
@@ -1166,6 +1168,7 @@ public class DMNRuntimeTest {
         assertThat( result.get( "Mean wins" ), is( new BigDecimal(0.5) ) );
         assertThat( (List<?>) result.get( "Positions of Los Angeles teams" ), contains( new BigDecimal(1) ) );
         assertThat( result.get( "Number of teams" ), is( new BigDecimal(2) ) );
+        assertThat( result.get( "Sum of bonus points" ), is( new BigDecimal(47) ) );
     }
     
     private String formatMessages(List<DMNMessage> messages) {
