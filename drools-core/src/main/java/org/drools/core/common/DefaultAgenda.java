@@ -1334,7 +1334,7 @@ public class DefaultAgenda
 
         public boolean toFireAllRules() {
             synchronized (stateMachineLock) {
-                if (isFiring()) {
+                if (currentState.isFiring() || !currentState.isAlive()) {
                     return false;
                 }
                 waitAndEnterExecutionState( ExecutionState.FIRING_ALL_RULES );
