@@ -1,0 +1,11 @@
+<settings>
+  <proxies>
+    <proxy>
+      <id>MyProxy</id>
+      <active>true</active>
+      <protocol>http</protocol>
+      <host>localhost</host>
+      <port>8888</port>
+    </proxy>
+  </proxies>
+</settings>
