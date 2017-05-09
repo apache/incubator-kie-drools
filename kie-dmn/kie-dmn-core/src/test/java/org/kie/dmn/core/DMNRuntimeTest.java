@@ -1194,6 +1194,42 @@ public class DMNRuntimeTest {
         assertThat( result.get( "MyDecision" ), is( "Hello John Doe" ) );
     }
     
+    @Test
+    public void testEx_6_1() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Ex_6_1.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_5f1269c8-1e6f-4748-9eca-26aa1b1278ef",
+                "Ex 6-1" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext ctx = runtime.newContext();
+        Map<String, Object> t1 = new HashMap<>();
+        t1.put("city", "Los Angeles");
+        t1.put("name", "Los Angeles");
+        t1.put("wins", 0);
+        t1.put("losses", 1);
+        t1.put("bonus points", 40);
+        Map<String, Object> t2 = new HashMap<>();
+        t2.put("city", "San Francisco");
+        t2.put("name", "San Francisco");
+        t2.put("wins", 1);
+        t2.put("losses", 0);
+        t2.put("bonus points", 7);
+        ctx.set("NBA Pacific", Arrays.asList(new Map[]{t1, t2}));
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, ctx );
+       
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Number of distinct cities" ), is( new BigDecimal(2) ) );
+        assertThat( result.get( "Second place losses" ), is( new BigDecimal(0) ) );
+        assertThat( result.get( "Max wins" ), is( new BigDecimal(1) ) );
+        assertThat( result.get( "Mean wins" ), is( new BigDecimal(0.5) ) );
+        assertThat( (List<?>) result.get( "Positions of Los Angeles teams" ), contains( new BigDecimal(1) ) );
+        assertThat( result.get( "Number of teams" ), is( new BigDecimal(2) ) );
+        assertThat( result.get( "Sum of bonus points" ), is( new BigDecimal(47) ) );
+    }
+    
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
