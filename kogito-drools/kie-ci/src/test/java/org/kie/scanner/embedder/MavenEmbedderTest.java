@@ -15,23 +15,23 @@
 
 package org.kie.scanner.embedder;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuilder;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsSource;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.junit.Test;
 import org.kie.scanner.MavenRepositoryConfiguration;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 import static org.drools.core.util.IoUtils.readFileAsString;
 import static org.junit.Assert.*;
@@ -54,8 +54,8 @@ public class MavenEmbedderTest {
             MavenSettings.reinitSettingsFromString(EMPTY_SETTINGS);
 
             final MavenRequest mavenRequest = createMavenRequest(null);
-            final MavenEmbedder embedder = new MavenEmbedderMock( mavenRequest );
-            final MavenExecutionRequest request = embedder.buildMavenExecutionRequest( mavenRequest );
+            final MavenEmbedder embedder = new MavenEmbedderWithRepoMock( mavenRequest );
+            final MavenExecutionRequest request = embedder.getMavenExecutionRequest();
 
             assertNotNull( request );
 
@@ -69,9 +69,6 @@ public class MavenEmbedderTest {
 
         } catch ( MavenEmbedderException mee ) {
             fail( mee.getMessage() );
-
-        } catch ( ComponentLookupException cle ) {
-            fail( cle.getMessage() );
         } finally {
             if (oldSettingsXmlPath != null) {
                 System.setProperty( CUSTOM_SETTINGS_PROPERTY, oldSettingsXmlPath );
@@ -84,8 +81,8 @@ public class MavenEmbedderTest {
     public void testCustomSettingSource() {
         try {
             final MavenRequest mavenRequest = createMavenRequest(new SettingsSourceMock( "<settings/>" ) );
-            final MavenEmbedder embedder = new MavenEmbedderMock( mavenRequest );
-            final MavenExecutionRequest request = embedder.buildMavenExecutionRequest( mavenRequest );
+            final MavenEmbedder embedder = new MavenEmbedderWithRepoMock( mavenRequest );
+            final MavenExecutionRequest request = embedder.getMavenExecutionRequest();
 
             assertNotNull( request );
 
@@ -93,15 +90,41 @@ public class MavenEmbedderTest {
 
         } catch ( MavenEmbedderException mee ) {
             fail( mee.getMessage() );
-
-        } catch ( ComponentLookupException cle ) {
-            fail( cle.getMessage() );
         }
     }
 
-    public static class MavenEmbedderMock extends MavenEmbedder {
+    @Test
+    public void testProxies() {
+        String oldSettingsXmlPath = System.getProperty( CUSTOM_SETTINGS_PROPERTY );
+        try {
+            if (oldSettingsXmlPath != null) {
+                System.clearProperty( CUSTOM_SETTINGS_PROPERTY );
+            }
+            MavenSettings.reinitSettingsFromString(EMPTY_SETTINGS);
 
-        public MavenEmbedderMock( final MavenRequest mavenRequest ) throws MavenEmbedderException {
+            final MavenRequest mavenRequest = createMavenRequest(null);
+            final MavenEmbedder embedder = new MavenEmbedderWithProxyMock( mavenRequest );
+            final MavenExecutionRequest request = embedder.getMavenExecutionRequest();
+
+            assertNotNull( request );
+
+            final List<Proxy> proxies = request.getProxies();
+            assertEquals( 1, proxies.size() );
+            assertEquals( "MyProxy", proxies.get(0).getId() );
+
+        } catch ( MavenEmbedderException mee ) {
+            fail( mee.getMessage() );
+        } finally {
+            if (oldSettingsXmlPath != null) {
+                System.setProperty( CUSTOM_SETTINGS_PROPERTY, oldSettingsXmlPath );
+            }
+            MavenSettings.reinitSettings();
+        }
+    }
+
+    public static abstract class MavenEmbedderMock extends MavenEmbedder {
+
+        public MavenEmbedderMock( MavenRequest mavenRequest ) throws MavenEmbedderException {
             super( mavenRequest );
         }
 
@@ -112,7 +135,7 @@ public class MavenEmbedderTest {
 
         private Settings getMavenSettings() {
             String path = getClass().getResource( "." ).toString().substring( "file:".length() );
-            File testSettingsFile = new File( path + "settings_with_repositories.xml" );
+            File testSettingsFile = new File( path + getSettingsFile() );
             assertTrue( testSettingsFile.exists() );
 
             SettingsBuilder settingsBuilder = new DefaultSettingsBuilderFactory().newInstance();
@@ -124,6 +147,32 @@ public class MavenEmbedderTest {
             } catch ( SettingsBuildingException e ) {
                 throw new RuntimeException( e );
             }
+        }
+
+        protected abstract String getSettingsFile();
+    }
+
+    public static class MavenEmbedderWithRepoMock extends MavenEmbedderMock {
+
+        public MavenEmbedderWithRepoMock( MavenRequest mavenRequest ) throws MavenEmbedderException {
+            super( mavenRequest );
+        }
+
+        @Override
+        protected String getSettingsFile() {
+            return "settings_with_repositories.xml";
+        }
+    }
+
+    public static class MavenEmbedderWithProxyMock extends MavenEmbedderMock {
+
+        public MavenEmbedderWithProxyMock( MavenRequest mavenRequest ) throws MavenEmbedderException {
+            super( mavenRequest );
+        }
+
+        @Override
+        protected String getSettingsFile() {
+            return "settings_with_proxies.xml";
         }
     }
 

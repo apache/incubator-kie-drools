@@ -166,10 +166,14 @@ public class MavenEmbedder {
             }
         }
 
+        MavenRepositoryConfiguration mavenRepoConf = getMavenRepositoryConfiguration();
+
         //DROOLS-899: Copy repositories defined in settings to execution request
-        for ( ArtifactRepository artifactRepository : getMavenRepositoryConfiguration().getArtifactRepositoriesForRequest() ) {
+        for ( ArtifactRepository artifactRepository : mavenRepoConf.getArtifactRepositoriesForRequest() ) {
             mavenExecutionRequest.addRemoteRepository( artifactRepository );
         }
+
+        mavenExecutionRequest.setProxies( mavenRepoConf.getProxies() );
 
         mavenExecutionRequest.setLoggingLevel( mavenRequest.getLoggingLevel() );
 
@@ -357,6 +361,10 @@ public class MavenEmbedder {
 
     public MavenSession getMavenSession() {
         return mavenSession;
+    }
+
+    public MavenExecutionRequest getMavenExecutionRequest() {
+        return mavenExecutionRequest;
     }
 
     public void dispose() {

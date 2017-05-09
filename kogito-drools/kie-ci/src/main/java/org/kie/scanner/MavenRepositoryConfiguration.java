@@ -15,6 +15,10 @@
 
 package org.kie.scanner;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
 import org.apache.maven.artifact.repository.Authentication;
@@ -23,15 +27,13 @@ import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
 import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.apache.maven.settings.Mirror;
 import org.apache.maven.settings.Profile;
+import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.util.repository.AuthenticationBuilder;
-
-import java.util.Collection;
-import java.util.HashSet;
 
 public class MavenRepositoryConfiguration {
 
@@ -45,6 +47,10 @@ public class MavenRepositoryConfiguration {
         this.extraRepositories = initExtraRepositories();
         this.remoteRepositoriesForRequest = initRemoteRepositoriesForRequest();
         this.artifactRepositoriesForRequest = initArtifactRepositories();
+    }
+
+    public List<Proxy> getProxies() {
+        return settings.getProxies();
     }
 
     public Collection<RemoteRepository> getExtraRepositories() {

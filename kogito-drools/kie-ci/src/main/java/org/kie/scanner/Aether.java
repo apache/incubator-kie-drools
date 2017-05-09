@@ -15,6 +15,10 @@
 
 package org.kie.scanner;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.settings.Settings;
@@ -26,19 +30,17 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.repository.Proxy;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.transport.wagon.WagonProvider;
+import org.eclipse.aether.util.repository.DefaultProxySelector;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
 
 import static org.kie.scanner.embedder.MavenProjectLoader.loadMavenProject;
 
@@ -57,32 +59,23 @@ public class Aether {
 
     private RemoteRepository localRepository;
 
-    public Aether( String localRepoDir,
-                   boolean offline ) {
-        this( loadMavenProject( offline ), localRepoDir, offline );
-    }
-
     public Aether( MavenProject mavenProject ) {
-        this( mavenProject,
-              MavenSettings.getSettings().getLocalRepository(),
-              MavenSettings.getSettings().isOffline() );
+        this( MavenSettings.getSettings(), mavenProject );
     }
 
     public static synchronized Aether getAether() {
         if ( instance == null ) {
             Settings settings = MavenSettings.getSettings();
-            instance = new Aether( settings.getLocalRepository(), settings.isOffline() );
+            instance = new Aether( settings, loadMavenProject( settings.isOffline() ) );
         }
         return instance;
     }
 
-    private Aether( MavenProject mavenProject,
-                    String localRepoDir,
-                    boolean offline ) {
-        this.localRepoDir = localRepoDir;
-        this.offline = offline;
+    private Aether( Settings settings, MavenProject mavenProject ) {
+        this.localRepoDir = settings.getLocalRepository();
+        this.offline = settings.isOffline();
         system = newRepositorySystem();
-        session = newRepositorySystemSession( system );
+        session = newRepositorySystemSession( settings, system );
         repositories = initRepositories( mavenProject );
     }
 
@@ -110,11 +103,18 @@ public class Aether {
         return locator.getService( RepositorySystem.class );
     }
 
-    private RepositorySystemSession newRepositorySystemSession( RepositorySystem system ) {
+    private RepositorySystemSession newRepositorySystemSession( Settings settings, RepositorySystem system ) {
         LocalRepository localRepo = new LocalRepository( localRepoDir );
         DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
         session.setLocalRepositoryManager( system.newLocalRepositoryManager( session, localRepo ) );
         session.setOffline( offline );
+        if (!settings.getProxies().isEmpty()) {
+            DefaultProxySelector proxySelector = new DefaultProxySelector();
+            for (org.apache.maven.settings.Proxy proxy : settings.getProxies()) {
+                proxySelector.add( new Proxy( proxy.getProtocol(), proxy.getHost(), proxy.getPort()), proxy.getNonProxyHosts() );
+            }
+            session.setProxySelector( proxySelector );
+        }
         return session;
     }
 
