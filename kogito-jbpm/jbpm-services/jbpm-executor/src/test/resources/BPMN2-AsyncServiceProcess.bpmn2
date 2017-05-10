@@ -21,7 +21,7 @@
     </operation>
   </interface>
 
-  <process processType="Private" isExecutable="true" id="ServiceProcess" name="Service Process" >
+  <process processType="Private" isExecutable="true" id="AsyncServiceProcess" name="Service Process" >
 
     <!-- process variables -->
     <property id="s" itemSubjectRef="_sItem"/>
@@ -29,6 +29,11 @@
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     <serviceTask id="_2" name="Hello" operationRef="_2_ServiceOperation" implementation="Other" >
+      <extensionElements>
+        <tns:metaData name="customAsync">
+          <tns:metaValue>true</tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
       <ioSpecification>        
         <dataInput id="_2_param" name="Parameter" />
         <dataOutput id="_2_result" name="Result" />
@@ -59,7 +64,7 @@
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="ServiceProcess" >
+    <bpmndi:BPMNPlane bpmnElement="AsyncServiceProcess" >
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="16" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>

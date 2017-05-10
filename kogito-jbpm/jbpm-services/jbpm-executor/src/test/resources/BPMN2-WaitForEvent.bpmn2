@@ -5,7 +5,7 @@
     <bpmn2:startEvent id="processStartEvent" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
       <bpmn2:outgoing>_D47401E2-CA08-4630-BF07-87C32C9E5082</bpmn2:outgoing>
     </bpmn2:startEvent>
-    <bpmn2:intermediateCatchEvent id="_E779DEC1-CA31-4496-8DC4-27A8E5725A61" drools:selectable="true" drools:boundaryca="" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="">
+    <bpmn2:intermediateCatchEvent id="_E779DEC1-CA31-4496-8DC4-27A8E5725A61" drools:selectable="true" drools:boundaryca="" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Signal">
       <bpmn2:incoming>_D47401E2-CA08-4630-BF07-87C32C9E5082</bpmn2:incoming>
       <bpmn2:outgoing>_F47F3DF6-7D9F-4561-B247-6107C9776852</bpmn2:outgoing>
       <bpmn2:signalEventDefinition id="_ge8lsOgNEeS3ScoFLk_wFg" signalRef="MySignal"/>
@@ -17,7 +17,7 @@
       <bpmn2:script><![CDATA[System.out.println(Thread.currentThread().getName() + " Signal received");]]></bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="_F47F3DF6-7D9F-4561-B247-6107C9776852" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_E779DEC1-CA31-4496-8DC4-27A8E5725A61" targetRef="_84316E3B-528D-4E0E-B9A5-C17E978954DA"/>
-    <bpmn2:endEvent id="_8F5CB9C5-EB84-4AD9-8E46-45784682E47F" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="">
+    <bpmn2:endEvent id="_8F5CB9C5-EB84-4AD9-8E46-45784682E47F" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="EndProcess">
       <bpmn2:incoming>_FD08A3B8-8A62-4810-833E-BA78D2284827</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="_FD08A3B8-8A62-4810-833E-BA78D2284827" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_84316E3B-528D-4E0E-B9A5-C17E978954DA" targetRef="_8F5CB9C5-EB84-4AD9-8E46-45784682E47F"/>

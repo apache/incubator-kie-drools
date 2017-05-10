@@ -18,11 +18,7 @@
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     <subProcess id="_2" name="Hello"  >
-      <extensionElements>
-        <tns:metaData name="customAsync">
-          <tns:metaValue>true</tns:metaValue>
-        </tns:metaData>
-      </extensionElements>    <!-- variables -->
+    <!-- variables -->
     <property id="x" itemSubjectRef="_2-xItem"/>
     <!-- nodes -->
     <startEvent id="_2-1" name="StartSubProcess" />
