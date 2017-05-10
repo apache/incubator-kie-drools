@@ -24,6 +24,7 @@ import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.Msg;
@@ -37,17 +38,27 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvaluator {
-    private static final Logger logger = LoggerFactory.getLogger( DMNExpressionEvaluatorInvokerFunction.class );
+public class DMNFunctionDefinitionEvaluator
+        implements DMNExpressionEvaluator {
+    private static final Logger logger = LoggerFactory.getLogger( DMNFunctionDefinitionEvaluator.class );
 
     private final String name;
     private final FunctionDefinition functionDefinition;
     private List<FormalParameter> parameters = new ArrayList<>(  );
     private DMNExpressionEvaluator evaluator;
 
-    public DMNExpressionEvaluatorInvokerFunction(String name, FunctionDefinition fdef ) {
+    public DMNFunctionDefinitionEvaluator(String name, FunctionDefinition fdef ) {
         this.name = name;
         this.functionDefinition = fdef;
+    }
+
+    public DMNType getParameterType( String name ) {
+        for( FormalParameter fp : parameters ) {
+            if( fp.name.equals( name ) ) {
+                return fp.type;
+            }
+        }
+        return null;
     }
 
     public List<List<String>> getParameterNames() {
@@ -74,7 +85,7 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         DMNResultImpl result = (DMNResultImpl) dmnr;
         // when this evaluator is executed, it should return a "FEEL function" to register in the context
-        DMNExpressionEvaluatorFunction function = new DMNExpressionEvaluatorFunction( name, parameters, functionDefinition, evaluator, eventManager, result );
+        DMNFunction function = new DMNFunction( name, parameters, functionDefinition, evaluator, eventManager, result );
         return new EvaluatorResultImpl( function, ResultType.SUCCESS );
     }
 
@@ -88,14 +99,15 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
         }
     }
 
-    public static class DMNExpressionEvaluatorFunction extends BaseFEELFunction {
+    public static class DMNFunction
+            extends BaseFEELFunction {
         private final List<FormalParameter> parameters;
         private final DMNExpressionEvaluator evaluator;
         private final DMNRuntimeEventManager eventManager;
         private final DMNResultImpl resultContext;
         private final FunctionDefinition functionDefinition;
 
-        public DMNExpressionEvaluatorFunction(String name, List<FormalParameter> parameters, FunctionDefinition functionDefinition, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
+        public DMNFunction(String name, List<FormalParameter> parameters, FunctionDefinition functionDefinition, DMNExpressionEvaluator evaluator, DMNRuntimeEventManager eventManager, DMNResultImpl result) {
             super( name );
             this.functionDefinition = functionDefinition;
             this.parameters = parameters;

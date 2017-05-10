@@ -1193,7 +1193,7 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "MyDecision" ), is( "Hello John Doe" ) );
     }
-    
+
     @Test
     public void testEx_6_1() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Ex_6_1.dmn", this.getClass() );
@@ -1230,6 +1230,25 @@ public class DMNRuntimeTest {
         assertThat( result.get( "Sum of bonus points" ), is( new BigDecimal(47) ) );
     }
     
+    @Test
+    public void testJavaFunctionContext() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "java_function_context.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/dmn/definitions/_b42317c4-4f0c-474e-a0bf-2895b0b3c314",
+                "Dessin 1" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext ctx = runtime.newContext();
+        ctx.set( "Input", 3.14 );
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, ctx );
+
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( ((BigDecimal) result.get( "D1" )).setScale( 4, BigDecimal.ROUND_HALF_UP ), is( new BigDecimal( "-1.0000" ) ) );
+        assertThat( ((BigDecimal) result.get( "D2" )).setScale( 4, BigDecimal.ROUND_HALF_UP ), is( new BigDecimal( "-1.0000" ) ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }

@@ -6,6 +6,7 @@ public enum DMNMessageType {
     TYPE_REF_NOT_FOUND( "The listed type reference could not be resolved", Tag.COMPILATION, Tag.DMN_CORE ),
     TYPE_DEF_NOT_FOUND( "The listed type definition was not found", Tag.COMPILATION, Tag.DMN_CORE ),
     INVALID_NAME( "The listed name is not a valid FEEL identifier", Tag.VALIDATION, Tag.DMN_VALIDATOR, Tag.COMPILATION, Tag.DMN_CORE ),
+    INVALID_ATTRIBUTE_VALUE( "Invalid value for the listed attribute", Tag.VALIDATION, Tag.DMN_VALIDATOR, Tag.COMPILATION, Tag.DMN_CORE ),
     INVALID_SYNTAX( "Invalid FEEL syntax on the referenced expression", Tag.COMPILATION, Tag.RUNTIME, Tag.DMN_CORE ),
     MISSING_EXPRESSION( "No decision logic was defined for the node or variable", Tag.COMPILATION, Tag.VALIDATION, Tag.DMN_CORE, Tag.DMN_VALIDATOR ),
     MISSING_VARIABLE( "A variable declaration is missing", Tag.COMPILATION, Tag.VALIDATION, Tag.DMN_CORE, Tag.DMN_VALIDATOR ),

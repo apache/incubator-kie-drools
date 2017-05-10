@@ -22,6 +22,7 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 /**
  * An Expression Evaluator interface for DMN defined expressions
  */
+@FunctionalInterface
 public interface DMNExpressionEvaluator {
     /**
      * Evaluates the expression, returning its result type (SUCCESS/FAILURE) and
