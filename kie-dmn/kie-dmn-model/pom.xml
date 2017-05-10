@@ -32,6 +32,7 @@
             <Import-Package>
               javax.xml,
               javax.xml.stream,
+              javax.xml.namespace,
               com.thoughtworks.xstream.mapper;resolution:=optional,
               com.thoughtworks.xstream.converters;resolution:=optional,
               com.thoughtworks.xstream.converters.basic;resolution:=optional,
