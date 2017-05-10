@@ -145,7 +145,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
         this.classLoader = ProjectClassLoader.getClassLoader(classLoader == null ? null : classLoader, getClass(), false);
 
         this.immutable = false;
-        this.chainedProperties = ChainedProperties.createChainedProperties( this.classLoader );
+        this.chainedProperties = ChainedProperties.getChainedProperties( this.classLoader );
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );

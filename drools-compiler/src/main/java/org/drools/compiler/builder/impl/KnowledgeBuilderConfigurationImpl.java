@@ -193,13 +193,13 @@ public class KnowledgeBuilderConfigurationImpl
 
     private void init(Properties properties) {
 
-        this.chainedProperties = ChainedProperties.createChainedProperties( getClassLoader() );
+        this.chainedProperties = ChainedProperties.getChainedProperties( getClassLoader() );
 
         if (chainedProperties.getProperty("drools.dialect.java", null) == null) {
             // if it couldn't find a conf for java dialect using the project class loader
             // it means it could not load the conf file at all (very likely it is running in
             // an osgi environement) so try with the class loader of this class
-            this.chainedProperties = ChainedProperties.createChainedProperties( getClass().getClassLoader() );
+            this.chainedProperties = ChainedProperties.getChainedProperties( getClass().getClassLoader() );
 
             if (this.classLoader instanceof ProjectClassLoader) {
                 ((ProjectClassLoader) classLoader).setDroolsClassLoader(getClass().getClassLoader());

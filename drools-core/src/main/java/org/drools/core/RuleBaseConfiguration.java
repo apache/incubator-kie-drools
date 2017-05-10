@@ -420,7 +420,7 @@ public class RuleBaseConfiguration
 
         this.immutable = false;
 
-        this.chainedProperties = ChainedProperties.createChainedProperties( this.classLoader );
+        this.chainedProperties = ChainedProperties.getChainedProperties( this.classLoader );
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
