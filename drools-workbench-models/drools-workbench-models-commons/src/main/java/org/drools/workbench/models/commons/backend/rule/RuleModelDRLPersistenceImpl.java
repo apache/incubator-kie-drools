@@ -2602,7 +2602,7 @@ public class RuleModelDRLPersistenceImpl
         } else if (conditionalDescr instanceof ExistsDescr) {
             comp = new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_EXISTS);
         } else {
-            throw new IllegalArgumentException( "Unknown conditional descr type: " + conditionalDescr );
+            throw new IllegalArgumentException("Unknown conditional descr type: " + conditionalDescr);
         }
 
         addPatternToComposite(m,
@@ -3338,14 +3338,34 @@ public class RuleModelDRLPersistenceImpl
                                       dmo);
             }
         }
-        ComplexExpr complexExpr = new ComplexExpr(splittedExpr.get(1));
-        for (int i = 0; i < splittedExpr.size(); i += 2) {
-            complexExpr.subExprs.add(parseExpr(splittedExpr.get(i),
-                                               isJavaDialect,
-                                               boundParams,
-                                               dmo));
+        if (isCompositeFieldConstraint(splittedExpr)) {
+            ComplexExpr complexExpr = new ComplexExpr(splittedExpr.get(1));
+            for (int i = 0; i < splittedExpr.size(); i += 2) {
+                complexExpr.subExprs.add(parseExpr(splittedExpr.get(i),
+                                                   isJavaDialect,
+                                                   boundParams,
+                                                   dmo));
+            }
+            return complexExpr;
+        } else {
+            //The expression parts cannot be represented by a CompositeFieldConstraint as it
+            //contains different operators in between the component parts. Therefore we have
+            //to revert to simple unmarshalling of the rule.
+            throw new RuleModelUnmarshallingException();
         }
-        return complexExpr;
+    }
+
+    private boolean isCompositeFieldConstraint(final List<String> splittedExpr) {
+        if (splittedExpr.size() < 2) {
+            return false;
+        }
+        String operator = splittedExpr.get(1);
+        for (int i = 1; i < splittedExpr.size(); i += 2) {
+            if (!splittedExpr.get(i).equals(operator)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isSingleEval(final String expr) {
@@ -3377,12 +3397,14 @@ public class RuleModelDRLPersistenceImpl
         OR,
         AMPERSAND,
         AND,
-        NESTED
+        NESTED,
+        EVAL
     }
 
     private List<String> splitExpression(final String expr) {
         List<String> splittedExpr = new ArrayList<String>();
         int nestingLevel = 0;
+        int evalNestingLevel = nestingLevel;
         SplitterState status = SplitterState.START;
 
         StringBuilder sb = new StringBuilder();
@@ -3399,7 +3421,12 @@ public class RuleModelDRLPersistenceImpl
                     }
                     break;
                 case EXPR:
-                    if (ch == '|') {
+                    if (sb.toString().equals("eval(")) {
+                        status = SplitterState.EVAL;
+                        evalNestingLevel = nestingLevel;
+                        nestingLevel++;
+                        sb.append(ch);
+                    } else if (ch == '|') {
                         status = SplitterState.PIPE;
                     } else if (ch == '&') {
                         status = SplitterState.AMPERSAND;
@@ -3407,6 +3434,27 @@ public class RuleModelDRLPersistenceImpl
                         sb.append(ch);
                     }
                     break;
+                case EVAL:
+                    if (ch == '(') {
+                        nestingLevel++;
+                        sb.append(ch);
+                    } else if (ch == ')') {
+                        nestingLevel--;
+                        if (nestingLevel == evalNestingLevel) {
+                            String currentExpr = sb.toString().trim();
+                            if (currentExpr.length() > 0) {
+                                splittedExpr.add(currentExpr + ")");
+                            }
+                            status = SplitterState.EXPR;
+                            sb = new StringBuilder();
+                        } else {
+                            sb.append(ch);
+                        }
+                    } else {
+                        sb.append(ch);
+                    }
+                    break;
+
                 case PIPE:
                     if (ch == '|') {
                         status = SplitterState.OR;
