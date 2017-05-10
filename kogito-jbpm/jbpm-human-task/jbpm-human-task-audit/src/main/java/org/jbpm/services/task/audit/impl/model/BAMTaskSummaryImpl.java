@@ -95,7 +95,15 @@ public class BAMTaskSummaryImpl implements Serializable {
     }
 
 
-    public Date getStartDate() {
+    public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
+	public Date getStartDate() {
         return startDate;
     }
 
