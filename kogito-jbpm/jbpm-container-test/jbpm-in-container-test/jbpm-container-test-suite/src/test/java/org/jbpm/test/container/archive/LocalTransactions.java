@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
 import org.jbpm.test.container.handlers.ListWorkItemHandler;
 import org.jbpm.test.container.listeners.TrackingAgendaEventListener;
 import org.jbpm.test.container.listeners.TrackingProcessEventListener;
+import org.jbpm.test.container.webspherefix.WebSphereFixedJtaPlatform;
 import org.jbpm.test.container.tools.IntegrationMavenResolver;
 import org.jbpm.test.container.tools.KieUtils;
 import org.kie.api.KieServices;
@@ -68,6 +69,8 @@ public class LocalTransactions {
                 .addAsLibraries(dependencies);
 
         war.addClass(LocalTransactions.class)
+                // Workaroud for https://hibernate.atlassian.net/browse/HHH-11606
+                .addClass(WebSphereFixedJtaPlatform.class)
                 .addClass(ListWorkItemHandler.class)
                 .addClass(TrackingAgendaEventListener.class)
                 .addClass(TrackingProcessEventListener.class)

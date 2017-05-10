@@ -211,11 +211,11 @@
     </profile>
 
     <profile>
-      <id>shrinkwrap-remote-was8</id>
+      <id>shrinkwrap-remote-was9</id>
       <activation>
         <property>
           <name>container.profile</name>
-          <value>was85x</value>
+          <value>was9</value>
         </property>
       </activation>
       <dependencies>
@@ -237,8 +237,8 @@
               <artifactId>hibernate-jpa-2.1-api</artifactId>
             </exclusion>
             <exclusion>
-              <groupId>org.javassist</groupId>
-              <artifactId>javassist</artifactId>
+              <groupId>xml-apis</groupId>
+              <artifactId>xml-apis</artifactId>
             </exclusion>
           </exclusions>
         </dependency>
@@ -285,6 +285,10 @@
             <exclusion>
               <groupId>org.javassist</groupId>
               <artifactId>javassist</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>xml-apis</groupId>
+              <artifactId>xml-apis</artifactId>
             </exclusion>
           </exclusions>
         </dependency>

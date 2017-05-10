@@ -17,6 +17,7 @@ package org.jbpm.test.container.archive;
 
 import java.io.File;
 
+import org.jbpm.test.container.webspherefix.WebSphereFixedJtaPlatform;
 import org.jbpm.test.container.tools.IntegrationMavenResolver;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -62,6 +63,8 @@ public class RegisterRestService {
         war = ShrinkWrap
                 .create(WebArchive.class, ARCHIVE_NAME + ".war")
                 .addPackage(REGISTER_REST_SERVICE_PACKAGE)
+                // Workaroud for https://hibernate.atlassian.net/browse/HHH-11606
+                .addClass(WebSphereFixedJtaPlatform.class)
                 .setWebXML(getClass().getResource("registerrestservice/WEB-INF/web.xml"))
                 .addAsWebInfResource(getClass().getResource("registerrestservice/WEB-INF/weblogic.xml"),
                                 ArchivePaths.create("weblogic.xml"))

@@ -865,20 +865,20 @@
     </profile>
 
     <profile>
-      <id>was85x</id>
+      <id>was9</id>
       <activation>
         <property>
           <name>container.profile</name>
-          <value>was85x</value>
+          <value>was9</value>
         </property>
       </activation>
       <properties>
-        <container.id>websphere85x</container.id>
+        <container.id>websphere9</container.id>
         <container.port>9080</container.port>
         <!--WebSphere has to use this H2 driver class for pooling datasource-->
         <org.jbpm.datasource.driver.class>org.h2.jdbcx.JdbcDataSource</org.jbpm.datasource.driver.class>
         <org.jbpm.persistence.ds>jdbc/jbpm</org.jbpm.persistence.ds>
-        <container.tm>org.hibernate.service.jta.platform.internal.WebSphereExtendedJtaPlatform</container.tm>
+        <container.tm>org.jbpm.test.container.webspherefix.WebSphereFixedJtaPlatform</container.tm>
         <!--Different web service URL for WebSphere has to be used-->
         <wsdl.token>/SimpleService.wsdl</wsdl.token>
       </properties>
@@ -890,6 +890,8 @@
               <artifactId>cargo-maven2-plugin</artifactId>
               <configuration>
                 <container>
+                  <!-- There is no Cargo for WebSphere 9 yet so we have to use the previous one -->
+                  <containerId>websphere85x</containerId>
                   <type>installed</type>
                   <home>${websphere.home}</home>
                   <timeout>240000</timeout>
@@ -899,6 +901,10 @@
                       <artifactId>h2</artifactId>
                     </dependency>
                   </dependencies>
+                  <systemProperties>
+                    <!-- Disable implicit bean archives scanning to speed up deployment -->
+                    <com.ibm.ws.cdi.enableImplicitBeanArchives>false</com.ibm.ws.cdi.enableImplicitBeanArchives>
+                  </systemProperties>
                 </container>
                 <configuration>
                   <type>standalone</type>
@@ -936,84 +942,16 @@
           <!--Arquillian connector-->
           <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-was-remote-8.5</artifactId>
-            <version>1.0.0.BRMS-SNAPSHOT</version>
-          </dependency>
-
-          <dependency>
-            <groupId>com.ibm.ws</groupId>
-            <artifactId>ejb-thinclient</artifactId>
-            <version>8.5.0</version>
-            <scope>system</scope>
-            <systemPath>${websphere.home}/runtimes/com.ibm.ws.ejb.thinclient_8.5.0.jar</systemPath>
-          </dependency>
-          <dependency>
-            <groupId>com.ibm.ws</groupId>
-            <artifactId>sib.client.thin.jms</artifactId>
-            <version>8.5.0</version>
-            <scope>system</scope>
-            <systemPath>${websphere.home}/runtimes/com.ibm.ws.sib.client.thin.jms_8.5.0.jar</systemPath>
-          </dependency>
-          <dependency>
-            <groupId>com.ibm.ws</groupId>
-            <artifactId>orb</artifactId>
-            <version>8.5.0</version>
-            <scope>system</scope>
-            <systemPath>${websphere.home}/runtimes/com.ibm.ws.orb_8.5.0.jar</systemPath>
-          </dependency>
-          <dependency>
-            <groupId>com.ibm.ws</groupId>
-            <artifactId>was_public</artifactId>
-            <version>8.5.0</version>
-            <scope>system</scope>
-            <systemPath>${websphere.home}/dev/was_public.jar</systemPath>
-          </dependency>
-          <dependency>
-            <groupId>com.ibm.ws</groupId>
-            <artifactId>ibmjgssprovider</artifactId>
-            <version>8.5.0</version>
-            <scope>system</scope>
-            <systemPath>${websphere.home}/java/jre/lib/ibmjgssprovider.jar</systemPath>
-          </dependency>
-          <dependency>
-            <groupId>com.ibm.ws</groupId>
-            <artifactId>admin_client</artifactId>
-            <version>8.5.0</version>
-            <scope>system</scope>
-            <systemPath>${websphere.home}/runtimes/com.ibm.ws.admin.client_8.5.0.jar</systemPath>
+            <artifactId>arquillian-was-remote-9</artifactId>
+            <version>1.0.0.Final-BXMS-SNAPSHOT</version>
           </dependency>
         </dependencies>
       </dependencyManagement>
       <dependencies>
         <dependency>
           <groupId>org.jboss.arquillian.container</groupId>
-          <artifactId>arquillian-was-remote-8.5</artifactId>
+          <artifactId>arquillian-was-remote-9</artifactId>
           <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>com.ibm.ws</groupId>
-          <artifactId>ejb-thinclient</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.ibm.ws</groupId>
-          <artifactId>sib.client.thin.jms</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.ibm.ws</groupId>
-          <artifactId>orb</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.ibm.ws</groupId>
-          <artifactId>was_public</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.ibm.ws</groupId>
-          <artifactId>ibmjgssprovider</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.ibm.ws</groupId>
-          <artifactId>admin_client</artifactId>
         </dependency>
       </dependencies>
     </profile>

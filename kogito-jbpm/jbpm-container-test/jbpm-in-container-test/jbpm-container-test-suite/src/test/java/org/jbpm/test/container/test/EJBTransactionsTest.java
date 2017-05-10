@@ -27,6 +27,7 @@ import org.jbpm.test.container.groups.WAS;
 import org.jbpm.test.container.groups.WLS;
 import org.jbpm.test.container.listeners.TrackingProcessEventListener;
 import org.jbpm.test.container.tools.TrackingListenerAssert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.kie.api.KieBase;
@@ -43,7 +44,8 @@ public class EJBTransactionsTest extends AbstractEJBTransactionsTest {
 
     private KieBase kbase;
 
-    public EJBTransactionsTest() {
+    @Before
+    public void setUp() {
         kbase = getKBase(et.getResource(EJBTransactions.BPMN_DOUBLE_HUMAN_TASKS));
     }
 

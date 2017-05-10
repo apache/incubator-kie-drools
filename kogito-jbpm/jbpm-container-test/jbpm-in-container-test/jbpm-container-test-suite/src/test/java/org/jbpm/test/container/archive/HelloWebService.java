@@ -20,6 +20,7 @@ import java.io.File;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.PomEquippedResolveStage;
+import org.jbpm.test.container.webspherefix.WebSphereFixedJtaPlatform;
 import org.jbpm.test.container.tools.IntegrationMavenResolver;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
@@ -58,6 +59,8 @@ public class HelloWebService {
         war = ShrinkWrap
                 .create(WebArchive.class, ARCHIVE_NAME + ".war")
                 .addPackage(HELLO_WEB_SERVICE_PACKAGE)
+                // Workaroud for https://hibernate.atlassian.net/browse/HHH-11606
+                .addClass(WebSphereFixedJtaPlatform.class)
                 .setWebXML(HELLO_WEB_SERVICE_PATH + "WEB-INF/web.xml")
                 .addAsLibraries(dependencies);
 

@@ -3,7 +3,7 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence persistence_1_0.xsd">
 
   <persistence-unit name="containerPU" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>${org.jbpm.persistence.ds}</jta-data-source>
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
 
