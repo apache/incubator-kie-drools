@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_b42317c4-4f0c-474e-a0bf-2895b0b3c314"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.1.10.201704271113" id="_7e396e51-1cc5-4cf6-bd34-8a5c666f73f8"
+                      name="Dessin 1" namespace="http://www.trisotech.com/dmn/definitions/_b42317c4-4f0c-474e-a0bf-2895b0b3c314"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:businessKnowledgeModel id="_9de2ce2e-82dd-44b9-9bc7-9e9fc3db7ca0" name="Cosinus1" triso:displayName="Cosinus1">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="J" id="_a72a7aff-48c3-4806-83ca-fc1f1fe34321">
+      <semantic:formalParameter id="_d0a66edd-9e83-49ac-aefb-b02a56b38f83" name="number" typeRef="feel:number"/>
+      <semantic:context>
+        <semantic:contextEntry>
+          <semantic:variable id="_137c9d35-c920-4270-8dce-d93844ac13c4" name="class"/>
+          <semantic:literalExpression id="_469b82c0-7b46-4c79-bbdb-7ccd8d071c85">
+            <semantic:text>"java.lang.Math"</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_f2f6c56b-5724-43f5-8233-ded22fefb877" name="method signature"/>
+          <semantic:literalExpression id="_83bc9702-62c7-4b8f-ba1a-e2a694cae9e8">
+            <semantic:text>"cos(double)"</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_ad5ae2f9-f1bc-41e7-9f92-8b19ba462259" name="Cosinus1"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_9de2ce2e-82dd-44b9-9bc7-9e9fc3db7cac" name="Cosinus2" triso:displayName="Cosinus2">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" id="_a72a7aff-48c3-4806-83ca-fc1f1fe34320">
+      <semantic:formalParameter id="_d0a66edd-9e83-49ac-aefb-b02a56b38f82" name="number" typeRef="feel:number"/>
+      <semantic:literalExpression>
+        <semantic:text>
+          function( number ) external { java : { class : "java.lang.Math", method signature : "cos(double)" } }
+        </semantic:text>
+      </semantic:literalExpression>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_ad5ae2f9-f1bc-41e7-9f92-8b19ba46225e" name="Cosinus2"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:decision id="_f46b6f52-1a31-40a0-918b-f76de41a83bb" name="D1" triso:displayName="D2">
+    <semantic:variable id="_69a432a0-d4c2-4804-8795-2d91eb9a4c70" name="D1" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_835f756b-aca3-4dc3-b79e-af9fbf2ffbec"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_9de2ce2e-82dd-44b9-9bc7-9e9fc3db7ca0"/>
+    </semantic:knowledgeRequirement>
+    <semantic:literalExpression id="_178db6f8-1dbc-403d-95db-4c84d39307a5">
+      <semantic:text>Cosinus1(Input)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_f46b6f52-1a31-40a0-918b-f76de41a83b0" name="D2" triso:displayName="D2">
+    <semantic:variable id="_69a432a0-d4c2-4804-8795-2d91eb9a4c71" name="D2" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_835f756b-aca3-4dc3-b79e-af9fbf2ffbec"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_9de2ce2e-82dd-44b9-9bc7-9e9fc3db7cac"/>
+    </semantic:knowledgeRequirement>
+    <semantic:literalExpression id="_178db6f8-1dbc-403d-95db-4c84d39307a6">
+      <semantic:text>Cosinus2(Input)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_835f756b-aca3-4dc3-b79e-af9fbf2ffbec" name="Input" triso:displayName="Input">
+    <semantic:variable id="_e8d3bbd2-da39-417b-abc5-998f1bcb8f8a" name="Input" typeRef="feel:number"/>
+  </semantic:inputData>
+</semantic:definitions>

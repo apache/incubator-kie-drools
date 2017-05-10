@@ -27,6 +27,7 @@ import javax.xml.stream.Location;
 public abstract class DMNModelInstrumentedBase {
     public static final String URI_FEEL = "http://www.omg.org/spec/FEEL/20140401";
     public static final String URI_DMN = "http://www.omg.org/spec/DMN/20151101/dmn.xsd";
+    public static final String URI_KIE = "http://www.drools.org/kie/dmn/1.1";
 
     private Map<String, String> nsContext;
 

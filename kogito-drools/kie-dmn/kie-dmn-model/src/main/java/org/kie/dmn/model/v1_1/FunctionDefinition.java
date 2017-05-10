@@ -15,10 +15,35 @@
  */
 package org.kie.dmn.model.v1_1;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FunctionDefinition extends Expression {
+
+    public static final QName KIND_QNAME = new QName( DMNModelInstrumentedBase.URI_KIE, "kind" );
+
+    public static enum Kind {
+        FEEL("F"), JAVA("J"), PMML("P");
+
+        public final String code;
+        Kind( String code ) {
+            this.code = code;
+        }
+
+        public static Kind determineFromString( String code ) {
+            if ( code == null ) {
+                return null;
+            } else if ( FEEL.code.equals( code ) ) {
+                return FEEL;
+            } else if( JAVA.code.equals( code ) ) {
+                return JAVA;
+            } else if( PMML.code.equals( code ) ) {
+                return PMML;
+            }
+            return null;
+        }
+    }
 
     private List<InformationItem> formalParameter;
     private Expression expression;

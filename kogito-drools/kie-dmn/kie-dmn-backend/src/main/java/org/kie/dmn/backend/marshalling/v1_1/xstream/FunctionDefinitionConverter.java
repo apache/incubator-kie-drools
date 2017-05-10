@@ -46,8 +46,8 @@ public class FunctionDefinitionConverter extends ExpressionConverter {
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
         super.assignAttributes(reader, parent);
-        
-        // no attributes.
+        String kind = reader.getAttribute( FunctionDefinition.KIND_QNAME.getLocalPart() );
+        ((FunctionDefinition) parent).getOtherAttributes().put( FunctionDefinition.KIND_QNAME, kind );
     }
 
     @Override

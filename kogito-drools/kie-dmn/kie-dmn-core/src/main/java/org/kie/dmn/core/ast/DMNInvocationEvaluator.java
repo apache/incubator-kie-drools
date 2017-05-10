@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.ast;
 
+import org.drools.core.rule.Function;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
@@ -42,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class DMNInvocationEvaluator
         implements DMNExpressionEvaluator, FEELEventListener {
@@ -54,12 +56,18 @@ public class DMNInvocationEvaluator
     private final List<ActualParameter> parameters = new ArrayList<>();
     private final FEELImpl feel;
     private final List<FEELEvent> events = new ArrayList<>();
+    private final BiFunction<DMNContext, String, FEELFunction> functionLocator;
 
-    public DMNInvocationEvaluator(String nodeName, DMNElement node, String functionName, Invocation invocation) {
+    public DMNInvocationEvaluator(String nodeName, DMNElement node, String functionName, Invocation invocation, BiFunction<DMNContext, String, FEELFunction> functionLocator ) {
         this.nodeName = nodeName;
         this.node = node;
         this.functionName = functionName;
         this.invocation = invocation;
+        if( functionLocator == null ) {
+            this.functionLocator = (ctx, fname) -> (FEELFunction) ctx.get( fname );
+        } else {
+            this.functionLocator = functionLocator;
+        }
         feel = (FEELImpl) FEEL.newInstance();
         feel.addListener( this );
     }
@@ -81,7 +89,7 @@ public class DMNInvocationEvaluator
         Object invocationResult = null;
 
         try {
-            FEELFunction function = (FEELFunction) previousContext.get( functionName );
+            FEELFunction function = this.functionLocator.apply( previousContext, functionName );
             if ( function == null ) {
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,

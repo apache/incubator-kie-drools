@@ -77,6 +77,10 @@ public class Msg {
     public static final Message0 FAILED_VALIDATOR                                    = new Message0( DMNMessageType.FAILED_VALIDATOR, "The validator was unable to compile the embedded DMN validation rules. Validation of the DMN Model cannot be performed." );
     public static final Message0 FAILED_NO_XML_SOURCE                                = new Message0( DMNMessageType.FAILED_VALIDATOR, "Schema validation not supported for in memory object. Please use the validate method with the file or reader signature." );
     public static final Message1 FAILED_XML_VALIDATION                               = new Message1( DMNMessageType.FAILED_XML_VALIDATION, "Failed XML validation of DMN file: %s" );
+    public static final Message2 FUNC_DEF_INVALID_KIND                               = new Message2( DMNMessageType.INVALID_ATTRIBUTE_VALUE, "Invalid 'kind' value '%s' on function definition in node '%s'" );
+    public static final Message1 FUNC_DEF_BODY_NOT_CONTEXT                           = new Message1( DMNMessageType.INVALID_SYNTAX, "A non-FEEL function definition requires a context as it's body in node '%s'" );
+    public static final Message3 FUNC_DEF_COMPILATION_ERR                            = new Message3( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling Java function '%s' on node '%s': %s" );
+    public static final Message2 FUNC_DEF_MISSING_ENTRY                              = new Message2( DMNMessageType.INVALID_SYNTAX, "A Java function definition requires both the 'class' and the 'method signature' attributes. Invalid definition for function '%s' on node '%s'" );
 
     public static interface Message {
         String getMask();
