@@ -23,6 +23,8 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.feel.lang.ast.FunctionDefNode;
+import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 
 /**
  * An evaluator for DMN Literal Expressions
@@ -33,6 +35,14 @@ public class DMNLiteralExpressionEvaluator
 
     public DMNLiteralExpressionEvaluator(CompiledExpression expression) {
         this.expression = expression;
+    }
+
+    public boolean isFunctionDefinition() {
+        return ((CompiledExpressionImpl)expression).getExpression() instanceof FunctionDefNode;
+    }
+
+    public CompiledExpression getExpression() {
+        return this.expression;
     }
 
     @Override

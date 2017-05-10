@@ -15,7 +15,9 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
@@ -87,6 +89,28 @@ public class DMNFEELHelper
         CompiledExpression ce = feel.compile( expression, feelctx );
         processEvents( model, element, errorMsg, msgParams );
         return ce;
+    }
+
+    public FEELFunction evaluateFunctionDef(DMNCompilerContext ctx, String expression, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
+        FEELFunction function = null;
+        try {
+            function = (FEELFunction) feel.evaluate( expression );
+        } catch( Throwable t ) {
+            logger.error( "Error evaluating function definition. Error will be reported in the model.", t );
+        }
+        processEvents( model, element, errorMsg, msgParams );
+        return function;
+    }
+
+    public FEELFunction evaluateFunctionDef(DMNCompilerContext ctx, CompiledExpression expression, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {
+        FEELFunction function = null;
+        try {
+            function = (FEELFunction) feel.evaluate( expression, Collections.emptyMap() );
+        } catch( Throwable t ) {
+            logger.error( "Error evaluating function definition. Error will be reported in the model.", t );
+        }
+        processEvents( model, element, errorMsg, msgParams );
+        return function;
     }
 
     public List<UnaryTest> evaluateUnaryTests(DMNCompilerContext ctx, String unaryTests, DMNModelImpl model, DMNElement element, Msg.Message errorMsg, Object... msgParams) {

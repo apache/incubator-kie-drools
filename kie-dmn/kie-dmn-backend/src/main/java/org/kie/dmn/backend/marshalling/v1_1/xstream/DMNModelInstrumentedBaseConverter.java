@@ -16,6 +16,7 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -51,7 +52,7 @@ public abstract class DMNModelInstrumentedBaseConverter
         
         Map<String, String> currentNSCtx = customStaxReader.getNsContext();
         mib.getNsContext().putAll(currentNSCtx);
-        
+
         mib.setLocation( customStaxReader.getLocation() );
     }
     
