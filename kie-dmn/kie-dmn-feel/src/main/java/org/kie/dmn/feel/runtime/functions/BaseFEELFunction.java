@@ -263,7 +263,7 @@ public abstract class BaseFEELFunction
                                 System.arraycopy( cm.getActualParams(), 0, newParams, 0, cm.getActualParams().length ); // can't rely on adjustForVariableParameters() have actually copied
                                 newParams[i] = singletonValue;
                                 cm.setActualParams(newParams);
-                                break;
+                                continue;
                             }
                         }
                     }
