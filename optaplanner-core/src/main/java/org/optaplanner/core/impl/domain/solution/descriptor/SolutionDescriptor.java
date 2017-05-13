@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.domain.solution.descriptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -39,6 +40,7 @@ import java.util.concurrent.ConcurrentMap;
 import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.optaplanner.core.api.domain.autodetect.AutoDiscoverMemberType;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
@@ -64,6 +66,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -109,7 +112,7 @@ public class SolutionDescriptor<Solution_> {
             List<Class<?>> entityClassList, ScoreDefinition deprecatedScoreDefinition) {
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         SolutionDescriptor<Solution_> solutionDescriptor = new SolutionDescriptor<>(solutionClass);
-        solutionDescriptor.processAnnotations(descriptorPolicy, deprecatedScoreDefinition);
+        solutionDescriptor.processAnnotations(descriptorPolicy, deprecatedScoreDefinition, entityClassList);
         for (Class<?> entityClass : sortEntityClassList(entityClassList)) {
             EntityDescriptor<Solution_> entityDescriptor = new EntityDescriptor<>(solutionDescriptor, entityClass);
             solutionDescriptor.addEntityDescriptor(entityDescriptor);
@@ -147,6 +150,7 @@ public class SolutionDescriptor<Solution_> {
     private final Class<Solution_> solutionClass;
     private SolutionCloner<Solution_> solutionCloner;
 
+    private AutoDiscoverMemberType autoDiscoverMemberType;
     private final Map<String, MemberAccessor> problemFactMemberAccessorMap;
     private final Map<String, MemberAccessor> problemFactCollectionMemberAccessorMap;
     private final Map<String, MemberAccessor> entityMemberAccessorMap;
@@ -184,7 +188,7 @@ public class SolutionDescriptor<Solution_> {
         lowestEntityDescriptorCache.put(entityClass, entityDescriptor);
     }
 
-    public void processAnnotations(DescriptorPolicy descriptorPolicy, ScoreDefinition deprecatedScoreDefinition) {
+    public void processAnnotations(DescriptorPolicy descriptorPolicy, ScoreDefinition deprecatedScoreDefinition, List<Class<?>> entityClassList) {
         processSolutionAnnotations(descriptorPolicy);
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
         // to make sure each one is registered
@@ -192,9 +196,7 @@ public class SolutionDescriptor<Solution_> {
             List<Member> memberList = ConfigUtils.getDeclaredMembers(lineageClass);
             for (Member member : memberList) {
                 processValueRangeProviderAnnotation(descriptorPolicy, member);
-                processProblemFactPropertyAnnotation(descriptorPolicy, member);
-                processPlanningEntityPropertyAnnotation(descriptorPolicy, member);
-                processScoreAnnotation(descriptorPolicy, member, deprecatedScoreDefinition);
+                processFactEntityOrScoreAnnotation(descriptorPolicy, member, deprecatedScoreDefinition, entityClassList);
             }
         }
         if (entityCollectionMemberAccessorMap.isEmpty() && entityMemberAccessorMap.isEmpty()) {
@@ -291,6 +293,7 @@ public class SolutionDescriptor<Solution_> {
                     + ") has been specified as a solution in the configuration," +
                     " but does not have a " + PlanningSolution.class.getSimpleName() + " annotation.");
         }
+        autoDiscoverMemberType = solutionAnnotation.autoDiscoverMemberType();
         processSolutionCloner(descriptorPolicy, solutionAnnotation);
         lookUpStrategyResolver = new LookUpStrategyResolver(solutionAnnotation.lookUpStrategyType());
     }
@@ -315,45 +318,109 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
-    private void processProblemFactPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
-        Class<? extends Annotation> annotationClass = ConfigUtils.extractAnnotationClass(member,
-                ProblemFactProperty.class, ProblemFactCollectionProperty.class);
-        if (annotationClass != null) {
-            MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
-                    member, FIELD_OR_READ_METHOD, annotationClass);
-            assertUnexistingProblemFactOrPlanningEntityProperty(memberAccessor, annotationClass);
-            if (annotationClass == ProblemFactProperty.class) {
-                problemFactMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
-            } else if (annotationClass == ProblemFactCollectionProperty.class) {
-                if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
-                    throw new IllegalStateException("The solutionClass (" + solutionClass
-                            + ") has a " + ProblemFactCollectionProperty.class.getSimpleName()
-                            + " annotated member (" + member + ") that does not return a "
-                            + Collection.class.getSimpleName() + ".");
-                }
-                problemFactCollectionMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
-            }
+    private void processFactEntityOrScoreAnnotation(DescriptorPolicy descriptorPolicy, Member member,
+            ScoreDefinition deprecatedScoreDefinition, List<Class<?>> entityClassList) {
+        Class<? extends Annotation> annotationClass = extractFactEntityOrScoreAnnotationClassOrAutoDiscover(
+                member, entityClassList);
+        if (annotationClass == null) {
+            return;
+        } else if (annotationClass.equals(ProblemFactProperty.class)
+                || annotationClass.equals(ProblemFactCollectionProperty.class)) {
+            processProblemFactPropertyAnnotation(descriptorPolicy, member, annotationClass);
+        } else if (annotationClass.equals(PlanningEntityProperty.class)
+                || annotationClass.equals(PlanningEntityCollectionProperty.class)) {
+            processPlanningEntityPropertyAnnotation(descriptorPolicy, member, annotationClass);
+        } else if (annotationClass.equals(PlanningScore.class)) {
+            processScoreAnnotation(descriptorPolicy, member, annotationClass, deprecatedScoreDefinition);
         }
     }
 
-    private void processPlanningEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
+    private Class<? extends Annotation> extractFactEntityOrScoreAnnotationClassOrAutoDiscover(
+            Member member, List<Class<?>> entityClassList) {
         Class<? extends Annotation> annotationClass = ConfigUtils.extractAnnotationClass(member,
-                PlanningEntityProperty.class, PlanningEntityCollectionProperty.class);
-        if (annotationClass != null) {
-            MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
-                    member, FIELD_OR_GETTER_METHOD, annotationClass);
-            assertUnexistingProblemFactOrPlanningEntityProperty(memberAccessor, annotationClass);
-            if (annotationClass == PlanningEntityProperty.class) {
-                entityMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
-            } else if (annotationClass == PlanningEntityCollectionProperty.class) {
-                if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
-                    throw new IllegalStateException("The solutionClass (" + solutionClass
-                            + ") has a " + PlanningEntityCollectionProperty.class.getSimpleName()
-                            + " annotated member (" + member + ") that does not return a "
-                            + Collection.class.getSimpleName() + ".");
-                }
-                entityCollectionMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+                ProblemFactProperty.class, ProblemFactCollectionProperty.class,
+                PlanningEntityProperty.class, PlanningEntityCollectionProperty.class,
+                PlanningScore.class);
+        if (annotationClass == null) {
+            Class<?> type;
+            if (autoDiscoverMemberType == AutoDiscoverMemberType.FIELD
+                    && member instanceof Field) {
+                Field field = (Field) member;
+                type = field.getType();
+            } else if (autoDiscoverMemberType == AutoDiscoverMemberType.GETTER
+                    && (member instanceof Method) && ReflectionHelper.isGetterMethod((Method) member)) {
+                Method method = (Method) member;
+                type = method.getReturnType();
+            } else {
+                type = null;
             }
+            if (type != null) {
+                if (Score.class.isAssignableFrom(type)) {
+                    annotationClass = PlanningScore.class;
+                } else if (Collection.class.isAssignableFrom(type)) {
+                    Type genericType = (member instanceof Field) ? ((Field) member).getGenericType()
+                            : ((Method) member).getGenericReturnType();
+                    Class<?> elementType = ConfigUtils.extractCollectionGenericTypeParameter(
+                            "solutionClass", solutionClass,
+                            type, genericType,
+                            null, member.getName());
+                    if (entityClassList.stream().anyMatch(entityClass -> entityClass.isAssignableFrom(elementType))) {
+                        annotationClass = PlanningEntityCollectionProperty.class;
+                    } else {
+                        annotationClass = ProblemFactCollectionProperty.class;
+                    }
+                } else if (Map.class.isAssignableFrom(type)) {
+                    throw new IllegalStateException("The autoDiscoverMemberType (" + autoDiscoverMemberType
+                            + ") does not yet support the member (" + member
+                            + ") of type (" + type
+                            + ") which is an implementation of " + Map.class.getSimpleName() + ".");
+                } else if (entityClassList.stream().anyMatch(entityClass -> entityClass.isAssignableFrom(type))) {
+                    annotationClass = PlanningEntityProperty.class;
+                } else {
+                    annotationClass = ProblemFactProperty.class;
+                }
+            }
+        }
+        return annotationClass;
+    }
+
+    private void processProblemFactPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member,
+            Class<? extends Annotation> annotationClass) {
+        MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+                member, FIELD_OR_READ_METHOD, annotationClass);
+        assertUnexistingProblemFactOrPlanningEntityProperty(memberAccessor, annotationClass);
+        if (annotationClass == ProblemFactProperty.class) {
+            problemFactMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+        } else if (annotationClass == ProblemFactCollectionProperty.class) {
+            if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
+                throw new IllegalStateException("The solutionClass (" + solutionClass
+                        + ") has a " + ProblemFactCollectionProperty.class.getSimpleName()
+                        + " annotated member (" + member + ") that does not return a "
+                        + Collection.class.getSimpleName() + ".");
+            }
+            problemFactCollectionMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+        } else {
+            throw new IllegalStateException("Impossible situation with annotationClass (" + annotationClass + ").");
+        }
+    }
+
+    private void processPlanningEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member,
+            Class<? extends Annotation> annotationClass) {
+        MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+                member, FIELD_OR_GETTER_METHOD, annotationClass);
+        assertUnexistingProblemFactOrPlanningEntityProperty(memberAccessor, annotationClass);
+        if (annotationClass == PlanningEntityProperty.class) {
+            entityMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+        } else if (annotationClass == PlanningEntityCollectionProperty.class) {
+            if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
+                throw new IllegalStateException("The solutionClass (" + solutionClass
+                        + ") has a " + PlanningEntityCollectionProperty.class.getSimpleName()
+                        + " annotated member (" + member + ") that does not return a "
+                        + Collection.class.getSimpleName() + ".");
+            }
+            entityCollectionMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+        } else {
+            throw new IllegalStateException("Impossible situation with annotationClass (" + annotationClass + ").");
         }
     }
 
@@ -388,40 +455,50 @@ public class SolutionDescriptor<Solution_> {
     }
 
     private void processScoreAnnotation(DescriptorPolicy descriptorPolicy, Member member,
-            ScoreDefinition deprecatedScoreDefinition) {
-        if (((AnnotatedElement) member).isAnnotationPresent(PlanningScore.class)) {
-            MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
-                    member, FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningScore.class);
-            if (deprecatedScoreDefinition != null) {
+            Class<? extends Annotation> annotationClass, ScoreDefinition deprecatedScoreDefinition) {
+        MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+                member, FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningScore.class);
+        if (deprecatedScoreDefinition != null) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") has a " + PlanningScore.class.getSimpleName()
+                    + " annotated member (" + memberAccessor
+                    + ") but the solver configuration still has a deprecated scoreDefinitionType"
+                    + " or scoreDefinitionClass element.\n"
+                    + "Maybe remove the <scoreDefinitionType>, <bendableHardLevelsSize>, <bendableSoftLevelsSize> and <scoreDefinitionClass> elements from the solver configuration.");
+        }
+        if (!Score.class.isAssignableFrom(memberAccessor.getType())) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") has a " + PlanningScore.class.getSimpleName()
+                    + " annotated member (" + memberAccessor + ") that does not return a subtype of Score.");
+        }
+        if (scoreMemberAccessor != null) {
+            if (!scoreMemberAccessor.getName().equals(memberAccessor.getName())
+                    || !scoreMemberAccessor.getClass().equals(memberAccessor.getClass())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
                         + ") has a " + PlanningScore.class.getSimpleName()
                         + " annotated member (" + memberAccessor
-                        + ") but the solver configuration still has a deprecated scoreDefinitionType"
-                        + " or scoreDefinitionClass element.\n"
-                        + "Maybe remove the <scoreDefinitionType>, <bendableHardLevelsSize>, <bendableSoftLevelsSize> and <scoreDefinitionClass> elements from the solver configuration.");
+                        + ") that is duplicated by another member (" + scoreMemberAccessor + ").\n"
+                        + "  Verify that the annotation is not defined on both the field and its getter.");
             }
-            if (!Score.class.isAssignableFrom(memberAccessor.getType())) {
-                throw new IllegalStateException("The solutionClass (" + solutionClass
-                        + ") has a " + PlanningScore.class.getSimpleName()
-                        + " annotated member (" + memberAccessor + ") that does not return a subtype of Score.");
-            }
-            if (scoreMemberAccessor != null) {
-                if (!scoreMemberAccessor.getName().equals(memberAccessor.getName())
-                        || !scoreMemberAccessor.getClass().equals(memberAccessor.getClass())) {
-                    throw new IllegalStateException("The solutionClass (" + solutionClass
-                            + ") has a " + PlanningScore.class.getSimpleName()
-                            + " annotated member (" + memberAccessor
-                            + ") that is duplicated by another member (" + scoreMemberAccessor + ").\n"
-                            + "  Verify that the annotation is not defined on both the field and its getter.");
-                }
-                // Bottom class wins. Bottom classes are parsed first due to ConfigUtil.getAllAnnotatedLineageClasses()
-                return;
-            }
-            scoreMemberAccessor = memberAccessor;
-            Class<? extends Score> scoreType = (Class<? extends Score>) scoreMemberAccessor.getType();
-            PlanningScore annotation = scoreMemberAccessor.getAnnotation(PlanningScore.class);
-            scoreDefinition = buildScoreDefinition(scoreType, annotation);
+            // Bottom class wins. Bottom classes are parsed first due to ConfigUtil.getAllAnnotatedLineageClasses()
+            return;
         }
+        scoreMemberAccessor = memberAccessor;
+        Class<? extends Score> scoreType = (Class<? extends Score>) scoreMemberAccessor.getType();
+        PlanningScore annotation = scoreMemberAccessor.getAnnotation(PlanningScore.class);
+        if (annotation == null) {
+            // The member was autodiscovered
+            try {
+                annotation = AutoDiscoverAnnotationDefaults.class.getDeclaredField("PLANNING_SCORE").getAnnotation(PlanningScore.class);
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException("Impossible situation: the field (PLANNING_SCORE) must exist.", e);
+            }
+        }
+        scoreDefinition = buildScoreDefinition(scoreType, annotation);
+    }
+
+    private static class AutoDiscoverAnnotationDefaults {
+        @PlanningScore private static final Object PLANNING_SCORE = new Object();
     }
 
     public ScoreDefinition buildScoreDefinition(Class<? extends Score> scoreType, PlanningScore annotation) {

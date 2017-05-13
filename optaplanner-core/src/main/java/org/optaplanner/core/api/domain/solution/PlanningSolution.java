@@ -19,6 +19,7 @@ package org.optaplanner.core.api.domain.solution;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.optaplanner.core.api.domain.autodetect.AutoDiscoverMemberType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
@@ -52,6 +53,11 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Target({TYPE})
 @Retention(RUNTIME)
 public @interface PlanningSolution {
+
+    /**
+     * @return never null
+     */
+    AutoDiscoverMemberType autoDiscoverMemberType() default AutoDiscoverMemberType.NONE;
 
     /**
      * Overrides the default {@link SolutionCloner} to implement a custom {@link PlanningSolution} cloning implementation.

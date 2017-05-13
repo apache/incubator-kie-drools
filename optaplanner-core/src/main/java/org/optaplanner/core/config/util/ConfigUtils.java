@@ -22,6 +22,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,6 +39,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -336,6 +339,46 @@ public class ConfigUtils {
             }
         }
         return annotationClass;
+    }
+
+    public static Class<?> extractCollectionGenericTypeParameter(
+            String parentClassConcept, Class<?> parentClass,
+            Class<?> type, Type genericType,
+            Class<? extends Annotation> annotationClass, String memberName) {
+        if (!(genericType instanceof ParameterizedType)) {
+            throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
+                    + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
+                    + " member (" + memberName
+                    + ") with a member type (" + type
+                    + ") that returns a " + Collection.class.getSimpleName()
+                    + " which has no generic parameters.\n"
+                    + "Maybe the member (" + memberName + ") should return a typed "
+                    + Collection.class.getSimpleName() + ".");
+        }
+        ParameterizedType parameterizedType = (ParameterizedType) genericType;
+        Type[] typeArguments = parameterizedType.getActualTypeArguments();
+        if (typeArguments.length != 1) {
+            throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
+                    + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
+                    + " member (" + memberName
+                    + ") with a member type (" + type
+                    + ") which is parameterized collection with an unsupported number of generic parameters ("
+                    + typeArguments.length + ").");
+        }
+        Type typeArgument = typeArguments[0];
+        if (typeArgument instanceof ParameterizedType) {
+            // Remove the type parameters so it can be cast to a Class
+            typeArgument = ((ParameterizedType) typeArgument).getRawType();
+        }
+        if (!(typeArgument instanceof Class)) {
+            throw new IllegalArgumentException("The " + parentClassConcept + " (" + parentClass + ") has a "
+                    + (annotationClass == null ? "auto discovered" : annotationClass.getSimpleName() + " annotated")
+                    + " member (" + memberName
+                    + ") with a member type (" + type
+                    + ") which is parameterized collection with an unsupported type argument ("
+                    + typeArgument + ").");
+        }
+        return ((Class) typeArgument);
     }
 
     public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType, Class<? extends Annotation> annotationClass) {

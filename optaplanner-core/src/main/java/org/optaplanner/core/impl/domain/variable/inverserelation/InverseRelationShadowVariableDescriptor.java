@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
@@ -64,33 +65,10 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
         Class<?> masterClass;
         if (Collection.class.isAssignableFrom(variablePropertyType)) {
             Type genericType = variableMemberAccessor.getGenericType();
-            if (!(genericType instanceof ParameterizedType)) {
-                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                        + " annotated property (" + variableMemberAccessor.getName()
-                        + ") with a property type (" + variablePropertyType
-                        + ") which is non parameterized collection.");
-            }
-            ParameterizedType parameterizedType = (ParameterizedType) genericType;
-            Type[] typeArguments = parameterizedType.getActualTypeArguments();
-            if (typeArguments.length != 1) {
-                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                        + " annotated property (" + variableMemberAccessor.getName()
-                        + ") with a property type (" + variablePropertyType
-                        + ") which is parameterized collection with an unsupported number of type arguments ("
-                        + typeArguments.length + ").");
-            }
-            Type typeArgument = typeArguments[0];
-            if (!(typeArgument instanceof Class)) {
-                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a " + InverseRelationShadowVariable.class.getSimpleName()
-                        + " annotated property (" + variableMemberAccessor.getName()
-                        + ") with a property type (" + variablePropertyType
-                        + ") which is parameterized collection with an unsupported type arguments ("
-                        + typeArgument + ").");
-            }
-            masterClass = ((Class) typeArgument);
+            masterClass = ConfigUtils.extractCollectionGenericTypeParameter(
+                    "entityClass", entityDescriptor.getEntityClass(),
+                    variablePropertyType, genericType,
+                    InverseRelationShadowVariable.class, variableMemberAccessor.getName());
             singleton = false;
         } else {
             masterClass = variablePropertyType;

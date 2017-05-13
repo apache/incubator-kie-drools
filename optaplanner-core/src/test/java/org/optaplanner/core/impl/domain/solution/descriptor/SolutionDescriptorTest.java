@@ -16,11 +16,13 @@
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
@@ -32,6 +34,8 @@ import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGeneric
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataReadMethodProblemFactCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodetect.TestdataAutoDiscoverFieldSolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodetect.TestdataAutoDiscoverGetterSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningScorePropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicateProblemFactCollectionPropertySolution;
@@ -189,6 +193,48 @@ public class SolutionDescriptorTest {
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
         assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "v1", "v2", "extra");
+    }
+
+    @Test
+    public void autoDiscoverFields() {
+        SolutionDescriptor<TestdataAutoDiscoverFieldSolution> solutionDescriptor
+                = TestdataAutoDiscoverFieldSolution.buildSolutionDescriptor();
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap(), "singleProblemFact");
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
+                "problemFactList");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap(), "otherEntity");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
+                "entityList");
+
+        TestdataObject singleProblemFact = new TestdataObject("p1");
+        List<TestdataValue> valueList = Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2"));
+        List<TestdataEntity> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"));
+        TestdataEntity otherEntity = new TestdataEntity("otherE1");
+        TestdataAutoDiscoverFieldSolution solution = new TestdataAutoDiscoverFieldSolution(
+                "s1", singleProblemFact, valueList, entityList, otherEntity);
+
+        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "p1", "e1", "e2", "v1", "v2");
+    }
+
+    @Test
+    public void autoDiscoverGetters() {
+        SolutionDescriptor<TestdataAutoDiscoverGetterSolution> solutionDescriptor
+                = TestdataAutoDiscoverGetterSolution.buildSolutionDescriptor();
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap(), "singleProblemFact");
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
+                "problemFactList");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap(), "otherEntity");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
+                "entityList");
+
+        TestdataObject singleProblemFact = new TestdataObject("p1");
+        List<TestdataValue> valueList = Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2"));
+        List<TestdataEntity> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"));
+        TestdataEntity otherEntity = new TestdataEntity("otherE1");
+        TestdataAutoDiscoverGetterSolution solution = new TestdataAutoDiscoverGetterSolution(
+                "s1", singleProblemFact, valueList, entityList, otherEntity);
+
+        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "p1", "e1", "e2", "v1", "v2");
     }
 
     @Test @Deprecated
