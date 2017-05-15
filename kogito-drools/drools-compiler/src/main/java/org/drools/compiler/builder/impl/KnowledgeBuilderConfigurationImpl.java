@@ -16,6 +16,15 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
+
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DialectConfiguration;
@@ -57,15 +66,6 @@ import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.net.URL;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * This class configures the package compiler.
@@ -193,17 +193,13 @@ public class KnowledgeBuilderConfigurationImpl
 
     private void init(Properties properties) {
 
-        this.chainedProperties = new ChainedProperties("packagebuilder.conf",
-                getClassLoader(),
-                true);
+        this.chainedProperties = ChainedProperties.getChainedProperties( getClassLoader() );
 
         if (chainedProperties.getProperty("drools.dialect.java", null) == null) {
             // if it couldn't find a conf for java dialect using the project class loader
             // it means it could not load the conf file at all (very likely it is running in
             // an osgi environement) so try with the class loader of this class
-            this.chainedProperties = new ChainedProperties("packagebuilder.conf",
-                    getClass().getClassLoader(),
-                    true);
+            this.chainedProperties = ChainedProperties.getChainedProperties( getClass().getClassLoader() );
 
             if (this.classLoader instanceof ProjectClassLoader) {
                 ((ProjectClassLoader) classLoader).setDroolsClassLoader(getClass().getClassLoader());

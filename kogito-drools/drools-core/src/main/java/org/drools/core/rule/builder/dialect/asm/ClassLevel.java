@@ -39,14 +39,10 @@ public class ClassLevel {
     }
 
     private static void findJavaVersion(ClassLoader classLoader) {
-        ChainedProperties chainedProperties = new ChainedProperties( "packagebuilder.conf",
-                                                                     classLoader,
-                                                                     true );
+        ChainedProperties chainedProperties = ChainedProperties.getChainedProperties( classLoader );
 
         if (chainedProperties.getProperty("drools.dialect.java", null) == null) {
-            chainedProperties = new ChainedProperties( "packagebuilder.conf",
-                                                       ClassGenerator.class.getClassLoader(),
-                                                       true );
+            chainedProperties = ChainedProperties.getChainedProperties( ClassGenerator.class.getClassLoader() );
         }
 
         javaVersion = findJavaVersion(chainedProperties);

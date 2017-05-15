@@ -15,6 +15,11 @@
 
 package org.drools.compiler.compiler;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -59,12 +64,6 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
-import org.kie.internal.utils.ChainedProperties;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -100,36 +99,6 @@ public class PackageBuilderConfigurationTest {
         System.getProperties().remove( "drools.dialect.java.compiler" );
         System.getProperties().remove( "drools.dialect.default" );
         System.getProperties().remove( "drools.kbuilder.severity." + DuplicateFunction.KEY );
-    }
-
-    @Test
-    public void testIgnoreDefaults() {
-        // check standard chained properties, that includes defaults
-        ChainedProperties chainedProperties = new ChainedProperties( "packagebuilder.conf",
-                                                                     getClass().getClassLoader(),
-                                                                     true );
-        //System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
-        //                                                   null ) );
-        assertNotNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
-                                                      null ) );
-
-        // now check that chained properties can ignore defaults
-        chainedProperties = new ChainedProperties( "packagebuilder.conf",
-                                                   getClass().getClassLoader(),
-                                                   false );
-        //System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
-        //                                                   null ) );
-        assertNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
-                                                   null ) );
-
-        // now check it can find defaults again.
-        chainedProperties = new ChainedProperties( "packagebuilder.conf",
-                                                   getClass().getClassLoader(),
-                                                   true );
-        //System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
-        //                                                   null ) );
-        assertNotNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
-                                                      null ) );
     }
 
     @Test

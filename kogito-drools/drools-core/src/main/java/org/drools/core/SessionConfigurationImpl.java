@@ -16,6 +16,13 @@
 
 package org.drools.core;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
@@ -28,21 +35,14 @@ import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.KeepReferenceOption;
 import org.kie.api.runtime.conf.QueryListenerOption;
-import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
+import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.ChainedProperties;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * SessionConfiguration
@@ -145,8 +145,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
         this.classLoader = ProjectClassLoader.getClassLoader(classLoader == null ? null : classLoader, getClass(), false);
 
         this.immutable = false;
-        this.chainedProperties = new ChainedProperties( "session.conf",
-                                                        this.classLoader );
+        this.chainedProperties = ChainedProperties.getChainedProperties( this.classLoader );
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
