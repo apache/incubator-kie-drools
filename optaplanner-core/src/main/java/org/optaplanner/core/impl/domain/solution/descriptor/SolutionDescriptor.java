@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentMap;
 import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.optaplanner.core.api.domain.autodetect.AutoDiscoverMemberType;
+import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;

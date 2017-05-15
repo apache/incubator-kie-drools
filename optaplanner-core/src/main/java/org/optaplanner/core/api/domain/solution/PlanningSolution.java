@@ -19,7 +19,7 @@ package org.optaplanner.core.api.domain.solution;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.optaplanner.core.api.domain.autodetect.AutoDiscoverMemberType;
+import org.optaplanner.core.api.domain.autodiscover.AutoDiscoverMemberType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
