@@ -16,10 +16,6 @@
 package org.jbpm.services.task;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -27,7 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.mail.Address;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -55,6 +50,8 @@ import org.slf4j.LoggerFactory;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
+import static org.junit.Assert.*;
+
 
 /**
  * All users are defined as part of userinfo.propeties file that is utilized by PropertyUserInfoImpl
@@ -67,8 +64,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
     private Wiser wiser;
 
     public void setup() {
-        final ChainedProperties props =
-                new ChainedProperties( "email.conf", ClassLoaderUtil.getClassLoader( null, getClass(), false ));
+        final ChainedProperties props = ChainedProperties.getChainedProperties( "email.conf", ClassLoaderUtil.getClassLoader( null, getClass(), false ));
 
         wiser = new Wiser();
         wiser.setHostname(props.getProperty( "mail.smtp.host", "localhost" ));

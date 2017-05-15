@@ -34,8 +34,7 @@ public class TaskReminderTest extends TaskReminderBaseTest {
 
     @Before
     public void setup() {
-        final ChainedProperties props =
-                new ChainedProperties("email.conf", ClassLoaderUtil.getClassLoader(null, getClass(), false));
+        final ChainedProperties props = ChainedProperties.getChainedProperties( "email.conf", ClassLoaderUtil.getClassLoader( null, getClass(), false ));
 
         wiser = new Wiser();
         wiser.setHostname(props.getProperty("mail.smtp.host", "localhost"));

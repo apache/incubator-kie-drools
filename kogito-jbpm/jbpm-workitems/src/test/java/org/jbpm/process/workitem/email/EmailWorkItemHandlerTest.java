@@ -16,13 +16,8 @@
 
 package org.jbpm.process.workitem.email;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
@@ -40,6 +35,8 @@ import org.kie.internal.utils.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
+import static org.junit.Assert.*;
+
 public class EmailWorkItemHandlerTest extends AbstractBaseTest {
     private Wiser wiser;    
 
@@ -48,7 +45,7 @@ public class EmailWorkItemHandlerTest extends AbstractBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        ChainedProperties props = new ChainedProperties( "email.conf", ClassLoaderUtil.getClassLoader( null, getClass(), false ));
+        ChainedProperties props = ChainedProperties.getChainedProperties( "email.conf", ClassLoaderUtil.getClassLoader( null, getClass(), false ));
         emailHost = props.getProperty( "mail.smtp.host", "localhost" );
         emailPort = props.getProperty( "mail.smtp.port", "2345" );
 
