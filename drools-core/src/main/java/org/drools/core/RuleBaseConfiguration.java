@@ -16,14 +16,20 @@
 
 package org.drools.core;
 
-import org.drools.core.common.AgendaFactory;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.conflict.DepthConflictResolver;
 import org.drools.core.reteoo.KieComponentFactory;
-import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.drools.core.util.ConfFileUtils;
@@ -59,16 +65,6 @@ import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import static org.drools.core.util.Drools.isJmxAvailable;
 import static org.drools.core.util.MemoryUtil.hasPermGen;
 
@@ -101,7 +97,6 @@ import static org.drools.core.util.MemoryUtil.hasPermGen;
  * drools.indexLeftBetaMemory = &lt;true/false&gt;
  * drools.indexRightBetaMemory = &lt;true/false&gt;
  * drools.equalityBehavior = &lt;identity|equality&gt;
- * drools.executorService = &lt;qualified class name&gt;
  * drools.conflictResolver = &lt;qualified class name&gt;
  * drools.consequenceExceptionHandler = &lt;qualified class name&gt;
  * drools.ruleBaseUpdateHandler = &lt;qualified class name&gt;
@@ -145,7 +140,6 @@ public class RuleBaseConfiguration
     private boolean         indexLeftBetaMemory;
     private boolean         indexRightBetaMemory;
     private AssertBehaviour assertBehaviour;
-    private String          executorService;
     private String          consequenceExceptionHandler;
     private String          ruleBaseUpdateHandler;
     private boolean         classLoaderCacheEnabled;
@@ -204,7 +198,6 @@ public class RuleBaseConfiguration
         out.writeBoolean(indexRightBetaMemory);
         out.writeObject(indexPrecedenceOption);
         out.writeObject(assertBehaviour);
-        out.writeObject(executorService);
         out.writeObject(consequenceExceptionHandler);
         out.writeObject(ruleBaseUpdateHandler);
         out.writeObject(conflictResolver);
@@ -237,7 +230,6 @@ public class RuleBaseConfiguration
         indexRightBetaMemory = in.readBoolean();
         indexPrecedenceOption = (IndexPrecedenceOption) in.readObject();
         assertBehaviour = (AssertBehaviour) in.readObject();
-        executorService = (String) in.readObject();
         consequenceExceptionHandler = (String) in.readObject();
         ruleBaseUpdateHandler = (String) in.readObject();
         conflictResolver = (ConflictResolver) in.readObject();
@@ -378,8 +370,6 @@ public class RuleBaseConfiguration
             return getIndexPrecedenceOption().getValue();
         } else if ( name.equals( EqualityBehaviorOption.PROPERTY_NAME ) ) {
             return getAssertBehaviour().toExternalForm();
-        } else if ( name.equals( "drools.executorService" ) ) {
-            return getExecutorService();
         } else if ( name.equals( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) ) {
             return getConsequenceExceptionHandler();
         } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
@@ -430,9 +420,7 @@ public class RuleBaseConfiguration
 
         this.immutable = false;
 
-        this.chainedProperties = new ChainedProperties( "rulebase.conf",
-                                                        this.classLoader,
-                                                        true );
+        this.chainedProperties = ChainedProperties.getChainedProperties( this.classLoader );
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
@@ -459,8 +447,6 @@ public class RuleBaseConfiguration
         setIndexPrecedenceOption(IndexPrecedenceOption.determineIndexPrecedence(this.chainedProperties.getProperty(IndexPrecedenceOption.PROPERTY_NAME, "equality")));
 
         setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(this.chainedProperties.getProperty(EqualityBehaviorOption.PROPERTY_NAME, "identity")));
-
-        setExecutorService(this.chainedProperties.getProperty("drools.executorService", "org.drools.core.concurrent.DefaultExecutorService"));
 
         setConsequenceExceptionHandler(this.chainedProperties.getProperty(ConsequenceExceptionHandlerOption.PROPERTY_NAME, "org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler"));
 
@@ -659,15 +645,6 @@ public class RuleBaseConfiguration
     public void setIndexPrecedenceOption(final IndexPrecedenceOption precedence) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.indexPrecedenceOption = precedence;
-    }
-
-    public String getExecutorService() {
-        return executorService;
-    }
-
-    public void setExecutorService(String executorService) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.executorService = executorService;
     }
 
     public String getConsequenceExceptionHandler() {
