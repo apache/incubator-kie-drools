@@ -9169,6 +9169,7 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
+    @Ignore("This test is supposed to cause a StackOverflow inside mvel but this not always happens")
     public void testStackOverflowInMvel() {
         // DROOLS-1542
         String str1 = "import " + Person.class.getName() + ";\n" +
