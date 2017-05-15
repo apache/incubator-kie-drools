@@ -19,6 +19,7 @@ public class Msg {
     public static final Message1 INVALID_SYNTAX                                      = new Message1( DMNMessageType.INVALID_SYNTAX, "%s: invalid syntax" );
     public static final Message2 INVALID_SYNTAX2                                     = new Message2( DMNMessageType.INVALID_SYNTAX, "%s: %s" );
     public static final Message1 MISSING_EXPRESSION_FOR_BKM                          = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for Business Knowledge Model node '%s'" );
+    public static final Message1 MISSING_EXPRESSION_FOR_FUNCTION                     = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for function '%s'. Skipping evaluation and returning null" );
     public static final Message1 MISSING_EXPRESSION_FOR_DECISION                     = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for Decision Node '%s'" );
     public static final Message1 MISSING_EXPRESSION_FOR_NODE                         = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for Node '%s'" );
     public static final Message2 MISSING_EXPRESSION_FOR_INVOCATION                   = new Message2( DMNMessageType.MISSING_EXPRESSION, "Missing expression for parameter %s on node '%s'" );
@@ -78,6 +79,7 @@ public class Msg {
     public static final Message0 FAILED_NO_XML_SOURCE                                = new Message0( DMNMessageType.FAILED_VALIDATOR, "Schema validation not supported for in memory object. Please use the validate method with the file or reader signature." );
     public static final Message1 FAILED_XML_VALIDATION                               = new Message1( DMNMessageType.FAILED_XML_VALIDATION, "Failed XML validation of DMN file: %s" );
     public static final Message2 FUNC_DEF_INVALID_KIND                               = new Message2( DMNMessageType.INVALID_ATTRIBUTE_VALUE, "Invalid 'kind' value '%s' on function definition in node '%s'" );
+    public static final Message1 FUNC_DEF_PMML_NOT_SUPPORTED                         = new Message1( DMNMessageType.INVALID_ATTRIBUTE_VALUE, "PMML function definitions are not supported, node '%s'. Function evaluation will be skipped." );
     public static final Message1 FUNC_DEF_BODY_NOT_CONTEXT                           = new Message1( DMNMessageType.INVALID_SYNTAX, "A non-FEEL function definition requires a context as it's body in node '%s'" );
     public static final Message3 FUNC_DEF_COMPILATION_ERR                            = new Message3( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling Java function '%s' on node '%s': %s" );
     public static final Message2 FUNC_DEF_MISSING_ENTRY                              = new Message2( DMNMessageType.INVALID_SYNTAX, "A Java function definition requires both the 'class' and the 'method signature' attributes. Invalid definition for function '%s' on node '%s'" );

@@ -119,18 +119,30 @@ public class DMNFunctionDefinitionEvaluator
         public Object invoke(EvaluationContext ctx, Object[] params) {
             DMNContext previousContext = resultContext.getContext();
             try {
-                // we could be more strict and only set the parameters and the dependencies as values in the new
-                // context, but for now, cloning the original context
-                DMNContextImpl dmnContext = (DMNContextImpl) previousContext.clone();
-                for( int i = 0; i < params.length; i++ ) {
-                    dmnContext.set( parameters.get( i ).name, params[i] );
+                if( evaluator != null ) {
+                    // we could be more strict and only set the parameters and the dependencies as values in the new
+                    // context, but for now, cloning the original context
+                    DMNContextImpl dmnContext = (DMNContextImpl) previousContext.clone();
+                    for( int i = 0; i < params.length; i++ ) {
+                        dmnContext.set( parameters.get( i ).name, params[i] );
+                    }
+                    resultContext.setContext( dmnContext );
+                    EvaluatorResult result = evaluator.evaluate( eventManager, resultContext );
+                    if( result.getResultType() == ResultType.SUCCESS ) {
+                        return result.getResult();
+                    }
+                    return null;
+                } else {
+                    MsgUtil.reportMessage( logger,
+                                           DMNMessage.Severity.ERROR,
+                                           functionDefinition,
+                                           resultContext,
+                                           null,
+                                           null,
+                                           Msg.MISSING_EXPRESSION_FOR_FUNCTION,
+                                           getName() );
+                    return null;
                 }
-                resultContext.setContext( dmnContext );
-                EvaluatorResult result = evaluator.evaluate( eventManager, resultContext );
-                if( result.getResultType() == ResultType.SUCCESS ) {
-                    return result.getResult();
-                }
-                return null;
             } catch ( Exception e ) {
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,

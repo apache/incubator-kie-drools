@@ -1277,6 +1277,19 @@ public class DMNRuntimeTest {
         assertThat( ((BigDecimal) result.get( "D2" )).setScale( 4, BigDecimal.ROUND_HALF_UP ), is( new BigDecimal( "-1.0000" ) ) );
     }
 
+    @Test
+    public void testPMMLFunctionContext() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "pmml_function_context.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/dmn/definitions/_b42317c4-4f0c-474e-a0bf-2895b0b3c314",
+                "Dessin 1" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        assertThat( dmnModel.getMessages().size(), is( 1 ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.INVALID_ATTRIBUTE_VALUE ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getSeverity(), is( DMNMessage.Severity.WARN ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
