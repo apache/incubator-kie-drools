@@ -15,6 +15,14 @@
  */
 package org.drools.persistence.session;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Random;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.persistence.api.PersistenceContextManager;
 import org.drools.persistence.util.DroolsPersistenceUtil;
@@ -25,11 +33,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.KieBase;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.DefaultRuleRuntimeEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -39,20 +49,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Random;
-
-import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.drools.persistence.util.DroolsPersistenceUtil.*;
+import static org.junit.Assert.*;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 @RunWith(Parameterized.class)
@@ -63,7 +61,10 @@ public class ReloadSessionTest {
     private EntityManagerFactory emf;
     private boolean locking;
 
-    private static String simpleRule = "package org.kie.test\n"
+    private static final String ENTRY_POINT = "ep1";
+
+    private static String simpleRule =
+              "package org.kie.test\n"
             + "global java.util.List list\n" 
             + "rule rule1\n" 
             + "when\n"
@@ -73,6 +74,16 @@ public class ReloadSessionTest {
             + "end\n" 
             + "\n";
 
+    private static final String RULE_WITH_EP =
+              "package org.kie.test\n"
+            + "global java.util.List list\n"
+            + "rule rule1\n"
+            + "when\n"
+            + "  Integer(intValue > 0) from entry-point " + ENTRY_POINT + " \n"
+            + "then\n"
+            + "  list.add( 1 );\n"
+            + "end\n"
+            + "\n";
 
     @Parameters(name="{0}")
     public static Collection<Object[]> persistence() {
@@ -194,5 +205,41 @@ public class ReloadSessionTest {
 
         assertEquals(1, ksession.getRuleRuntimeEventListeners().size());
         assertEquals(1, ksession.getAgendaEventListeners().size());
+    }
+
+    @Test
+    public void testInsert() {
+        final Environment env = createEnvironment();
+        final KieBase kbase = initializeKnowledgeBase( RULE_WITH_EP );
+        KieSession kieSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        assertTrue("There should be NO facts present in a new (empty) knowledge session.", kieSession.getFactHandles().isEmpty());
+
+        kieSession.insert(Integer.valueOf(10));
+        kieSession = reloadSession(kieSession, env);
+
+        Collection<? extends Object> objects = kieSession.getObjects();
+        assertEquals("Reloaded working memory should contain the fact.", 1, objects.size());
+    }
+
+    @Test
+    public void testInsertIntoEntryPoint() {
+        // RHBRMS-2815
+        final Environment env = createEnvironment();
+        final KieBase kbase = initializeKnowledgeBase(RULE_WITH_EP);
+        KieSession kieSession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+        assertTrue("There should be NO facts present in a new (empty) knowledge session.", kieSession.getFactHandles().isEmpty());
+
+        kieSession.getEntryPoint(ENTRY_POINT).insert(Integer.valueOf(10));
+        kieSession = reloadSession(kieSession, env);
+
+        Collection<? extends Object> objects = kieSession.getEntryPoint(ENTRY_POINT).getObjects();
+        assertEquals("Reloaded working memory should contain the fact in the entry point.", 1, objects.size());
+    }
+
+    private KieSession reloadSession(final KieSession kieSession, final Environment environment) {
+        final long sessionId = kieSession.getIdentifier();
+        final KieBase kieBase = kieSession.getKieBase();
+        kieSession.dispose();
+        return JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId, kieBase, null, environment);
     }
 }

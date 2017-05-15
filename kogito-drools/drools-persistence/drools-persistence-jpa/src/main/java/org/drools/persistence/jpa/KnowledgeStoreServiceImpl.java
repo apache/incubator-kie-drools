@@ -15,10 +15,11 @@
  */
  package org.drools.persistence.jpa;
 
-import org.kie.api.runtime.ExecutableRunner;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Properties;
+
 import org.drools.core.SessionConfiguration;
-import org.drools.core.command.EntryPointCreator;
-import org.drools.core.command.impl.CommandBasedEntryPoint;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.persistence.PersistableRunner;
@@ -27,14 +28,10 @@ import org.kie.api.KieBase;
 import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
 
 public class KnowledgeStoreServiceImpl
     implements
@@ -70,8 +67,6 @@ public class KnowledgeStoreServiceImpl
         ExecutableRunner runner = (ExecutableRunner) buildCommandService( kbase,
                                                                           mergeConfig( configuration ),
                                                                           environment );
-        runner.createContext().set( EntryPointCreator.class.getName(),
-                                    new CommandBasedEntryPointCreator(runner) );
         return new CommandBasedStatefulKnowledgeSession( runner );
     }
 
@@ -91,8 +86,6 @@ public class KnowledgeStoreServiceImpl
                                                                           kbase,
                                                                           mergeConfig( configuration ),
                                                                           environment );
-        runner.createContext().set( EntryPointCreator.class.getName(),
-                                    new CommandBasedEntryPointCreator(runner) );
         return new CommandBasedStatefulKnowledgeSession( runner );
     }
 
@@ -112,21 +105,7 @@ public class KnowledgeStoreServiceImpl
                                                                           kbase,
                                                                           mergeConfig( configuration ),
                                                                           environment );
-        runner.createContext().set( EntryPointCreator.class.getName(),
-                                    new CommandBasedEntryPointCreator(runner) );
         return new CommandBasedStatefulKnowledgeSession( runner );
-    }
-
-    public static class CommandBasedEntryPointCreator implements EntryPointCreator {
-        private final ExecutableRunner runner;
-
-        public CommandBasedEntryPointCreator(ExecutableRunner runner ) {
-            this.runner = runner;
-        }
-
-        public EntryPoint getEntryPoint(String entryPoint) {
-            return new CommandBasedEntryPoint( runner, entryPoint );
-        }
     }
 
     private CommandExecutor buildCommandService(Long sessionId,
