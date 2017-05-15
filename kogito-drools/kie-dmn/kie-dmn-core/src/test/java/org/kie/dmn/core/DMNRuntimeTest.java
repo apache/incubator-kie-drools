@@ -1231,6 +1231,34 @@ public class DMNRuntimeTest {
     }
     
     @Test
+    public void testSingletonlist_function_call() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "singletonlist_fuction_call.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_0768879b-5ee1-410f-92f0-7732573b069d",
+                "expression function subst [a] with a" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext ctx = runtime.newContext();
+        ctx.set("InputLineItem", prototype(entry("Line", "0015"), entry("Description", "additional Battery")));
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, ctx );
+       
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get("The Battery"), is( prototype(entry("Line", "0010"), entry("Description", "Battery")) ) );
+        assertThat( (List<?>)result.get("Remove Battery"), contains( prototype(entry("Line", "0020"), entry("Description", "Case")),
+                                                                     prototype(entry("Line", "0030"), entry("Description", "Power Supply"))
+                                                                     ) );
+        assertThat( (List<?>)result.get("Remove Battery"), not( contains( prototype(entry("Line", "0010"), entry("Description", "Battery")) ) ) );
+        
+        assertThat( (List<?>)result.get("Insert before Line 0020"), contains( prototype(entry("Line", "0010"), entry("Description", "Battery")), 
+                                                                              prototype(entry("Line", "0015"), entry("Description", "additional Battery")), 
+                                                                              prototype(entry("Line", "0020"), entry("Description", "Case")),
+                                                                              prototype(entry("Line", "0030"), entry("Description", "Power Supply"))
+                                                                              ) );
+    }
+
+    @Test
     public void testJavaFunctionContext() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "java_function_context.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel(

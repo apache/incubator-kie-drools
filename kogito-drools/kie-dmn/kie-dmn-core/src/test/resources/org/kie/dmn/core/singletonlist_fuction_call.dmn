@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_0768879b-5ee1-410f-92f0-7732573b069d" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.1.12" id="_0768879b-5ee1-410f-92f0-7732573b069d" name="expression function subst [a] with a" namespace="http://www.trisotech.com/definitions/_0768879b-5ee1-410f-92f0-7732573b069d" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="tLineItem" name="tLineItem">
+    <semantic:itemComponent id="_07769e77-c4b6-4d8e-bf57-9128889cc772" name="Line">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_6c20764c-5088-4278-8e7d-9f3c82f89b5d" name="Description">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tItemsList" name="tItemsList" isCollection="true">
+    <semantic:typeRef>tLineItem</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:decision id="_095d7dda-ba25-46aa-959c-785adf0372d4" name="Hardcoded List" triso:displayName="Hardcoded List">
+    <semantic:variable id="_52f07be6-1773-49ce-a23f-9ae1379a078a" name="Hardcoded List" typeRef="tItemsList"/>
+    <semantic:relation id="_c62c1cbb-dc14-465a-a694-196cd8c6d94a">
+      <semantic:column id="_39e13c34-6f32-4eb6-8965-d1fbf5de19c8" name="Line" typeRef="feel:string"/>
+      <semantic:column id="_8d08a159-fe52-450c-884b-0775bd14d0f2" name="Description" typeRef="feel:string"/>
+      <semantic:row id="_e1b58143-4f6b-47b5-af0d-2c44e93e156c">
+        <semantic:literalExpression id="_9c36705c-367b-4f59-89d1-1bb527e59e17">
+          <semantic:text>"0010"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_c399b915-3736-4ac2-91f2-c045dd873903">
+          <semantic:text>"Battery"</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_f665a89a-c218-4f90-98f7-09d9eb4f0e8f">
+        <semantic:literalExpression id="_272384f9-b5cf-47b7-991b-21b89b918010">
+          <semantic:text>"0020"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_8c9dca05-650a-4710-bddd-e595430ab608">
+          <semantic:text>"Case"</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+      <semantic:row id="_f858209d-dfb6-4eed-a1ab-729f2ead3e21">
+        <semantic:literalExpression id="_9466e9a8-b6a7-45c1-88ea-b6fa32d0cbcc">
+          <semantic:text>"0030"</semantic:text>
+        </semantic:literalExpression>
+        <semantic:literalExpression id="_9c48966d-2d37-46b5-a0ac-2cec70346471">
+          <semantic:text>"Power Supply"</semantic:text>
+        </semantic:literalExpression>
+      </semantic:row>
+    </semantic:relation>
+  </semantic:decision>
+  <semantic:decision id="_4da8aa97-1c62-4c38-80ac-c32e338c0035" name="Remove Battery" triso:displayName="Remove Battery">
+    <semantic:variable id="_ae8a88c0-ef5a-425a-8986-223deeb3db61" name="Remove Battery" typeRef="tItemsList"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_095d7dda-ba25-46aa-959c-785adf0372d4"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_07dcb842-7603-45cb-9997-976e09157fd8">
+      <semantic:text>remove(Hardcoded List, index of(Hardcoded List.Description, "Battery"))</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_ada3a6b5-7657-4a51-af08-b2484bdefe02" name="InputLineItem" triso:displayName="InputLineItem">
+    <semantic:variable id="_958bdc18-328d-4ba3-b2a8-92c3f83139c8" name="InputLineItem" typeRef="tLineItem"/>
+  </semantic:inputData>
+  <semantic:decision id="_5d5ec8f3-b58b-46af-91f5-f96d3ca6e0ee" name="Insert before Line 0020" triso:displayName="Insert before Line 0020">
+    <semantic:variable id="_74c448af-cb42-4e51-a242-b76de08571a9" name="Insert before Line 0020" typeRef="tItemsList"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_ada3a6b5-7657-4a51-af08-b2484bdefe02"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_095d7dda-ba25-46aa-959c-785adf0372d4"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_908bc99d-640f-4496-a71d-81e294c2aac8">
+      <semantic:text>insert before(Hardcoded List,index of(Hardcoded List.Line,"0020"),InputLineItem)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_85901b30-1c42-4344-afbc-ddad63374e37" name="The Battery" triso:displayName="The Battery">
+    <semantic:variable id="_20145de8-5e31-4fcc-9c5e-0eb3efaf7ff0" name="The Battery" typeRef="tLineItem"/>
+    <semantic:informationRequirement>
+        <semantic:requiredDecision href="#_095d7dda-ba25-46aa-959c-785adf0372d4"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_336e7b89-03be-4430-a78f-c0947198cab2">
+        <semantic:text>Hardcoded List[Description = "Battery"]</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>    
+</semantic:definitions>
