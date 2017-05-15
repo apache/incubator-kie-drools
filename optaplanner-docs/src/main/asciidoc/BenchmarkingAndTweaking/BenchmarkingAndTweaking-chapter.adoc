@@ -423,8 +423,8 @@ The following ``solverRankingType``s are supported:
 * ``WORST_SCORE``: Minimize the worst case scenario.
 * ``TOTAL_RANKING``: Maximize the overall ranking. Use this if your datasets differ greatly in size or difficulty, producing a difference in `Score` magnitude.
 
-``
-Solver``s with at least one failed single benchmark do not get a ranking. ``Solver``s with not fully initialized solutions are ranked worse.
+``Solver``s with at least one failed single benchmark do not get a ranking.
+``Solver``s with not fully initialized solutions are ranked worse.
 
 To use a custom ranking, implement a ``Comparator``:
 

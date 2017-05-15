@@ -1247,8 +1247,7 @@ It's an uninitialized solution.
 ==== Solution Class
 
 A solution class holds all problem facts, planning entities and a score.
-It is annotated with a``
-        @PlanningSolution`` annotation.
+It is annotated with a `@PlanningSolution` annotation.
 For example, an `NQueens` instance holds a list of all columns, all rows and all `Queen` instances:
 
 [source,java,options="nowrap"]
