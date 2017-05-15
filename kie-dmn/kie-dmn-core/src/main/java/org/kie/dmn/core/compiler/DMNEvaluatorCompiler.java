@@ -329,6 +329,15 @@ public class DMNEvaluatorCompiler {
                                        Msg.FUNC_DEF_BODY_NOT_CONTEXT,
                                        node.getIdentifierString() );
             }
+        } else if( kind.equals( FunctionDefinition.Kind.PMML ) ) {
+            MsgUtil.reportMessage( logger,
+                                   DMNMessage.Severity.WARN,
+                                   funcDef,
+                                   model,
+                                   null,
+                                   null,
+                                   Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
+                                   node.getIdentifierString() );
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,
