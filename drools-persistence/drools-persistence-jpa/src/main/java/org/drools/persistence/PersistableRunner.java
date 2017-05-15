@@ -15,9 +15,16 @@
  */
 package org.drools.persistence;
 
+import java.lang.reflect.Constructor;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import org.drools.core.SessionConfiguration;
+import org.drools.core.command.EntryPointCreator;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.AbstractInterceptor;
+import org.drools.core.command.impl.CommandBasedEntryPoint;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
@@ -48,16 +55,13 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.RequestContext;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 public class PersistableRunner implements SingleSessionCommandService {
 
@@ -68,7 +72,6 @@ public class PersistableRunner implements SingleSessionCommandService {
 
     private KieSession                 ksession;
     private Environment                env;
-    private RequestContext             sessionContext;
     private ChainableRunner            runner;
 
     private TransactionManager         txm;
@@ -145,8 +148,6 @@ public class PersistableRunner implements SingleSessionCommandService {
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
 
         ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl(this.txm, this.sessionInfo ) );
-
-        this.sessionContext = RequestContext.create(ksession.getClass().getClassLoader()).with(this.ksession);
 
         this.runner = new TransactionInterceptor();
 
@@ -254,11 +255,6 @@ public class PersistableRunner implements SingleSessionCommandService {
         InternalKnowledgeRuntime kruntime = ((InternalKnowledgeRuntime) ksession);
         kruntime.setIdentifier( this.sessionInfo.getId() );
         kruntime.setEndOperationListener( new EndOperationListenerImpl( this.txm, this.sessionInfo ) );
-
-        if ( this.sessionContext == null ) {
-            // this should only happen when this class is first constructed
-            this.sessionContext = RequestContext.create(ksession.getClass().getClassLoader()).with( this.ksession );
-        }
 
         this.runner = new TransactionInterceptor();
         // apply interceptors
@@ -376,7 +372,21 @@ public class PersistableRunner implements SingleSessionCommandService {
     }
 
     public RequestContext createContext() {
-        return RequestContext.create(ksession.getClass().getClassLoader()).with( this.ksession );
+        RequestContext context = RequestContext.create(ksession.getClass().getClassLoader()).with( this.ksession );
+        context.set( EntryPointCreator.class.getName(), new CommandBasedEntryPointCreator(runner) );
+        return context;
+    }
+
+    public static class CommandBasedEntryPointCreator implements EntryPointCreator {
+        private final ExecutableRunner runner;
+
+        public CommandBasedEntryPointCreator(ExecutableRunner runner ) {
+            this.runner = runner;
+        }
+
+        public EntryPoint getEntryPoint( String entryPoint ) {
+            return new CommandBasedEntryPoint( runner, entryPoint );
+        }
     }
 
     public ChainableRunner getChainableRunner() {
@@ -598,6 +608,10 @@ public class PersistableRunner implements SingleSessionCommandService {
             }
 
             return context;
+        }
+
+        public RequestContext createContext() {
+            return PersistableRunner.this.createContext();
         }
     }
 
