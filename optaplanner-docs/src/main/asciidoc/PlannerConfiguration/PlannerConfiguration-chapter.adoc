@@ -1282,7 +1282,7 @@ Without <<automaticScanningForAnnotations,automated scanning>>, the solver confi
 
 
 [[planningEntitiesOfASolution]]
-==== Planning Entities of a Solution (@PlanningEntityCollectionProperty)
+==== Planning Entities of a Solution (``@PlanningEntityCollectionProperty``)
 
 Planner needs to extract the entity instances from the solution instance.
 It gets those collection(s) by calling every getter (or field) that is annotated with ``@PlanningEntityCollectionProperty``:
@@ -1308,17 +1308,19 @@ Those can even return a `Collection` with the same entity class type.
 
 [NOTE]
 ====
-A @PlanningEntityCollectionProperty annotation needs to be on a member in a class with a @PlanningSolution annotation.
+A `@PlanningEntityCollectionProperty annotation needs to be on a member in a class with a @PlanningSolution annotation.
 It is ignored on parent classes or subclasses without that annotation.
 ====
 
 In rare cases, a planning entity might be a singleton: use `@PlanningEntityProperty` on its getter (or field) instead.
 
+Both annotations can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
+
 
 [[scoreOfASolution]]
 ==== `Score` of a Solution (``@PlanningScore``)
 
-A `Solution` requires a score property, which is annotated with a `@PlanningScore` annotation.
+A `Solution` requires a score property (or field), which is annotated with a `@PlanningScore` annotation.
 The score property is `null` if the the score hasn't been calculated yet.
 The `score` property is typed to the specific `Score` implementation of your use case.
 For example, `NQueens` uses a <<simpleScore,SimpleScore>>:
@@ -1364,7 +1366,9 @@ public class CloudBalance {
 }
 ----
 
-Some use cases use <<scoreType,other `Score` types>>.
+Some use cases use <<scoreType,other score types>>.
+
+This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
 
 
 [[getProblemFacts]]
@@ -1416,6 +1420,8 @@ It is ignored on parent classes or subclasses without that annotation.
 
 In rare cases, a problem fact might be a singleton: use `@ProblemFactProperty` on its method (or field) instead.
 
+Both annotations can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
+
 
 [[cachedProblemFact]]
 ===== Cached Problem Fact
@@ -1450,6 +1456,51 @@ For example in examination, a cached problem fact `TopicConflict` is created for
 ----
 
 Where a score constraint needs to check that no two exams with a topic that shares a student are scheduled close together (depending on the constraint: at the same time, in a row, or in the same day), the `TopicConflict` instance can be used as a problem fact, rather than having to combine every two `Student` instances.
+
+
+[[autoDiscoverSolutionProperties]]
+==== Auto Discover Solution Properties
+
+Instead of configuring each property (or field) annotation explicitly,
+some can also be deducted automatically by Planner.
+For example, on the cloud balancing example:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution(autoDiscoverMemberType = AutoDiscoverMemberType.FIELD)
+public class CloudBalance {
+
+    // Auto discovered as @ProblemFactCollectionProperty
+    @ValueRangeProvider(id = "computerRange") // Not (yet) auto discovered
+    private List<CloudComputer> computerList;
+
+    // Auto discovered as @PlanningEntityCollectionProperty
+    private List<CloudProcess> processList;
+
+    // Auto discovered as @PlanningScore
+    private HardSoftScore score;
+
+    ...
+}
+----
+
+The `AutoDiscoverMemberType` can be:
+
+* `NONE`: No auto discovery.
+* `FIELD`: Auto discover all fields on the `@PlanningSolution` class
+* `GETTER`: Auto discover all getters on the `@PlanningSolution` class
+
+The automatic annotation is based on the field type (or getter return type):
+
+* `@ProblemFactProperty`: when it isn't a `Collection`, a `@PlanningEntity` class or a `Score`
+* `@ProblemFactCollectionProperty`: when it's a `Collection` of a type that isn't a `@PlanningEntity` class
+* `@PlanningEntityProperty`: when it is a configured `@PlanningEntity` class or subclass
+* `@PlanningEntityCollectionProperty`: when it's a `Collection` of a type that is a configured `@PlanningEntity` class or subclass
+* `@PlanningScore`: when it is a `Score` or subclass
+
+These automatic annotation can still be overwritten per field (or getter).
+Specifically, a <<bendableScore, BendableScore>> always needs to override
+with an explicit `@PlanningScore` annotation to define the number of hard and soft levels.
 
 
 [[cloningASolution]]
