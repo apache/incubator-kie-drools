@@ -193,9 +193,15 @@ Planner can find scan the classpath and find them automatically:
 </solver>
 ----
 
-This comes at a bootstrap performance cost.
+[NOTE]
+====
+On environments such as OSGi and Android, which use a non-standard `ClassLoader`,
+automated scanning might not find the `@PlanningSolution` or `@PlanningEntity` classes.
+====
 
-If there are multiple models in your classpath or to speed up scanning, specify the packages to scan:
+Automated scanning inflicts a performance cost during bootstrap.
+To speed up scanning or if there are multiple models in your classpath,
+specify the packages to scan:
 
 [source,xml,options="nowrap"]
 ----
