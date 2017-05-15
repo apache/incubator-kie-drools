@@ -140,7 +140,9 @@ public abstract class BaseDMNTypeImpl
             }
             return true;
         } 
-        // .. normal case, or collection of 1 element:
+        // .. normal case, or collection of 1 element: singleton list
+        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
+        // and vice-versa
         return internalIsInstanceOf(o);
     }
     
@@ -161,7 +163,9 @@ public abstract class BaseDMNTypeImpl
             }
             return true;
         } 
-        // .. normal case, or collection of 1 element:
+        // .. normal case, or collection of 1 element: singleton list
+        // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
+        // and vice-versa
         return internalIsAssignableValue( value );
     }
     
