@@ -38,11 +38,7 @@ import org.slf4j.LoggerFactory;
  * Priority
  * <ul>
  *  <li>System properties</li>
- *  <li>home directory</li>
- *  <li>working directory</li>
- *  <li>META-INF/ of optionally provided classLoader</li>
- *  <li>META-INF/ of Thread.currentThread().getContextClassLoader()</li>
- *  <li>META-INF/ of  ClassLoader.getSystemClassLoader()</li>
+ *  <li>META-INF/ of provided classLoader</li>
  * </ul>
  * <br/>
  * To improve performance in frequent session creation cases, chained properties can be cached by it's conf file name
@@ -56,112 +52,59 @@ public class ChainedProperties
     Externalizable {
 
     protected static transient Logger logger = LoggerFactory.getLogger(ChainedProperties.class);
-    private static final int MAX_CACHE_ENTRIES = Integer.parseInt(System.getProperty("org.kie.property.cache.size", "100"));
-    private static final boolean CACHE_ENABLED = Boolean.parseBoolean(System.getProperty("org.kie.property.cache.enabled", "false"));
+    private static final int MAX_CACHE_ENTRIES = 100;
 
-    protected static Map<CacheKey, List<Properties>> propertiesCache =
+    protected static Map<CacheKey, ChainedProperties> propertiesCache =
             Collections.synchronizedMap(
-                    new LinkedHashMap<CacheKey, List<Properties>>() {
+                    new LinkedHashMap<CacheKey, ChainedProperties>() {
         private static final long serialVersionUID = -4728876927433598466L;
 
         protected boolean removeEldestEntry(
-                Map.Entry<CacheKey, List<Properties>> eldest) {
+                Map.Entry<CacheKey, ChainedProperties> eldest) {
             return size() > MAX_CACHE_ENTRIES;
         }
     });
 
-    private List<Properties> props;
-    private List<Properties> defaultProps;
+    private List<Properties> props = new ArrayList<Properties>();
+    private List<Properties> defaultProps = new ArrayList<Properties>();
+
+    public static ChainedProperties getChainedProperties( ClassLoader classLoader ) {
+        return getChainedProperties( "properties.conf", classLoader );
+    }
+
+    public static ChainedProperties getChainedProperties( String confFileName, ClassLoader classLoader ) {
+        CacheKey key = new CacheKey( confFileName, classLoader );
+        ChainedProperties chainedProperties = propertiesCache.get(key);
+        if (chainedProperties == null) {
+            chainedProperties = new ChainedProperties( confFileName, classLoader );
+            propertiesCache.put(key, chainedProperties);
+        }
+        ChainedProperties props = chainedProperties.clone();
+        props.addProperties( System.getProperties() );
+        return props;
+    }
+
+    protected ChainedProperties clone() {
+        ChainedProperties clone = new ChainedProperties();
+        clone.props.addAll( this.props );
+        clone.defaultProps.addAll( this.defaultProps );
+        return clone;
+    }
 
     public ChainedProperties() {
     }
 
-    public ChainedProperties(String confFileName, ClassLoader classLoader) {
-        this(confFileName, classLoader, true);
-    }
-
-    public ChainedProperties(String confFileName, ClassLoader classLoader,
-            boolean populateDefaults) {
-
-        this.props = new ArrayList<Properties>();
-        this.defaultProps = new ArrayList<Properties>();
-
-        // Properties added in precedence order
-
-        // System defined properties always get precedence
-        addProperties( System.getProperties() );
-
-        // System property defined properties file
-        loadProperties( System.getProperty( "drools." + confFileName ),
-                        this.props );
-
-        // User home properties file
-        loadProperties( System.getProperty( "user.home" ) + "/drools."
-                + confFileName, this.props );
-
-        // Working directory properties file
-        loadProperties( "drools." + confFileName, this.props );
-
-        // check META-INF directories for all known ClassLoaders
-
-        // DROOLS-1443 load properties from supplied classLoader
-        loadProperties( "META-INF/drools." + confFileName, classLoader,
-                this.props );
-
-        // DROOLS-1443 load properties from supplied classLoader
-        loadProperties( "/META-INF/drools." + confFileName, classLoader,
-                this.props );
-
-        ClassLoader contextClassLoader = Thread.currentThread()
-                .getContextClassLoader();
-        if ( contextClassLoader != null && contextClassLoader != classLoader ) {
-            // DROOLS-1443 load properties from context classLoader
-            loadProperties(confFileName, contextClassLoader, this.props);
-        }
-
-        ClassLoader systemClassLoader = null;
-        try {
-            systemClassLoader = ClassLoader.getSystemClassLoader();
-        } catch (SecurityException se) {
-            // DROOLS-1125: the system class loader cannot be retrieved in
-            // Google App Engine - ignore
-        }
-        if ( systemClassLoader != null && systemClassLoader != classLoader ) {
-            // DROOLS-1443 load properties from system classLoader
-            loadProperties(confFileName, systemClassLoader, this.props);
-        }
-
-        if ( !populateDefaults ) {
-            return;
-        }
-
-        // load defaults
-        // DROOLS-1443 load default properties from supplied classLoader
-        loadProperties( "META-INF/drools.default." + confFileName, classLoader,
-                this.defaultProps);
-        // DROOLS-1443 load default properties from supplied classLoader
-        loadProperties( "/META-INF/drools.default." + confFileName, classLoader,
-                this.defaultProps);
-
-        if ( contextClassLoader != null && contextClassLoader != classLoader ) {
-            // DROOLS-1443 load default properties from context classLoader
-            loadProperties(confFileName, contextClassLoader, this.defaultProps);
-        }
-        if ( systemClassLoader != null && systemClassLoader != classLoader ) {
-            // DROOLS-1443 load default properties from system classLoader
-            loadProperties(confFileName, systemClassLoader, this.defaultProps);
-        }
+    private ChainedProperties(String confFileName, ClassLoader classLoader) {
+        loadProperties( "META-INF/kie." + confFileName, classLoader, this.props );
+        loadProperties( "META-INF/kie.default." + confFileName, classLoader, this.defaultProps);
 
         // this happens only in OSGi: for some reason doing
         // ClassLoader.getResources() doesn't work but doing
         // Class.getResourse() does
         if (this.defaultProps.isEmpty()) {
             try {
-                Class<?> c = Class.forName(
-                        "org.drools.compiler.lang.MVELDumper", false,
-                        classLoader);
-                URL confURL = c.getResource("/META-INF/drools.default."
-                        + confFileName);
+                Class<?> c = Class.forName( "org.drools.core.WorkingMemory", false, classLoader);
+                URL confURL = c.getResource("/META-INF/kie.default." + confFileName);
                 loadProperties(confURL, this.defaultProps);
             } catch (ClassNotFoundException e) { }
         }
@@ -260,23 +203,9 @@ public class ChainedProperties
     private void loadProperties(String fileName,
                                 ClassLoader classLoader,
                                 List<Properties> chain) {
-        if (!CACHE_ENABLED) {
-            try {
-                chain.addAll(read(fileName,classLoader));
-            } catch (IOException e){}
-            return;
-        }
-        CacheKey ck = new CacheKey(fileName, classLoader);
-        List<Properties> cached = propertiesCache.get(ck);
-        if (cached == null) {
-            try {
-                cached = read(fileName, classLoader);
-                propertiesCache.put(ck, cached);
-            } catch (IOException e) {}
-        }
-        if (cached != null) {
-            chain.addAll(cached);
-        }
+        try {
+            chain.addAll(read(fileName,classLoader));
+        } catch (IOException e){}
     }
 
     private List<Properties> read(String fileName, ClassLoader classLoader)
