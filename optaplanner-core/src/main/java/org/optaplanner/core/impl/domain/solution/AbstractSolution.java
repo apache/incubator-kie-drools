@@ -33,12 +33,13 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
 /**
- * Currently only used by OptaPlanner Workbench.
- * TODO Should we promote using this class in the examples and docs too?
- * We can never enforce it, as the user might want to use a different superclass.
+ * Only used by OptaPlanner Workbench 6 (but not 7).
+ * This class will be removed in 8.0.
  * @param <S> the {@link Score} type used by this use case
+ * @deprecated Use {@link PlanningSolution#autoDiscoverMemberType()} instead.
  */
 @PlanningSolution
+@Deprecated
 public abstract class AbstractSolution<S extends Score> implements Serializable {
 
     protected S score;

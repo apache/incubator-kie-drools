@@ -26,10 +26,21 @@ import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
  * Determines if and how to automatically presume
  * {@link ProblemFactCollectionProperty}, {@link ProblemFactProperty},
  * {@link PlanningEntityCollectionProperty} and {@link PlanningEntityProperty} annotations
- * on a {@link PlanningSolution}.
+ * on {@link PlanningSolution} members based from the member type.
  */
 public enum AutoDiscoverMemberType {
+    /**
+     * Do not reflect.
+     */
     NONE,
+    /**
+     * Reflect over the fields and automatically behave as the appropriate annotation is there
+     * based on the field type.
+     */
     FIELD,
+    /**
+     * Reflect over the getter methods and automatically behave as the appropriate annotation is there
+     * based on the return type.
+     */
     GETTER;
 }

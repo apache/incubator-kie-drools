@@ -55,6 +55,10 @@ import static java.lang.annotation.RetentionPolicy.*;
 public @interface PlanningSolution {
 
     /**
+     * Enable reflection through the members of the class
+     * to automatically assume {@link PlanningScore}, {@link PlanningEntityCollectionProperty},
+     * {@link PlanningEntityProperty}, {@link ProblemFactCollectionProperty} and {@link ProblemFactProperty} annotations
+     * based on the member type.
      * @return never null
      */
     AutoDiscoverMemberType autoDiscoverMemberType() default AutoDiscoverMemberType.NONE;
