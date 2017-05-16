@@ -16,10 +16,9 @@
 
 package org.drools.compiler.oopath;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.oopath.model.BabyBoy;
 import org.drools.compiler.oopath.model.BabyGirl;
@@ -35,6 +34,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
+import static org.junit.Assert.assertTrue;
+
 public class OOPathCastTest {
 
     @Test
@@ -44,7 +45,7 @@ public class OOPathCastTest {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toy: /wife/children{ #BabyGirl }/toys )\n" +
+                        "  Man( $toy: /wife/children#BabyGirl/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
@@ -82,7 +83,7 @@ public class OOPathCastTest {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toy: /wife/children{ #Man }/toys )\n" +
+                        "  Man( $toy: /wife/children#Man/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
@@ -100,7 +101,7 @@ public class OOPathCastTest {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( name == \"Bob\", $name: /wife/children{ #BabyGirl, favoriteDollName.startsWith(\"A\") }.name )\n" +
+                        "  Man( name == \"Bob\", $name: /wife/children#BabyGirl[ favoriteDollName.startsWith(\"A\") ].name )\n" +
                         "then\n" +
                         "  list.add( $name );\n" +
                         "end\n";

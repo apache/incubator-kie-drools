@@ -16,6 +16,9 @@
 
 package org.drools.testcoverage.functional.oopath;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Employee;
@@ -26,9 +29,6 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Tests usage of OOPath expressions resulting in multiple conditional branches (e.g. OR operator).
@@ -57,7 +57,7 @@ public class OOPathLogicalBranchesTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Employee( $address: /address{ street == 'Elm' || city == 'Big City' } )\n" +
+                "  Employee( $address: /address[ street == 'Elm' || city == 'Big City' ] )\n" +
                 "then\n" +
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
@@ -77,8 +77,8 @@ public class OOPathLogicalBranchesTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  $emp: Employee( $address: /address{ street == 'Elm' || city == 'Big City' } )\n" +
-                "        Employee( this != $emp, /address{ street == 'Elm' || city == 'Big City' } )\n" +
+                "  $emp: Employee( $address: /address[ street == 'Elm' || city == 'Big City' ] )\n" +
+                "        Employee( this != $emp, /address[ street == 'Elm' || city == 'Big City' ] )\n" +
                 "then\n" +
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
@@ -98,8 +98,8 @@ public class OOPathLogicalBranchesTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  $emp: Employee( $address: /address{ street == 'Elm' || city == 'Big City' } )\n" +
-                "        Employee( this != $emp, /address{ street == $address.street || city == 'Big City' } )\n" +
+                "  $emp: Employee( $address: /address[ street == 'Elm' || city == 'Big City' ] )\n" +
+                "        Employee( this != $emp, /address[ street == $address.street || city == 'Big City' ] )\n" +
                 "then\n" +
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
@@ -119,8 +119,8 @@ public class OOPathLogicalBranchesTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  $emp: Employee( /address{ street == 'Elm' || city == 'Big City' } )\n" +
-                "        Employee( this != $emp, /address{ street == 'Elm' || city == 'Big City' } )\n" +
+                "  $emp: Employee( /address[ street == 'Elm' || city == 'Big City' ] )\n" +
+                "        Employee( this != $emp, /address[ street == 'Elm' || city == 'Big City' ] )\n" +
                 "then\n" +
                 "  list.add( $emp.getName() );\n" +
                 "end\n";
@@ -140,9 +140,9 @@ public class OOPathLogicalBranchesTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Employee( $address: /address{ street == 'Elm', city == 'Big City' } )\n" +
+                "  Employee( $address: /address[ street == 'Elm', city == 'Big City' ] )\n" +
                 " or " +
-                "  Employee( $address: /address{ street == 'Elm', city == 'Small City' } )\n" +
+                "  Employee( $address: /address[ street == 'Elm', city == 'Small City' ] )\n" +
                 "then\n" +
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
@@ -163,9 +163,9 @@ public class OOPathLogicalBranchesTest {
                 "\n" +
                 "rule R when\n" +
                 " $employee: (\n" +
-                "  Employee( /address{ street == 'Elm', city == 'Big City' } )\n" +
+                "  Employee( /address[ street == 'Elm', city == 'Big City' ] )\n" +
                 " or " +
-                "  Employee( /address{ street == 'Elm', city == 'Small City' } )\n" +
+                "  Employee( /address[ street == 'Elm', city == 'Small City' ] )\n" +
                 " )\n" +
                 "then\n" +
                 "  list.add( $employee.getName() );\n" +
@@ -186,7 +186,7 @@ public class OOPathLogicalBranchesTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Employee( $address: /address{ street == 'Elm' && city == 'Big City' } )\n" +
+                "  Employee( $address: /address[ street == 'Elm' && city == 'Big City' ] )\n" +
                 "then\n" +
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
@@ -206,8 +206,8 @@ public class OOPathLogicalBranchesTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  $emp: Employee( $address: /address{ street == 'Elm' && city == 'Big City' } )\n" +
-                "        Employee( this != $emp, /address{ street == 'Elm' && city == 'Small City' } )\n" +
+                "  $emp: Employee( $address: /address[ street == 'Elm' && city == 'Big City' ] )\n" +
+                "        Employee( this != $emp, /address[ street == 'Elm' && city == 'Small City' ] )\n" +
                 "then\n" +
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
@@ -227,8 +227,8 @@ public class OOPathLogicalBranchesTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  $emp: Employee( /address{ street == 'Elm' && city == 'Big City' } )\n" +
-                "        Employee( this != $emp, /address{ street == 'Elm' && city == 'Small City' } )\n" +
+                "  $emp: Employee( /address[ street == 'Elm' && city == 'Big City' ] )\n" +
+                "        Employee( this != $emp, /address[ street == 'Elm' && city == 'Small City' ] )\n" +
                 "then\n" +
                 "  list.add( $emp.getName() );\n" +
                 "end\n";
@@ -248,9 +248,9 @@ public class OOPathLogicalBranchesTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Employee( $address: /address{ street == 'Elm', city == 'Big City' } )\n" +
+                "  Employee( $address: /address[ street == 'Elm', city == 'Big City' ] )\n" +
                 " and " +
-                "  Employee( /address{ street == 'Elm', city == 'Small City' } )\n" +
+                "  Employee( /address[ street == 'Elm', city == 'Small City' ] )\n" +
                 "then\n" +
                 "  list.add( $address.getCity() );\n" +
                 "end\n";
@@ -270,9 +270,9 @@ public class OOPathLogicalBranchesTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  $employee: Employee( /address{ street == 'Elm', city == 'Big City' } )\n" +
+                "  $employee: Employee( /address[ street == 'Elm', city == 'Big City' ] )\n" +
                 " and " +
-                "  not Employee( /address{ street == 'Elm', city == 'Small City' } )\n" +
+                "  not Employee( /address[ street == 'Elm', city == 'Small City' ] )\n" +
                 "then\n" +
                 "  list.add( $employee.getName() );\n" +
                 "end\n";

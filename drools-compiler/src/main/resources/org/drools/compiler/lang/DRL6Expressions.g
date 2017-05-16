@@ -566,12 +566,12 @@ xpathPrimary returns [BaseDescr result]
     ;
 
 xpathChunk returns [BaseDescr result]
-    : (xpathSeparator ID)=> xpathSeparator ID (DOT ID)* (LEFT_SQUARE DECIMAL RIGHT_SQUARE)? (LEFT_CURLY xpathExpressionList RIGHT_CURLY)?
+    : (xpathSeparator ID)=> xpathSeparator ID (DOT ID)* (HASH ID)? (LEFT_SQUARE xpathExpressionList RIGHT_SQUARE)?
     ;
 
 xpathExpressionList returns [java.util.List<String> exprs]
 @init { $exprs = new java.util.ArrayList<String>();}
-  :   ((HASH ID)=> HASH ID | f=expression { $exprs.add( $f.text ); })
+  :   f=expression { $exprs.add( $f.text ); }
       (COMMA s=expression { $exprs.add( $s.text ); })*
   ;
 

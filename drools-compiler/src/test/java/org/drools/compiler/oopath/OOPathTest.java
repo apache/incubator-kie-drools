@@ -15,15 +15,13 @@
 
 package org.drools.compiler.oopath;
 
-import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.oopath.model.Adult;
 import org.drools.compiler.oopath.model.Child;
@@ -51,6 +49,10 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+
+import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class OOPathTest {
 
@@ -98,7 +100,7 @@ public class OOPathTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Man( $toy: /wife/children[0]{age > 10}/toys[1] )\n" +
+                "  Man( $toy: /wife/children[0]/toys[1] )\n" +
                 "then\n" +
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
@@ -200,7 +202,7 @@ public class OOPathTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Man( $toy: /wife/children/toys{ name.length == ../name.length } )\n" +
+                "  Man( $toy: /wife/children/toys[ name.length == ../name.length ] )\n" +
                 "then\n" +
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
@@ -269,7 +271,7 @@ public class OOPathTest {
                 "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
-                "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                "  Group( $id: name, $p: /members[age >= 20] )\n" +
                 "then\n" +
                 "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
@@ -319,7 +321,7 @@ public class OOPathTest {
                 "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
-                "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                "  Group( $id: name, $p: /members[age >= 20] )\n" +
                 "then\n" +
                 "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
@@ -362,7 +364,7 @@ public class OOPathTest {
                 "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
-                "  Group( $id: name, $p: /members{age >= 30} )\n" +
+                "  Group( $id: name, $p: /members[age >= 30] )\n" +
                 "then\n" +
                 "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
@@ -415,7 +417,7 @@ public class OOPathTest {
                 "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
-                "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
+                "  TMDirectory( $id: name, $p: /files[size >= 100] )\n" +
                 "then\n" +
                 "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
@@ -497,7 +499,7 @@ public class OOPathTest {
                 "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
-                "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
+                "  TMDirectory( $id: name, $p: /files[size >= 100] )\n" +
                 "then\n" +
                 "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
@@ -565,7 +567,7 @@ public class OOPathTest {
                 "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
-                "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
+                "  TMDirectory( $id: name, $p: /files[size >= 100] )\n" +
                 "then\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
@@ -671,7 +673,7 @@ public class OOPathTest {
                 "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
-                "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
+                "  TMDirectory( $id: name, $p: /files[size >= 100] )\n" +
                 "then\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
@@ -773,7 +775,7 @@ public class OOPathTest {
                 "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
-                "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
+                "  TMDirectory( $id: name, $p: /files[size >= 100] )\n" +
                 "then\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
                 "end\n";
@@ -843,7 +845,7 @@ public class OOPathTest {
                 "import org.drools.compiler.oopath.model.*;\n" +
                 "\n" +
                 "rule R2 when\n" +
-                "  TMFileSet( $id: name, $p: /files{size >= 100} )\n" +
+                "  TMFileSet( $id: name, $p: /files[size >= 100] )\n" +
                 "then\n" +
                 "  System.out.println( $id + \".\" + $p.getName() );\n" +
                 "  insertLogical(      $id + \".\" + $p.getName() );\n" +
@@ -917,7 +919,7 @@ public class OOPathTest {
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
                 "  $dir1 : TMFileSet( $ic1 : /files )\n" +
-                "  TMFileSet( this == $dir1, $ic2 : /files{name == $ic1.name}, $ic2 != $ic1 )\n" +
+                "  TMFileSet( this == $dir1, $ic2 : /files[name == $ic1.name], $ic2 != $ic1 )\n" +
                 "then\n" +
                 "  System.out.println( $dir1 + \".: \" + $ic1 + \" \" + $ic2 );\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +
@@ -952,7 +954,7 @@ public class OOPathTest {
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
                 "  $dir1 : TMFileSet( $ic1 : /files )\n" +
-                "  TMFileSet( this == $dir1, $ic2 : /files{this != $ic1}, $ic2.name == $ic1.name )\n" +
+                "  TMFileSet( this == $dir1, $ic2 : /files[this != $ic1], $ic2.name == $ic1.name )\n" +
                 "then\n" +
                 "  System.out.println( $dir1 + \".: \" + $ic1 + \" \" + $ic2 );\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +
@@ -987,7 +989,7 @@ public class OOPathTest {
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
                 "  $dir1 : TMFileSet( $ic1 : /files )\n" +
-                "  TMFileSet( this == $dir1, $ic2 : /files{name == $ic1.name, this != $ic1} )\n" +
+                "  TMFileSet( this == $dir1, $ic2 : /files[name == $ic1.name, this != $ic1] )\n" +
                 "then\n" +
                 "  System.out.println( $dir1 + \".: \" + $ic1 + \" \" + $ic2 );\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +
@@ -1021,7 +1023,7 @@ public class OOPathTest {
                 "global java.util.Set duplicateNames; \n" +
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
-                "  $dir1 : TMFileSet( $ic1 : /files, /files{name == $ic1.name, this != $ic1} )\n" +
+                "  $dir1 : TMFileSet( $ic1 : /files, /files[name == $ic1.name, this != $ic1] )\n" +
                 "then\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +
                 "end\n";
@@ -1038,7 +1040,7 @@ public class OOPathTest {
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
                 "  $ic1 : TMFileWithParentObj( $curName : name,\n" +
-                "                              $ic2: /parent{#TMFileSet}/files{name == $curName, this != $ic1 } )\n" +
+                "                              $ic2: /parent#TMFileSet/files[name == $curName, this != $ic1 ] )\n" +
                 "then\n" +
                 "  System.out.println( $ic1 + \" \" + $ic2 );\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +
@@ -1091,7 +1093,7 @@ public class OOPathTest {
                 "\n" +
                 "rule DIFF_FILES_BUT_WITH_SAME_FILENAME when\n" +
                 "  $ic1 : TMFileWithParentObj( $curName : name, $curId : id, \n" +
-                "                               $ic2: /parent{#TMFileSetQuater}/files{name == $curName, id != $curId } )\n" +
+                "                               $ic2: /parent#TMFileSetQuater/files[name == $curName, id != $curId ] )\n" +
                 "then\n" +
                 "  System.out.println( $ic1 + \" \" + $ic2 );\n" +
                 "  duplicateNames.add( $ic1.getName() );\n" +

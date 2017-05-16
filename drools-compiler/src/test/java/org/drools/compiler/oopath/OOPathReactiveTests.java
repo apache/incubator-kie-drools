@@ -16,14 +16,21 @@
 
 package org.drools.compiler.oopath;
 
-import static org.drools.compiler.oopath.model.BodyMeasurement.*;
-import static org.junit.Assert.*;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.SerializationHelper;
-import org.drools.compiler.oopath.model.*;
+import org.drools.compiler.oopath.model.Adult;
+import org.drools.compiler.oopath.model.Child;
+import org.drools.compiler.oopath.model.Company;
+import org.drools.compiler.oopath.model.Disease;
+import org.drools.compiler.oopath.model.Employee;
+import org.drools.compiler.oopath.model.Group;
+import org.drools.compiler.oopath.model.Man;
+import org.drools.compiler.oopath.model.School;
+import org.drools.compiler.oopath.model.Toy;
+import org.drools.compiler.oopath.model.Woman;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.BetaMemory;
@@ -44,9 +51,10 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-/**
- * Created by tzimanyi on 24.2.17.
- */
+import static org.drools.compiler.oopath.model.BodyMeasurement.CHEST;
+import static org.drools.compiler.oopath.model.BodyMeasurement.RIGHT_FOREARM;
+import static org.junit.Assert.*;
+
 public class OOPathReactiveTests {
 
     @Test
@@ -56,7 +64,7 @@ public class OOPathReactiveTests {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toy: /wife/children{age > 10}/toys )\n" +
+                        "  Man( $toy: /wife/children[age > 10]/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
@@ -100,7 +108,7 @@ public class OOPathReactiveTests {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toy: /wife/children{age > 10}/toys )\n" +
+                        "  Man( $toy: /wife/children[age > 10]/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
@@ -165,7 +173,7 @@ public class OOPathReactiveTests {
                 "import org.drools.compiler.oopath.model.*;\n" +
                         "\n" +
                         "rule R2 when\n" +
-                        "  School( $child: /children{age >= 13 && age < 20} )\n" +
+                        "  School( $child: /children[age >= 13 && age < 20] )\n" +
                         "then\n" +
                         "  System.out.println( $child );\n" +
                         "  insertLogical( $child );\n" +
@@ -212,7 +220,7 @@ public class OOPathReactiveTests {
                 "import org.drools.compiler.oopath.model.*;\n" +
                         "\n" +
                         "rule R2 when\n" +
-                        "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                        "  Group( $id: name, $p: /members[age >= 20] )\n" +
                         "then\n" +
                         "  System.out.println( $id + \".\" + $p.getName() );\n" +
                         "  insertLogical(      $id + \".\" + $p.getName() );\n" +
@@ -332,7 +340,7 @@ public class OOPathReactiveTests {
                 "import org.drools.compiler.oopath.model.*;\n" +
                         "\n" +
                         "rule R2 when\n" +
-                        "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                        "  Group( $id: name, $p: /members[age >= 20] )\n" +
                         "then\n" +
                         "  System.out.println( $id + \".\" + $p.getName() );\n" +
                         "  insertLogical(      $id + \".\" + $p.getName() );\n" +
@@ -390,7 +398,7 @@ public class OOPathReactiveTests {
                         "\n" +
                         "rule R when\n" +
                         "  $i : Integer()\n" +
-                        "  Man( $toy: /wife/children{age > $i}?/toys )\n" +
+                        "  Man( $toy: /wife/children[age > $i]?/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
@@ -437,12 +445,12 @@ public class OOPathReactiveTests {
                         "\n" +
                         "rule R1 when\n" +
                         "  $i : Integer()\n" +
-                        "  Man( $toy: /wife/children{age >= $i}/toys )\n" +
+                        "  Man( $toy: /wife/children[age >= $i]/toys )\n" +
                         "then\n" +
                         "  toyList.add( $toy.getName() );\n" +
                         "end\n" +
                         "rule R2 when\n" +
-                        "  School( $child: /children{age >= 13} )\n" +
+                        "  School( $child: /children[age >= 13] )\n" +
                         "then\n" +
                         "  teenagers.add( $child.getName() );\n" +
                         "end\n";
@@ -496,7 +504,7 @@ public class OOPathReactiveTests {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toy: /wife/children{age > 10}/toys )\n" +
+                        "  Man( $toy: /wife/children[age > 10]/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
@@ -578,7 +586,7 @@ public class OOPathReactiveTests {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $disease: /wife/children{age > 10}/diseases )\n" +
+                        "  Man( $disease: /wife/children[age > 10]/diseases )\n" +
                         "then\n" +
                         "  list.add( $disease.getName() );\n" +
                         "end\n";
@@ -654,7 +662,7 @@ public class OOPathReactiveTests {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toy: /wife/children{age > 10}?/toys )\n" +
+                        "  Man( $toy: /wife/children[age > 10]?/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
@@ -698,7 +706,7 @@ public class OOPathReactiveTests {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toy: ?/wife/children{age > 10}/toys )\n" +
+                        "  Man( $toy: ?/wife/children[age > 10]/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
@@ -742,7 +750,7 @@ public class OOPathReactiveTests {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toy: /wife?/children{age > 10}?/toys )\n" +
+                        "  Man( $toy: /wife?/children[age > 10]?/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
@@ -761,7 +769,7 @@ public class OOPathReactiveTests {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toy: /wife/children{age > 10}/toys )\n" +
+                        "  Man( $toy: /wife/children[age > 10]/toys )\n" +
                         "then\n" +
                         "  list.add( $toy );\n" +
                         "end\n";
@@ -803,11 +811,11 @@ public class OOPathReactiveTests {
                 "import org.drools.compiler.oopath.model.*;\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $child: /wife/children{age >= 10} )\n" +
+                        "  Man( $child: /wife/children[age >= 10] )\n" +
                         "then\n" +
                         "end\n" +
                         "rule R2 when\n" +
-                        "  Man( $child: /wife/children{age < 10} )\n" +
+                        "  Man( $child: /wife/children[age < 10] )\n" +
                         "then\n" +
                         "$child.setAge(12);" +
                         "end\n";
