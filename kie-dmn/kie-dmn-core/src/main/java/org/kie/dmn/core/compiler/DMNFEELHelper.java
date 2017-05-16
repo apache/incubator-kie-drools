@@ -55,9 +55,11 @@ public class DMNFEELHelper
         EvaluationContextImpl ctx = new EvaluationContextImpl( null );
         try {
             ctx.enterFrame();
-            // need to set the values for in context variables...
-            for ( Map.Entry<String,Object> entry : dmnContext.getAll().entrySet() ) {
-                ctx.setValue( entry.getKey(), entry.getValue() );
+            if ( dmnContext != null ) {
+                // need to set the values for in context variables...
+                for ( Map.Entry<String,Object> entry : dmnContext.getAll().entrySet() ) {
+                    ctx.setValue( entry.getKey(), entry.getValue() );
+                }
             }
     
             for ( UnaryTest t : unaryTests ) {

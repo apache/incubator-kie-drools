@@ -119,6 +119,6 @@
     <semantic:variable id="_15ed0551-f2f8-462d-83be-0a5bbaab13d1" name="Decision Logic 1"/>
   </semantic:businessKnowledgeModel>
   <semantic:inputData id="_bd0c3ecc-845b-45d2-b87f-dfcb3bc68a30" name="Number">
-    <semantic:variable id="_6c3a2c35-42a6-4a1f-a524-962585f099c1" name="Number" typeRef="feel:string"/>
+    <semantic:variable id="_6c3a2c35-42a6-4a1f-a524-962585f099c1" name="Number" typeRef="feel:number"/>
   </semantic:inputData>
 </semantic:definitions>

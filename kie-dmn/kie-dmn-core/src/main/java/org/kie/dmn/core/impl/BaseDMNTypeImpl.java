@@ -21,11 +21,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public abstract class BaseDMNTypeImpl
         implements DMNType {
@@ -134,7 +137,7 @@ public abstract class BaseDMNTypeImpl
         if ( isCollection() && o instanceof Collection ) {
             Collection<Object> elements = (Collection) o;
             for ( Object e : elements ) {
-                if ( !internalIsInstanceOf(e) ) {
+                if ( !internalIsInstanceOf(e) || !valueMatchesInUnaryTests(e) ) {
                     return false;
                 }
             }
@@ -143,9 +146,17 @@ public abstract class BaseDMNTypeImpl
         // .. normal case, or collection of 1 element: singleton list
         // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
         // and vice-versa
-        return internalIsInstanceOf(o);
+        return internalIsInstanceOf(o) && valueMatchesInUnaryTests(o);
     }
     
+    private boolean valueMatchesInUnaryTests(Object o) {
+        if ( allowedValues == null || allowedValues.isEmpty() ) {
+            return true;
+        } else {
+            return DMNFEELHelper.valueMatchesInUnaryTests(allowedValues, EvalHelper.coerceNumber(o), null);
+        }
+    }
+
     protected abstract boolean internalIsInstanceOf(Object o);
     
     @Override
@@ -157,7 +168,7 @@ public abstract class BaseDMNTypeImpl
         if ( isCollection() && value instanceof Collection ) {
             Collection<Object> elements = (Collection) value;
             for ( Object e : elements ) {
-                if ( !internalIsAssignableValue(e) ) {
+                if ( !internalIsAssignableValue(e) || !valueMatchesInUnaryTests(e) ) {
                     return false;
                 }
             }
@@ -166,7 +177,7 @@ public abstract class BaseDMNTypeImpl
         // .. normal case, or collection of 1 element: singleton list
         // spec defines that "a=[a]", i.e., singleton collections should be treated as the single element
         // and vice-versa
-        return internalIsAssignableValue( value );
+        return internalIsAssignableValue( value ) && valueMatchesInUnaryTests(value);
     }
     
     protected abstract boolean internalIsAssignableValue(Object o);
