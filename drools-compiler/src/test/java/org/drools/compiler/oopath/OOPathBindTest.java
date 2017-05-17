@@ -116,7 +116,7 @@ public class OOPathBindTest {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Adult( $name: /name {this == \"Bob\"} )\n" +
+                        "  Adult( $name: /name[this == \"Bob\"] )\n" +
                         "then\n" +
                         "  list.add( $name );\n" +
                         "end\n";
@@ -131,7 +131,7 @@ public class OOPathBindTest {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Adult( $name: /name {this.length == 3, this != \"George\"} )\n" +
+                        "  Adult( $name: /name[this.length == 3, this != \"George\"] )\n" +
                         "then\n" +
                         "  list.add( $name );\n" +
                         "end\n";
@@ -147,7 +147,7 @@ public class OOPathBindTest {
                         "\n" +
                         "rule R when\n" +
                         "  $alice: Adult(name == \"Alice\") \n" +
-                        "  Adult( $name: /name {this.length == 3, this != $alice.name} )\n" +
+                        "  Adult( $name: /name[this.length == 3, this != $alice.name] )\n" +
                         "then\n" +
                         "  list.add( $name );\n" +
                         "end\n";
@@ -247,7 +247,7 @@ public class OOPathBindTest {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toys: /wife/children{age > 10}.toys )\n" +
+                        "  Man( $toys: /wife/children[age > 10].toys )\n" +
                         "then\n" +
                         "  list.add( $toys.size() );\n" +
                         "end\n";

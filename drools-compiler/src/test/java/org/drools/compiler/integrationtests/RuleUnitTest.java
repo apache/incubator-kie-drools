@@ -540,7 +540,7 @@ public class RuleUnitTest {
                 "package org.kie.test;\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule Adult when\n" +
-                "    $p : /persons{age >= 18}\n" +
+                "    $p : /persons[age >= 18]\n" +
                 "then\n" +
                 "    System.out.println($p.getName() + \" is adult\");\n" +
                 "end";
@@ -595,7 +595,7 @@ public class RuleUnitTest {
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + AdultUnit.class.getCanonicalName() + "\n" +
                 "rule Adult @Unit( AdultUnit.class ) when\n" +
-                "    $p : /persons{age >= 18}\n" +
+                "    $p : /persons[age >= 18]\n" +
                 "then\n" +
                 "    System.out.println($p.getName() + \" is adult\");\n" +
                 "end";
@@ -618,7 +618,7 @@ public class RuleUnitTest {
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + AdultUnit.class.getCanonicalName() + "\n" +
                 "rule Adult @Unit( AdultUnit.class ) when\n" +
-                "    $p : /persons{age >= adultAge}\n" +
+                "    $p : /persons[age >= adultAge]\n" +
                 "then\n" +
                 "    System.out.println($p.getName() + \" is adult and greater than \" + adultAge);\n" +
                 "end";
@@ -688,7 +688,7 @@ public class RuleUnitTest {
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + NamedVarsUnit.class.getCanonicalName() + "\n" +
                 "rule Adult @Unit( NamedVarsUnit.class ) when\n" +
-                "    $p : /persons{age >= adultAge}\n" +
+                "    $p : /persons[age >= adultAge]\n" +
                 "then\n" +
                 "    System.out.println($p.getName() + \" is adult and greater than \" + adultAge);\n" +
                 "end";
@@ -729,7 +729,7 @@ public class RuleUnitTest {
                 "import " + TicketIssuerUnit.class.getCanonicalName() + "\n" +
                 "\n" +
                 "rule BoxOfficeIsOpen when\n" +
-                "    $box: /boxOffices{ open }\n" +
+                "    $box: /boxOffices[ open ]\n" +
                 "then\n" +
                 "    drools.guard( TicketIssuerUnit.class );" +
                 "end";
@@ -740,7 +740,7 @@ public class RuleUnitTest {
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + AdultTicket.class.getCanonicalName() + "\n" +
                 "rule IssueAdultTicket when\n" +
-                "    $p: /persons{ age >= 18 }\n" +
+                "    $p: /persons[ age >= 18 ]\n" +
                 "then\n" +
                 "    tickets.insert(new AdultTicket($p));\n" +
                 "end\n" +
@@ -870,7 +870,7 @@ public class RuleUnitTest {
                 "unit " + getCanonicalSimpleName( Unit0.class ) + "\n" +
                 "import " + UnitA.class.getCanonicalName() + "\n" +
                 "rule X when\n" +
-                "    $b: /ds{ #Boolean }\n" +
+                "    $b: /ds#Boolean\n" +
                 "then\n" +
                 "    Boolean b = $b;\n" +
                 "    drools.guard( UnitA.class );\n" +
@@ -881,7 +881,7 @@ public class RuleUnitTest {
                 "unit " + getCanonicalSimpleName( UnitA.class ) + "\n" +
                 "import " + UnitB.class.getCanonicalName() + "\n" +
                 "rule A when\n" +
-                "    $s: /ds{ #String }\n" +
+                "    $s: /ds#String\n" +
                 "then\n" +
                 "    drools.guard( UnitB.class );" +
                 "end";
@@ -891,7 +891,7 @@ public class RuleUnitTest {
                 "unit " + getCanonicalSimpleName( UnitB.class ) + "\n" +
                 "import " + UnitB.class.getCanonicalName() + "\n" +
                 "rule B when\n" +
-                "    $i: /ds{ #Integer }\n" +
+                "    $i: /ds#Integer\n" +
                 "then\n" +
                 "    list.add($i);" +
                 "end";
@@ -973,12 +973,12 @@ public class RuleUnitTest {
                 "import " + AgeCheckUnit.class.getCanonicalName() + "\n" +
                 "\n" +
                 "rule R1 when\n" +
-                "    $i: /ds{ #Integer }\n" +
+                "    $i: /ds#Integer\n" +
                 "then\n" +
                 "    drools.guard( new AgeCheckUnit($i) );" +
                 "end\n" +
                 "rule RegisterAdultTicket when\n" +
-                "    $s: /ds{ #String }\n" +
+                "    $s: /ds#String\n" +
                 "then\n" +
                 "    drools.guard( new AgeCheckUnit($s.length()) );" +
                 "end";
@@ -988,7 +988,7 @@ public class RuleUnitTest {
                 "unit " + getCanonicalSimpleName( AgeCheckUnit.class ) + ";\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule CheckAge when\n" +
-                "    $p : /persons{ age > minAge }\n" +
+                "    $p : /persons[ age > minAge ]\n" +
                 "then\n" +
                 "    list.add($p.getName() + \">\" + minAge);\n" +
                 "end";
@@ -1061,7 +1061,7 @@ public class RuleUnitTest {
                 "unit " + getCanonicalSimpleName( AdultUnit.class ) + "\n" +
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "rule Adult when\n" +
-                "    $p: /persons{ age < 18 }\n" +
+                "    $p: /persons[ age < 18 ]\n" +
                 "then\n" +
                 "    System.out.println($p.getName() + \" is NOT adult\");\n" +
                 "    modify($p) { setHappy(true); }\n" +
@@ -1100,7 +1100,7 @@ public class RuleUnitTest {
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + LongAddress.class.getCanonicalName() + "\n" +
                 "rule Adult when\n" +
-                "    $a: /persons{ age > 18 }/addresses{ #LongAddress, country == \"it\" }\n" +
+                "    $a: /persons[ age > 18 ]/addresses#LongAddress[ country == \"it\" ]\n" +
                 "then\n" +
                 "    System.out.println($a.getCountry());\n" +
                 "end";
@@ -1127,7 +1127,7 @@ public class RuleUnitTest {
                 "import " + Person.class.getCanonicalName() + "\n" +
                 "import " + LongAddress.class.getCanonicalName() + "\n" +
                 "rule Adult when\n" +
-                "    $p: /persons{ age > 18, $a: /addresses{ #LongAddress, country == \"it\" } }\n" +
+                "    $p: /persons[ age > 18, $a: /addresses#LongAddress[ country == \"it\" ] ]\n" +
                 "then\n" +
                 "    System.out.println($p.getName() + \" is in \" + $a.getCountry());\n" +
                 "end";
