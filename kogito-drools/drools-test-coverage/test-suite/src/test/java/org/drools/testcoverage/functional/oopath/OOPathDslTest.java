@@ -36,7 +36,7 @@ public class OOPathDslTest {
     public void dslWithOOPathAndSpecialChars() {
         final String dsl
                 = "[when]Person comes from \"{state}\"=person : "
-                + "Person( /address\\{ #InternationalAddress, state == \"{state}\" \\} )\n";
+                + "Person( /address#InternationalAddress[ state == \"{state}\" ] )\n";
         final String drl
                 = "package P\n"
                 + "\n"

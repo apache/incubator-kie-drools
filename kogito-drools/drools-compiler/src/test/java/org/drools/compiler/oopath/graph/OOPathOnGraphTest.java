@@ -16,15 +16,14 @@
 
 package org.drools.compiler.oopath.graph;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.phreak.AbstractReactiveObject;
-import org.drools.core.reteoo.ReteDumper;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +40,7 @@ public class OOPathOnGraphTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Vertex( it instanceof Library, $a : /outVs/outVs/it{ #Person, age > 40 } )\n" +
+                "  Vertex( it instanceof Library, $a : /outVs/outVs/it#Person[ age > 40 ] )\n" +
                 "then\n" +
                 "  list.add( $a.getName() );\n" +
                 "end\n";
@@ -80,7 +79,7 @@ public class OOPathOnGraphTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Vertex( it instanceof Library, $a : /outVs/outVs/it{ #Person, age > 25 } )\n" +
+                "  Vertex( it instanceof Library, $a : /outVs/outVs/it#Person[ age > 25 ] )\n" +
                 "then\n" +
                 "  list.add( $a.getName() );\n" +
                 "end\n";
@@ -119,7 +118,7 @@ public class OOPathOnGraphTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Vertex( it instanceof Library, $v : /outVs/outVs{ /it{ #Person, age > 25 } } )\n" +
+                "  Vertex( it instanceof Library, $v : /outVs/outVs[ /it#Person[ age > 25 ] ] )\n" +
                 "then\n" +
                 "  list.add( ((Person)$v.getIt()).getName() );\n" +
                 "end\n";
@@ -127,8 +126,6 @@ public class OOPathOnGraphTest {
         KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
-
-        ReteDumper.dumpRete( ksession );
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
@@ -160,7 +157,7 @@ public class OOPathOnGraphTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Vertex( it instanceof Library, $v : /outVs/outVs{ it#Person.age > 25 } )\n" +
+                "  Vertex( it instanceof Library, $v : /outVs/outVs[ it#Person.age > 25 ] )\n" +
                 "then\n" +
                 "  list.add( ((Person)$v.getIt()).getName() );\n" +
                 "end\n";

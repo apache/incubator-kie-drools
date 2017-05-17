@@ -60,7 +60,7 @@ public class OOPathBenchmarkTest {
             "global java.util.List list\n" +
             "\n" +
             "rule R when\n" +
-            "  Man( $toy: /wife/children{age > 10}/toys )\n" +
+            "  Man( $toy: /wife/children[age > 10]/toys )\n" +
             "then\n" +
             "  list.add( $toy.getName() );\n" +
             "end\n";

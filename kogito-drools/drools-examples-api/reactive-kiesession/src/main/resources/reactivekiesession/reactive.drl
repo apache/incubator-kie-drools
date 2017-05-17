@@ -68,7 +68,7 @@ rule Init when then
 end
 
 rule R when
-    Man( $toy: /wife/children{age > 10}/toys )
+    Man( $toy: /wife/children[age > 10]/toys )
 then
     list.add( $toy.getName() );
 end

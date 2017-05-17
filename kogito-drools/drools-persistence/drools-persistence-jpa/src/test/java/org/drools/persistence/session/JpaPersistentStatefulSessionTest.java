@@ -109,7 +109,7 @@ public class JpaPersistentStatefulSessionTest {
                 "global java.util.List list\n" +
                 "rule rule1\n" +
                 "when\n" +
-                (withOOPath ? " AtomicInteger($i: /intValue{this > 0})\n" : " $i: AtomicInteger(intValue > 0)\n") +
+                (withOOPath ? " AtomicInteger($i: /intValue[this > 0])\n" : " $i: AtomicInteger(intValue > 0)\n") +
                 "then\n" +
                 " list.add( $i );\n" +
                 "end\n" +
@@ -192,7 +192,7 @@ public class JpaPersistentStatefulSessionTest {
                 "global java.util.List list\n" +
                 "rule rule1\n" +
                 "when\n" +
-                (withOOPath ? " $i: Integer( /intValue{this > 0})\n" : " $i : Integer(intValue > 0)\n") +
+                (withOOPath ? " $i: Integer( /intValue[this > 0])\n" : " $i : Integer(intValue > 0)\n") +
                 "then\n" +
                 " list.add( $i );\n" +
                 "end\n";
@@ -348,7 +348,7 @@ public class JpaPersistentStatefulSessionTest {
                 "rule rule1\n" +
                 "agenda-group \"badfocus\"" +
                 "when\n" +
-                (withOOPath ? "  Integer(/intValue{this > 0})\n" : "  Integer(intValue > 0)\n") +
+                (withOOPath ? "  Integer(/intValue[this > 0])\n" : "  Integer(intValue > 0)\n") +
                 "then\n" +
                 "  list.add( 1 );\n" +
                 "end\n" +
@@ -498,7 +498,7 @@ public class JpaPersistentStatefulSessionTest {
                 "rule rule1\n" +
                 "when\n" +
                 (withOOPath ?
-                        " $p: Person($list : addresses, /addresses{street == \"y\"})\n" :
+                        " $p: Person($list : addresses, /addresses[street == \"y\"])\n" :
                         " $p: Person($list : addresses)\n" + " $a: Address(street == \"y\") from $list\n"
                 ) +
                 "then\n" +
@@ -530,7 +530,7 @@ public class JpaPersistentStatefulSessionTest {
                 "global java.util.List list\n" +
                 "rule rule1\n" +
                 "when\n" +
-                (withOOPath ? "  Integer(/intValue{this > 0})\n" : "  Integer(intValue > 0)\n") +
+                (withOOPath ? "  Integer(/intValue[this > 0])\n" : "  Integer(intValue > 0)\n") +
                 "then\n" +
                 "  list.add( 1 );\n" +
                 "end\n" +

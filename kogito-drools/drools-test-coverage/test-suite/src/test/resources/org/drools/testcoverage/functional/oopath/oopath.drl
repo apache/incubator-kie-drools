@@ -21,7 +21,7 @@ import org.drools.testcoverage.common.model.Person
 
 rule "Basic expression"
 when
-    person: Person( /address{ street == "Some Street" } )
+    person: Person( /address[ street == "Some Street" ] )
 then
     //consequences
 end

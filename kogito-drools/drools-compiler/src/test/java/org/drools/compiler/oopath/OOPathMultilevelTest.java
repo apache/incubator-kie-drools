@@ -110,7 +110,7 @@ public class OOPathMultilevelTest {
                         "global java.util.List list\n" +
                         "\n" +
                         "rule R when\n" +
-                        "  Man( $toy: /wife/children{age > 10, name.length > 5}/toys )\n" +
+                        "  Man( $toy: /wife/children[age > 10, name.length > 5]/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";
@@ -126,7 +126,7 @@ public class OOPathMultilevelTest {
                         "\n" +
                         "rule R when\n" +
                         "  $i : Integer()\n" +
-                        "  Man( $toy: /wife/children{age > 10, name.length > $i}/toys )\n" +
+                        "  Man( $toy: /wife/children[age > 10, name.length > $i]/toys )\n" +
                         "then\n" +
                         "  list.add( $toy.getName() );\n" +
                         "end\n";

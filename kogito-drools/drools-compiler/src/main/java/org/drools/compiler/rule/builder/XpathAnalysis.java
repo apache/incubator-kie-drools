@@ -104,21 +104,19 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder( field );
+            if (inlineCast != null) {
+                sb.append( "#" ).append( inlineCast );
+            }
             if (index >= 0) {
                 sb.append( "[" ).append( index ).append( "]" );
             }
             if (!constraints.isEmpty()) {
-                sb.append( "{ " );
-                if (inlineCast != null) {
-                    sb.append( "#" ).append( inlineCast ).append( ", " );
-                }
+                sb.append( "[ " );
                 sb.append( constraints.get(0) );
                 for (int i = 1; i < constraints.size(); i++) {
                     sb.append( ", " ).append( constraints.get( i ) );
                 }
-                sb.append( " }" );
-            } else if (inlineCast != null) {
-                sb.append( "{ #" ).append( inlineCast ).append( " }" );
+                sb.append( " ]" );
             }
             return sb.toString();
         }
@@ -143,11 +141,11 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
         int index = -1;
         int lastStart = i;
         int nestedParam = 0;
-        int nestedCurly = 0;
         int nestedSquare = 0;
 
         boolean iterate = true;
         boolean isQuoted = false;
+        boolean isInlineCast = false;
 
         String field = null;
         String error = null;
@@ -157,9 +155,12 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
             switch (xpath.charAt(i)) {
                 case '/':
                 case '.':
-                    if (!isQuoted && nestedParam == 0 && nestedCurly == 0 && nestedSquare == 0) {
+                    if (!isQuoted && nestedParam == 0 && nestedSquare == 0) {
                         if (field == null) {
                             field = xpath.substring(lastStart, xpath.charAt(i-1) == '?' ? i-1 : i).trim();
+                        } else if (isInlineCast) {
+                            inlineCast = xpath.substring(lastStart, xpath.charAt(i-1) == '?' ? i-1 : i).trim();
+                            isInlineCast = false;
                         }
                         parts.add(new XpathPart(field, iterate, lazyPath, constraints, inlineCast, index, partStart));
                         partStart = i;
@@ -193,11 +194,23 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
                         }
                     }
                     break;
+                case '#':
+                    if (!isQuoted && nestedParam == 0 && nestedSquare == 0) {
+                        if (field == null) {
+                            field = xpath.substring( lastStart, i ).trim();
+                        }
+                        lastStart = i+1;
+                        isInlineCast = true;
+                    }
+                    break;
                 case '[':
-                    if (!isQuoted && nestedParam == 0 && nestedCurly == 0) {
+                    if (!isQuoted && nestedParam == 0) {
                         if (nestedSquare == 0) {
                             if (field == null) {
                                 field = xpath.substring( lastStart, i ).trim();
+                            } else if (isInlineCast) {
+                                inlineCast = xpath.substring( lastStart, i ).trim();
+                                isInlineCast = false;
                             }
                             lastStart = i+1;
                         }
@@ -205,53 +218,28 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
                     }
                     break;
                 case ']':
-                    if (!isQuoted && nestedParam == 0 && nestedCurly == 0) {
+                    if (!isQuoted && nestedParam == 0) {
                         nestedSquare--;
                         if (nestedSquare == 0) {
-                            try {
-                                index = Integer.parseInt( xpath.substring( lastStart, i ).trim() );
-                            } catch (Exception e) {
-                                error = "Expected int but found: " + xpath.substring( lastStart, i ).trim();
+                            String constraint = xpath.substring( lastStart, i ).trim();
+                            if ( Character.isDigit(constraint.charAt( 0 )) ) {
+                                try {
+                                    index = Integer.parseInt( constraint );
+                                } catch (Exception e) {
+                                    constraints.add( constraint );
+                                }
+                            } else {
+                                constraints.add( constraint );
                             }
                         } else if (nestedSquare < 0) {
                             error = "Unbalanced square brackets";
                         }
                     }
                     break;
-                case '{':
-                    if (!isQuoted && nestedParam == 0 && nestedSquare == 0) {
-                        if (nestedCurly == 0) {
-                            if (field == null) {
-                                field = xpath.substring( lastStart, i ).trim();
-                            }
-                            lastStart = i+1;
-                        }
-                        nestedCurly++;
-                    }
-                    break;
-                case '}':
-                    if (!isQuoted && nestedParam == 0 && nestedSquare == 0) {
-                        nestedCurly--;
-                        if (nestedCurly == 0) {
-                            String constraint = xpath.substring(lastStart, i).trim();
-                            if (constraint.startsWith("#")) {
-                                inlineCast = constraint.substring(1);
-                            } else {
-                                constraints.add(constraint);
-                            }
-                        } else if (nestedCurly < 0) {
-                            error = "Unbalanced curly braces";
-                        }
-                    }
-                    break;
                 case ',':
-                    if (!isQuoted && nestedParam == 0 && nestedCurly == 1) {
+                    if (!isQuoted && nestedParam == 0 && nestedSquare == 1) {
                         String constraint = xpath.substring(lastStart, i).trim();
-                        if (constraint.startsWith("#")) {
-                            inlineCast = constraint.substring(1);
-                        } else {
-                            constraints.add(constraint);
-                        }
+                        constraints.add(constraint);
                         lastStart = i+1;
                     }
                     break;
@@ -264,6 +252,9 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
 
         if (field == null) {
             field = xpath.substring(lastStart).trim();
+        } else if (isInlineCast) {
+            inlineCast = xpath.substring(lastStart).trim();
+            isInlineCast = false;
         }
         parts.add(new XpathPart(field, iterate, lazyPath, constraints, inlineCast, index, partStart));
 

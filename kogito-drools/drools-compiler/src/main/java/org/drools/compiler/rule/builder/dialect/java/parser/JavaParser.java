@@ -1,4 +1,4 @@
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/semantics/java/parser/Java.g 2017-02-02 16:51:44
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/semantics/java/parser/Java.g 2017-05-16 10:26:32
 
     package org.drools.compiler.rule.builder.dialect.java.parser;
     import java.util.Iterator;
