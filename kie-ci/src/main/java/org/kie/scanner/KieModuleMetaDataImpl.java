@@ -15,15 +15,6 @@
 
 package org.kie.scanner;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.kproject.xml.DependencyFilter;
-import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.rule.KieModuleMetaInfo;
-import org.drools.core.rule.TypeMetaInfo;
-import org.eclipse.aether.artifact.Artifact;
-import org.kie.api.builder.ReleaseId;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -40,9 +31,18 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.DependencyFilter;
+import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.rule.KieModuleMetaInfo;
+import org.drools.core.rule.TypeMetaInfo;
+import org.eclipse.aether.artifact.Artifact;
+import org.kie.api.builder.ReleaseId;
+
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
 import static org.drools.core.util.IoUtils.UTF8_CHARSET;
+import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
 import static org.kie.scanner.ArtifactResolver.getResolverFor;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {
@@ -147,6 +147,10 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     private void init() {
+        if (artifactResolver == null) {
+            return;
+        }
+
         if (releaseId != null) {
             addArtifact(artifactResolver.resolveArtifact(releaseId));
         }

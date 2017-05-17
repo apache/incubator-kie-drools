@@ -15,6 +15,12 @@
 
 package org.kie.scanner;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.core.rule.TypeMetaInfo;
@@ -27,12 +33,6 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.type.Role;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
 
 import static java.util.Arrays.asList;
 import static junit.framework.TestCase.assertFalse;
@@ -55,6 +55,14 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( releaseId, new DependencyFilter.ExcludeScopeFilter("test") );
         checkDroolsCoreDep( kieModuleMetaData );
         assertFalse( ( "" + kieModuleMetaData.getPackages() ).contains( "junit" ) );
+    }
+
+    @Test
+    public void testKieModuleMetaDataForNonExistingGAV() throws Exception {
+        // DROOLS-1562
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( "org.drools", "drools-core", "5.7.0.Final" );
+        KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( releaseId );
+        assertEquals( 0, kieModuleMetaData.getPackages().size() );
     }
 
     @Test
