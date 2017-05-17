@@ -97,7 +97,7 @@
             <dependency>
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctorj-pdf</artifactId>
-              <version>1.5.0-alpha.14</version>
+              <version>1.5.0-alpha.15</version>
             </dependency>
           </dependencies>
         </plugin>
