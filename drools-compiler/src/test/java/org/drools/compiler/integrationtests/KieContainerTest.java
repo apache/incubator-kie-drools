@@ -15,6 +15,13 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.Constructor;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.compiler.io.Folder;
@@ -24,7 +31,9 @@ import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
+import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
@@ -32,15 +41,9 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.drools.compiler.integrationtests.incrementalcompilation.IncrementalCompilationTest.createAndDeployJar;
-import static org.drools.core.util.DroolsAssert.*;
+import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
+import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
 import static org.junit.Assert.*;
 
 public class KieContainerTest {
@@ -55,6 +58,20 @@ public class KieContainerTest {
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         KieModule kmodule = ((InternalKieContainer) kieContainer).getMainKieModule();
         assertEquals( releaseId, kmodule.getReleaseId() );
+    }
+
+    @Test
+    public void testUpdateToNonExistingRelease() {
+        // DROOLS-1562
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "test-release", "1.0.0");
+        createAndDeployJar( ks, releaseId, createDRL("ruleA") );
+
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+
+        Results results = kieContainer.updateToVersion( ks.newReleaseId( "org.kie", "test-release", "1.0.1" ) );
+        assertEquals( 1, results.getMessages( Level.ERROR ).size() );
+        assertEquals( "1.0.0", ( (InternalKieContainer) kieContainer ).getContainerReleaseId().getVersion() );
     }
     
     @Test
