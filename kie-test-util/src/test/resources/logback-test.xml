@@ -2,13 +2,9 @@
 <configuration>
 
   <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
-    <layout class="org.kie.test.util.logging.FilteredPatternLayout">
+    <encoder>
       <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %class{36}.%method:%line - %msg%n</pattern>
-      <param name="ConversionPattern" value="%-5p  %c %F(%M:%L) %d{dd.MM.yyyy HH:mm:ss}  %m%n"/>
-      <param name="Filter" value="sun.reflect"/>
-      <param name="Filter" value="org.junit"/>
-      <param name="Filter" value="org.eclipse.jdt.internal"/>
-    </layout>
+    </encoder>
   </appender>
 
   <logger name="org.kie" level="info"/>
