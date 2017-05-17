@@ -19,6 +19,8 @@ package org.jbpm.runtime.manager.impl.error.filters;
 import java.sql.SQLException;
 import java.util.Date;
 
+import javax.transaction.RollbackException;
+
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.task.model.Task;
@@ -45,7 +47,7 @@ public class DBExecutionErrorFilter extends AbstractExecutionErrorFilter {
 
     @Override
     public boolean accept(ExecutionErrorContext errorContext) {
-        if (isCausedBy(errorContext.getCause(), SQLException.class, hibernateException)) {
+        if (isCausedBy(errorContext.getCause(), SQLException.class, RollbackException.class, hibernateException)) {
             return true;
         }
         return false;
