@@ -74,7 +74,7 @@ public class OOPathCepTest {
                 "  @role( event )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  MessageEvent( $message: /msg{ message == 'Hello' } )\n" +
+                "  MessageEvent( $message: /msg[ message == 'Hello' ] )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -96,7 +96,7 @@ public class OOPathCepTest {
                 "  @role( event )\n" +
                 "end\n" +
                 "rule R when\n" +
-                String.format("  MessageEvent( $message: /msg{ message == 'Hello' } ) from entry-point \"%s\"\n", ENTRY_POINT_NAME) +
+                String.format("  MessageEvent( $message: /msg[ message == 'Hello' ] ) from entry-point \"%s\"\n", ENTRY_POINT_NAME) +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -130,8 +130,8 @@ public class OOPathCepTest {
                 "  @role( event )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this after ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this after ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -163,8 +163,8 @@ public class OOPathCepTest {
                 "  @role( event )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this before ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this before ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -196,8 +196,8 @@ public class OOPathCepTest {
                 "  @role( event )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this coincides[1s] ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this coincides[1s] ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -230,8 +230,8 @@ public class OOPathCepTest {
                 "  @duration( duration )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this during ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this during ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -264,8 +264,8 @@ public class OOPathCepTest {
                 "  @duration( duration )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this finishes ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this finishes ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -298,8 +298,8 @@ public class OOPathCepTest {
                 "  @duration( duration )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this finishedby ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this finishedby ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -332,8 +332,8 @@ public class OOPathCepTest {
                 "  @duration( duration )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this includes ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this includes ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -365,8 +365,8 @@ public class OOPathCepTest {
                 "  @role( event )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this meets[ 1s ] ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this meets[ 1s ] ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -398,8 +398,8 @@ public class OOPathCepTest {
                 "  @role( event )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this metby[ 1s ] ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this metby[ 1s ] ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -432,8 +432,8 @@ public class OOPathCepTest {
                 "  @duration( duration )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this overlaps[ 1s ] ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this overlaps[ 1s ] ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -467,8 +467,8 @@ public class OOPathCepTest {
                 "  @duration( duration )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this overlappedby[ 1s ] ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this overlappedby[ 1s ] ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -501,8 +501,8 @@ public class OOPathCepTest {
                 "  @duration( duration )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this starts[ 1s ] ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this starts[ 1s ] ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -535,8 +535,8 @@ public class OOPathCepTest {
                 "  @duration( duration )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  ev1: MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  ev2: MessageEvent( $message: /msg{ message == 'Pong' }, this startedby[ 1s ] ev1 )\n" +
+                "  ev1: MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  ev2: MessageEvent( $message: /msg[ message == 'Pong' ], this startedby[ 1s ] ev1 )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";
@@ -568,7 +568,7 @@ public class OOPathCepTest {
                 "  @role( event )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  $messageEvent: MessageEvent( /msg{ message == 'Ping' } ) over window:length( 2 )\n" +
+                "  $messageEvent: MessageEvent( /msg[ message == 'Ping' ] ) over window:length( 2 )\n" +
                 "then\n" +
                 "  events.add( $messageEvent );\n" +
                 "end\n";
@@ -593,7 +593,7 @@ public class OOPathCepTest {
                 "  MessageEvent() over window:length( 2 )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  $messageEvent: MessageEvent( /msg{ message == 'Ping' } ) from window Pings\n" +
+                "  $messageEvent: MessageEvent( /msg[ message == 'Ping' ] ) from window Pings\n" +
                 "then\n" +
                 "  events.add( $messageEvent );\n" +
                 "end\n";
@@ -615,7 +615,7 @@ public class OOPathCepTest {
                 "end\n" +
                 "\n" +
                 "declare window Pings\n" +
-                "  MessageEvent( /msg{ message == 'Ping' } ) over window:length( 2 )\n" +
+                "  MessageEvent( /msg[ message == 'Ping' ] ) over window:length( 2 )\n" +
                 "end\n" +
                 "rule R when\n" +
                 "  $messageEvent: MessageEvent() from window Pings\n" +
@@ -664,7 +664,7 @@ public class OOPathCepTest {
                 "  @role( event )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  $messageEvent: MessageEvent( /msg{ message == 'Ping' } ) over window:time( 3s )\n" +
+                "  $messageEvent: MessageEvent( /msg[ message == 'Ping' ] ) over window:time( 3s )\n" +
                 "then\n" +
                 "  events.add( $messageEvent );\n" +
                 "end\n";
@@ -689,7 +689,7 @@ public class OOPathCepTest {
                 "  MessageEvent() over window:time( 3s )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  $messageEvent: MessageEvent( /msg{ message == 'Ping' } ) from window Pings\n" +
+                "  $messageEvent: MessageEvent( /msg[ message == 'Ping' ] ) from window Pings\n" +
                 "then\n" +
                 "  events.add( $messageEvent );\n" +
                 "end\n";
@@ -744,8 +744,8 @@ public class OOPathCepTest {
                 "  @expires( 2s )\n" +
                 "end\n" +
                 "rule R when\n" +
-                "  MessageEvent( /msg{ message == 'Ping' } )\n" +
-                "  MessageEvent( $message: /msg{ message == 'Pong' } )\n" +
+                "  MessageEvent( /msg[ message == 'Ping' ] )\n" +
+                "  MessageEvent( $message: /msg[ message == 'Pong' ] )\n" +
                 "then\n" +
                 "  messages.add( $message );\n" +
                 "end\n";

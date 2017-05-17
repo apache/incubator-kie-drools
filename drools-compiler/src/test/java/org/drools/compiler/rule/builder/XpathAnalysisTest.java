@@ -148,7 +148,7 @@ public class XpathAnalysisTest {
 
     @Test
     public void testRelativePathInCondition() {
-        final String xpath = "/address.street{../city == \"The City\"}/name/";
+        final String xpath = "/address.street[../city == \"The City\"]/name/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
         assertEquals("The XPath should be valid.", false, result.hasError());
@@ -165,7 +165,7 @@ public class XpathAnalysisTest {
 
     @Test
     public void testUnicode() {
-        final String xpath = "/address.ulička{name == 'ěščřžýáíé'}/";
+        final String xpath = "/address.ulička[name == 'ěščřžýáíé']/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
         assertEquals("The XPath should be valid.", false, result.hasError());
@@ -208,7 +208,7 @@ public class XpathAnalysisTest {
 
     @Test
     public void testCondition() {
-        final String xpath = "/address/street{name == \"Elm\"}";
+        final String xpath = "/address/street[name == \"Elm\"]";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
         assertEquals("The XPath should be valid.", false, result.hasError());
@@ -223,7 +223,7 @@ public class XpathAnalysisTest {
 
     @Test
     public void testThreeConditions() {
-        final String xpath = "/address/street{name == \"Elm\", length <= 10, code == \"Something, \\\"and\\\" other thing\"}";
+        final String xpath = "/address/street[name == \"Elm\", length <= 10, code == \"Something, \\\"and\\\" other thing\"]";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
         assertEquals("The XPath should be valid.", false, result.hasError());
@@ -241,7 +241,7 @@ public class XpathAnalysisTest {
 
     @Test
     public void testConditionIterate() {
-        final String xpath = "/address/street{name == \"Elm\"}/";
+        final String xpath = "/address/street[name == \"Elm\"]/";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
         assertEquals("The XPath should be valid.", false, result.hasError());
@@ -256,24 +256,8 @@ public class XpathAnalysisTest {
     }
 
     @Test
-    public void testConditionIndexAndDereference() {
-        final String xpath = "/address/street[1]{name == \"Elm\"}.city";
-        final XpathAnalysis result = XpathAnalysis.analyze(xpath);
-
-        assertEquals("The XPath should be valid.", false, result.hasError());
-        assertNull(result.getError());
-
-        final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
-        verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name == \"Elm\"")), null, 1, 0),
-                iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("city", false, false, new ArrayList<String>(), null, -1, 0), iterator.next());
-        assertEquals(false, iterator.hasNext());
-    }
-
-    @Test
     public void testBasicCast() {
-        final String xpath = "/address/street{#MyStreetType, name.value == \"Elm\"}.city";
+        final String xpath = "/address/street#MyStreetType[name.value == \"Elm\"].city";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
         assertEquals("The XPath should be valid.", false, result.hasError());
@@ -289,7 +273,7 @@ public class XpathAnalysisTest {
 
     @Test
     public void testComplexCast() {
-        final String xpath = "/address/street[1]{#MyStreetType, name.value == \"Elm\"}.city{#MyCityType, value, #MyCityMoreSpecificType}";
+        final String xpath = "/address/street#MyStreetType[name.value == \"Elm\"].city#MyCityMoreSpecificType[ value ]";
         final XpathAnalysis result = XpathAnalysis.analyze(xpath);
 
         assertEquals("The XPath should be valid.", false, result.hasError());
@@ -297,7 +281,7 @@ public class XpathAnalysisTest {
 
         final Iterator<XpathAnalysis.XpathPart> iterator = getNonEmptyIterator(result);
         verifyXpathPart(new XpathAnalysis.XpathPart("address", true, false, new ArrayList<String>(), null, -1, 0), iterator.next());
-        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name.value == \"Elm\"")), "MyStreetType", 1, 0),
+        verifyXpathPart(new XpathAnalysis.XpathPart("street", true, false, new ArrayList<String>(Arrays.asList("name.value == \"Elm\"")), "MyStreetType", -1, 0),
                 iterator.next());
         verifyXpathPart(new XpathAnalysis.XpathPart("city", false, false, new ArrayList<String>(Arrays.asList("value")), "MyCityMoreSpecificType", -1, 0),
                 iterator.next());
