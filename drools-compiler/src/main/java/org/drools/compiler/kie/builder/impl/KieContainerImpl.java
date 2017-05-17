@@ -56,6 +56,7 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -200,7 +201,12 @@ public class KieContainerImpl
     public Results updateToVersion(ReleaseId newReleaseId) {
         checkNotClasspathKieProject();
         Results results = update(((KieModuleKieProject) kProject).getInternalKieModule(), newReleaseId);
-        containerReleaseId = newReleaseId;
+        if (results != null) {
+            containerReleaseId = newReleaseId;
+        } else {
+            results = new ResultsImpl();
+            ( (ResultsImpl) results ).addMessage( Message.Level.ERROR, null, "Cannot find KieModule with ReleaseId: " + newReleaseId );
+        }
         return results;
     }
 
@@ -232,6 +238,9 @@ public class KieContainerImpl
 
     private Results update(final InternalKieModule currentKM, final ReleaseId newReleaseId) {
         final InternalKieModule newKM = (InternalKieModule) kr.getKieModule( newReleaseId );
+        if (newKM == null) {
+            return null;
+        }
         ChangeSetBuilder csb = new ChangeSetBuilder();
         final KieJarChangeSet cs = csb.build( currentKM, newKM );
 
