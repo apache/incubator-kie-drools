@@ -34,8 +34,6 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.event.kiescanner.KieScannerEventListener;
-import org.kie.api.event.kiescanner.KieScannerStatusChangeEvent;
-import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.scanner.event.KieScannerEventSupport;
 import org.kie.scanner.management.KieScannerMBean;
@@ -48,19 +46,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.enterprise.inject.New;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
