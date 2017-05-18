@@ -36,7 +36,6 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.ClassAwareObjectStore;
 import org.drools.core.common.InternalWorkingMemory;
@@ -63,7 +62,6 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.FileLoggerModel;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.Resource;
@@ -82,11 +80,9 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
-import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 import static org.drools.compiler.kie.util.InjectionHelper.wireListnersAndWIHs;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
@@ -603,40 +599,10 @@ public class KieContainerImpl
 
     private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
-        Collection<KnowledgePackage> pkgs = kModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
-
-        if ( pkgs == null ) {
-            KnowledgeBuilder kbuilder = buildKnowledgePackages(kBaseModel, kieProject, messages);
-            if ( kbuilder.hasErrors() ) {
-                // Messages already populated by the buildKnowlegePackages
-                return null;
-            }
-        }
-
-        // if we get to here, then we know the pkgs is now cached
-        pkgs = kModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
-
-        if ( kBaseModel.getEventProcessingMode() == EventProcessingOption.CLOUD &&
-            (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
-            for (KnowledgePackage kpkg : pkgs) {
-                if ( ((KnowledgePackageImpl) kpkg).needsStreamMode() ) {
-                    throw new RuntimeException( "The requested KieBase \"" + kBaseModel.getName() + "\" has been set to run in CLOUD mode but requires features only available in STREAM mode" );
-                }
-            }
-        }
-
-        ClassLoader cl = kieProject.getClassLoader();
-        if (conf == null) {
-            conf = getKnowledgeBaseConfiguration(kBaseModel, cl);
-        } else if (conf instanceof RuleBaseConfiguration) {
-            ((RuleBaseConfiguration)conf).setClassLoader(cl);
-        }
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
+        InternalKnowledgeBase kBase = kModule.createKieBase(kBaseModel, kieProject, messages, conf);
         kBase.setResolvedReleaseId(containerReleaseId);
         kBase.setContainerId(containerId);
         kBase.initMBeans();
-
-        kBase.addKnowledgePackages( pkgs );
         return kBase;
     }
 
@@ -646,14 +612,6 @@ public class KieContainerImpl
             throw new RuntimeException( "The requested KieBase \"" + kBaseName + "\" does not exist" );
         }
         return kBaseModel;
-    }
-
-    private KieBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModelImpl kBaseModel, ClassLoader cl) {
-        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, cl);
-        kbConf.setOption(kBaseModel.getEqualsBehavior());
-        kbConf.setOption(kBaseModel.getEventProcessingMode());
-        kbConf.setOption(kBaseModel.getDeclarativeAgenda());
-        return kbConf;
     }
 
     public KieSession newKieSession() {
