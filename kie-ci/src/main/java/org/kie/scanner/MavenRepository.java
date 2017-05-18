@@ -417,10 +417,6 @@ public class MavenRepository {
 
         return releaseId.getArtifactId() + "-" + releaseId.getVersion();
     }
-
-    public RemoteRepository getLocalRepository() {
-        return this.aether.getLocalRepository();
-    }
     
     /**
      * Utility method specifically suggested for testing purposes only.
