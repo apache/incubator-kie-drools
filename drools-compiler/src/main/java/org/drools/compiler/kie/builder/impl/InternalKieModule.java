@@ -15,9 +15,17 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Map;
+
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.common.ResourceProvider;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -30,11 +38,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Map;
 
 public interface InternalKieModule extends KieModule {
 
@@ -88,4 +91,6 @@ public interface InternalKieModule extends KieModule {
     PomModel getPomModel();
 
     KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel );
+
+    InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf );
 }
