@@ -15,50 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import com.google.protobuf.ExtensionRegistry;
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.kproject.xml.DependencyFilter;
-import org.drools.compiler.kproject.xml.PomModel;
-import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
-import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
-import org.drools.core.common.ResourceProvider;
-import org.drools.core.rule.KieModuleMetaInfo;
-import org.drools.core.rule.TypeMetaInfo;
-import org.drools.core.util.Drools;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.Results;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.RuleTemplateModel;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceConfiguration;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.CompositeKnowledgeBuilder;
-import org.kie.internal.builder.DecisionTableConfiguration;
-import org.kie.internal.builder.DecisionTableInputType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.builder.ResourceChangeSet;
-import org.kie.internal.builder.ResultSeverity;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.io.ResourceTypeImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,6 +30,56 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import com.google.protobuf.ExtensionRegistry;
+import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
+import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
+import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
+import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.DependencyFilter;
+import org.drools.compiler.kproject.xml.PomModel;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
+import org.drools.core.common.ResourceProvider;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.rule.KieModuleMetaInfo;
+import org.drools.core.rule.TypeMetaInfo;
+import org.drools.core.util.Drools;
+import org.drools.core.util.IoUtils;
+import org.drools.core.util.StringUtils;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.RuleTemplateModel;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.DecisionTableInputType;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.io.ResourceTypeImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
@@ -195,6 +201,49 @@ public abstract class AbstractKieModule
             }
         }
         return typesMetaInfo;
+    }
+
+    public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
+        Collection<KnowledgePackage> pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
+
+        if ( pkgs == null ) {
+            KnowledgeBuilder kbuilder = buildKnowledgePackages(kBaseModel, kieProject, messages);
+            if ( kbuilder.hasErrors() ) {
+                // Messages already populated by the buildKnowlegePackages
+                return null;
+            }
+        }
+
+        // if we get to here, then we know the pkgs is now cached
+        pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
+
+        if ( kBaseModel.getEventProcessingMode() == EventProcessingOption.CLOUD &&
+             (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
+            for (KnowledgePackage kpkg : pkgs) {
+                if ( ((KnowledgePackageImpl) kpkg).needsStreamMode() ) {
+                    throw new RuntimeException( "The requested KieBase \"" + kBaseModel.getName() + "\" has been set to run in CLOUD mode but requires features only available in STREAM mode" );
+                }
+            }
+        }
+
+        ClassLoader cl = kieProject.getClassLoader();
+        if (conf == null) {
+            conf = getKnowledgeBaseConfiguration(kBaseModel, cl);
+        } else if (conf instanceof RuleBaseConfiguration ) {
+            ((RuleBaseConfiguration)conf).setClassLoader(cl);
+        }
+
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
+        kBase.addKnowledgePackages( pkgs );
+        return kBase;
+    }
+
+    private KieBaseConfiguration getKnowledgeBaseConfiguration(KieBaseModelImpl kBaseModel, ClassLoader cl) {
+        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, cl);
+        kbConf.setOption(kBaseModel.getEqualsBehavior());
+        kbConf.setOption(kBaseModel.getEventProcessingMode());
+        kbConf.setOption(kBaseModel.getDeclarativeAgenda());
+        return kbConf;
     }
 
     @SuppressWarnings("deprecation")
