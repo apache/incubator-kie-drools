@@ -305,9 +305,6 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         
         countDownListener.waitTillCompleted(3000);
         assertEquals(2, timerExporations.size());
-
-        
-        manager.close();
     }
     
     @Test(timeout=20000)
@@ -355,4 +352,58 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         ksession.abortProcessInstance(processInstance.getId());
         manager.disposeRuntimeEngine(runtime);
     }
+
+    @Test(timeout=25000)
+    public void testContinueTimerWithMisfire() throws Exception {
+        // RHBPMS-4729
+        System.setProperty("org.quartz.properties", "quartz-db-short-misfire.properties");
+
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("StartProcess", 2);
+        // prepare listener to assert results
+        final List<Long> timerExporations = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener(){
+            @Override
+          public void beforeProcessStarted(ProcessStartedEvent event) {
+              timerExporations.add(event.getProcessInstance().getId());
+          }
+        };
+
+        // No special configuration for TimerService in order to test RuntimeManager default
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("org/jbpm/test/functional/timer/TimerStart2.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener, countDownListener))
+                .get();
+        manager = getManager(environment, true);
+
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        countDownListener.waitTillCompleted();
+
+        manager.disposeRuntimeEngine(runtime);
+        manager.close();
+
+        System.out.println("==== manager.close() ====");
+
+        countDownListener.reset(3);
+
+        // Simulate interval between shutdown and start so the Trigger is older than (now - misfireThreshold)
+        Thread.sleep(5000);
+
+        // ---- restart ----
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("org/jbpm/test/functional/timer/TimerStart2.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener, countDownListener))
+                .get();
+        manager = getManager(environment, true);
+
+        countDownListener.waitTillCompleted(4000);
+
+        assertEquals(5, timerExporations.size());
+    }
+
 }

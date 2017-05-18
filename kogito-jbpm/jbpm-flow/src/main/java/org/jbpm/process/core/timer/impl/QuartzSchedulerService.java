@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import java.io.NotSerializableException;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -66,6 +67,8 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
     private static final Integer START_DELAY = Integer.parseInt(System.getProperty("org.jbpm.timer.delay", "2"));
     private static final Integer FAILED_JOB_RETRIES = Integer.parseInt(System.getProperty("org.jbpm.timer.quartz.retries", "5"));
     private static final Integer FAILED_JOB_DELAY = Integer.parseInt(System.getProperty("org.jbpm.timer.quartz.delay", "1000"));
+
+    private static final Integer RESCHEDULE_DELAY = Integer.parseInt(System.getProperty("org.jbpm.timer.quartz.reschedule.delay", "500"));
 
     private AtomicLong idCounter = new AtomicLong();
     private TimerService globalTimerService;
@@ -156,8 +159,16 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
         jobq.setRequestsRecovery(true);
         jobq.getJobDataMap().put("timerJobInstance", timerJobInstance);
             
+        // Amend nextFireTime not to schedule older than now + RESCHEDULE_DELAY
+        Date nextFireTime = timerJobInstance.getTrigger().hasNextFireTime();
+        Date threshold = new Date(System.currentTimeMillis() + RESCHEDULE_DELAY);
+        if (nextFireTime.before(threshold)) {
+            logger.debug("nextFireTime [" + nextFireTime + "] is older than (now + RESCHEDULE_DELAY). Amending it to [" + threshold + "]");
+            nextFireTime = threshold;
+        }
+
         // Define a Trigger that will fire "now"
-        org.quartz.Trigger triggerq = new SimpleTrigger(quartzJobHandle.getJobName()+"_trigger", quartzJobHandle.getJobGroup(), timerJobInstance.getTrigger().hasNextFireTime());
+        org.quartz.Trigger triggerq = new SimpleTrigger(quartzJobHandle.getJobName()+"_trigger", quartzJobHandle.getJobGroup(), nextFireTime);
             
         // Schedule the job with the trigger
         try {
