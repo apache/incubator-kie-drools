@@ -250,10 +250,10 @@ public class RuleUnitTest {
 
         assertEquals(4, executor.run( NotAdultUnit.class ) );
 
-        List<String> expectedLogs = asList("org.drools.compiler.integrationtests.RuleUnitTest.NotAdultUnit started.",
-                                           "org.drools.compiler.integrationtests.RuleUnitTest.NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest.AdultUnit",
-                                           "org.drools.compiler.integrationtests.RuleUnitTest.AdultUnit started.",
-                                           "org.drools.compiler.integrationtests.RuleUnitTest.AdultUnit ended.");
+        List<String> expectedLogs = asList("org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit ended.");
         assertEquals( expectedLogs, log );
     }
 
@@ -675,10 +675,10 @@ public class RuleUnitTest {
 
         assertEquals(4, executor.run( NotAdultUnit.class ) );
 
-        List<String> expectedLogs = asList("org.drools.compiler.integrationtests.RuleUnitTest.NotAdultUnit started.",
-                                           "org.drools.compiler.integrationtests.RuleUnitTest.NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest.AdultUnit",
-                                           "org.drools.compiler.integrationtests.RuleUnitTest.AdultUnit started.",
-                                           "org.drools.compiler.integrationtests.RuleUnitTest.AdultUnit ended.");
+        List<String> expectedLogs = asList("org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$NotAdultUnit yielded to org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit started.",
+                                           "org.drools.compiler.integrationtests.RuleUnitTest$AdultUnit ended.");
         assertEquals( expectedLogs, log );
     }
 
