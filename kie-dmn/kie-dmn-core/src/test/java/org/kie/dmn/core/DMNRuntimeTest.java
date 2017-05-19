@@ -512,11 +512,12 @@ public class DMNRuntimeTest {
         context.set( "Year", 1999 );
         context.set( "Month", 11 );
         context.set( "Day", 22 );
-        context.set( "oneHour", "PT1H" );
-        context.set( "durationString", "P13DT2H14S" );
+        context.set( "oneHour", Duration.parse( "PT1H" ) ); // <variable name="oneHour" typeRef="feel:days and time duration"/>
+        context.set( "durationString", "P13DT2H14S" );      // <variable name="durationString" typeRef="feel:string"/>
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         DMNContext ctx = dmnResult.getContext();
 
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
         assertThat( ctx.get("Date-Time"), is( ZonedDateTime.of( 2016, 12, 24, 23, 59, 0, 0, ZoneOffset.ofHours( -5 ) ) ) );
         assertThat( ctx.get("Date"), is( new HashMap<String, Object>(  ) {{
             put( "fromString", LocalDate.of( 2015, 12, 24 ) );
@@ -1091,7 +1092,7 @@ public class DMNRuntimeTest {
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
 
         assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
-        assertThat( dmnResult.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );
+        assertThat( dmnResult.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ), is( true ) );
     }
     
     @Test
@@ -1288,6 +1289,41 @@ public class DMNRuntimeTest {
         assertThat( dmnModel.getMessages().size(), is( 1 ) );
         assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.INVALID_ATTRIBUTE_VALUE ) );
         assertThat( dmnModel.getMessages().get( 0 ).getSeverity(), is( DMNMessage.Severity.WARN ) );
+    }
+    
+    @Test
+    public void test_countCSATradeRatings() {
+        // DROOLS-1563
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "countCSATradeRatings.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_1a7d184c-2e38-4462-ae28-15591ef6d534",
+                "countCSATradeRatings" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext ctx = runtime.newContext();
+        List<Map<?, ?>> ratings = new ArrayList<>();
+        ratings.add( prototype(entry("Agency", "FITCH"), entry("Value", "val1")) );
+        ratings.add( prototype(entry("Agency", "MOODY"), entry("Value", "val2")) );
+        ctx.set("CSA Trade Ratings", ratings);
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, ctx );
+       
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get("Trade Ratings"), is( new BigDecimal(2) ) );
+        
+        
+        DMNContext ctx2 = runtime.newContext();
+        ctx2.set("CSA Trade Ratings", null);
+        DMNResult dmnResult2 = runtime.evaluateAll( dmnModel, ctx2 );
+        assertThat( formatMessages( dmnResult2.getMessages() ), dmnResult2.hasErrors(), is( false ) );
+        DMNContext result2 = dmnResult2.getContext();
+        assertThat( result2.get("Trade Ratings"), nullValue() );
+        
+                
+        DMNResult dmnResult3 = runtime.evaluateAll( dmnModel, runtime.newContext() );
+        assertThat( formatMessages( dmnResult3.getMessages() ), dmnResult3.hasErrors(), is( true ) );
+        assertThat( dmnResult3.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ), is( true ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {
