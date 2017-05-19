@@ -23,6 +23,6 @@ public class RuleUnitUtil {
     public static final String RULE_UNIT_DECLARATION = "$$unit";
 
     public static String getUnitName( RuleUnit ruleUnit ) {
-        return ruleUnit.getClass().getCanonicalName();
+        return ruleUnit.getClass().getName();
     }
 }

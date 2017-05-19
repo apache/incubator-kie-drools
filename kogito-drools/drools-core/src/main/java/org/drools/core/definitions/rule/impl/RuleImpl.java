@@ -863,7 +863,7 @@ public class RuleImpl implements Externalizable,
     }
 
     public void setRuleUnitClass( Class<? extends RuleUnit> ruleUnit ) {
-        setRuleUnitClassName( ruleUnit.getCanonicalName() );
+        setRuleUnitClassName( ruleUnit.getName() );
     }
 
     public void setRuleUnitClassName( String ruleUnitClassName ) {

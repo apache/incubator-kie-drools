@@ -91,7 +91,7 @@ public class RuleBuildContext extends PackageBuildContext {
         }
 
         if (ruleDescr.getUnit() != null) {
-            rule.setRuleUnitClassName( pkg.getName() + "." + ruleDescr.getUnit().getTarget() );
+            rule.setRuleUnitClassName( pkg.getName() + "." + ruleDescr.getUnit().getTarget().replace( '.', '$' ) );
         }
 
         Dialect dialect = getDialect();
@@ -191,7 +191,7 @@ public class RuleBuildContext extends PackageBuildContext {
             TypeResolver typeResolver = getPkg().getTypeResolver();
             boolean unitFound = false;
             try {
-                unitFound = RuleUnit.class.isAssignableFrom( typeResolver.resolveType( ruleUnitClassName ) );
+                unitFound = RuleUnit.class.isAssignableFrom( Class.forName(ruleUnitClassName, true, typeResolver.getClassLoader()) );
                 if (unitFound && nameInferredFromResource) {
                     rule.setRuleUnitClassName( ruleUnitClassName );
                 }
