@@ -564,7 +564,35 @@
           "methodName": "newSingleThreadExecutor",
           "elementKind": "method",
           "justification": "Return an ExecutorService to allow to shut it down"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.builder.KieScanner::addListener(org.kie.api.event.kiescanner.KieScannerEventListener)",
+          "package": "org.kie.api.builder",
+          "classSimpleName": "KieScanner",
+          "methodName": "addListener",
+          "elementKind": "method",
+          "justification": "DROOLS-1565 Implement a KieScanner listener"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method java.util.Collection<org.kie.api.event.kiescanner.KieScannerEventListener> org.kie.api.builder.KieScanner::getListeners()",
+          "package": "org.kie.api.builder",
+          "classSimpleName": "KieScanner",
+          "methodName": "getListeners",
+          "elementKind": "method",
+          "justification": "DROOLS-1565 Implement a KieScanner listener"
+        },
+        {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.builder.KieScanner::removeListener(org.kie.api.event.kiescanner.KieScannerEventListener)",
+          "package": "org.kie.api.builder",
+          "classSimpleName": "KieScanner",
+          "methodName": "removeListener",
+          "elementKind": "method",
+          "justification": "DROOLS-1565 Implement a KieScanner listener"
         }
+        
       ]
     }
   }
