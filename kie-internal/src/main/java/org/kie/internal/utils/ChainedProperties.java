@@ -51,7 +51,6 @@ public class ChainedProperties
     Externalizable, Cloneable {
 
     protected static transient Logger logger = LoggerFactory.getLogger(ChainedProperties.class);
-    private static final int MAX_CACHE_ENTRIES = 100;
 
     private List<Properties> props = new ArrayList<Properties>();
     private List<Properties> defaultProps = new ArrayList<Properties>();
@@ -105,7 +104,6 @@ public class ChainedProperties
 
     /**
      * Specifically added properties take priority, so they go to the front of the list.
-     * @param properties
      */
     public void addProperties(Properties properties) {
         this.props.add( 0, properties );
@@ -172,16 +170,6 @@ public class ChainedProperties
     }
 
     private void loadProperties(String fileName,
-                                List<Properties> chain) {
-        if (fileName != null) {
-            File file = new File(fileName);
-            if (file != null && file.exists()) {
-                loadProperties(fileName, null, chain);
-            }
-        }
-    }
-
-    private void loadProperties(String fileName,
                                 ClassLoader classLoader,
                                 List<Properties> chain) {
         try {
@@ -220,68 +208,5 @@ public class ChainedProperties
         } catch ( IOException e ) {
             //throw new IllegalArgumentException( "Invalid URL to properties file '" + confURL.toExternalForm() + "'" );
         }
-    }
-
-
-    /*
-     * optional cache handling to improve performance to avoid duplicated loads of properties
-     */
-
-
-    private static class CacheKey {
-        private String confFileName;
-        private ClassLoader classLoader;
-
-        CacheKey(String confFileName, ClassLoader classLoader) {
-            this.confFileName = confFileName;
-            this.classLoader = classLoader;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result
-                    + ((classLoader == null) ? 0 : classLoader.hashCode());
-            result = prime * result
-                    + ((confFileName == null) ? 0 : confFileName.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            CacheKey other = (CacheKey) obj;
-            if (classLoader == null) {
-                if (other.classLoader != null) {
-                    return false;
-                }
-            } else if (!classLoader.equals(other.classLoader)) {
-                return false;
-            }
-            if (confFileName == null) {
-                if (other.confFileName != null) {
-                    return false;
-                }
-            } else if (!confFileName.equals(other.confFileName)) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return "CacheKey [confFileName=" + confFileName + ", classLoader="
-                    + classLoader + "]";
-        }
-
     }
 }
