@@ -265,7 +265,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this(id,
              kBase,
              true,
-             SessionConfigurationImpl.getDefaultInstance(),
+             kBase.getSessionConfiguration(),
              EnvironmentFactory.newEnvironment());
     }
 
@@ -333,8 +333,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    protected void init() {
-        init( SessionConfigurationImpl.getDefaultInstance(), EnvironmentFactory.newEnvironment(), 1 );
+    protected void init(SessionConfiguration config, Environment environment) {
+        init( config, environment, 1 );
     }
 
     private void init( SessionConfiguration config, Environment environment, long propagationContext ) {
