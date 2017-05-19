@@ -26,7 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -49,52 +48,34 @@ import org.slf4j.LoggerFactory;
  */
 public class ChainedProperties
     implements
-    Externalizable {
+    Externalizable, Cloneable {
 
     protected static transient Logger logger = LoggerFactory.getLogger(ChainedProperties.class);
     private static final int MAX_CACHE_ENTRIES = 100;
 
-    protected static Map<CacheKey, ChainedProperties> propertiesCache =
-            Collections.synchronizedMap(
-                    new LinkedHashMap<CacheKey, ChainedProperties>() {
-        private static final long serialVersionUID = -4728876927433598466L;
-
-        protected boolean removeEldestEntry(
-                Map.Entry<CacheKey, ChainedProperties> eldest) {
-            return size() > MAX_CACHE_ENTRIES;
-        }
-    });
-
     private List<Properties> props = new ArrayList<Properties>();
     private List<Properties> defaultProps = new ArrayList<Properties>();
+
+    public ChainedProperties() { }
 
     public static ChainedProperties getChainedProperties( ClassLoader classLoader ) {
         return getChainedProperties( "properties.conf", classLoader );
     }
 
     public static ChainedProperties getChainedProperties( String confFileName, ClassLoader classLoader ) {
-        CacheKey key = new CacheKey( confFileName, classLoader );
-        ChainedProperties chainedProperties = propertiesCache.get(key);
-        if (chainedProperties == null) {
-            chainedProperties = new ChainedProperties( confFileName, classLoader );
-            propertiesCache.put(key, chainedProperties);
-        }
-        ChainedProperties props = chainedProperties.clone();
-        props.addProperties( System.getProperties() );
-        return props;
+        return new ChainedProperties( confFileName, classLoader );
     }
 
-    protected ChainedProperties clone() {
+    public ChainedProperties clone() {
         ChainedProperties clone = new ChainedProperties();
         clone.props.addAll( this.props );
         clone.defaultProps.addAll( this.defaultProps );
         return clone;
     }
 
-    public ChainedProperties() {
-    }
-
     private ChainedProperties(String confFileName, ClassLoader classLoader) {
+        addProperties( System.getProperties() );
+
         loadProperties( "META-INF/kie." + confFileName, classLoader, this.props );
         loadProperties( "META-INF/kie.default." + confFileName, classLoader, this.defaultProps);
 
