@@ -15,9 +15,19 @@
 
 package org.kie.scanner;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
+import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.core.util.FileManager;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,16 +41,17 @@ import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.event.kiescanner.KieScannerEvent;
+import org.kie.api.event.kiescanner.KieScannerEventListener;
+import org.kie.api.event.kiescanner.KieScannerStatusChangeEvent;
+import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.scanner.embedder.MavenEmbedderUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import org.kie.scanner.event.KieScannerStatusChangeEventImpl;
+import org.kie.scanner.event.KieScannerUpdateResultsEventImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
@@ -48,7 +59,8 @@ import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 @RunWith(Parameterized.class)
 public class KieRepositoryScannerTest extends AbstractKieCiTest {
-
+    private static final Logger LOG = LoggerFactory.getLogger(KieRepositoryScannerTest.class);
+    
     private final boolean useWiredComponentProvider;
 
     private FileManager fileManager;
@@ -203,6 +215,176 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ks.getRepository().removeKieModule(releaseId1);
         ks.getRepository().removeKieModule(releaseId2);
     }
+    
+    @Test
+    public void testKScannerWithRange_withListener() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        MavenRepository repository = getMavenRepository();
+        
+        String artifactId = "scanner-range-test-withlistener";
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", artifactId, "1.0.1");
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", artifactId, "1.0.2");
+
+        // Because KieScanner also check the local repo, ensure the artifact are not deployed on the local maven repo
+        repository.removeLocalArtifact( releaseId1 );
+        repository.removeLocalArtifact( releaseId2 );
+        
+        ReleaseId releaseRange = ks.newReleaseId("org.kie", artifactId, "[1.0.0,)");
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId1, "rule1", "rule2");
+        KieContainer kieContainer = ks.newKieContainer(releaseRange);
+
+        final List<KieScannerEvent> events = new ArrayList<>();
+        InternalKieScanner scanner = (KieRepositoryScannerImpl) ks.newKieScanner(kieContainer);
+        KieScannerEventListener listener = new KieScannerEventListener() {
+            public void onKieScannerStatusChangeEvent(KieScannerStatusChangeEvent statusChange) {
+                LOG.info("KieScanner event: {}", statusChange); events.add(statusChange);
+            }
+            public void onKieScannerUpdateResultsEvent(KieScannerUpdateResultsEvent updtaeResults) {
+                LOG.info("KieScanner event: {}", updtaeResults); events.add(updtaeResults);
+            }
+        };
+        scanner.addListener( listener );        
+        
+        scanner.scanNow();
+        // Because 1.0.2 does not exist, will perform a scan but will NOT update.
+        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING) ) );
+        assertThat( events, CoreMatchers.not( CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING) )) );
+        events.clear();
+        
+        repository.installArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
+
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, "rule1", "rule2");
+
+        // create a new kjar 
+        InternalKieModule kJar2 = createKieJar(ks, releaseId2, "rule2", "rule3");
+
+        // deploy it on maven
+        repository.installArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId2));
+
+        // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
+        assertEquals(releaseId1, scanner.getCurrentReleaseId());
+        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
+
+        // scan the maven repo to get the new kjar version and deploy it on the kcontainer
+        scanner.scanNow();
+        assertEquals(releaseId2, scanner.getCurrentReleaseId());
+        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
+
+        // create a ksesion and check it works as expected
+        KieSession ksession2 = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession2, "rule2", "rule3");
+        
+        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING) ) );
+        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING) ) );
+        assertTrue( events.get(2) instanceof KieScannerUpdateResultsEventImpl );
+        assertFalse( ((KieScannerUpdateResultsEventImpl)events.get(2)).getResults().hasMessages(Message.Level.ERROR) );
+        events.clear();
+
+        ks.getRepository().removeKieModule(releaseId1);
+        ks.getRepository().removeKieModule(releaseId2);
+        
+        scanner.removeListener( listener );
+        assertEquals( 0, scanner.getListeners().size() );
+        repository.removeLocalArtifact( releaseId1 );
+        repository.removeLocalArtifact( releaseId2 );
+    }
+    
+    @Test
+    public void testKScannerWithRange_withListener_errors() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        MavenRepository repository = getMavenRepository();
+        
+        String artifactId = "scanner-range-test-withlistener-errors";
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", artifactId, "1.0.1");
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", artifactId, "1.0.2");
+
+        // Because KieScanner also check the local repo, ensure the artifact are not deployed on the local maven repo
+        repository.removeLocalArtifact( releaseId1 );
+        repository.removeLocalArtifact( releaseId2 );
+        
+        ReleaseId releaseRange = ks.newReleaseId("org.kie", artifactId, "[1.0.0,)");
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId1, "rule1", "rule2");
+        KieContainer kieContainer = ks.newKieContainer(releaseRange);
+
+        final List<KieScannerEvent> events = new ArrayList<>();
+        InternalKieScanner scanner = (KieRepositoryScannerImpl) ks.newKieScanner(kieContainer);
+        KieScannerEventListener listener = new KieScannerEventListener() {
+            public void onKieScannerStatusChangeEvent(KieScannerStatusChangeEvent statusChange) {
+                LOG.info("KieScanner event: {}", statusChange); events.add(statusChange);
+            }
+            public void onKieScannerUpdateResultsEvent(KieScannerUpdateResultsEvent updtaeResults) {
+                LOG.info("KieScanner event: {}", updtaeResults); events.add(updtaeResults);
+            }
+        };
+        scanner.addListener( listener );        
+        
+        scanner.scanNow();
+        // Because 1.0.2 does not exist, will perform a scan but will NOT update.
+        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING) ) );
+        assertThat( events, CoreMatchers.not( CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING) )) );
+        events.clear();
+        
+        repository.installArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
+
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, "rule1", "rule2");
+
+        // Create a wrong KJAR for releaseId2
+        KieFileSystem kfs = ks.newKieFileSystem();
+        String pomContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+                "  <modelVersion>4.0.0</modelVersion>\n" +
+                "\n" +
+                "  <groupId>" + releaseId2.getGroupId() + "</groupId>\n" +
+                "  <artifactId>" + releaseId2.getArtifactId() + "</artifactId>\n" +
+                "  <version>" + releaseId2.getVersion() + "</version></project>\n";
+        kfs.writePomXML(pomContent);
+        kfs.write("rulebroken" + ".drl", "rule X when asd asd then end" );
+        kfs.write("META-INF/kmodule.xml", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" + 
+                "  <!-- This is a minimal kmodule.xml. Ref Drools documentation, see http://docs.jboss.org/drools/release/6.1.0.Final/drools-docs/html_single/index.html#d0e1112 -->\n" + 
+                "</kmodule>\n");
+        File tempJar = File.createTempFile("org.kie"+artifactId+"1.0.2", "tmp");
+        LOG.info("Writing to temp file: {}", tempJar);
+        // please notice that writeAsJar would return a new file with .jar postfixed
+        tempJar = ((KieFileSystemImpl)kfs).asMemoryFileSystem().writeAsJar(tempJar.getParentFile(), tempJar.getName());
+        File tempPom = File.createTempFile("org.kie"+artifactId+"1.0.2", "tmp.xml");
+        LOG.info("Writing to temp file: {}", tempPom);
+        FileUtils.writeStringToFile( tempPom, pomContent, "UTF-8" );
+        repository.installArtifact(releaseId2, tempJar, tempPom);
+        
+        assertEquals(releaseId1, scanner.getCurrentReleaseId());
+        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
+
+        // scan the maven repo to get the new kjar version and deploy it on the kcontainer
+        scanner.scanNow();
+        
+        // Keeping at previous release
+        assertEquals(releaseId1, scanner.getCurrentReleaseId());
+        assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
+
+        // there should be no update performed.
+        
+        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.SCANNING) ) );
+        assertThat( events, CoreMatchers.hasItem( new KieScannerStatusChangeEventImpl(KieScanner.Status.UPDATING) ) );
+        assertTrue( events.get(2) instanceof KieScannerUpdateResultsEventImpl );
+        assertTrue( ((KieScannerUpdateResultsEventImpl)events.get(2)).getResults().hasMessages(Message.Level.ERROR) );
+        events.clear();
+
+        ks.getRepository().removeKieModule(releaseId1);
+        ks.getRepository().removeKieModule(releaseId2);
+        
+        scanner.removeListener( listener );
+        assertEquals( 0, scanner.getListeners().size() );
+        repository.removeLocalArtifact( releaseId1 );
+        repository.removeLocalArtifact( releaseId2 );
+    }
+    
+    
 
     @Test
     public void testKScannerWithKJarContainingClasses() throws Exception {

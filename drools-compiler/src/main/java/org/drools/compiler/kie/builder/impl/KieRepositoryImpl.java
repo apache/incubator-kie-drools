@@ -25,6 +25,7 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.event.kiescanner.KieScannerEventListener;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.utils.ServiceRegistryImpl;
@@ -37,6 +38,8 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -201,6 +204,14 @@ public class KieRepositoryImpl
         }
 
         public long getPollingInterval() { return 0; }
+
+        public void addListener(KieScannerEventListener listener) { }
+
+        public void removeListener(KieScannerEventListener listener) { }
+
+        public Collection<KieScannerEventListener> getListeners() {
+            return Collections.emptyList();
+        }
     }
 
     public KieModule addKieModule(Resource resource, Resource... dependencies) {
