@@ -24,6 +24,8 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNUnaryTest;
+import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
@@ -31,6 +33,7 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.*;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.model.v1_1.ItemDefinition;
@@ -1324,6 +1327,49 @@ public class DMNRuntimeTest {
         DMNResult dmnResult3 = runtime.evaluateAll( dmnModel, runtime.newContext() );
         assertThat( formatMessages( dmnResult3.getMessages() ), dmnResult3.hasErrors(), is( true ) );
         assertThat( dmnResult3.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.REQ_NOT_FOUND ) ), is( true ) );
+    }
+
+    @Test
+    public void testDMNInputDataNodeTypeTest() {
+        // DROOLS-1569
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DMNInputDataNodeTypeTest.dmn", this.getClass() );
+        final String MODEL_NAMESPACE = "http://www.trisotech.com/definitions/_17396034-163a-48aa-9a7f-c6eb17f9cc6c";
+        final String FEEL_NAMESPACE = "http://www.omg.org/spec/FEEL/20140401";
+        DMNModel dmnModel = runtime.getModel(
+                MODEL_NAMESPACE,
+                "DMNInputDataNodeTypeTest" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        InputDataNode idnMembership = dmnModel.getInputs().stream().filter(idn -> idn.getName().equals("Membership Level")).findFirst().get();
+        assertThat( idnMembership.getType().getBaseType().getNamespace(), is(FEEL_NAMESPACE));
+        assertThat( idnMembership.getType().getBaseType().getName(), is("string"));
+        assertThat( idnMembership.getType().isCollection(), is(false));
+        assertThat( idnMembership.getType().isComposite(), is(false));
+        assertThat( idnMembership.getType().getAllowedValues().size(), is( 3 ) );
+        assertThat( idnMembership.getType().getAllowedValues().get(0).toString(), is( "\"Gold\"" ));
+        assertThat( idnMembership.getType().getAllowedValues().get(1).toString(), is( "\"Silver\"" ));
+        assertThat( idnMembership.getType().getAllowedValues().get(2).toString(), is( "\"None\"" ));
+        
+        InputDataNode idnMembershipLevels = dmnModel.getInputs().stream().filter(idn -> idn.getName().equals("Membership Levels")).findFirst().get();
+        assertThat( idnMembershipLevels.getType().getBaseType().getNamespace(), is(MODEL_NAMESPACE));
+        assertThat( idnMembershipLevels.getType().getBaseType().getName(), is("tMembershipLevel"));
+        assertThat( idnMembershipLevels.getType().isCollection(), is(true));
+        assertThat( idnMembershipLevels.getType().isComposite(), is(false));
+        assertThat( idnMembershipLevels.getType().getAllowedValues().isEmpty(), is( true ));
+        
+        InputDataNode idnPercent = dmnModel.getInputs().stream().filter(idn -> idn.getName().equals("Percent")).findFirst().get();
+        assertThat( idnPercent.getType().getBaseType().getNamespace(), is(FEEL_NAMESPACE));
+        assertThat( idnPercent.getType().getBaseType().getName(), is("number"));
+        assertThat( idnPercent.getType().isCollection(), is(false));
+        assertThat( idnPercent.getType().isComposite(), is(false));
+        assertThat( idnPercent.getType().getAllowedValues().size(), is( 1 ) );
+        assertThat( idnPercent.getType().getAllowedValues().get(0).toString(), is( "[0..100]" ));
+        
+        InputDataNode idnCarDamageResponsibility = dmnModel.getInputs().stream().filter(idn -> idn.getName().equals("Car Damage Responsibility")).findFirst().get();
+        assertThat( idnCarDamageResponsibility.getType().getBaseType(), is( nullValue() ));
+        assertThat( idnCarDamageResponsibility.getType().isCollection(), is(false));
+        assertThat( idnCarDamageResponsibility.getType().isComposite(), is(true));
     }
 
     private String formatMessages(List<DMNMessage> messages) {

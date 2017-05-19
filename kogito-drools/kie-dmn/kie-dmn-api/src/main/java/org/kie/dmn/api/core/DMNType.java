@@ -16,6 +16,7 @@
 
 package org.kie.dmn.api.core;
 
+import java.util.List;
 import java.util.Map;
 
 public interface DMNType
@@ -50,4 +51,6 @@ public interface DMNType
      * @return if value can be assigned to the type represented by this type. If the parameter is null, returns true. 
      */
     boolean isAssignableValue(Object value);
+
+    List<DMNUnaryTest> getAllowedValues();
 }

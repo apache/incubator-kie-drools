@@ -386,7 +386,7 @@ public class DMNEvaluatorCompiler {
             } else if ( ic.getInputExpression().getTypeRef() != null ) {
                 QName inputExpressionTypeRef = ic.getInputExpression().getTypeRef();
                 BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inputExpressionTypeRef, ic.getInputExpression()), inputExpressionTypeRef.getLocalPart());
-                inputValues = typeRef.getAllowedValues();
+                inputValues = typeRef.getAllowedValuesFEEL();
             }
             CompiledExpression compiledInput = feel.compileFeelExpression(
                     ctx,
@@ -422,14 +422,14 @@ public class DMNEvaluatorCompiler {
             } else if ( oc.getTypeRef() != null ) {
                 QName outputExpressionTypeRef = oc.getTypeRef();
                 BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(outputExpressionTypeRef, oc), outputExpressionTypeRef.getLocalPart());
-                outputValues = typeRef.getAllowedValues();
+                outputValues = typeRef.getAllowedValuesFEEL();
             } else if ( dt.getOutput().size() == 1
                         && ( dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry ) ) {
                 QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
                 // if inferredTypeRef is null, a std err will have been reported
                 if ( inferredTypeRef != null ) {
                     BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
-                    outputValues = typeRef.getAllowedValues();
+                    outputValues = typeRef.getAllowedValuesFEEL();
                 }
             }
             if ( dt.getHitPolicy().equals(HitPolicy.PRIORITY) && ( outputValues == null || outputValues.isEmpty() ) ) {

@@ -21,6 +21,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.UnaryTestImpl;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
@@ -92,21 +93,21 @@ public class UnaryTestNode
     public UnaryTest evaluate(EvaluationContext ctx) {
         switch ( operator ) {
             case LTE:
-                return createCompareUnaryTest( (l, r) -> l.compareTo( r ) <= 0 );
+                return new UnaryTestImpl( createCompareUnaryTest( (l, r) -> l.compareTo( r ) <= 0 ) , value.getText() );
             case LT:
-                return createCompareUnaryTest( (l, r) -> l.compareTo( r ) < 0 );
+                return new UnaryTestImpl( createCompareUnaryTest( (l, r) -> l.compareTo( r ) < 0 ) , value.getText() );
             case GT:
-                return createCompareUnaryTest( (l, r) -> l.compareTo( r ) > 0 );
+                return new UnaryTestImpl( createCompareUnaryTest( (l, r) -> l.compareTo( r ) > 0 ) , value.getText() );
             case GTE:
-                return createCompareUnaryTest( (l, r) -> l.compareTo( r ) >= 0 );
+                return new UnaryTestImpl( createCompareUnaryTest( (l, r) -> l.compareTo( r ) >= 0 ) , value.getText() );
             case EQ:
-                return createIsEqualUnaryTest( );
+                return new UnaryTestImpl( createIsEqualUnaryTest( ) , value.getText() );
             case NE:
-                return createIsNotEqualUnaryTest( );
+                return new UnaryTestImpl( createIsNotEqualUnaryTest( ) , value.getText() );
             case IN:
-                return createInUnaryTest();
+                return new UnaryTestImpl( createInUnaryTest() , value.getText() );
             case NOT:
-                return createNotUnaryTest();
+                return new UnaryTestImpl( createNotUnaryTest() , value.getText() );
         }
         ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.NULL_OR_UNKNOWN_OPERATOR)));
         return null;

@@ -45,16 +45,16 @@ public class SimpleTypeImpl
     }
 
     public BaseDMNTypeImpl clone() {
-        return new SimpleTypeImpl( getNamespace(), getName(), getId(), isCollection(), getAllowedValues(), getBaseType(), getFeelType() );
+        return new SimpleTypeImpl( getNamespace(), getName(), getId(), isCollection(), getAllowedValuesFEEL(), getBaseType(), getFeelType() );
     }
 
     @Override
     protected boolean internalIsInstanceOf(Object o) {
-        return getFeelType().isInstanceOf(o);
+        return getBaseType() != null ? getBaseType().isInstanceOf(o) : getFeelType().isInstanceOf(o);
     }
 
     @Override
     protected boolean internalIsAssignableValue(Object o) {
-        return getFeelType().isAssignableValue(o);
+        return getBaseType() != null ? getBaseType().isAssignableValue(o) : getFeelType().isAssignableValue (o);
     }
 }
