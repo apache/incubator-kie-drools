@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
@@ -96,7 +97,12 @@ public abstract class BaseDMNTypeImpl
         return false;
     }
 
-    public List<UnaryTest> getAllowedValues() {
+    @Override
+    public List<DMNUnaryTest> getAllowedValues() {
+        return allowedValues != null ? Collections.unmodifiableList((List) allowedValues) : Collections.emptyList();
+    }
+    
+    public List<UnaryTest> getAllowedValuesFEEL() {
         return allowedValues;
     }
 
