@@ -15,9 +15,25 @@
  */
 package org.drools.persistence.marshalling.util;
 
+import java.io.ByteArrayInputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.TransactionManager;
+
 import bitronix.tm.TransactionManagerServices;
 import junit.framework.TestCase;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -39,28 +55,11 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.TransactionManager;
-import java.io.ByteArrayInputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import static org.drools.persistence.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
 import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
 import static org.drools.persistence.util.DroolsPersistenceUtil.cleanUp;
 import static org.drools.persistence.util.DroolsPersistenceUtil.getDatasourceProperties;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 
@@ -450,7 +449,7 @@ public class MarshallingTestUtil {
     
         // Prepare input for marshaller
         ByteArrayInputStream bais = new ByteArrayInputStream( marshalledData.byteArray );
-        SessionConfiguration conf = SessionConfiguration.getDefaultInstance();
+        SessionConfiguration conf = new SessionConfigurationImpl();
         Environment env = EnvironmentFactory.newEnvironment();
     
         // Unmarshall
