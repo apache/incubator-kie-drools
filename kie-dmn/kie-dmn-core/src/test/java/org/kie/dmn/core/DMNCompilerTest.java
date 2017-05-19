@@ -58,11 +58,11 @@ public class DMNCompilerTest {
 
         EvaluationContext ctx = new EvaluationContextImpl( null );
         assertThat( feelType.getFeelType(), is( BuiltInType.STRING ) );
-        assertThat( feelType.getAllowedValues().size(), is( 4 ) );
-        assertThat( feelType.getAllowedValues().get( 0 ).apply( ctx, "UNEMPLOYED" ), is( true ) );
-        assertThat( feelType.getAllowedValues().get( 1 ).apply( ctx, "EMPLOYED" ), is( true )   );
-        assertThat( feelType.getAllowedValues().get( 2 ).apply( ctx, "SELF-EMPLOYED" ), is( true )  );
-        assertThat( feelType.getAllowedValues().get( 3 ).apply( ctx, "STUDENT" ), is( true )  );
+        assertThat( feelType.getAllowedValuesFEEL().size(), is( 4 ) );
+        assertThat( feelType.getAllowedValuesFEEL().get( 0 ).apply( ctx, "UNEMPLOYED" ), is( true ) );
+        assertThat( feelType.getAllowedValuesFEEL().get( 1 ).apply( ctx, "EMPLOYED" ), is( true )   );
+        assertThat( feelType.getAllowedValuesFEEL().get( 2 ).apply( ctx, "SELF-EMPLOYED" ), is( true )  );
+        assertThat( feelType.getAllowedValuesFEEL().get( 3 ).apply( ctx, "STUDENT" ), is( true )  );
     }
 
     @Test

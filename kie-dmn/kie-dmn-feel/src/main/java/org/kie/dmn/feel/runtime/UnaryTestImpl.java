@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,24 @@
 
 package org.kie.dmn.feel.runtime;
 
-import java.util.function.BiFunction;
-
-import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.feel.lang.EvaluationContext;
 
-@FunctionalInterface
-public interface UnaryTest extends DMNUnaryTest, BiFunction<EvaluationContext, Object, Boolean> {
-
+public class UnaryTestImpl implements UnaryTest {
+    private final String text;
+    private final UnaryTest delegate;
+   
+    public UnaryTestImpl(UnaryTest delegate, String text) {
+        this.text = text;
+        this.delegate = delegate;
+    }
+   
+    @Override
+    public String toString() {
+        return text;
+    }
+   
+    @Override
+    public Boolean apply(EvaluationContext ctx, Object obj) {
+        return delegate.apply(ctx, obj);
+    }
 }
