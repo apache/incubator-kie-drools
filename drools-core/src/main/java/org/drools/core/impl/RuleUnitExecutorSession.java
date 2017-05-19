@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.core.SessionConfiguration;
+import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.common.DynamicEntryPoint;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.datasources.CursoredDataSource;
@@ -54,7 +55,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
 
     public RuleUnitExecutorSession() {
         session = new StatefulKnowledgeSessionImpl();
-        initSession();
+        initSession(new SessionConfigurationImpl(), EnvironmentFactory.newEnvironment());
         session.agendaEventSupport = new AgendaEventSupport();
         session.ruleRuntimeEventSupport = new RuleRuntimeEventSupport();
         session.ruleEventListenerSupport = new RuleEventListenerSupport();
@@ -65,7 +66,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
                                     final SessionConfiguration config,
                                     final Environment environment ) {
         session = new StatefulKnowledgeSessionImpl(id, null, initInitFactHandle, config, environment);
-        initSession();
+        initSession(config, environment);
     }
 
     public RuleUnitExecutorSession( final long id,
@@ -75,11 +76,11 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
                                     final InternalAgenda agenda,
                                     final Environment environment ) {
         session = new StatefulKnowledgeSessionImpl(id, null, handleFactory, propagationContext, config, agenda, environment);
-        initSession();
+        initSession(config, environment);
     }
 
-    private void initSession() {
-        session.init();
+    private void initSession(SessionConfiguration config, Environment environment) {
+        session.init(config, environment);
         session.ruleUnitExecutor = this;
     }
 

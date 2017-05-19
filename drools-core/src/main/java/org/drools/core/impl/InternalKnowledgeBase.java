@@ -152,4 +152,6 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
 
     RuleUnitRegistry getRuleUnitRegistry();
     boolean hasUnits();
+
+    SessionConfiguration getSessionConfiguration();
 }
