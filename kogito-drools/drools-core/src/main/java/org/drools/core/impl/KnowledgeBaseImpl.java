@@ -41,6 +41,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
@@ -133,8 +134,8 @@ public class KnowledgeBaseImpl
 
     private static final long serialVersionUID = 510l;
 
-    public  Set<EntryPointNode> addedEntryNodeCache;
-    public  Set<EntryPointNode> removedEntryNodeCache;
+    private Set<EntryPointNode> addedEntryNodeCache;
+    private Set<EntryPointNode> removedEntryNodeCache;
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -194,6 +195,8 @@ public class KnowledgeBaseImpl
 
     private RuleUnitRegistry ruleUnitRegistry = new RuleUnitRegistry();
 
+    private SessionConfiguration sessionConfiguration;
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -223,6 +226,8 @@ public class KnowledgeBaseImpl
         if ( this.config.getSessionCacheOption().isEnabled() ) {
             sessionsCache = new SessionsCache(this.config.getSessionCacheOption().isAsync());
         }
+
+        sessionConfiguration = new SessionConfigurationImpl( null, this.config.getClassLoader(), this.config.getChainedProperties() );
     }
 
     @Override
@@ -292,7 +297,7 @@ public class KnowledgeBaseImpl
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KieSessionConfiguration conf, Environment environment) {
         // NOTE if you update here, you'll also need to update the JPAService
         if ( conf == null ) {
-            conf = SessionConfiguration.getDefaultInstance();
+            conf = getSessionConfiguration();
         }
         
         if ( environment == null ) {
@@ -301,7 +306,11 @@ public class KnowledgeBaseImpl
 
         return newStatefulSession((SessionConfiguration) conf, environment);
     }
-    
+
+    public SessionConfiguration getSessionConfiguration() {
+        return sessionConfiguration;
+    }
+
     public Collection<StatefulKnowledgeSession> getStatefulKnowledgeSessions() {
         return statefulSessions;
     }
@@ -452,6 +461,9 @@ public class KnowledgeBaseImpl
 
         this.config = (RuleBaseConfiguration) droolsStream.readObject();
         this.config.setClassLoader(droolsStream.getParentClassLoader());
+
+        this.sessionConfiguration = new SessionConfigurationImpl( null, config.getClassLoader(), config.getChainedProperties() );
+
         kieComponentFactory = getConfiguration().getComponentFactory();
 
         this.pkgs = (Map<String, InternalKnowledgePackage>) droolsStream.readObject();
@@ -641,7 +653,7 @@ public class KnowledgeBaseImpl
     }
 
     public StatefulKnowledgeSessionImpl newStatefulSession() {
-        return newStatefulSession(SessionConfiguration.getDefaultInstance(),
+        return newStatefulSession(getSessionConfiguration(),
                                   EnvironmentFactory.newEnvironment());
     }
 
@@ -1459,7 +1471,7 @@ public class KnowledgeBaseImpl
     }
 
     public StatefulKnowledgeSessionImpl newStatefulSession(boolean keepReference) {
-        SessionConfiguration config = SessionConfiguration.newInstance();
+        SessionConfiguration config = getSessionConfiguration();
         config.setKeepReference( keepReference );
 
         return newStatefulSession( config,
@@ -1475,13 +1487,13 @@ public class KnowledgeBaseImpl
                                                            boolean keepReference) {
         return newStatefulSession( stream,
                                    keepReference,
-                                   SessionConfiguration.getDefaultInstance() );
+                                   getSessionConfiguration() );
     }
 
     public StatefulKnowledgeSessionImpl newStatefulSession(java.io.InputStream stream,
                                                            boolean keepReference,
                                                            SessionConfiguration conf) {
-        StatefulKnowledgeSessionImpl session = null;
+        StatefulKnowledgeSessionImpl session;
         try {
             readLock();
             try {
@@ -1527,7 +1539,7 @@ public class KnowledgeBaseImpl
     public StatefulKnowledgeSessionImpl newStatefulSession(SessionConfiguration sessionConfig,
                                                            Environment environment) {
         if ( sessionConfig == null ) {
-            sessionConfig = SessionConfiguration.getDefaultInstance();
+            sessionConfig = getSessionConfiguration();
         }
         if ( environment == null ) {
             environment = EnvironmentFactory.newEnvironment();

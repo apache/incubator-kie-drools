@@ -16,6 +16,10 @@
 
 package org.drools.core;
 
+import java.io.Externalizable;
+import java.util.Map;
+import java.util.Properties;
+
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobFactoryManager;
@@ -30,8 +34,8 @@ import org.kie.api.runtime.conf.KieSessionOption;
 import org.kie.api.runtime.conf.MultiValueKieSessionOption;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
-import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
+import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.conf.WorkItemHandlerOption;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -39,22 +43,10 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
-import java.io.Externalizable;
-import java.util.Map;
-import java.util.Properties;
-
 public abstract class SessionConfiguration implements KieSessionConfiguration, Externalizable {
 
-    private static class DefaultSessionConfiguration {
-        private static final SessionConfigurationImpl defaultInstance = new SessionConfigurationImpl();
-    }
-
-    public static SessionConfiguration getDefaultInstance() {
-        return DefaultSessionConfiguration.defaultInstance;
-    }
-
     public static SessionConfiguration newInstance() {
-        return new SessionConfigurationDelegate();
+        return new SessionConfigurationImpl();
     }
 
     public static SessionConfiguration newInstance(Properties properties) {
@@ -215,9 +207,6 @@ public abstract class SessionConfiguration implements KieSessionConfiguration, E
 
     @Override
     public final int hashCode() {
-        if (this == getDefaultInstance()) {
-            return 0;
-        }
         int result = (isKeepReference() ? 1 : 0);
         result = 31 * result + getClockType().hashCode();
         result = 31 * result + getBeliefSystemType().hashCode();
