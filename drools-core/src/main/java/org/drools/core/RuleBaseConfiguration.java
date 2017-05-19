@@ -1215,4 +1215,7 @@ public class RuleBaseConfiguration
         return null;
     }
 
+    public ChainedProperties getChainedProperties() {
+        return chainedProperties;
+    }
 }

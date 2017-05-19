@@ -122,7 +122,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
      * Creates a new session configuration with default configuration options.
      */
     public SessionConfigurationImpl() {
-        init(null, null);
+        init( null, null, null );
     }
 
     /**
@@ -130,24 +130,28 @@ public class SessionConfigurationImpl extends SessionConfiguration {
      * as configuration options. 
      */
     public SessionConfigurationImpl( Properties properties ) {
-        init( properties, null );
-    }
-
-    public SessionConfigurationImpl( ClassLoader classLoader ) {
-        init(null, classLoader);
+        init( properties, null, null );
     }
 
     public SessionConfigurationImpl( Properties properties, ClassLoader classLoader ) {
-        init( properties, classLoader );
+        init( properties, classLoader, null );
     }
 
-    private void init(Properties properties, ClassLoader classLoader) {
-        this.classLoader = ProjectClassLoader.getClassLoader(classLoader == null ? null : classLoader, getClass(), false);
+    public SessionConfigurationImpl( Properties properties, ClassLoader classLoader, ChainedProperties chainedProperties ) {
+        init( properties, classLoader, chainedProperties );
+    }
+
+    private void init(Properties properties, ClassLoader classLoader, ChainedProperties chainedProperties) {
+        this.classLoader = classLoader instanceof ProjectClassLoader ?
+                           classLoader :
+                           ProjectClassLoader.getClassLoader(classLoader == null ? null : classLoader, getClass(), false);
 
         this.immutable = false;
-        this.chainedProperties = ChainedProperties.getChainedProperties( this.classLoader );
+
+        this.chainedProperties = chainedProperties != null ? chainedProperties : ChainedProperties.getChainedProperties( this.classLoader );
 
         if ( properties != null ) {
+            this.chainedProperties = this.chainedProperties.clone();
             this.chainedProperties.addProperties( properties );
         }
 
@@ -395,8 +399,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     }
 
     public TimerService newTimerService() {
-        String className = this.chainedProperties.getProperty(
-                                                               "drools.timerService",
+        String className = this.chainedProperties.getProperty( "drools.timerService",
                                                                "org.drools.core.time.impl.JDKTimerService" );
         if ( className == null ) {
             return null;
