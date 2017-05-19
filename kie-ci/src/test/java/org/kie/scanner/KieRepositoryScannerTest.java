@@ -286,12 +286,13 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         KieSession ksession = kieContainer.newKieSession("KSession1");
         checkKSession(ksession, "rule1", "rule2");
 
-        // Create faulty KJAR for 
+        // create a new kjar 
         InternalKieModule kJar2 = createKieJar(ks, releaseId2, "rule2", "rule3");
 
+        // deploy it on maven
         repository.installArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId2));
 
-        
+        // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
         assertEquals(releaseId1, scanner.getCurrentReleaseId());
         assertEquals(InternalKieScanner.Status.STOPPED, scanner.getStatus());
 
