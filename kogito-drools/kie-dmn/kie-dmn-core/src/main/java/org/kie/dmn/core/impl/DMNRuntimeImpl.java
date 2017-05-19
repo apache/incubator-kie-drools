@@ -369,42 +369,9 @@ public class DMNRuntimeImpl
         if (dep instanceof InputDataNode) {
             InputDataNode inputDataNode = (InputDataNode) dep;
             BaseDMNTypeImpl dmnType = (BaseDMNTypeImpl) inputDataNode.getType();
-            return checkValueIsValid(dmnType, context.get( dep.getName() ), context);
+            return dmnType.isAssignableValue( context.get( dep.getName() ) );
         }
-        return true;
-    }
-    
-    private boolean checkValueIsValid(BaseDMNTypeImpl dmnType, Object v, DMNContext context) {
-        if ( dmnType instanceof SimpleTypeImpl && dmnType.getAllowedValues() != null && !dmnType.getAllowedValues().isEmpty() ) {
-            List<UnaryTest> allowedValues = dmnType.getAllowedValues();
-            if ( dmnType.isCollection() ) {
-                if ( v instanceof Collection) {
-                    Collection<?> elements = (Collection<?>) v;
-                    for ( Object e : elements ) {
-                       if ( !DMNFEELHelper.valueMatchesInUnaryTests(allowedValues, e, context) ) {
-                           return false;
-                       }
-                    }
-                    return true;
-                } else {
-                    return false; // <itemComponent isCollection="true" ..> hence the actual input value MUST be a Collection.
-                }
-            } 
-            return DMNFEELHelper.valueMatchesInUnaryTests(allowedValues, v, context);
-        } else if ( dmnType instanceof CompositeTypeImpl ) {
-            CompositeTypeImpl compositeDMNType = (CompositeTypeImpl) dmnType;
-            for ( Entry<String, DMNType> f : compositeDMNType.getFields().entrySet() ) {
-                Object value;
-                try {
-                    value = EvalHelper.getValue(v, f.getKey());
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    return false;
-                }
-                if ( !checkValueIsValid((BaseDMNTypeImpl) f.getValue(), value, context) ) {
-                    return false;
-                }
-            }
-        }
+        // if the dependency is NOT an InputData, the type coherence was checked at evaluation result assignment.
         return true;
     }
 

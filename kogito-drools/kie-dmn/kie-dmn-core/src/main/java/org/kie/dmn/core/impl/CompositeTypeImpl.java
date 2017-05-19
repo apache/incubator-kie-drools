@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core.impl;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -25,6 +27,7 @@ import java.util.Map.Entry;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class CompositeTypeImpl
         extends BaseDMNTypeImpl {
@@ -82,41 +85,73 @@ public class CompositeTypeImpl
     
     @Override
     protected boolean internalIsInstanceOf(Object o) {
-        Map<String, Object> instance = null;
-        try {
-            instance = (Map<String, Object>) o;
-        } catch ( Exception e ) {
-            return false;
-        }
-        for ( Entry<String, DMNType> f : fields.entrySet() ) {
-            if ( !instance.containsKey(f.getKey()) ) {
-                return false;
-            } else {
-                if ( !f.getValue().isInstanceOf(instance.get(f.getKey())) ) {
-                    return false;
+        if ( o instanceof Map<?, ?> ) {
+            Map<?, ?> instance = (Map<?, ?>) o;
+            for ( Entry<String, DMNType> f : fields.entrySet() ) {
+                if ( !instance.containsKey(f.getKey()) ) {
+                    return false; // It must have key named 'f.getKey()' like a Duck.
+                } else {
+                    if ( !f.getValue().isInstanceOf(instance.get(f.getKey())) ) {
+                        return false;
+                    }
                 }
             }
+            return true;
+        } else {
+            for ( Entry<String, DMNType> f : fields.entrySet() ) {
+                Method getter = EvalHelper.getGenericAccessor( o.getClass(), f.getKey() );
+                if ( getter != null ) {
+                    Object invoked;
+                    try {
+                        invoked = getter.invoke( o );
+                    } catch ( IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
+                        return false;
+                    }
+                    Object fieldValue = EvalHelper.coerceNumber( invoked );
+                    if ( !f.getValue().isInstanceOf( fieldValue ) ) {
+                        return false;
+                    }
+                } else {
+                    return false; // It must <genericAccessor> like a Duck.
+                }
+            }
+            return true;
         }
-        return true;
     }
 
     @Override
     protected boolean internalIsAssignableValue(Object o) {
-        Map<String, Object> instance = null;
-        try {
-            instance = (Map<String, Object>) o;
-        } catch ( Exception e ) {
-            return false;
-        }
-        for ( Entry<String, DMNType> f : fields.entrySet() ) {
-            if ( !instance.containsKey(f.getKey()) ) {
-                return false;
-            } else {
-                if ( !f.getValue().isAssignableValue(instance.get(f.getKey())) ) {
-                    return false;
+        if ( o instanceof Map<?, ?> ) {
+            Map<?, ?> instance = (Map<?, ?>) o;
+            for ( Entry<String, DMNType> f : fields.entrySet() ) {
+                if ( !instance.containsKey(f.getKey()) ) {
+                    return false; // It must have key named 'f.getKey()' like a Duck.
+                } else {
+                    if ( !f.getValue().isAssignableValue(instance.get(f.getKey())) ) {
+                        return false;
+                    }
                 }
             }
+            return true;
+        } else {
+            for ( Entry<String, DMNType> f : fields.entrySet() ) {
+                Method getter = EvalHelper.getGenericAccessor( o.getClass(), f.getKey() );
+                if ( getter != null ) {
+                    Object invoked;
+                    try {
+                        invoked = getter.invoke( o );
+                    } catch ( IllegalAccessException | IllegalArgumentException | InvocationTargetException e ) {
+                        return false;
+                    }
+                    Object fieldValue = EvalHelper.coerceNumber( invoked );
+                    if ( !f.getValue().isAssignableValue( fieldValue ) ) {
+                        return false;
+                    }
+                } else {
+                    return false; // It must <genericAccessor> like a Duck.
+                }
+            }
+            return true;
         }
-        return true;
     }
 }
