@@ -25,10 +25,6 @@ import java.io.InputStream;
 
 public interface InternalKieScanner extends KieScanner {
 
-    enum Status {
-        STARTING, SCANNING, UPDATING, RUNNING, STOPPED, SHUTDOWN
-    }
-
     void setKieContainer(KieContainer kieContainer);
 
     KieModule loadArtifact(ReleaseId releaseId);
