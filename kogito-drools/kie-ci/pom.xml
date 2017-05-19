@@ -150,6 +150,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
     <!-- Replacement for above excluded 'commons-logging:commons-logging' -->
     <dependency>
       <groupId>org.slf4j</groupId>

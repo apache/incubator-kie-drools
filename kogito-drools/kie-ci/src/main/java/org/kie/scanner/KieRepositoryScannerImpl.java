@@ -31,8 +31,11 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.event.kiescanner.KieScannerEventListener;
 import org.kie.api.runtime.KieContainer;
+import org.kie.scanner.event.KieScannerEventSupport;
 import org.kie.scanner.management.KieScannerMBean;
 import org.kie.scanner.management.KieScannerMBeanImpl;
 import org.kie.scanner.management.MBeanUtils;
@@ -42,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +53,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
@@ -73,7 +78,29 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private KieScannerMBean mbean;
 
     private long pollingInterval;
+    
+    private KieScannerEventSupport listeners = new KieScannerEventSupport();
+    
+    @Override
+    public void addListener(KieScannerEventListener listener) {
+        listeners.addEventListener(listener);
+    }
 
+    @Override
+    public void removeListener(KieScannerEventListener listener) {
+        listeners.removeEventListener(listener);
+    }
+
+    @Override
+    public Collection<KieScannerEventListener> getListeners() {
+        return listeners.getEventListeners();
+    }
+    
+    private void changeStatus( Status status ) {
+        this.status = status;
+        listeners.fireKieScannerStatusChangeEventImpl(status);
+    }
+    
     public synchronized void setKieContainer(KieContainer kieContainer) {
         if (this.kieContainer != null) {
             throw new RuntimeException("Cannot change KieContainer on an already initialized KieScanner");
@@ -90,7 +117,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         usedDependencies = indexArtifacts(artifactResolver);
 
         KieScannersRegistry.register(this);
-        status = Status.STOPPED;
+        changeStatus( Status.STOPPED );
         
         if( MBeanUtils.isMBeanEnabled() ) {
             mbean = new KieScannerMBeanImpl(this);
@@ -244,7 +271,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             timer = null;
         }
         this.pollingInterval = 0;
-        status = Status.STOPPED;
+        changeStatus( Status.STOPPED );
     }
 
     public synchronized long getPollingInterval() {
@@ -254,12 +281,12 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     public void shutdown() {
         if( getStatus() != Status.SHUTDOWN ) {
             stop(); // making sure it is stopped
-            status = Status.SHUTDOWN;
+            changeStatus( Status.SHUTDOWN );
         }
     }
 
     private void startScanTask(long pollingInterval) {
-        status = Status.RUNNING;
+        changeStatus( Status.RUNNING );
         this.pollingInterval = pollingInterval;
         timer = new Timer(true);
         timer.schedule(new ScanTask(), pollingInterval, pollingInterval);
@@ -273,7 +300,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
                     return;
                 }
                 scanNow();
-                status = Status.RUNNING;
+                changeStatus( Status.RUNNING );
             }
         }
     }
@@ -285,47 +312,56 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         // Polling can be started so remember the original state.
         final Status originalStatus = status;
         try {
-            status = Status.SCANNING;
+            changeStatus( Status.SCANNING );
             Map<DependencyDescriptor, Artifact> updatedArtifacts = scanForUpdates();
             if (updatedArtifacts.isEmpty()) {
-                status = originalStatus;
+                changeStatus( originalStatus );
                 return;
             }
-            status = Status.UPDATING;
+            changeStatus( Status.UPDATING );
 
+            boolean allUpdatesSucceeded = true;
             // build the dependencies first
             Map.Entry<DependencyDescriptor, Artifact> containerEntry = null;
             for (Map.Entry<DependencyDescriptor, Artifact> entry : updatedArtifacts.entrySet()) {
                 if (entry.getKey().isSameArtifact(kieContainer.getContainerReleaseId())) {
                     containerEntry = entry;
                 } else {
-                    updateKieModule(entry.getKey(), entry.getValue());
+                    allUpdatesSucceeded = updateKieModule(entry.getKey(), entry.getValue()) && allUpdatesSucceeded;
                 }
             }
             if (containerEntry != null) {
-                updateKieModule(containerEntry.getKey(), containerEntry.getValue());
+                allUpdatesSucceeded = updateKieModule(containerEntry.getKey(), containerEntry.getValue()) && allUpdatesSucceeded;
             }
 
-            log.info("The following artifacts have been updated: " + updatedArtifacts);
+            if ( allUpdatesSucceeded ) {
+                log.error("Some errors occured while updating the following artifacts: " + updatedArtifacts);
+            } else {
+                log.info("The following artifacts have been updated: " + updatedArtifacts);
+            }
             
             // show we catch exceptions here and shutdown the scanner if one happens?
             
         } finally {
-            status = originalStatus;
+            changeStatus( originalStatus );
         }
     }
 
-    private void updateKieModule(DependencyDescriptor oldDependency, Artifact artifact) {
+    private boolean updateKieModule(DependencyDescriptor oldDependency, Artifact artifact) {
         ReleaseId newReleaseId = new DependencyDescriptor(artifact).getReleaseId();
         ZipKieModule kieModule = createZipKieModule(newReleaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, artifactResolver, artifactResolver.getArtifactDependecies(newReleaseId.toString()));
             ResultsImpl messages = build(kieModule);
             if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
-                kieContainer.updateDependencyToVersion(oldDependency.getArtifactReleaseId(), newReleaseId);
+                Results updateMessages = kieContainer.updateDependencyToVersion(oldDependency.getArtifactReleaseId(), newReleaseId);
                 oldDependency.setArtifactVersion(artifact.getVersion());
+                messages.getMessages().addAll( updateMessages.getMessages() ); // append all update Results into build Results to notify listeners
             }
+            listeners.fireKieScannerUpdateResultsEventImpl(messages);
+            return !messages.hasMessages(Message.Level.ERROR);
         }
+        return false;
     }
 
     private Map<DependencyDescriptor, Artifact> scanForUpdates() {
@@ -388,4 +424,5 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     public synchronized KieScannerMBean getMBean() {
         return this.mbean;
     }
+
 }

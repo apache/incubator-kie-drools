@@ -48,6 +48,10 @@ public class MavenRepositoryConfiguration {
         this.remoteRepositoriesForRequest = initRemoteRepositoriesForRequest();
         this.artifactRepositoriesForRequest = initArtifactRepositories();
     }
+    
+    protected String getLocalRepository() {
+        return settings.getLocalRepository();
+    }
 
     public List<Proxy> getProxies() {
         return settings.getProxies();

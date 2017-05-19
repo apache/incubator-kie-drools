@@ -15,11 +15,14 @@
 
 package org.kie.scanner;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.settings.Server;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
@@ -33,6 +36,8 @@ import org.eclipse.aether.graph.DependencyVisitor;
 import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.installation.InstallationException;
 import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.repository.LocalRepositoryManager;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactRequest;
@@ -411,5 +416,38 @@ public class MavenRepository {
         }
 
         return releaseId.getArtifactId() + "-" + releaseId.getVersion();
+    }
+    
+    /**
+     * Utility method specifically suggested for testing purposes only.
+     * @param repository 
+     */
+    public void removeLocalArtifact(ReleaseId releaseId) {
+        // Taken by analogy of build-helper-maven-plugin
+        Artifact artifact = new DefaultArtifact(releaseId.getGroupId(), releaseId.getArtifactId(), null, releaseId.getVersion());
+        
+        LocalRepository localRepo = new LocalRepository( getMavenRepositoryConfiguration().getLocalRepository() );
+        
+        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+        LocalRepositoryManager localRepositoryManager = aether.getSystem().newLocalRepositoryManager( session, localRepo );
+        session.setLocalRepositoryManager( localRepositoryManager );
+        session.setOffline( true );
+        
+        String pathForLocalArtifact = localRepositoryManager.getPathForLocalArtifact(artifact);
+        
+        File localArtifactDir = new File( localRepo.getBasedir(), pathForLocalArtifact )    // File .jar
+                                .getParentFile()                                            // Directory of specific version, corresponding in ReleaseId
+                                ;
+
+        if (!localArtifactDir.exists()) {
+            log.warn("The expected local maven repo dir for {} does not exist {}, nothing to delete.", releaseId, localArtifactDir);
+            return;
+        }
+        log.info("Erasing directory from local maven repository {}", localArtifactDir);
+        try {
+            FileUtils.deleteDirectory(localArtifactDir);
+        } catch (Exception e) {
+            log.error("Error while trying to erase directory from local maven repository {}", localArtifactDir);
+        }
     }
 }
