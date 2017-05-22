@@ -117,6 +117,7 @@
               org.kie.api,
               org.kie.api.builder,
               org.kie.api.builder.model,
+              org.kie.api.event.kiescanner,
               org.kie.api.runtime,
               org.kie.internal.utils,
               org.osgi.framework,
