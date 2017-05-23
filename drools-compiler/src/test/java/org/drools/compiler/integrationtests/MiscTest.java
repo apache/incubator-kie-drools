@@ -81,7 +81,6 @@ import org.drools.compiler.Target;
 import org.drools.compiler.TestParam;
 import org.drools.compiler.Triangle;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.ParserError;
@@ -600,78 +599,6 @@ import org.slf4j.LoggerFactory;
                        result.size() );
          assertEquals( person,
                        result.get( 1 ) );
-
-     }
-
-     @Test
-     public void testDeclaredFactAndFunction() throws Exception {
-         String rule = "package com.jboss.qa;\n";
-         rule += "global java.util.List list\n";
-         rule += "declare Address\n";
-         rule += "    street: String\n";
-         rule += "end\n";
-         rule += "function void myFunction() {\n";
-         rule += "}\n";
-         rule += "rule \"r1\"\n";
-         rule += "    dialect \"mvel\"\n";
-         rule += "when\n";
-         rule += "    Address()\n";
-         rule += "then\n";
-         rule += "    list.add(\"r1\");\n";
-         rule += "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         List list = new ArrayList();
-         session.setGlobal( "list",
-                            list );
-
-         FactType addressFact = kbase.getFactType( "com.jboss.qa", "Address" );
-         Object address = addressFact.newInstance();
-         session.insert( address );
-         session.fireAllRules();
-
-         list = (List) session.getGlobal( "list" );
-         assertEquals( 1,
-                       list.size() );
-
-         assertEquals( "r1",
-                       list.get( 0 ) );
-     }
-
-     @Test
-     public void testTypeDeclarationOnSeparateResource() throws Exception {
-         String file1 = "package a.b.c\n" +
-                        "declare SomePerson\n" +
-                        "    weight : double\n" +
-                        "    height : double\n" +
-                        "end\n";
-         String file2 = "package a.b.c\n" +
-                        "import org.drools.compiler.*\n" +
-                        "declare Holder\n" +
-                        "    person : Person\n" +
-                        "end\n" +
-                        "rule \"create holder\"\n" +
-                        "    when\n" +
-                        "        person : Person( )\n" +
-                        "        not (\n" +
-                        "            Holder( person; )\n" +
-                        "        )\n" +
-                        "    then\n" +
-                        "        insert(new Holder(person));\n" +
-                        "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( file1, file2 );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         assertEquals( 0,
-                       ksession.fireAllRules() );
-         ksession.insert( new Person( "Bob" ) );
-         assertEquals( 1,
-                       ksession.fireAllRules() );
-         assertEquals( 0,
-                       ksession.fireAllRules() );
 
      }
 
@@ -1769,26 +1696,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testDeclareAndFrom() throws Exception {
-         KnowledgeBase kbase = loadKnowledgeBase( "test_DeclareWithFrom.drl" );
-         FactType profileType = kbase.getFactType( "org.drools.compiler",
-                                                   "Profile" );
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         Object profile = profileType.newInstance();
-         Map<String, Integer> map = new HashMap<String, Integer>();
-         map.put( "internet",
-                  Integer.valueOf( 2 ) );
-         profileType.set( profile,
-                          "pageFreq",
-                          map );
-
-         ksession.insert( profile );
-         ksession.fireAllRules();
-         ksession.dispose();
-     }
-
-     @Test
      public void testDeclarationNonExistingField() throws Exception {
          KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
          kbuilder.add( ResourceFactory.newClassPathResource( "test_DeclarationOfNonExistingField.drl",
@@ -2252,97 +2159,6 @@ import org.slf4j.LoggerFactory;
          assertEquals( 1,
                        rules );
 
-     }
-
-     @Test
-     public void testNoneTypeSafeDeclarations() {
-         // same namespace
-         String str = "package org.drools.compiler\n" +
-                      "global java.util.List list\n" +
-                      "declare Person\n" +
-                      "    @typesafe(false)\n" +
-                      "end\n" +
-                      "rule testTypeSafe\n dialect \"mvel\" when\n" +
-                      "   $p : Person( object.street == 's1' )\n" +
-                      "then\n" +
-                      "   list.add( $p );\n" +
-                      "end\n";
-
-         executeTypeSafeDeclarations( str,
-                                      true );
-
-         // different namespace with import
-         str = "package org.drools.compiler.test\n" +
-               "import org.drools.compiler.Person\n" +
-               "global java.util.List list\n" +
-               "declare Person\n" +
-               "    @typesafe(false)\n" +
-               "end\n" +
-               "rule testTypeSafe\n dialect \"mvel\" when\n" +
-               "   $p : Person( object.street == 's1' )\n" +
-               "then\n" +
-               "   list.add( $p );\n" +
-               "end\n";
-         executeTypeSafeDeclarations( str,
-                                      true );
-
-         // different namespace without import using qualified name
-         str = "package org.drools.compiler.test\n" +
-               "global java.util.List list\n" +
-               "declare org.drools.compiler.Person\n" +
-               "    @typesafe(false)\n" +
-               "end\n" +
-               "rule testTypeSafe\n dialect \"mvel\" when\n" +
-               "   $p : org.drools.compiler.Person( object.street == 's1' )\n" +
-               "then\n" +
-               "   list.add( $p );\n" +
-               "end\n";
-         executeTypeSafeDeclarations( str,
-                                      true );
-
-         // this should fail as it's not declared non typesafe
-         str = "package org.drools.compiler.test\n" +
-               "global java.util.List list\n" +
-               "declare org.drools.compiler.Person\n" +
-               "    @typesafe(true)\n" +
-               "end\n" +
-               "rule testTypeSafe\n dialect \"mvel\" when\n" +
-               "   $p : org.drools.compiler.Person( object.street == 's1' )\n" +
-               "then\n" +
-               "   list.add( $p );\n" +
-               "end\n";
-         executeTypeSafeDeclarations( str,
-                                      false );
-     }
-
-     private void executeTypeSafeDeclarations(String str,
-                                              boolean mustSucceed) {
-         KnowledgeBase kbase = null;
-         try {
-             kbase = loadKnowledgeBaseFromString(str);
-             if ( !mustSucceed ) {
-                 fail("Compilation Should fail" );
-             }
-         } catch ( Throwable e ) {
-             if ( mustSucceed ) {
-                 fail("Compilation Should succeed" );
-             }
-             return;
-         }
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         Address a = new Address( "s1" );
-         Person p = new Person( "yoda" );
-         p.setObject( a );
-
-         ksession.insert( p );
-         ksession.fireAllRules();
-         assertEquals( p,
-                       list.get( 0 ) );
      }
 
      @Test
@@ -4243,32 +4059,8 @@ import org.slf4j.LoggerFactory;
                        rules );
      }
 
-     public void testFreeFormExpressions() {
-         String str = "package org.drools.compiler\n" +
-                      "rule r1\n" +
-                      "when\n" +
-                      "    $p1 : Person( age > 2*10, 10 < age )\n" +
-                      "    $p2 : Person( age > 2*$p1.age )\n" +
-                      "then\n" +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         Person bob = new Person( "bob",
-                                  30 );
-         Person mark = new Person( "mark",
-                                   61 );
-         ksession.insert( bob );
-         ksession.insert( mark );
-
-         int rules = ksession.fireAllRules();
-         assertEquals( 1,
-                       rules );
-     }
-
      @Test
-     public void testFreeFormExpressions2() {
+     public void testFreeFormExpressions() {
          String str = "package org.drools.compiler\n" +
                       "rule r1\n" +
                       "when\n" +
@@ -5335,94 +5127,6 @@ import org.slf4j.LoggerFactory;
          assertEquals( 1, ksession.fireAllRules() );
      }
 
-     @Test
-     public void testDeclaresWithArrayFields() throws Exception {
-         String rule = "package org.drools.compiler.test; \n" +
-                       "import " + org.drools.compiler.test.Person.class.getName() + ";\n" +
-                       "import " + org.drools.compiler.test.Man.class.getName() + ";\n" +
-                       "\n" +
-                       "global java.util.List list;" +
-                       "\n" +
-                       "declare Cheese\n" +
-                       "   name : String = \"ched\" \n" +
-                       "end \n" +
-                       "" +
-                       "declare X\n" +
-                       "    fld \t: String   = \"xx\"                                      @key \n" +
-                       "    achz\t: Cheese[] \n" +
-                       "    astr\t: String[] " + " = new String[] {\"x\", \"y11\" } \n" +
-                       "    aint\t: int[] \n" +
-                       "    sint\t: short[] \n" +
-                       "    bint\t: byte[] \n" +
-                       "    lint\t: long[] \n" +
-                       "    dint\t: double[] \n" +
-                       "    fint\t: float[] \n" +
-                       "    zint\t: Integer[] " + " = new Integer[] {2,3}                   @key \n" +
-                       "    aaaa\t: String[][] \n" +
-                       "    bbbb\t: int[][] \n" +
-                       "    aprs\t: Person[] " + " = new Person[] { new Man() } \n" +
-                       "end\n" +
-                       "\n" +
-                       "rule \"Init\"\n" +
-                       "when\n" +
-                       "\n" +
-                       "then\n" +
-                       "    X x = new X( \"xx\", \n" +
-                       "                 new Cheese[0], \n" +
-                       "                 new String[] { \"x\", \"y22\" }, \n" +
-                       "                 new int[] { 7, 9 }, \n" +
-                       "                 new short[] { 3, 4 }, \n" +
-                       "                 new byte[] { 1, 2 }, \n" +
-                       "                 new long[] { 100L, 200L }, \n" +
-                       "                 new double[] { 3.2, 4.4 }, \n" +
-                       "                 new float[] { 3.2f, 4.4f }, \n" +
-                       "                 new Integer[] { 2, 3 }, \n" +
-                       "                 new String[2][3], \n" +
-                       "                 new int[5][3], \n" +
-                       "                 null \n" +
-                       "    ); \n" +
-                       "   insert( x );\n" +
-                       "   " +
-                       "   X x2 = new X(); \n" +
-                       "   x2.setAint( new int[2] ); \n " +
-                       "   x2.getAint()[0] = 7; \n" +
-                       "   insert( x2 );\n" +
-                       "   " +
-                       "   if ( x.hashCode() == x2.hashCode() ) list.add( \"hash\" );  \n" +
-                       "   " +
-                       "   if( x.equals( x2 ) ) list.add( \"equals\" );  \n" +
-                       "   " +
-                       "   list.add( x.getAint(  )[0] );  \n" +
-                       "end \n" +
-                       "\n" +
-                       "rule \"Check\"\n" +
-                       "when\n" +
-                       "    X( astr.length > 0,            \n" +
-                       "       astr[0] == \"x\",           \n" +
-                       "       $x : astr[1],               \n" +
-                       "       aint[0] == 7  )             \n" +
-                       "then\n" +
-                       "    list.add( $x );\n" +
-                       "end \n" +
-                       "";
-
-         System.out.println( rule );
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-         List list = new ArrayList();
-         ksession.setGlobal( "list", list );
-
-         ksession.fireAllRules();
-
-         assertTrue( list.contains( "hash" ) );
-         assertTrue( list.contains( "equals" ) );
-         assertTrue( list.contains( 7 ) );
-         assertTrue( list.contains( "y11" ) );
-         assertTrue( list.contains( "y22" ) );
-
-     }
-
      public static class Parent {
      }
 
@@ -5702,65 +5406,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testDeclaredTypeAsFieldForAnotherDeclaredType() {
-         // JBRULES-3468
-         String str = "package com.sample\n" +
-                      "\n" +
-                      "import com.sample.*;\n" +
-                      "\n" +
-                      "declare Item\n" +
-                      "        id : int;\n" +
-                      "end\n" +
-                      "\n" +
-                      "declare Priority\n" +
-                      "        name : String;\n" +
-                      "        priority : int;\n" +
-                      "end\n" +
-                      "\n" +
-                      "declare Cap\n" +
-                      "        item : Item;\n" +
-                      "        name : String\n" +
-                      "end\n" +
-                      "\n" +
-                      "rule \"split cart into items\"\n" +
-                      "when\n" +
-                      "then\n" +
-                      "        insert(new Item(1));\n" +
-                      "        insert(new Item(2));\n" +
-                      "        insert(new Item(3));\n" +
-                      "end\n" +
-                      "\n" +
-                      "rule \"Priorities\"\n" +
-                      "when\n" +
-                      "then\n" +
-                      "        insert(new Priority(\"A\", 3));\n" +
-                      "        insert(new Priority(\"B\", 2));\n" +
-                      "        insert(new Priority(\"C\", 5));\n" +
-                      "end\n" +
-                      "\n" +
-                      "rule \"Caps\"\n" +
-                      "when\n" +
-                      "        $i : Item()\n" +
-                      "        $p : Priority($name : name)\n" +
-                      "then\n" +
-                      "        insert(new Cap($i, $name));\n" +
-                      "end\n" +
-                      "\n" +
-                      "rule \"test\"\n" +
-                      "when\n" +
-                      "        $i : Item()\n" +
-                      "        Cap(item.id == $i.id)\n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         assertEquals( 20, ksession.fireAllRules() );
-         ksession.dispose();
-     }
-
-     @Test
      public void testCheckDuplicateVariables() throws Exception {
          // JBRULES-3035
          String str = "package com.sample\n" +
@@ -5793,54 +5438,6 @@ import org.slf4j.LoggerFactory;
          kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
          kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
          assertTrue( kbuilder.hasErrors() );
-     }
-
-     @Test
-     public void testDeclaredTypesDefaultHashCode() {
-         // JBRULES-3481
-         String str = "package com.sample\n" +
-                      "\n" +
-                      "global java.util.List list; \n" +
-                      "" +
-                      "declare Bean\n" +
-                      " id : int \n" +
-                      "end\n" +
-                      "\n" +
-                      "declare KeyedBean\n" +
-                      " id : int @key \n" +
-                      "end\n" +
-                      "\n" +
-                      "\n" +
-                      "rule Create\n" +
-                      "when\n" +
-                      "then\n" +
-                      " list.add( new Bean(1) ); \n" +
-                      " list.add( new Bean(2) ); \n" +
-                      " list.add( new KeyedBean(1) ); \n" +
-                      " list.add( new KeyedBean(1) ); \n" +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         List list = new ArrayList();
-
-         ksession.setGlobal( "list", list );
-         ksession.fireAllRules();
-
-         ksession.dispose();
-
-         assertFalse( list.get( 0 ).hashCode() == 34 );
-         assertFalse( list.get( 1 ).hashCode() == 34 );
-         assertFalse( list.get( 0 ).hashCode() == list.get( 1 ).hashCode() );
-         assertNotSame( list.get( 0 ), list.get( 1 ) );
-         assertFalse( list.get( 0 ).equals( list.get( 1 ) ) );
-
-         assertTrue( list.get( 2 ).hashCode() == 32 );
-         assertTrue( list.get( 3 ).hashCode() == 32 );
-         assertNotSame( list.get( 2 ), list.get( 3 ) );
-         assertTrue( list.get( 2 ).equals( list.get( 3 ) ) );
-
      }
 
      @Test
@@ -5990,72 +5587,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testMvelFunctionWithDeclaredTypeArg() {
-         // JBRULES-3562
-         String rule = "package test; \n" +
-                       "dialect \"mvel\"\n" +
-                       "global java.lang.StringBuilder value;\n" +
-                       "function String getFieldValue(Bean bean) {" +
-                       "   return bean.getField();" +
-                       "}" +
-                       "declare Bean \n" +
-                       "   field : String \n" +
-                       "end \n" +
-                       "\n" +
-                       "rule R1 \n" +
-                       "when \n" +
-                       "then \n" +
-                       "   insert( new Bean( \"mario\" ) ); \n" +
-                       "end \n" +
-                       "\n" +
-                       "rule R2 \n" +
-                       "when \n" +
-                       "   $bean : Bean( ) \n" +
-                       "then \n" +
-                       "   value.append( getFieldValue($bean) ); \n" +
-                       "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         StringBuilder sb = new StringBuilder();
-         ksession.setGlobal( "value", sb );
-         ksession.fireAllRules();
-
-         assertEquals( "mario", sb.toString() );
-         ksession.dispose();
-     }
-
-     @Test
-     public void testMvelFunctionWithDeclaredTypeArgForGuvnor() throws Exception {
-         // JBRULES-3562
-         String function = "function String getFieldValue(Bean bean) {" +
-                           " return bean.getField();" +
-                           "}\n";
-         String declaredFactType = "declare Bean \n" +
-                                   " field : String \n" +
-                                   "end \n";
-         String rule = "rule R2 \n" +
-                       "dialect 'mvel'\n" +
-                       "when \n" +
-                       " $bean : Bean( ) \n" +
-                       "then \n" +
-                       " System.out.println( getFieldValue($bean) ); \n" +
-                       "end\n";
-
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         kbuilder.add( ResourceFactory.newByteArrayResource( declaredFactType.getBytes() ), ResourceType.DRL );
-         kbuilder.add( ResourceFactory.newByteArrayResource( function.getBytes() ), ResourceType.DRL );
-         kbuilder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ), ResourceType.DRL );
-
-         for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
-             System.out.println( "ERROR:" );
-             System.out.println( error.getMessage() );
-         }
-         assertFalse( kbuilder.hasErrors() );
-     }
-
-     @Test
      public void testGenericsOption() throws Exception {
          // JBRULES-3579
          String str = "import org.drools.compiler.*;\n" +
@@ -6102,18 +5633,6 @@ import org.slf4j.LoggerFactory;
              }
              fail( "Could not parse knowledge" );
          }
-     }
-
-     @Test
-     public void testDeclaredTypeWithHundredsProps() {
-         // JBRULES-3621
-         StringBuilder sb = new StringBuilder( "declare MyType\n" );
-         for ( int i = 0; i < 300; i++ ) {
-             sb.append( "i" + i + " : int\n" );
-         }
-         sb.append( "end" );
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( sb.toString() );
      }
 
      @Test
