@@ -57,6 +57,7 @@
   <modules>
     <module>optaplanner-core</module>
     <module>optaplanner-persistence</module>
+    <module>optaplanner-integration</module>
     <module>optaplanner-benchmark</module>
     <module>optaplanner-test</module>
     <module>optaplanner-examples</module>
