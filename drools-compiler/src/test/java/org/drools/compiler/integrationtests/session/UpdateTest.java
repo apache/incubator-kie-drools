@@ -1,24 +1,26 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-package org.drools.compiler.integrationtests;
+package org.drools.compiler.integrationtests.session;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.compiler.integrationtests.DeleteTest;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
 import org.junit.After;
@@ -40,7 +42,7 @@ import static org.junit.Assert.assertEquals;
 
 public class UpdateTest {
 
-    private static final String DELETE_TEST_DRL = "update_test.drl";
+    private static final String DELETE_TEST_DRL = "org/drools/compiler/integrationtests/session/update_test.drl";
 
     private KieSession ksession;
 

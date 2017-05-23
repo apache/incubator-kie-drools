@@ -53,13 +53,11 @@ import org.drools.compiler.Cheesery;
 import org.drools.compiler.Cheesery.Maturity;
 import org.drools.compiler.Child;
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.DomainObjectHolder;
 import org.drools.compiler.FactA;
 import org.drools.compiler.FactB;
 import org.drools.compiler.FactC;
 import org.drools.compiler.FirstClass;
 import org.drools.compiler.Foo;
-import org.drools.compiler.FromTestClass;
 import org.drools.compiler.Guess;
 import org.drools.compiler.IndexedNumber;
 import org.drools.compiler.LongAddress;
@@ -73,7 +71,6 @@ import org.drools.compiler.Person;
 import org.drools.compiler.PersonFinal;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.PersonWithEquals;
-import org.drools.compiler.Pet;
 import org.drools.compiler.PolymorphicFact;
 import org.drools.compiler.Primitives;
 import org.drools.compiler.RandomNumber;
@@ -97,7 +94,6 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
@@ -107,24 +103,17 @@ import org.drools.core.rule.MapBackedClassLoader;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.command.Setter;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
@@ -6946,7 +6935,7 @@ import org.slf4j.LoggerFactory;
                       "import " + MiscTest.class.getName() + ";\n" +
                       "rule R1 when\n" +
                       "   $p : Person( age == 38 )\n" +
-                      "then end\n" +
+                 "then end\n" +
                       "rule R2 when\n" +
                       "   $p : Person( age == 37+1 )\n" +
                       "then end\n" +
