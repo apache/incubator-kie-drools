@@ -210,30 +210,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testMetaConsequence() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_MetaConsequence.drl" ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-         List results = new ArrayList();
-         session.setGlobal( "results",
-                            results );
-
-         session.insert( new Person( "Michael" ) );
-
-         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
-                                                                              true );
-         results = (List) session.getGlobal( "results" );
-
-         session.fireAllRules();
-         assertEquals( 2,
-                       results.size() );
-         assertEquals( "bar",
-                       (results.get( 0 )) );
-         assertEquals( "bar2",
-                       (results.get( 1 )) );
-
-     }
-
-     @Test
      public void testEnabledExpression() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_enabledExpression.drl" ) );
          StatefulKnowledgeSession session = createKnowledgeSession( kbase );
@@ -1492,40 +1468,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testMVELConsequenceWithMapsAndArrays() throws Exception {
-         String rule = "package org.drools.compiler.test;\n";
-         rule += "import java.util.ArrayList\n";
-         rule += "import java.util.HashMap\n";
-         rule += "global java.util.List list\n";
-         rule += "rule \"Test Rule\"\n";
-         rule += "    dialect \"mvel\"";
-         rule += "when\n";
-         rule += "then\n";
-         rule += "    m = new HashMap();\n";
-         rule += "    l = new ArrayList();\n";
-         rule += "    l.add(\"first\");\n";
-         rule += "    m.put(\"content\", l);\n";
-         rule += "    System.out.println(((ArrayList)m[\"content\"])[0]);\n";
-         rule += "    list.add(((ArrayList)m[\"content\"])[0]);\n";
-         rule += "end";
-
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( rule ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         List list = new ArrayList();
-         session.setGlobal( "list",
-                            list );
-         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
-                                                                              true );
-         session.fireAllRules();
-
-         assertEquals( 1,
-                       ((List) session.getGlobal( "list" )).size() );
-         assertEquals( "first",
-                       ((List) session.getGlobal( "list" )).get( 0 ) );
-     }
-
-     @Test
      public void testCell() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "evalmodify.drl" ) );
 
@@ -2120,26 +2062,6 @@ import static org.mockito.Mockito.*;
          assertEquals( "Rule is incorrectly being fired",
                        20,
                        provolone.getPrice() );
-     }
-
-     @Test
-     public void testConsequenceException() throws Exception {
-         KnowledgeBase kbase = loadKnowledgeBase( "test_ConsequenceException.drl" );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         final Cheese brie = new Cheese( "brie",
-                                         12 );
-         ksession.insert( brie );
-
-         try {
-             ksession.fireAllRules();
-             fail( "Should throw an Exception from the Consequence" );
-         } catch ( final org.kie.api.runtime.rule.ConsequenceException e ) {
-             assertEquals( "Throw Consequence Exception",
-                           e.getMatch().getRule().getName() );
-             assertEquals( "this should throw an exception",
-                           e.getCause().getMessage() );
-         }
      }
 
      @Test
@@ -4985,15 +4907,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testConsequenceBuilderException() throws Exception {
-         final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         builder.add( ResourceFactory.newClassPathResource( "test_ConsequenceBuilderException.drl", getClass() ),
-                      ResourceType.DRL );
-
-         assertTrue( builder.hasErrors() );
-     }
-
-     @Test
      public void testRuntimeTypeCoercion() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_RuntimeTypeCoercion.drl" ) );
          StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -6219,49 +6132,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testMVELConsequenceWithoutSemiColon1() throws Exception {
-         String drl = "";
-         drl += "package test\n";
-         drl += "import org.drools.compiler.Person\n";
-         drl += "import org.drools.compiler.Pet\n";
-         drl += "rule test dialect 'mvel'\n";
-         drl += "when\n";
-         drl += "$person:Person()\n";
-         drl += "$pet:Pet()\n";
-         drl += "then\n";
-         drl += "    delete($person) // some comment\n";
-         drl += "    delete($pet) // another comment\n";
-         drl += "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         // create working memory mock listener
-         RuleRuntimeEventListener wml = Mockito.mock( RuleRuntimeEventListener.class );
-
-         ksession.addEventListener( wml );
-
-         FactHandle personFH = ksession.insert( new Person( "Toni" ) );
-         FactHandle petFH = ksession.insert( new Pet( "Toni" ) );
-
-         int fired = ksession.fireAllRules();
-         assertEquals( 1,
-                       fired );
-
-         // capture the arguments and check that the retracts happened
-         ArgumentCaptor<ObjectDeletedEvent> retracts = ArgumentCaptor.forClass( ObjectDeletedEvent.class );
-         verify( wml,
-                 times( 2 ) ).objectDeleted(retracts.capture());
-         List<ObjectDeletedEvent> values = retracts.getAllValues();
-         assertThat( values.get( 0 ).getFactHandle(),
-                     is( personFH ) );
-         assertThat( values.get( 1 ).getFactHandle(),
-                     is( petFH ) );
-
-     }
-
-     @Test
      public void testRuleMetaAttributes() throws Exception {
          String drl = "";
          drl += "package test\n";
@@ -6284,30 +6154,6 @@ import static org.mockito.Mockito.*;
          assertThat( (String) rule.getMetaData().get( "text" ),
                      is( "It's an escaped\" string" ) );
 
-     }
-
-     // following test depends on MVEL: http://jira.codehaus.org/browse/MVEL-212
-     @Test
-     public void testMVELConsequenceUsingFactConstructors() throws Exception {
-         String drl = "";
-         drl += "package test\n";
-         drl += "import org.drools.compiler.Person\n";
-         drl += "global org.drools.core.runtime.StatefulKnowledgeSession ksession\n";
-         drl += "rule test dialect 'mvel'\n";
-         drl += "when\n";
-         drl += "    $person:Person( name == 'mark' )\n";
-         drl += "then\n";
-         drl += "    // below constructor for Person does not exist\n";
-         drl += "    Person p = new Person( 'bob', 30, 555 )\n";
-         drl += "    ksession.update(ksession.getFactHandle($person), new Person('bob', 30, 999, 453, 534, 534, 32))\n";
-         drl += "end\n";
-
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                       ResourceType.DRL );
-         KnowledgeBuilderErrors errors = kbuilder.getErrors();
-
-         assertTrue( kbuilder.hasErrors() );
      }
 
      @Test
