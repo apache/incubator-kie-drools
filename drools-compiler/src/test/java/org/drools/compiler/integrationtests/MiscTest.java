@@ -1459,45 +1459,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testOr() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "or_test.drl" ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         session.setGlobal( "list",
-                            list );
-
-         final Cheese cheddar = new Cheese( "cheddar",
-                                            5 );
-         final FactHandle h = session.insert( cheddar );
-
-         session.fireAllRules();
-
-         // just one added
-         assertEquals( "got cheese",
-                       list.get( 0 ) );
-         assertEquals( 1,
-                       list.size() );
-
-         session.delete( h );
-         session.fireAllRules();
-
-         // still just one
-         assertEquals( 1,
-                       list.size() );
-
-         session.insert( new Cheese( "stilton",
-                                     5 ) );
-         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
-                                                                              true );
-         session.fireAllRules();
-
-         // now have one more
-         assertEquals( 2,
-                       ((List) session.getGlobal( "list" )).size() );
-     }
-
-     @Test
      public void testReturnValue() throws Exception {
          KnowledgeBase kbase = loadKnowledgeBase( "returnvalue_rule_test.drl" );
          kbase = SerializationHelper.serializeObject( kbase );
@@ -2167,34 +2128,6 @@ import org.slf4j.LoggerFactory;
 
          assertTrue( list.contains( "fired1" ) );
          assertTrue( list.contains( "fired2" ) );
-     }
-
-     @Test
-     public void testOrWithBinding() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_OrWithBindings.drl" ) );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         final Person hola = new Person( "hola" );
-         ksession.insert( hola );
-
-         ksession.fireAllRules();
-
-         assertEquals( 0,
-                       list.size() );
-         Cheese brie = new Cheese( "brie" );
-         ksession.insert( brie );
-
-         ksession.fireAllRules();
-
-         assertEquals( 2,
-                       list.size() );
-         assertTrue( list.contains( hola ) );
-         assertTrue( list.contains( brie ) );
-
      }
 
      @Test
@@ -2974,44 +2907,6 @@ import org.slf4j.LoggerFactory;
 
          assertEquals( 1,
                        fired );
-     }
-
-     @Test
-     public void testConstraintConnectorOr() throws Exception {
-         final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ConstraintConnectorOr.drl" ) );
-         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         List<Person> results = new ArrayList<Person>();
-         ksession.setGlobal( "results",
-                             results );
-
-         final Person mark = new Person( "Mark" );
-         mark.setAlive( true );
-         mark.setHappy( true );
-
-         final Person bush = new Person( "Bush" );
-         bush.setAlive( true );
-         bush.setHappy( false );
-
-         final Person conan = new Person( "Conan" );
-         conan.setAlive( false );
-         conan.setHappy( true );
-
-         final Person nero = new Person( "Nero" );
-         nero.setAlive( false );
-         nero.setHappy( false );
-
-         ksession.insert( mark );
-         ksession.insert( bush );
-         ksession.insert( conan );
-         ksession.insert( nero );
-
-         ksession.fireAllRules();
-
-         assertEquals( 3,
-                       results.size() );
-         assertTrue( results.contains( mark ) );
-         assertTrue( results.contains( bush ) );
-         assertTrue( results.contains( conan ) );
      }
 
      @Test
@@ -4696,116 +4591,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testOrCE() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_OrCE.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         ksession.insert( new Cheese( "brie",
-                                      10 ) );
-         ksession.insert( new Person( "bob" ) );
-
-         ksession.fireAllRules();
-
-         assertEquals( "should have fired once",
-                       1,
-                       list.size() );
-     }
-
-     @Test
-     public void testOrWithAndUsingNestedBindings() throws IOException,
-                                                   ClassNotFoundException {
-         String str = "";
-         str += "package org.drools.compiler\n";
-         str += "import org.drools.compiler.Person\n";
-         str += "global java.util.List mlist\n";
-         str += "global java.util.List jlist\n";
-         str += "rule rule1 dialect \"mvel\" \n";
-         str += "when\n";
-         str += "$a : Person( name == \"a\" )\n";
-         str += "  (or $b : Person( name == \"b1\" )\n";
-         str += "      (and $p : Person( name == \"p2\" )\n";
-         str += "           $b : Person( name == \"b2\" ) )\n";
-         str += "      (and $p : Person( name == \"p3\" )\n";
-         str += "           $b : Person( name == \"b3\" ) )\n";
-         str += "   )\n ";
-         str += "then\n";
-         str += "   mlist.add( $b );\n";
-         str += "end\n";
-         str += "rule rule2 dialect \"java\" \n";
-         str += "when\n";
-         str += "$a : Person( name == \"a\" )\n";
-         str += "  (or $b : Person( name == \"b1\" )\n";
-         str += "      (and $p : Person( name == \"p2\" )\n";
-         str += "           $b : Person( name == \"b2\" ) )\n";
-         str += "      (and $p : Person( name == \"p3\" )\n";
-         str += "           $b : Person( name == \"b3\" ) )\n";
-         str += "   )\n ";
-         str += "then\n";
-         str += "   jlist.add( $b );\n";
-         str += "end\n";
-
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         Person a = new Person( "a" );
-         Person b1 = new Person( "b1" );
-         Person p2 = new Person( "p2" );
-         Person b2 = new Person( "b2" );
-         Person p3 = new Person( "p3" );
-         Person b3 = new Person( "b3" );
-
-         List mlist = new ArrayList();
-         List jlist = new ArrayList();
-
-         ksession.setGlobal( "mlist",
-                             mlist );
-         ksession.setGlobal( "jlist",
-                             jlist );
-         ksession.insert( a );
-         ksession.insert( b1 );
-         ksession.fireAllRules();
-         assertEquals( b1,
-                       mlist.get( 0 ) );
-         assertEquals( b1,
-                       jlist.get( 0 ) );
-
-         ksession.dispose();
-         ksession = createKnowledgeSession( kbase );
-         ksession.setGlobal( "mlist",
-                             mlist );
-         ksession.setGlobal( "jlist",
-                             jlist );
-         ksession.insert( a );
-         ksession.insert( b2 );
-         ksession.insert( p2 );
-         ksession.fireAllRules();
-         assertEquals( b2,
-                       mlist.get( 1 ) );
-         assertEquals( b2,
-                       jlist.get( 1 ) );
-
-         ksession.dispose();
-         ksession = createKnowledgeSession( kbase );
-         ksession.setGlobal( "mlist",
-                             mlist );
-         ksession.setGlobal( "jlist",
-                             jlist );
-         ksession.insert( a );
-         ksession.insert( b3 );
-         ksession.insert( p3 );
-         ksession.fireAllRules();
-         assertEquals( b3,
-                       mlist.get( 2 ) );
-         assertEquals( b3,
-                       jlist.get( 2 ) );
-
-     }
-
-     @Test
      public void testFieldBindingOnWrongFieldName() {
          //JBRULES-2527
 
@@ -4908,26 +4693,6 @@ import org.slf4j.LoggerFactory;
          assertNull( fh1 );
          FactHandle fh2 = ksession.getFactHandle( cheese );
          assertNotNull( fh2 );
-     }
-
-     @Test
-     public void testOrCEFollowedByEval() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_OrCEFollowedByEval.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         ksession.insert( new FactA( "X" ) );
-         InternalFactHandle b = (InternalFactHandle) ksession.insert( new FactB( "X" ) );
-
-         ksession.fireAllRules();
-
-         assertEquals( "should have fired",
-                       2,
-                       list.size() );
-         assertTrue( list.contains( b.getObject() ) );
      }
 
      @Test
@@ -5714,24 +5479,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testOrWithReturnValueRestriction() throws Exception {
-         String fileName = "test_OrWithReturnValue.drl";
-         KnowledgeBase kbase = loadKnowledgeBase( fileName );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         ksession.insert( new Cheese( "brie",
-                                      18 ) );
-         ksession.insert( new Cheese( "stilton",
-                                      8 ) );
-         ksession.insert( new Cheese( "brie",
-                                      28 ) );
-
-         int fired = ksession.fireAllRules();
-         assertEquals( 2,
-                       fired );
-     }
-
-     @Test
      public void testFromExprFollowedByNot() {
          String rule = "";
          rule += "package org.drools.compiler;\n";
@@ -6008,50 +5755,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testBindingsWithOr() throws InstantiationException,
-                                     IllegalAccessException {
-         // JBRULES-2917: matching of field==v1 || field==v2 breaks when variable binding is added
-
-         String str = "package org.drools.compiler\n" +
-                      "declare Assignment\n" +
-                      "    source : int\n" +
-                      "    target : int\n" +
-                      "end\n" +
-                      "rule ValueIsTheSame1\n" +
-                      "when\n" +
-                      "    Assignment( $t: target == 10 || target == source )\n" +
-                      "then\n" +
-                      "end\n" +
-                      "rule ValueIsTheSame2\n" +
-                      "when\n" +
-                      "    Assignment( $t: target == source || target == 10 )\n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         FactType asgType = kbase.getFactType( "org.drools.compiler",
-                                               "Assignment" );
-         Object asg = asgType.newInstance();
-         asgType.set( asg,
-                      "source",
-                      10 );
-         asgType.set( asg,
-                      "target",
-                      10 );
-
-         ksession.insert( asg );
-
-         int rules = ksession.fireAllRules();
-         ksession.dispose();
-
-         assertEquals( 2,
-                       rules );
-     }
-
-     @Test
      public void testMVELClassReferences() throws InstantiationException,
                                           IllegalAccessException {
          String str = "package org.drools.compiler\n" +
@@ -6216,45 +5919,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testOrWithFrom() {
-         // JBRULES-2274: Rule does not fire as expected using deep object model and nested 'or' clause
-
-         String str = "package org.drools.compiler\n" +
-                      "rule NotContains\n" +
-                      "when\n" +
-                      "    $oi1 : OrderItem( )\n" +
-                      "    $o1  : Order(number == 1) from $oi1.order; \n" +
-                      "    ( eval(true) or eval(true) )\n" +
-                      "    $oi2 : OrderItem( )\n" +
-                      "    $o2  : Order(number == 2) from $oi2.order; \n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         Order order1 = new Order( 1,
-                                   "XYZ" );
-         Order order2 = new Order( 2,
-                                   "ABC" );
-         OrderItem item11 = new OrderItem( order1,
-                                           1 );
-         order1.addItem( item11 );
-         OrderItem item21 = new OrderItem( order2,
-                                           1 );
-         order2.addItem( item21 );
-
-         ksession.insert( order1 );
-         ksession.insert( order2 );
-         ksession.insert( item11 );
-         ksession.insert( item21 );
-
-         int rules = ksession.fireAllRules();
-         assertEquals( 2,
-                       rules );
-     }
-
-     @Test
      public void testSoundsLike() {
          // JBRULES-2991: Operator soundslike is broken
 
@@ -6273,31 +5937,6 @@ import org.slf4j.LoggerFactory;
 
          int rules = ksession.fireAllRules();
          assertEquals( 1,
-                       rules );
-     }
-
-     @Test
-     public void testRestrictionsWithOr() {
-         // JBRULES-2203: NullPointerException When Using Conditional Element "or" in LHS Together with a Return Value Restriction
-
-         String str = "package org.drools.compiler\n" +
-                      "rule \"test\"\n" +
-                      "when\n" +
-                      "    Cheese( price == (1 + 1) );\n" +
-                      "    (or eval(true);\n" +
-                      "        eval(true);\n" +
-                      "    )\n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         ksession.insert( new Cheese( "Stilton",
-                                      2 ) );
-
-         int rules = ksession.fireAllRules();
-         assertEquals( 2,
                        rules );
      }
 
@@ -7657,52 +7296,6 @@ import org.slf4j.LoggerFactory;
          ksession.insert( new ClassA() );
          ksession.insert( new ClassB() );
          assertEquals( 3, ksession.fireAllRules() );
-     }
-
-     @Test
-     public void testVariableBindingWithOR() throws Exception {
-         // JBRULES-3390
-         String str1 = "package org.drools.compiler.test; \n" +
-                       "declare A\n" +
-                       "end\n" +
-                       "declare B\n" +
-                       "   field : int\n" +
-                       "end\n" +
-                       "declare C\n" +
-                       "   field : int\n" +
-                       "end\n" +
-                       "rule R when\n" +
-                       "( " +
-                       "   A( ) and ( B( $bField : field ) or C( $cField : field ) ) " +
-                       ")\n" +
-                       "then\n" +
-                       "    System.out.println($bField);\n" +
-                       "end\n";
-
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ), ResourceType.DRL );
-         assertTrue( kbuilder.hasErrors() );
-
-         String str2 = "package org.drools.compiler.test; \n" +
-                       "declare A\n" +
-                       "end\n" +
-                       "declare B\n" +
-                       "   field : int\n" +
-                       "end\n" +
-                       "declare C\n" +
-                       "   field : int\n" +
-                       "end\n" +
-                       "rule R when\n" +
-                       "( " +
-                       "   A( ) and ( B( $field : field ) or C( $field : field ) ) " +
-                       ")\n" +
-                       "then\n" +
-                       "    System.out.println($field);\n" +
-                       "end\n";
-
-         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         kbuilder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-         assertFalse( kbuilder2.hasErrors() );
      }
 
      @Test
