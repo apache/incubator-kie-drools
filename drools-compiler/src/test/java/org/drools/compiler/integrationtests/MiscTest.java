@@ -2561,28 +2561,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testMergingDifferentPackages() throws Exception {
-         // using the same builder
-         try {
-             Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_RuleNameClashes1.drl",
-                                                                         "test_RuleNameClashes2.drl" );
-             assertEquals( 3,
-                           kpkgs.size() );
-             for ( KnowledgePackage kpkg : kpkgs ) {
-                 if (kpkg.getName().equals("org.drools.package1")) {
-                     assertEquals( "rule 1",
-                                   kpkg.getRules().iterator().next().getName() );
-                 }
-             }
-         } catch ( KnowledgeBuilderImpl.PackageMergeException e ) {
-             fail( "unexpected exception: " + e.getMessage() );
-         } catch ( RuntimeException e ) {
-             e.printStackTrace();
-             fail( "unexpected exception: " + e.getMessage() );
-         }
-     }
-
-     @Test
      public void testSelfJoinAndNotWithIndex() throws IOException,
                                               ClassNotFoundException {
          String drl = "";
@@ -2649,70 +2627,6 @@ import org.slf4j.LoggerFactory;
                      list.get( 2 ) );
          assertSame( p3,
                      list.get( 3 ) );
-     }
-
-     @Test
-     public void testMergingDifferentPackages2() throws Exception {
-         // using different builders
-         try {
-             Collection<KnowledgePackage> kpkgs1 = loadKnowledgePackages( "test_RuleNameClashes1.drl" );
-             assertEquals( 1,
-                           kpkgs1.iterator().next().getRules().size() );
-
-             Collection<KnowledgePackage> kpkgs2 = loadKnowledgePackages( "test_RuleNameClashes2.drl" );
-             assertEquals( 1,
-                           kpkgs2.iterator().next().getRules().size() );
-
-             KnowledgeBase kbase = loadKnowledgeBase();
-             kbase.addKnowledgePackages( kpkgs1 );
-             kbase.addKnowledgePackages( kpkgs2 );
-             kbase = SerializationHelper.serializeObject( kbase );
-             StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-             final List results = new ArrayList();
-             ksession.setGlobal( "results",
-                                 results );
-
-             ksession.insert( new Cheese( "stilton",
-                                          10 ) );
-             ksession.insert( new Cheese( "brie",
-                                          5 ) );
-
-             ksession.fireAllRules();
-
-             assertEquals( results.toString(),
-                           2,
-                           results.size() );
-             assertTrue( results.contains( "p1.r1" ) );
-             assertTrue( results.contains( "p2.r1" ) );
-
-         } catch ( KnowledgeBuilderImpl.PackageMergeException e ) {
-             fail( "Should not raise exception when merging different packages into the same rulebase: " + e.getMessage() );
-         } catch ( Exception e ) {
-             e.printStackTrace();
-             fail( "unexpected exception: " + e.getMessage() );
-         }
-     }
-
-     @Test
-     public void testMergePackageWithSameRuleNames() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_MergePackageWithSameRuleNames1.drl" ) );
-         Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_MergePackageWithSameRuleNames2.drl" );
-         kbase.addKnowledgePackages( kpkgs );
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List results = new ArrayList();
-         ksession.setGlobal( "results",
-                             results );
-
-         ksession.fireAllRules();
-
-         assertEquals( 1,
-                       results.size() );
-
-         assertEquals( "rule1 for the package2",
-                       results.get( 0 ) );
      }
 
      @Test
