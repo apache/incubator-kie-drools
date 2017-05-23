@@ -232,53 +232,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testGetStatefulKnowledgeSessions() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "empty.drl" ) );
-
-         StatefulKnowledgeSession ksession_1 = createKnowledgeSession( kbase );
-         String expected_1 = "expected_1";
-         String expected_2 = "expected_2";
-         FactHandle handle_1 = ksession_1.insert( expected_1 );
-         FactHandle handle_2 = ksession_1.insert( expected_2 );
-         ksession_1.fireAllRules();
-         Collection<StatefulKnowledgeSession> coll_1 = kbase.getStatefulKnowledgeSessions();
-         assertTrue( coll_1.size() == 1 );
-
-         StatefulKnowledgeSession ksession_2 = coll_1.iterator().next();
-         Object actual_1 = ksession_2.getObject( handle_1 );
-         Object actual_2 = ksession_2.getObject( handle_2 );
-         assertEquals( expected_1,
-                       actual_1 );
-         assertEquals( expected_2,
-                       actual_2 );
-
-         ksession_1.dispose();
-         Collection<StatefulKnowledgeSession> coll_2 = kbase.getStatefulKnowledgeSessions();
-         assertTrue( coll_2.size() == 0 );
-
-         // here to make sure it's safe to call dispose() twice
-         ksession_1.dispose();
-         Collection<StatefulKnowledgeSession> coll_3 = kbase.getStatefulKnowledgeSessions();
-         assertTrue( coll_3.size() == 0 );
-     }
-
-     @Test
-     public void testGetFactHandle() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "empty.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         for ( int i = 0; i < 20; i++ ) {
-             Object object = new Object();
-             ksession.insert( object );
-             FactHandle factHandle = ksession.getFactHandle( object );
-             assertNotNull( factHandle );
-             assertEquals( object,
-                           ksession.getObject( factHandle ) );
-         }
-         ksession.dispose();
-     }
-
-     @Test
      public void testPrimitiveArray() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_primitiveArray.drl" ) );
          StatefulKnowledgeSession session = createKnowledgeSession( kbase );
@@ -1319,22 +1272,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testDisconnectedFactHandle() {
-         KnowledgeBase kbase = getKnowledgeBase();
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert( "hello" );
-         DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert( "goodbye" );
-
-         FactHandle key = DefaultFactHandle.createFromExternalFormat( helloHandle.toExternalForm() );
-         assertEquals( "hello",
-                       ksession.getObject( key ) );
-
-         key = DefaultFactHandle.createFromExternalFormat( goodbyeHandle.toExternalForm() );
-         assertEquals( "goodbye",
-                       ksession.getObject( key ) );
-     }
-
-     @Test
      public void testBigDecimal() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "big_decimal_and_comparable.drl" ) );
          StatefulKnowledgeSession session = createKnowledgeSession( kbase );
@@ -1985,67 +1922,6 @@ import org.slf4j.LoggerFactory;
                        list4.size() );
          assertTrue( list4.contains( youngChili1 ) );
          assertTrue( list4.contains( chili1 ) );
-     }
-
-     @Test
-     public void testDumpers() throws Exception {
-         final DrlParser parser = new DrlParser( LanguageLevelOption.DRL5 );
-         Resource resource = new InputStreamResource( getClass().getResourceAsStream( "test_Dumpers.drl" ) );
-         final PackageDescr pkg = parser.parse( resource );
-
-         if ( parser.hasErrors() ) {
-             for ( DroolsError error : parser.getErrors() ) {
-                 logger.warn( error.toString() );
-             }
-             fail( parser.getErrors().toString() );
-         }
-
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( pkg ) );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         final Cheese brie = new Cheese( "brie",
-                                         12 );
-         ksession.insert( brie );
-
-         ksession.fireAllRules();
-
-         assertEquals( 3,
-                       list.size() );
-         assertEquals( "3 1",
-                       list.get( 0 ) );
-         assertEquals( "MAIN",
-                       list.get( 1 ) );
-         assertEquals( "1 1",
-                       list.get( 2 ) );
-
-         final DrlDumper drlDumper = new DrlDumper();
-         final String drlResult = drlDumper.dump( pkg );
-
-         System.out.println( drlResult );
-
-         kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( drlResult ) );
-         ksession = kbase.newStatefulKnowledgeSession();
-
-         list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         ksession.insert( brie );
-
-         ksession.fireAllRules();
-
-         assertEquals( 3,
-                       list.size() );
-         assertEquals( "3 1",
-                       list.get( 0 ) );
-         assertEquals( "MAIN",
-                       list.get( 1 ) );
-         assertEquals( "1 1",
-                       list.get( 2 ) );
      }
 
      @Test
@@ -3784,21 +3660,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testNotInStatelessSession() throws Exception {
-         KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-         kbc.setOption( SequentialOption.YES );
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc, "test_NotInStatelessSession.drl" ) );
-         StatelessKnowledgeSession session = createStatelessKnowledgeSession( kbase );
-
-         List list = new ArrayList();
-         session.setGlobal( "list",
-                            list );
-         session.execute( "not integer" );
-         assertEquals( "not integer",
-                       list.get( 0 ) );
-     }
-
-     @Test
      public void testDynamicallyAddInitialFactRule() throws Exception {
          String rule = "package org.drools.compiler.test\n" +
                        "global java.util.List list\n" +
@@ -4363,38 +4224,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testGetFactHandleEqualityBehavior() throws Exception {
-         KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-         kbc.setOption( EqualityBehaviorOption.EQUALITY );
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         CheeseEqual cheese = new CheeseEqual( "stilton",
-                                               10 );
-         ksession.insert( cheese );
-         FactHandle fh = ksession.getFactHandle( new CheeseEqual( "stilton",
-                                                                                          10 ) );
-         assertNotNull( fh );
-     }
-
-     @Test
-     public void testGetFactHandleIdentityBehavior() throws Exception {
-         KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-         kbc.setOption(EqualityBehaviorOption.IDENTITY);
-         KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase(kbc));
-         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-
-         CheeseEqual cheese = new CheeseEqual( "stilton",
-                                               10 );
-         ksession.insert( cheese );
-         FactHandle fh1 = ksession.getFactHandle( new Cheese( "stilton",
-                                                             10 ) );
-         assertNull( fh1 );
-         FactHandle fh2 = ksession.getFactHandle( cheese );
-         assertNotNull( fh2 );
-     }
-
-     @Test
      public void testNPEOnMVELAlphaPredicates() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_NPEOnMVELPredicate.drl" ) );
          StatefulKnowledgeSession session = createKnowledgeSession( kbase );
@@ -4598,47 +4427,6 @@ import org.slf4j.LoggerFactory;
          ksession.fireAllRules();
          assertEquals( 2,
                        results.size() );
-     }
-
-     @Test
-     public void testInsertionOrder() {
-         KnowledgeBase kbase = loadKnowledgeBase("test_InsertionOrder.drl");
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         List<String> results = new ArrayList<String>();
-         ksession.setGlobal( "results",
-                             results );
-         ksession.insert( new Move( 1,
-                                    2 ) );
-         ksession.insert( new Move( 2,
-                                    3 ) );
-
-         Win win2 = new Win( 2 );
-         Win win3 = new Win( 3 );
-
-         ksession.fireAllRules();
-         assertEquals( 2,
-                       results.size() );
-         assertTrue( results.contains( win2 ) );
-         assertTrue( results.contains( win3 ) );
-
-         ksession.dispose();
-         ksession = createKnowledgeSession( kbase );
-         results = new ArrayList<String>();
-         ksession.setGlobal( "results",
-                             results );
-         // reverse the order of the inserts
-         ksession.insert( new Move( 2,
-                                    3 ) );
-         ksession.insert( new Move( 1,
-                                    2 ) );
-
-         ksession.fireAllRules();
-         assertEquals( 2,
-                       results.size() );
-         assertTrue( results.contains( win2 ) );
-         assertTrue( results.contains( win3 ) );
-
      }
 
      @Test
@@ -4848,43 +4636,6 @@ import org.slf4j.LoggerFactory;
                        results.size() );
          assertEquals( 2,
                        results.get( 0 ).intValue() );
-
-     }
-
-     @Test
-     public void testInsert() throws Exception {
-         String drl = "";
-         drl += "package test\n";
-         drl += "import org.drools.compiler.Person\n";
-         drl += "import org.drools.compiler.Pet\n";
-         drl += "import java.util.ArrayList\n";
-         drl += "global java.util.List list\n";
-         drl += "rule test\n";
-         drl += "when\n";
-         drl += "$person:Person()\n";
-         drl += "$pets : ArrayList()\n";
-         drl += "   from collect( \n";
-         drl += "      Pet(\n";
-         drl += "         ownerName == $person.name\n";
-         drl += "      )\n";
-         drl += "   )\n";
-         drl += "then\n";
-         drl += "  list.add( $person );\n";
-         drl += "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         List list = new ArrayList();
-         ksession.setGlobal("list", list);
-
-         Person p = new Person( "Toni" );
-         ksession.insert( p);
-         ksession.insert( new Pet( "Toni" ) );
-
-         ksession.fireAllRules();
-
-         assertEquals( 1, list.size() );
-         assertSame( p, list.get( 0 ) );
 
      }
 
@@ -5916,35 +5667,6 @@ import org.slf4j.LoggerFactory;
          int rules = ksession.fireAllRules();
          assertEquals( 1, rules );
          ksession.dispose();
-     }
-
-     @Test
-     public void testDispose() throws Exception {
-         StringBuilder rule = new StringBuilder();
-         rule.append( "package org.drools.compiler\n" );
-         rule.append( "rule X\n" );
-         rule.append( "when\n" );
-         rule.append( "    Message()\n" );
-         rule.append( "then\n" );
-         rule.append( "end\n" );
-
-         //building stuff
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         ksession.insert( new Message( "test" ) );
-         int rules = ksession.fireAllRules();
-         assertEquals( 1, rules );
-
-         ksession.dispose();
-
-         try {
-             // the following should raise an IllegalStateException as the session was already disposed
-             ksession.fireAllRules();
-             fail( "An IllegallStateException should have been raised as the session was disposed before the method call." );
-         } catch ( IllegalStateException ise ) {
-             // success
-         }
      }
 
      @Test
