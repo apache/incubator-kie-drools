@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class RuleModelDRLPersistenceTest {
+public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RuleModelDRLPersistenceTest.class);
 
@@ -81,6 +81,7 @@ public class RuleModelDRLPersistenceTest {
 
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         ruleModelPersistence = RuleModelDRLPersistenceImpl.getInstance();
     }
 
@@ -516,7 +517,8 @@ public class RuleModelDRLPersistenceTest {
     @Test
     public void testMoreComplexRendering() {
         final RuleModel m = getComplexModel(false);
-        String expected = "rule \"Complex Rule\"\n" +
+        String expected = "package org.test;\n" +
+                "rule \"Complex Rule\"\n" +
                 "no-loop true\n" +
                 "salience -10\n" +
                 "agenda-group \"aGroup\"\n" +
@@ -539,7 +541,8 @@ public class RuleModelDRLPersistenceTest {
     @Test
     public void testMoreComplexRenderingWithDsl() {
         final RuleModel m = getComplexModel(true);
-        String expected = "rule \"Complex Rule\"\n" +
+        String expected = "package org.test;\n" +
+                "rule \"Complex Rule\"\n" +
                 "no-loop true\n" +
                 "salience -10\n" +
                 "agenda-group \"aGroup\"\n" +
@@ -567,7 +570,7 @@ public class RuleModelDRLPersistenceTest {
 
         RuleModel unmarshalledModel = ruleModelPersistence.unmarshalUsingDSL(drl,
                                                                              null,
-                                                                             mock(PackageDataModelOracle.class),
+                                                                             dmo,
                                                                              dslFile);
 
         IAction[] actions = unmarshalledModel.rhs;
@@ -740,6 +743,7 @@ public class RuleModelDRLPersistenceTest {
     private RuleModel getComplexModel(boolean useDsl) {
         final RuleModel m = new RuleModel();
         m.name = "Complex Rule";
+        m.setPackageName("org.test");
 
         m.addAttribute(new RuleAttribute("no-loop",
                                          "true"));
@@ -781,6 +785,19 @@ public class RuleModelDRLPersistenceTest {
             sen.setDefinition("Send an email to {administrator}");
             m.addRhsItem(sen);
         }
+
+        addModelField("org.test.Person",
+                      "this",
+                      "org.test.Person",
+                      DataType.TYPE_THIS);
+        addModelField("org.test.Person",
+                      "age",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
+        addModelField("org.test.Person",
+                      "status",
+                      String.class.getName(),
+                      DataType.TYPE_STRING);
 
         return m;
     }
@@ -3593,7 +3610,6 @@ public class RuleModelDRLPersistenceTest {
         final RuleModel m = getComplexModel();
         final String drl = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         final RuleModel m2 = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
                                                                                          Collections.EMPTY_LIST,
                                                                                          dmo);
@@ -3736,6 +3752,7 @@ public class RuleModelDRLPersistenceTest {
     private RuleModel getComplexModel() {
         final RuleModel m = new RuleModel();
         m.name = "complex";
+        m.setPackageName("org.test");
 
         m.addAttribute(new RuleAttribute("no-loop",
                                          "true"));
@@ -3768,8 +3785,21 @@ public class RuleModelDRLPersistenceTest {
 
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition("Send an email to {administrator}");
-
         m.addRhsItem(sen);
+
+        addModelField("org.test.Person",
+                      "this",
+                      "org.test.Person",
+                      DataType.TYPE_THIS);
+        addModelField("org.test.Person",
+                      "age",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
+        addModelField("org.test.Person",
+                      "status",
+                      String.class.getName(),
+                      DataType.TYPE_STRING);
+
         return m;
     }
 

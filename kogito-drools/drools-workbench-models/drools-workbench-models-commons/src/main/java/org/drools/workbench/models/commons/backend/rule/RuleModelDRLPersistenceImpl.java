@@ -135,7 +135,7 @@ import static org.drools.workbench.models.commons.backend.rule.RuleModelPersiste
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.findMethodInfo;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.getMethodInfosForType;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.getSimpleFactType;
-import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.inferDataType;
+import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.inferDataTypeFromAction;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.inferFieldNature;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.parseExpressionParameters;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.removeNumericSuffix;
@@ -3272,16 +3272,14 @@ public class RuleModelDRLPersistenceImpl
                                       boundParams.get(variable),
                                       dmo);
         String value = unwrapParenthesis(statement);
-        String dataType = inferDataType(action,
-                                        field,
-                                        boundParams,
-                                        dmo,
-                                        model.getImports());
-        if (dataType == null) {
-            dataType = inferDataType(value,
-                                     boundParams,
-                                     isJavaDialect);
-        }
+        String dataType = inferDataTypeFromAction(action,
+                                                  field,
+                                                  value,
+                                                  isJavaDialect,
+                                                  boundParams,
+                                                  dmo,
+                                                  model.getImports());
+
         action.addFieldValue(buildFieldValue(isJavaDialect,
                                              field,
                                              value,
@@ -3815,8 +3813,9 @@ public class RuleModelDRLPersistenceImpl
                                                    m,
                                                    con,
                                                    boundParams);
-            String classType = getFQFactType(m,
-                                             factPattern.getFactType());
+            String classType = RuleModelPersistenceHelper.getFQFactType(m,
+                                                                        factPattern.getFactType(),
+                                                                        dmo);
             con.getExpressionLeftSide().appendPart(new ExpressionUnboundFact(factPattern.getFactType()));
 
             parseExpression(m,
@@ -3841,8 +3840,9 @@ public class RuleModelDRLPersistenceImpl
 
             boolean isBoundParam = false;
             if (factType == null) {
-                factType = getFQFactType(m,
-                                         boundParams.get(splits[0].trim()));
+                factType = RuleModelPersistenceHelper.getFQFactType(m,
+                                                                    boundParams.get(splits[0].trim()),
+                                                                    dmo);
                 isBoundParam = true;
             }
 
@@ -3860,8 +3860,9 @@ public class RuleModelDRLPersistenceImpl
 
                 //The first part of the expression may be a bound variable
                 if (boundParams.containsKey(expressionPart)) {
-                    factType = getFQFactType(m,
-                                             boundParams.get(expressionPart));
+                    factType = RuleModelPersistenceHelper.getFQFactType(m,
+                                                                        boundParams.get(expressionPart),
+                                                                        dmo);
                     isBoundParam = true;
 
                     typeFields = findFields(m,
@@ -3992,30 +3993,6 @@ public class RuleModelDRLPersistenceImpl
                                                           isJavaDialect);
         }
 
-        private String getFQFactType(final RuleModel ruleModel,
-                                     final String factType) {
-
-            Set<String> factTypes = dmo.getProjectModelFields().keySet();
-
-            if (factTypes.contains(ruleModel.getPackageName() + "." + factType)) {
-                return ruleModel.getPackageName() + "." + factType;
-            }
-
-            for (String item : ruleModel.getImports().getImportStrings()) {
-                if (item.endsWith("." + factType)) {
-                    return item;
-                }
-            }
-
-            for (String type : factTypes) {
-                if (type.endsWith("." + factType)) {
-                    return type;
-                }
-            }
-
-            return factType;
-        }
-
         private ModelField findFact(final Map<String, ModelField[]> modelFields,
                                     final String factType) {
             final ModelField[] typeFields = modelFields.get(factType);
@@ -4119,21 +4096,17 @@ public class RuleModelDRLPersistenceImpl
                                             final FactPattern factPattern,
                                             final BaseSingleFieldConstraint con,
                                             String value) {
-            String type = null;
             if (value.contains("@{")) {
                 con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
                 con.setValue(unwrapTemplateKey(value));
             } else if (value.startsWith("\"")) {
-                type = DataType.TYPE_STRING;
                 con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
                 con.setValue(value.substring(1,
                                              value.length() - 1));
             } else if (value.startsWith("(")) {
                 if (operator != null && operator.contains("in")) {
-                    value = unwrapParenthesis(value);
-                    type = value.startsWith("\"") ? DataType.TYPE_STRING : DataType.TYPE_NUMERIC_INTEGER;
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-                    con.setValue(value);
+                    con.setValue(unwrapParenthesis(value));
                 } else {
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_RET_VALUE);
                     con.setValue(unwrapParenthesis(value));
@@ -4141,12 +4114,11 @@ public class RuleModelDRLPersistenceImpl
             } else {
                 if (!Character.isDigit(value.charAt(0))) {
                     if (value.equals("true") || value.equals("false")) {
-                        type = DataType.TYPE_BOOLEAN;
                         con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
-                    } else if (isEnumerationValue(m,
-                                                  factPattern,
-                                                  con)) {
-                        type = DataType.TYPE_COMPARABLE;
+                    } else if (RuleModelPersistenceHelper.isEnumerationValue(m,
+                                                                             factPattern,
+                                                                             con,
+                                                                             dmo)) {
                         con.setConstraintValueType(SingleFieldConstraint.TYPE_ENUM);
                     } else if (value.indexOf('.') > 0 && boundParams.containsKey(value.substring(0,
                                                                                                  value.indexOf('.')).trim())) {
@@ -4162,61 +4134,24 @@ public class RuleModelDRLPersistenceImpl
                         con.setConstraintValueType(SingleFieldConstraint.TYPE_RET_VALUE);
                     }
                 } else {
-                    if (value.endsWith("I")) {
-                        type = DataType.TYPE_NUMERIC_BIGINTEGER;
-                        value = value.substring(0,
-                                                value.length() - 1);
-                    } else if (value.endsWith("B")) {
-                        type = DataType.TYPE_NUMERIC_BIGDECIMAL;
-                        value = value.substring(0,
-                                                value.length() - 1);
-                    } else if (value.endsWith("f")) {
-                        type = DataType.TYPE_NUMERIC_FLOAT;
-                    } else if (value.endsWith("d")) {
-                        type = DataType.TYPE_NUMERIC_DOUBLE;
-                    } else {
-                        type = DataType.TYPE_NUMERIC_INTEGER;
-                    }
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
                 }
                 con.setValue(value);
             }
+
+            final String type = RuleModelPersistenceHelper.inferDataTypeFromConstraint(m,
+                                                                                       factPattern,
+                                                                                       con,
+                                                                                       value,
+                                                                                       dmo,
+                                                                                       m.getImports());
+
             if (con instanceof SingleFieldConstraint) {
                 ((SingleFieldConstraint) con).setFieldType(type);
             } else if (con instanceof ConnectiveConstraint) {
                 ((ConnectiveConstraint) con).setFieldType(type);
             }
             return type;
-        }
-
-        private boolean isEnumerationValue(final RuleModel ruleModel,
-                                           final FactPattern factPattern,
-                                           final BaseSingleFieldConstraint con) {
-            String factType = null;
-            String fieldName = null;
-            if (con instanceof SingleFieldConstraintEBLeftSide) {
-                SingleFieldConstraintEBLeftSide sfcex = (SingleFieldConstraintEBLeftSide) con;
-                List<ExpressionPart> sfcexParts = sfcex.getExpressionLeftSide().getParts();
-                factType = sfcexParts.get(sfcexParts.size() - 1).getPrevious().getClassType();
-                fieldName = sfcex.getFieldName();
-            } else if (con instanceof SingleFieldConstraint) {
-                factType = factPattern.getFactType();
-                fieldName = ((SingleFieldConstraint) con).getFieldName();
-            } else if (con instanceof ConnectiveConstraint) {
-                factType = factPattern.getFactType();
-                fieldName = ((ConnectiveConstraint) con).getFieldName();
-            }
-
-            if (factType == null || fieldName == null) {
-                return false;
-            }
-
-            final String fullyQualifiedFactType = getFQFactType(ruleModel,
-                                                                factType);
-            final String key = fullyQualifiedFactType + "#" + fieldName;
-            final Map<String, String[]> projectJavaEnumDefinitions = dmo.getProjectJavaEnumDefinitions();
-
-            return projectJavaEnumDefinitions.containsKey(key);
         }
     }
 

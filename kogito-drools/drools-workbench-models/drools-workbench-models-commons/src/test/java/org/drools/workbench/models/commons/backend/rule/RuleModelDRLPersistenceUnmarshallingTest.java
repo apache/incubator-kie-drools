@@ -32,10 +32,7 @@ import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
@@ -73,8 +70,6 @@ import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,78 +77,9 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class RuleModelDRLPersistenceUnmarshallingTest {
+public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest {
 
     private static final Logger logger = LoggerFactory.getLogger(RuleModelDRLPersistenceUnmarshallingTest.class);
-
-    private PackageDataModelOracle dmo;
-    private Map<String, ModelField[]> packageModelFields = new HashMap<>();
-    private Map<String, String[]> projectJavaEnumDefinitions = new HashMap<>();
-    private Map<String, List<MethodInfo>> projectMethodInformation = new HashMap<>();
-
-    @Before
-    public void setUp() throws Exception {
-        dmo = mock(PackageDataModelOracle.class);
-        when(dmo.getProjectModelFields()).thenReturn(packageModelFields);
-        when(dmo.getProjectJavaEnumDefinitions()).thenReturn(projectJavaEnumDefinitions);
-        when(dmo.getProjectMethodInformation()).thenReturn(projectMethodInformation);
-    }
-
-    @After
-    public void cleanUp() throws Exception {
-        packageModelFields.clear();
-        projectJavaEnumDefinitions.clear();
-        projectMethodInformation.clear();
-    }
-
-    private void addModelField(final String factName,
-                               final String fieldName,
-                               final String clazz,
-                               final String type) {
-        ModelField[] modelFields = new ModelField[1];
-        modelFields[0] = new ModelField(fieldName,
-                                        clazz,
-                                        ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                                        ModelField.FIELD_ORIGIN.DECLARED,
-                                        FieldAccessorsAndMutators.BOTH,
-                                        type);
-        if (packageModelFields.containsKey(factName)) {
-            final List<ModelField> existingModelFields = new ArrayList<>(Arrays.asList(packageModelFields.get(factName)));
-            existingModelFields.add(modelFields[0]);
-            modelFields = existingModelFields.toArray(modelFields);
-        }
-        packageModelFields.put(factName,
-                               modelFields);
-    }
-
-    private void addJavaEnumDefinition(final String factName,
-                                       final String fieldName,
-                                       final String[] values) {
-        final String key = factName + "#" + fieldName;
-        projectJavaEnumDefinitions.put(key,
-                                       values);
-    }
-
-    private void addMethodInformation(final String factName,
-                                      final String name,
-                                      final List<String> params,
-                                      final String returnType,
-                                      final String parametricReturnType,
-                                      final String genericType) {
-        MethodInfo mi = new MethodInfo(name,
-                                       params,
-                                       returnType,
-                                       parametricReturnType,
-                                       genericType);
-
-        List<MethodInfo> existingMethodInfo = projectMethodInformation.get(factName);
-        if (existingMethodInfo == null) {
-            existingMethodInfo = new ArrayList<>();
-            projectMethodInformation.put(factName,
-                                         existingMethodInfo);
-        }
-        existingMethodInfo.add(mi);
-    }
 
     @Test
     public void testFactPattern() {
@@ -3374,8 +3300,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
     @Test
     public void testFromAccumulate() {
-        String drl = "import java.lang.Number;\n"
-                + "import org.mortgages.Applicant;\n"
+        String drl = "package org.test;\n"
+                + "import java.lang.Number;\n"
                 + "rule \"rule1\"\n"
                 + "when\n"
                 + "  total : Number( intValue > 0 ) from accumulate ( Applicant( age < 30 ), count() )\n"
@@ -3385,12 +3311,18 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         addModelField("java.lang.Number",
                       "intValue",
                       "java.lang.Integer",
-                      DataType.TYPE_NUMERIC);
+                      DataType.TYPE_NUMERIC_INTEGER);
 
-        addModelField("org.mortgages.Applicant",
+        addModelField("org.test.Applicant",
+                      "this",
+                      "org.test.Applicant",
+                      DataType.TYPE_THIS);
+        addModelField("org.test.Applicant",
                       "age",
-                      "java.lang.Integer",
-                      DataType.TYPE_NUMERIC);
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
+
+        when(dmo.getPackageName()).thenReturn("org.test");
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                           Collections.emptyList(),
@@ -6382,12 +6314,24 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     @Test
     //https://issues.jboss.org/browse/GUVNOR-2141
     public void testSingleFieldConstraintConnectives1() {
-        String drl = "rule \"rule1\"\n"
+        String drl = "package org.test;\n"
+                + "rule \"rule1\"\n"
                 + "dialect \"mvel\"\n"
                 + "  when\n"
                 + "    Applicant( age < 55 || > 75 )\n"
                 + "  then\n"
                 + "end";
+
+        addModelField("org.test.Applicant",
+                      "this",
+                      "org.test.Applicant",
+                      DataType.TYPE_THIS);
+        addModelField("org.test.Applicant",
+                      "age",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
+
+        when(dmo.getPackageName()).thenReturn("org.test");
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                           Collections.emptyList(),
@@ -6443,12 +6387,24 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     @Test
     //https://issues.jboss.org/browse/GUVNOR-2141
     public void testSingleFieldConstraintConnectives2() {
-        String drl = "rule \"rule1\"\n"
+        String drl = "package org.test;\n"
+                + "rule \"rule1\"\n"
                 + "dialect \"mvel\"\n"
                 + "  when\n"
                 + "    Applicant( age == 55 || == 75 )\n"
                 + "  then\n"
                 + "end";
+
+        addModelField("org.test.Applicant",
+                      "this",
+                      "org.test.Applicant",
+                      DataType.TYPE_THIS);
+        addModelField("org.test.Applicant",
+                      "age",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
+
+        when(dmo.getPackageName()).thenReturn("org.test");
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                           Collections.emptyList(),

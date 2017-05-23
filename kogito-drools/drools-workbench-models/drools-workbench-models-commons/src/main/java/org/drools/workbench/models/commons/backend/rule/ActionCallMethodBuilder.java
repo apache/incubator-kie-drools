@@ -35,7 +35,12 @@ import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 
-import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
+import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.adjustParam;
+import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.getMethodInfosForType;
+import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.inferDataTypeFromActionValue;
+import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.inferFieldNature;
+import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.removeNumericSuffix;
+import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.unwrapTemplateKey;
 
 public class ActionCallMethodBuilder {
 
@@ -48,10 +53,10 @@ public class ActionCallMethodBuilder {
     private String[] parameters;
     private int index;
 
-    public ActionCallMethodBuilder( RuleModel model,
-                                    PackageDataModelOracle dmo,
-                                    boolean isJavaDialect,
-                                    Map<String, String> boundParams ) {
+    public ActionCallMethodBuilder(RuleModel model,
+                                   PackageDataModelOracle dmo,
+                                   boolean isJavaDialect,
+                                   Map<String, String> boundParams) {
         this.model = model;
         this.dmo = dmo;
         this.isJavaDialect = isJavaDialect;
@@ -59,54 +64,54 @@ public class ActionCallMethodBuilder {
     }
 
     //ActionCallMethods do not support chained method invocations
-    public boolean supports( final String line ) {
+    public boolean supports(final String line) {
         final List<String> splits = new ArrayList<String>();
         int depth = 0;
         int textDepth = 0;
         boolean escape = false;
         StringBuffer split = new StringBuffer();
-        for ( char c : line.toCharArray() ) {
-            if ( depth == 0 && c == '.' ) {
-                splits.add( split.toString() );
+        for (char c : line.toCharArray()) {
+            if (depth == 0 && c == '.') {
+                splits.add(split.toString());
                 split = new StringBuffer();
                 depth = 0;
                 textDepth = 0;
                 escape = false;
                 continue;
-            } else if ( c == '\\' ) {
+            } else if (c == '\\') {
                 escape = true;
-                split.append( c );
+                split.append(c);
                 continue;
-            } else if ( textDepth == 0 && c == '"' ) {
+            } else if (textDepth == 0 && c == '"') {
                 textDepth++;
-            } else if ( !escape && textDepth > 0 && c == '"' ) {
+            } else if (!escape && textDepth > 0 && c == '"') {
                 textDepth--;
-            } else if ( textDepth == 0 && c == '(' ) {
+            } else if (textDepth == 0 && c == '(') {
                 depth++;
-            } else if ( textDepth == 0 && c == ')' ) {
+            } else if (textDepth == 0 && c == ')') {
                 depth--;
             }
-            split.append( c );
+            split.append(c);
             escape = false;
         }
-        splits.add( split.toString() );
+        splits.add(split.toString());
         return splits.size() == 2;
     }
 
-    public ActionCallMethod get( String variable,
-                                 String methodName,
-                                 String[] parameters ) {
+    public ActionCallMethod get(String variable,
+                                String methodName,
+                                String[] parameters) {
         this.variable = variable;
         this.methodName = methodName;
         this.parameters = parameters;
 
         ActionCallMethod actionCallMethod = new ActionCallMethod();
-        actionCallMethod.setMethodName( methodName );
-        actionCallMethod.setVariable( variable );
-        actionCallMethod.setState( ActionCallMethod.TYPE_DEFINED );
+        actionCallMethod.setMethodName(methodName);
+        actionCallMethod.setVariable(variable);
+        actionCallMethod.setState(ActionCallMethod.TYPE_DEFINED);
 
-        for ( ActionFieldFunction parameter : getActionFieldFunctions() ) {
-            actionCallMethod.addFieldValue( parameter );
+        for (ActionFieldFunction parameter : getActionFieldFunctions()) {
+            actionCallMethod.addFieldValue(parameter);
         }
 
         return actionCallMethod;
@@ -117,90 +122,91 @@ public class ActionCallMethodBuilder {
         List<ActionFieldFunction> actionFieldFunctions = new ArrayList<ActionFieldFunction>();
 
         this.index = 0;
-        for ( String param : parameters ) {
+        for (String param : parameters) {
             param = param.trim();
-            if ( param.length() == 0 ) {
+            if (param.length() == 0) {
                 continue;
             }
 
-            actionFieldFunctions.add( getActionFieldFunction( param,
-                                                              getDataType( param ) ) );
+            actionFieldFunctions.add(getActionFieldFunction(param,
+                                                            getDataType(param)));
         }
         return actionFieldFunctions;
     }
 
-    private ActionFieldFunction getActionFieldFunction( String param,
-                                                        String dataType ) {
-        param = removeNumericSuffix( param,
-                                     dataType );
-        final int fieldNature = inferFieldNature( dataType,
-                                                  param,
-                                                  boundParams,
-                                                  isJavaDialect );
+    private ActionFieldFunction getActionFieldFunction(String param,
+                                                       String dataType) {
+        param = removeNumericSuffix(param,
+                                    dataType);
+        final int fieldNature = inferFieldNature(dataType,
+                                                 param,
+                                                 boundParams,
+                                                 isJavaDialect);
 
         //If the field is a formula don't adjust the param value
         String paramValue = param;
-        switch ( fieldNature ) {
+        switch (fieldNature) {
             case FieldNatureType.TYPE_FORMULA:
                 break;
             case FieldNatureType.TYPE_VARIABLE:
                 break;
             case FieldNatureType.TYPE_TEMPLATE:
-                paramValue = unwrapTemplateKey( param );
+                paramValue = unwrapTemplateKey(param);
                 break;
             default:
-                paramValue = adjustParam( dataType,
-                                          param,
-                                          boundParams,
-                                          isJavaDialect );
+                paramValue = adjustParam(dataType,
+                                         param,
+                                         boundParams,
+                                         isJavaDialect);
         }
-        ActionFieldFunction actionField = new ActionFieldFunction( methodName,
-                                                                   paramValue,
-                                                                   dataType );
-        actionField.setNature( fieldNature );
+        ActionFieldFunction actionField = new ActionFieldFunction(methodName,
+                                                                  paramValue,
+                                                                  dataType);
+        actionField.setNature(fieldNature);
         return actionField;
     }
 
-    private String getDataType( String param ) {
+    private String getDataType(String param) {
         String dataType;
 
         MethodInfo methodInfo = getMethodInfo();
 
-        if ( methodInfo != null ) {
-            dataType = methodInfo.getParams().get( index++ );
+        if (methodInfo != null) {
+            dataType = methodInfo.getParams().get(index++);
         } else {
-            dataType = boundParams.get( param );
+            dataType = boundParams.get(param);
         }
-        if ( dataType == null ) {
-            dataType = inferDataType( param,
-                                      boundParams,
-                                      isJavaDialect );
+        if (dataType == null) {
+            dataType = inferDataTypeFromActionValue(param,
+                                                    boundParams,
+                                                    isJavaDialect);
         }
         return dataType;
     }
 
     private MethodInfo getMethodInfo() {
-        String variableType = boundParams.get( variable );
-        if ( variableType != null ) {
-            List<MethodInfo> methods = getMethodInfosForType( model,
-                                                              dmo,
-                                                              variableType );
-            if ( methods != null ) {
+        String variableType = boundParams.get(variable);
+        if (variableType != null) {
+            List<MethodInfo> methods = getMethodInfosForType(model,
+                                                             dmo,
+                                                             variableType);
+            if (methods != null) {
 
-                ArrayList<MethodInfo> methodInfos = getMethodInfos( methodName, methods );
+                ArrayList<MethodInfo> methodInfos = getMethodInfos(methodName,
+                                                                   methods);
 
-                if ( methodInfos.size() > 1 ) {
+                if (methodInfos.size() > 1) {
                     // Now if there were more than one method with the same name
                     // we need to start figuring out what is the correct one.
-                    for ( MethodInfo methodInfo : methodInfos ) {
-                        if ( compareParameters( methodInfo.getParams() ) ) {
+                    for (MethodInfo methodInfo : methodInfos) {
+                        if (compareParameters(methodInfo.getParams())) {
                             return methodInfo;
                         }
                     }
-                } else if ( !methodInfos.isEmpty() ) {
+                } else if (!methodInfos.isEmpty()) {
                     // Not perfect, but works on most cases.
                     // There is no check if the parameter types match.
-                    return methodInfos.get( 0 );
+                    return methodInfos.get(0);
                 }
             }
         }
@@ -208,26 +214,26 @@ public class ActionCallMethodBuilder {
         return null;
     }
 
-    private ArrayList<MethodInfo> getMethodInfos( String methodName,
-                                                  List<MethodInfo> methods ) {
+    private ArrayList<MethodInfo> getMethodInfos(String methodName,
+                                                 List<MethodInfo> methods) {
         ArrayList<MethodInfo> result = new ArrayList<MethodInfo>();
-        for ( MethodInfo method : methods ) {
-            if ( method.getName().equals( methodName ) ) {
-                result.add( method );
+        for (MethodInfo method : methods) {
+            if (method.getName().equals(methodName)) {
+                result.add(method);
             }
         }
         return result;
     }
 
-    private boolean compareParameters( List<String> methodParams ) {
-        if ( methodParams.size() != parameters.length ) {
+    private boolean compareParameters(List<String> methodParams) {
+        if (methodParams.size() != parameters.length) {
             return false;
         } else {
-            for ( int index = 0; index < methodParams.size(); index++ ) {
-                final String methodParamDataType = methodParams.get( index );
-                final String paramDataType = assertParamDataType( methodParamDataType,
-                                                                  parameters[ index ].trim() );
-                if ( !methodParamDataType.equals( paramDataType ) ) {
+            for (int index = 0; index < methodParams.size(); index++) {
+                final String methodParamDataType = methodParams.get(index);
+                final String paramDataType = assertParamDataType(methodParamDataType,
+                                                                 parameters[index].trim());
+                if (!methodParamDataType.equals(paramDataType)) {
                     return false;
                 }
             }
@@ -235,116 +241,102 @@ public class ActionCallMethodBuilder {
         }
     }
 
-    private String assertParamDataType( final String methodParamDataType,
-                                        final String paramValue ) {
-        if ( boundParams.containsKey( paramValue ) ) {
+    private String assertParamDataType(final String methodParamDataType,
+                                       final String paramValue) {
+        if (boundParams.containsKey(paramValue)) {
             //If the parameter is a bound variable use the MethodInfo data-type
             return methodParamDataType;
-
         } else {
             //Otherwise try coercing the parameter value into the method data-type until a match is found
-            if ( DataType.TYPE_BOOLEAN.equals( methodParamDataType ) ) {
-                if ( Boolean.TRUE.equals( Boolean.parseBoolean( paramValue ) ) || Boolean.FALSE.equals( Boolean.parseBoolean( paramValue ) ) ) {
+            if (DataType.TYPE_BOOLEAN.equals(methodParamDataType)) {
+                if (Boolean.TRUE.equals(Boolean.parseBoolean(paramValue)) || Boolean.FALSE.equals(Boolean.parseBoolean(paramValue))) {
                     return methodParamDataType;
                 }
                 return null;
-
-            } else if ( DataType.TYPE_DATE.equals( methodParamDataType ) ) {
+            } else if (DataType.TYPE_DATE.equals(methodParamDataType)) {
                 try {
-                    new SimpleDateFormat( DateUtils.getDateFormatMask(), Locale.ENGLISH ).parse( adjustParam( methodParamDataType,
-                                                                                                              paramValue,
-                                                                                                              Collections.EMPTY_MAP,
-                                                                                                              isJavaDialect ) );
+                    new SimpleDateFormat(DateUtils.getDateFormatMask(),
+                                         Locale.ENGLISH).parse(adjustParam(methodParamDataType,
+                                                                           paramValue,
+                                                                           Collections.EMPTY_MAP,
+                                                                           isJavaDialect));
                     return methodParamDataType;
-                } catch ( ParseException e ) {
+                } catch (ParseException e) {
                     return null;
                 }
-
-            } else if ( DataType.TYPE_STRING.equals( methodParamDataType ) ) {
-                if ( paramValue.startsWith( "\"" ) ) {
+            } else if (DataType.TYPE_STRING.equals(methodParamDataType)) {
+                if (paramValue.startsWith("\"")) {
                     return methodParamDataType;
                 }
-
-            } else if ( DataType.TYPE_NUMERIC.equals( methodParamDataType ) ) {
-                if ( !NumberUtils.isNumber( paramValue ) ) {
+            } else if (DataType.TYPE_NUMERIC.equals(methodParamDataType)) {
+                if (!NumberUtils.isNumber(paramValue)) {
                     return methodParamDataType;
                 }
-
-            } else if ( DataType.TYPE_NUMERIC_BIGDECIMAL.equals( methodParamDataType ) ) {
+            } else if (DataType.TYPE_NUMERIC_BIGDECIMAL.equals(methodParamDataType)) {
                 try {
-                    new BigDecimal( adjustParam( methodParamDataType,
-                                                 paramValue,
-                                                 Collections.EMPTY_MAP,
-                                                 isJavaDialect ) );
+                    new BigDecimal(adjustParam(methodParamDataType,
+                                               paramValue,
+                                               Collections.EMPTY_MAP,
+                                               isJavaDialect));
                     return methodParamDataType;
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     return null;
                 }
-
-            } else if ( DataType.TYPE_NUMERIC_BIGINTEGER.equals( methodParamDataType ) ) {
+            } else if (DataType.TYPE_NUMERIC_BIGINTEGER.equals(methodParamDataType)) {
                 try {
-                    new BigInteger( adjustParam( methodParamDataType,
-                                                 paramValue,
-                                                 Collections.EMPTY_MAP,
-                                                 isJavaDialect ) );
+                    new BigInteger(adjustParam(methodParamDataType,
+                                               paramValue,
+                                               Collections.EMPTY_MAP,
+                                               isJavaDialect));
                     return methodParamDataType;
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     return null;
                 }
-
-            } else if ( DataType.TYPE_NUMERIC_BYTE.equals( methodParamDataType ) ) {
+            } else if (DataType.TYPE_NUMERIC_BYTE.equals(methodParamDataType)) {
                 try {
-                    new Byte( paramValue );
+                    new Byte(paramValue);
                     return methodParamDataType;
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     return null;
                 }
-
-            } else if ( DataType.TYPE_NUMERIC_DOUBLE.equals( methodParamDataType ) ) {
+            } else if (DataType.TYPE_NUMERIC_DOUBLE.equals(methodParamDataType)) {
                 try {
-                    new Double( paramValue );
+                    new Double(paramValue);
                     return methodParamDataType;
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     return null;
                 }
-
-            } else if ( DataType.TYPE_NUMERIC_FLOAT.equals( methodParamDataType ) ) {
+            } else if (DataType.TYPE_NUMERIC_FLOAT.equals(methodParamDataType)) {
                 try {
-                    new Float( paramValue );
+                    new Float(paramValue);
                     return methodParamDataType;
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     return null;
                 }
-
-            } else if ( DataType.TYPE_NUMERIC_INTEGER.equals( methodParamDataType ) ) {
+            } else if (DataType.TYPE_NUMERIC_INTEGER.equals(methodParamDataType)) {
                 try {
-                    new Integer( paramValue );
+                    new Integer(paramValue);
                     return methodParamDataType;
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     return null;
                 }
-
-            } else if ( DataType.TYPE_NUMERIC_LONG.equals( methodParamDataType ) ) {
+            } else if (DataType.TYPE_NUMERIC_LONG.equals(methodParamDataType)) {
                 try {
-                    new Long( paramValue );
+                    new Long(paramValue);
                     return methodParamDataType;
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     return null;
                 }
-
-            } else if ( DataType.TYPE_NUMERIC_SHORT.equals( methodParamDataType ) ) {
+            } else if (DataType.TYPE_NUMERIC_SHORT.equals(methodParamDataType)) {
                 try {
-                    new Short( paramValue );
+                    new Short(paramValue);
                     return methodParamDataType;
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     return null;
                 }
-
             }
 
             return null;
         }
-
     }
-
 }
