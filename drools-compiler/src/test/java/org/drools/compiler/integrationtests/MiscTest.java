@@ -2821,59 +2821,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testMatchesNotMatchesCheese() throws Exception {
-         final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_MatchesNotMatches.drl" ) );
-         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         final Cheese stilton = new Cheese( "stilton",
-                                            12 );
-         final Cheese stilton2 = new Cheese( "stilton2",
-                                             12 );
-         final Cheese agedStilton = new Cheese( "aged stilton",
-                                                12 );
-         final Cheese brie = new Cheese( "brie",
-                                         10 );
-         final Cheese brie2 = new Cheese( "brie2",
-                                          10 );
-         final Cheese muzzarella = new Cheese( "muzzarella",
-                                               10 );
-         final Cheese muzzarella2 = new Cheese( "muzzarella2",
-                                                10 );
-         final Cheese provolone = new Cheese( "provolone",
-                                              10 );
-         final Cheese provolone2 = new Cheese( "another cheese (provolone)",
-                                               10 );
-         ksession.insert( stilton );
-         ksession.insert( stilton2 );
-         ksession.insert( agedStilton );
-         ksession.insert( brie );
-         ksession.insert( brie2 );
-         ksession.insert( muzzarella );
-         ksession.insert( muzzarella2 );
-         ksession.insert( provolone );
-         ksession.insert( provolone2 );
-
-         ksession.fireAllRules();
-
-         logger.info( list.toString() );
-         assertEquals( 4,
-                       list.size() );
-
-         assertEquals( stilton,
-                       list.get( 0 ) );
-         assertEquals( brie,
-                       list.get( 1 ) );
-         assertEquals( agedStilton,
-                       list.get( 2 ) );
-         assertEquals( provolone,
-                       list.get( 3 ) );
-     }
-
-     @Test
      public void testAutomaticBindings() throws Exception {
          final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_AutoBindings.drl" ) );
          final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -2895,56 +2842,6 @@ import org.slf4j.LoggerFactory;
 
          assertEquals( bob,
                        list.get( 0 ) );
-     }
-
-     @Test
-     public void testMatchesMVEL() throws Exception {
-         final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_MatchesMVEL.drl" ) );
-         final StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         final List results = new ArrayList();
-         session.setGlobal( "results",
-                            results );
-
-         Map map = new HashMap();
-         map.put( "content",
-                  "hello ;=" );
-         session.insert( map );
-
-         session.fireAllRules();
-
-         assertEquals( 1,
-                       results.size() );
-     }
-
-     @Test
-     public void testMatchesMVEL2() throws Exception {
-         KnowledgeBase kbase = loadKnowledgeBase( "test_MatchesMVEL2.drl" );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         Map map = new HashMap();
-         map.put( "content",
-                  "String with . and (routine)" );
-         ksession.insert( map );
-         int fired = ksession.fireAllRules();
-
-         assertEquals( 2,
-                       fired );
-     }
-
-     @Test
-     public void testMatchesMVEL3() throws Exception {
-         KnowledgeBase kbase = loadKnowledgeBase( "test_MatchesMVEL2.drl" );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         Map map = new HashMap();
-         map.put( "content",
-                  "String with . and ()" );
-         ksession.insert( map );
-         int fired = ksession.fireAllRules();
-
-         assertEquals( 1,
-                       fired );
      }
 
      @Test
@@ -5442,60 +5339,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testNotMatchesSucceeds() throws InstantiationException,
-                                         IllegalAccessException {
-         // JBRULES-2914: Rule misfires due to "not matches" not working
-
-         String str = "package org.drools.compiler\n" +
-                      "rule NotMatches\n" +
-                      "when\n" +
-                      "    Person( name == null || (name != null && name not matches \"-.{2}x.*\" ) )\n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         Person p = new Person( "-..x..xrwx" );
-
-         ksession.insert( p );
-
-         int rules = ksession.fireAllRules();
-         ksession.dispose();
-
-         assertEquals( 0,
-                       rules );
-     }
-
-     @Test
-     public void testNotMatchesFails() throws InstantiationException,
-                                      IllegalAccessException {
-         // JBRULES-2914: Rule misfires due to "not matches" not working
-
-         String str = "package org.drools.compiler\n" +
-                      "rule NotMatches\n" +
-                      "when\n" +
-                      "    Person( name == null || (name != null && name not matches \"-.{2}x.*\" ) )\n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         Person p = new Person( "d..x..xrwx" );
-
-         ksession.insert( p );
-
-         int rules = ksession.fireAllRules();
-         ksession.dispose();
-
-         assertEquals( 1,
-                       rules );
-     }
-
-     @Test
      public void testNotEqualsOperator() {
          // JBRULES-3003: restriction evaluation returns 'false' for "trueField != falseField"
 
@@ -7557,41 +7400,6 @@ import org.slf4j.LoggerFactory;
          public Double getTyped() {
              return typed;
          }
-     }
-
-     public void testMvelMatches() {
-         String str = "package com.sample\n" +
-                      "import org.drools.compiler.Person\n" +
-                      "global java.util.List results;" +
-                      "rule XXX when\n" +
-                      "  Person( $n : name ~= \"\\\\D.*\" )\n" +
-                      "then\n" +
-                      "  results.add( $n ); \n " +
-                      "end \n" +
-                      "rule YY when\n" +
-                      "  Person( $a : age, $n : name ~= \"\\\\d\\\\D.*\" )\n" +
-                      "then\n" +
-                      "  results.add( $a ); \n " +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         List res = new ArrayList();
-         ksession.setGlobal( "results", res );
-
-         ksession.insert( new Person( "mark", 37 ) );
-         ksession.insert( new Person( "mario", 38 ) );
-         ksession.insert( new Person( "1mike", 44 ) );
-         ksession.insert( new Person( "52matt", 44 ) );
-
-         ksession.fireAllRules();
-         ksession.dispose();
-
-         assertEquals( 3, res.size() );
-         assertTrue( res.contains( "mark" ) );
-         assertTrue( res.contains( "mario" ) );
-         assertTrue( res.contains( 44 ) );
      }
 
      @Test
