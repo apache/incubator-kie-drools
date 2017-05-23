@@ -138,7 +138,7 @@ import org.slf4j.LoggerFactory;
   */
  public class MiscTest extends CommonTestMethodBase {
 
-     private static Logger logger = LoggerFactory.getLogger( MiscTest.class );
+    private static Logger logger = LoggerFactory.getLogger(MiscTest.class);
 
      @Test
      public void testStaticFieldReference() throws Exception {
@@ -1484,37 +1484,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testAssertRetract() throws Exception {
-         // postponed while I sort out KnowledgeHelperFixer
-         KnowledgeBase kbase = loadKnowledgeBase( "assert_retract.drl" );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         final PersonInterface person = new Person( "michael",
-                                                    "cheese" );
-         person.setStatus( "start" );
-         ksession.insert( person );
-
-         ksession.fireAllRules();
-
-         List<String> results = (List<String>) ksession.getGlobal( "list" );
-         for ( String result : results ) {
-             logger.info( result );
-         }
-         assertEquals( 5,
-                       results.size() );
-         assertTrue( results.contains( "first" ) );
-         assertTrue( results.contains( "second" ) );
-         assertTrue( results.contains( "third" ) );
-         assertTrue( results.contains( "fourth" ) );
-         assertTrue( results.contains( "fifth" ) );
-
-     }
-
-     @Test
      public void testPredicateAsFirstPattern() throws Exception {
          KnowledgeBase kbase = loadKnowledgeBase( "predicate_as_first_pattern.drl" );
          StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -2224,33 +2193,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testModifyRetractWithFunction() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_RetractModifyWithFunction.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final Cheese stilton = new Cheese( "stilton",
-                                            7 );
-         final Cheese muzzarella = new Cheese( "muzzarella",
-                                               9 );
-         final int sum = stilton.getPrice() + muzzarella.getPrice();
-         final FactHandle stiltonHandle = ksession.insert( stilton );
-         final FactHandle muzzarellaHandle = ksession.insert( muzzarella );
-
-         ksession.fireAllRules();
-
-         assertEquals( sum,
-                       stilton.getPrice() );
-         assertEquals( 1,
-                       ksession.getFactCount() );
-         assertNotNull( ksession.getObject( stiltonHandle ) );
-         assertNotNull( ksession.getFactHandle( stilton ) );
-
-         assertNull( ksession.getObject( muzzarellaHandle ) );
-         assertNull( ksession.getFactHandle( muzzarella ) );
-
-     }
-
-     @Test
      public void testConstraintConnectors() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ConstraintConnectors.drl" ) );
          StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -2948,39 +2890,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testEmptyAfterRetractInIndexedMemory() {
-         String str = "";
-         str += "package org.simple \n";
-         str += "import org.drools.compiler.Person\n";
-         str += "global java.util.List list \n";
-         str += "rule xxx dialect 'mvel' \n";
-         str += "when \n";
-         str += "  Person( $name : name ) \n";
-         str += "  $s : String( this == $name) \n";
-         str += "then \n";
-         str += "  list.add($s); \n";
-         str += "end  \n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         Person p = new Person( "ackbar" );
-         FactHandle ph = ksession.insert( p );
-         FactHandle sh = ksession.insert( "ackbar" );
-         ksession.fireAllRules();
-         ksession.dispose();
-
-         assertEquals( 1,
-                       list.size() );
-         assertEquals( "ackbar",
-                       list.get( 0 ) );
-     }
-
-     @Test
      public void testRuleReplacement() throws Exception {
          // test rule replacement
          Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_RuleNameClashes3.drl",
@@ -3525,28 +3434,6 @@ import org.slf4j.LoggerFactory;
          assertEquals( "null object",
                        list.get( index++ ) );
 
-     }
-
-     @Test
-     public void testModifyRetractAndModifyInsert() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ModifyRetractInsert.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         Person bob = new Person( "Bob" );
-         bob.setStatus( "hungry" );
-         ksession.insert( bob );
-         ksession.insert( new Cheese() );
-         ksession.insert( new Cheese() );
-
-         ksession.fireAllRules( 2 );
-
-         assertEquals( "should have fired only once",
-                       1,
-                       list.size() );
      }
 
      @Test
@@ -5640,41 +5527,6 @@ import org.slf4j.LoggerFactory;
          ksession.insert( a );
          ksession.insert( b );
          assertEquals( 1, ksession.fireAllRules() );
-     }
-
-     @Test
-     public void testRetractLeftTuple() throws Exception {
-         // JBRULES-3420
-         String str = "import " + MiscTest.class.getName() + ".*\n" +
-                      "rule R1 salience 3\n" +
-                      "when\n" +
-                      "   $b : InterfaceB( )\n" +
-                      "   $a : ClassA( b == null )\n" +
-                      "then\n" +
-                      "   $a.setB( $b );\n" +
-                      "   update( $a );\n" +
-                      "end\n" +
-                      "rule R2 salience 2\n" +
-                      "when\n" +
-                      "   $b : ClassB( id == \"123\" )\n" +
-                      "   $a : ClassA( b != null && b.id == $b.id )\n" +
-                      "then\n" +
-                      "   $b.setId( \"456\" );\n" +
-                      "   update( $b );\n" +
-                      "end\n" +
-                      "rule R3 salience 1\n" +
-                      "when\n" +
-                      "   InterfaceA( $b : b )\n" +
-                      "then\n" +
-                      "   delete( $b );\n" +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         ksession.insert( new ClassA() );
-         ksession.insert( new ClassB() );
-         assertEquals( 3, ksession.fireAllRules() );
      }
 
      @Test
