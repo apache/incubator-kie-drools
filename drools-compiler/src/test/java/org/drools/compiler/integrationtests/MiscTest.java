@@ -16,6 +16,32 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
 import org.drools.compiler.Address;
@@ -138,31 +164,6 @@ import org.mockito.Mockito;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 /**
   * Run all the tests with the ReteOO engine implementation
@@ -507,68 +508,6 @@ import static org.mockito.Mockito.*;
          ksession.insert( new Message( "help" ) );
          ksession.fireAllRules();
          ksession.dispose();
-     }
-
-     @Test
-     public void testEvalWithBigDecimal() throws Exception {
-         String str = "";
-         str += "package org.drools.compiler \n";
-         str += "import java.math.BigDecimal; \n";
-         str += "global java.util.List list \n";
-         str += "rule rule1 \n";
-         str += "    dialect \"java\" \n";
-         str += "when \n";
-         str += "    $bd : BigDecimal() \n";
-         str += "    eval( $bd.compareTo( BigDecimal.ZERO ) > 0 ) \n";
-         str += "then \n";
-         str += "    list.add( $bd ); \n";
-         str += "end \n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-         ksession.insert( new BigDecimal( 1.5 ) );
-
-         ksession.fireAllRules();
-
-         assertEquals( 1,
-                       list.size() );
-         assertEquals( new BigDecimal( 1.5 ),
-                       list.get( 0 ) );
-     }
-
-     @Test
-     public void testFieldBiningsAndEvalSharing() throws Exception {
-         final String drl = "test_FieldBindingsAndEvalSharing.drl";
-         evalSharingTest( drl );
-     }
-
-     @Test
-     public void testFieldBiningsAndPredicateSharing() throws Exception {
-         final String drl = "test_FieldBindingsAndPredicateSharing.drl";
-         evalSharingTest( drl );
-     }
-
-     private void evalSharingTest(final String drl) throws Exception {
-         KnowledgeBase kbase = loadKnowledgeBase( drl );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         final TestParam tp1 = new TestParam();
-         tp1.setValue2( "boo" );
-         ksession.insert( tp1 );
-
-         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-                                                                               true );
-         ksession.fireAllRules();
-
-         assertEquals( 1,
-                       ((List) ksession.getGlobal( "list" )).size() );
      }
 
      @Test
@@ -1451,23 +1390,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testBigDecimalWithFromAndEval() throws Exception {
-         String rule = "package org.drools.compiler.test;\n";
-         rule += "rule \"Test Rule\"\n";
-         rule += "when\n";
-         rule += "    $dec : java.math.BigDecimal() from java.math.BigDecimal.TEN;\n";
-         rule += "    eval( $dec.compareTo(java.math.BigDecimal.ONE) > 0 )\n";
-         rule += "then\n";
-         rule += "    System.out.println(\"OK!\");\n";
-         rule += "end";
-
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( rule ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         session.fireAllRules();
-     }
-
-     @Test
      public void testCell() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "evalmodify.drl" ) );
 
@@ -1573,75 +1495,6 @@ import static org.mockito.Mockito.*;
          // now have one more
          assertEquals( 2,
                        ((List) session.getGlobal( "list" )).size() );
-     }
-
-     @Test
-     public void testEval() throws Exception {
-         KnowledgeBase kbase = loadKnowledgeBase( "eval_rule_test.drl" );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         ksession.setGlobal( "five",
-                             new Integer( 5 ) );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         final Cheese stilton = new Cheese( "stilton",
-                                            5 );
-         ksession.insert( stilton );
-         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-                                                                               true );
-         ksession.fireAllRules();
-
-         assertEquals( stilton,
-                       ((List) ksession.getGlobal( "list" )).get( 0 ) );
-     }
-
-     @Test
-     public void testJaninoEval() throws Exception {
-         KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-         kbconf.setProperty( JavaDialectConfiguration.JAVA_COMPILER_PROPERTY, "JANINO" );
-         KnowledgeBase kbase = loadKnowledgeBase( kbconf, "eval_rule_test.drl" );
-
-         kbase = SerializationHelper.serializeObject( kbase );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         ksession.setGlobal( "five",
-                             new Integer( 5 ) );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         final Cheese stilton = new Cheese( "stilton",
-                                            5 );
-         ksession.insert( stilton );
-         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-                                                                               true );
-         ksession.fireAllRules();
-
-         assertEquals( stilton,
-                       ((List) ksession.getGlobal( "list" )).get( 0 ) );
-     }
-
-     @Test
-     public void testEvalMore() throws Exception {
-         KnowledgeBase kbase = loadKnowledgeBase( "eval_rule_test_more.drl" );
-         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-
-         final List list = new ArrayList();
-         session.setGlobal( "list",
-                            list );
-
-         final Person foo = new Person( "foo" );
-         session.insert( foo );
-         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
-                                                                              true );
-         session.fireAllRules();
-
-         assertEquals( foo,
-                       ((List) session.getGlobal( "list" )).get( 0 ) );
      }
 
      @Test
@@ -2065,23 +1918,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testEvalException() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_EvalException.drl" ) );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         final Cheese brie = new Cheese( "brie",
-                                         12 );
-         try {
-             ksession.insert( brie );
-             ksession.fireAllRules();
-             fail( "Should throw an Exception from the Eval" );
-         } catch ( final Exception e ) {
-             assertEquals( "this should throw an exception",
-                           e.getCause().getMessage() );
-         }
-     }
-
-     @Test
      public void testPredicateException() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_PredicateException.drl" ) );
          StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -2331,21 +2167,6 @@ import static org.mockito.Mockito.*;
 
          assertTrue( list.contains( "fired1" ) );
          assertTrue( list.contains( "fired2" ) );
-     }
-
-     @Test
-     public void testjustEval() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_NoPatterns.drl" ) );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         ksession.fireAllRules();
-
-         assertTrue( list.contains( "fired1" ) );
-         assertTrue( list.contains( "fired3" ) );
      }
 
      @Test
@@ -2945,17 +2766,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testCastingInsideEvals() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_castsInsideEval.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         ksession.setGlobal( "value",
-                             new Integer( 20 ) );
-
-         ksession.fireAllRules();
-     }
-
-     @Test
      public void testMemberOfAndNotMemberOf() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_memberOf.drl" ) );
          StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -3357,34 +3167,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testEvalInline() throws Exception {
-         final String text = "package org.drools.compiler\n" +
-                             "rule \"inline eval\"\n" +
-                             "when\n" +
-                             "    $str : String()\n" +
-                             "    Person( eval( name.startsWith($str) && age == 18) )\n" +
-                             "then\n" +
-                             "end";
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         ksession.insert( "b" );
-
-         ksession.insert( new Person( "mark",
-                                      50 ) );
-         int rules = ksession.fireAllRules();
-         assertEquals( 0,
-                       rules );
-
-         ksession.insert( new Person( "bob",
-                                      18 ) );
-         rules = ksession.fireAllRules();
-         assertEquals( 1,
-                       rules );
-
-     }
-
-     @Test
      public void testMethodCalls() throws Exception {
          final String text = "package org.drools.compiler\n" +
                              "rule \"method calls\"\n" +
@@ -3425,101 +3207,6 @@ import static org.mockito.Mockito.*;
          int rules = ksession.fireAllRules();
          assertEquals( 1,
                        rules );
-
-     }
-
-     @Test
-     public void testEvalCE() throws Exception {
-         final String text = "package org.drools.compiler\n" +
-                             "rule \"inline eval\"\n" +
-                             "when\n" +
-                             "    $str : String()\n" +
-                             "    $p   : Person()\n" +
-                             "    eval( $p.getName().startsWith($str) && $p.getName().endsWith($str) )" +
-                             "then\n" +
-                             "end";
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         ksession.insert( "b" );
-
-         ksession.insert( new Person( "mark",
-                                      50 ) );
-         int rules = ksession.fireAllRules();
-         assertEquals( 0,
-                       rules );
-
-         ksession.insert( new Person( "bob",
-                                      18 ) );
-         rules = ksession.fireAllRules();
-         assertEquals( 1,
-                       rules );
-
-     }
-
-     @Test
-     public void testEvalRewrite() throws Exception {
-         final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_EvalRewrite.drl" ) );
-         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         final Order order1 = new Order( 10,
-                                         "Bob" );
-         final OrderItem item11 = new OrderItem( order1,
-                                                 1 );
-         final OrderItem item12 = new OrderItem( order1,
-                                                 2 );
-         order1.addItem( item11 );
-         order1.addItem( item12 );
-         final Order order2 = new Order( 11,
-                                         "Bob" );
-         final OrderItem item21 = new OrderItem( order2,
-                                                 1 );
-         final OrderItem item22 = new OrderItem( order2,
-                                                 2 );
-         order2.addItem( item21 );
-         order2.addItem( item22 );
-         final Order order3 = new Order( 12,
-                                         "Bob" );
-         final OrderItem item31 = new OrderItem( order3,
-                                                 1 );
-         final OrderItem item32 = new OrderItem( order3,
-                                                 2 );
-         order3.addItem( item31 );
-         order3.addItem( item32 );
-         final Order order4 = new Order( 13,
-                                         "Bob" );
-         final OrderItem item41 = new OrderItem( order4,
-                                                 1 );
-         final OrderItem item42 = new OrderItem( order4,
-                                                 2 );
-         order4.addItem( item41 );
-         order4.addItem( item42 );
-         ksession.insert( order1 );
-         ksession.insert( item11 );
-         ksession.insert( item12 );
-         ksession.insert( order2 );
-         ksession.insert( item21 );
-         ksession.insert( item22 );
-         ksession.insert( order3 );
-         ksession.insert( item31 );
-         ksession.insert( item32 );
-         ksession.insert( order4 );
-         ksession.insert( item41 );
-         ksession.insert( item42 );
-
-         ksession.fireAllRules();
-
-         assertEquals( 5,
-                       list.size() );
-         assertTrue( list.contains( item11 ) );
-         assertTrue( list.contains( item12 ) );
-         assertTrue( list.contains( item22 ) );
-         assertTrue( list.contains( order3 ) );
-         assertTrue( list.contains( order4 ) );
 
      }
 
@@ -4555,101 +4242,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testEvalRewriteWithSpecialOperators() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_EvalRewriteWithSpecialOperators.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         final Order order1 = new Order( 10,
-                                         "Bob" );
-         final OrderItem item11 = new OrderItem( order1,
-                                                 1 );
-         final OrderItem item12 = new OrderItem( order1,
-                                                 2 );
-         order1.addItem( item11 );
-         order1.addItem( item12 );
-         final Order order2 = new Order( 11,
-                                         "Bob" );
-         final OrderItem item21 = new OrderItem( order2,
-                                                 1 );
-         final OrderItem item22 = new OrderItem( order2,
-                                                 2 );
-         order2.addItem( item21 );
-         order2.addItem( item22 );
-         final Order order3 = new Order( 12,
-                                         "Bob" );
-         final OrderItem item31 = new OrderItem( order3,
-                                                 1 );
-         final OrderItem item32 = new OrderItem( order3,
-                                                 2 );
-         final OrderItem item33 = new OrderItem( order3,
-                                                 3 );
-         order3.addItem( item31 );
-         order3.addItem( item32 );
-         order3.addItem( item33 );
-         final Order order4 = new Order( 13,
-                                         "Bob" );
-         final OrderItem item41 = new OrderItem( order4,
-                                                 1 );
-         final OrderItem item42 = new OrderItem( order4,
-                                                 2 );
-         order4.addItem( item41 );
-         order4.addItem( item42 );
-         final Order order5 = new Order( 14,
-                                         "Mark" );
-         final OrderItem item51 = new OrderItem( order5,
-                                                 1 );
-         final OrderItem item52 = new OrderItem( order5,
-                                                 2 );
-         order5.addItem( item51 );
-         order5.addItem( item52 );
-         ksession.insert( order1 );
-         ksession.insert( item11 );
-         ksession.insert( item12 );
-         ksession.insert( order2 );
-         ksession.insert( item21 );
-         ksession.insert( item22 );
-         ksession.insert( order3 );
-         ksession.insert( item31 );
-         ksession.insert( item32 );
-         ksession.insert( item33 );
-         ksession.insert( order4 );
-         ksession.insert( item41 );
-         ksession.insert( item42 );
-         ksession.insert( order5 );
-         ksession.insert( item51 );
-         ksession.insert( item52 );
-
-         ksession.fireAllRules();
-
-         assertEquals( 9,
-                       list.size() );
-         int index = 0;
-         assertEquals( item11,
-                       list.get( index++ ) );
-         assertEquals( item12,
-                       list.get( index++ ) );
-         assertEquals( item21,
-                       list.get( index++ ) );
-         assertEquals( item22,
-                       list.get( index++ ) );
-         assertEquals( item31,
-                       list.get( index++ ) );
-         assertEquals( item33,
-                       list.get( index++ ) );
-         assertEquals( item41,
-                       list.get( index++ ) );
-         assertEquals( order5,
-                       list.get( index++ ) );
-         assertEquals( order5,
-                       list.get( index++ ) );
-
-     }
-
-     @Test
      public void testAutovivificationOfVariableRestrictions() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_AutoVivificationVR.drl" ) );
          StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -4877,36 +4469,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testEvalRewriteMatches() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_EvalRewriteMatches.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         final Order order1 = new Order( 14,
-                                         "Mark" );
-         final OrderItem item11 = new OrderItem( order1,
-                                                 1 );
-         final OrderItem item12 = new OrderItem( order1,
-                                                 2 );
-         order1.addItem( item11 );
-         order1.addItem( item12 );
-
-         ksession.insert( order1 );
-         ksession.insert( item11 );
-         ksession.insert( item12 );
-
-         ksession.fireAllRules();
-
-         assertEquals( 2,
-                       list.size() );
-         assertTrue( list.contains( item11 ) );
-         assertTrue( list.contains( item12 ) );
-     }
-
-     @Test
      public void testRuntimeTypeCoercion() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_RuntimeTypeCoercion.drl" ) );
          StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -4998,29 +4560,6 @@ import static org.mockito.Mockito.*;
          assertEquals( "null object",
                        list.get( index++ ) );
 
-     }
-
-     @Test
-     public void testAlphaEvalWithOrCE() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_AlphaEvalWithOrCE.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         FactA a = new FactA();
-         a.setField1( "a value" );
-
-         ksession.insert( a );
-         ksession.insert( new FactB() );
-         ksession.insert( new FactC() );
-
-         ksession.fireAllRules();
-
-         assertEquals( "should not have fired",
-                       0,
-                       list.size() );
      }
 
      @Test
@@ -5485,25 +5024,6 @@ import static org.mockito.Mockito.*;
                        results.size() );
          assertEquals( foo,
                        results.get( 1 ) );
-     }
-
-     @Test
-     public void testEvalWithLineBreaks() throws Exception {
-         final KnowledgeBase kbase = loadKnowledgeBase("test_EvalWithLineBreaks.drl");
-
-         final List<Person> results = new ArrayList<Person>();
-
-         final StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-         session.setGlobal( "results",
-                            results );
-
-         session.insert( Integer.valueOf( 10 ) );
-         session.fireAllRules();
-
-         assertEquals( 1,
-                       results.size() );
-         assertEquals( Integer.valueOf( 10 ),
-                       results.get( 0 ) );
      }
 
      @Test
@@ -6413,40 +5933,6 @@ import static org.mockito.Mockito.*;
          ksession.fireAllRules();
          assertEquals( 0,
                        list.size() ); // this should still now blocked by a2, but bug from previous update hanging onto blocked
-
-         ksession.dispose();
-     }
-
-     @Test
-     public void testModifyWithLiaToEval() {
-         String str = "";
-         str += "package org.simple \n";
-         str += "import " + Person.class.getCanonicalName() + "\n";
-         str += "global java.util.List list \n";
-         str += "rule xxx \n";
-         str += "when \n";
-         str += "    $p : Person() \n";
-         str += "    eval( $p.getAge() > 30 ) \n";
-         str += "then \n";
-         str += "  list.add($p); \n";
-         str += "end  \n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         Person p1 = new Person( "darth", 25 );
-         FactHandle fh = ksession.insert( p1 );
-         ksession.fireAllRules();
-         assertEquals( 0, list.size() );
-
-         p1.setAge( 35 );
-         ksession.update( fh, p1 );
-         ksession.fireAllRules();
-         assertEquals( 1, list.size() );
 
          ksession.dispose();
      }
