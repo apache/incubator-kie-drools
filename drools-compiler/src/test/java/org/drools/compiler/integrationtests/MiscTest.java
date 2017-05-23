@@ -5632,28 +5632,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testSoundsLike() {
-         // JBRULES-2991: Operator soundslike is broken
-
-         String str = "package org.drools.compiler\n" +
-                      "rule SoundsLike\n" +
-                      "when\n" +
-                      "    Person( name soundslike \"Bob\" )\n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         ksession.insert( new Person( "Bob" ) );
-         ksession.insert( new Person( "Mark" ) );
-
-         int rules = ksession.fireAllRules();
-         assertEquals( 1,
-                       rules );
-     }
-
-     @Test
      public void testConstraintExpression() {
          String str = "package org.drools.compiler\n" +
                       "rule \"test\"\n" +
