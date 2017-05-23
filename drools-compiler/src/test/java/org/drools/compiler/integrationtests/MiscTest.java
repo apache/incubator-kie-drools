@@ -5044,32 +5044,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testAddRemoveListeners() throws Exception {
-         final KnowledgeBase kbase = loadKnowledgeBase("test_AddRemoveListeners.drl");
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         // creating listener as a jmock proxy
-         final RuleRuntimeEventListener wmeListener = mock( RuleRuntimeEventListener.class );
-
-         ksession.addEventListener( wmeListener );
-
-         // listener will be notified of both facts insertion
-         ksession.insert( new Cheese( "stilton" ) );
-         ksession.insert( wmeListener );
-
-         // firing rules will remove listener
-         ksession.fireAllRules();
-
-         // inserting another object into the working memory, listener should NOT be notified,
-         // since it is no longer listening.
-         ksession.insert( new Cheese( "brie" ) );
-
-         verify( wmeListener,
-                 times( 2 ) ).objectInserted( any( org.kie.api.event.rule.ObjectInsertedEvent.class ) );
-     }
-
-     @Test
      public void testInsert() throws Exception {
          String drl = "";
          drl += "package test\n";
@@ -6970,19 +6944,6 @@ import org.slf4j.LoggerFactory;
          ksession.fireAllRules();
      }
 
-     @Test
-     public void testCommentDelimiterInString() throws Exception {
-         // JBRULES-3401
-         String str = "rule x\n" +
-                      "dialect \"mvel\"\n" +
-                      "when\n" +
-                      "then\n" +
-                      "System.out.println( \"/*\" );\n" +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-     }
-
      public interface InterfaceA {
          InterfaceB getB();
      }
@@ -8421,22 +8382,6 @@ import org.slf4j.LoggerFactory;
          KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
          kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
          assertTrue( kbuilder.hasErrors() );
-     }
-
-     @Test
-     public void testCommentWithCommaInRHS() {
-         // JBRULES-3648
-         String str = "import org.drools.compiler.*;\n" +
-                      "rule R1 when\n" +
-                      "   $p : Person( age < name.length ) \n" +
-                      "then\n" +
-                      "   insertLogical(new Person(\"Mario\",\n" +
-                      "       // this is the age,\n" +
-                      "       38));" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
      }
 
      @Test
