@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.integrationtests;
+package org.drools.compiler.integrationtests.drl;
 
 //list any import classes here.
 import org.drools.compiler.FirstClass;

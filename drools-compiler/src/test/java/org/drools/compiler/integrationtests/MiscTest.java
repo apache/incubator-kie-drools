@@ -172,38 +172,6 @@ import static org.mockito.Mockito.*;
      private static Logger logger = LoggerFactory.getLogger( MiscTest.class );
 
      @Test
-     public void testImportFunctions() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ImportFunctions.drl" ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         final Cheese cheese = new Cheese( "stilton",
-                                           15 );
-         session.insert( cheese );
-         List list = new ArrayList();
-         session.setGlobal( "list",
-                            list );
-         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
-                                                                              true );
-         int fired = session.fireAllRules();
-
-         list = (List) session.getGlobal( "list" );
-
-         assertEquals( 4,
-                       fired );
-         assertEquals( 4,
-                       list.size() );
-
-         assertEquals( "rule1",
-                       list.get( 0 ) );
-         assertEquals( "rule2",
-                       list.get( 1 ) );
-         assertEquals( "rule3",
-                       list.get( 2 ) );
-         assertEquals( "rule4",
-                       list.get( 3 ) );
-     }
-
-     @Test
      public void testStaticFieldReference() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_StaticField.drl" ) );
          StatefulKnowledgeSession session = createKnowledgeSession( kbase );
@@ -459,31 +427,6 @@ import static org.mockito.Mockito.*;
          if ( kbuilder.hasErrors() ) {
              fail( kbuilder.getErrors().toString() );
          }
-     }
-
-     @Test
-     public void testMissingImport() throws Exception {
-         String str = "";
-         str += "package org.drools.compiler \n";
-         str += "import " + Person.class.getName() + "\n";
-         str += "global java.util.List list \n";
-         str += "rule rule1 \n";
-         str += "when \n";
-         str += "    $i : Cheese() \n";
-         str += "         MissingClass( fieldName == $i ) \n";
-         str += "then \n";
-         str += "    list.add( $i ); \n";
-         str += "end \n";
-
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                       ResourceType.DRL );
-
-         if ( kbuilder.hasErrors() ) {
-             logger.warn( kbuilder.getErrors().toString() );
-         }
-         assertTrue( kbuilder.hasErrors() );
      }
 
      @Test
@@ -1546,25 +1489,6 @@ import static org.mockito.Mockito.*;
          StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 
          session.fireAllRules();
-     }
-
-     @Test()
-     public void testImport() throws Exception {
-         // Same package as this test
-         String rule = "";
-         rule += "package org.drools.compiler.integrationtests;\n";
-         rule += "import java.lang.Math;\n";
-         rule += "rule \"Test Rule\"\n";
-         rule += "  dialect \"mvel\"\n";
-         rule += "  when\n";
-         rule += "  then\n";
-         // Can't handle the TestFact.TEST
-         rule += "    new TestFact(TestFact.TEST);\n";
-         rule += "end";
-
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( rule ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         ksession.fireAllRules();
      }
 
      @Test
@@ -2734,15 +2658,6 @@ import static org.mockito.Mockito.*;
      }
 
      @Test
-     public void testMissingImports() {
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         kbuilder.add( ResourceFactory.newClassPathResource( "test_missing_import.drl",
-                                                             getClass() ),
-                       ResourceType.DRL );
-         assertTrue( kbuilder.hasErrors() );
-     }
-
-     @Test
      public void testNestedConditionalElements() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_NestedConditionalElements.drl" ) );
          StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -2833,12 +2748,6 @@ import static org.mockito.Mockito.*;
                        30,
                        e.getPrice() );
          // success
-     }
-
-     @Test
-     public void testImportConflict() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ImportConflict.drl" ) );
-         StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
      }
 
      @Test
@@ -4816,26 +4725,6 @@ import static org.mockito.Mockito.*;
          assertEquals( order5,
                        list.get( index++ ) );
 
-     }
-
-     @Test
-     public void testImportColision() throws Exception {
-         Collection<KnowledgePackage> kpkgs1 = loadKnowledgePackages( "nested1.drl" );
-         Collection<KnowledgePackage> kpkgs2 = loadKnowledgePackages( "nested2.drl" );
-         KnowledgeBase kbase = loadKnowledgeBase();
-         kbase.addKnowledgePackages( kpkgs1 );
-         kbase.addKnowledgePackages( kpkgs2 );
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         kbase = SerializationHelper.serializeObject( kbase );
-
-         ksession.insert( new FirstClass() );
-         ksession.insert( new SecondClass() );
-         ksession.insert( new FirstClass.AlternativeKey() );
-         ksession.insert( new SecondClass.AlternativeKey() );
-
-         ksession.fireAllRules();
      }
 
      @Test
@@ -8893,31 +8782,6 @@ import static org.mockito.Mockito.*;
          public boolean isOddArgsNr(int... args) {
              return args.length % 2 == 1;
          }
-     }
-
-     @Test
-     public void testPackageImportWithMvelDialect() throws Exception {
-         // JBRULES-2244
-         String str = "package org.drools.compiler.test;\n" +
-                      "import org.drools.compiler.*\n" +
-                      "dialect \"mvel\"\n" +
-                      "rule R1 no-loop when\n" +
-                      "   $p : Person( )" +
-                      "   $c : Cheese( )" +
-                      "then\n" +
-                      "   modify($p) { setCheese($c) };\n" +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         Person p = new Person( "Mario", 38 );
-         ksession.insert( p );
-         Cheese c = new Cheese( "Gorgonzola" );
-         ksession.insert( c );
-
-         assertEquals( 1, ksession.fireAllRules() );
-         assertSame( c, p.getCheese() );
      }
 
      @Test

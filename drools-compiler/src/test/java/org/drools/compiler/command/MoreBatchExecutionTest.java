@@ -49,7 +49,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
     @Test
     public void testFireAllRules() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("org/drools/compiler/integrationtests/test_ImportFunctions.drl"), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newClassPathResource("org/drools/compiler/integrationtests/drl/test_ImportFunctions.drl"), ResourceType.DRL);
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }
