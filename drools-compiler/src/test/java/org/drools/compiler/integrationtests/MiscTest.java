@@ -59,14 +59,12 @@ import org.drools.compiler.FactC;
 import org.drools.compiler.FirstClass;
 import org.drools.compiler.Foo;
 import org.drools.compiler.Guess;
-import org.drools.compiler.IndexedNumber;
 import org.drools.compiler.LongAddress;
 import org.drools.compiler.Message;
 import org.drools.compiler.MockPersistentSet;
 import org.drools.compiler.ObjectWithSet;
 import org.drools.compiler.Order;
 import org.drools.compiler.OrderItem;
-import org.drools.compiler.OuterClass;
 import org.drools.compiler.Person;
 import org.drools.compiler.PersonFinal;
 import org.drools.compiler.PersonInterface;
@@ -306,58 +304,6 @@ import org.slf4j.LoggerFactory;
          if ( kbuilder.hasErrors() ) {
              fail( kbuilder.getErrors().toString() );
          }
-     }
-
-     @Test
-     public void testInvalidModify1() throws Exception {
-         String str = "";
-         str += "package org.drools.compiler \n";
-         str += "import " + Cheese.class.getName() + "\n";
-         str += "global java.util.List list \n";
-         str += "rule rule1 \n";
-         str += "    no-loop \n";
-         str += "when \n";
-         str += "    $i : Cheese() \n";
-         str += "then \n";
-         str += "    modify( $i ); ";
-         str += "    list.add( $i ); \n";
-         str += "end \n";
-
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                       ResourceType.DRL );
-
-         if ( kbuilder.hasErrors() ) {
-             logger.warn( kbuilder.getErrors().toString() );
-         }
-         assertTrue( kbuilder.hasErrors() );
-     }
-
-     @Test
-     public void testInvalidModify2() throws Exception {
-         String str = "";
-         str += "package org.drools.compiler \n";
-         str += "import " + Cheese.class.getName() + "\n";
-         str += "global java.util.List list \n";
-         str += "rule rule1 \n";
-         str += "    no-loop \n";
-         str += "when \n";
-         str += "    $i : Cheese() \n";
-         str += "then \n";
-         str += "    modify( $i ) { setType( \"stilton\" ); setType( \"stilton\" );}; ";
-         str += "    list.add( $i ); \n";
-         str += "end \n";
-
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                       ResourceType.DRL );
-
-         if ( kbuilder.hasErrors() ) {
-             logger.warn( kbuilder.getErrors().toString() );
-         }
-         assertTrue( kbuilder.hasErrors() );
      }
 
      @Test
@@ -1748,37 +1694,6 @@ import org.slf4j.LoggerFactory;
 
          assertTrue( list.contains( "fired1" ) );
          assertTrue( list.contains( "fired2" ) );
-     }
-
-     @Test
-     public void testJoinNodeModifyObject() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_JoinNodeModifyObject.drl" ) );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         try {
-             final List orderedFacts = new ArrayList();
-             final List errors = new ArrayList();
-             ksession.setGlobal( "orderedNumbers",
-                                 orderedFacts );
-             ksession.setGlobal( "errors",
-                                 errors );
-             final int MAX = 2;
-             for ( int i = 1; i <= MAX; i++ ) {
-                 final IndexedNumber n = new IndexedNumber( i,
-                                                            MAX - i + 1 );
-                 ksession.insert( n );
-             }
-             ksession.fireAllRules();
-             assertTrue( "Processing generated errors: " + errors.toString(),
-                         errors.isEmpty() );
-             for ( int i = 1; i <= MAX; i++ ) {
-                 final IndexedNumber n = (IndexedNumber) orderedFacts.get( i - 1 );
-                 assertEquals( "Fact is out of order",
-                               i,
-                               n.getIndex() );
-             }
-         } finally {
-         }
      }
 
      @Test
@@ -3654,98 +3569,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testModifyBlock() throws Exception {
-         doModifyTest( "test_ModifyBlock.drl" );
-     }
-
-     @Test
-     public void testModifyBlockWithPolymorphism() throws Exception {
-         doModifyTest( "test_ModifyBlockWithPolymorphism.drl" );
-     }
-
-     private void doModifyTest(String drlResource) throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( drlResource ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         Person bob = new Person( "Bob" );
-         bob.setStatus( "hungry" );
-
-         Cheese c = new Cheese();
-
-         ksession.insert( bob );
-         ksession.insert( c );
-
-         ksession.fireAllRules();
-
-         assertEquals( 10,
-                       c.getPrice() );
-         assertEquals( "fine",
-                       bob.getStatus() );
-     }
-
-     @Test
-     public void testModifyBlockWithFrom() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ModifyBlockWithFrom.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List results = new ArrayList();
-         ksession.setGlobal( "results",
-                             results );
-
-         Person bob = new Person( "Bob" );
-         Address addr = new Address( "abc" );
-         bob.addAddress( addr );
-
-         ksession.insert( bob );
-         ksession.insert( addr );
-
-         ksession.fireAllRules();
-
-         // modify worked
-         assertEquals( "12345",
-                       addr.getZipCode() );
-         // chaining worked
-         assertEquals( 1,
-                       results.size() );
-         assertEquals( addr,
-                       results.get( 0 ) );
-     }
-
-     // this test requires mvel 1.2.19. Leaving it commented until mvel is released.
-     @Test
-     public void testJavaModifyBlock() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_JavaModifyBlock.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         Person bob = new Person( "Bob",
-                                  30 );
-         bob.setStatus( "hungry" );
-         ksession.insert( bob );
-         ksession.insert( new Cheese() );
-         ksession.insert( new Cheese() );
-         ksession.insert( new OuterClass.InnerClass( 1 ) );
-
-         ksession.fireAllRules();
-
-         assertEquals( 2,
-                       list.size() );
-         assertEquals( "full",
-                       bob.getStatus() );
-         assertEquals( 31,
-                       bob.getAge() );
-         assertEquals( 2,
-                       ((OuterClass.InnerClass) list.get( 1 )).getIntAttr() );
-     }
-
-     @Test
      public void testFieldBindingOnWrongFieldName() {
          //JBRULES-2527
 
@@ -3853,31 +3676,6 @@ import org.slf4j.LoggerFactory;
          assertEquals( 1,
                        list.size() );
 
-     }
-
-     @Test
-     public void testModifyWithLockOnActive() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ModifyWithLockOnActive.drl" ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         final List results = new ArrayList();
-         session.setGlobal( "results",
-                            results );
-
-         final Person bob = new Person( "Bob",
-                                        15 );
-         final Person mark = new Person( "Mark",
-                                         16 );
-         final Person michael = new Person( "Michael",
-                                            14 );
-         session.insert( bob );
-         session.insert( mark );
-         session.insert( michael );
-         session.getAgenda().getAgendaGroup( "feeding" ).setFocus();
-         session.fireAllRules( 5 );
-
-         assertEquals( 2,
-                       ((List) session.getGlobal( "results" )).size() );
      }
 
      @Test
@@ -4983,49 +4781,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testModifyJava() {
-         String str = "package org.drools.compiler\n" +
-                      "import java.util.List\n" +
-                      "rule \"test\"\n" +
-                      "when\n" +
-                      "    $l : List() from collect ( Person( alive == false ) );\n" +
-                      "then\n" +
-                      "    for(Object p : $l ) {\n" +
-                      "        Person p2 = (Person) p;\n" +
-                      "        modify(p2) { setAlive(true) }\n" +
-                      "    }\n" +
-                      "end";
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                       ResourceType.DRL );
-
-         Assert.assertFalse( kbuilder.getErrors().toString(),
-                             kbuilder.hasErrors() );
-     }
-
-     @Test
-     public void testModifyMVEL() {
-         String str = "package org.drools.compiler\n" +
-                      "import java.util.List\n" +
-                      "rule \"test\"\n" +
-                      "    dialect \"mvel\"\n" +
-                      "when\n" +
-                      "    $l : List() from collect ( Person( alive == false ) );\n" +
-                      "then\n" +
-                      "    for(Object p : $l ) {\n" +
-                      "        Person p2 = (Person) p;\n" +
-                      "        modify(p2) { setAlive(true) }\n" +
-                      "    }\n" +
-                      "end";
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                       ResourceType.DRL );
-
-         Assert.assertFalse( kbuilder.getErrors().toString(),
-                             kbuilder.hasErrors() );
-     }
-
-     @Test
      public void testPackageNameOfTheBeast() throws Exception {
          // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
 
@@ -5923,36 +5678,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testModifySimple() {
-         String str = "package org.drools.compiler;\n" +
-                      "\n" +
-                      "rule \"test modify block\"\n" +
-                      "when\n" +
-                      "    $p: Person( name == \"hungry\" )\n" +
-                      "then\n" +
-                      "    modify( $p ) { setName(\"fine\") }\n" +
-                      "end\n" +
-                      "\n" +
-                      "rule \"Log\"\n" +
-                      "when\n" +
-                      "    $o: Object()\n" +
-                      "then\n" +
-                      "    System.out.println( $o );\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         Person p = new Person();
-         p.setName( "hungry" );
-         ksession.insert( p );
-
-         ksession.fireAllRules();
-
-         ksession.dispose();
-     }
-
-     @Test
      public void testDeclaresWithArrayFields() throws Exception {
          String rule = "package org.drools.compiler.test; \n" +
                        "import " + org.drools.compiler.test.Person.class.getName() + ";\n" +
@@ -6247,24 +5972,6 @@ import org.slf4j.LoggerFactory;
                       "   Object obj = m.get(englishNumber.toLowerCase()); \n" +
                       "   return Integer.parseInt(obj.toString()); \n" +
                       "}\n";
-
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-
-         assertTrue( kbuilder.hasErrors() );
-     }
-
-     @Test
-     public void testMissingClosingBraceOnModify() throws Exception {
-         // JBRULES-3436
-         String str = "package org.drools.compiler.test;\n" +
-                      "import org.drools.compiler.*\n" +
-                      "rule R1 when\n" +
-                      "   $p : Person( )" +
-                      "   $c : Cheese( )" +
-                      "then\n" +
-                      "   modify($p) { setCheese($c) ;\n" +
-                      "end\n";
 
          KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
          kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );

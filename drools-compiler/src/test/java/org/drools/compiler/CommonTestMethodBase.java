@@ -15,6 +15,10 @@
 
 package org.drools.compiler;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Collection;
+import java.util.function.Predicate;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -52,11 +56,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Collection;
-import java.util.function.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This contains methods common to many of the tests in drools-compiler. </p>
@@ -65,6 +66,8 @@ import java.util.function.Predicate;
  * drools-persistence-jpa.
  */
 public class CommonTestMethodBase extends Assert {
+
+    private static Logger logger = LoggerFactory.getLogger(CommonTestMethodBase.class);
 
     protected KieSession createKieSession(KieBase kbase) {
         return kbase.newKieSession();
@@ -288,6 +291,16 @@ public class CommonTestMethodBase extends Assert {
         while (System.currentTimeMillis() < waitEndTime) {
             // do nothing, only spin.
         }
+    }
+
+    protected void testInvalidDrl(final String drl) {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+
+        if (kbuilder.hasErrors()) {
+            logger.warn(kbuilder.getErrors().toString());
+        }
+        assertTrue(kbuilder.hasErrors());
     }
 
     public static byte[] createJar(KieServices ks,
