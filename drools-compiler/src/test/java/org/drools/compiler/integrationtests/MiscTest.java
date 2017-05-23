@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +49,6 @@ import org.drools.compiler.Bar;
 import org.drools.compiler.Cat;
 import org.drools.compiler.Cell;
 import org.drools.compiler.Cheese;
-import org.drools.compiler.CheeseEqual;
 import org.drools.compiler.Cheesery;
 import org.drools.compiler.Cheesery.Maturity;
 import org.drools.compiler.Child;
@@ -67,7 +65,6 @@ import org.drools.compiler.IndexedNumber;
 import org.drools.compiler.LongAddress;
 import org.drools.compiler.Message;
 import org.drools.compiler.MockPersistentSet;
-import org.drools.compiler.Move;
 import org.drools.compiler.ObjectWithSet;
 import org.drools.compiler.Order;
 import org.drools.compiler.OrderItem;
@@ -88,37 +85,24 @@ import org.drools.compiler.StockTick;
 import org.drools.compiler.Target;
 import org.drools.compiler.TestParam;
 import org.drools.compiler.Triangle;
-import org.drools.compiler.Win;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.ParserError;
-import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.core.ClassObjectFilter;
-import org.drools.core.audit.WorkingMemoryConsoleLogger;
-import org.drools.core.base.RuleNameEndsWithAgendaFilter;
-import org.drools.core.base.RuleNameEqualsAgendaFilter;
-import org.drools.core.base.RuleNameMatchesAgendaFilter;
-import org.drools.core.base.RuleNameStartsWithAgendaFilter;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.io.impl.InputStreamResource;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
-import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.ObjectSink;
-import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.MapBackedClassLoader;
 import org.junit.Assert;
 import org.junit.Test;
@@ -135,7 +119,6 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
@@ -153,12 +136,10 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mvel2.MVEL;
@@ -3657,43 +3638,6 @@ import org.slf4j.LoggerFactory;
                        results.size() );
          assertEquals( results.get( 0 ),
                        events.next() );
-     }
-
-     @Test
-     public void testDynamicallyAddInitialFactRule() throws Exception {
-         String rule = "package org.drools.compiler.test\n" +
-                       "global java.util.List list\n" +
-                       "rule xxx when\n" +
-                       "   i:Integer()\n" +
-                       "then\n" +
-                       "   list.add(i);\n" +
-                       "end";
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( rule ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         List list = new ArrayList();
-         session.setGlobal( "list",
-                            list );
-
-         session.insert( new Integer( 5 ) );
-         session.fireAllRules();
-
-         assertEquals( new Integer( 5 ),
-                       list.get( 0 ) );
-
-         rule = "package org.drools.compiler.test\n" +
-                "global java.util.List list\n" +
-                "rule xxx when\n" +
-                "then\n" +
-                "   list.add(\"x\");\n" +
-                "end";
-         Collection<KnowledgePackage> kpkgs = loadKnowledgePackagesFromString( rule );
-         kbase.addKnowledgePackages( kpkgs );
-
-         session.fireAllRules();
-
-         assertEquals( "x",
-                       list.get( 1 ) );
      }
 
      @Test
@@ -7349,46 +7293,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testAddRuleWithFrom() {
-         // JBRULES-3499
-         String str1 = "global java.util.List names;\n" +
-                       "global java.util.List list;\n";
-
-         String str2 = "import org.drools.compiler.*;\n" +
-                       "global java.util.List names;\n" +
-                       "global java.util.List list;\n" +
-                       "rule R1 when\n" +
-                       "   $p : Person( )\n" +
-                       "   String( this == $p.name ) from names\n" +
-                       "then\n" +
-                       " list.add( $p );\n" +
-                       "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString(str1);
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         List<String> names = new ArrayList<String>();
-         names.add("Mark");
-         ksession.setGlobal( "names", names );
-
-         List<String> list = new ArrayList<String>();
-         ksession.setGlobal("list", list);
-
-         Person p = new Person( "Mark" );
-         ksession.insert( p );
-
-         ksession.fireAllRules();
-
-         kbase.addKnowledgePackages( loadKnowledgePackagesFromString(str2) );
-
-         ksession.fireAllRules();
-
-         assertEquals(1, list.size());
-         assertSame(p, list.get(0));
-         ksession.dispose();
-     }
-
-     @Test
      public void testConstantLeft() {
          // JBRULES-3627
          String str = "import org.drools.compiler.*;\n" +
@@ -7481,29 +7385,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testRemoveRuleWithFromNode() throws Exception {
-         // JBRULES-3631
-         String str =
-                 "package org.drools.compiler;\n" +
-                 "import org.drools.compiler.*;\n" +
-                 "rule R1 when\n" +
-                 "   not( Person( name == \"Mark\" ));\n" +
-                 "then\n" +
-                 "end\n" +
-                 "rule R2 when\n" +
-                 "   $p: Person( name == \"Mark\" );\n" +
-                 "   not( Address() from $p.getAddresses() );\n" +
-                 "then\n" +
-                 "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-         assertEquals(2, kbase.getKnowledgePackage("org.drools.compiler").getRules().size());
-         kbase.removeRule( "org.drools.compiler", "R2" );
-
-         assertEquals( 1, kbase.getKnowledgePackage( "org.drools.compiler" ).getRules().size() );
-     }
-
-     @Test
      public void testDeterministicOTNOrdering() throws Exception {
          // JBRULES-3632
          String str =
@@ -7562,105 +7443,6 @@ import org.slf4j.LoggerFactory;
          // check that OTNs ordering is not breaking serialization
          ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
          ksession.fireAllRules();
-     }
-
-     @Test
-     public void testRemoveBigRule() throws Exception {
-         // JBRULES-3496
-         String str =
-                 "package org.drools.compiler.test\n" +
-                         "\n" +
-                         "declare SimpleFact\n" +
-                         "   patientSpaceId : String\n" +
-                         "   block : int\n" +
-                         "end\n" +
-                         "\n" +
-                         "declare SimpleMembership\n" +
-                         "   patientSpaceId : String\n" +
-                         "   listId : String\n" +
-                         "end\n" +
-                         "\n" +
-                         "declare SimplePatient\n" +
-                         "   spaceId : String\n" +
-                         "end\n" +
-                         "\n" +
-                         "rule \"RTR - 47146 retract\"\n" +
-                         "agenda-group \"list membership\"\n" +
-                         "when\n" +
-                         "   $listMembership0 : SimpleMembership( $listMembershipPatientSpaceIdRoot : patientSpaceId, ( listId != null && listId == \"47146\" ) )\n" +
-                         "   not ( $patient0 : SimplePatient( $patientSpaceIdRoot : spaceId, spaceId != null && spaceId == $listMembershipPatientSpaceIdRoot ) \n" +
-                         "       and ( ( " +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 1 )\n" +
-                         "         ) or ( " +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 2 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId  == $patientSpaceIdRoot, block == 3 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 4 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 5 )\n" +
-                         "       ) ) and ( ( " +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 6 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 7 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 8 )\n" +
-                         "       ) ) and ( ( " +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 9 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 10 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 11 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 12 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 13 )\n" +
-                         "         ) or ( (" +
-                         "            SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 14 )\n" +
-                         "           ) and (" +
-                         "              SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 15 )\n" +
-                         "         ) ) or ( ( " +
-                         "            SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 16 )\n" +
-                         "           ) and ( " +
-                         "             SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 17 )\n" +
-                         "         ) ) or ( ( " +
-                         "             SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 18 )\n" +
-                         "           ) and (" +
-                         "             SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 19 )\n" +
-                         "         ) ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 20 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 21 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 22 )\n" +
-                         "         ) or ( ( " +
-                         "             SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 23 )\n" +
-                         "         ) and (" +
-                         "             SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 24 )\n" +
-                         "     ) ) ) and ( ( " +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 25 )\n" +
-                         "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 26 )\n" +
-                         "     ) ) )\n" +
-                         "then\n" +
-                         "end\n";
-
-         Collection<KnowledgePackage> kpgs = loadKnowledgePackagesFromString( str );
-
-         Assert.assertEquals(1, kpgs.size());
-
-         KnowledgeBase kbase = getKnowledgeBase();
-         kbase.addKnowledgePackages( kpgs );
-
-         kbase.removeKnowledgePackage( kpgs.iterator().next().getName() );
-
-         EntryPointNode epn = ( (InternalKnowledgeBase) kbase ).getRete().getEntryPointNodes().values().iterator().next();
-         for (ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
-             ObjectSink[] sinks = otn.getObjectSinkPropagator().getSinks();
-             if (sinks.length > 0) {
-                 fail( otn + " has sinks " + Arrays.toString( sinks ) );
-             }
-         }
      }
 
      @Test
@@ -7753,72 +7535,4 @@ import org.slf4j.LoggerFactory;
         verify( ael ).afterMatchFired( event.capture() );
         assertEquals( "R2", event.getValue().getMatch().getRule().getName() );
     }
-
-    @Test
-     public void testMemoriesCCEWhenAddRemoveAddRule() {
-         // JBRULES-3656
-         String rule1 = "import " + MiscTest.class.getCanonicalName() + ".*\n" +
-                        "import java.util.Date\n" +
-                        "rule \"RTR - 28717 retract\"\n" +
-                        "when\n" +
-                        "        $listMembership0 : SimpleMembership( $listMembershipPatientSpaceIdRoot : patientSpaceId,\n" +
-                        "        ( listId != null && listId == \"28717\" ) ) and not ($patient0 : SimplePatient( $patientSpaceIdRoot : spaceId, spaceId != null &&\n" +
-                        "        spaceId == $listMembershipPatientSpaceIdRoot ) and\n" +
-                        "        (($ruleTime0 : RuleTime( $ruleTimeStartOfDay4_1 : startOfDay, $ruleTimeTime4_1 : time ) and $patient1 :\n" +
-                        "        SimplePatient( spaceId != null && spaceId == $patientSpaceIdRoot, birthDate != null && (birthDate after[0s,1d] $ruleTimeStartOfDay4_1) ) ) ) )\n" +
-                        "then\n" +
-                        "end";
-
-         String rule2 = "import " + MiscTest.class.getCanonicalName() + ".*\n" +
-                        "import java.util.Date\n" +
-                        "rule \"RTR - 28717 retract\"\n" +
-                        "when  $listMembership0 : SimpleMembership( $listMembershipPatientSpaceIdRoot : patientSpaceId, ( listId != null && listId == \"28717\" ) )\n" +
-                        "    and not ($patient0 : SimplePatient( $patientSpaceIdRoot : spaceId, spaceId != null && spaceId == $listMembershipPatientSpaceIdRoot )\n" +
-                        "    and ( ($ruleTime0 : RuleTime( $ruleTimeStartOfDay4_1 : startOfDay, $ruleTimeTime4_1 : time )\n" +
-                        "    and $patient1 : SimplePatient( spaceId != null && spaceId == $patientSpaceIdRoot, birthDate != null && (birthDate not after[0s,1d] $ruleTimeStartOfDay4_1) ) ) ) )\n" +
-                        "then\n" +
-                        "end";
-
-         KnowledgeBase kbase = getKnowledgeBase();
-         StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
-
-         kbase.addKnowledgePackages(loadKnowledgePackagesFromString( rule1 ) );
-
-
-         kbase.addKnowledgePackages(loadKnowledgePackagesFromString(rule2) );
-     }
-
-     public static class RuleTime {
-         public Date getTime() {
-             return new Date();
-         }
-
-         public Date getStartOfDay() {
-             return new Date();
-         }
-     }
-
-     public static class SimpleMembership {
-         public String getListId() {
-             return "";
-         }
-
-         public String getPatientSpaceId() {
-             return "";
-         }
-     }
-
-     public class SimplePatient {
-         public String getSpaceId() {
-             return "";
-         }
-
-         public String getFactHandleString() {
-             return "";
-         }
-
-         public Date getBirthDate() {
-             return new Date();
-         }
-     }
  }
