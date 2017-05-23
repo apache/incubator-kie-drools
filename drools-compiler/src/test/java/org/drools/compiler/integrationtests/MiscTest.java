@@ -3106,68 +3106,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testMapAccess() throws Exception {
-         final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_MapAccess.drl" ) );
-         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         Map map = new HashMap();
-         map.put( "name",
-                  "Edson" );
-         map.put( "surname",
-                  "Tirelli" );
-         map.put( "age",
-                  "28" );
-
-         ksession.insert( map );
-
-         ksession.fireAllRules();
-
-         assertEquals( 1,
-                       list.size() );
-         assertTrue( list.contains( map ) );
-     }
-
-     @Test
-     public void testMapNullConstraint() throws Exception {
-         KnowledgeBase kbase = loadKnowledgeBase( "test_mapNullConstraints.drl" );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         org.kie.api.event.rule.AgendaEventListener ael = mock( org.kie.api.event.rule.AgendaEventListener.class );
-         ksession.addEventListener( ael );
-         new WorkingMemoryConsoleLogger( ksession );
-
-         Map addresses = new HashMap();
-         addresses.put( "home",
-                        new Address( "home street" ) );
-         Person bob = new Person( "Bob" );
-         bob.setNamedAddresses( addresses );
-
-         ksession.insert( bob );
-         ksession.fireAllRules();
-
-         ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.api.event.rule.AfterMatchFiredEvent.class );
-         verify( ael,
-                 times( 4 ) ).afterMatchFired(arg.capture());
-         org.kie.api.event.rule.AfterMatchFiredEvent aaf = arg.getAllValues().get( 0 );
-         assertThat( aaf.getMatch().getRule().getName(),
-                     is( "1. home != null" ) );
-         aaf = arg.getAllValues().get( 1 );
-         assertThat( aaf.getMatch().getRule().getName(),
-                     is( "2. not home == null" ) );
-
-         aaf = arg.getAllValues().get( 2 );
-         assertThat( aaf.getMatch().getRule().getName(),
-                     is( "7. work == null" ) );
-         aaf = arg.getAllValues().get( 3 );
-         assertThat( aaf.getMatch().getRule().getName(),
-                     is( "8. not work != null" ) );
-     }
-
-     @Test
      public void testNoneTypeSafeDeclarations() {
          // same namespace
          String str = "package org.drools.compiler\n" +
@@ -3256,53 +3194,6 @@ import org.slf4j.LoggerFactory;
          ksession.fireAllRules();
          assertEquals( p,
                        list.get( 0 ) );
-     }
-
-     @Test
-     public void testMapAccessWithVariable() throws Exception {
-         final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_MapAccessWithVariable.drl" ) );
-         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "results",
-                             list );
-
-         Map map = new HashMap();
-         map.put( "name",
-                  "Edson" );
-         map.put( "surname",
-                  "Tirelli" );
-         map.put( "age",
-                  "28" );
-
-         ksession.insert( map );
-         ksession.insert( "name" );
-
-         ksession.fireAllRules();
-
-         assertEquals( 1,
-                       list.size() );
-         assertTrue( list.contains( map ) );
-     }
-
-     // Drools does not support variables inside bindings yet... but we should...
-     @Test
-     public void testMapAccessWithVariable2() {
-         String str = "package org.drools.compiler;\n" +
-                      "import java.util.Map;\n" +
-                      "rule \"map access with variable\"\n" +
-                      "    when\n" +
-                      "        $key : String( )\n" +
-                      "        $p1 : Person( name == 'Bob', namedAddresses[$key] != null, $na : namedAddresses[$key] )\n" +
-                      "        $p2 : Person( name == 'Mark', namedAddresses[$key] == $na )\n" +
-                      "    then\n" +
-                      "end\n";
-
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                       ResourceType.DRL );
-
-         Assert.assertTrue( kbuilder.hasErrors() );
      }
 
      @Test
@@ -4838,31 +4729,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testListOfMaps() {
-         KnowledgeBase kbase = loadKnowledgeBase("test_TestMapVariableRef.drl");
-
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-
-         Map mapOne = new HashMap<String, Object>();
-         Map mapTwo = new HashMap<String, Object>();
-
-         mapOne.put( "MSG",
-                     "testMessage" );
-         mapTwo.put( "MSGTWO",
-                     "testMessage" );
-
-         list.add( mapOne );
-         list.add( mapTwo );
-         ksession.insert( list );
-         ksession.fireAllRules();
-
-         assertEquals( 3,
-                       list.size() );
-
-     }
-
-     @Test
      public void testKnowledgeContextMVEL() {
          KnowledgeBase kbase = loadKnowledgeBase("test_KnowledgeContextMVEL.drl");
          StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -5365,37 +5231,6 @@ import org.slf4j.LoggerFactory;
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( rule ) );
          StatefulKnowledgeSession session = createKnowledgeSession( kbase );
          assertNotNull( session );
-     }
-
-     @Test
-     public void testAccessingMapValues() throws Exception {
-
-         String rule = "";
-         rule += "package org.drools.compiler;\n";
-         rule += "import org.drools.compiler.Pet;\n";
-         rule += "rule \"Test Rule\"\n";
-         rule += "  when\n";
-         rule += "    $pet: Pet()\n";
-         rule += "    Pet( \n";
-         rule += "      ownerName == $pet.attributes[\"key\"] \n";
-         rule += "    )\n";
-         rule += "  then\n";
-         rule += "    System.out.println(\"hi pet\");\n";
-         rule += "end";
-
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( rule ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-         assertNotNull( session );
-
-         Pet pet1 = new Pet( "Toni" );
-         pet1.getAttributes().put( "key",
-                                   "value" );
-         Pet pet2 = new Pet( "Toni" );
-
-         session.insert( pet1 );
-         session.insert( pet2 );
-
-         session.fireAllRules();
      }
 
      @Test
@@ -5938,45 +5773,6 @@ import org.slf4j.LoggerFactory;
          int rules = ksession.fireAllRules();
          assertEquals( 1,
                        rules );
-     }
-
-     @Test
-     public void testMapModel() {
-         String str = "package org.drools.compiler\n" +
-                      "import java.util.Map\n" +
-                      "rule \"test\"\n" +
-                      "when\n" +
-                      "    Map( type == \"Person\", name == \"Bob\" );\n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         Map<String, String> mark = new HashMap<String, String>();
-         mark.put( "type",
-                   "Person" );
-         mark.put( "name",
-                   "Mark" );
-
-         ksession.insert( mark );
-
-         int rules = ksession.fireAllRules();
-         assertEquals( 0,
-                       rules );
-
-         Map<String, String> bob = new HashMap<String, String>();
-         bob.put( "type",
-                  "Person" );
-         bob.put( "name",
-                  "Bob" );
-
-         ksession.insert( bob );
-
-         rules = ksession.fireAllRules();
-         assertEquals( 1,
-                       rules );
-
      }
 
      @Test
@@ -7889,35 +7685,6 @@ import org.slf4j.LoggerFactory;
          ksession.insert( new Person( "mario", 38 ) );
 
          ksession.fireAllRules();
-         ksession.dispose();
-     }
-
-     @Test
-     public void testMapAccessorWithPrimitiveKey() {
-         String str = "package com.sample\n" +
-                      "import " + MiscTest.class.getName() + ".MapContainerBean\n" +
-                      "rule R1 when\n" +
-                      "  MapContainerBean( map[1] == \"one\" )\n" +
-                      "then\n" +
-                      "end\n" +
-                      "rule R2 when\n" +
-                      "  MapContainerBean( map[1+1] == \"two\" )\n" +
-                      "then\n" +
-                      "end\n" +
-                      "rule R3 when\n" +
-                      "  MapContainerBean( map[this.get3()] == \"three\" )\n" +
-                      "then\n" +
-                      "end\n" +
-                      "rule R4 when\n" +
-                      "  MapContainerBean( map[4] == null )\n" +
-                      "then\n" +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         ksession.insert( new MapContainerBean() );
-         assertEquals( 4, ksession.fireAllRules() );
          ksession.dispose();
      }
 
