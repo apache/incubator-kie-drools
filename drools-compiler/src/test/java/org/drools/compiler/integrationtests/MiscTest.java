@@ -7048,39 +7048,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testRuleFlowGroupWithLockOnActivate() {
-         // JBRULES-3590
-         String str = "import org.drools.compiler.Person;\n" +
-                      "import org.drools.compiler.Cheese;\n" +
-                      "rule R1\n" +
-                      "ruleflow-group \"group1\"\n" +
-                      "lock-on-active true\n" +
-                      "when\n" +
-                      "   $p : Person()\n" +
-                      "then\n" +
-                      "   $p.setName(\"John\");\n" +
-                      "   update ($p);\n" +
-                      "end\n" +
-                      "rule R2\n" +
-                      "ruleflow-group \"group1\"\n" +
-                      "lock-on-active true\n" +
-                      "when\n" +
-                      "   $p : Person( name == null )\n" +
-                      "   forall ( Cheese ( type == \"cheddar\" ))\n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         ksession.insert( new Person() );
-         ksession.insert( new Cheese( "gorgonzola" ) );
-         ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup( "group1" );
-         assertEquals( 1, ksession.fireAllRules() );
-         ksession.dispose();
-     }
-
-     @Test
      public void testInstanceof() throws Exception {
          // JBRULES-3591
          String str = "import org.drools.compiler.*;\n" +
@@ -7187,27 +7154,6 @@ import org.slf4j.LoggerFactory;
              System.out.println( error.getMessage() );
          }
          assertFalse( kbuilder.hasErrors() );
-     }
-
-     public void testGenericsList() throws Exception {
-         String str = "import org.drools.compiler.*;\n" +
-                      "rule R1 when\n" +
-                      "   $c : Cheese( $type: type )\n" +
-                      "   $p : Person( $name : name, addresses.get(0).street == $type )\n" +
-                      "then\n" +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         Person p = new Person( "x" );
-         p.addAddress( new Address( "x", "x", "x" ) );
-         p.addAddress( new Address( "y", "y", "y" ) );
-         ksession.insert( p );
-
-         ksession.insert( new Cheese( "x" ) );
-         assertEquals( 1, ksession.fireAllRules() );
-         ksession.dispose();
      }
 
      @Test
