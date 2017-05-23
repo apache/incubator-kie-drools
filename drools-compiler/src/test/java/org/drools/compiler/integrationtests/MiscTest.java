@@ -2049,37 +2049,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testContainsCheese() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ContainsCheese.drl" ) );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         final Cheese stilton = new Cheese( "stilton",
-                                            12 );
-         ksession.insert( stilton );
-         final Cheese brie = new Cheese( "brie",
-                                         10 );
-         ksession.insert( brie );
-
-         final Cheesery cheesery = new Cheesery();
-         cheesery.getCheeses().add( stilton );
-         ksession.insert( cheesery );
-
-         ksession.fireAllRules();
-
-         assertEquals( 2,
-                       list.size() );
-
-         assertEquals( stilton,
-                       list.get( 0 ) );
-         assertEquals( brie,
-                       list.get( 1 ) );
-     }
-
-     @Test
      public void testDuplicateRuleNames() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_DuplicateRuleName1.drl" ) );
          StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -2729,30 +2698,6 @@ import org.slf4j.LoggerFactory;
          assertEquals( stilton,
                        list.get( 0 ) );
          assertEquals( muzzarela,
-                       list.get( 1 ) );
-     }
-
-     @Test
-     public void testContainsInArray() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_contains_in_array.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         final Primitives p = new Primitives();
-         p.setStringArray( new String[]{"test1", "test3"} );
-         ksession.insert( p );
-
-         ksession.fireAllRules();
-
-         assertEquals( 2,
-                       list.size() );
-
-         assertEquals( "ok1",
-                       list.get( 0 ) );
-         assertEquals( "ok2",
                        list.get( 1 ) );
      }
 
@@ -5682,47 +5627,6 @@ import org.slf4j.LoggerFactory;
          int rules = ksession.fireAllRules();
          ksession.dispose();
 
-         assertEquals( 1,
-                       rules );
-     }
-
-     @Test
-     public void testNotContainsOperator() {
-         // JBRULES-2404: "not contains" operator doesn't work on nested fields
-
-         String str = "package org.drools.compiler\n" +
-                      "rule NotContains\n" +
-                      "when\n" +
-                      "    $oi : OrderItem( )\n" +
-                      "    $o  : Order( items.values() not contains $oi )" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         Order order1 = new Order( 1,
-                                   "XYZ" );
-         Order order2 = new Order( 2,
-                                   "ABC" );
-         OrderItem item11 = new OrderItem( order1,
-                                           1 );
-         order1.addItem( item11 );
-         OrderItem item21 = new OrderItem( order2,
-                                           1 );
-         order2.addItem( item21 );
-
-         ksession.insert( order1 );
-         ksession.insert( item11 );
-
-         // should not fire, as item11 is contained in order1.items
-         int rules = ksession.fireAllRules();
-         assertEquals( 0,
-                       rules );
-
-         // should fire as item21 is not contained in order1.items
-         ksession.insert( item21 );
-         rules = ksession.fireAllRules();
          assertEquals( 1,
                        rules );
      }
