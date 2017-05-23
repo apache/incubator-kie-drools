@@ -14,6 +14,7 @@
 */
 package org.jbpm.services.task.assignment.impl.strategy;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -61,8 +62,8 @@ public class LoadBalanceAssignmentStrategy implements AssignmentStrategy {
 
 	@Override
 	public Assignment apply(Task task, TaskContext taskContext, String excludedUser) {
-        List<OrganizationalEntity> excluded = ((InternalPeopleAssignments)task.getPeopleAssignments()).getExcludedOwners();
         UserInfo userInfo = (UserInfo) ((org.jbpm.services.task.commands.TaskContext)taskContext).get(EnvironmentName.TASK_USER_INFO);
+		List<OrganizationalEntity> excluded = (getExcludedEntities(task, userInfo));
 
         // Get the the users from the task's the potential owners, making sure that excluded users are not included
         List<OrganizationalEntity> potentialOwners = task.getPeopleAssignments().getPotentialOwners().stream()
@@ -86,6 +87,20 @@ public class LoadBalanceAssignmentStrategy implements AssignmentStrategy {
         Collection<UserTaskLoad> loads = calculator.getUserTaskLoads(users, taskContext);
         UserTaskLoad lightestLoad = loads.stream().min(UserTaskLoad::compareTo).orElse(null);
 		return lightestLoad != null ? new Assignment(lightestLoad.getUser().getId()):null;
+	}
+
+	private static List<OrganizationalEntity> getExcludedEntities(Task task, UserInfo userInfo) {
+		List<OrganizationalEntity> excluded = ((InternalPeopleAssignments) task.getPeopleAssignments()).getExcludedOwners();
+
+		List<OrganizationalEntity> excludedUsers = new ArrayList<>();
+		for (OrganizationalEntity entity : excluded) {
+			if (entity instanceof Group) {
+				userInfo.getMembersForGroup((Group) entity).forEachRemaining(excludedUsers::add);
+			}
+		}
+		excluded.addAll(excludedUsers);
+
+		return excluded;
 	}
 
 }
