@@ -1,6 +1,14 @@
 {
   "filters": {
     "revapi": {
+      "filter": {
+        "elements": {
+          "exclude": [
+            "method .* org\\.optaplanner\\.benchmark\\.config.*::(?!(set|get)).*",
+            "parameter .* org\\.optaplanner\\.benchmark\\.config.*::(?!(set|get)).*"
+          ]
+        }
+      },
       "java": {
         "filter": {
           "packages": {
