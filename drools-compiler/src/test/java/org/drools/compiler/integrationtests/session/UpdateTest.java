@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.compiler.integrationtests.DeleteTest;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
 import org.junit.After;
@@ -42,7 +41,7 @@ import static org.junit.Assert.assertEquals;
 
 public class UpdateTest {
 
-    private static final String DELETE_TEST_DRL = "org/drools/compiler/integrationtests/session/update_test.drl";
+    private static final String UPDATE_TEST_DRL = "org/drools/compiler/integrationtests/session/update_test.drl";
 
     private KieSession ksession;
 
@@ -51,7 +50,7 @@ public class UpdateTest {
         final KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
 
         kfs.write(KieServices.Factory.get().getResources()
-                .newClassPathResource(DELETE_TEST_DRL, DeleteTest.class));
+                .newClassPathResource(UPDATE_TEST_DRL, DeleteTest.class));
 
         final KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
 

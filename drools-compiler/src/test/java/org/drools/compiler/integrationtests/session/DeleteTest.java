@@ -18,22 +18,130 @@ package org.drools.compiler.integrationtests.session;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.drools.compiler.Cheese;
+
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.integrationtests.MiscTest;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.Person;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Message.Level;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeleteTest extends CommonTestMethodBase {
 
     private static Logger logger = LoggerFactory.getLogger(DeleteTest.class);
+
+    private static final String DELETE_TEST_DRL = "org/drools/compiler/integrationtests/session/delete_test.drl";
+
+    private KieSession ksession;
+
+    @Before
+    public void setUp() {
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
+        kfs.write(KieServices.Factory.get().getResources()
+                .newClassPathResource(DELETE_TEST_DRL, DeleteTest.class));
+
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
+        kbuilder.buildAll();
+
+        List<Message> res = kbuilder.getResults().getMessages(Level.ERROR);
+        Assertions.assertThat(res).isEmpty();
+
+        KieBase kbase = KieServices.Factory.get()
+                .newKieContainer(kbuilder.getKieModule().getReleaseId())
+                .getKieBase();
+
+        ksession = kbase.newKieSession();
+    }
+
+    @After
+    public void tearDown() {
+        ksession.dispose();
+    }
+
+    @Test
+    public void deleteFactTest() {
+        ksession.insert(new Person("Petr", 25));
+
+        FactHandle george = ksession.insert(new Person("George", 19));
+        QueryResults results = ksession.getQueryResults("informationAboutPersons");
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(2L);
+
+        ksession.delete(george);
+        results = ksession.getQueryResults("informationAboutPersons");
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(1L);
+    }
+
+    @Test
+    public void deleteFactTwiceTest() {
+        FactHandle george = ksession.insert(new Person("George", 19));
+        QueryResults results = ksession.getQueryResults("countPerson");
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
+
+        ksession.delete(george);
+        results = ksession.getQueryResults("countPerson");
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
+
+        ksession.delete(george);
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void deleteNullFactTest() {
+        ksession.delete(null);
+    }
+
+    @Test
+    public void deleteUpdatedFactTest() {
+        FactHandle person = ksession.insert(new Person("George", 18));
+
+        ksession.update(person, new Person("John", 21));
+
+        QueryResults results = ksession.getQueryResults("countPerson");
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
+
+        ksession.delete(person);
+        results = ksession.getQueryResults("countPerson");
+        Assertions.assertThat(results).isNotEmpty();
+        Assertions.assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
+    }
+
+    @Test
+    public void deleteUpdatedFactDifferentClassTest() {
+        FactHandle fact = ksession.insert(new Person("George", 18));
+
+        Assertions.assertThat(ksession.getObjects()).hasSize(1);
+        Assertions.assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Person.class);
+
+        ksession.update(fact, new Cheese("Cheddar", 50));
+
+        Assertions.assertThat(ksession.getObjects()).hasSize(1);
+        Assertions.assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Cheese.class);
+
+        ksession.delete(fact);
+
+        Assertions.assertThat(ksession.getObjects()).isEmpty();
+    }
 
     @Test
     public void testRetractLeftTuple() throws Exception {
@@ -79,7 +187,7 @@ public class DeleteTest extends CommonTestMethodBase {
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
-        final PersonInterface person = new Person("michael", "cheese");
+        final PersonInterface person = new org.drools.compiler.Person("michael", "cheese");
         person.setStatus("start");
         ksession.insert(person);
 
@@ -116,7 +224,7 @@ public class DeleteTest extends CommonTestMethodBase {
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
-        final Person p = new Person("ackbar");
+        final org.drools.compiler.Person p = new org.drools.compiler.Person("ackbar");
         ksession.insert(p);
         ksession.insert("ackbar");
         ksession.fireAllRules();
@@ -134,11 +242,11 @@ public class DeleteTest extends CommonTestMethodBase {
         final List list = new ArrayList();
         ksession.setGlobal("results", list);
 
-        final Person bob = new Person("Bob");
+        final org.drools.compiler.Person bob = new org.drools.compiler.Person("Bob");
         bob.setStatus("hungry");
         ksession.insert(bob);
-        ksession.insert(new Cheese());
-        ksession.insert(new Cheese());
+        ksession.insert(new org.drools.compiler.Cheese());
+        ksession.insert(new org.drools.compiler.Cheese());
 
         ksession.fireAllRules(2);
 
@@ -150,8 +258,8 @@ public class DeleteTest extends CommonTestMethodBase {
         final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_RetractModifyWithFunction.drl"));
         final KieSession ksession = createKnowledgeSession(kbase);
 
-        final Cheese stilton = new Cheese("stilton", 7);
-        final Cheese muzzarella = new Cheese("muzzarella", 9);
+        final org.drools.compiler.Cheese stilton = new org.drools.compiler.Cheese("stilton", 7);
+        final org.drools.compiler.Cheese muzzarella = new org.drools.compiler.Cheese("muzzarella", 9);
         final int sum = stilton.getPrice() + muzzarella.getPrice();
         final FactHandle stiltonHandle = ksession.insert(stilton);
         final FactHandle muzzarellaHandle = ksession.insert(muzzarella);
