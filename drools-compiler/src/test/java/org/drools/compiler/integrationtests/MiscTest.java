@@ -5440,44 +5440,6 @@ import org.slf4j.LoggerFactory;
          assertTrue( kbuilder.hasErrors() );
      }
 
-     @Test
-     public void testJittingConstraintWithInvocationOnLiteral() {
-         String str = "package com.sample\n" +
-                      "import org.drools.compiler.Person\n" +
-                      "rule XXX when\n" +
-                      "  Person( name.toString().toLowerCase().contains( \"mark\".toString().toLowerCase() ) )\n" +
-                      "then\n" +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         ksession.insert( new Person( "mark", 37 ) );
-         ksession.insert( new Person( "mario", 38 ) );
-
-         ksession.fireAllRules();
-         ksession.dispose();
-     }
-
-     @Test
-     public void testJittingMethodWithCharSequenceArg() {
-         String str = "package com.sample\n" +
-                      "import org.drools.compiler.Person\n" +
-                      "rule XXX when\n" +
-                      "  Person( $n : name, $n.contains( \"mark\" ) )\n" +
-                      "then\n" +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         ksession.insert( new Person( "mark", 37 ) );
-         ksession.insert( new Person( "mario", 38 ) );
-
-         ksession.fireAllRules();
-         ksession.dispose();
-     }
-
      public static class MapContainerBean {
          private final Map<Integer, String> map = new HashMap<Integer, String>();
 
@@ -5704,24 +5666,6 @@ import org.slf4j.LoggerFactory;
 
          ksession.insert( new Person( null ) );
          ksession.insert( new Person( "Mark" ) );
-
-         assertEquals( 1, ksession.fireAllRules() );
-         ksession.dispose();
-     }
-
-     @Test
-     public void testJitConstraintInvokingConstructor() {
-         // JBRULES-3628
-         String str = "import org.drools.compiler.Person;\n" +
-                      "rule R1 when\n" +
-                      "   Person( new Integer( ageAsInteger ) < 40 ) \n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         ksession.insert( new Person( "Mario", 38 ) );
 
          assertEquals( 1, ksession.fireAllRules() );
          ksession.dispose();
