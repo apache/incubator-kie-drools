@@ -2668,40 +2668,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testMemberOfAndNotMemberOf() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_memberOf.drl" ) );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         final List list = new ArrayList();
-         ksession.setGlobal( "list",
-                             list );
-
-         final Cheese stilton = new Cheese( "stilton",
-                                            12 );
-         final Cheese muzzarela = new Cheese( "muzzarela",
-                                              10 );
-         final Cheese brie = new Cheese( "brie",
-                                         15 );
-         ksession.insert( stilton );
-         ksession.insert( muzzarela );
-
-         final Cheesery cheesery = new Cheesery();
-         cheesery.getCheeses().add( stilton.getType() );
-         cheesery.getCheeses().add( brie.getType() );
-         ksession.insert( cheesery );
-
-         ksession.fireAllRules();
-
-         assertEquals( 2,
-                       list.size() );
-
-         assertEquals( stilton,
-                       list.get( 0 ) );
-         assertEquals( muzzarela,
-                       list.get( 1 ) );
-     }
-
-     @Test
      public void testNodeSharingNotExists() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_nodeSharingNotExists.drl" ) );
          StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
@@ -5023,81 +4989,6 @@ import org.slf4j.LoggerFactory;
          assertEquals( 1, list.size() );
          assertSame( p, list.get( 0 ) );
 
-     }
-
-
-     @Test
-     public void testMemberOfNotWorkingWithOr() throws Exception {
-
-         String rule = "";
-         rule += "package org.drools.compiler;\n";
-         rule += "import java.util.ArrayList;\n";
-         rule += "import org.drools.compiler.Person;\n";
-         rule += "rule \"Test Rule\"\n";
-         rule += "when\n";
-         rule += "    $list: ArrayList()                                   \n";
-         rule += "    ArrayList()                                          \n";
-         rule += "            from collect(                                \n";
-         rule += "                  Person(                                \n";
-         rule += "                      (                                  \n";
-         rule += "                          pet memberOf $list             \n";
-         rule += "                      ) || (                             \n";
-         rule += "                          pet == null                    \n";
-         rule += "                      )                                  \n";
-         rule += "                  )                                      \n";
-         rule += "            )\n";
-         rule += "then\n";
-         rule += "  System.out.println(\"hello person\");\n";
-         rule += "end";
-
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( rule ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         Person toni = new Person( "Toni",
-                                   12 );
-         toni.setPet( new Pet( "Mittens" ) );
-
-         session.insert( new ArrayList() );
-         session.insert( toni );
-
-         session.fireAllRules();
-     }
-
-     @Test
-     public void testUnNamed() throws Exception {
-
-         String rule = "";
-         rule += "package org.drools.compiler;\n";
-         rule += "import java.util.ArrayList;\n";
-         rule += "import org.drools.compiler.Person;\n";
-         rule += "rule \"Test Rule\"\n";
-         rule += "when\n";
-         rule += "    $list: ArrayList()                                   \n";
-         rule += "    ArrayList()                                          \n";
-         rule += "            from collect(                                \n";
-         rule += "                  Person(                                \n";
-         rule += "                      (                                  \n";
-         rule += "                          pet memberOf $list             \n";
-         rule += "                      ) || (                             \n";
-         rule += "                          pet == null                    \n";
-         rule += "                      )                                  \n";
-         rule += "                  )                                      \n";
-         rule += "            )\n";
-         rule += "then\n";
-         rule += "  System.out.println(\"hello person\");\n";
-         rule += "end";
-
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( rule ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         Person toni = new Person( "Toni",
-                                   12 );
-         toni.setPet( new Pet( "Mittens" ) );
-
-         session.insert( new ArrayList() );
-         session.insert( toni );
-
-         session.fireAllRules();
      }
 
      @Test
