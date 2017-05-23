@@ -192,27 +192,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testEnabledExpression() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_enabledExpression.drl" ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-         List results = new ArrayList();
-         session.setGlobal( "results",
-                            results );
-
-         session.insert( new Person( "Michael" ) );
-
-         results = (List) session.getGlobal( "results" );
-
-         session.fireAllRules();
-         assertEquals( 3,
-                       results.size() );
-         assertTrue( results.contains( "1" ) );
-         assertTrue( results.contains( "2" ) );
-         assertTrue( results.contains( "3" ) );
-
-     }
-
-     @Test
      public void testPrimitiveArray() throws Exception {
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_primitiveArray.drl" ) );
          StatefulKnowledgeSession session = createKnowledgeSession( kbase );
@@ -7490,49 +7469,4 @@ import org.slf4j.LoggerFactory;
          ksession.insert( new Person( "Mario", 38 ) );
          assertEquals( 3, ksession.fireAllRules() );
      }
-
-    @Test
-    public void testEnabledExpression2() {
-        String drl = "import " + Foo.class.getName() + ";\n" +
-                     "rule R1\n" +
-                     "    enabled( rule.name == $f.id )" +
-                     "when\n" +
-                     "   $f : Foo()\n" +
-                     "then end\n" +
-                     "rule R2\n" +
-                     "when\n" +
-                     "   Foo( id == \"R2\" )\n" +
-                     "then end\n";
-
-        KieServices ks = KieServices.Factory.get();
-
-        // Create an in-memory jar for version 1.0.0
-        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-enabled", "1.0.0" );
-        KieModule km = createAndDeployJar( ks, releaseId1, drl );
-
-        // Create a session and fire rules
-        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
-
-        AgendaEventListener ael = mock( AgendaEventListener.class );
-        KieSession ksession = kc.newKieSession();
-        ksession.addEventListener( ael );
-        ksession.insert( new Foo( "R1", null ) );
-        assertEquals( 1, ksession.fireAllRules() );
-        ksession.dispose();
-
-        ArgumentCaptor<AfterMatchFiredEvent> event = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
-        verify( ael ).afterMatchFired( event.capture() );
-        assertEquals( "R1", event.getValue().getMatch().getRule().getName() );
-
-        ael = mock( AgendaEventListener.class );
-        ksession = kc.newKieSession();
-        ksession.addEventListener( ael );
-        ksession.insert( new Foo( "R2", null ) );
-        assertEquals( 1, ksession.fireAllRules() );
-        ksession.dispose();
-
-        event = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
-        verify( ael ).afterMatchFired( event.capture() );
-        assertEquals( "R2", event.getValue().getMatch().getRule().getName() );
-    }
  }
