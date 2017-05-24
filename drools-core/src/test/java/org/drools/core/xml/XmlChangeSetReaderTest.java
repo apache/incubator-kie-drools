@@ -75,6 +75,8 @@ public class XmlChangeSetReaderTest {
         Assert.assertEquals("another description", resource2.getDescription());
         
         Assert.assertEquals("some useful description", secureResource.getDescription());
-        
+
+        Assert.assertEquals(2, changeSetReader.getParser().getAttrs().getLength());
+        Assert.assertEquals("DRL", changeSetReader.getParser().getAttrs().getValue("type"));
     }
 }
