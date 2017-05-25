@@ -45,16 +45,18 @@ public class BPMN2XMLTest extends XMLTestCase {
     private static final Logger logger = LoggerFactory.getLogger(BPMN2XMLTest.class);
    
 	private static final String[] processes = {
-		"BPMN2-SimpleXMLProcess.bpmn2",
-//		"BPMN2-MinimalProcess.xml",
+		"BPMN2-SimpleXMLProcess.bpmn2"
 	};
-	
+
+	private String errorMessage;
+
 	public void setUp() throws Exception {
 		super.setUp();
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreComments(true);
+		setErrorMessage(null);
 	}
-	
+
 	public void testXML() throws IOException, SAXException {
 		SemanticModules modules = new SemanticModules();
 		modules.addSemanticModule(new BPMNSemanticModule());
@@ -99,6 +101,36 @@ public class BPMN2XMLTest extends XMLTestCase {
             
 			assertTrue("Original and generated output is not the same.", diff.identical());
 		}
+	}
+
+	public void testInvalidXML() throws Exception, SAXException {
+
+		SemanticModules modules = new SemanticModules();
+		modules.addSemanticModule(new BPMNSemanticModule());
+		modules.addSemanticModule(new BPMNDISemanticModule());
+		XmlProcessReader processReader = new XmlProcessReader(modules, getClass().getClassLoader()) {
+			@Override
+			protected String processParserMessage(Object parent, org.xml.sax.Attributes attr, String errorMessage) {
+				setErrorMessage(super.processParserMessage(parent, attr, errorMessage));
+				return errorMessage;
+			}
+		};
+
+		processReader.read(BPMN2XMLTest.class.getResourceAsStream("/BPMN2-XMLProcessWithError.bpmn2"));
+
+		assertNotNull(getErrorMessage());
+		assertEquals("Process Info: id:error.process, pkg:org.jbpm, name:errorprocess, version:1.0 \n" +
+							  "Node Info: id:_F8A89567-7416-4CCA-9CCD-BC1DDE870F1E name: \n" +
+							  "Parser message: (null: 45, 181): cvc-complex-type.2.4.a: Invalid content was found starting with element 'bpmn2:endEvent'. One of '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":artifact, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":resourceRole, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":correlationSubscription, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":supports}' is expected.", getErrorMessage());
+
+	}
+
+	private void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
+	private String getErrorMessage() {
+		return errorMessage;
 	}
 	
 	public static String slurp(InputStream in) throws IOException {
