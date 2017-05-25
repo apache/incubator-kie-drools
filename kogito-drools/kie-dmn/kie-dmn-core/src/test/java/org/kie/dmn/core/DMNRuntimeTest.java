@@ -49,6 +49,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -1370,6 +1371,31 @@ public class DMNRuntimeTest {
         assertThat( idnCarDamageResponsibility.getType().getBaseType(), is( nullValue() ));
         assertThat( idnCarDamageResponsibility.getType().isCollection(), is(false));
         assertThat( idnCarDamageResponsibility.getType().isComposite(), is(true));
+    }
+    
+
+    @Test
+    public void testForLoopTypeCheck() {
+        // DROOLS-1580
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "PersonListHelloBKM.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_ec5a78c7-a317-4c39-8310-db59be60f1c8",
+                "PersonListHelloBKM" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        
+        Map<String, Object> p1 = prototype( entry("Full Name", "John Doe"), entry("Age", 33) );
+        Map<String, Object> p2 = prototype( entry("Full Name", "47"), entry("Age", 47) );
+        
+        context.set("My Input Data", Arrays.asList(new Object[]{p1, p2}));
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        assertThat( (List<String>)result.get("My Decision"), containsInAnyOrder( "The person named John Doe is 33 years old.",
+                                                                                 "The person named 47 is 47 years old.") );
     }
 
     private String formatMessages(List<DMNMessage> messages) {

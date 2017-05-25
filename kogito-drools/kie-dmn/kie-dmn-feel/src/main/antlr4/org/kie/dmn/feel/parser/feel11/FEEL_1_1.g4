@@ -86,7 +86,7 @@ forExpression
 @after {
     helper.popScope();
 }
-    : for_key iterationContexts return_key expression
+    : for_key iterationContexts return_key {helper.enableDynamicResolution();} expression {helper.disableDynamicResolution();}
     ;
 
 iterationContexts
