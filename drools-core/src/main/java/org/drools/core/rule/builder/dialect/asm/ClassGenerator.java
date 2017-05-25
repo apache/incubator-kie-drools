@@ -287,10 +287,6 @@ public class ClassGenerator {
         return className;
     }
 
-    public String getInternalClassName() {
-        return toInteralName(className);
-    }
-
     private String[] toInteralNames( Class<?>[] classes ) {
         if (classes == null) return null;
         String[] internals = new String[classes.length];
