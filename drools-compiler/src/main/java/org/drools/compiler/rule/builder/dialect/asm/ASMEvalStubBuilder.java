@@ -15,9 +15,11 @@
 
 package org.drools.compiler.rule.builder.dialect.asm;
 
+import java.util.Map;
+
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Declaration;
-import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.rule.builder.dialect.asm.EvalGenerator;
 import org.drools.core.rule.builder.dialect.asm.EvalStub;
@@ -27,8 +29,6 @@ import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
-
-import java.util.Map;
 
 import static org.mvel2.asm.Opcodes.*;
 
@@ -52,9 +52,10 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
             }
         }).addMethod(ACC_PUBLIC, "clone", generator.methodDescr(EvalExpression.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
-                mv.visitTypeInsn( NEW, generator.getInternalClassName() );
+                String internalClassName = generator.getClassName().replace('.', '/');
+                mv.visitTypeInsn( NEW, internalClassName );
                 mv.visitInsn( DUP );
-                mv.visitMethodInsn( INVOKESPECIAL, generator.getInternalClassName(), "<init>", "()V", false );
+                mv.visitMethodInsn( INVOKESPECIAL, internalClassName, "<init>", "()V", false );
                 mv.visitInsn( ARETURN );
             }
         }).addMethod(ACC_PUBLIC, "replaceDeclaration", generator.methodDescr(null, Declaration.class, Declaration.class)
