@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.Map;
 import java.util.Set;
 
@@ -122,6 +123,8 @@ public class ExtensibleXmlParser extends DefaultHandler {
     private ClassLoader         classLoader;
 
     private Map                 metaData                      = new HashMap();
+
+    private Attributes attrs;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -272,7 +275,6 @@ public class ExtensibleXmlParser extends DefaultHandler {
             }
             // XXE protection end
 
-            final String isValidatingString = System.getProperty( "drools.schema.validating" );
             if ( System.getProperty( "drools.schema.validating" ) != null ) {
                 this.isValidating = Boolean.getBoolean( "drools.schema.validating" );
             }
@@ -384,6 +386,8 @@ public class ExtensibleXmlParser extends DefaultHandler {
                              final String localName,
                              final String qname,
                              final Attributes attrs) throws SAXException {
+        this.attrs = attrs;
+
         if ( direction == 1 ) {
             // going down again, so clear 
             this.peer = null;
@@ -409,7 +413,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
                                      attrs,
                                      this );
         
-        this.parents.add( node );    
+        this.parents.add( node );
     }
 
     /**
@@ -460,33 +464,25 @@ public class ExtensibleXmlParser extends DefaultHandler {
             return;
         }
 
-        // get parent
-        Object parent;
-        if ( this.parents.size() != 0 ) {
-            parent = this.parents.getLast();
-        } else {
-            parent = null;
-        }
-
         // check valid parents
         // null parent means localname is rule-set
         // dont process if elements are the same
         // instead check for allowed nesting
         final Class nodeClass = getHandler( uri,
                                             localName ).generateNodeFor();
-        if ( nodeClass != null && !nodeClass.isInstance( parent ) ) {
+        if ( nodeClass != null && !nodeClass.isInstance( getParent() ) ) {
             Object allowedParent;
             final Iterator it = validParents.iterator();
             while ( !validParent && it.hasNext() ) {
                 allowedParent = it.next();
-                if ( parent == null && allowedParent == null ) {
+                if ( getParent() == null && allowedParent == null ) {
                     validParent = true;
-                } else if ( allowedParent != null && ((Class) allowedParent).isInstance( parent ) ) {
+                } else if ( allowedParent != null && ((Class) allowedParent).isInstance( getParent() ) ) {
                     validParent = true;
                 }
             }
             if ( !validParent ) {
-                throw new SAXParseException( "<" + localName + "> has an invalid parent element [" + parent + "]",
+                throw new SAXParseException( "<" + localName + "> has an invalid parent element [" + getParent() + "]",
                                              getLocator() );
             }
         }
@@ -535,6 +531,9 @@ public class ExtensibleXmlParser extends DefaultHandler {
      */
     public void startElementBuilder(final String tagName,
                                     final Attributes attrs) {
+
+        this.attrs = attrs;
+
         this.characters = new StringBuilder();
 
         final Element element = this.document.createElement( tagName );
@@ -599,7 +598,15 @@ public class ExtensibleXmlParser extends DefaultHandler {
     }
 
     public Object getParent() {
-        return this.parents.getLast();
+        try {
+            return this.parents.size() > 0 ? this.parents.getLast() : null;
+        }catch(NoSuchElementException e) {
+            return null;
+        }
+    }
+
+    public SAXParser getParser() {
+        return parser;
     }
 
     public Object getParent(int index) {
@@ -671,7 +678,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
         this.namespaces.remove( prefix );
     }
 
-    private String buildPrintMessage(final SAXParseException x) {
+    protected String buildPrintMessage(final SAXParseException x) {
         return this.message.format( new Object[]{x.getSystemId(), new Integer( x.getLineNumber() ), new Integer( x.getColumnNumber() ), x.getMessage()} );
     }
 
@@ -785,4 +792,11 @@ public class ExtensibleXmlParser extends DefaultHandler {
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
+
+    public Attributes getAttrs() { return this.attrs; }
+
+    public void setParser(final SAXParser parser) {
+        this.parser = parser;
+    }
+
 }
