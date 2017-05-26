@@ -110,8 +110,8 @@ quantifiedExpression
 @after {
     helper.popScope();
 }
-    : some_key iterationContexts satisfies_key expression     #quantExprSome
-    | every_key iterationContexts satisfies_key expression    #quantExprEvery
+    : some_key iterationContexts satisfies_key {helper.enableDynamicResolution();} expression {helper.disableDynamicResolution();}    #quantExprSome
+    | every_key iterationContexts satisfies_key {helper.enableDynamicResolution();} expression {helper.disableDynamicResolution();}   #quantExprEvery
     ;
 
 // #54

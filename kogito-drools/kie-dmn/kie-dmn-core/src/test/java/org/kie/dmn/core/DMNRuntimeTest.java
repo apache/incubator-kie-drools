@@ -1418,6 +1418,29 @@ public class DMNRuntimeTest {
                                                                   ) );
     }
 
+    @Test
+    public void testSameEveryTypeCheck() {
+        // DROOLS-1587
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "same_every_type_check.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_09a13244-114d-43fb-9e00-cda89a2000dd",
+                "same every type check" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext emptyContext = runtime.newContext();
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, emptyContext );
+        DMNContext result = dmnResult.getContext();
+        
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        assertThat( result.get("Some are even"), is( true ) );
+        assertThat( result.get("Every are even"), is( false ) );
+        assertThat( result.get("Some are positive"), is( true ) );
+        assertThat( result.get("Every are positive"), is( true ) );
+        assertThat( result.get("Some are negative"), is( false ) );
+        assertThat( result.get("Every are negative"), is( false ) );
+    }
+
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
