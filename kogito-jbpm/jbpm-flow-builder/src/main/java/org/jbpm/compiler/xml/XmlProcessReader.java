@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.List;
+import java.util.LinkedList;
 
 import java.text.MessageFormat;
 import javax.xml.parsers.SAXParser;
@@ -52,7 +53,7 @@ public class XmlProcessReader {
         this.parser = new ExtensibleXmlParser() {
             @Override
             protected String buildPrintMessage(final SAXParseException x) {
-                return processParserMessage(super.getParent(), super.getAttrs(), super.buildPrintMessage(x));
+                return processParserMessage(super.getParents(), super.getAttrs(), super.buildPrintMessage(x));
             }
         };
 
@@ -118,18 +119,20 @@ public class XmlProcessReader {
         return (ProcessBuildData) this.parser.getData();
     }
 
-    protected String processParserMessage(Object parent, Attributes attr, String errorMessage) {
+    protected String processParserMessage(LinkedList<Object> parents, Attributes attr, String errorMessage) {
         String nodeId = (attr == null  || attr.getValue("id") == null) ? "" : attr.getValue("id");
         String nodeName = (attr == null  || attr.getValue("name") == null) ? "" : attr.getValue("name");
 
-        if(parent != null && parent instanceof RuleFlowProcess) {
-            RuleFlowProcess process = ((RuleFlowProcess) parent);
-            return messageWithProcessInfo.format(new Object[] {process.getId(),
-                    process.getPackageName(),
-                    process.getName(),
-                    process.getVersion(), nodeId, nodeName, errorMessage});
-        } else {
-            return message.format(new Object[] {nodeId, nodeName, errorMessage});
+        for(Object parent : parents) {
+            if(parent != null && parent instanceof RuleFlowProcess) {
+                RuleFlowProcess process = ((RuleFlowProcess) parent);
+                return messageWithProcessInfo.format(new Object[] {process.getId(),
+                        process.getPackageName(),
+                        process.getName(),
+                        process.getVersion(), nodeId, nodeName, errorMessage});
+            }
         }
+
+        return message.format(new Object[] {nodeId, nodeName, errorMessage});
     }
 }

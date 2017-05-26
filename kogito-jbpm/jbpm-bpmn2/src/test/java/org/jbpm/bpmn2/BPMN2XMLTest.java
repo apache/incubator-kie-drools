@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
+import java.util.LinkedList;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
@@ -110,8 +111,8 @@ public class BPMN2XMLTest extends XMLTestCase {
 		modules.addSemanticModule(new BPMNDISemanticModule());
 		XmlProcessReader processReader = new XmlProcessReader(modules, getClass().getClassLoader()) {
 			@Override
-			protected String processParserMessage(Object parent, org.xml.sax.Attributes attr, String errorMessage) {
-				setErrorMessage(super.processParserMessage(parent, attr, errorMessage));
+			protected String processParserMessage(LinkedList<Object> parents, org.xml.sax.Attributes attr, String errorMessage) {
+				setErrorMessage(super.processParserMessage(parents, attr, errorMessage));
 				return errorMessage;
 			}
 		};
@@ -123,6 +124,26 @@ public class BPMN2XMLTest extends XMLTestCase {
 							  "Node Info: id:_F8A89567-7416-4CCA-9CCD-BC1DDE870F1E name: \n" +
 							  "Parser message: (null: 45, 181): cvc-complex-type.2.4.a: Invalid content was found starting with element 'bpmn2:endEvent'. One of '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":artifact, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":resourceRole, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":correlationSubscription, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":supports}' is expected.", getErrorMessage());
 
+	}
+
+	public void testInvalidXMLInCompositeNode() throws Exception, SAXException {
+		SemanticModules modules = new SemanticModules();
+		modules.addSemanticModule(new BPMNSemanticModule());
+		modules.addSemanticModule(new BPMNDISemanticModule());
+		XmlProcessReader processReader = new XmlProcessReader(modules, getClass().getClassLoader()) {
+			@Override
+			protected String processParserMessage(LinkedList<Object> parents, org.xml.sax.Attributes attr, String errorMessage) {
+				setErrorMessage(super.processParserMessage(parents, attr, errorMessage));
+				return errorMessage;
+			}
+		};
+
+		processReader.read(BPMN2XMLTest.class.getResourceAsStream("/BPMN2-XMLProcessWithErrorInCompositeNode.bpmn2"));
+
+		assertNotNull(getErrorMessage());
+		assertEquals("Process Info: id:abc.abc, pkg:org.drools.bpmn2, name:abc, version:1.0 \n" +
+							 "Node Info: id:_47489F3D-FEBD-4452-B62E-B04EF191C6C3 name: \n" +
+							 "Parser message: (null: 24, 185): cvc-complex-type.2.4.a: Invalid content was found starting with element 'bpmn2:subProcess'. One of '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":artifact}' is expected.", getErrorMessage());
 	}
 
 	private void setErrorMessage(String errorMessage) {
