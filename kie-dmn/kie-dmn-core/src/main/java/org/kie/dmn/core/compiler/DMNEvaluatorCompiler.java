@@ -189,7 +189,10 @@ public class DMNEvaluatorCompiler {
 
                     // TODO: if it is not the last entry, raise error message
                     DMNType type = null;
-                    if ( node instanceof BusinessKnowledgeModelNode ) {
+                    if ( ctxDef.getParent() instanceof ContextEntry && ((ContextEntry)ctxDef.getParent()).getVariable() != null ) {
+                        ContextEntry parentEntry = (ContextEntry) ctxDef.getParent();
+                        type = compiler.resolveTypeRef( model, node, parentEntry.getVariable(), parentEntry.getVariable(), parentEntry.getVariable().getTypeRef() );
+                    } else if ( node instanceof BusinessKnowledgeModelNode ) {
                         type = ((BusinessKnowledgeModelNode) node).getResultType();
                     } else if ( node instanceof DecisionNode ) {
                         type = ((DecisionNode) node).getResultType();
