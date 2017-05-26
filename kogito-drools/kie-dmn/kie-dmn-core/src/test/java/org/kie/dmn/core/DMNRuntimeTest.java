@@ -24,7 +24,6 @@ import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.DMNUnaryTest;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
@@ -32,24 +31,21 @@ import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.*;
-import org.kie.dmn.core.api.event.*;
-import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.v1_1.ItemDefinition;
 import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
 import java.time.*;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -1373,7 +1369,6 @@ public class DMNRuntimeTest {
         assertThat( idnCarDamageResponsibility.getType().isComposite(), is(true));
     }
     
-
     @Test
     public void testForLoopTypeCheck() {
         // DROOLS-1580
@@ -1394,8 +1389,33 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
 
         assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
-        assertThat( (List<String>)result.get("My Decision"), containsInAnyOrder( "The person named John Doe is 33 years old.",
-                                                                                 "The person named 47 is 47 years old.") );
+        assertThat( (List<?>)result.get("My Decision"), contains( "The person named John Doe is 33 years old.",
+                                                                  "The person named 47 is 47 years old.") );
+    }
+    
+    @Test
+    public void testTypeInferenceForNestedContextAnonymousEntry() {
+        // DROOLS-1585
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "PersonListHelloBKM2.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_7e41a76e-2df6-4899-bf81-ae098757a3b6",
+                "PersonListHelloBKM2" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        
+        Map<String, Object> p1 = prototype( entry("Full Name", "John Doe"), entry("Age", 33) );
+        Map<String, Object> p2 = prototype( entry("Full Name", "47"), entry("Age", 47) );
+        
+        context.set("My Input Data", Arrays.asList(new Object[]{p1, p2}));
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        assertThat( (List<?>)result.get("My Decision"), contains( prototype( entry("Full Name", "Prof. John Doe"), entry("Age", EvalHelper.coerceNumber(33)) ),
+                                                                  prototype( entry("Full Name", "Prof. 47"), entry("Age", EvalHelper.coerceNumber(47)) ) 
+                                                                  ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {
