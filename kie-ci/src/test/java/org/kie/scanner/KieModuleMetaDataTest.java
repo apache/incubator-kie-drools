@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kproject.xml.DependencyFilter;
+import org.appformer.maven.support.DependencyFilter;
 import org.drools.core.rule.TypeMetaInfo;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -33,6 +33,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.type.Role;
+import org.appformer.maven.integration.MavenRepository;
 
 import static java.util.Arrays.asList;
 import static junit.framework.TestCase.assertFalse;
@@ -262,7 +263,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }
-        MavenRepository.getMavenRepository().installArtifact( releaseId, kieModule, pomFile );
+        KieMavenRepository.getKieMavenRepository().installArtifact( releaseId, kieModule, pomFile );
 
         //Build a second KieModule, depends on the first KieModule jar which we have deployed into Maven
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "metadata-test-using-pom", "1.0-SNAPSHOT" );

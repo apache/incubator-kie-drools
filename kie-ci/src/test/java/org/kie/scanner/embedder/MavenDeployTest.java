@@ -16,6 +16,11 @@
 
 package org.kie.scanner.embedder;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.junit.Test;
@@ -24,16 +29,12 @@ import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.appformer.maven.integration.embedder.MavenSettings;
 import org.kie.scanner.AbstractKieCiTest;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-import static org.kie.scanner.embedder.MavenSettings.CUSTOM_SETTINGS_PROPERTY;
+import static org.appformer.maven.integration.embedder.MavenSettings.CUSTOM_SETTINGS_PROPERTY;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class MavenDeployTest extends AbstractKieCiTest {
 
@@ -53,7 +54,7 @@ public class MavenDeployTest extends AbstractKieCiTest {
             InternalKieModule kJar1 = createKieJar( ks, releaseId, "rule1", "rule2" );
             KieContainer kieContainer = ks.newKieContainer( releaseId );
 
-            MavenRepository repository = getMavenRepository();
+            KieMavenRepository repository = getKieMavenRepository();
             RemoteRepository remote = createRemoteRepository( m2Folder );
             repository.deployArtifact(remote, releaseId, kJar1, createKPom(m2Folder, releaseId).toFile());
 
@@ -145,7 +146,7 @@ public class MavenDeployTest extends AbstractKieCiTest {
             InternalKieModule kJar1 = createKieJar( ks, releaseId, "rule1", "rule2" );
             KieContainer kieContainer = ks.newKieContainer( releaseId );
 
-            MavenRepository repository = getMavenRepository();
+            KieMavenRepository repository = getKieMavenRepository();
             repository.deployArtifact(releaseId, kJar1, createKPomWithDistributionManagement(m2Folder, releaseId).toFile());
 
             // create a ksesion and check it works as expected

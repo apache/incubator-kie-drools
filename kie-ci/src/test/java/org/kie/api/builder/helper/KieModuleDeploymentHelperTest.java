@@ -15,8 +15,6 @@
 
 package org.kie.api.builder.helper;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,16 +31,15 @@ import org.drools.core.impl.EnvironmentImpl;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.builder.KieModule;
-import org.kie.api.builder.helper.FluentKieModuleDeploymentHelper;
-import org.kie.api.builder.helper.KieModuleDeploymentHelper;
-import org.kie.api.builder.helper.SingleKieModuleDeploymentHelper;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.scanner.MavenRepository;
+import org.appformer.maven.integration.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
 
 public class KieModuleDeploymentHelperTest {
 
