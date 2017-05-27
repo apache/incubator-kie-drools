@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_1b5a3a8f-ccf0-459b-8783-38601977e828"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler"
+                      exporterVersion="5.1.13" id="_1b5a3a8f-ccf0-459b-8783-38601977e828" name="DMCommunity Challenge - March 2017"
+                      namespace="http://www.trisotech.com/definitions/_1b5a3a8f-ccf0-459b-8783-38601977e828" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition isCollection="false" label="tProfile" name="tProfile">
+    <semantic:itemComponent id="_ca82dc10-9d18-49b3-a899-6888fe0c432e" isCollection="false" name="Name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_1b2e3428-4599-4fc8-9bec-3332094a8e13" isCollection="false" name="Gender">
+      <semantic:typeRef>tGender</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_9fc95729-59a5-4709-8d67-7b7076f8a2c2" isCollection="false" name="City">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_f57320fd-6aa5-4dbf-b5b3-562d87e6d6c2" isCollection="false" name="Age">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_329e326b-830a-4ebc-96a1-b5570e07e0ec" isCollection="false" name="List of Interests">
+      <semantic:typeRef>tInterests</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_0fd65c9c-ef19-400d-92ea-2f64abe8aa24" isCollection="false" name="Minimum Acceptable Age">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_2ec9cbb9-37d2-4e5d-9141-0be6926c3eaf" isCollection="false" name="Maximum Acceptable Age">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_bc5ff4fb-670d-400b-8a11-3b703c7529ad" isCollection="false" name="Acceptable Genders">
+      <semantic:typeRef>tGenders</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_2d0ca6ea-c4db-4338-af57-0bbba8f5323a" isCollection="false" name="Minimum Matching Interests">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="false" label="tGender" name="tGender">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+    <semantic:allowedValues triso:constraintsType="enumeration">
+      <semantic:text>"Male","Female"</semantic:text>
+    </semantic:allowedValues>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tGenders" name="tGenders">
+    <semantic:typeRef>tGender</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tInterests" name="tInterests">
+    <semantic:typeRef>feel:string</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tProfiles" name="tProfiles">
+    <semantic:typeRef>tProfile</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition label="tCandidate" name="tCandidate">
+    <semantic:itemComponent id="_d8e99cda-6180-4d21-a2cb-3e1a6149fb23" name="Profile1">
+      <semantic:typeRef>tProfile</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_a04a5e84-c03d-4a9a-be5f-aa98c8919624" name="Profile2">
+      <semantic:typeRef>tProfile</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_1f0e7a00-4f34-43b3-b61f-27d6b9fbd3a1" name="Is Match">
+      <semantic:typeRef>feel:boolean</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_ecc7077a-0618-4616-8944-3adc67a82f99" name="Score">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tCandidates" name="tCandidates">
+    <semantic:typeRef>tCandidate</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:itemDefinition isCollection="true" label="tBooleans" name="tBooleans">
+    <semantic:typeRef>feel:boolean</semantic:typeRef>
+  </semantic:itemDefinition>
+  <semantic:decision id="_1218fa8b-b84b-4243-8f46-2ca65bf20e60" name="Candidate Matches" triso:displayName="Candidate Matches">
+    <semantic:variable id="_a4b32ccb-e93e-4c3f-b5ae-53799aa001fc" name="Candidate Matches" typeRef="tProfiles"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_5bd652fa-ee9f-4ca1-96ba-4494126eae1b"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_16b96440-fbd7-40af-bd3c-7856978377bb"/>
+    </semantic:informationRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_6dbcbdb7-c97c-4906-9db0-8dabed33ec34"/>
+    </semantic:knowledgeRequirement>
+    <semantic:context id="_079d8d43-14be-4355-9165-3c4bd8e0159f">
+      <semantic:contextEntry>
+        <semantic:variable id="_e0d02ff9-17d2-417a-b434-3304431d8711" name="Candidates" typeRef="tCandidates"/>
+        <semantic:literalExpression id="_e13390a7-c4ca-4d0b-be8f-fbeb56d31f2d">
+          <semantic:text>for Candidate in Profiles return Evaluate Match( Lonely Soul, Candidate )</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+      <semantic:contextEntry>
+        <semantic:literalExpression id="_2d38d584-2f22-4321-bbf8-d32518564c8f">
+          <semantic:text>Candidates[ Is Match = true ]</semantic:text>
+        </semantic:literalExpression>
+      </semantic:contextEntry>
+    </semantic:context>
+  </semantic:decision>
+  <semantic:businessKnowledgeModel id="_6dbcbdb7-c97c-4906-9db0-8dabed33ec34" name="Evaluate Match" triso:displayName="Evaluate Match">
+    <semantic:encapsulatedLogic id="_dee4876f-6a00-46be-a544-456c953f16af">
+      <semantic:formalParameter id="_eacb8641-e064-4e79-9f3f-67d037968e6b" name="Candidate1" typeRef="tProfile"/>
+      <semantic:formalParameter id="_806a19d9-4dc4-4188-9a09-6e455a7c924d" name="Candidate2" typeRef="tProfile"/>
+      <semantic:context id="context__dee4876f-6a00-46be-a544-456c953f16af">
+        <semantic:contextEntry>
+          <semantic:variable id="_a235e41c-05a0-455b-9404-6a9d92f08b63" name="Profile1" typeRef="tProfile"/>
+          <semantic:literalExpression id="_426e3a96-3bc7-49c9-8f94-66bcc1b0846a">
+            <semantic:text>Candidate1</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_ef0a60ea-e7dc-4ed8-8200-24fd812a202f" name="Profile2" typeRef="tProfile"/>
+          <semantic:literalExpression id="_6976f585-6cb8-4773-befa-55b6b3f6c782">
+            <semantic:text>Candidate2</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_ad138269-56d0-49f3-886a-e3d8b0b4d2a8" name="Is Match" typeRef="feel:boolean"/>
+          <semantic:literalExpression id="_b2f7b209-5a11-4135-915c-67b078cfdde4">
+            <semantic:text>Is Candidate a Match(Candidate1, Candidate2) and
+Is Candidate a Match(Candidate2, Candidate1)
+
+</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_5063aaf2-4c9a-4292-aa8e-4483fec12a31" name="Score" typeRef="feel:number"/>
+          <semantic:literalExpression id="_436e98a3-2227-40b0-9cf4-03deed70c142">
+            <semantic:text>Number of Matching Interests(Candidate1, Candidate2) - absolute( Candidate1.Age - Candidate2.Age )</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_740f5a50-259e-4597-9532-0214c67760c9" name="Evaluate Match" typeRef="tCandidate"/>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_3fbd0f80-6d92-4807-8406-a65073d2ce23"/>
+    </semantic:knowledgeRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_0bbe192e-a5f0-4e4d-b1f0-b4741ec3a48a"/>
+    </semantic:knowledgeRequirement>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_1e8c0870-a5c8-44b8-a3b0-ca6b07122fd9"/>
+    </semantic:knowledgeRequirement>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_3fbd0f80-6d92-4807-8406-a65073d2ce23" name="Is Candidate a Match" triso:displayName="Is Candidate a Match">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie-dmn/1.1" drools:kind="F" id="_2396a065-ed4a-4f0e-8bba-c66a3a6dd697">
+      <semantic:formalParameter id="_1426566d-e6a4-4a1b-a4a4-da747132400d" name="Profile" typeRef="tProfile"/>
+      <semantic:formalParameter id="_65c7fa56-63fa-4009-958e-a60ca88c3232" name="Candidate" typeRef="tProfile"/>
+      <semantic:literalExpression id="_fd97e464-37b7-4f65-a71e-0a9d4ff309a8">
+        <semantic:text>list contains(Profile.Acceptable Genders, Candidate.Gender) and
+Candidate.Age between Profile.Minimum Acceptable Age and Profile.Maximum Acceptable Age and
+Candidate.City = Profile.City and
+Number of Matching Interests(Profile, Candidate) &gt;= Profile.Minimum Matching Interests</semantic:text>
+      </semantic:literalExpression>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_52983d76-87e7-4c99-ac1a-49e38433d759" name="Is Candidate a Match" typeRef="feel:boolean"/>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="#_0bbe192e-a5f0-4e4d-b1f0-b4741ec3a48a"/>
+    </semantic:knowledgeRequirement>
+  </semantic:businessKnowledgeModel>
+  <semantic:inputData id="_5bd652fa-ee9f-4ca1-96ba-4494126eae1b" name="Profiles" triso:displayName="Profiles">
+    <semantic:variable id="_8600f27c-045d-46ba-b77f-cd6e3b830622" name="Profiles" typeRef="tProfiles"/>
+  </semantic:inputData>
+  <semantic:inputData id="_16b96440-fbd7-40af-bd3c-7856978377bb" name="Lonely Soul" triso:displayName="Lonely Soul">
+    <semantic:variable id="_c02d7e55-7dff-4644-842e-586874908a50" name="Lonely Soul" typeRef="tProfile"/>
+  </semantic:inputData>
+  <semantic:businessKnowledgeModel id="_0bbe192e-a5f0-4e4d-b1f0-b4741ec3a48a" name="Number of Matching Interests" triso:displayName="Number of Matching Interests">
+    <semantic:encapsulatedLogic id="_eb69f632-8c10-4553-8e3b-5e79c0241ca4">
+      <semantic:formalParameter id="_a49e5584-3ea6-47c6-bf72-02eb74f729c7" name="Profile" typeRef="tProfile"/>
+      <semantic:formalParameter id="_50149ab9-14ce-4a40-ae18-219bf2cc1a79" name="Candidate" typeRef="tProfile"/>
+      <semantic:context id="context__eb69f632-8c10-4553-8e3b-5e79c0241ca4">
+        <semantic:contextEntry>
+          <semantic:variable id="_865c0723-9f89-4e82-b877-9e1c4d2dd131" name="Matching Interests" typeRef="tBooleans"/>
+          <semantic:literalExpression id="_6d897ea7-31e5-408a-88ec-ca3b309e0ee4">
+            <semantic:text>for Interest in Profile.List of Interests return list contains(Candidate.List of Interests, Interest)</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:literalExpression id="_4276f418-b95c-4eb1-88b5-fe6add51cd12">
+            <semantic:text>count( Matching Interests[item == true] )</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_02a8efbd-6146-46a4-b1bd-fb7c2cf4a2d9" name="Number of Matching Interests" typeRef="feel:number"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:businessKnowledgeModel id="_1e8c0870-a5c8-44b8-a3b0-ca6b07122fd9" name="absolute" triso:displayName="absolute">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie-dmn/1.1" drools:kind="J" id="_faaac0ba-3cb6-4969-b6bb-1b429baacb80">
+      <semantic:formalParameter id="_08935875-c71a-44a6-af85-0fa2f794aac9" name="value" typeRef="feel:number"/>
+      <semantic:context>
+        <semantic:contextEntry>
+          <semantic:variable id="_392560b5-870a-4a72-aaab-8f0897dc0d19" name="class"/>
+          <semantic:literalExpression id="_5a92b1ad-7ddf-4f4c-a642-1d52defb903e">
+            <semantic:text>"java.lang.Math"</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+        <semantic:contextEntry>
+          <semantic:variable id="_7557a670-ba83-41c2-9693-b27e8cce2040" name="method signature"/>
+          <semantic:literalExpression id="_28efee3b-2550-4645-920d-0be07b3e196d">
+            <semantic:text>"abs(double)"</semantic:text>
+          </semantic:literalExpression>
+        </semantic:contextEntry>
+      </semantic:context>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_2a1f5c6a-2a22-4121-b0aa-4da1ea52fcae" name="absolute" typeRef="feel:number"/>
+  </semantic:businessKnowledgeModel>
+  <semantic:decision id="_426f14ba-7bfa-48ba-8709-97f3bf673917" name="Sorted Candidates" triso:displayName="Sorted Candidates">
+    <semantic:variable id="_4ae11868-6bef-4ba4-a0f9-7321cc184689" name="Sorted Candidates" typeRef="tProfiles"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_1218fa8b-b84b-4243-8f46-2ca65bf20e60"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression expressionLanguage="http://www.omg.org/spec/FEEL/20140401" id="_d73ad552-1f5f-4ecf-b753-8802713632e1" triso:unparsed="true">
+      <semantic:text>sort( Candidate Matches, function( c1, c2 ) c1.Score &gt;= c2.Score )</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>
