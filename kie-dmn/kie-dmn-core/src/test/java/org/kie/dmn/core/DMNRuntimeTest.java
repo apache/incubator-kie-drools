@@ -25,11 +25,7 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.ast.InputDataNode;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
-import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
+import org.kie.dmn.api.core.event.*;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -1464,15 +1460,16 @@ public class DMNRuntimeTest {
         profiles.add( createProfile( "Donna", "Female", "Boston", 32,
                                      Arrays.asList( "swimming", "cinema", "jogging", "writing" ),
                                      30, 40, Arrays.asList( "Female" ), 2 ) );
-        profiles.add( createProfile( "Eleonore", "Female", "Boston", 26,
+        profiles.add( createProfile( "Eleonore", "Female", "Boston", 28,
                                      Arrays.asList( "swimming", "cinema", "dancing", "writing" ),
                                      22, 32, Arrays.asList( "Male" ), 2 ) );
 
         DMNContext ctx = runtime.newContext();
         ctx.set("Lonely Soul", lonelySoul );
-        ctx.set("Profiles", profiles);
+        ctx.set("Potential Soul Mates", profiles);
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, ctx );
+        System.out.println( formatMessages( dmnResult.getMessages() ) );
         System.out.println(dmnResult.getContext());
 
     }
