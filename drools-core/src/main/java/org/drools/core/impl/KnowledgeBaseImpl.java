@@ -1624,7 +1624,7 @@ public class KnowledgeBaseImpl
     }
 
     public TypeDeclaration getOrCreateExactTypeDeclaration( Class<?> clazz ) {
-        return this.classTypeDeclaration.computeIfAbsent( clazz.getName(), c -> new TypeDeclaration( clazz ) );
+        return this.classTypeDeclaration.computeIfAbsent( clazz.getName(), c -> TypeDeclaration.createTypeDeclarationForBean( clazz ) );
     }
 
     public TypeDeclaration getTypeDeclaration( Class<?> clazz ) {

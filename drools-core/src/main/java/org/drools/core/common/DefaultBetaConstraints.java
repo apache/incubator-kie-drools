@@ -16,6 +16,12 @@
 
 package org.drools.core.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -29,13 +35,6 @@ import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.internal.conf.IndexPrecedenceOption;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.util.index.IndexUtil.compositeAllowed;
 import static org.drools.core.util.index.IndexUtil.isIndexableForNode;
@@ -265,11 +264,7 @@ public class DefaultBetaConstraints
     public BitMask getListenedPropertyMask(List<String> settableProperties) {
         BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
         for (BetaNodeFieldConstraint constraint : constraints) {
-            if (constraint instanceof MvelConstraint) {
-                mask = mask.setAll(((MvelConstraint)constraint).getListenedPropertyMask(settableProperties));
-            } else {
-                return allSetButTraitBitMask();
-            }
+            mask = mask.setAll(constraint.getListenedPropertyMask(settableProperties));
         }
         return mask;
     }

@@ -393,6 +393,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     // Slot specific
 
+    @Override
     public BitMask getListenedPropertyMask(List<String> settableProperties) {
         return analyzedCondition != null ?
                 calculateMask(analyzedCondition, settableProperties) :

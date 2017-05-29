@@ -16,9 +16,13 @@
 
 package org.drools.core.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
@@ -26,13 +30,6 @@ import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class TripleNonIndexSkipBetaConstraints 
     implements
@@ -157,12 +154,9 @@ public class TripleNonIndexSkipBetaConstraints
     }
 
     public BitMask getListenedPropertyMask(List<String> settableProperties) {
-        if (constraint0 instanceof MvelConstraint && constraint1 instanceof MvelConstraint && constraint2 instanceof MvelConstraint) {
-            return ((MvelConstraint)constraint0).getListenedPropertyMask(settableProperties)
-                                                .setAll(((MvelConstraint) constraint1).getListenedPropertyMask(settableProperties))
-                                                .setAll(((MvelConstraint) constraint2).getListenedPropertyMask(settableProperties));
-        }
-        return allSetButTraitBitMask();
+        return constraint0.getListenedPropertyMask(settableProperties)
+                          .setAll(constraint1.getListenedPropertyMask(settableProperties))
+                          .setAll(constraint2.getListenedPropertyMask(settableProperties));
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {
