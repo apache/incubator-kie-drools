@@ -1437,43 +1437,6 @@ public class DMNRuntimeTest {
         assertThat( result.get("Every are negative"), is( false ) );
     }
 
-    @Test
-    public void testDMChallengeMarch2017() {
-        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "dmcommunity_challenge_2017_03.dmn", this.getClass() );
-        final String MODEL_NAMESPACE = "http://www.trisotech.com/definitions/_1b5a3a8f-ccf0-459b-8783-38601977e828";
-        DMNModel dmnModel = runtime.getModel(
-                MODEL_NAMESPACE,
-                "DMCommunity Challenge - March 2017" );
-        assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
-
-        Map<?,?> lonelySoul = createProfile( "Bob", "Male", "Boston", 30,
-                                             Arrays.asList( "swimming", "cinema", "jogging", "writing" ),
-                                             25, 35, Arrays.asList( "Female" ), 1 );
-        List<Map<?, ?>> profiles = new ArrayList<>();
-        profiles.add( createProfile( "Alice", "Female", "Boston", 28,
-                                     Arrays.asList( "cinema", "singing", "dancing" ),
-                                     20, 30, Arrays.asList( "Male" ), 1 ) );
-        profiles.add( createProfile( "Charlie", "Male", "New York", 28,
-                                     Arrays.asList( "dancing", "writing", "hiking" ),
-                                     30, 40, Arrays.asList( "Female" ), 2 ) );
-        profiles.add( createProfile( "Donna", "Female", "Boston", 32,
-                                     Arrays.asList( "swimming", "cinema", "jogging", "writing" ),
-                                     30, 40, Arrays.asList( "Female" ), 2 ) );
-        profiles.add( createProfile( "Eleonore", "Female", "Boston", 28,
-                                     Arrays.asList( "swimming", "cinema", "dancing", "writing" ),
-                                     22, 32, Arrays.asList( "Male" ), 2 ) );
-
-        DMNContext ctx = runtime.newContext();
-        ctx.set("Lonely Soul", lonelySoul );
-        ctx.set("Potential Soul Mates", profiles);
-
-        DMNResult dmnResult = runtime.evaluateAll( dmnModel, ctx );
-        System.out.println( formatMessages( dmnResult.getMessages() ) );
-        System.out.println(dmnResult.getContext());
-
-    }
-
     private Map<String, Object> createProfile( String name, String gender, String city, int age,
                                                List<String> interests, int minAge, int maxAge, List<String> genders,
                                                int matchingInterests ) {
