@@ -51,8 +51,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
 import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class OOPathTest {
 
@@ -1126,5 +1125,102 @@ public class OOPathTest {
         final List<Object> res = new ArrayList<>();
         res.addAll(ksession.getObjects());
         return res;
+    }
+
+    @Test
+    public void testWith2Peers() {
+        // DROOLS-1589
+        String header =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                "global java.util.List list\n\n";
+
+        String drl1 =
+                "rule R1 when\n" +
+                "  Man( $m: /wife[age == 25] )\n" +
+                "then\n" +
+                "  list.add($m.getName());\n" +
+                "end\n\n";
+
+        String drl2 =
+                "rule R2 when\n" +
+                "  Man( $m: /wife[age == 26] )\n" +
+                "then\n" +
+                "  list.add($m.getName());\n" +
+                "end\n\n";
+
+        String drl3 =
+                "rule R3 when\n" +
+                "  Man( $m: /wife[age == 27] )\n" +
+                "then\n" +
+                "  list.add($m.getName());\n" +
+                "end\n\n";
+
+        final KieSession ksession = new KieHelper()
+                .addContent( header + drl1 + drl2 + drl3, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Man bob = new Man("John", 25);
+        bob.setWife( new Woman("Jane", 25) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "Jane", list.get(0) );
+        list.clear();
+
+        bob.getWife().setAge(26);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "Jane", list.get(0) );
+        list.clear();
+
+        bob.getWife().setAge(27);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "Jane", list.get(0) );
+        list.clear();
+
+        bob.getWife().setAge(28);
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+    }
+
+    @Test
+    public void testWithExists() {
+        String header =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                "global java.util.List list\n\n";
+
+        String drl1 =
+                "rule R1 when\n" +
+                "  exists( Man( $m: /wife[age == 25] ) )\n" +
+                "then\n" +
+                "  list.add(\"Found\");\n" +
+                "end\n\n";
+
+        final KieSession ksession = new KieHelper()
+                .addContent( header + drl1, ResourceType.DRL )
+                .build()
+                .newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        final Man bob = new Man("John", 25);
+        bob.setWife( new Woman("Jane", 25) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "Found", list.get(0) );
+        list.clear();
     }
 }
