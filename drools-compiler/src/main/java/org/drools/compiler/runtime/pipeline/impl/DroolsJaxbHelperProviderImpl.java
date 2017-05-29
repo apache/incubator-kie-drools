@@ -16,6 +16,21 @@
 
 package org.drools.compiler.runtime.pipeline.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JPackage;
@@ -59,21 +74,6 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.help.DroolsJaxbHelperProvider;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import java.io.ByteArrayOutputStream;
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class DroolsJaxbHelperProviderImpl
     implements DroolsJaxbHelperProvider {
@@ -180,7 +180,7 @@ public class DroolsJaxbHelperProviderImpl
                 }
                 String pkgName = className.substring( 0, className.lastIndexOf( '.' ) );
                 PackageRegistry pkgReg = kBuilder.getPackageRegistry(pkgName);
-                pkgReg.getPackage().addTypeDeclaration( new TypeDeclaration( clazz ) );
+                pkgReg.getPackage().addTypeDeclaration( TypeDeclaration.createTypeDeclarationForBean( clazz ) );
             }
 
             kBuilder.updateResults(results);

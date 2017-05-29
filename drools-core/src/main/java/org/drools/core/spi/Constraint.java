@@ -16,9 +16,13 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.rule.Declaration;
-
 import java.io.Externalizable;
+import java.util.List;
+
+import org.drools.core.rule.Declaration;
+import org.drools.core.util.bitmask.BitMask;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public interface Constraint
     extends
@@ -59,15 +63,19 @@ public interface Constraint
      *
      * @return
      */
-    public ConstraintType getType();
+    ConstraintType getType();
     
     /**
      * Returns true in case this constraint is a temporal constraint
      * 
      * @return
      */
-    public boolean isTemporal();
-    
+    boolean isTemporal();
+
+    default BitMask getListenedPropertyMask( List<String> settableProperties ) {
+        return allSetButTraitBitMask();
+    }
+
     /**
      * An enum for Constraint Types
      */

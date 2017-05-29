@@ -16,6 +16,8 @@
 
 package org.drools.core.common;
 
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
@@ -25,10 +27,6 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.internal.conf.IndexPrecedenceOption;
-
-import java.util.List;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class DoubleBetaConstraints extends MultipleBetaConstraint {
 
@@ -160,11 +158,8 @@ public class DoubleBetaConstraints extends MultipleBetaConstraint {
     }
 
     public BitMask getListenedPropertyMask(List<String> settableProperties) {
-        if (constraints[0] instanceof MvelConstraint && constraints[1] instanceof MvelConstraint) {
-            return ((MvelConstraint)constraints[0]).getListenedPropertyMask(settableProperties)
-                                                   .setAll(((MvelConstraint) constraints[1]).getListenedPropertyMask(settableProperties));
-        }
-        return allSetButTraitBitMask();
+        return constraints[0].getListenedPropertyMask(settableProperties)
+                             .setAll(constraints[1].getListenedPropertyMask(settableProperties));
     }
 
     public void registerEvaluationContext(BuildContext buildContext) {
