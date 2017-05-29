@@ -29,12 +29,12 @@ import java.util.Set;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
-import org.drools.compiler.lang.descr.Annotated;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
+import org.drools.core.rule.Annotated;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.ClassUtils;
 import org.kie.api.definition.type.Modifies;
@@ -42,7 +42,7 @@ import org.kie.api.definition.type.Position;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.rule.Match;
 
-import static org.drools.compiler.builder.impl.TypeDeclarationConfigurator.processTypeAnnotations;
+import static org.drools.compiler.builder.impl.TypeDeclarationConfigurator.processMvelBasedAccessors;
 import static org.drools.core.util.BitMaskUtil.isSet;
 
 public class TypeDeclarationCache {
@@ -260,7 +260,8 @@ public class TypeDeclarationCache {
     }
 
     private TypeDeclaration createTypeDeclarationForBean(Class<?> cls) {
-        TypeDeclaration typeDeclaration = new TypeDeclaration(cls);
+        Annotated annotated = new Annotated.ClassAdapter(cls);
+        TypeDeclaration typeDeclaration = TypeDeclaration.createTypeDeclarationForBean(cls, annotated, kbuilder.getBuilderConfiguration().getPropertySpecificOption());
 
         String namespace = ClassUtils.getPackage( cls );
         PackageRegistry pkgRegistry = kbuilder.getPackageRegistry( namespace );
@@ -268,7 +269,7 @@ public class TypeDeclarationCache {
             pkgRegistry = kbuilder.createPackageRegistry( new PackageDescr(namespace) );
         }
 
-        processTypeAnnotations( kbuilder, pkgRegistry, new Annotated.ClassAdapter(cls), typeDeclaration );
+        processMvelBasedAccessors( kbuilder, pkgRegistry, annotated, typeDeclaration );
         return typeDeclaration;
     }
 

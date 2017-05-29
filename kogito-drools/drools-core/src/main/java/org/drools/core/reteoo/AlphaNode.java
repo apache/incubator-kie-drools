@@ -16,6 +16,11 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+
 import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -25,17 +30,9 @@ import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.Operator;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -332,10 +329,7 @@ public class AlphaNode extends ObjectSource
                 typeBit = true;
             }
         }
-        if (settableProperties == null || !(constraint instanceof MvelConstraint)) {
-            return typeBit ? AllSetBitMask.get() : allSetButTraitBitMask();
-        }
-        BitMask mask = ((MvelConstraint) constraint).getListenedPropertyMask(settableProperties);
+        BitMask mask = constraint.getListenedPropertyMask(settableProperties);
         return typeBit ? mask.set(PropertySpecificUtil.TRAITABLE_BIT) : mask;
     }
 

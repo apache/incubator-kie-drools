@@ -23,29 +23,26 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
-import org.drools.compiler.lang.descr.Annotated;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
+import org.drools.core.rule.Annotated;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.ClassUtils;
-import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.Duration;
-import org.kie.api.definition.type.Expires;
-import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
-import org.kie.internal.builder.conf.PropertySpecificOption;
+
+import static org.drools.core.rule.TypeDeclaration.processTypeAnnotations;
 
 public class TypeDeclarationConfigurator {
 
@@ -105,15 +102,14 @@ public class TypeDeclarationConfigurator {
             }
         }
 
-        processTypeAnnotations( kbuilder, pkgRegistry, typeDescr, type );
+        processMvelBasedAccessors( kbuilder, pkgRegistry, typeDescr, type );
+        processTypeAnnotations( type, typeDescr, kbuilder.getBuilderConfiguration().getPropertySpecificOption());
         return true;
     }
 
-    static void processTypeAnnotations( KnowledgeBuilderImpl kbuilder, PackageRegistry pkgRegistry, Annotated annotated, TypeDeclaration type ) {
+    static void processMvelBasedAccessors( KnowledgeBuilderImpl kbuilder, PackageRegistry pkgRegistry, Annotated annotated, TypeDeclaration type ) {
         wireTimestampAccessor( kbuilder, annotated, type, pkgRegistry );
         wireDurationAccessor( kbuilder, annotated, type, pkgRegistry );
-        configureExpirationOffset( kbuilder, annotated, type );
-        configurePropertyReactivity( kbuilder, annotated, type );
     }
 
     protected void buildFieldAccessors(final TypeDeclaration type,
@@ -211,31 +207,5 @@ public class TypeDeclarationConfigurator {
         data.addCompileable((MVELCompileable) reader);
         ((MVELCompileable) reader).compile(data);
         return reader;
-    }
-
-    private static void configureExpirationOffset( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type ) {
-        Expires expires = annotated.getTypedAnnotation(Expires.class);
-        if (expires != null) {
-            String expiration;
-            try {
-                expiration = expires.value();
-            } catch (Exception e) {
-                if (annotated instanceof BaseDescr) {
-                    kbuilder.addBuilderResult( new TypeDeclarationError( (BaseDescr)annotated, e.getMessage() ) );
-                }
-                return;
-            }
-            long offset = TimeIntervalParser.parseSingle( expiration );
-            // @Expires( -1 ) means never expire
-            type.setExpirationOffset(offset == -1L ? Long.MAX_VALUE : offset);
-            type.setExpirationType( expires.policy() );
-        }
-    }
-
-    private static void configurePropertyReactivity( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type ) {
-        PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getPropertySpecificOption();
-        boolean propertyReactive = propertySpecificOption.isPropSpecific( annotated.hasAnnotation( PropertyReactive.class ),
-                                                                          annotated.hasAnnotation( ClassReactive.class ) );
-        type.setPropertyReactive(propertyReactive);
     }
 }

@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.facttemplates.FactTemplate;
@@ -31,11 +32,13 @@ import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
+import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Expires.Policy;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.definition.KnowledgeDefinition;
 
 /**
@@ -131,7 +134,7 @@ public class TypeDeclaration
         this.valid =  true;
     }
 
-    public TypeDeclaration( Class< ? > typeClass ) {
+    private TypeDeclaration( Class< ? > typeClass ) {
         this(typeClass.getSimpleName());
         setTypeClass(typeClass);
         javaBased = true;
@@ -541,4 +544,39 @@ public class TypeDeclaration
         return this.order - o.order;
     }
 
+    public static TypeDeclaration createTypeDeclarationForBean(Class<?> cls) {
+        return createTypeDeclarationForBean(cls, PropertySpecificOption.ALWAYS);
+    }
+
+    public static TypeDeclaration createTypeDeclarationForBean(Class<?> cls, PropertySpecificOption propertySpecificOption) {
+        return createTypeDeclarationForBean(cls, new Annotated.ClassAdapter(cls), propertySpecificOption);
+    }
+
+    public static TypeDeclaration createTypeDeclarationForBean(Class<?> cls, Annotated annotated, PropertySpecificOption propertySpecificOption) {
+        TypeDeclaration typeDeclaration = new TypeDeclaration(cls);
+        processTypeAnnotations( typeDeclaration, annotated, propertySpecificOption );
+        return typeDeclaration;
+    }
+
+    public static void processTypeAnnotations( TypeDeclaration type, Annotated annotated, PropertySpecificOption propertySpecificOption ) {
+        configureExpirationOffset( type, annotated );
+        configurePropertyReactivity( type, annotated, propertySpecificOption );
+    }
+
+    private static void configureExpirationOffset( TypeDeclaration type, Annotated annotated ) {
+        Expires expires = annotated.getTypedAnnotation(Expires.class);
+        if (expires != null) {
+            String expiration = expires.value();
+            long offset = TimeIntervalParser.parseSingle( expiration );
+            // @Expires( -1 ) means never expire
+            type.setExpirationOffset(offset == -1L ? Long.MAX_VALUE : offset);
+            type.setExpirationType( expires.policy() );
+        }
+    }
+
+    private static void configurePropertyReactivity( TypeDeclaration type, Annotated annotated, PropertySpecificOption propertySpecificOption ) {
+        boolean propertyReactive = propertySpecificOption.isPropSpecific( annotated.hasAnnotation( PropertyReactive.class ),
+                                                                          annotated.hasAnnotation( ClassReactive.class ) );
+        type.setPropertyReactive(propertyReactive);
+    }
 }

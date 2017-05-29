@@ -17,6 +17,7 @@
 package org.drools.compiler.lang.descr;
 
 import org.drools.compiler.rule.builder.util.AnnotationFactory;
+import org.drools.core.rule.Annotated;
 
 import java.io.Externalizable;
 import java.io.IOException;
