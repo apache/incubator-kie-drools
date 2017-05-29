@@ -230,6 +230,7 @@ public class StringDataGenerator {
 
     public void predictMaximumSizeAndReset(int maximumSize) {
         indexLimit = (int) Math.pow(partValuesLength, partValuesList.size());
+        filteredPartValuesList = partValuesList;
         for (int i = 1; i < partValuesList.size(); i++) {
             int proposedIndexLimit = (int) Math.pow(partValuesLength, i);
             if (maximumSize <= proposedIndexLimit) {
