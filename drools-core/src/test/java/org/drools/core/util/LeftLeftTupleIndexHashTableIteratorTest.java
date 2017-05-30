@@ -38,8 +38,8 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class LeftLeftTupleIndexHashTableIteratorTest {
         BetaMemory betaMemory = betaConstraints.createBetaMemory( config, NodeTypeEnums.JoinNode );
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ss = kBase.newStatefulKnowledgeSession();
+        KieSession ss = kBase.newKieSession();
 
         InternalFactHandle fh1 = (InternalFactHandle) ss.insert( new Foo( "brie",
                                                                           1 ) );

@@ -27,7 +27,7 @@ import org.drools.core.test.model.MockActivation;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 /**
  * <p>
@@ -49,7 +49,7 @@ public class LazyTMSEnablingTest {
     @Before
     public void setUp() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         tms = ((NamedEntryPoint)ksession.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
 

@@ -39,7 +39,7 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class ReteooWorkingMemoryTest {
     @Ignore
     public void testBasicWorkingMemoryActions() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final TruthMaintenanceSystem tms = ((NamedEntryPoint)ksession.getWorkingMemoryEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
         final String string = "test";
@@ -104,11 +104,11 @@ public class ReteooWorkingMemoryTest {
     @Test
     public void testId() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         assertEquals( 0,
                       ksession.getIdentifier() );
-        ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
         assertEquals( 1,
                       ksession.getIdentifier() );
     }
@@ -123,7 +123,7 @@ public class ReteooWorkingMemoryTest {
         final GlobalResolver resolver = new MapGlobalResolver(map);
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         ksession.setGlobalResolver( resolver );
         assertEquals( "value1",
@@ -161,7 +161,7 @@ public class ReteooWorkingMemoryTest {
     @Test @Ignore
     public void testExecuteQueueActions() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
         final ReentrantAction action = new ReentrantAction();
         ksession.queueWorkingMemoryAction( action );
         ksession.flushPropagations();
@@ -184,7 +184,7 @@ public class ReteooWorkingMemoryTest {
 
 
         kBase.getRete().addObjectSink( epn );
-        StatefulKnowledgeSession ksession = kBase.newStatefulKnowledgeSession();
+        KieSession ksession = kBase.newKieSession();
         FactHandle f1 = ksession.insert( "f1" );
         
         EntryPoint ep = ksession.getEntryPoint( "xxx" );
