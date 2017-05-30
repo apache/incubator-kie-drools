@@ -21,11 +21,11 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.jsr94.rules.Constants;
 import org.drools.jsr94.rules.Jsr94FactHandleFactory;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.KnowledgeBaseFactory;
 
 import javax.rules.ObjectFilter;
 import javax.rules.admin.RuleExecutionSet;

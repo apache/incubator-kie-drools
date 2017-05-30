@@ -109,7 +109,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceTypePackage;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -279,17 +278,6 @@ public class KnowledgeBaseImpl
         return Collections.unmodifiableCollection( kieBaseListeners );
     }
 
-    public void addKnowledgePackages(Collection<KnowledgePackage> knowledgePackages) {
-        addPackages((Collection<InternalKnowledgePackage>)(Collection<?>) knowledgePackages);
-    }
-
-    public Collection<KnowledgePackage> getKnowledgePackages() {
-        InternalKnowledgePackage[] pkgs = getPackages();
-        List<KnowledgePackage> list = new ArrayList<KnowledgePackage>( pkgs.length );
-        Collections.addAll( list, pkgs );
-        return list;
-    }
-
     public StatefulKnowledgeSession newStatefulKnowledgeSession() {
         return newStatefulKnowledgeSession(null, EnvironmentFactory.newEnvironment());
     }
@@ -368,10 +356,6 @@ public class KnowledgeBaseImpl
         }
     }
 
-    public KnowledgePackage getKnowledgePackage(String packageName) {
-        return getPackage(packageName);
-    }
-
     public Rule getRule(String packageName,
                         String ruleName) {
         InternalKnowledgePackage p = getPackage(packageName);
@@ -409,12 +393,14 @@ public class KnowledgeBaseImpl
     }
 
     public Collection<KiePackage> getKiePackages() {
-        Object o = getKnowledgePackages();
-        return (Collection<KiePackage>) o;
+        InternalKnowledgePackage[] pkgs = getPackages();
+        List<KiePackage> list = new ArrayList<KiePackage>( pkgs.length );
+        Collections.addAll( list, pkgs );
+        return list;
     }
 
     public KiePackage getKiePackage(String packageName) {
-        return getKnowledgePackage(packageName);
+        return getPackage(packageName);
     }
 
     public void removeKiePackage(String packageName) {
@@ -702,13 +688,14 @@ public class KnowledgeBaseImpl
         }
     }
 
-    // FIXME: this returns the live map!
+    @Override
     public Map<String, InternalKnowledgePackage> getPackagesMap() {
-        return this.pkgs;
+        return Collections.unmodifiableMap( this.pkgs );
     }
 
+    @Override
     public Map<String, Class<?>> getGlobals() {
-        return this.globals;
+        return Collections.unmodifiableMap( this.globals );
     }
 
     public void lock() {
@@ -752,6 +739,7 @@ public class KnowledgeBaseImpl
      *
      * @param newPkgs The package to add.
      */
+    @Override
     public void addPackages( final Collection<InternalKnowledgePackage> newPkgs ) {
         final List<InternalKnowledgePackage> clonedPkgs = new ArrayList<InternalKnowledgePackage>();
         for (InternalKnowledgePackage newPkg : newPkgs) {
@@ -1581,10 +1569,7 @@ public class KnowledgeBaseImpl
         return this.reteooBuilder.getIdGenerator().getLastId(topic) + 1;
     }
 
-    public void addPackages(InternalKnowledgePackage[] pkgs) {
-        addPackages( Arrays.asList(pkgs) );
-    }
-
+    @Override
     public void addPackage(final InternalKnowledgePackage newPkg) {
         addPackages( Collections.singleton(newPkg) );
     }

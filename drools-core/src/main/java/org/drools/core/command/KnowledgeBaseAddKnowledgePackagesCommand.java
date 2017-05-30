@@ -16,10 +16,13 @@
 
 package org.drools.core.command;
 
+import java.util.Collection;
+
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.api.runtime.Context;
 
@@ -35,8 +38,8 @@ public class KnowledgeBaseAddKnowledgePackagesCommand
         if (kbuilder.hasErrors()) {
             throw new IllegalStateException("There are rule compilation errors:\n" + kbuilder.getErrors().toString());
         }
-        KnowledgeBase kbase = (KnowledgeBase) ((RegistryContext) context).lookup(KieBase.class);
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) ((RegistryContext) context).lookup(KieBase.class);
+        kbase.addPackages( (Collection<InternalKnowledgePackage>)(Collection<?>)kbuilder.getKnowledgePackages() );
         return null;
     }
 
