@@ -16,12 +16,12 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
 
 import static org.drools.core.phreak.ReactiveObjectUtil.ModificationType.REMOVE;
 
@@ -29,8 +29,13 @@ public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
 
     private Map<Object, ModificationType> modificationTypeMap = new HashMap<>(); 
 
-    private final Object[] objects;
-    private final int hash;
+    private Object[] objects;
+    private int hash;
+    private int peerIndex;
+
+    public ReactiveFromNodeLeftTuple() {
+        // constructor needed for serialisation
+    }
 
     public ReactiveFromNodeLeftTuple(final LeftTuple leftTuple,
                                      final RightTuple rightTuple,
@@ -41,7 +46,7 @@ public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
         super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
 
         objects = new Object[leftTuple.getIndex() + 2];
-        System.arraycopy( leftTuple.toObjects(), 0, objects, 0, leftTuple.getIndex() );
+        System.arraycopy( leftTuple.toObjects(), 0, objects, 0, leftTuple.getIndex()+1 );
         objects[leftTuple.getIndex()+1] = rightTuple.getFactHandle().getObject();
         hash = Arrays.hashCode( objects );
     }
@@ -50,7 +55,7 @@ public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
         super(factHandle, leftTuple, sink);
 
         objects = new Object[leftTuple.getIndex() + 2];
-        System.arraycopy( leftTuple.toObjects(), 0, objects, 0, leftTuple.getIndex() );
+        System.arraycopy( leftTuple.toObjects(), 0, objects, 0, leftTuple.getIndex()+1 );
         objects[leftTuple.getIndex()+1] = factHandle.getObject();
         hash = Arrays.hashCode( objects );
     }
@@ -63,13 +68,24 @@ public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
     }
 
     @Override
+    public void initPeer( BaseLeftTuple original, LeftTupleSink sink ) {
+        super.initPeer( original, sink );
+        ReactiveFromNodeLeftTuple reactiveTuple = ( (ReactiveFromNodeLeftTuple) original );
+        objects = reactiveTuple.objects;
+        peerIndex = reactiveTuple.peerIndex+1;
+        hash = Arrays.hashCode( objects ) + peerIndex;
+    }
+
+    @Override
     public int hashCode() {
         return hash;
     }
 
     @Override
     public boolean equals( Object other ) {
-        return other instanceof ReactiveFromNodeLeftTuple && Arrays.equals( objects, ( (ReactiveFromNodeLeftTuple) other ).objects );
+        return other instanceof ReactiveFromNodeLeftTuple &&
+               Arrays.equals( objects, ( (ReactiveFromNodeLeftTuple) other ).objects ) &&
+               peerIndex == ( (ReactiveFromNodeLeftTuple) other ).peerIndex;
     }
 
     public boolean updateModificationState(Object object, ModificationType newState ) {

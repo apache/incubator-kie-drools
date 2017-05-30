@@ -92,13 +92,13 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
     public LeftTuple createLeftTuple( LeftTuple leftTuple,
                                       Sink sink,
                                       PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
-        return new FromNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled );
+        throw new UnsupportedOperationException();
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
-        return new FromNodeLeftTuple(leftTuple, rightTuple, sink );
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -114,5 +114,13 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
     @Override
     public String toString() {
         return "[ReactiveFromNode(" + id + ") :: " + dataProvider + "]";
+    }
+
+    @Override
+    public LeftTuple createPeer(LeftTuple original) {
+        ReactiveFromNodeLeftTuple peer = new ReactiveFromNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
     }
 }
