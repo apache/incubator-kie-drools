@@ -2247,7 +2247,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         methodInformation.put("java.util.Map",
                               mapMethodInformation);
 
-        when(dmo.getProjectMethodInformation()).thenReturn(methodInformation);
+        when(dmo.getModuleMethodInformation()).thenReturn(methodInformation);
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                           Collections.emptyList(),
@@ -2311,7 +2311,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         methodInformation.put("org.mortgages.MyType",
                               mapMethodInformation);
 
-        when(dmo.getProjectMethodInformation()).thenReturn(methodInformation);
+        when(dmo.getModuleMethodInformation()).thenReturn(methodInformation);
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                           Collections.emptyList(),
@@ -2369,7 +2369,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         methodInformation.put("org.mortgages.MyType",
                               mapMethodInformation);
 
-        when(dmo.getProjectMethodInformation()).thenReturn(methodInformation);
+        when(dmo.getModuleMethodInformation()).thenReturn(methodInformation);
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                           Collections.emptyList(),
@@ -3796,7 +3796,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         methodInformation.put("java.lang.String",
                               mapMethodInformation);
 
-        when(dmo.getProjectMethodInformation()).thenReturn(methodInformation);
+        when(dmo.getModuleMethodInformation()).thenReturn(methodInformation);
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                                 Collections.emptyList(),
@@ -3879,7 +3879,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         methodInformation.put("java.lang.String",
                               mapMethodInformation);
 
-        when(dmo.getProjectMethodInformation()).thenReturn(methodInformation);
+        when(dmo.getModuleMethodInformation()).thenReturn(methodInformation);
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                                 Collections.emptyList(),
@@ -3961,7 +3961,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         methodInformation.put("java.lang.String",
                               mapMethodInformation);
 
-        when(dmo.getProjectMethodInformation()).thenReturn(methodInformation);
+        when(dmo.getModuleMethodInformation()).thenReturn(methodInformation);
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                                 Collections.emptyList(),
@@ -4066,7 +4066,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         methodInformation.put("org.mortgages.classes.MyClass",
                               mapMethodInformation);
 
-        when(dmo.getProjectMethodInformation()).thenReturn(methodInformation);
+        when(dmo.getModuleMethodInformation()).thenReturn(methodInformation);
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                                 Collections.emptyList(),
@@ -4845,7 +4845,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
                 methodInfos);
 
         when(
-                dmo.getProjectMethodInformation()
+                dmo.getModuleMethodInformation()
         ).thenReturn(
                 map
         );
@@ -4919,7 +4919,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         HashMap<String, String> map = new HashMap<>();
         map.put("Person#addresses",
                 "Address");
-        when(dmo.getProjectFieldParametersType()).thenReturn(map);
+        when(dmo.getModuleFieldParametersType()).thenReturn(map);
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                                 Collections.emptyList(),
@@ -5653,7 +5653,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         map.put("TestClass",
                 methodInfos);
 
-        when(dmo.getProjectMethodInformation()).thenReturn(map);
+        when(dmo.getModuleMethodInformation()).thenReturn(map);
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                                 Collections.emptyList(),
@@ -5718,7 +5718,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         map.put("java.lang.Number",
                 methodInfos);
 
-        when(dmo.getProjectMethodInformation()).thenReturn(map);
+        when(dmo.getModuleMethodInformation()).thenReturn(map);
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                                 Collections.emptyList(),
@@ -5779,7 +5779,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         map.put("java.lang.Number",
                 methodInfos);
 
-        when(dmo.getProjectMethodInformation()).thenReturn(map);
+        when(dmo.getModuleMethodInformation()).thenReturn(map);
 
         final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
                                                                                 Collections.emptyList(),
