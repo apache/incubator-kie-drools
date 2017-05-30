@@ -50,9 +50,9 @@ public class RuleModelDRLPersistenceUnmarshallingI18NTest {
     @Before
     public void setUp() throws Exception {
         dmo = mock(PackageDataModelOracle.class);
-        when(dmo.getProjectModelFields()).thenReturn(packageModelFields);
-        when(dmo.getProjectJavaEnumDefinitions()).thenReturn(projectJavaEnumDefinitions);
-        when(dmo.getProjectMethodInformation()).thenReturn(projectMethodInformation);
+        when(dmo.getModuleModelFields()).thenReturn(packageModelFields);
+        when(dmo.getModuleJavaEnumDefinitions()).thenReturn(projectJavaEnumDefinitions);
+        when(dmo.getModuleMethodInformation()).thenReturn(projectMethodInformation);
     }
 
     @After
