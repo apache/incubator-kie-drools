@@ -19,13 +19,16 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.definition.KnowledgePackage;
 
@@ -151,5 +154,35 @@ public class RemoveRuleTest extends CommonTestMethodBase {
         kbase.removeRule( "org.drools.compiler", "R2" );
 
         assertEquals( 1, kbase.getKiePackage( "org.drools.compiler" ).getRules().size() );
+    }
+
+    @Test
+    public void testRuleRemovalWithJoinedRootPattern() {
+        String str = "";
+        str += "package org.drools.compiler \n";
+        str += "rule rule1 \n";
+        str += "when \n";
+        str += "  String() \n";
+        str += "  Person() \n";
+        str += "then \n";
+        str += "end  \n";
+        str += "rule rule2 \n";
+        str += "when \n";
+        str += "  String() \n";
+        str += "  Cheese() \n";
+        str += "then \n";
+        str += "end  \n";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = createKnowledgeSession(kbase);
+        final DefaultFactHandle handle = (DefaultFactHandle) ksession.insert("hello");
+        ksession.fireAllRules();
+        LeftTuple leftTuple = handle.getFirstLeftTuple();
+        assertNotNull(leftTuple);
+        assertNotNull(leftTuple.getPeer());
+        kbase.removeRule("org.drools.compiler", "rule2");
+        leftTuple = handle.getFirstLeftTuple();
+        assertNotNull(leftTuple);
+        assertNull(leftTuple.getHandleNext());
     }
 }

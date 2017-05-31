@@ -29,10 +29,13 @@ import org.drools.compiler.integrationtests.SerializationHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.command.Setter;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 
 public class ModifyTest extends CommonTestMethodBase {
@@ -269,5 +272,30 @@ public class ModifyTest extends CommonTestMethodBase {
             }
         } finally {
         }
+    }
+
+    @Test
+    public void testModifyCommand() {
+        final String str =
+                "rule \"sample rule\"\n" +
+                        "   when\n" +
+                        "   then\n" +
+                        "       System.out.println(\"\\\"Hello world!\\\"\");\n" +
+                        "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
+
+        final Person p1 = new Person("John", "nobody", 25);
+        ksession.execute(CommandFactory.newInsert(p1));
+        final FactHandle fh = ksession.getFactHandle(p1);
+
+        final Person p = new Person("Frank", "nobody", 30);
+        final List<Setter> setterList = new ArrayList<Setter>();
+        setterList.add(CommandFactory.newSetter("age", String.valueOf(p.getAge())));
+        setterList.add(CommandFactory.newSetter("name", p.getName()));
+        setterList.add(CommandFactory.newSetter("likes", p.getLikes()));
+
+        ksession.execute(CommandFactory.newModify(fh, setterList));
     }
 }

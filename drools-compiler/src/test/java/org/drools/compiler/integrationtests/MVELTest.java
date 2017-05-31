@@ -15,8 +15,19 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.TestEnum;
@@ -27,82 +38,56 @@ import org.drools.core.base.mvel.MVELDebugHandler;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.MapBackedClassLoader;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.util.DateUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-
 public class MVELTest extends CommonTestMethodBase {
-    
+
     @Test
-    public void testHelloWorld() throws Exception {
+    public void testHelloWorld() {
         // read in the source
-        KieBase kbase = loadKnowledgeBase("test_mvel.drl");
-        KieSession ksession = kbase.newKieSession();
+        final KieBase kbase = loadKnowledgeBase("test_mvel.drl");
+        final KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
-        ksession.setGlobal( "list",
-                                 list );
+        ksession.setGlobal("list", list);
 
         final List list2 = new ArrayList();
-        ksession.setGlobal( "list2",
-                                 list2 );
+        ksession.setGlobal("list2", list2);
 
-        Cheese c = new Cheese( "stilton",
-                               10 );
-        ksession.insert( c );
+        final Cheese c = new Cheese("stilton", 10);
+        ksession.insert(c);
         ksession.fireAllRules();
-        assertEquals( 2,
-                      list.size() );
-        assertEquals( BigInteger.valueOf( 30 ),
-                      list.get( 0 ) );
-        assertEquals( Integer.valueOf( 22 ),
-                      list.get( 1 ) );
+        assertEquals(2, list.size());
+        assertEquals(BigInteger.valueOf(30), list.get(0));
+        assertEquals(22, list.get(1));
 
-        assertEquals( "hello world",
-                      list2.get( 0 ) );
+        assertEquals("hello world", list2.get(0));
 
-        Date dt = DateUtils.parseDate( "10-Jul-1974" );
-        assertEquals( dt,
-                      c.getUsedBy() );
+        final Date dt = DateUtils.parseDate("10-Jul-1974");
+        assertEquals(dt, c.getUsedBy());
     }
 
     @Test
-    public void testIncrementOperator() throws Exception {
+    public void testIncrementOperator() {
         String str = "";
         str += "package org.kie \n";
         str += "global java.util.List list \n";
@@ -116,32 +101,26 @@ public class MVELTest extends CommonTestMethodBase {
         str += "    list.add( i ); \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+        assertFalse(kbuilder.hasErrors());
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        assertFalse( kbuilder.hasErrors() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        List list = new ArrayList();
-        ksession.setGlobal( "list",
-                            list );
-        ksession.insert( 5 );
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+        ksession.insert(5);
 
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( 10,
-                      list.get( 0 ) );
+        assertEquals(1, list.size());
+        assertEquals(10, list.get(0));
     }
 
     @Test
-    public void testEvalWithBigDecimal() throws Exception {
+    public void testEvalWithBigDecimal() {
         String str = "";
         str += "package org.kie \n";
         str += "import java.math.BigDecimal; \n";
@@ -155,88 +134,74 @@ public class MVELTest extends CommonTestMethodBase {
         str += "    list.add( $bd ); \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            System.err.println( kbuilder.getErrors() );
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+        if (kbuilder.hasErrors()) {
+            System.err.println(kbuilder.getErrors());
         }
-        assertFalse( kbuilder.hasErrors() );
+        assertFalse(kbuilder.hasErrors());
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        List list = new ArrayList();
-        ksession.setGlobal( "list",
-                            list );
-        ksession.insert( new BigDecimal( 1.5 ) );
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+        ksession.insert(new BigDecimal(1.5));
 
         ksession.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( new BigDecimal( 1.5 ),
-                      list.get( 0 ) );
+        assertEquals(1, list.size());
+        assertEquals(new BigDecimal(1.5), list.get(0));
     }
 
     @Test
-    public void testLocalVariableMVELConsequence() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_LocalVariableMVELConsequence.drl");
-        KieSession ksession = kbase.newKieSession();
+    public void testLocalVariableMVELConsequence() {
+        final KieBase kbase = loadKnowledgeBase("test_LocalVariableMVELConsequence.drl");
+        final KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
-        ksession.setGlobal( "results",
-                                 list );
+        ksession.setGlobal("results", list);
 
-        ksession.insert( new Person( "bob",
-                                          "stilton" ) );
-        ksession.insert( new Person( "mark",
-                                          "brie" ) );
+        ksession.insert(new Person("bob", "stilton"));
+        ksession.insert(new Person("mark", "brie"));
 
         try {
             ksession.fireAllRules();
-
-            assertEquals( "should have fired twice",
-                          2,
-                          list.size() );
-
-        } catch ( Exception e ) {
+            assertEquals("should have fired twice", 2, list.size());
+        } catch (final Exception e) {
             e.printStackTrace();
-            fail( "Should not raise any exception" );
+            fail("Should not raise any exception");
         }
 
     }
 
     @Test
-    public void testMVELUsingGlobalsInDebugMode() throws Exception {
-        MVELDebugHandler.setDebugMode( true );
+    public void testMVELUsingGlobalsInDebugMode() {
+        MVELDebugHandler.setDebugMode(true);
         try {
-            KieBase kbase = loadKnowledgeBase("test_MVELGlobalDebug.drl");
+            final KieBase kbase = loadKnowledgeBase("test_MVELGlobalDebug.drl");
             KieSession ksession = kbase.newKieSession();
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, false);
             ksession.dispose();
-            MVELDebugHandler.setDebugMode( false );
-        } catch ( Exception e ) {
-            MVELDebugHandler.setDebugMode( false );
+            MVELDebugHandler.setDebugMode(false);
+        } catch (final Exception e) {
+            MVELDebugHandler.setDebugMode(false);
             e.printStackTrace();
-            fail( "Should not raise exceptions" );
+            fail("Should not raise exceptions");
         }
 
     }
 
     @Test
-    public void testDuplicateLocalVariableMVELConsequence() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    public void testDuplicateLocalVariableMVELConsequence() {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("test_DuplicateLocalVariableMVELConsequence.drl")), ResourceType.DRL);
-
         assertTrue( kbuilder.hasErrors() );
     }
 
     @Test
-    public void testArrays() throws Exception {
+    public void testArrays() {
         String text = "package test_mvel;\n";
         text += "import " + TestObject.class.getCanonicalName() + ";\n";
         text += "import function " + TestObject.class.getCanonicalName() + ".array;\n";
@@ -252,14 +217,13 @@ public class MVELTest extends CommonTestMethodBase {
         text += "    $fact.applyValueAddPromo(1,2,3,4,\"mvel\");\n";
         text += "end";
 
-        KieBase kieBase = loadKnowledgeBaseFromString(text.replaceAll( "mvel", "java" ), text);
-        StatelessKieSession statelessKieSession = kieBase.newStatelessKieSession();
+        final KieBase kieBase = loadKnowledgeBaseFromString(text.replaceAll("mvel", "java"), text);
+        final StatelessKieSession statelessKieSession = kieBase.newStatelessKieSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         statelessKieSession.execute(new TestObject(list));
-        
-        assertEquals( 6, list.size() );
 
+        assertEquals(6, list.size());
         assertTrue(list.containsAll( Arrays.asList("TestObject.checkHighestPriority: java|2",
                                                    "TestObject.stayHasDaysOfWeek: java|false|[2008-04-01, 2008-04-10]",
                                                    "TestObject.checkHighestPriority: mvel|2",
@@ -269,7 +233,7 @@ public class MVELTest extends CommonTestMethodBase {
     }
     
     @Test
-    public void testPackageImports() throws Exception {
+    public void testPackageImports() {
         String str = "";
         str += "package org.kie \n";
         str += "dialect \"mvel\"\n";
@@ -284,30 +248,27 @@ public class MVELTest extends CommonTestMethodBase {
         str += "    insert(new Policy());        // from org.acme.insurance.* \n";
         str += "    insert(new SensorReading()); // from org.acme.sensor.SensorReading \n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        if (kbuilder.hasErrors()) {
-          throw new RuntimeException(kbuilder.getErrors().toString());
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        int result = ksession.fireAllRules();
-        
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+        if (kbuilder.hasErrors()) {
+            throw new RuntimeException(kbuilder.getErrors().toString());
+        }
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final int result = ksession.fireAllRules();
         assertEquals(1, result);
-        Collection<? extends Object> insertedObjects = ksession.getObjects();
+        final Collection<? extends Object> insertedObjects = ksession.getObjects();
         assertEquals(3, insertedObjects.size());
     }
     
     @Test
     public void testSizeCheckInObject() {
-        String str = ""+
+        final String str = ""+
         "package org.drools.compiler.test \n" +
         "import " + Triangle.class.getCanonicalName() + "\n" +
-        //"import " + Address.class.getCanonicalName() + "\n" +
         "global java.util.List list \n" +
         "rule \"show\" \n" + 
         "when  \n" + 
@@ -315,19 +276,19 @@ public class MVELTest extends CommonTestMethodBase {
         "then \n" + 
         "    list.add('r1'); \n" + 
         "end \n";
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-         
-         if ( kbuilder.hasErrors() ) {
-             System.out.println( kbuilder.getErrors().toString()  );
-             fail( kbuilder.getErrors().toString());
-         }
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
     }
     
     
     @Test
     public void testNestedEnum() {
-        String str = ""+
+        final String str = ""+
            "package org.drools.compiler.test \n" +
            "import " + Triangle.class.getCanonicalName() + "\n" +
            "global java.util.List list \n" +
@@ -337,30 +298,29 @@ public class MVELTest extends CommonTestMethodBase {
            "then \n" + 
            "    list.add($t.getT()); \n" + 
            "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
         }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
- 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        Triangle t = new Triangle( Triangle.Type.ACUTE);
-        ksession.insert( t );
-        
-        ksession.fireAllRules();    
-        
-        assertEquals(Triangle.Type.ACUTE, list.get(0) );
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+        final Triangle t = new Triangle(Triangle.Type.ACUTE);
+        ksession.insert(t);
+        ksession.fireAllRules();
+        assertEquals(Triangle.Type.ACUTE, list.get(0));
     }
     
     @Test
     public void testNestedEnumWithMap() {
-        String str = ""+
+        final String str = ""+
            "package org.drools.compiler.test \n" +
            "import " + DMap.class.getCanonicalName() + " \n" +
            "import " + Triangle.class.getCanonicalName() + "\n" +
@@ -371,33 +331,32 @@ public class MVELTest extends CommonTestMethodBase {
            "then \n" + 
            "    list.add('r1'); \n" + 
            "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
         }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
- 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        
-        DMap m = new DMap();
-        m.put(  Triangle.Type.ACUTE, "xxx" );
-        
-        ksession.insert( m );
-        
-        ksession.fireAllRules();    
-        
-        assertEquals( "r1", list.get(0) );
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        final DMap m = new DMap();
+        m.put(Triangle.Type.ACUTE, "xxx");
+
+        ksession.insert(m);
+        ksession.fireAllRules();
+        assertEquals("r1", list.get(0));
     } 
     
     @Test
     public void testNewConstructor() {
-        String str = ""+
+        final String str = ""+
            "package org.drools.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
            "import " + Address.class.getCanonicalName() + "\n" +
@@ -408,52 +367,51 @@ public class MVELTest extends CommonTestMethodBase {
            "then \n" + 
            "    list.add('r1'); \n" + 
            "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
         }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
- 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        
-        Person p = new Person("yoda");
-        p.setAddress( new Address("s1") );
-        
-        ksession.insert( p );
-        
-        ksession.fireAllRules();    
-        
-        assertEquals( "r1", list.get(0) );
-        
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        final Person p = new Person("yoda");
+        p.setAddress(new Address("s1"));
+
+        ksession.insert(p);
+        ksession.fireAllRules();
+        assertEquals("r1", list.get(0));
+
         // Check it was built with MVELReturnValueExpression constraint
-        List<ObjectTypeNode> nodes = ((InternalKnowledgeBase)kbase).getRete().getObjectTypeNodes();
+        final List<ObjectTypeNode> nodes = ((InternalKnowledgeBase) kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
-        for ( ObjectTypeNode n : nodes ) {
-            if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
+        for (final ObjectTypeNode n : nodes) {
+            if (((ClassObjectType) n.getObjectType()).getClassType() == Person.class) {
                 node = n;
                 break;
             }
         }
-        
-        AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
-        AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
+
+        final AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
+        final AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint )constraint).getFieldExtractor() instanceof ClassFieldReader );
-            FieldValue r = (( MvelConstraint )constraint).getField();
-            assertEquals( p.getAddress(), r.getValue() );
+            assertTrue(((MvelConstraint) constraint).getFieldExtractor() instanceof ClassFieldReader);
+            final FieldValue r = ((MvelConstraint) constraint).getField();
+            assertEquals(p.getAddress(), r.getValue());
         }
     }         
     
     @Test
     public void testArrayAccessorWithGenerics() {
-        String str = ""+
+        final String str = ""+
            "package org.drools.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
            "import " + Address.class.getCanonicalName() + "\n" +
@@ -464,59 +422,58 @@ public class MVELTest extends CommonTestMethodBase {
            "then \n" + 
            "    list.add('r1'); \n" + 
            "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
         }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
- 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        
-        Person p = new Person("yoda");
-        p.addAddress( new Address("s1") );
-        
-        ksession.insert( p );
-        
-        ksession.fireAllRules();    
-        
-        assertEquals( "r1", list.get(0) );
-        
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        final Person p = new Person("yoda");
+        p.addAddress(new Address("s1"));
+
+        ksession.insert(p);
+        ksession.fireAllRules();
+        assertEquals("r1", list.get(0));
+
         // Check it was built with MVELReturnValueExpression constraint
-        List<ObjectTypeNode> nodes = ((InternalKnowledgeBase)kbase).getRete().getObjectTypeNodes();
+        final List<ObjectTypeNode> nodes = ((InternalKnowledgeBase) kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
-        for ( ObjectTypeNode n : nodes ) {
-            if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
+        for (final ObjectTypeNode n : nodes) {
+            if (((ClassObjectType) n.getObjectType()).getClassType() == Person.class) {
                 node = n;
                 break;
             }
         }
-        
+
         AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( ((MvelConstraint)constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader );
-            assertEquals( new Address("s1"), (( MvelConstraint )constraint).getField().getValue() );
+            assertTrue(((MvelConstraint) constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertEquals(new Address("s1"), ((MvelConstraint) constraint).getField().getValue());
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint )constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader );
-            assertEquals( new Address("s1").getStreet(), (( MvelConstraint )constraint).getField().getValue() );
+            assertTrue(((MvelConstraint) constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertEquals(new Address("s1").getStreet(), ((MvelConstraint) constraint).getField().getValue());
         }
     }    
     
     @Test
     public void testArrayAccessorWithStaticFieldAccess() {
-        String str = ""+
+        final String str = ""+
            "package org.drools.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
            "import " + Address.class.getCanonicalName() + "\n" +
@@ -528,58 +485,57 @@ public class MVELTest extends CommonTestMethodBase {
            "then \n" + 
            "    list.add('r1'); \n" + 
            "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
         }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
- 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        
-        Person p = new Person("yoda");
-        p.addAddress( new Address("s1") );
-        
-        ksession.insert( p );
-        
-        ksession.fireAllRules();    
-        
-        assertEquals( "r1", list.get(0) );
-        
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        final Person p = new Person("yoda");
+        p.addAddress(new Address("s1"));
+
+        ksession.insert(p);
+        ksession.fireAllRules();
+        assertEquals("r1", list.get(0));
+
         // Check it was built with MVELReturnValueExpression constraint
-        List<ObjectTypeNode> nodes = ((InternalKnowledgeBase)kbase).getRete().getObjectTypeNodes();
+        final List<ObjectTypeNode> nodes = ((InternalKnowledgeBase) kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
-        for ( ObjectTypeNode n : nodes ) {
-            if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
+        for (final ObjectTypeNode n : nodes) {
+            if (((ClassObjectType) n.getObjectType()).getClassType() == Person.class) {
                 node = n;
                 break;
             }
         }
-        
+
         AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader );
-            assertEquals( new Address("s1"), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
+            assertTrue(((MvelConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertEquals(new Address("s1"), ((MvelConstraint) alphanode.getConstraint()).getField().getValue());
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader );
-            assertEquals( new Address("s1").getStreet(), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
+            assertTrue(((MvelConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertEquals(new Address("s1").getStreet(), ((MvelConstraint) alphanode.getConstraint()).getField().getValue());
         }
     }       
     
     @Test
     public void testMapAccessorWithStaticFieldAccess() {
-        String str = ""+
+        final String str = ""+
            "package org.drools.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
            "import " + Address.class.getCanonicalName() + "\n" +
@@ -591,59 +547,60 @@ public class MVELTest extends CommonTestMethodBase {
            "then \n" + 
            "    list.add('r1'); \n" + 
            "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
         }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
- 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        
-        Person p = new Person("yoda");
-        p.getNamedAddresses().put( TestEnum.ONE,  new Address("s1") );
-        
-        ksession.insert( p );
-        
-        ksession.fireAllRules();    
-        
-        assertEquals( "r1", list.get(0) );
-        
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        final Person p = new Person("yoda");
+        p.getNamedAddresses().put(TestEnum.ONE, new Address("s1"));
+
+        ksession.insert(p);
+
+        ksession.fireAllRules();
+
+        assertEquals("r1", list.get(0));
+
         // Check it was built with MVELReturnValueExpression constraint
-        List<ObjectTypeNode> nodes = ((InternalKnowledgeBase)kbase).getRete().getObjectTypeNodes();
+        final List<ObjectTypeNode> nodes = ((InternalKnowledgeBase) kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
-        for ( ObjectTypeNode n : nodes ) {
-            if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
+        for (final ObjectTypeNode n : nodes) {
+            if (((ClassObjectType) n.getObjectType()).getClassType() == Person.class) {
                 node = n;
                 break;
             }
         }
-        
+
         AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader );
-            assertEquals( new Address("s1"), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
+            assertTrue(((MvelConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertEquals(new Address("s1"), ((MvelConstraint) alphanode.getConstraint()).getField().getValue());
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
-            assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader );
-            assertEquals( new Address("s1").getStreet(), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
+            assertTrue(((MvelConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
+            assertEquals(new Address("s1").getStreet(), ((MvelConstraint) alphanode.getConstraint()).getField().getValue());
         }
     }     
     
     @Test
     public void testArrayAccessorWithoutGenerics() {
-        String str = ""+
+        final String str = ""+
            "package org.drools.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
            "import " + Address.class.getCanonicalName() + "\n" +
@@ -654,11 +611,12 @@ public class MVELTest extends CommonTestMethodBase {
            "then \n" + 
            "    list.add('r1'); \n" + 
            "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+
         // This should fail as there are no generics for the List 
-        assertTrue( kbuilder.hasErrors() );
+        assertTrue(kbuilder.hasErrors());
         
     }         
     
@@ -666,97 +624,19 @@ public class MVELTest extends CommonTestMethodBase {
         
     }
 
-    @Test
-    @Ignore("Added 30-APR-2011 -Rikkola-")
-    public void testNestedEnumFromJar() {
-        String str = ""+
-           "package org.drools.compiler.test \n" +
-           "import org.kie.examples.eventing.EventRequest \n" +
-           "global java.util.List list \n" +
-           "rule 'zaa'\n  " +
-           "when \n  " +
-           "request: EventRequest( status == EventRequest.Status.ACTIVE )\n   " +
-           "then \n " +
-           "request.setStatus(EventRequest.Status.ACTIVE); \n  " +
-           "end";
-
-
-        JarInputStream jis = null;
-        try {
-            jis = new JarInputStream( this.getClass().getResourceAsStream( "/eventing-example.jar" ) );
-        } catch (IOException e) {
-            fail("Failed to load the jar");
-        }
-        MapBackedClassLoader loader = createClassLoader( jis );
-
-        KnowledgeBuilderConfiguration knowledgeBuilderConfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, loader);
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(knowledgeBuilderConfiguration);
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KieBaseConfiguration knowledgeBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null,loader);
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(knowledgeBaseConfiguration);
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        Triangle t = new Triangle( Triangle.Type.ACUTE);
-        ksession.insert( t );
-
-        ksession.fireAllRules();
-
-        assertEquals(Triangle.Type.ACUTE, list.get(0) );
-    }
-
-    public static MapBackedClassLoader createClassLoader(JarInputStream jis) {
-        ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
-
-        final ClassLoader p = parentClassLoader;
-
-        MapBackedClassLoader loader = AccessController.doPrivileged(new PrivilegedAction<MapBackedClassLoader>() {
-            public MapBackedClassLoader run() {
-                return new MapBackedClassLoader(p);
-            }
-        });
-
-        try {
-            JarEntry entry = null;
-            byte[] buf = new byte[1024];
-            int len = 0;
-            while ((entry = jis.getNextJarEntry()) != null) {
-                if (!entry.isDirectory() && !entry.getName().endsWith(".java")) {
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    while ((len = jis.read(buf)) >= 0) {
-                        out.write(buf, 0, len);
-                    }
-
-                    loader.addResource(entry.getName(), out.toByteArray());
-                }
-            }
-
-        } catch (IOException e) {
-            fail("failed to read the jar");
-        }
-        return loader;
-    }
-
     public static class Triangle {
+
         public static final int ZERO = 0;
-        
+
         private List<Map<String, Object>> deliveries;
-        
+
         public static enum Type {
             ACUTE, OBTUSE;
         }
-        
+
         private Type t;
-        
-        public Triangle(Type t) {
+
+        public Triangle(final Type t) {
             this.t = t;
         }
 
@@ -764,21 +644,21 @@ public class MVELTest extends CommonTestMethodBase {
             return t;
         }
 
-        public void setT(Type t) {
+        public void setT(final Type t) {
             this.t = t;
         }
-        
+
         public List<Map<String, Object>> getDeliveries() {
             return deliveries;
         }
-    
-        public void setDeliveries(List<Map<String, Object>> deliveries) {
-                this.deliveries = deliveries;
-        }        
+
+        public void setDeliveries(final List<Map<String, Object>> deliveries) {
+            this.deliveries = deliveries;
+        }
     }
     
-    public Object compiledExecute(String ex) {
-        Serializable compiled = MVEL.compileExpression( ex );
+    public Object compiledExecute(final String ex) {
+        final Serializable compiled = MVEL.compileExpression( ex );
         return MVEL.executeExpression( compiled,
                                        new Object(),
                                        new HashMap() );
@@ -786,22 +666,22 @@ public class MVELTest extends CommonTestMethodBase {
 
     @Test
     public void test1() {
-    	ParserContext pc = new ParserContext();
-    	pc.addInput("x", String.class);
-    	pc.setStrongTyping(true);
-    	Object o = MVEL.compileExpression("x.startsWith('d')", pc);
-    	Map vars = new HashMap();
-    	vars.put("x", "d");
-    	MVEL.executeExpression(o, vars);
-    	System.out.println( o );
+        final ParserContext pc = new ParserContext();
+        pc.addInput("x", String.class);
+        pc.setStrongTyping(true);
+        final Object o = MVEL.compileExpression("x.startsWith('d')", pc);
+        final Map vars = new HashMap();
+        vars.put("x", "d");
+        MVEL.executeExpression(o, vars);
+        System.out.println(o);
     }
 
     @Test
     public void testTokensInString(){
         //should query antldr DFA63 class but don't know how
-        String [] operators = {"," ,"=" , "|=", "*"};
+        final String [] operators = {"," ,"=" , "|=", "*"};
         //test various in consequence
-        String strBegin = "" +
+        final String strBegin = "" +
             "package org.kie \n" +
             "import org.drools.compiler.Cheese \n" +
             "dialect \"mvel\"\n" +
@@ -811,21 +691,308 @@ public class MVELTest extends CommonTestMethodBase {
             "then \n"+
             "modify($c){ type = \"swiss";
 
-        String strEnd= "good\"};\n" +
-                "end\n";
-        StringBuffer failures = new StringBuffer();
-        for(String oper:operators){
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            String rule = strBegin+oper+strEnd;
+        final String strEnd = "good\"};\n" + "end\n";
+        final StringBuilder failures = new StringBuilder();
+        for (final String oper : operators) {
+            final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            final String rule = strBegin + oper + strEnd;
             System.out.print(rule);
             kbuilder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
             if (kbuilder.hasErrors()) {
                 failures.append(kbuilder.getErrors().toString());
             }
         }
-        String failStr = failures.toString();
-        if(failStr.length()>0){
+        final String failStr = failures.toString();
+        if (failStr.length() > 0) {
             fail(failStr);
         }
+    }
+
+    @Test
+    public void testGeneratedBeansMVEL() throws IllegalAccessException, InstantiationException {
+        final KieBase kbase = loadKnowledgeBase("test_GeneratedBeansMVEL.drl");
+
+        // Retrieve the generated fact type
+        final FactType pf = kbase.getFactType("mortgages", "Applicant");
+        final FactType af = kbase.getFactType("mortgages", "LoanApplication");
+
+        final Object person = pf.newInstance();
+        pf.set(person, "creditRating", "OK");
+
+        final Object application = af.newInstance();
+        final KieSession ksession = createKnowledgeSession(kbase);
+        ksession.insert(person);
+        ksession.insert(application);
+
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testMVELClassReferences() throws InstantiationException, IllegalAccessException {
+        final String str = "package org.drools.compiler\n" +
+                "declare Assignment\n" +
+                "    source : Class\n" +
+                "    target : Class\n" +
+                "end\n" +
+                "rule ObjectIsAssignable1\n" +
+                "when\n" +
+                "    Assignment( $t: target == java.lang.Object.class || target == source )\n" +
+                "then\n" +
+                "end\n" +
+                "rule ObjectIsAssignable2\n" +
+                "when\n" +
+                "    Assignment( $t: target == source || target == java.lang.Object.class )\n" +
+                "then\n" +
+                "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final FactType asgType = kbase.getFactType("org.drools.compiler", "Assignment");
+        final Object asg = asgType.newInstance();
+        asgType.set(asg, "source", Object.class);
+        asgType.set(asg, "target", Object.class);
+
+        ksession.insert(asg);
+
+        final int rules = ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals(2, rules);
+    }
+
+    @Test
+    public void testMVELConstraintsWithFloatingPointNumbersInScientificNotation() {
+        final String rule = "package test; \n" +
+                "dialect \"mvel\"\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare Bean \n" +
+                " field : double \n" +
+                "end \n" +
+                "\n" +
+                "rule \"Init\" \n" +
+                "when \n" +
+                "then \n" +
+                "\t insert( new Bean( 1.0E-2 ) ); \n" +
+                "end \n" +
+                "\n" +
+                "rule \"Check\" \n" +
+                "when \n" +
+                "\t Bean( field < 1.0E-1 ) \n" +
+                "then \n" +
+                "\t list.add( \"OK\" ); \n" +
+                "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(rule);
+        final KieSession kSession = kbase.newKieSession();
+
+        final List<String> list = new ArrayList<String>();
+        kSession.setGlobal("list", list);
+
+        kSession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
+
+    @Test
+    public void testMvelDoubleInvocation() {
+        final String rule = "package org.drools.compiler\n" +
+                "import " + TestUtility.class.getCanonicalName() + ";\n" +
+                "import " + TestFact.class.getCanonicalName() + ";\n" +
+                "rule \"First Rule\"\n" +
+                "    when\n" +
+                "    $tf : TestFact(TestUtility.utilMethod(s, \"Value1\") == true\n" +
+                "             && i > 0\n" +
+                "    )\n" +
+                "    then\n" +
+                "        System.out.println(\"First Rule Fires\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Second Rule\"\n" +
+                "    when\n" +
+                "    $tf : TestFact(TestUtility.utilMethod(s, \"Value2\") == true\n" +
+                "             && i > 0\n" +
+                "    )\n" +
+                "    then\n" +
+                "        System.out.println(\"Second Rule Fires\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Third Rule\"\n" +
+                "    when\n" +
+                "    $tf : TestFact(TestUtility.utilMethod(s, \"Value3\") == true\n" +
+                "             && i > 0\n" +
+                "    )\n" +
+                "    then\n" +
+                "        System.out.println(\"Third Rule Fires\");\n" +
+                "end ";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(rule);
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final TestFact fact = new TestFact();
+        fact.setS("asdf");
+        fact.setI(10);
+        ksession.insert(fact);
+        ksession.fireAllRules();
+
+        ksession.dispose();
+    }
+
+    public static class TestUtility {
+
+        public static Boolean utilMethod(final String s1, final String s2) {
+            Boolean result = null;
+
+            if (s1 != null) {
+                result = s1.equals(s2);
+            }
+
+            return result;
+        }
+    }
+
+    public static class TestFact {
+
+        private int i;
+        private String s;
+
+        public int getI() {
+            return i;
+        }
+
+        public void setI(final int i) {
+            this.i = i;
+        }
+
+        public String getS() {
+            return s;
+        }
+
+        public void setS(final String s) {
+            this.s = s;
+        }
+    }
+
+    @Test
+    public void testMVELSoundex() throws Exception {
+        // read in the source
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("MVEL_soundex.drl"));
+        KieSession ksession = createKnowledgeSession(kbase);
+
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+        final Cheese c = new Cheese("fubar", 2);
+
+        ksession.insert(c);
+        ksession.fireAllRules();
+        assertEquals(42, c.getPrice());
+    }
+
+    @Test
+    public void testMVELSoundexNoCharParam() throws Exception {
+        // read in the source
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("MVEL_soundexNPE2500.drl"));
+        KieSession ksession = createKnowledgeSession(kbase);
+
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+        final Cheese foobarCheese = new Cheese("foobar", 2);
+        final Cheese nullCheese = new Cheese(null, 2);
+        final Cheese starCheese = new Cheese("*", 2);
+
+        ksession.insert(foobarCheese);
+        ksession.insert(nullCheese);
+        ksession.insert(starCheese);
+        ksession.fireAllRules();
+        assertEquals(42, foobarCheese.getPrice());
+        assertEquals(2, nullCheese.getPrice());
+        assertEquals(2, starCheese.getPrice());
+    }
+
+    @Test
+    public void testMVELRewrite() throws Exception {
+        // read in the source
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_MVELrewrite.drl"));
+        KieSession ksession = createKnowledgeSession(kbase);
+
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+        final List results = new ArrayList();
+        ksession.setGlobal("results", results);
+
+        final Cheese brie = new Cheese("brie", 2);
+        final Cheese stilton = new Cheese("stilton", 2);
+        final Cheesery cheesery = new Cheesery();
+        cheesery.addCheese(brie);
+        cheesery.addCheese(stilton);
+
+        ksession.insert(cheesery);
+        ksession.fireAllRules();
+
+        assertEquals(1, results.size());
+        assertEquals(cheesery, results.get(0));
+    }
+
+    @Test
+    public void testMVELTypeCoercion() {
+        final String str = "package org.drools.compiler.test; \n" +
+                "\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare Bean\n" +
+                // NOTICE: THIS WORKS WHEN THE FIELD IS "LIST", BUT USED TO WORK WITH ARRAYLIST TOO
+                "  field : java.util.ArrayList\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when  \n" +
+                "then\n" +
+                "  insert( new Bean( new java.util.ArrayList( java.util.Arrays.asList( \"x\" ) ) ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check\"\n" +
+                "when\n" +
+                "  $b : Bean( $fld : field == [\"x\"] )\n" +
+                "then\n" +
+                "  System.out.println( $fld );\n" +
+                "  list.add( \"OK\" ); \n" +
+                "end";
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
+        final KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbConf.setOption(EqualityBehaviorOption.EQUALITY);
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbConf);
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertTrue(list.contains("OK"));
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testNoMvelSyntaxInFunctions() {
+        // JBRULES-3433
+        final String str = "import java.util.*;\n" +
+                "dialect \"mvel\"\n" +
+                "function Integer englishToInt(String englishNumber) { \n" +
+                "   Map m = [\"one\":1, \"two\":2, \"three\":3, \"four\":4, \"five\":5]; \n" +
+                "   Object obj = m.get(englishNumber.toLowerCase()); \n" +
+                "   return Integer.parseInt(obj.toString()); \n" +
+                "}\n";
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+
+        assertTrue(kbuilder.hasErrors());
     }
 }
