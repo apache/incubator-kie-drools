@@ -43,6 +43,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
@@ -112,8 +113,8 @@ public interface InternalKnowledgeBase extends KieBase {
     Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException;
 
     InternalKnowledgePackage getPackage(String name);
-    void addPackage(InternalKnowledgePackage pkg);
-    void addPackages( final Collection<InternalKnowledgePackage> newPkgs );
+    void addPackage(KiePackage pkg);
+    void addPackages( final Collection<KiePackage> newPkgs );
     Map<String, InternalKnowledgePackage> getPackagesMap();
     
     ClassFieldAccessorCache getClassFieldAccessorCache();

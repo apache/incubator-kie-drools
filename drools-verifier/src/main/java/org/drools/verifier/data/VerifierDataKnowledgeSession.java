@@ -56,7 +56,7 @@ class VerifierDataKnowledgeSession
         Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( (Collection<InternalKnowledgePackage>)(Collection<?>)pkgs );
+        kbase.addPackages( pkgs );
 
         this.kSession = kbase.newKieSession();
     }

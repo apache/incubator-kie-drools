@@ -109,6 +109,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.io.ResourceTypePackage;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -740,10 +741,10 @@ public class KnowledgeBaseImpl
      * @param newPkgs The package to add.
      */
     @Override
-    public void addPackages( final Collection<InternalKnowledgePackage> newPkgs ) {
+    public void addPackages( final Collection<KiePackage> newPkgs ) {
         final List<InternalKnowledgePackage> clonedPkgs = new ArrayList<InternalKnowledgePackage>();
-        for (InternalKnowledgePackage newPkg : newPkgs) {
-            clonedPkgs.add(newPkg.deepCloneIfAlreadyInUse(rootClassLoader));
+        for (KiePackage newPkg : newPkgs) {
+            clonedPkgs.add(((InternalKnowledgePackage)newPkg).deepCloneIfAlreadyInUse(rootClassLoader));
         }
 
         enqueueModification(new Runnable() {
@@ -752,6 +753,11 @@ public class KnowledgeBaseImpl
                 internalAddPackages(clonedPkgs);
             }
         });
+    }
+    
+    @Override
+    public void addPackage(final KiePackage newPkg) {
+        addPackages( Collections.singleton(newPkg) );
     }
 
     public void enqueueModification(Runnable modification) {
@@ -1567,11 +1573,6 @@ public class KnowledgeBaseImpl
     public int getMemoryCount(String topic) {
         // may start in 0
         return this.reteooBuilder.getIdGenerator().getLastId(topic) + 1;
-    }
-
-    @Override
-    public void addPackage(final InternalKnowledgePackage newPkg) {
-        addPackages( Collections.singleton(newPkg) );
     }
 
     public void registerSegmentPrototype(LeftTupleSource tupleSource, SegmentMemory smem) {

@@ -61,7 +61,7 @@ public class VerifierKnowledgeBaseBuilder {
             }
         }
 
-        verifierKnowledgeBase.addPackages( (Collection<InternalKnowledgePackage>)(Collection<?>)kbuilder.getKnowledgePackages() );
+        verifierKnowledgeBase.addPackages( kbuilder.getKnowledgePackages() );
 
         return verifierKnowledgeBase;
     }
