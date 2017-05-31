@@ -18,12 +18,12 @@ package org.drools.beliefs.bayes.integration;
 import org.drools.beliefs.bayes.BayesInstance;
 import org.drools.beliefs.bayes.runtime.BayesRuntime;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertNotNull;
@@ -37,21 +37,21 @@ public class BayesRuntimeTest {
         kbuilder.add( ResourceFactory.newClassPathResource("Garden.xmlbif", AssemblerTest.class), ResourceType.BAYES );
 
 
-        KnowledgeBase kbase = getKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = getKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl) kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl) kbase.newKieSession();
 
         BayesRuntime bayesRuntime = ksession.getKieRuntime(BayesRuntime.class);
         BayesInstance<Garden> instance = bayesRuntime.createInstance(Garden.class);
         assertNotNull(  instance );
     }
 
-    protected KnowledgeBase getKnowledgeBase() {
+    protected InternalKnowledgeBase getKnowledgeBase() {
         return KnowledgeBaseFactory.newKnowledgeBase();
     }
 
-    protected KnowledgeBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
+    protected InternalKnowledgeBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
         return KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
     }
 }

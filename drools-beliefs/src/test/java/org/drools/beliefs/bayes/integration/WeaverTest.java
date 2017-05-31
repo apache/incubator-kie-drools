@@ -19,11 +19,11 @@ import org.drools.beliefs.bayes.JunctionTree;
 import org.drools.beliefs.bayes.assembler.BayesPackage;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceTypePackage;
 
@@ -39,8 +39,8 @@ public class WeaverTest {
         kbuilder.add( ResourceFactory.newClassPathResource("Garden.xmlbif", AssemblerTest.class), ResourceType.BAYES );
 
 
-        KnowledgeBase kbase = getKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = getKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         InternalKnowledgePackage kpkg = (InternalKnowledgePackage) kbase.getKiePackage("org.drools.beliefs.bayes.integration");
         Map<ResourceType, ResourceTypePackage> map = kpkg.getResourceTypePackages();
@@ -49,11 +49,11 @@ public class WeaverTest {
         assertNotNull( jtree );
     }
 
-    protected KnowledgeBase getKnowledgeBase() {
+    protected InternalKnowledgeBase getKnowledgeBase() {
         return KnowledgeBaseFactory.newKnowledgeBase();
     }
 
-    protected KnowledgeBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
+    protected InternalKnowledgeBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
         return KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
     }
 }
