@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.integrationtests.operators.enabled;
+package org.drools.compiler.integrationtests.operators;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;

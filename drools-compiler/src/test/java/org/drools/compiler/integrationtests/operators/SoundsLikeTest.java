@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.integrationtests.operators.soundslike;
+package org.drools.compiler.integrationtests.operators;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;

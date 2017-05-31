@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.integrationtests.operators.matches;
+package org.drools.compiler.integrationtests.operators;
 
 import java.util.ArrayList;
 import java.util.HashMap;

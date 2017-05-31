@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.integrationtests.operators.eval;
+package org.drools.compiler.integrationtests.operators;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

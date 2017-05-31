@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.integrationtests.operators.from;
+package org.drools.compiler.integrationtests.operators;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
