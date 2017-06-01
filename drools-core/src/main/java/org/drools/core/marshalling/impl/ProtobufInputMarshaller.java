@@ -504,7 +504,6 @@ public class ProtobufInputMarshaller {
                                              typeConf,
                                              wm );
 
-        propagationContext.evaluateActionQueue( wm );
         wm.flushPropagations();
     }
 

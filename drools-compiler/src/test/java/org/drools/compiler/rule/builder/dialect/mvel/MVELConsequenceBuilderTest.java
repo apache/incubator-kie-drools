@@ -51,6 +51,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.CompositeObjectSinkAdapterTest;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
@@ -124,7 +125,7 @@ public class MVELConsequenceBuilderTest {
         f0.removeLeftTuple(tuple);
 
         final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,
-                                                pctxFactory.createPropagationContext( 1, PropagationContext.Type.DELETION, null, tuple, null),
+                                                pctxFactory.createPropagationContext( 1, PropagationContext.Type.DELETION, null, tuple != null ? (TerminalNode)tuple.getTupleSink() : null, null ),
                                                 new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( kBase )), null);
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( ksession );
         kbHelper.setActivation( item );

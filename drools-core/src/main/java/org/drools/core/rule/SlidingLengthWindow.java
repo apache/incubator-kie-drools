@@ -16,18 +16,18 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.spi.PropagationContext;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Collections;
+
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.spi.PropagationContext;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 
@@ -109,7 +109,6 @@ public class SlidingLengthWindow
             // retract previous
             final PropagationContext expiresPctx = createPropagationContextForFact( workingMemory, previous, PropagationContext.Type.EXPIRATION );
             ObjectTypeNode.doRetractObject( previous, expiresPctx, workingMemory);
-            expiresPctx.evaluateActionQueue( workingMemory );
         }
         window.handles[window.pos] = (EventFactHandle) handle;
         return true;

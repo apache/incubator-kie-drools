@@ -17,52 +17,42 @@ package org.drools.core.common;
 
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 
 public interface PropagationContextFactory {
 
-    public PropagationContext createPropagationContext(final long number,
-                                                       final PropagationContext.Type type,
-                                                       final RuleImpl rule,
-                                                       final Tuple leftTuple,
-                                                       final InternalFactHandle factHandle,
-                                                       final EntryPointId entryPoint,
-                                                       final BitMask modificationMask,
-                                                       final Class<?> modifiedClass,
-                                                       final MarshallerReaderContext readerContext);
+    PropagationContext createPropagationContext(long number,
+                                                PropagationContext.Type type,
+                                                RuleImpl rule,
+                                                TerminalNode terminalNode,
+                                                InternalFactHandle factHandle,
+                                                EntryPointId entryPoint,
+                                                BitMask modificationMask,
+                                                Class<?> modifiedClass,
+                                                MarshallerReaderContext readerContext);
 
-    public PropagationContext createPropagationContext(final long number,
-                                                       final PropagationContext.Type type,
-                                                       final RuleImpl rule,
-                                                       final Tuple leftTuple,
-                                                       final InternalFactHandle factHandle,
-                                                       final EntryPointId entryPoint,
-                                                       final MarshallerReaderContext readerContext);
+    PropagationContext createPropagationContext(long number,
+                                                PropagationContext.Type type,
+                                                RuleImpl rule,
+                                                TerminalNode terminalNode,
+                                                InternalFactHandle factHandle,
+                                                EntryPointId entryPoint,
+                                                MarshallerReaderContext readerContext);
 
-    public PropagationContext createPropagationContext(final long number,
-                                                       final PropagationContext.Type type,
-                                                       final RuleImpl rule,
-                                                       final Tuple leftTuple,
-                                                       final InternalFactHandle factHandle,
-                                                       final int activeActivations,
-                                                       final int dormantActivations,
-                                                       final EntryPointId entryPoint,
-                                                       final BitMask modificationMask);
+    PropagationContext createPropagationContext(long number,
+                                                PropagationContext.Type type,
+                                                RuleImpl rule,
+                                                TerminalNode terminalNode,
+                                                InternalFactHandle factHandle,
+                                                EntryPointId entryPoint);
 
-    public PropagationContext createPropagationContext(final long number,
-                                                       final PropagationContext.Type type,
-                                                       final RuleImpl rule,
-                                                       final Tuple leftTuple,
-                                                       final InternalFactHandle factHandle,
-                                                       final EntryPointId entryPoint);
-
-    public PropagationContext createPropagationContext(final long number,
-                                                       final PropagationContext.Type type,
-                                                       final RuleImpl rule,
-                                                       final Tuple leftTuple,
-                                                       final InternalFactHandle factHandle);
+    PropagationContext createPropagationContext(long number,
+                                                PropagationContext.Type type,
+                                                RuleImpl rule,
+                                                TerminalNode terminalNode,
+                                                InternalFactHandle factHandle);
 
 }

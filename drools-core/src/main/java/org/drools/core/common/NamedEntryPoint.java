@@ -39,6 +39,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
@@ -168,7 +169,7 @@ public class NamedEntryPoint
     public FactHandle insert(final Object object,
                              final boolean dynamic,
                              final RuleImpl rule,
-                             final Activation activation) {
+                             final TerminalNode terminalNode) {
         if ( object == null ) {
             // you cannot assert a null object
             return null;
@@ -183,23 +184,21 @@ public class NamedEntryPoint
             final PropagationContext propagationContext = this.pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(),
                                                                                                     PropagationContext.Type.INSERTION,
                                                                                                     rule,
-                                                                                                    (activation == null) ? null : activation.getTuple(),
+                                                                                                    terminalNode,
                                                                                                     null,
                                                                                                     entryPoint);
-            InternalFactHandle handle = null;
             if ( this.wm.isSequential() ) {
-                handle = createHandle( object,
-                                       typeConf );
+                InternalFactHandle handle = createHandle( object, typeConf );
                 propagationContext.setFactHandle(handle);
                 insert( handle,
                         object,
                         rule,
-                        activation,
                         typeConf,
                         propagationContext );
                 return handle;
             }
 
+            InternalFactHandle handle;
             try {
                 this.lock.lock();
 
@@ -252,7 +251,6 @@ public class NamedEntryPoint
                 insert( handle,
                         object,
                         rule,
-                        activation,
                         typeConf,
                         propagationContext );
 
@@ -266,28 +264,22 @@ public class NamedEntryPoint
 
     }
 
-    public void insert(final InternalFactHandle handle,
-                       final Object object,
-                       final RuleImpl rule,
-                       final Activation activation,
+    public void insert(InternalFactHandle handle,
+                       Object object,
+                       RuleImpl rule,
+                       TerminalNode terminalNode,
                        ObjectTypeConf typeConf) {
         PropagationContext pctx = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
-                                                                       rule, (activation == null) ? null : activation.getTuple(), handle, entryPoint);
-        insert( handle, object, rule, activation, typeConf, pctx );
+                                                                       rule, terminalNode, handle, entryPoint);
+        insert( handle, object, rule, typeConf, pctx );
     }
 
     public void insert(final InternalFactHandle handle,
                         final Object object,
                         final RuleImpl rule,
-                        final Activation activation,
                         ObjectTypeConf typeConf,
                         PropagationContext pctx) {
         this.kBase.executeQueuedActions();
-
-        if ( activation != null ) {
-            // release resources so that they can be GC'ed
-            activation.getPropagationContext().releaseResources();
-        }
 
         this.objectStore.addHandle( handle,
                                     object );
@@ -295,8 +287,6 @@ public class NamedEntryPoint
                                           pctx,
                                           typeConf,
                                           this.wm );
-
-        pctx.evaluateActionQueue( this.wm );
 
         this.wm.getRuleRuntimeEventSupport().fireObjectInserted(pctx,
                                                                 handle,
@@ -379,20 +369,15 @@ public class NamedEntryPoint
                 return handle;
             }
 
-            if ( activation != null ) {
-                // release resources so that they can be GC'ed
-                activation.getPropagationContext().releaseResources();
-            }
-
             if ( originalObject != object || !AssertBehaviour.IDENTITY.equals( this.kBase.getConfiguration().getAssertBehaviour() ) ) {
                 this.objectStore.updateHandle(handle, object);
             }
 
             this.handleFactory.increaseFactHandleRecency( handle );
-            RuleImpl rule = activation == null ? null : activation.getRule();
 
             final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
-                                                                                               rule, (activation == null) ? null : activation.getTuple(),
+                                                                                               activation == null ? null : activation.getRule(),
+                                                                                               activation == null ? null : activation.getTuple().getTupleSink(),
                                                                                                handle, entryPoint, mask, modifiedClass, null);
 
             if ( typeConf.isTMSEnabled() ) {
@@ -430,7 +415,7 @@ public class NamedEntryPoint
                 this.traitHelper.replaceCore( handle, object, originalObject, propagationContext.getModificationMask(), object.getClass(), activation );
             }
 
-            update( handle, object, originalObject, typeConf, rule, propagationContext );
+            update( handle, object, originalObject, typeConf, propagationContext );
 
         } finally {
             this.wm.endOperation();
@@ -439,13 +424,11 @@ public class NamedEntryPoint
         return handle;
     }
 
-    public void update(InternalFactHandle handle, Object object, Object originalObject, ObjectTypeConf typeConf, RuleImpl rule, PropagationContext propagationContext) {
+    public void update(InternalFactHandle handle, Object object, Object originalObject, ObjectTypeConf typeConf, PropagationContext propagationContext) {
         this.entryPointNode.modifyObject( handle,
                                           propagationContext,
                                           typeConf,
                                           this.wm );
-
-        propagationContext.evaluateActionQueue( this.wm );
 
         this.wm.getRuleRuntimeEventSupport().fireObjectUpdated(propagationContext,
                                                                handle,
@@ -468,13 +451,13 @@ public class NamedEntryPoint
 
     public void delete(FactHandle factHandle,
                        RuleImpl rule,
-                       Activation activation) {
-        delete(factHandle, rule, activation, FactHandle.State.ALL);
+                       TerminalNode terminalNode) {
+        delete(factHandle, rule, terminalNode, FactHandle.State.ALL);
     }
 
     public void delete(FactHandle factHandle,
                        RuleImpl rule,
-                       Activation activation,
+                       TerminalNode terminalNode,
                        FactHandle.State fhState) {
         if ( factHandle == null ) {
             throw new IllegalArgumentException( "FactHandle cannot be null " );
@@ -503,7 +486,7 @@ public class NamedEntryPoint
 
             EqualityKey key = handle.getEqualityKey();
             if (fhState.isStated()) {
-                deleteStated( rule, activation, handle, key );
+                deleteStated( rule, terminalNode, handle, key );
             }
             if (fhState.isLogical()) {
                 deleteLogical( key );
@@ -514,13 +497,13 @@ public class NamedEntryPoint
         }
     }
 
-    private void deleteStated( RuleImpl rule, Activation activation, InternalFactHandle handle, EqualityKey key ) {
+    private void deleteStated( RuleImpl rule, TerminalNode terminalNode, InternalFactHandle handle, EqualityKey key ) {
         if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
             return;
         }
 
         if ( handle.isTraitable() ) {
-            traitHelper.deleteWMAssertedTraitProxies( handle, rule, activation );
+            traitHelper.deleteWMAssertedTraitProxies( handle, rule, terminalNode );
         }
 
         final Object object = handle.getObject();
@@ -531,12 +514,7 @@ public class NamedEntryPoint
             removePropertyChangeListener( handle, true );
         }
 
-        if ( activation != null ) {
-            // release resources so that they can be GC'ed
-            activation.getPropagationContext().releaseResources();
-        }
-
-        PropagationContext propagationContext = delete( handle, object, typeConf, rule, activation );
+        PropagationContext propagationContext = delete( handle, object, typeConf, rule, null, terminalNode );
 
         deleteFromTMS( handle, key, typeConf, propagationContext );
 
@@ -570,8 +548,12 @@ public class NamedEntryPoint
     }
 
     public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, Activation activation) {
+        return delete( handle, object, typeConf, rule, activation, activation == null ? null : activation.getTuple().getTupleSink() );
+    }
+
+    public PropagationContext delete(InternalFactHandle handle, Object object, ObjectTypeConf typeConf, RuleImpl rule, Activation activation, TerminalNode terminalNode) {
         final PropagationContext propagationContext = pctxFactory.createPropagationContext( this.wm.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
-                                                                                            rule, ( activation == null ) ? null : activation.getTuple(),
+                                                                                            rule, terminalNode,
                                                                                             handle, this.entryPoint );
 
         this.entryPointNode.retractObject( handle,
@@ -582,13 +564,11 @@ public class NamedEntryPoint
         if ( handle.isTraiting() && handle.getObject() instanceof TraitProxy ) {
             (( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() )._getTypeCode() );
         } else if ( handle.isTraitable() ) {
-            traitHelper.deleteWMAssertedTraitProxies( handle, rule, activation );
+            traitHelper.deleteWMAssertedTraitProxies( handle, rule, terminalNode );
         }
 
         this.objectStore.removeHandle( handle );
 
-
-        propagationContext.evaluateActionQueue( this.wm );
 
         this.wm.getRuleRuntimeEventSupport().fireObjectRetracted(propagationContext,
                                                                  handle,

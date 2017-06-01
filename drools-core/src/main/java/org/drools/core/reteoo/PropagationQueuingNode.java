@@ -404,7 +404,6 @@ public class PropagationQueuingNode extends ObjectSource
             sink.propagateAssertObject( this.handle,
                                         this.context,
                                         workingMemory );
-            context.evaluateActionQueue( workingMemory );
         }
     }
 
@@ -426,7 +425,6 @@ public class PropagationQueuingNode extends ObjectSource
             nodeSink.assertObject( this.handle,
                                    this.context,
                                    workingMemory );
-            context.evaluateActionQueue( workingMemory );
         }
 
         @Override
@@ -459,7 +457,6 @@ public class PropagationQueuingNode extends ObjectSource
 
             this.handle.forEachLeftTuple( lt -> lt.retractTuple(  context, workingMemory ) );
             this.handle.clearLeftTuples();
-            context.evaluateActionQueue( workingMemory );
         }
     }
 
@@ -482,7 +479,6 @@ public class PropagationQueuingNode extends ObjectSource
             nodeSink.modifyRightTuple( rightTuple,
                                        context,
                                        workingMemory );
-            context.evaluateActionQueue( workingMemory );
         }
         
         @Override

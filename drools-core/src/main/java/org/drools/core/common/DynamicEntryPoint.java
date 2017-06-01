@@ -16,22 +16,22 @@
 
 package org.drools.core.common;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
-import org.kie.api.runtime.rule.RuleUnit;
-import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.locks.ReentrantLock;
+import org.kie.api.runtime.rule.RuleUnit;
 
 public class DynamicEntryPoint extends NamedEntryPoint {
 
@@ -76,9 +76,9 @@ public class DynamicEntryPoint extends NamedEntryPoint {
     }
 
     @Override
-    public FactHandle insert( Object object, boolean dynamic, RuleImpl rule, Activation activation ) {
+    public FactHandle insert( Object object, boolean dynamic, RuleImpl rule, TerminalNode terminalNode ) {
         if (isBoundToRuleBase()) {
-            return super.insert( object, dynamic, rule, activation );
+            return super.insert( object, dynamic, rule, terminalNode );
         }
 
         if ( object == null ) {
@@ -117,9 +117,9 @@ public class DynamicEntryPoint extends NamedEntryPoint {
     }
 
     @Override
-    public void delete( FactHandle factHandle, RuleImpl rule, Activation activation, FactHandle.State fhState ) {
+    public void delete( FactHandle factHandle, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState ) {
         if (isBoundToRuleBase()) {
-            super.delete( factHandle, rule, activation, fhState );
+            super.delete( factHandle, rule, terminalNode, fhState );
         }
 
         try {
