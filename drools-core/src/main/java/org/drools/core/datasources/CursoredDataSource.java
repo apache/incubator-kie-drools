@@ -252,7 +252,7 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
             PropagationContext context = pctxFactory.createPropagationContext( ep.getInternalWorkingMemory().getNextPropagationIdCounter(),
                                                                                PropagationContext.Type.MODIFICATION,
                                                                                activation == null ? null : activation.getRule(),
-                                                                               activation == null ? null : activation.getTuple(),
+                                                                               activation == null ? null : activation.getTuple().getTupleSink(),
                                                                                handle,
                                                                                ep.getEntryPoint(),
                                                                                mask,
@@ -286,7 +286,7 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
             PropagationContext context = pctxFactory.createPropagationContext( ep.getInternalWorkingMemory().getNextPropagationIdCounter(),
                                                                                PropagationContext.Type.DELETION,
                                                                                activation == null ? null : activation.getRule(),
-                                                                               activation == null ? null : activation.getTuple(),
+                                                                               activation == null ? null : activation.getTuple().getTupleSink(),
                                                                                handle,
                                                                                ep.getEntryPoint() );
 

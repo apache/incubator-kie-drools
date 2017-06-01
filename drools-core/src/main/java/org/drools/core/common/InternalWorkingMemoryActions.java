@@ -16,16 +16,17 @@
 
 package org.drools.core.common;
 
+import java.util.Collection;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.runtime.beliefs.Mode;
-
-import java.util.Collection;
 
 public interface InternalWorkingMemoryActions
         extends
@@ -38,14 +39,10 @@ public interface InternalWorkingMemoryActions
                 Class<?> modifiedClass,
                 Activation activation);
 
-    void delete(FactHandle handle,
-                RuleImpl rule,
-                Activation activation);
-
     FactHandle insert(Object object,
                       boolean dynamic,
                       RuleImpl rule,
-                      Activation activation);
+                      TerminalNode terminalNode);
 
     FactHandle insertAsync(Object object);
 

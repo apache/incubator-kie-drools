@@ -40,7 +40,6 @@ import org.drools.core.InitialFact;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.CalendarsImpl;
 import org.drools.core.base.DroolsQuery;
@@ -1489,12 +1488,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public FactHandle insert(final Object object,
                              final boolean dynamic,
                              final RuleImpl rule,
-                             final Activation activation) {
+                             final TerminalNode terminalNode) {
         checkAlive();
         return this.defaultEntryPoint.insert(object,
                                              dynamic,
                                              rule,
-                                             activation);
+                                             terminalNode);
     }
 
     public void retract(FactHandle handle) {
@@ -1511,18 +1510,18 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void delete(final FactHandle factHandle,
                        final RuleImpl rule,
-                       final Activation activation) {
-        delete(factHandle, rule, activation, FactHandle.State.ALL);
+                       final TerminalNode terminalNode) {
+        delete(factHandle, rule, terminalNode, FactHandle.State.ALL);
     }
 
     public void delete(FactHandle factHandle,
                        RuleImpl rule,
-                       Activation activation,
+                       TerminalNode terminalNode,
                        FactHandle.State fhState ) {
         checkAlive();
         this.defaultEntryPoint.delete(factHandle,
                                       rule,
-                                      activation,
+                                      terminalNode,
                                       fhState);
     }
 
@@ -1700,12 +1699,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
 
             final PropagationContext context = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
-                                                                                    this.ruleOrigin, this.tuple, this.factHandle);
+                                                                                    this.ruleOrigin, this.tuple != null ? this.tuple.getTupleSink() : null, this.factHandle);
             workingMemory.getKnowledgeBase().assertObject(this.factHandle,
                                                           this.factHandle.getObject(),
                                                           context,
                                                           workingMemory);
-            context.evaluateActionQueue( workingMemory );
         }
     }
 
