@@ -16,16 +16,16 @@
 package org.drools.persistence.command;
 
 import org.drools.compiler.command.SimpleBatchExecutionTest;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -59,7 +59,7 @@ public class SimpleBatchExecutionPersistenceTest extends SimpleBatchExecutionTes
         context = null;
     }
 
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
+    protected StatefulKnowledgeSession createKnowledgeSession(KieBase kbase) {
         if( context == null ) {
             context = DroolsPersistenceUtil.setupWithPoolingDataSource(DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME);
         }
