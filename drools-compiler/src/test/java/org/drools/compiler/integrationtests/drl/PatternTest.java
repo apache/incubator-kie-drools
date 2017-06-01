@@ -17,6 +17,7 @@
 package org.drools.compiler.integrationtests.drl;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.drools.compiler.Cheese;
@@ -24,7 +25,11 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.FactB;
 import org.drools.compiler.FactC;
+import org.drools.compiler.Message;
+import org.drools.compiler.Order;
+import org.drools.compiler.OrderItem;
 import org.drools.compiler.Person;
+import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.common.InternalFactHandle;
@@ -203,5 +208,294 @@ public class PatternTest extends CommonTestMethodBase {
 
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
+    }
+
+    @Test
+    public void testUppercaseField() throws Exception {
+        String rule = "package org.drools.compiler.test;\n";
+        rule += "global java.util.List list\n";
+        rule += "declare Address\n";
+        rule += "    Street: String\n";
+        rule += "end\n";
+        rule += "rule \"r1\"\n";
+        rule += "when\n";
+        rule += "    Address($street: Street)\n";
+        rule += "then\n";
+        rule += "    list.add($street);\n";
+        rule += "end\n";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(rule);
+        final KieSession ksession = createKnowledgeSession(kbase);
+        ksession.setGlobal("list", new ArrayList<String>());
+
+        final FactType addressType = kbase.getFactType("org.drools.compiler.test", "Address");
+        final Object address = addressType.newInstance();
+        addressType.set(address, "Street", "5th Avenue");
+        ksession.insert(address);
+        ksession.fireAllRules();
+
+        final List list = (List) ksession.getGlobal("list");
+        assertEquals(1, list.size());
+        assertEquals("5th Avenue", list.get(0));
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testUppercaseField2() throws Exception {
+        final String rule = "package org.drools.compiler\n" +
+                "declare SomeFact\n" +
+                "    Field : String\n" +
+                "    aField : String\n" +
+                "end\n" +
+                "rule X\n" +
+                "when\n" +
+                "    SomeFact( Field == \"foo\", aField == \"bar\" )\n" +
+                "then\n" +
+                "end\n";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(rule);
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final FactType factType = kbase.getFactType("org.drools.compiler", "SomeFact");
+        final Object fact = factType.newInstance();
+        factType.set(fact, "Field", "foo");
+        factType.set(fact, "aField", "bar");
+        ksession.insert(fact);
+
+        final int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+        ksession.dispose();
+    }
+
+    @Test
+    public void testHelloWorld() throws Exception {
+        final KieBase kbase = loadKnowledgeBase("HelloWorld.drl");
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        final Message message = new Message("hola");
+        message.addToList("hello");
+        message.setNumber(42);
+
+        ksession.insert(message);
+        ksession.insert("boo");
+        ksession.fireAllRules();
+        assertTrue(message.isFired());
+        assertEquals(message, ((List) ksession.getGlobal("list")).get(0));
+    }
+
+    @Test
+    public void testBigDecimal() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("big_decimal_and_comparable.drl"));
+        KieSession session = createKnowledgeSession(kbase);
+
+        final List list = new ArrayList();
+        session.setGlobal("list", list);
+
+        final PersonInterface bill = new Person("bill", null, 42);
+        bill.setBigDecimal(new BigDecimal("42"));
+
+        final PersonInterface ben = new Person("ben", null, 43);
+        ben.setBigDecimal(new BigDecimal("43"));
+
+        session.insert(bill);
+        session.insert(new Cheese("gorgonzola", 43));
+        session.insert(ben);
+        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
+        session.fireAllRules();
+
+        assertEquals(1, ((List) session.getGlobal("list")).size());
+    }
+
+    @Test
+    public void testSelfReference() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_SelfReference.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List results = new ArrayList();
+        ksession.setGlobal("results", results);
+
+        final Order order = new Order(10, "Bob");
+        final OrderItem item1 = new OrderItem(order, 1);
+        final OrderItem item2 = new OrderItem(order, 2);
+        final OrderItem anotherItem1 = new OrderItem(null, 3);
+        final OrderItem anotherItem2 = new OrderItem(null, 4);
+        ksession.insert(order);
+        ksession.insert(item1);
+        ksession.insert(item2);
+        ksession.insert(anotherItem1);
+        ksession.insert(anotherItem2);
+
+        ksession.fireAllRules();
+
+        assertEquals(2, results.size());
+        assertTrue(results.contains(item1));
+        assertTrue(results.contains(item2));
+    }
+
+    @Test
+    public void testSelfReference2() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_SelfReference2.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List results = new ArrayList();
+        ksession.setGlobal("results", results);
+        ksession.insert(new Cheese());
+        ksession.fireAllRules();
+
+        assertEquals(0, results.size());
+    }
+
+    @Test
+    public void testImplicitDeclarations() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_implicitDeclarations.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List results = new ArrayList();
+        ksession.setGlobal("results", results);
+        ksession.setGlobal("factor", 1.2);
+
+        final Cheese cheese = new Cheese("stilton", 10);
+        ksession.insert(cheese);
+
+        ksession.fireAllRules();
+        assertEquals(1, results.size());
+    }
+
+    @Test
+    public void testMethodCalls() throws Exception {
+        final String text = "package org.drools.compiler\n" +
+                "rule \"method calls\"\n" +
+                "when\n" +
+                "    Person( getName().substring(2) == 'b' )\n" +
+                "then\n" +
+                "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(text);
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        ksession.insert(new Person("mark", 50));
+        int rules = ksession.fireAllRules();
+        assertEquals(0, rules);
+
+        ksession.insert(new Person("bob", 18));
+        rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    @Test
+    public void testSelfJoinWithIndex() throws IOException, ClassNotFoundException {
+        String drl = "";
+        drl += "package org.drools.compiler.test\n";
+        drl += "import org.drools.compiler.Person\n";
+        drl += "global java.util.List list\n";
+        drl += "rule test1\n";
+        drl += "when\n";
+        drl += "   $p1 : Person( $name : name, $age : age )\n";
+        drl += "   $p2 : Person( name == $name, age < $age)\n";
+        drl += "then\n";
+        drl += "    list.add( $p1 );\n";
+        drl += "end\n";
+
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(drl));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        final Person p1 = new Person("darth", 30);
+        final FactHandle fh1 = ksession.insert(p1);
+
+        final Person p2 = new Person("darth", 25);
+        final FactHandle fh2 = ksession.insert(p2); // creates activation.
+
+        p1.setName("yoda");
+        ksession.update(fh1, p1); // creates activation
+        ksession.fireAllRules();
+
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void testSelfJoinAndNotWithIndex() throws IOException, ClassNotFoundException {
+        String drl = "";
+        drl += "package org.drools.compiler.test\n";
+        drl += "import org.drools.compiler.Person\n";
+        drl += "global java.util.List list\n";
+        drl += "rule test1\n";
+        drl += "when\n";
+
+        // selects the youngest person, for
+        drl += "   $p1 : Person( )\n";
+        drl += "     not Person( name == $p1.name, age < $p1.age )\n";
+
+        // select the youngest person with the same name as $p1, but different likes and must be older
+        drl += "   $p2 : Person( name == $p1.name, likes != $p1.likes, age > $p1.age)\n";
+        drl += "     not Person( name == $p1.name, likes == $p2.likes, age < $p2.age )\n";
+        drl += "then\n";
+        drl += "    System.out.println( $p1 + \":\" + $p2 );\n";
+        drl += "    list.add( $p1 );\n";
+        drl += "    list.add( $p2 );\n";
+        drl += "end\n";
+
+        final KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( drl ) );
+        final KieSession ksession = createKnowledgeSession( kbase );
+
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        final Person p0 = new Person("yoda", 0);
+        p0.setLikes("cheddar");
+        final FactHandle fh0 = ksession.insert(p0);
+
+        final Person p1 = new Person("darth", 15);
+        p1.setLikes("cheddar");
+        final FactHandle fh1 = ksession.insert(p1);
+
+        final Person p2 = new Person("darth", 25);
+        p2.setLikes("cheddar");
+        final FactHandle fh2 = ksession.insert(p2); // creates activation.
+
+        final Person p3 = new Person("darth", 30);
+        p3.setLikes("brie");
+        final FactHandle fh3 = ksession.insert(p3);
+
+        ksession.fireAllRules();
+        // selects p1 and p3
+        assertEquals(2, list.size());
+        assertSame(p1, list.get(0));
+        assertSame(p3, list.get(1));
+
+        p1.setName("yoda");
+        ksession.update(fh1, p1); // creates activation
+
+        ksession.fireAllRules();
+        // now selects p2 and p3
+        assertEquals(4, list.size());
+        assertSame(p2, list.get(2));
+        assertSame(p3, list.get(3));
+    }
+
+    @Test
+    public void testQualifiedFieldReference() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_QualifiedFieldReference.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List list = new ArrayList();
+        ksession.setGlobal("results", list);
+
+        final Person bob = new Person("bob", "stilton");
+        final Cheese stilton = new Cheese("stilton", 12);
+        ksession.insert(bob);
+        ksession.insert(stilton);
+
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+
+        assertEquals(bob, list.get(0));
     }
 }

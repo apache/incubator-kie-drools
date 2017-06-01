@@ -79,6 +79,10 @@ public class CommonTestMethodBase extends Assert {
         return kbase.newKieSession(ksconf, null);
     }
 
+    protected KieSession createKieSession(KieBase kbase, KieSessionConfiguration sessionConfiguration, Environment env) {
+        return kbase.newKieSession(sessionConfiguration, env);
+    }
+
     @Deprecated
     protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
         return kbase.newStatefulKnowledgeSession();

@@ -70,4 +70,31 @@ public class EqualsTest extends CommonTestMethodBase {
 
         assertEquals(1, rules);
     }
+
+    @Test
+    public void testCharComparisons() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_charComparisons.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List results = new ArrayList();
+        ksession.setGlobal("results", results);
+
+        Primitives p1 = new Primitives();
+        p1.setCharPrimitive('a');
+        p1.setStringAttribute("b");
+        Primitives p2 = new Primitives();
+        p2.setCharPrimitive('b');
+        p2.setStringAttribute("a");
+
+        ksession.insert(p1);
+        ksession.insert(p2);
+
+        ksession.fireAllRules();
+
+        assertEquals(3, results.size());
+        assertEquals("1", results.get(0));
+        assertEquals("2", results.get(1));
+        assertEquals("3", results.get(2));
+
+    }
 }

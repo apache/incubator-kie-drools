@@ -16,6 +16,8 @@
 
 package org.drools.compiler.integrationtests.drl;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.integrationtests.SerializationHelper;
@@ -75,5 +77,62 @@ public class RHSTest extends CommonTestMethodBase {
             }
             fail("Could not parse knowledge");
         }
+    }
+
+    @Test
+    public void testIncrementOperator() throws Exception {
+        String str = "";
+        str += "package org.drools.compiler \n";
+        str += "global java.util.List list \n";
+        str += "rule rule1 \n";
+        str += "    dialect \"java\" \n";
+        str += "when \n";
+        str += "    $I : Integer() \n";
+        str += "then \n";
+        str += "    int i = $I.intValue(); \n";
+        str += "    i += 5; \n";
+        str += "    list.add( i ); \n";
+        str += "end \n";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(5);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(10, list.get(0));
+    }
+
+    @Test
+    public void testKnowledgeHelperFixerInStrings() {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  no-loop true ";
+        str += "when \n";
+        str += "  $fact : String() \n";
+        str += "then \n";
+        str += "  list.add(\"This is an update()\"); \n";
+        str += "  list.add(\"This is an update($fact)\"); \n";
+        str += "  update($fact); \n";
+        str += "end  \n";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.insert("hello");
+        ksession.fireAllRules();
+
+        ksession.dispose();
+
+        assertEquals(2, list.size());
+        assertEquals("This is an update()", list.get(0));
+        assertEquals("This is an update($fact)", list.get(1));
     }
 }

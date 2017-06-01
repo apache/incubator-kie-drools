@@ -34,11 +34,9 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class OrTest extends CommonTestMethodBase {
 
@@ -392,5 +390,23 @@ public class OrTest extends CommonTestMethodBase {
 
         final int rules = ksession.fireAllRules();
         assertEquals(2, rules);
+    }
+
+    @Test
+    public void testEmptyIdentifier() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_emptyIdentifier.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List result = new ArrayList();
+        ksession.setGlobal("results", result);
+
+        final Person person = new Person("bob");
+        final Cheese cheese = new Cheese("brie", 10);
+
+        ksession.insert(person);
+        ksession.insert(cheese);
+
+        ksession.fireAllRules();
+        assertEquals(4, result.size());
     }
 }

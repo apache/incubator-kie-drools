@@ -16,6 +16,7 @@
 
 package org.drools.compiler.integrationtests.operators;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +26,10 @@ import org.drools.compiler.FactA;
 import org.drools.compiler.FactB;
 import org.drools.compiler.FactC;
 import org.drools.compiler.Person;
+import org.drools.compiler.PersonInterface;
 import org.drools.compiler.TestParam;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.core.common.InternalFactHandle;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
@@ -323,5 +324,47 @@ public class EvalTest extends CommonTestMethodBase {
         final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         session.fireAllRules();
+    }
+
+    @Test
+    public void testPredicate() throws Exception {
+        KieBase kbase = loadKnowledgeBase("predicate_rule_test.drl");
+        kbase = SerializationHelper.serializeObject(kbase);
+        KieSession ksession = kbase.newKieSession();
+
+        ksession.setGlobal("two", 2);
+
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        final PersonInterface peter = new Person("peter", null, 12);
+        ksession.insert(peter);
+        final PersonInterface jane = new Person("jane", null, 10);
+        ksession.insert(jane);
+
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+        ksession.fireAllRules();
+
+        assertEquals(jane, ((List) ksession.getGlobal("list")).get(0));
+        assertEquals(peter, ((List) ksession.getGlobal("list")).get(1));
+    }
+
+    @Test
+    public void testPredicateException() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_PredicateException.drl"));
+        final KieSession ksession = kbase.newKieSession();
+
+        final Cheese brie = new Cheese("brie", 12);
+        try {
+            ksession.insert(brie);
+            ksession.fireAllRules();
+            fail("Should throw an Exception from the Predicate");
+        } catch (final Exception e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof InvocationTargetException) {
+                cause = ((InvocationTargetException) cause).getTargetException();
+            }
+            assertTrue(cause.getMessage().contains("this should throw an exception"));
+        }
     }
 }

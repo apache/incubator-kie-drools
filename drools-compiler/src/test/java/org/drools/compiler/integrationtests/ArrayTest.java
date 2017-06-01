@@ -25,8 +25,6 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ArrayTest extends CommonTestMethodBase {
 

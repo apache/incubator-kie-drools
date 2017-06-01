@@ -16,235 +16,436 @@
 
 package org.drools.compiler.integrationtests.session;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import org.drools.core.test.model.Cheese;
-import org.drools.core.test.model.Person;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.compiler.Address;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.IndexedNumber;
+import org.drools.compiler.OuterClass;
+import org.drools.compiler.Person;
+import org.drools.compiler.Target;
+import org.drools.compiler.integrationtests.MiscTest;
+import org.drools.compiler.integrationtests.SerializationHelper;
+import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message;
+import org.kie.api.command.Setter;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.QueryResultsRow;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.command.CommandFactory;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+public class UpdateTest extends CommonTestMethodBase {
 
-
-public class UpdateTest {
-
-    private static final String UPDATE_TEST_DRL = "org/drools/compiler/integrationtests/session/update_test.drl";
-
-    private KieSession ksession;
-
-    @Before
-    public void setUp() {
-        final KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-
-        kfs.write(KieServices.Factory.get().getResources()
-                .newClassPathResource(UPDATE_TEST_DRL, DeleteTest.class));
-
-        final KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-
-        kbuilder.buildAll();
-
-        final List<Message> res = kbuilder.getResults().getMessages(Message.Level.ERROR);
-
-        assertEquals(res.toString(), 0, res.size());
-
-        final KieBase kbase = KieServices.Factory.get()
-                .newKieContainer(kbuilder.getKieModule().getReleaseId())
-                .getKieBase();
-
-        ksession = kbase.newKieSession();
+    @Test
+    public void testModifyBlock() throws Exception {
+        doModifyTest("test_ModifyBlock.drl");
     }
 
-    @After
-    public void tearDown() {
+    @Test
+    public void testModifyBlockWithPolymorphism() throws Exception {
+        doModifyTest("test_ModifyBlockWithPolymorphism.drl");
+    }
+
+    private void doModifyTest(final String drlResource) throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase(drlResource));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List list = new ArrayList();
+        ksession.setGlobal("results", list);
+
+        final Person bob = new Person("Bob");
+        bob.setStatus("hungry");
+
+        final Cheese c = new Cheese();
+
+        ksession.insert(bob);
+        ksession.insert(c);
+
+        ksession.fireAllRules();
+
+        assertEquals(10, c.getPrice());
+        assertEquals("fine", bob.getStatus());
+    }
+
+    @Test
+    public void testModifyBlockWithFrom() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_ModifyBlockWithFrom.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List results = new ArrayList();
+        ksession.setGlobal("results", results);
+
+        final Person bob = new Person("Bob");
+        final Address addr = new Address("abc");
+        bob.addAddress(addr);
+
+        ksession.insert(bob);
+        ksession.insert(addr);
+
+        ksession.fireAllRules();
+
+        // modify worked
+        assertEquals("12345", addr.getZipCode());
+        // chaining worked
+        assertEquals(1, results.size());
+        assertEquals(addr, results.get(0));
+    }
+
+    // this test requires mvel 1.2.19. Leaving it commented until mvel is released.
+    @Test
+    public void testJavaModifyBlock() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_JavaModifyBlock.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List list = new ArrayList();
+        ksession.setGlobal("results", list);
+
+        final Person bob = new Person("Bob", 30);
+        bob.setStatus("hungry");
+        ksession.insert(bob);
+        ksession.insert(new Cheese());
+        ksession.insert(new Cheese());
+        ksession.insert(new OuterClass.InnerClass(1));
+
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertEquals("full", bob.getStatus());
+        assertEquals(31, bob.getAge());
+        assertEquals(2, ((OuterClass.InnerClass) list.get(1)).getIntAttr());
+    }
+
+    @Test
+    public void testModifyJava() {
+        testModifyWithDialect("java");
+    }
+
+    @Test
+    public void testModifyMVEL() {
+        testModifyWithDialect("mvel");
+    }
+
+    private void testModifyWithDialect(final String dialect) {
+        final String str = "package org.drools.compiler\n" +
+                "import java.util.List\n" +
+                "rule \"test\"\n" +
+                "    dialect \"" + dialect + "\"\n" +
+                "when\n" +
+                "    $l : List() from collect ( Person( alive == false ) );\n" +
+                "then\n" +
+                "    for(Object p : $l ) {\n" +
+                "        Person p2 = (Person) p;\n" +
+                "        modify(p2) { setAlive(true) }\n" +
+                "    }\n" +
+                "end";
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+        Assert.assertFalse(kbuilder.getErrors().toString(), kbuilder.hasErrors());
+    }
+
+    @Test
+    public void testModifySimple() {
+        final String str = "package org.drools.compiler;\n" +
+                "\n" +
+                "rule \"test modify block\"\n" +
+                "when\n" +
+                "    $p: Person( name == \"hungry\" )\n" +
+                "then\n" +
+                "    modify( $p ) { setName(\"fine\") }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Log\"\n" +
+                "when\n" +
+                "    $o: Object()\n" +
+                "then\n" +
+                "    System.out.println( $o );\n" +
+                "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
+
+        final Person p = new Person("hungry");
+        ksession.insert(p);
+        ksession.fireAllRules();
         ksession.dispose();
     }
 
     @Test
-    public void updateTheOnlyFactTest() {
-        final Person person = new Person("George", 18);
-        final FactHandle factPerson = ksession.insert(person);
-        assertThat(ksession.getObjects()).hasSize(1);
-        assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Person.class);
+    public void testModifyWithLockOnActive() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_ModifyWithLockOnActive.drl"));
+        final KieSession session = createKnowledgeSession(kbase);
 
-        Person personToBeVerified = (Person) ksession.getObjects().iterator().next();
-        verifyPerson(person, personToBeVerified, 18, "George", true);
+        final List results = new ArrayList();
+        session.setGlobal("results", results);
 
-        ksession.update(factPerson, new Person("Henry", 21));
-        verifyFactsPresentInSession(1, Person.class);
+        final Person bob = new Person("Bob", 15);
+        final Person mark = new Person("Mark", 16);
+        final Person michael = new Person("Michael", 14);
+        session.insert(bob);
+        session.insert(mark);
+        session.insert(michael);
+        session.getAgenda().getAgendaGroup("feeding").setFocus();
+        session.fireAllRules(5);
 
-        personToBeVerified = (Person) ksession.getObjects().iterator().next();
-        verifyPerson(person, personToBeVerified, 21, "Henry", false);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void updateWithNullTest() {
-        final Person person = new Person("George", 18);
-        final FactHandle factPerson = ksession.insert(person);
-        verifyFactsPresentInSession(1, Person.class);
-
-        ksession.update(factPerson, null);
+        assertEquals(2, ((List) session.getGlobal("results")).size());
     }
 
     @Test
-    public void updateWithDifferentClassGetQueryResultsTest() {
-        final Person person = new Person("George", 18);
-        final FactHandle fact = ksession.insert(person);
+    public void testMissingClosingBraceOnModify() throws Exception {
+        // JBRULES-3436
+        final String str = "package org.drools.compiler.test;\n" +
+                "import org.drools.compiler.*\n" +
+                "rule R1 when\n" +
+                "   $p : Person( )" +
+                "   $c : Cheese( )" +
+                "then\n" +
+                "   modify($p) { setCheese($c) ;\n" +
+                "end\n";
 
-        verifyFactsWithQuery(Person.class, "persons", person);
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
 
-        final Cheese cheese = new Cheese("Camembert", 2);
-        ksession.update(fact, cheese);
-
-        verifyWithQueryNoPersonsPresentInFacts();
-
-        verifyFactsPresentInSession(1, Cheese.class);
-        Cheese cheeseToBeVerified = (Cheese) ksession.getObjects().iterator().next();
-        verifyCheese(cheeseToBeVerified, 2, "Camembert");
-
-        cheeseToBeVerified = verifyFactPresentInSession(fact, Cheese.class);
-        verifyCheese(cheeseToBeVerified, 2, "Camembert");
-
+        assertTrue(kbuilder.hasErrors());
     }
 
     @Test
-    public void updateWithDifferentClassGetObjectsTest() {
-        final Person person = new Person("George", 18);
-        final FactHandle factPerson = ksession.insert(person);
-        final Person personToBeVerified = verifyFactsPresentInSession(1, Person.class).get(0);
-        assertThat(personToBeVerified).isEqualTo(person);
+    public void testInvalidModify1() throws Exception {
+        String str = "";
+        str += "package org.drools.compiler \n";
+        str += "import " + Cheese.class.getName() + "\n";
+        str += "global java.util.List list \n";
+        str += "rule rule1 \n";
+        str += "    no-loop \n";
+        str += "when \n";
+        str += "    $i : Cheese() \n";
+        str += "then \n";
+        str += "    modify( $i ); ";
+        str += "    list.add( $i ); \n";
+        str += "end \n";
 
-        final Cheese cheese = new Cheese("Camembert", 50);
-        ksession.update(factPerson, cheese);
-        verifyFactsPresentInSession(1, Cheese.class);
-
-        final Cheese cheeseToBeVerified = (Cheese) ksession.getObjects().iterator().next();
-        verifyCheese(cheeseToBeVerified, 50, "Camembert");
+        testInvalidDrl(str);
     }
 
     @Test
-    public void updateFireRulesTest() {
-        final Person george = new Person("George", 17);
-        final Person henry = new Person("Henry", 25);
-        final FactHandle georgeFact = ksession.insert(george);
-        ksession.insert(henry);
+    public void testInvalidModify2() throws Exception {
+        String str = "";
+        str += "package org.drools.compiler \n";
+        str += "import " + Cheese.class.getName() + "\n";
+        str += "global java.util.List list \n";
+        str += "rule rule1 \n";
+        str += "    no-loop \n";
+        str += "when \n";
+        str += "    $i : Cheese() \n";
+        str += "then \n";
+        str += "    modify( $i ) { setType( \"stilton\" ); setType( \"stilton\" );}; ";
+        str += "    list.add( $i ); \n";
+        str += "end \n";
 
-        verifyFactsWithQuery(Person.class, "persons", george, henry);
-
-        final List<Person> drivers = new ArrayList<>();
-        ksession.setGlobal("drivers", drivers);
-
-        assertThat(ksession.fireAllRules()).isEqualTo(1);
-
-        verifyList(drivers, george, henry);
-
-        george.setAge(18);
-        ksession.update(georgeFact, george);
-        verifyFactsWithQuery(Person.class, "persons", george, henry);
-
-        assertThat(ksession.fireAllRules()).isEqualTo(1);
-
-        verifyList(drivers, null, george, henry);
+        testInvalidDrl(str);
     }
 
     @Test
-    public void updateFactOnRuleFireTest() {
-        final Cheese camembert = new Cheese("Camembert", 19);
-        final Cheese cheddar = new Cheese("Cheddar", 45);
+    public void testJoinNodeModifyObject() throws IOException, ClassNotFoundException {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_JoinNodeModifyObject.drl"));
+        final KieSession ksession = kbase.newKieSession();
 
-        ksession.insert(camembert);
-        ksession.insert(cheddar);
-
-        verifyFactsWithQuery(Cheese.class, "cheeseTypes", camembert, cheddar);
-
-        final List<Cheese> expensiveCheese = new ArrayList<>();
-        ksession.setGlobal("expensiveCheese", expensiveCheese);
-        final int firedRules = ksession.fireAllRules();
-        assertThat(firedRules).isEqualTo(2);
-        verifyList(expensiveCheese, camembert, cheddar);
-
-        verifyFactsWithQuery(Cheese.class, "cheeseTypes", camembert, cheddar);
-        assertThat(camembert.getPrice()).isEqualTo(21);
-        assertThat(cheddar.getPrice()).isEqualTo(45);
-    }
-
-    private <T> void verifyFactsWithQuery(final Class<T> expectedClassOfFacts, final String queryToGetFacts, final T... factsToVerify) {
-        final QueryResults results = ksession.getQueryResults(queryToGetFacts);
-        assertThat(results).isNotEmpty();
-        final QueryResultsRow resultsRow = results.iterator().next();
-
-        assertThat(resultsRow.get("$" + queryToGetFacts)).isInstanceOf(List.class);
-        final List<Object> objects = (List<Object>) resultsRow.get("$" + queryToGetFacts);
-        assertThat(objects).hasSize(factsToVerify.length);
-        assertThat(objects).hasOnlyElementsOfType(expectedClassOfFacts);
-        assertThat(objects).containsAll(Arrays.asList(factsToVerify));
-    }
-
-    private void verifyWithQueryNoPersonsPresentInFacts() {
-        QueryResults results = ksession.getQueryResults("persons");
-        assertThat(results).isNotEmpty();
-
-        results = ksession.getQueryResults("persons");
-        assertThat(results).isNotEmpty();
-        final QueryResultsRow resultsRow = results.iterator().next();
-        assertThat(resultsRow.get("$persons")).isInstanceOf(List.class);
-        final List<Object> persons = (List<Object>) resultsRow.get("$persons");
-        assertThat(persons).isEmpty();
-    }
-
-    private <T> List<T> verifyFactsPresentInSession(final int expectedCountOfFacts, final Class<T> expectedClassOfFacts) {
-        if (expectedCountOfFacts < 1) {
-            assertThat(ksession.getObjects()).isEmpty();
-        } else {
-            assertThat(ksession.getObjects()).hasSize(expectedCountOfFacts);
-            assertThat(ksession.getObjects()).hasOnlyElementsOfType(expectedClassOfFacts);
-            return (List<T>) new ArrayList<Object>(ksession.getObjects());
-        }
-        return null;
-    }
-
-    private <T> T verifyFactPresentInSession(final FactHandle factToVerify, final Class<T> expectedClassOfFact) {
-        assertThat(ksession.getObject(factToVerify)).isNotNull();
-        assertThat(ksession.getObject(factToVerify)).isInstanceOf(expectedClassOfFact);
-        return (T) ksession.getObject(factToVerify);
-    }
-
-    private void verifyCheese(final Cheese cheeseToBeVerified, final int price, final String type) {
-        assertThat(cheeseToBeVerified.getPrice()).isEqualTo(price);
-        assertThat(cheeseToBeVerified.getType()).isEqualTo(type);
-    }
-
-    private void verifyPerson(final Person original, final Person personToBeVerified, final int age, final String name, final boolean shouldBeEqual) {
-        if (original != null) {
-            if (shouldBeEqual) {
-                assertThat(personToBeVerified).isEqualTo(original);
-            } else {
-                assertThat(personToBeVerified).isNotEqualTo(original);
+        try {
+            final List orderedFacts = new ArrayList();
+            final List errors = new ArrayList();
+            ksession.setGlobal("orderedNumbers", orderedFacts);
+            ksession.setGlobal("errors", errors);
+            final int MAX = 2;
+            for (int i = 1; i <= MAX; i++) {
+                final IndexedNumber n = new IndexedNumber(i, MAX - i + 1);
+                ksession.insert(n);
             }
-        }
-        assertThat(personToBeVerified.getAge()).isEqualTo(age);
-        assertThat(personToBeVerified.getName()).isEqualTo(name);
-    }
-
-    private <T> void verifyList(final List<T> list, final T entryNotToContain, final T... entriesToContain) {
-        assertThat(list).isNotEmpty();
-        assertThat(list).hasSize(entriesToContain.length);
-        assertThat(list).containsAll(Arrays.asList(entriesToContain));
-        if (entryNotToContain != null) {
-            assertThat(list).doesNotContain(entryNotToContain);
+            ksession.fireAllRules();
+            assertTrue("Processing generated errors: " + errors.toString(), errors.isEmpty());
+            for (int i = 1; i <= MAX; i++) {
+                final IndexedNumber n = (IndexedNumber) orderedFacts.get(i - 1);
+                assertEquals("Fact is out of order", i, n.getIndex());
+            }
+        } finally {
         }
     }
 
+    @Test
+    public void testModifyCommand() {
+        final String str =
+                "rule \"sample rule\"\n" +
+                        "   when\n" +
+                        "   then\n" +
+                        "       System.out.println(\"\\\"Hello world!\\\"\");\n" +
+                        "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
+
+        final Person p1 = new Person("John", "nobody", 25);
+        ksession.execute(CommandFactory.newInsert(p1));
+        final FactHandle fh = ksession.getFactHandle(p1);
+
+        final Person p = new Person("Frank", "nobody", 30);
+        final List<Setter> setterList = new ArrayList<Setter>();
+        setterList.add(CommandFactory.newSetter("age", String.valueOf(p.getAge())));
+        setterList.add(CommandFactory.newSetter("name", p.getName()));
+        setterList.add(CommandFactory.newSetter("likes", p.getLikes()));
+
+        ksession.execute(CommandFactory.newModify(fh, setterList));
+    }
+
+    @Test
+    public void testNotIterativeModifyBug() {
+        // JBRULES-2809
+        // This bug occurs when a tuple is modified, the remove/add puts it onto the memory end
+        // However before this was done it would attempt to find the next tuple, starting from itself
+        // This meant it would just re-add itself as the blocker, but then be moved to end of the memory
+        // If this tuple was then removed or changed, the blocked was unable to check previous tuples.
+
+        String str = "";
+        str += "package org.simple \n";
+        str += "import " + MiscTest.A.class.getCanonicalName() + "\n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "when \n";
+        str += "  $f1 : A() \n";
+        str += "    not A(this != $f1,  eval(field2 == $f1.getField2())) \n";
+        str += "    eval( !$f1.getField1().equals(\"1\") ) \n";
+        str += "then \n";
+        str += "  list.add($f1); \n";
+        str += "end  \n";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = createKnowledgeSession(kbase);
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        final MiscTest.A a1 = new MiscTest.A("2", "2");
+        final MiscTest.A a2 = new MiscTest.A("1", "2");
+        final MiscTest.A a3 = new MiscTest.A("1", "2");
+
+        final FactHandle fa1 = ksession.insert(a1);
+        final FactHandle fa2 = ksession.insert(a2);
+        final FactHandle fa3 = ksession.insert(a3);
+        ksession.fireAllRules();
+
+        // a1 is blocked by a2
+        assertEquals(0, list.size());
+
+        // modify a2, so that a1 is now blocked by a3
+        a2.setField2("1"); // Do
+        ksession.update(fa2, a2);
+        a2.setField2("2"); // Undo
+        ksession.update(fa2, a2);
+
+        // modify a3 to cycle, so that it goes on the memory end, but in a previous bug still blocked a1
+        ksession.update(fa3, a3);
+
+        a3.setField2("1"); // Do
+        ksession.update(fa3, a3);
+        ksession.fireAllRules();
+        assertEquals(0, list.size()); // this should still now blocked by a2, but bug from previous update hanging onto blocked
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testLLR() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_JoinNodeModifyTuple.drl" ) );
+        KieSession ksession = createKnowledgeSession( kbase );
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,true );
+
+        // 1st time
+        Target tgt = new Target();
+        tgt.setLabel( "Santa-Anna" );
+        tgt.setLat(60.26544f);
+        tgt.setLon(28.952137f);
+        tgt.setCourse(145.0f);
+        tgt.setSpeed(12.0f);
+        tgt.setTime(1.8666667f);
+        ksession.insert( tgt );
+
+        tgt = new Target();
+        tgt.setLabel( "Santa-Maria" );
+        tgt.setLat(60.236874f);
+        tgt.setLon(28.992579f);
+        tgt.setCourse(325.0f);
+        tgt.setSpeed(8.0f);
+        tgt.setTime(1.8666667f);
+        ksession.insert( tgt );
+
+        ksession.fireAllRules();
+
+        // 2nd time
+        tgt = new Target();
+        tgt.setLabel( "Santa-Anna" );
+        tgt.setLat(60.265343f);
+        tgt.setLon(28.952267f);
+        tgt.setCourse(145.0f);
+        tgt.setSpeed(12.0f);
+        tgt.setTime(1.9f);
+        ksession.insert( tgt );
+
+        tgt = new Target();
+        tgt.setLabel( "Santa-Maria" );
+        tgt.setLat(60.236935f);
+        tgt.setLon(28.992493f);
+        tgt.setCourse(325.0f);
+        tgt.setSpeed(8.0f);
+        tgt.setTime(1.9f);
+        ksession.insert( tgt );
+
+        ksession.fireAllRules();
+
+        // 3d time
+        tgt = new Target();
+        tgt.setLabel( "Santa-Anna" );
+        tgt.setLat(60.26525f);
+        tgt.setLon(28.952396f);
+        tgt.setCourse(145.0f);
+        tgt.setSpeed(12.0f);
+        tgt.setTime(1.9333333f);
+        ksession.insert( tgt );
+
+        tgt = new Target();
+        tgt.setLabel( "Santa-Maria" );
+        tgt.setLat(60.236996f);
+        tgt.setLon(28.992405f);
+        tgt.setCourse(325.0f);
+        tgt.setSpeed(8.0f);
+        tgt.setTime(1.9333333f);
+        ksession.insert( tgt );
+
+        ksession.fireAllRules();
+
+        // 4th time
+        tgt = new Target();
+        tgt.setLabel( "Santa-Anna" );
+        tgt.setLat(60.265163f);
+        tgt.setLon(28.952526f);
+        tgt.setCourse(145.0f);
+        tgt.setSpeed(12.0f);
+        tgt.setTime(1.9666667f);
+        ksession.insert( tgt );
+
+        tgt = new Target();
+        tgt.setLabel( "Santa-Maria" );
+        tgt.setLat(60.237057f);
+        tgt.setLon(28.99232f);
+        tgt.setCourse(325.0f);
+        tgt.setSpeed(8.0f);
+        tgt.setTime(1.9666667f);
+        ksession.insert( tgt );
+
+        ksession.fireAllRules();
+    }
 }
