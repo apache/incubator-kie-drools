@@ -27,12 +27,15 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
-import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentEvent;
+import org.jbpm.services.api.DeploymentNotFoundException;
 import org.jbpm.services.api.DeploymentEventListener;
+import org.jbpm.services.api.ProcessDefinitionNotFoundException;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
+import org.jbpm.services.api.DeploymentService;
+import org.jbpm.services.api.model.DeployedUnit;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
@@ -43,14 +46,12 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(BPMN2DataServiceImpl.class);
 
     private ConcurrentMap<String, Map<String, ProcessDescriptor>> definitionCache =
     		new ConcurrentHashMap<String, Map<String, ProcessDescriptor>>();
-
 
     public BPMN2DataServiceImpl() {
     }
@@ -190,18 +191,16 @@ public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventL
 
 	@Override
 	public ProcessDefinition getProcessDefinition(String deploymentId, String processId) {
-	    validateNonEmptyDeploymentIdAndProcessId(deploymentId, processId);
-
-	    if (definitionCache.containsKey(deploymentId)) {
-
-	        ProcessDescriptor helper = definitionCache.get(deploymentId).get(processId);
-	        if (helper == null) {
-	            throw new IllegalStateException("No process available with given id : " + processId);
-	        }
-	        return helper.getProcess();
-	    }
-
-	    return null;
+        if (definitionCache.containsKey(deploymentId)) {
+            ProcessDescriptor helper = definitionCache.get(deploymentId).get(processId);
+            if(helper != null && helper.getProcess() != null) {
+                return helper.getProcess();
+            } else {
+                throw new ProcessDefinitionNotFoundException("No process available with given id : " + processId);
+            }
+        } else {
+            throw new DeploymentNotFoundException("No deployments available for " + deploymentId);
+        }
 	}
 
 	@Override

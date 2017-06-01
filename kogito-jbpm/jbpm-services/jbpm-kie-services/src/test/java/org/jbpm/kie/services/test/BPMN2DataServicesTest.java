@@ -17,8 +17,8 @@ package org.jbpm.kie.services.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -37,6 +37,8 @@ import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
+import org.jbpm.services.api.DeploymentNotFoundException;
+import org.jbpm.services.api.ProcessDefinitionNotFoundException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -309,8 +311,12 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         // now let's undeploy the unit
         deploymentService.undeploy(deploymentUnit);
 
-        procDef = bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), processId);
-        assertNull(procDef);
+        try {
+            bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), processId);
+            fail("DeploymentNotFoundException was not thrown");
+        } catch(DeploymentNotFoundException e) {
+            // expected
+        }
     }
 
     @Test
@@ -339,5 +345,49 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         assertEquals("String", processData.get("type"));
         assertEquals("Object", processData.get("myobject"));
         assertEquals(2, processData.keySet().size());
+    }
+
+    @Test(expected=DeploymentNotFoundException.class)
+    public void testGetProcessDefinitionUndeployedDeploymentUnit() throws IOException {
+
+        assertNotNull(deploymentService);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID,
+                                                                  ARTIFACT_ID,
+                                                                  VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        deploymentService.undeploy(deploymentUnit);
+        bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+    }
+
+    @Test(expected=DeploymentNotFoundException.class)
+    public void testGetProcessDefinitionInvalidDeploymenId() throws IOException {
+
+        assertNotNull(deploymentService);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID,
+                                                                  ARTIFACT_ID,
+                                                                  VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        bpmn2Service.getProcessDefinition("invalidid", "org.jbpm.writedocument");
+    }
+
+    @Test(expected=ProcessDefinitionNotFoundException.class)
+    public void testGetProcessDefinitionInvalidProcessId() throws IOException {
+
+        assertNotNull(deploymentService);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID,
+                                                                  ARTIFACT_ID,
+                                                                  VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), "org.jbpm.invalidId");
+
     }
 }

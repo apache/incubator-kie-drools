@@ -59,7 +59,9 @@ public interface DefinitionService {
 	 * NOTE: This method assumes process has already been built by invoking <code>buildProcessDefinition</code> method
 	 * @param deploymentId identifier of deployment that process belongs to
 	 * @param processId identifier of the process
-	 * @return returns complete <code>ProcessDefinition</code> if found otherwise null
+	 * @return returns complete <code>ProcessDefinition</code>
+	 * @throws DeploymentNotFoundException in case deployment with given deploymentId cannot be found
+	 * @throws ProcessDefinitionNotFoundException in case process definition with given processId cannot be found
 	 */
 	ProcessDefinition getProcessDefinition(String deploymentId, String processId);
     
