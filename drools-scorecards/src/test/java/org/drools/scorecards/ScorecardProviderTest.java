@@ -19,13 +19,13 @@ package org.drools.scorecards;
 
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.ScoreCardProvider;
-
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ScoreCardConfiguration;
@@ -83,12 +83,12 @@ public class ScorecardProviderTest {
             ResourceType.SCARD,
             scconf );
         assertFalse( kbuilder.hasErrors() );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         assertNotNull(kbase);
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         //NEW WORKING MEMORY
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieSession session = kbase.newKieSession();
         FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
         assertNotNull(scorecardType);
 
