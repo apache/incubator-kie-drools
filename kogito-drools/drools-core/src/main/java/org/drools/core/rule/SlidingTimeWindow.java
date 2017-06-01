@@ -176,7 +176,6 @@ public class SlidingTimeWindow
                 // if not expired yet, expire it
                 final PropagationContext expiresPctx = createPropagationContextForFact( workingMemory, handle, PropagationContext.Type.EXPIRATION );
                 ObjectTypeNode.doRetractObject(handle, expiresPctx, workingMemory);
-                expiresPctx.evaluateActionQueue( workingMemory );
             }
             queue.setExpiringHandle( null );
             handle = queue.peek();

@@ -16,17 +16,15 @@
 
 package org.drools.core.spi;
 
+import java.io.Externalizable;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.bitmask.BitMask;
-
-import java.io.Externalizable;
-import java.util.LinkedList;
 
 public interface PropagationContext extends Externalizable {
 
@@ -49,8 +47,6 @@ public interface PropagationContext extends Externalizable {
     InternalFactHandle getFactHandle();
     void setFactHandle(InternalFactHandle factHandle);
 
-    Tuple getLeftTupleOrigin();
-
     /**
      * Returns the offset of the fact that initiated this propagation
      * in the current propagation context. This attribute is mutable
@@ -68,20 +64,8 @@ public interface PropagationContext extends Externalizable {
      */
     void setOriginOffset( int offset );
 
-    void releaseResources();
-
     EntryPointId getEntryPoint();
     
-    void addInsertAction(WorkingMemoryAction action);
-    void removeInsertAction(WorkingMemoryAction action);
-
-    LinkedList<WorkingMemoryAction> getQueue1();
-
-
-    LinkedList<WorkingMemoryAction> getQueue2();
-
-    void evaluateActionQueue(InternalWorkingMemory workingMemory);
-
     BitMask getModificationMask();
     PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory);
     void setModificationMask(BitMask mask);

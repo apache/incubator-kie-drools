@@ -24,7 +24,6 @@ import java.util.concurrent.locks.Lock;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalRuleUnitExecutor;
@@ -82,10 +81,6 @@ public interface InternalWorkingMemory
      * @return null if fact handle not found
      */
     FactHandle getFactHandleByIdentity(final Object object);
-
-    void delete(final FactHandle factHandle,
-                       final RuleImpl rule,
-                       final Activation activation);
 
     Lock getLock();
 

@@ -441,7 +441,6 @@ public class RuleExecutor {
                 // update the Activation in the WM
                 InternalFactHandle factHandle = activation.getActivationFactHandle();
                 wm.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), wm );
-                activation.getPropagationContext().evaluateActionQueue( wm );
             }
         }
     }

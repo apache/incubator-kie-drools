@@ -20,6 +20,7 @@ import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.TraitHelper;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
@@ -34,18 +35,17 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
     FactHandle insert( Object object,
                        boolean dynamic,
                        RuleImpl rule,
-                       Activation activation );
+                       TerminalNode terminalNode );
 
     void insert(InternalFactHandle handle,
                 Object object,
                 RuleImpl rule,
-                Activation activation,
+                TerminalNode terminalNode,
                 ObjectTypeConf typeConf );
 
     void insert(InternalFactHandle handle,
                 Object object,
                 RuleImpl rule,
-                Activation activation,
                 ObjectTypeConf typeConf,
                 PropagationContext pctx );
 
@@ -61,7 +61,6 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
                 Object object,
                 Object originalObject,
                 ObjectTypeConf typeConf,
-                RuleImpl rule,
                 PropagationContext propagationContext);
 
     PropagationContext delete(InternalFactHandle handle,
@@ -69,6 +68,13 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
                               ObjectTypeConf typeConf,
                               RuleImpl rule,
                               Activation activation);
+
+    PropagationContext delete(InternalFactHandle handle,
+                              Object object,
+                              ObjectTypeConf typeConf,
+                              RuleImpl rule,
+                              Activation activation,
+                              TerminalNode terminalNode);
 
     void removeFromObjectStore(InternalFactHandle handle);
 }

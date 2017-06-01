@@ -20,21 +20,18 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
@@ -50,8 +47,6 @@ public class PhreakPropagationContext
     private RuleImpl                        rule;
 
     private TerminalNode                    terminalNodeOrigin;
-
-    private Tuple                           leftTuple;
 
     private InternalFactHandle              factHandle;
 
@@ -80,12 +75,12 @@ public class PhreakPropagationContext
     public PhreakPropagationContext(final long number,
                                     final Type type,
                                     final RuleImpl rule,
-                                    final Tuple leftTuple,
+                                    final TerminalNode terminalNode,
                                     final InternalFactHandle factHandle) {
         this( number,
               type,
               rule,
-              leftTuple,
+              terminalNode,
               factHandle,
               EntryPointId.DEFAULT,
               allSetBitMask(),
@@ -97,13 +92,13 @@ public class PhreakPropagationContext
     public PhreakPropagationContext(final long number,
                                     final Type type,
                                     final RuleImpl rule,
-                                    final Tuple leftTuple,
+                                    final TerminalNode terminalNode,
                                     final InternalFactHandle factHandle,
                                     final EntryPointId entryPoint) {
         this( number,
               type,
               rule,
-              leftTuple,
+              terminalNode,
               factHandle,
               entryPoint,
               allSetBitMask(),
@@ -114,34 +109,14 @@ public class PhreakPropagationContext
     public PhreakPropagationContext(final long number,
                                     final Type type,
                                     final RuleImpl rule,
-                                    final Tuple leftTuple,
-                                    final InternalFactHandle factHandle,
-                                    final int activeActivations,
-                                    final int dormantActivations,
-                                    final EntryPointId entryPoint,
-                                    final BitMask modificationMask) {
-        this( number,
-              type,
-              rule,
-              leftTuple,
-              factHandle,
-              entryPoint,
-              modificationMask,
-              Object.class,
-              null );
-    }
-
-    public PhreakPropagationContext(final long number,
-                                    final Type type,
-                                    final RuleImpl rule,
-                                    final Tuple leftTuple,
+                                    final TerminalNode terminalNode,
                                     final InternalFactHandle factHandle,
                                     final EntryPointId entryPoint,
                                     final MarshallerReaderContext readerContext) {
         this( number,
               type,
               rule,
-              leftTuple,
+              terminalNode,
               factHandle,
               entryPoint,
               allSetBitMask(),
@@ -152,7 +127,7 @@ public class PhreakPropagationContext
     public PhreakPropagationContext(final long number,
                                     final Type type,
                                     final RuleImpl rule,
-                                    final Tuple leftTuple,
+                                    final TerminalNode terminalNode,
                                     final InternalFactHandle factHandle,
                                     final EntryPointId entryPoint,
                                     final BitMask modificationMask,
@@ -160,8 +135,7 @@ public class PhreakPropagationContext
                                     final MarshallerReaderContext readerContext) {
         this.type = type;
         this.rule = rule;
-        this.leftTuple = leftTuple;
-        this.terminalNodeOrigin = leftTuple != null ? (TerminalNode)leftTuple.getTupleSink() : null;
+        this.terminalNodeOrigin = terminalNode;
         this.factHandle = factHandle;
         this.propagationNumber = number;
         this.entryPoint = entryPoint;
@@ -177,7 +151,6 @@ public class PhreakPropagationContext
         this.type = (Type) in.readObject();
         this.propagationNumber = in.readLong();
         this.rule = (RuleImpl) in.readObject();
-        this.leftTuple = (LeftTuple) in.readObject();
         this.entryPoint = (EntryPointId) in.readObject();
         this.originOffset = in.readInt();
         this.modificationMask = (BitMask) in.readObject();
@@ -187,7 +160,6 @@ public class PhreakPropagationContext
         out.writeObject( this.type );
         out.writeLong( this.propagationNumber );
         out.writeObject( this.rule );
-        out.writeObject( this.leftTuple );
         out.writeObject( this.entryPoint );
         out.writeInt( this.originOffset );
         out.writeObject(this.modificationMask);
@@ -214,10 +186,6 @@ public class PhreakPropagationContext
         return terminalNodeOrigin;
     }
 
-    public Tuple getLeftTupleOrigin() {
-        return this.leftTuple;
-    }
-
     public InternalFactHandle getFactHandle() {
         return this.factHandle;
     }
@@ -228,10 +196,6 @@ public class PhreakPropagationContext
 
     public Type getType() {
         return this.type;
-    }
-
-    public void releaseResources() {
-        this.leftTuple = null;
     }
 
     /**
@@ -254,26 +218,6 @@ public class PhreakPropagationContext
 
     public void setOriginOffset(int originOffset) {
         this.originOffset = originOffset;
-    }
-
-    public void addInsertAction(WorkingMemoryAction action) {
-        throw new UnsupportedOperationException("rete only method");
-    }
-
-    public void removeInsertAction(WorkingMemoryAction action) {
-        throw new UnsupportedOperationException("rete only method");
-    }
-    
-    public LinkedList<WorkingMemoryAction> getQueue1() {
-        throw new UnsupportedOperationException("rete only method");
-    }
-
-    public LinkedList<WorkingMemoryAction> getQueue2() {
-        throw new UnsupportedOperationException("rete only method");
-    }
-
-    public void evaluateActionQueue(InternalWorkingMemory workingMemory) {
-        // return, do nothing, this is for rete only
     }
 
     public BitMask getModificationMask() {
@@ -379,7 +323,7 @@ public class PhreakPropagationContext
 
     @Override
     public String toString() {
-        return "PhreakPropagationContext [entryPoint=" + entryPoint + ", factHandle=" + factHandle + ", leftTuple=" + leftTuple + ", originOffset="
+        return "PhreakPropagationContext [entryPoint=" + entryPoint + ", factHandle=" + factHandle + ", originOffset="
                + originOffset + ", propagationNumber=" + propagationNumber + ", rule=" + rule + ", type=" + type + "]";
     }
 }

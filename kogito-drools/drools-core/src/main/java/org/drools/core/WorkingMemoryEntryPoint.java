@@ -24,6 +24,7 @@ import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
@@ -67,11 +68,11 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
 
     void delete(FactHandle factHandle,
                 RuleImpl rule,
-                Activation activation );
+                TerminalNode terminalNode );
 
     void delete(FactHandle factHandle,
                 RuleImpl rule,
-                Activation activation,
+                TerminalNode terminalNode,
                 FactHandle.State fhState);
 
     void update(FactHandle handle,

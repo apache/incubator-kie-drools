@@ -70,7 +70,7 @@ public class SimpleBeliefSystem
             ep.insert( bfh,
                        bfh.getObject(),
                        node.getJustifier().getRule(),
-                       node.getJustifier(),
+                       node.getJustifier().getTuple().getTupleSink(),
                        typeConf );
         }
         return beliefSet;
@@ -92,7 +92,7 @@ public class SimpleBeliefSystem
             ep.insert( bfh,
                        bfh.getObject(),
                        rule,
-                       activation,
+                       activation != null ? activation.getTuple().getTupleSink() : null,
                        typeConf );
         }
         return beliefSet;
@@ -115,19 +115,18 @@ public class SimpleBeliefSystem
     @Override
     public void delete( SimpleMode mode, RuleImpl rule, Activation activation, Object payload, BeliefSet<SimpleMode> beliefSet, PropagationContext context ) {
 
-        SimpleBeliefSet sBeliefSet = (SimpleBeliefSet) beliefSet;
         beliefSet.remove( mode );
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
 
         if ( beliefSet.isEmpty() && bfh.getEqualityKey() != null && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
-            ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), (RuleImpl) context.getRuleOrigin(), (Activation) context.getLeftTupleOrigin() );
+            ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(),
+                      null, activation != null ? activation.getTuple().getTupleSink() : null);
         } else if ( !beliefSet.isEmpty() && bfh.getObject() == payload && payload != bfh.getObject() ) {
             // prime has changed, to update new object
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
-            ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle(bfh, ((SimpleMode) beliefSet.getFirst()).getObject().getObject());
-
-            ((NamedEntryPoint) bfh.getEntryPoint() ).update( bfh, bfh.getObject(), allSetButTraitBitMask(), Object.class, null );
+            bfh.getEntryPoint().getObjectStore().updateHandle(bfh, beliefSet.getFirst().getObject().getObject());
+            bfh.getEntryPoint().update( bfh, bfh.getObject(), allSetButTraitBitMask(), Object.class, null );
         }
 
         if ( beliefSet.isEmpty() && bfh.getEqualityKey() != null ) {
@@ -147,7 +146,7 @@ public class SimpleBeliefSystem
                       BeliefSet<SimpleMode> beliefSet) {
         InternalFactHandle bfh = beliefSet.getFactHandle();
         // Remove the FH from the network
-        ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet),(RuleImpl) context.getRuleOrigin(), null);
+        ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(), null);
 
         bfh.getEqualityKey().setStatus( EqualityKey.STATED ); // revert to stated
     }
@@ -158,7 +157,7 @@ public class SimpleBeliefSystem
         bfh.getEqualityKey().setStatus( EqualityKey.JUSTIFIED ); // revert to justified
 
         // Add the FH back into the network
-        ep.insert(bfh, bfh.getObject(), (RuleImpl) context.getRuleOrigin(), null, getObjectTypeConf(beliefSet) );
+        ep.insert(bfh, bfh.getObject(), context.getRuleOrigin(), null, getObjectTypeConf(beliefSet) );
     }
 
     private ObjectTypeConf getObjectTypeConf(BeliefSet beliefSet) {

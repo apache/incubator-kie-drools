@@ -208,7 +208,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         return (InternalFactHandle) this.workingMemory.insert( object,
                                                                dynamic,
                                                                this.activation.getRule(),
-                                                               this.activation );
+                                                               this.activation.getTuple().getTupleSink() );
     }
 
     @Override
@@ -456,7 +456,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
         ((InternalFactHandle) handle).getEntryPoint().delete(handle,
                                                              this.activation.getRule(),
-                                                             this.activation,
+                                                             this.activation.getTuple().getTupleSink(),
                                                              fhState);
     }
 

@@ -15,19 +15,20 @@
 
 package org.drools.core.common;
 
+import java.io.Serializable;
+import java.util.Collection;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.io.Serializable;
-import java.util.Collection;
 
 public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Serializable {
     
@@ -122,12 +123,12 @@ public class DisconnectedWorkingMemoryEntryPoint implements WorkingMemoryEntryPo
     }
 
     @Override
-    public void delete( FactHandle factHandle, RuleImpl rule, Activation activation ) {
+    public void delete( FactHandle factHandle, RuleImpl rule, TerminalNode terminalNode ) {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 
     @Override
-    public void delete( FactHandle factHandle, RuleImpl rule, Activation activation, FactHandle.State fhState ) {
+    public void delete( FactHandle factHandle, RuleImpl rule, TerminalNode terminalNode, FactHandle.State fhState ) {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 
