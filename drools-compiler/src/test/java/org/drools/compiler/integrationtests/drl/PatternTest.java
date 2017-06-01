@@ -24,6 +24,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.FactB;
 import org.drools.compiler.FactC;
+import org.drools.compiler.Person;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.common.InternalFactHandle;
@@ -183,5 +184,24 @@ public class PatternTest extends CommonTestMethodBase {
 
         assertEquals("The rule is being incorrectly fired", 35, mussarela.getPrice());
         assertEquals("Rule is incorrectly being fired", 20, provolone.getPrice());
+    }
+
+    @Test
+    public void testConstantLeft() {
+        // JBRULES-3627
+        final String str = "import org.drools.compiler.*;\n" +
+                "rule R1 when\n" +
+                "   $p : Person( \"Mark\" == name )\n" +
+                "then\n" +
+                "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
+
+        ksession.insert(new Person(null));
+        ksession.insert(new Person("Mark"));
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
     }
 }

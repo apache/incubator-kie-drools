@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FirstClass;
 import org.drools.compiler.Person;
@@ -167,5 +168,36 @@ public class ImportsTest extends CommonTestMethodBase {
 
         assertEquals( 1, ksession.fireAllRules() );
         assertSame( c, p.getCheese() );
+    }
+
+    @Test
+    public void testImportStaticClass() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_StaticField.drl"));
+        KieSession session = createKnowledgeSession(kbase);
+
+        // will test serialisation of int and typesafe enums tests
+        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
+
+        final List list = new ArrayList();
+        session.setGlobal("list", list);
+
+        final Cheesery cheesery1 = new Cheesery();
+        cheesery1.setStatus(Cheesery.SELLING_CHEESE);
+        cheesery1.setMaturity(Cheesery.Maturity.OLD);
+        session.insert(cheesery1);
+        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
+
+        final Cheesery cheesery2 = new Cheesery();
+        cheesery2.setStatus(Cheesery.MAKING_CHEESE);
+        cheesery2.setMaturity(Cheesery.Maturity.YOUNG);
+        session.insert(cheesery2);
+        session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
+
+        session.fireAllRules();
+
+        assertEquals(2, list.size());
+
+        assertEquals(cheesery1, list.get(0));
+        assertEquals(cheesery2, list.get(1));
     }
 }

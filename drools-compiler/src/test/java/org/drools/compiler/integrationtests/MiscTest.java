@@ -140,75 +140,6 @@ import org.slf4j.LoggerFactory;
     private static Logger logger = LoggerFactory.getLogger(MiscTest.class);
 
      @Test
-     public void testStaticFieldReference() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_StaticField.drl" ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         // will test serialisation of int and typesafe enums tests
-         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
-                                                                              true );
-
-         List list = new ArrayList();
-         session.setGlobal( "list",
-                            list );
-
-         final Cheesery cheesery1 = new Cheesery();
-         cheesery1.setStatus( Cheesery.SELLING_CHEESE );
-         cheesery1.setMaturity( Maturity.OLD );
-         session.insert( cheesery1 );
-         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
-                                                                              true );
-
-         final Cheesery cheesery2 = new Cheesery();
-         cheesery2.setStatus( Cheesery.MAKING_CHEESE );
-         cheesery2.setMaturity( Maturity.YOUNG );
-         session.insert( cheesery2 );
-         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
-                                                                              true );
-
-         session.fireAllRules();
-
-         assertEquals( 2,
-                       list.size() );
-
-         assertEquals( cheesery1,
-                       list.get( 0 ) );
-         assertEquals( cheesery2,
-                       list.get( 1 ) );
-     }
-
-     @Test
-     public void testPrimitiveArray() throws Exception {
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_primitiveArray.drl" ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-
-         List result = new ArrayList();
-         session.setGlobal( "result",
-                            result );
-
-         final Primitives p1 = new Primitives();
-         p1.setPrimitiveIntArray( new int[]{1, 2, 3} );
-         p1.setArrayAttribute( new String[]{"a", "b"} );
-
-         session.insert( p1 );
-
-         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
-                                                                              true );
-         result = (List) session.getGlobal( "result" );
-
-         session.fireAllRules();
-         assertEquals( 3,
-                       result.size() );
-         assertEquals( 3,
-                       ((Integer) result.get( 0 )).intValue() );
-         assertEquals( 2,
-                       ((Integer) result.get( 1 )).intValue() );
-         assertEquals( 3,
-                       ((Integer) result.get( 2 )).intValue() );
-
-     }
-
-     @Test
      public void testVariableDeclaration() throws Exception {
          String str = "rule KickOff\n" +
                       "dialect \"mvel\"\n" +
@@ -2594,24 +2525,6 @@ import org.slf4j.LoggerFactory;
      }
 
      @Test
-     public void testGenericsInRHS() throws Exception {
-
-         String rule = "";
-         rule += "package org.drools.compiler;\n";
-         rule += "import java.util.Map;\n";
-         rule += "import java.util.HashMap;\n";
-         rule += "rule \"Test Rule\"\n";
-         rule += "  when\n";
-         rule += "  then\n";
-         rule += "    Map<String,String> map = new HashMap<String,String>();\n";
-         rule += "end";
-
-         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( rule ) );
-         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-         assertNotNull( session );
-     }
-
-     @Test
      public void testClassLoaderHits() throws Exception {
          final KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
          //conf.setOption( ClassLoaderCacheOption.DISABLED );
@@ -2719,33 +2632,6 @@ import org.slf4j.LoggerFactory;
                        list.size() );
 
          ksession.dispose();
-     }
-
-     @Test
-     public void testComplexOperator() {
-         String str = "package org.drools.compiler\n" +
-                      "rule \"test in\"\n" +
-                      "when\n" +
-                      "    Person( $name : name in (\"bob\", \"mark\") )\n" +
-                      "then\n" +
-                      "    boolean test = $name != null;" +
-                      "end\n" +
-                      "rule \"test not in\"\n" +
-                      "when\n" +
-                      "    Person( $name : name not in (\"joe\", \"doe\") )\n" +
-                      "then\n" +
-                      "    boolean test = $name != null;" +
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-
-         Person person = new Person( "bob" );
-         ksession.insert( person );
-
-         int rules = ksession.fireAllRules();
-         assertEquals( 2,
-                       rules );
      }
 
      @Test
@@ -3386,54 +3272,6 @@ import org.slf4j.LoggerFactory;
          assertEquals( 13, rules );
      }
 
-     @Test
-     public void testArrayUsage() {
-         String str = "import org.drools.compiler.TestParam;\n" +
-                      "\n" +
-                      "global java.util.List list;\n" +
-                      "\n" +
-                      "rule \"Intercept\"\n" +
-                      "when\n" +
-                      "    TestParam( value1 == \"extract\", $args : elements )\n" +
-                      "    $s : String( this == $args[$s.length() - $s.length()] )\n" +
-                      "    $s1 : String( this == $args[0] )\n" +
-                      "    $s2 : String( this == $args[1] )\n" +
-                      "    Integer( this == 2 ) from $args.length\n" +
-                      "    $s3 : String( this == $args[$args.length - $args.length  + 1] )\n" +
-                      "then\n" +
-                      "    delete( $s1 );  \n" +
-                      "    delete( $s2 );  \n" +
-                      "    list.add( $s1 ); \n" +
-                      "    list.add( $s2 ); \n" +
-
-                      "end\n";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         java.util.List list = new java.util.ArrayList();
-         ksession.setGlobal( "list", list );
-
-         int N = 2;
-         for ( int j = 0; j < N; j++ ) {
-             TestParam o = new TestParam();
-             o.setValue1("extract" );
-             o.setElements(new Object[]{"x1_" + j, "x2_" + j});
-             ksession.insert( "x1_" + j );
-             ksession.insert( "x2_" + j );
-             ksession.insert( o );
-             ksession.fireAllRules();
-         }
-
-         assertEquals( 4, list.size() );
-         assertTrue( list.contains( "x1_0"));
-         assertTrue( list.contains( "x1_1"));
-         assertTrue( list.contains( "x2_0"));
-         assertTrue( list.contains( "x2_1"));
-
-         ksession.dispose();
-     }
-
      public interface InterfaceA {
          InterfaceB getB();
      }
@@ -3817,52 +3655,6 @@ import org.slf4j.LoggerFactory;
          ksession.insert( p );
 
          ksession.insert( new Cheese( "x" ) );
-         assertEquals( 1, ksession.fireAllRules() );
-         ksession.dispose();
-     }
-
-     @Test
-     public void testRHSClone() {
-         // JBRULES-3539
-         String str = "import java.util.Map;\n" +
-                      "dialect \"mvel\"\n" +
-                      "rule \"RHSClone\"\n" +
-                      "when\n" +
-                      "   Map($valOne : this['keyOne'] !=null)\n" +
-                      "then\n" +
-                      "   System.out.println( $valOne.clone() );\n" +
-                      "end\n";
-
-         KnowledgeBuilderConfigurationImpl pkgBuilderCfg = new KnowledgeBuilderConfigurationImpl();
-         MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) pkgBuilderCfg.getDialectConfiguration( "mvel" );
-         mvelConf.setStrict( false );
-         mvelConf.setLangLevel( 5 );
-         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( pkgBuilderCfg );
-         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-         KnowledgeBuilderErrors errors = kbuilder.getErrors();
-         if ( errors.size() > 0 ) {
-             for ( KnowledgeBuilderError error : errors ) {
-                 System.err.println( error );
-             }
-             fail( "Could not parse knowledge" );
-         }
-     }
-
-     @Test
-     public void testConstantLeft() {
-         // JBRULES-3627
-         String str = "import org.drools.compiler.*;\n" +
-                      "rule R1 when\n" +
-                      "   $p : Person( \"Mark\" == name )\n" +
-                      "then\n" +
-                      "end";
-
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-         ksession.insert( new Person( null ) );
-         ksession.insert( new Person( "Mark" ) );
-
          assertEquals( 1, ksession.fireAllRules() );
          ksession.dispose();
      }
