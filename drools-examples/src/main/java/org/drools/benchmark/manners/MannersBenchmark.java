@@ -16,15 +16,16 @@
 
 package org.drools.benchmark.manners;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.IoUtils;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.BufferedReader;
@@ -61,15 +62,15 @@ public class MannersBenchmark {
         kbuilder.add( ResourceFactory.newClassPathResource("manners.drl",
                 MannersBenchmark.class),
                               ResourceType.DRL );
-        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
 
         // add the package to a rulebase
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( pkgs );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( pkgs );
 
         long totalTime = 0;
         for ( int i = 0; i < 5; i++ ) {
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            KieSession ksession = kbase.newKieSession();
     
             String filename;
             if ( args.length != 0 ) {

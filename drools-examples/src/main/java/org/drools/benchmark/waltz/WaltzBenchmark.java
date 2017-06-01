@@ -23,16 +23,16 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.IoUtils;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.RuleRuntime;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.
@@ -44,14 +44,14 @@ public abstract class WaltzBenchmark {
         kbuilder.add( ResourceFactory.newClassPathResource("waltz.drl",
                 WaltzBenchmark.class),
                               ResourceType.DRL );
-        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
         //add the package to a kbase
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( pkgs );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( pkgs );
 
         long totalTime = 0;
         for ( int i = 0; i < 5; i++ ) {
-            StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+            KieSession session = kbase.newKieSession();
     
             String filename;
             if ( args.length != 0 ) {
