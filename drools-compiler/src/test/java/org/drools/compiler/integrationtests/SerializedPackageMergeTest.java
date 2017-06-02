@@ -46,7 +46,7 @@ import static org.junit.Assert.*;
 
 public class SerializedPackageMergeTest {
     private static final DateFormat DF   = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
-    private static final String[]   DRLs = {"HelloWorld.drl","test_Serialization1.drl"};
+    private static final String[]   DRLs = {"drl/HelloWorld.drl","test_Serialization1.drl"};
 
     @Test
     public void testRuleExecutionWithoutSerialization() {
