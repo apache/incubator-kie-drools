@@ -173,7 +173,7 @@ public class DecisionTableFunction
                     ctx.notifyEvt( () -> new FEELEventBase( FEELEvent.Severity.ERROR,
                                                             Msg.createMessage( Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o.toString(), x.toString() ),
                                                             e ) );
-                    return true;
+                    throw e;
                 }
             };
         } else if ( o instanceof List ) {

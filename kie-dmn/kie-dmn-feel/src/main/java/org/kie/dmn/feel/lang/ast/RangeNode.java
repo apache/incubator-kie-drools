@@ -111,7 +111,7 @@ public class RangeNode
         if( s instanceof Comparable ) {
             start = (Comparable) s;
         } else if( s instanceof Period ) {
-            // period have special semantics
+            // period has special semantics
             start = new ComparablePeriod( (Period) s );
         } else {
             ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.INCOMPATIBLE_TYPE_FOR_RANGE, s.getClass().getSimpleName() )));

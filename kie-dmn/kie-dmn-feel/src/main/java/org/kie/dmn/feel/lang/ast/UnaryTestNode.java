@@ -105,9 +105,9 @@ public class UnaryTestNode
             case NE:
                 return new UnaryTestImpl( createIsNotEqualUnaryTest( ) , value.getText() );
             case IN:
-                return new UnaryTestImpl( createInUnaryTest( ) , value.getText() );
+                return new UnaryTestImpl( createInUnaryTest() , value.getText() );
             case NOT:
-                return new UnaryTestImpl( createNotUnaryTest( ) , value.getText() );
+                return new UnaryTestImpl( createNotUnaryTest() , value.getText() );
         }
         ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.NULL_OR_UNKNOWN_OPERATOR)));
         return null;
