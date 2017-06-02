@@ -28,12 +28,13 @@ public class Msg {
     public static final Message1 ERROR_ACCESSING_QUALIFIED_NAME = new Message1("Error accessing qualified name: %s");
     public static final Message2 ERROR_EVALUATING_PATH_EXPRESSION = new Message2("Error evaluating path expression: %s. %s");
     public static final Message0 VALUE_NULL_EXPR_NOT_NULL_AND_NOT_UNARY_TEST_EVALUATING_THIS_NODE_AS_FALSE = new Message0("value == null, expr != null and not Unary test, Evaluating this node as FALSE.");
-    public static final Message0 EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE = new Message0("Expression is Range but value is not Comparable");
+    public static final Message2 EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE = new Message2("Value '%s' is not comparable with range '%s'");
     public static final Message0 CONDITION_WAS_NOT_A_BOOLEAN = new Message0("Condition was not a Boolean");
     public static final Message1 FUNCTION_NOT_FOUND = new Message1("Function not found: '%s'");
     public static final Message1 ERROR_EXECUTING_LIST_FILTER = new Message1("Error executing list filter: %s");
     public static final Message0 INDEX_OUT_OF_BOUND = new Message0("Index out of bound");
     public static final Message2 X_TYPE_INCOMPATIBLE_WITH_Y_TYPE = new Message2("%s type incompatible with %s type");
+    public static final Message1 INCOMPATIBLE_TYPE_FOR_RANGE = new Message1("Type %s can not be used in a range unary test");
     public static final Message1 EVALUATED_TO_NULL = new Message1("%s evaluated to null");
     public static final Message1 IS_NULL = new Message1("%s is null");
     public static final Message0 BASE_NODE_EVALUATE_CALLED = new Message0("BaseNode evaluate called");

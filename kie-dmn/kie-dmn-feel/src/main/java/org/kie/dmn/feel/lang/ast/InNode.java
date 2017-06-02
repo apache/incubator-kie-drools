@@ -81,11 +81,12 @@ public class InNode
         } else if ( expr instanceof UnaryTest ) {
             return ((UnaryTest) expr).apply( ctx, value );
         } else if ( expr instanceof Range ) {
-            if( !( value instanceof Comparable ) ) {
-                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE)));
-                return null;
+            try {
+                return ((Range) expr).includes( value );
+            } catch ( Exception e ) {
+                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, value.toString(), expr.toString() ), e ) );
+                return false;
             }
-            return ((Range) expr).includes( (Comparable) value );
         } else if ( value != null ) {
             return value.equals( expr );
         } else {

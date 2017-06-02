@@ -18,12 +18,16 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
+
+import java.time.Period;
 
 public class RangeNode
         extends BaseNode {
@@ -79,8 +83,8 @@ public class RangeNode
 
     @Override
     public Range evaluate(EvaluationContext ctx) {
-        Comparable s = (Comparable) start.evaluate( ctx );
-        Comparable e = (Comparable) end.evaluate( ctx );
+        Object s = start.evaluate( ctx );
+        Object e = end.evaluate( ctx );
         
         boolean problem = false;
         if ( s == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "Start"))); problem = true; }
@@ -93,9 +97,55 @@ public class RangeNode
             return null;
         }
 
+        Comparable start = convertToComparable( ctx, s );
+        Comparable end = convertToComparable( ctx, e );
+
         return new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
-                              s,
-                              e,
+                              start,
+                              end,
                               upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED );
+    }
+
+    private Comparable convertToComparable(EvaluationContext ctx, Object s) {
+        Comparable start;
+        if( s instanceof Comparable ) {
+            start = (Comparable) s;
+        } else if( s instanceof Period ) {
+            // period have special semantics
+            start = new ComparablePeriod( (Period) s );
+        } else {
+            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.INCOMPATIBLE_TYPE_FOR_RANGE, s.getClass().getSimpleName() )));
+            start = null;
+        }
+        return start;
+    }
+
+    public static class ComparablePeriod implements Comparable<Period> {
+        private final int left;
+
+        public ComparablePeriod(Period value) {
+            this.left = value.getYears() * 12 + value.getMonths();
+        }
+
+        @Override
+        public int compareTo(Period o) {
+            int right = o.getYears() * 12 + o.getMonths();
+            return left - right;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if ( this == o ) return true;
+            if ( !(o instanceof ComparablePeriod) ) return false;
+
+            ComparablePeriod that = (ComparablePeriod) o;
+
+            return left == that.left;
+        }
+
+        @Override
+        public int hashCode() {
+            return left;
+        }
     }
 }

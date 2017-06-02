@@ -58,15 +58,15 @@ public class RangeImpl
     }
 
     @Override
-    public Boolean includes(Comparable param) {
+    public Boolean includes(Object param) {
         if ( lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.OPEN ) {
-            return param == null || lowEndPoint == null || highEndPoint == null ? null : ((Comparable) param).compareTo( lowEndPoint ) > 0 && ((Comparable) param).compareTo( highEndPoint ) < 0;
+            return param == null || lowEndPoint == null || highEndPoint == null ? null : lowEndPoint.compareTo( param ) < 0 && highEndPoint.compareTo( param ) > 0;
         } else if ( lowBoundary == RangeBoundary.OPEN && highBoundary == RangeBoundary.CLOSED ) {
-            return param == null || lowEndPoint == null || highEndPoint == null ? null : ((Comparable) param).compareTo( lowEndPoint ) > 0 && ((Comparable) param).compareTo( highEndPoint ) <= 0;
+            return param == null || lowEndPoint == null || highEndPoint == null ? null : lowEndPoint.compareTo( param ) < 0 && highEndPoint.compareTo( param ) >= 0;
         } else if ( lowBoundary == RangeBoundary.CLOSED && highBoundary == RangeBoundary.OPEN ) {
-            return param == null || lowEndPoint == null || highEndPoint == null ? null : ((Comparable) param).compareTo( lowEndPoint ) >= 0 && ((Comparable) param).compareTo( highEndPoint ) < 0;
+            return param == null || lowEndPoint == null || highEndPoint == null ? null : lowEndPoint.compareTo( param ) <= 0 && highEndPoint.compareTo( param ) > 0;
         } else if ( lowBoundary == RangeBoundary.CLOSED && highBoundary == RangeBoundary.CLOSED ) {
-            return param == null || lowEndPoint == null || highEndPoint == null ? null : ((Comparable) param).compareTo( lowEndPoint ) >= 0 && ((Comparable) param).compareTo( highEndPoint ) <= 0;
+            return param == null || lowEndPoint == null || highEndPoint == null ? null : lowEndPoint.compareTo( param ) <= 0 && highEndPoint.compareTo( param ) >= 0;
         }
         return null;
     }

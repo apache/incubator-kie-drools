@@ -21,6 +21,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
@@ -76,7 +77,7 @@ public class DecisionTableFunction
 
         List<DTInputClause> inputs;
         if ( inputValuesList != null ) {
-            List<UnaryTest> inputValues = inputValuesList.stream().map( DecisionTableFunction::toUnaryTest ).collect( Collectors.toList() );
+            List<UnaryTest> inputValues = inputValuesList.stream().map( o -> toUnaryTest(ctx, o) ).collect( Collectors.toList() );
             if ( inputValues.size() != inputExpressions.size() ) {
                 // TODO handle compilation error
             }
@@ -93,10 +94,10 @@ public class DecisionTableFunction
         if ( outputValues != null ) {
             if ( parseOutputs.size() == 1 ) {
                 outputClauses = new ArrayList<>();
-                List<UnaryTest> outputValuesCompiled = objectToUnaryTestList( Collections.singletonList( (List<Object>) outputValues ) ).get(0);
+                List<UnaryTest> outputValuesCompiled = objectToUnaryTestList( ctx, Collections.singletonList( (List<Object>) outputValues ) ).get(0);
                 outputClauses.add( new DTOutputClause( parseOutputs.get( 0 ), outputValuesCompiled ) );
             } else {
-                List<List<UnaryTest>> listOfList = objectToUnaryTestList( (List<List<Object>>) outputValues );
+                List<List<UnaryTest>> listOfList = objectToUnaryTestList( ctx, (List<List<Object>>) outputValues );
                 // zip inputExpression with its inputValue
                 outputClauses = IntStream.range( 0, parseOutputs.size() )
                         .mapToObj( i -> new DTOutputClause( parseOutputs.get( i ), listOfList.get( i ) ) )
@@ -117,7 +118,7 @@ public class DecisionTableFunction
         return new DTInvokerFunction( dti );
     }
 
-    protected List<List<UnaryTest>> objectToUnaryTestList(List<List<Object>> values) {
+    protected List<List<UnaryTest>> objectToUnaryTestList(EvaluationContext ctx, List<List<Object>> values) {
         if ( values == null || values.isEmpty() ) {
             return Collections.emptyList();
         }
@@ -126,7 +127,7 @@ public class DecisionTableFunction
             List<UnaryTest> uts = new ArrayList<>(  );
             tests.add(uts);
             for( Object t : lo ) {
-                uts.add( toUnaryTest( t ) );
+                uts.add( toUnaryTest( ctx, t ) );
             }
         }
         return tests;
@@ -147,7 +148,7 @@ public class DecisionTableFunction
         for ( int i = 0; i < rule.size(); i++ ) {
             Object o = rule.get( i );
             if ( i < inputSize ) {
-                dr.getInputEntry().add( toUnaryTest( o ) );
+                dr.getInputEntry().add( toUnaryTest( mainCtx, o ) );
             } else {
                 FEELEventListener ruleListener = event -> mainCtx.notifyEvt( () -> new FEELEventBase(event.getSeverity(),
                                                                                                      Msg.createMessage(Msg.ERROR_COMPILE_EXPR_DT_FUNCTION_RULE_IDX, index+1, event.getMessage()),
@@ -161,11 +162,20 @@ public class DecisionTableFunction
         return dr;
     }
 
-    private static UnaryTest toUnaryTest(Object o) {
+    private static UnaryTest toUnaryTest(EvaluationContext ctx, Object o) {
         if ( o instanceof UnaryTest ) {
             return (UnaryTest) o;
         } else if ( o instanceof Range ) {
-            return (c, x) -> ((Range) o).includes( (Comparable<?>) x );
+            return (c, x) -> {
+                try {
+                    return ((Range) o).includes( x );
+                } catch ( Exception e ) {
+                    ctx.notifyEvt( () -> new FEELEventBase( FEELEvent.Severity.ERROR,
+                                                            Msg.createMessage( Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o.toString(), x.toString() ),
+                                                            e ) );
+                    return true;
+                }
+            };
         } else if ( o instanceof List ) {
             return (c, x) -> ((List<?>) o).contains( x );
         } else {

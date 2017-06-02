@@ -105,9 +105,9 @@ public class UnaryTestNode
             case NE:
                 return new UnaryTestImpl( createIsNotEqualUnaryTest( ) , value.getText() );
             case IN:
-                return new UnaryTestImpl( createInUnaryTest() , value.getText() );
+                return new UnaryTestImpl( createInUnaryTest( ) , value.getText() );
             case NOT:
-                return new UnaryTestImpl( createNotUnaryTest() , value.getText() );
+                return new UnaryTestImpl( createNotUnaryTest( ) , value.getText() );
         }
         ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.NULL_OR_UNKNOWN_OPERATOR)));
         return null;
@@ -138,7 +138,12 @@ public class UnaryTestNode
     private UnaryTest createInUnaryTest() {
         return (c, o) -> {
             Object val = value.evaluate( c );
-            return o != null && ((Range) val).includes( (Comparable<?>) o );
+            try {
+                return o != null && ((Range) val).includes( o );
+            } catch ( Exception e ) {
+                c.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o.toString(), val.toString() ) ) );
+                throw e;
+            }
         };
     }
 
@@ -163,9 +168,15 @@ public class UnaryTestNode
                         return false;
                     }
                 } else if( test instanceof Range ) {
-                    if( ((Range)test).includes( (Comparable) o ) ) {
-                        return false;
+                    try {
+                        if( ((Range)test).includes( o ) ) {
+                            return false;
+                        }
+                    } catch ( Exception e ) {
+                        c.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o.toString(), test.toString() ) ) );
+                        throw e;
                     }
+
                 } else {
                     // test is a constant, so return false if it is equal to "o"
                     if( test.equals( o ) ) {

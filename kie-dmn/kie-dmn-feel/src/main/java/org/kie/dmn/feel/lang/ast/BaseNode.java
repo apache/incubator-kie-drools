@@ -126,10 +126,10 @@ public class BaseNode
         return BuiltInType.UNKNOWN;
     }
     
-    protected Supplier<FEELEvent> astEvent(Severity severity, String message) {
+    public Supplier<FEELEvent> astEvent(Severity severity, String message) {
         return () -> new ASTEventBase(severity, message, this) ;    
     }
-    protected Supplier<FEELEvent> astEvent(Severity severity, String message, Throwable throwable) {
+    public Supplier<FEELEvent> astEvent(Severity severity, String message, Throwable throwable) {
         return () -> new ASTEventBase(severity, message, this, throwable) ;    
     }
 
