@@ -32,15 +32,21 @@ import org.drools.compiler.Person;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.compiler.integrationtests.facts.ClassA;
+import org.drools.compiler.integrationtests.facts.ClassB;
 import org.drools.core.common.InternalFactHandle;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 
 public class PatternTest extends CommonTestMethodBase {
 
@@ -497,5 +503,128 @@ public class PatternTest extends CommonTestMethodBase {
         assertEquals(1, list.size());
 
         assertEquals(bob, list.get(0));
+    }
+
+    @Test
+    public void testAutovivificationOfVariableRestrictions() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_AutoVivificationVR.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List results = new ArrayList();
+        ksession.setGlobal("results", results);
+
+        ksession.insert(new Cheese("stilton", 10, 8));
+        ksession.fireAllRules();
+        assertEquals(1, results.size());
+    }
+
+    @Test
+    public void testParentheses() throws Exception {
+        final KieBase kbase = loadKnowledgeBase("test_ParenthesisUsage.drl");
+
+        final List<Person> results = new ArrayList<>();
+        final KieSession session = createKnowledgeSession(kbase);
+        session.setGlobal("results", results);
+
+        final Person bob = new Person("Bob", 20);
+        bob.setAlive(true);
+        final Person foo = new Person("Foo", 0);
+        foo.setAlive(false);
+
+        session.insert(bob);
+        session.fireAllRules();
+
+        assertEquals(1, results.size());
+        assertEquals(bob, results.get(0));
+
+        session.insert(foo);
+        session.fireAllRules();
+
+        assertEquals(2, results.size());
+        assertEquals(foo, results.get(1));
+    }
+
+    @Test
+    public void testCovariance() throws Exception {
+        // JBRULES-3392
+        final String str =
+                        "import " + ClassA.class.getCanonicalName() + ";\n" +
+                        "import " + ClassB.class.getCanonicalName() + ";\n" +
+                        "rule x\n" +
+                        "when\n" +
+                        "   $b : ClassB( )\n" +
+                        "   $a : ClassA( b.id == $b.id )\n" +
+                        "then\n" +
+                        "end\n";
+
+        final KieBase kbase = loadKnowledgeBaseFromString( str );
+        final KieSession ksession = kbase.newKieSession();
+
+        final ClassA a = new ClassA();
+        final ClassB b = new ClassB();
+        a.setB( b );
+
+        ksession.insert( a );
+        ksession.insert( b );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testCheckDuplicateVariables() throws Exception {
+        // JBRULES-3035
+        String str = "package com.sample\n" +
+                "import org.drools.compiler.*\n" +
+                "rule R1 when\n" +
+                "   Person( $a: age, $a: name ) // this should cause a compile-time error\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+        assertTrue(kbuilder.hasErrors());
+
+        str = "package com.sample\n" +
+                "rule R1 when\n" +
+                "   accumulate( Object(), $c: count(1), $c: max(1) ) // this should cause a compile-time error\n" +
+                "then\n" +
+                "end";
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+        assertTrue(kbuilder.hasErrors());
+
+        str = "package com.sample\n" +
+                "rule R1 when\n" +
+                "   Number($i: intValue) from accumulate( Object(), $i: count(1) ) // this should cause a compile-time error\n" +
+                "then\n" +
+                "end";
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+        assertTrue(kbuilder.hasErrors());
+    }
+
+    @Test
+    public void testCompilationFailureOnTernaryComparison() {
+        // JBRULES-3642
+        final String str =
+                "declare Cont\n" +
+                        "  val:Integer\n" +
+                        "end\n" +
+                        "rule makeFacts\n" +
+                        "salience 10\n" +
+                        "when\n" +
+                        "then\n" +
+                        "    insert( new Cont(2) );\n" +
+                        "end\n" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "    $c: Cont( 3 < val < 10 )\n" +
+                        "then\n" +
+                        "end";
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+        assertTrue(kbuilder.hasErrors());
     }
 }

@@ -16,12 +16,17 @@
 
 package org.drools.compiler.integrationtests.session;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CheeseEqual;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
+import org.drools.compiler.PersonInterface;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.core.ClassObjectFilter;
 import org.drools.core.common.DefaultFactHandle;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -148,5 +153,22 @@ public class StatefulSessionTest extends CommonTestMethodBase {
         key = DefaultFactHandle.createFromExternalFormat( goodbyeHandle.toExternalForm() );
         assertEquals( "goodbye",
                 ksession.getObject( key ) );
+    }
+
+    @Test
+    public void testIterateObjects() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_IterateObjects.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List results = new ArrayList();
+        ksession.setGlobal("results", results);
+
+        ksession.insert(new Cheese("stilton", 10));
+        ksession.fireAllRules();
+
+        final Iterator events = ksession.getObjects(new ClassObjectFilter(PersonInterface.class)).iterator();
+        assertTrue(events.hasNext());
+        assertEquals(1, results.size());
+        assertEquals(results.get(0), events.next());
     }
 }

@@ -16,7 +16,12 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.ResourceType;
@@ -24,18 +29,12 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.junit.Assert.assertEquals;
-
-public class SubnetworkTest {
+public class SubnetworkTest extends CommonTestMethodBase {
 
     @Test
     public void testNPEOnFlushingOfUnlinkedPmem() {
         // DROOLS-1285
-        String drl =
+        final String drl =
                 "import " + A.class.getCanonicalName() + "\n" +
                 "import " + B.class.getCanonicalName() + "\n" +
                 "import " + C.class.getCanonicalName() + "\n" +
@@ -45,11 +44,11 @@ public class SubnetworkTest {
                 "    not( B() and C() )\n" +
                 "then end\n";
 
-        KieSession kSession = new KieHelper().addContent( drl, ResourceType.DRL )
+        final KieSession kSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build( EventProcessingOption.STREAM )
                                              .newKieSession();
 
-        FactHandle fhA = kSession.insert( new A() );
+        final FactHandle fhA = kSession.insert( new A() );
         kSession.insert(new C());
         kSession.fireAllRules();
 
@@ -72,7 +71,7 @@ public class SubnetworkTest {
     @Test
     public void testRightStagingOnSharedSubnetwork() {
         // RHBRMS-2624
-        String drl =
+        final String drl =
                 "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
                 "rule R1y when\n" +
                 "    AtomicInteger() \n" +
@@ -97,7 +96,7 @@ public class SubnetworkTest {
                 "    update($i);" +
                 "end\n";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+        final KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                                .build().newKieSession();
 
         kieSession.insert( new AtomicInteger( 0 ) );
@@ -109,7 +108,7 @@ public class SubnetworkTest {
     @Test(timeout = 10000L)
     public void testUpdateOnSharedSubnetwork() {
         // DROOLS-1360
-        String drl =
+        final String drl =
                 "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
                 "rule R1y when\n" +
@@ -135,10 +134,10 @@ public class SubnetworkTest {
                 "    list.add($c);" +
                 "end\n";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+        final KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                                .build().newKieSession();
 
-        List<Number> list = new ArrayList<Number>();
+        final List<Number> list = new ArrayList<Number>();
         kieSession.setGlobal( "list", list );
 
         kieSession.insert( new AtomicInteger( 0 ) );
@@ -148,5 +147,11 @@ public class SubnetworkTest {
 
         assertEquals(1, list.size());
         assertEquals(4, list.get(0).intValue());
+    }
+
+    @Test
+    public void testSubNetworks() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_SubNetworks.drl"));
+        final KieSession session = createKnowledgeSession(kbase);
     }
 }

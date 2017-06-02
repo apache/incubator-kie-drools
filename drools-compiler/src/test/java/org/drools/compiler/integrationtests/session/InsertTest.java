@@ -21,13 +21,13 @@ import java.util.List;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Move;
 import org.drools.compiler.Person;
+import org.drools.compiler.PersonFinal;
 import org.drools.compiler.Pet;
 import org.drools.compiler.Win;
+import org.drools.compiler.integrationtests.SerializationHelper;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class InsertTest extends CommonTestMethodBase {
 
@@ -97,5 +97,22 @@ public class InsertTest extends CommonTestMethodBase {
         assertEquals(2, results.size());
         assertTrue(results.contains(win2));
         assertTrue(results.contains(win3));
+    }
+
+    @Test
+    public void testInsertFinalClassInstance() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_FinalClass.drl"));
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List list = new ArrayList();
+        ksession.setGlobal("results", list);
+
+        final PersonFinal bob = new PersonFinal();
+        bob.setName("bob");
+        bob.setStatus(null);
+
+        ksession.insert(bob);
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
     }
 }

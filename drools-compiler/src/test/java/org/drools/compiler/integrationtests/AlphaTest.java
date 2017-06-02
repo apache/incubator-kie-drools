@@ -90,7 +90,6 @@ public class AlphaTest extends CommonTestMethodBase {
     public void testAlphaHashingWithConstants() {
         // JBRULES-3658
         final String str = "import " + Person.class.getName() + ";\n" +
-                "import " + MiscTest.class.getName() + ";\n" +
                 "rule R1 when\n" +
                 "   $p : Person( age == 38 )\n" +
                 "then end\n" +

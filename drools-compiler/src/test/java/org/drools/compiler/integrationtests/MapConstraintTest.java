@@ -139,7 +139,7 @@ public class MapConstraintTest extends CommonTestMethodBase {
     @Test
     public void testMapAccessorWithPrimitiveKey() {
         final String str = "package com.sample\n" +
-                "import " + MiscTest.class.getName() + ".MapContainerBean\n" +
+                "import " + MapContainerBean.class.getCanonicalName() + ";\n" +
                 "rule R1 when\n" +
                 "  MapContainerBean( map[1] == \"one\" )\n" +
                 "then\n" +
@@ -160,9 +160,27 @@ public class MapConstraintTest extends CommonTestMethodBase {
         final KieBase kbase = loadKnowledgeBaseFromString(str);
         final KieSession ksession = kbase.newKieSession();
 
-        ksession.insert(new MiscTest.MapContainerBean());
+        ksession.insert(new MapContainerBean());
         assertEquals(4, ksession.fireAllRules());
         ksession.dispose();
+    }
+
+    public static class MapContainerBean {
+        private final Map<Integer, String> map = new HashMap<>();
+
+        MapContainerBean() {
+            map.put( 1, "one" );
+            map.put( 2, "two" );
+            map.put( 3, "three" );
+        }
+
+        public Map<Integer, String> getMap() {
+            return map;
+        }
+
+        public int get3() {
+            return 3;
+        }
     }
 
     @Test
@@ -202,7 +220,7 @@ public class MapConstraintTest extends CommonTestMethodBase {
         final KieBase kbase = loadKnowledgeBase("test_TestMapVariableRef.drl");
 
         final KieSession ksession = createKnowledgeSession(kbase);
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> list = new ArrayList<>();
 
         final Map mapOne = new HashMap<String, Object>();
         final Map mapTwo = new HashMap<String, Object>();

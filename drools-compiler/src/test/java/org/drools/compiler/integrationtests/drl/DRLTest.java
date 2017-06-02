@@ -29,6 +29,7 @@ import org.drools.compiler.integrationtests.SerializationHelper;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -36,7 +37,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
-public class RuleTest extends CommonTestMethodBase {
+public class DRLTest extends CommonTestMethodBase {
 
     @Test(expected = RuntimeException.class)
     public void testDuplicateRuleName() {
@@ -148,5 +149,87 @@ public class RuleTest extends CommonTestMethodBase {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource("test_DeclarationOfNonExistingField.drl", getClass()), ResourceType.DRL);
         assertTrue(kbuilder.hasErrors());
+    }
+
+    @Test
+    public void testDRLWithoutPackageDeclaration() throws Exception {
+        final KieBase kbase = loadKnowledgeBase("test_NoPackageDeclaration.drl");
+
+        // no package defined, so it is set to the default
+        final FactType factType = kbase.getFactType("defaultpkg", "Person");
+        assertNotNull(factType);
+        final Object bob = factType.newInstance();
+        factType.set(bob, "name", "Bob");
+        factType.set(bob, "age", Integer.valueOf(30));
+
+        final KieSession session = createKnowledgeSession(kbase);
+        final List results = new ArrayList();
+        session.setGlobal("results", results);
+
+        session.insert(bob);
+        session.fireAllRules();
+
+        assertEquals(1, results.size());
+        assertEquals(bob, results.get(0));
+    }
+
+    @Test
+    public void testEventsInDifferentPackages() {
+        final String str = "package org.drools.compiler.test\n" +
+                "import org.drools.compiler.*\n" +
+                "declare StockTick\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "rule r1\n" +
+                "when\n" +
+                "then\n" +
+                "    StockTick st = new StockTick();\n" +
+                "    st.setCompany(\"RHT\");\n" +
+                "end\n";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    @Test
+    public void testPackageNameOfTheBeast() throws Exception {
+        // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
+
+        final String ruleFileContent1 = "package org.drools.integrationtests;\n" +
+                "function void myFunction() {\n" +
+                "}\n" +
+                "declare MyDeclaredType\n" +
+                "  someProperty: boolean\n" +
+                "end";
+        final String ruleFileContent2 = "package de.something;\n" + // FAILS
+                //        String ruleFileContent2 = "package de.somethinga;\n" + // PASSES
+                //        String ruleFileContent2 = "package de.somethingb;\n" + // PASSES
+                //        String ruleFileContent2 = "package de.somethingc;\n" + // PASSES
+                //        String ruleFileContent2 = "package de.somethingd;\n" + // PASSES
+                //        String ruleFileContent2 = "package de.somethinge;\n" + // FAILS
+                //        String ruleFileContent2 = "package de.somethingf;\n" + // FAILS
+                //        String ruleFileContent2 = "package de.somethingg;\n" + // FAILS
+                "import org.drools.integrationtests.*;\n" +
+                "rule \"CheckMyDeclaredType\"\n" +
+                "  when\n" +
+                "    MyDeclaredType()\n" +
+                "  then\n" +
+                "    insertLogical(\"THIS-IS-MY-MARKER-STRING\");\n" +
+                "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(ruleFileContent1, ruleFileContent2);
+        final KieSession knowledgeSession = createKnowledgeSession(kbase);
+
+        final FactType myDeclaredFactType = kbase.getFactType("org.drools.integrationtests", "MyDeclaredType");
+        final Object myDeclaredFactInstance = myDeclaredFactType.newInstance();
+        knowledgeSession.insert(myDeclaredFactInstance);
+
+        final int rulesFired = knowledgeSession.fireAllRules();
+        assertEquals(1, rulesFired);
+
+        knowledgeSession.dispose();
     }
 }

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.integrationtests.MiscTest;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.compiler.integrationtests.facts.AFact;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
@@ -39,12 +39,12 @@ public class ExistsTest extends CommonTestMethodBase {
 
         String str = "";
         str += "package org.simple \n";
-        str += "import " + MiscTest.A.class.getCanonicalName() + "\n";
+        str += "import " + AFact.class.getCanonicalName() + "\n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
         str += "when \n";
-        str += "  $f1 : A() \n";
-        str += "    exists A(this != $f1, eval(field2 == $f1.getField2())) \n";
+        str += "  $f1 : AFact() \n";
+        str += "    exists AFact(this != $f1, eval(field2 == $f1.getField2())) \n";
         str += "    eval( !$f1.getField1().equals(\"1\") ) \n";
         str += "then \n";
         str += "  list.add($f1); \n";
@@ -56,9 +56,9 @@ public class ExistsTest extends CommonTestMethodBase {
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
-        final MiscTest.A a1 = new MiscTest.A("2", "2");
-        final MiscTest.A a2 = new MiscTest.A("1", "2");
-        final MiscTest.A a3 = new MiscTest.A("1", "2");
+        final AFact a1 = new AFact("2", "2");
+        final AFact a2 = new AFact("1", "2");
+        final AFact a3 = new AFact("1", "2");
 
         final FactHandle fa1 = ksession.insert(a1);
         final FactHandle fa2 = ksession.insert(a2);
@@ -115,19 +115,19 @@ public class ExistsTest extends CommonTestMethodBase {
 
         String str = "";
         str += "package org.simple \n";
-        str += "import " + MiscTest.A.class.getCanonicalName() + "\n";
+        str += "import " + AFact.class.getCanonicalName() + "\n";
         str += "global java.util.List list \n";
         str += "rule x1 \n";
         str += "when \n";
         str += "    $s : String( this == 'x1' ) \n";
-        str += "    exists A( this != null ) \n";
+        str += "    exists AFact( this != null ) \n";
         str += "then \n";
         str += "  list.add(\"fired x1\"); \n";
         str += "end  \n";
         str += "rule x2 \n";
         str += "when \n";
         str += "    $s : String( this == 'x2' ) \n";
-        str += "    exists A( field1 == $s, this != null ) \n"; // this ensures an index bucket
+        str += "    exists AFact( field1 == $s, this != null ) \n"; // this ensures an index bucket
         str += "then \n";
         str += "  list.add(\"fired x2\"); \n";
         str += "end  \n";
@@ -139,8 +139,8 @@ public class ExistsTest extends CommonTestMethodBase {
 
         ksession.insert("x1");
         ksession.insert("x2");
-        final MiscTest.A a1 = new MiscTest.A("x1", null);
-        final MiscTest.A a2 = new MiscTest.A("x2", null);
+        final AFact a1 = new AFact("x1", null);
+        final AFact a2 = new AFact("x2", null);
 
         final FactHandle fa1 = ksession.insert(a1);
         final FactHandle fa2 = ksession.insert(a2);

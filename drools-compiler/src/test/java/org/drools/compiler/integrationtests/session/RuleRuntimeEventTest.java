@@ -31,7 +31,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
-public class RuleEventTest extends CommonTestMethodBase {
+public class RuleRuntimeEventTest extends CommonTestMethodBase {
 
     @Test
     public void testEventModel() throws Exception {

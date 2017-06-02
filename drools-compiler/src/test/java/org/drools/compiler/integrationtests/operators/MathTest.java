@@ -96,4 +96,63 @@ public class MathTest extends CommonTestMethodBase {
         assertEquals(3, list.size());
         assertEquals("CORRECT", list.get(2));
     }
+
+    @Test
+    public void testShiftOperator()  {
+        final String rule = "dialect \"mvel\"\n" +
+                "rule kickOff\n" +
+                "when\n" +
+                "then\n" +
+                "   insert( Integer.valueOf( 1 ) );\n" +
+                "   insert( Long.valueOf( 1 ) );\n" +
+                "   insert( Integer.valueOf( 65552 ) ); // 0x10010\n" +
+                "   insert( Long.valueOf( 65552 ) );\n" +
+                "   insert( Integer.valueOf( 65568 ) ); // 0x10020\n" +
+                "   insert( Long.valueOf( 65568 ) );\n" +
+                "   insert( Integer.valueOf( 65536 ) ); // 0x10000\n" +
+                "   insert( Long.valueOf( 65536L ) );\n" +
+                "   insert( Long.valueOf( 4294967296L ) ); // 0x100000000L\n" +
+                "end\n" +
+                "rule test1\n" +
+                "   salience -1\n" +
+                "when\n" +
+                "   $a: Integer( $one: intValue == 1 )\n" +
+                "   $b: Integer( $shift: intValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test1 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end\n" +
+                "rule test2\n" +
+                "   salience -2\n" +
+                "when\n" +
+                "   $a: Integer( $one: intValue == 1 )\n" +
+                "   $b: Long ( $shift: longValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test2 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end\n" +
+                "rule test3\n" +
+                "   salience -3\n" +
+                "when\n" +
+                "   $a: Long ( $one: longValue == 1 )\n" +
+                "   $b: Long ( $shift: longValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test3 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end\n" +
+                "rule test4\n" +
+                "   salience -4\n" +
+                "when\n" +
+                "   $a: Long ( $one: longValue == 1 )\n" +
+                "   $b: Integer( $shift: intValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test4 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(rule);
+        final KieSession ksession = kbase.newKieSession();
+        final int rules = ksession.fireAllRules();
+        assertEquals(13, rules);
+    }
 }

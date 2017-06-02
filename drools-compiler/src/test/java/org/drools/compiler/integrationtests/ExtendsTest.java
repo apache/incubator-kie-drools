@@ -55,36 +55,6 @@ import org.kie.internal.utils.KieHelper;
  */
 public class ExtendsTest extends CommonTestMethodBase {
 
-
-
-    public StatefulKnowledgeSession genSession(String source) {
-        return genSession(new String[] {source},0);
-    }
-
-    public StatefulKnowledgeSession genSession(String source, int numerrors)  {
-        return genSession(new String[] {source},numerrors);
-    }
-
-    public StatefulKnowledgeSession genSession(String[] sources, int numerrors)  {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for (String source : sources)
-            kbuilder.add( ResourceFactory.newClassPathResource(source, getClass()), ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( kbuilder.getErrors().size() > 0 ) {
-            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
-                System.err.println( error );
-            }
-        }
-        assertEquals(numerrors, errors.size() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        return createKnowledgeSession(kbase);
-
-    }
-
     @Test
     public void testExtends() throws Exception {
         //Test Base Fact Type

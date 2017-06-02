@@ -23,6 +23,8 @@ import java.util.Map;
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.compiler.integrationtests.facts.ClassB;
+import org.drools.compiler.integrationtests.facts.InterfaceB;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
@@ -472,5 +474,143 @@ public class DeclareTest extends CommonTestMethodBase {
         ksession.insert(p);
         ksession.fireAllRules();
         assertEquals(p, list.get(0));
+    }
+
+    @Test
+    public void testTypeUnsafe() throws Exception {
+        final String str = "import " + DeclareTest.class.getName() + ".*\n" +
+                "declare\n" +
+                "   Parent @typesafe(false)\n" +
+                "end\n" +
+                "rule R1\n" +
+                "when\n" +
+                "   $a : Parent( x == 1 )\n" +
+                "then\n" +
+                "end\n";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
+
+        for (int i = 0; i < 20; i++) {
+            ksession.insert(new ChildA(i % 10));
+            ksession.insert(new ChildB(i % 10));
+        }
+
+        assertEquals(4, ksession.fireAllRules());
+
+        // give time to async jitting to complete
+        Thread.sleep(100);
+
+        ksession.insert(new ChildA(1));
+        ksession.insert(new ChildB(1));
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    public static class Parent {
+    }
+
+    public static class ChildA extends Parent {
+        private final int x;
+
+        public ChildA(final int x) {
+            this.x = x;
+        }
+
+        public int getX() {
+            return x;
+        }
+    }
+
+    public static class ChildB extends Parent {
+        private final int x;
+
+        public ChildB(final int x) {
+            this.x = x;
+        }
+
+        public int getX() {
+            return x;
+        }
+    }
+
+    @Test
+    public void testConstructorWithOtherDefaults() {
+        final String str = "" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare Bean\n" +
+                "   kField : String     @key\n" +
+                "   sField : String     = \"a\"\n" +
+                "   iField : int        = 10\n" +
+                "   dField : double     = 4.32\n" +
+                "   aField : Long[]     = new Long[] { 100L, 1000L }\n" +
+                "end" +
+                "\n" +
+                "rule \"Trig\"\n" +
+                "when\n" +
+                "    Bean( kField == \"key\", sField == \"a\", iField == 10, dField == 4.32, aField[1] == 1000L ) \n" +
+                "then\n" +
+                "    list.add( \"OK\" );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Exec\"\n" +
+                "when\n" +
+                "then\n" +
+                "    insert( new Bean( \"key\") ); \n" +
+                "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
+
+        final java.util.List list = new java.util.ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertTrue(list.contains("OK"));
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testKeyedInterfaceField() {
+        //JBRULES-3441
+        final String str = "package org.drools.compiler.integrationtest; \n" +
+                "\n" +
+                "import " + ClassB.class.getCanonicalName() + "; \n" +
+                "import " + InterfaceB.class.getCanonicalName() + "; \n" +
+                "" +
+                "global java.util.List list;" +
+                "" +
+                "declare Bean\n" +
+                "  id    : InterfaceB @key\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when  \n" +
+                "then\n" +
+                "  insert( new Bean( new ClassB() ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check\"\n" +
+                "when\n" +
+                "  $b : Bean( )\n" +
+                "then\n" +
+                "  list.add( $b.hashCode() ); \n" +
+                "  list.add( $b.equals( new Bean( new ClassB() ) ) ); \n" +
+                "end";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
+
+        final java.util.List list = new java.util.ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertTrue(list.contains(31 + 123));
+        assertTrue(list.contains(true));
+
+        ksession.dispose();
     }
 }

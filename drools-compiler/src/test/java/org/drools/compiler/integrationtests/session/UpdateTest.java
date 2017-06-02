@@ -16,6 +16,12 @@
 
 package org.drools.compiler.integrationtests.session;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +32,8 @@ import org.drools.compiler.IndexedNumber;
 import org.drools.compiler.OuterClass;
 import org.drools.compiler.Person;
 import org.drools.compiler.Target;
-import org.drools.compiler.integrationtests.MiscTest;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.compiler.integrationtests.facts.AFact;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -35,12 +41,10 @@ import org.kie.api.command.Setter;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class UpdateTest extends CommonTestMethodBase {
 
@@ -313,12 +317,12 @@ public class UpdateTest extends CommonTestMethodBase {
 
         String str = "";
         str += "package org.simple \n";
-        str += "import " + MiscTest.A.class.getCanonicalName() + "\n";
+        str += "import " + AFact.class.getCanonicalName() + "\n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
         str += "when \n";
-        str += "  $f1 : A() \n";
-        str += "    not A(this != $f1,  eval(field2 == $f1.getField2())) \n";
+        str += "  $f1 : AFact() \n";
+        str += "    not AFact(this != $f1,  eval(field2 == $f1.getField2())) \n";
         str += "    eval( !$f1.getField1().equals(\"1\") ) \n";
         str += "then \n";
         str += "  list.add($f1); \n";
@@ -329,9 +333,9 @@ public class UpdateTest extends CommonTestMethodBase {
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
-        final MiscTest.A a1 = new MiscTest.A("2", "2");
-        final MiscTest.A a2 = new MiscTest.A("1", "2");
-        final MiscTest.A a3 = new MiscTest.A("1", "2");
+        final AFact a1 = new AFact("2", "2");
+        final AFact a2 = new AFact("1", "2");
+        final AFact a3 = new AFact("1", "2");
 
         final FactHandle fa1 = ksession.insert(a1);
         final FactHandle fa2 = ksession.insert(a2);
@@ -447,5 +451,42 @@ public class UpdateTest extends CommonTestMethodBase {
         ksession.insert( tgt );
 
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void noDormantCheckOnModifies() throws Exception {
+        // Test case for BZ 862325
+        final String str = "package org.drools.compiler;\n"
+                + " rule R1\n"
+                + "    salience 10\n"
+                + "    when\n"
+                + "        $c : Cheese( price == 10 ) \n"
+                + "        $p : Person( ) \n"
+                + "    then \n"
+                + "        modify($c) { setPrice( 5 ) }\n"
+                + "        modify($p) { setAge( 20 ) }\n"
+                + "end\n"
+                + "rule R2\n"
+                + "    when\n"
+                + "        $p : Person( )"
+                + "    then \n"
+                + "        // noop\n"
+                + "end\n";
+
+        // load up the knowledge base
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
+
+        final org.kie.api.event.rule.AgendaEventListener ael = mock(org.kie.api.event.rule.AgendaEventListener.class);
+        ksession.addEventListener(ael);
+
+        ksession.insert(new Person("Bob", 19));
+        ksession.insert(new Cheese("brie", 10));
+        ksession.fireAllRules();
+
+        // both rules should fire exactly once
+        verify(ael, times(2)).afterMatchFired(any(org.kie.api.event.rule.AfterMatchFiredEvent.class));
+        // no cancellations should have happened
+        verify(ael, never()).matchCancelled(any(org.kie.api.event.rule.MatchCancelledEvent.class));
     }
 }

@@ -16,6 +16,7 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -116,5 +117,30 @@ public class GeneratedBeansTest extends CommonTestMethodBase {
         wm.fireAllRules();
         assertEquals(2, result.size());
         assertEquals(person, result.get(1));
+    }
+
+    @Test
+    public void testGeneratedBeansSerializable() throws Exception {
+        final KieBase kbase = loadKnowledgeBase("test_GeneratedBeansSerializable.drl");
+
+        final FactType cheeseFact = kbase.getFactType("org.drools.generatedbeans", "Cheese");
+        assertTrue("Generated beans must be serializable", Serializable.class.isAssignableFrom(cheeseFact.getFactClass()));
+
+        final Object cheese = cheeseFact.newInstance();
+        cheeseFact.set(cheese, "type", "stilton");
+
+        final Object cheese2 = cheeseFact.newInstance();
+        cheeseFact.set(cheese2, "type", "brie");
+
+        final KieSession ksession = createKnowledgeSession(kbase);
+        final List<Number> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        ksession.insert(cheese);
+        ksession.insert(cheese2);
+        ksession.fireAllRules();
+
+        assertEquals(1, results.size());
+        assertEquals(2, results.get(0).intValue());
     }
 }

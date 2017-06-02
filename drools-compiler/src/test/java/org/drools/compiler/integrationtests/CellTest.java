@@ -51,4 +51,25 @@ public class CellTest extends CommonTestMethodBase {
         assertEquals(9, cell.getValue());
     }
 
+    @Test
+    public void testFreeFormExpressions() {
+        final String str = "package org.drools.compiler\n" +
+                "rule r1\n" +
+                "when\n" +
+                "    $p1 : Cell( row == 2 )\n" +
+                "    $p2 : Cell( row == $p1.row + 1, row == ($p1.row + 1), row == 1 + $p1.row, row == (1 + $p1.row) )\n" +
+                "then\n" +
+                "end\n";
+
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final Cell c1 = new Cell(1, 2, 0);
+        final Cell c2 = new Cell(1, 3, 0);
+        ksession.insert(c1);
+        ksession.insert(c2);
+
+        final int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
 }

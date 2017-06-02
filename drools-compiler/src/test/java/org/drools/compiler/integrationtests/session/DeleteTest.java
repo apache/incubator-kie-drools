@@ -18,12 +18,14 @@ package org.drools.compiler.integrationtests.session;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.PersonInterface;
-import org.drools.compiler.integrationtests.MiscTest;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.compiler.integrationtests.facts.ClassA;
+import org.drools.compiler.integrationtests.facts.ClassB;
+import org.drools.compiler.integrationtests.facts.InterfaceA;
+import org.drools.compiler.integrationtests.facts.InterfaceB;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.Person;
 import org.junit.After;
@@ -146,7 +148,11 @@ public class DeleteTest extends CommonTestMethodBase {
     @Test
     public void testRetractLeftTuple() throws Exception {
         // JBRULES-3420
-        final String str = "import " + MiscTest.class.getName() + ".*\n" +
+        final String str =
+                "import " + ClassA.class.getCanonicalName() + ";\n" +
+                "import " + ClassB.class.getCanonicalName() + ";\n" +
+                "import " + InterfaceA.class.getCanonicalName() + ";\n" +
+                "import " + InterfaceB.class.getCanonicalName() + ";\n" +
                 "rule R1 salience 3\n" +
                 "when\n" +
                 "   $b : InterfaceB( )\n" +
@@ -173,8 +179,8 @@ public class DeleteTest extends CommonTestMethodBase {
         final KieBase kbase = loadKnowledgeBaseFromString(str);
         final KieSession ksession = kbase.newKieSession();
 
-        ksession.insert(new MiscTest.ClassA());
-        ksession.insert(new MiscTest.ClassB());
+        ksession.insert(new ClassA());
+        ksession.insert(new ClassB());
         assertEquals(3, ksession.fireAllRules());
     }
 
