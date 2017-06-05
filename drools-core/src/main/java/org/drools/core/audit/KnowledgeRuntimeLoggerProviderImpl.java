@@ -18,9 +18,8 @@ package org.drools.core.audit;
 
 import org.drools.core.impl.AbstractRuntime;
 import org.kie.api.event.KieRuntimeEventManager;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
-import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.api.logger.KieLoggers;
+import org.kie.api.logger.KieRuntimeLogger;
 
 import javax.inject.Singleton;
 
@@ -29,91 +28,42 @@ public class KnowledgeRuntimeLoggerProviderImpl
     implements
     KieLoggers {
 
-    public KnowledgeRuntimeLogger newFileLogger(KieRuntimeEventManager session,
+    public KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
                                                 String fileName) {
         return newFileLogger(session, fileName, WorkingMemoryFileLogger.DEFAULT_MAX_EVENTS_IN_MEMORY);
     }
 
-    public KnowledgeRuntimeLogger newFileLogger(KieRuntimeEventManager session,
+    public KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
                                                 String fileName,
                                                 int maxEventsInMemory) {
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( (KnowledgeRuntimeEventManager) session );
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
         logger.setMaxEventsInMemory( maxEventsInMemory );
         if ( fileName != null ) {
             logger.setFileName(fileName);
         }
-        return registerRuntimeLogger(session, new KnowledgeRuntimeFileLoggerWrapper(logger));
+        return registerRuntimeLogger(session, logger);
     }
 
-    public KnowledgeRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
+    public KieRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
                                                         String fileName,
                                                         int interval) {
-        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger( (KnowledgeRuntimeEventManager) session );
+        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger( session );
         if ( fileName != null ) {
             logger.setFileName( fileName );
         }
         logger.start( interval );
-        return registerRuntimeLogger(session, new KnowledgeRuntimeFileLoggerWrapper(logger));
+        return registerRuntimeLogger(session, logger);
     }
 
-    public KnowledgeRuntimeLogger newConsoleLogger(KieRuntimeEventManager session) {
-        WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger( (KnowledgeRuntimeEventManager) session );
-        return registerRuntimeLogger(session, new KnowledgeRuntimeConsoleLoggerWrapper(logger));
+    public KieRuntimeLogger newConsoleLogger(KieRuntimeEventManager session) {
+        WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger( session );
+        return registerRuntimeLogger(session, logger);
     }
 
-    private KnowledgeRuntimeLogger registerRuntimeLogger(KieRuntimeEventManager session, KnowledgeRuntimeLogger logger) {
+    private KieRuntimeLogger registerRuntimeLogger(KieRuntimeEventManager session, KieRuntimeLogger logger) {
         if (session instanceof AbstractRuntime) {
             ((AbstractRuntime) session).setLogger(logger);
         }
         return logger;
     }
-
-    private class KnowledgeRuntimeFileLoggerWrapper
-        implements
-        KnowledgeRuntimeLogger {
-
-        private WorkingMemoryFileLogger logger;
-
-        public KnowledgeRuntimeFileLoggerWrapper(WorkingMemoryFileLogger logger) {
-            this.logger = logger;
-        }
-
-        public void close() {
-            logger.stop();
-        }
-
-    }
-
-    private class KnowledgeRuntimeThreadedFileLoggerWrapper
-        implements
-            KnowledgeRuntimeLogger {
-
-        private ThreadedWorkingMemoryFileLogger logger;
-
-        public KnowledgeRuntimeThreadedFileLoggerWrapper(ThreadedWorkingMemoryFileLogger logger) {
-            this.logger = logger;
-        }
-
-        public void close() {
-            logger.stop();
-        }
-
-    }
-
-    private class KnowledgeRuntimeConsoleLoggerWrapper
-        implements
-        KnowledgeRuntimeLogger {
-
-        // private WorkingMemoryConsoleLogger logger;
-
-        public KnowledgeRuntimeConsoleLoggerWrapper(WorkingMemoryConsoleLogger logger) {
-            // this.logger = logger;
-        }
-
-        public void close() {
-            // Do nothing
-        }
-
-    }
-
 }
