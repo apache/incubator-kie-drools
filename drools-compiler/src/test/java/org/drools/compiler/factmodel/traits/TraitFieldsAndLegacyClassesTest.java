@@ -30,7 +30,6 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
@@ -110,10 +109,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -198,10 +197,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
                      "\n";
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -297,8 +296,8 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
+        KieSession knowledgeSession = kBase.newKieSession();
         TraitFactory.setMode( mode, kBase );
 
         List list = new ArrayList();
@@ -393,9 +392,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -555,10 +554,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -645,10 +644,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -729,10 +728,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -814,10 +813,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -905,10 +904,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -997,10 +996,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -1108,10 +1107,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n";
 
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kBase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -1241,10 +1240,10 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "    list.add(\"You are studying and working at ASU\");\n" +
                      "end\n";
 
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
 
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+        KieSession kSession = kBase.newKieSession();
         List list = new ArrayList();
         kSession.setGlobal("list", list);
 
@@ -1290,9 +1289,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n" +
                      "\n";
-        KnowledgeBase kBase = loadKnowledgeBaseFromString(drl);
+        KieBase kBase = loadKnowledgeBaseFromString(drl);
         TraitFactory.setMode( mode, kBase );
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+        KieSession kSession = kBase.newKieSession();
 
         FactType parent = kBase.getFactType("org.drools.traits.test", "PosTrait");
         assertEquals(0, ((FieldDefinition) parent.getField("field0")).getIndex());
