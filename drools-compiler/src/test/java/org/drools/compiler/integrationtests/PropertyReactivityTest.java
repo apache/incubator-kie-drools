@@ -19,10 +19,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.compiler.State;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.io.impl.ByteArrayResource;
@@ -44,7 +44,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testComposedConstraint() {
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import " + Klass2.class.getCanonicalName() + ";\n" +
@@ -55,10 +55,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 " modify($k2) { setD(1) }\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        Klass2 k2 = new Klass2(0, 0, 0, 0);
+        final Klass2 k2 = new Klass2(0, 0, 0, 0);
         ksession.insert(k2);
         assertEquals(1, ksession.fireAllRules());
         assertEquals(1, k2.getD());
@@ -67,7 +67,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testScrambleProperties() {
         // DROOLS-91
-        String str =
+        final String str =
                 "package org.drools.test\n" +
                 " global java.util.List list" +
                 "\n" +
@@ -111,10 +111,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 " list.add( \"React\" );\n" +
                 " end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -159,7 +159,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         private int e;
         private int f;
 
-        public Klass(int a, int b, int c, int d, int e, int f) {
+        public Klass(final int a, final int b, final int c, final int d, final int e, final int f) {
             this.a = a;
             this.b = b;
             this.c = c;
@@ -169,22 +169,22 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
 
         public int getA() { return a; }
-        public void setA(int a) { this.a = a; }
+        public void setA(final int a) { this.a = a; }
 
         public int getB() { return b; }
-        public void setB(int b) { this.b = b; }
+        public void setB(final int b) { this.b = b; }
 
         public int getC() { return c; }
-        public void setC(int c) { this.c = c; }
+        public void setC(final int c) { this.c = c; }
 
         public int getD() { return d; }
-        public void setD(int d) { this.d = d; }
+        public void setD(final int d) { this.d = d; }
 
         public int getE() { return e; }
-        public void setE(int e) { this.e = e; }
+        public void setE(final int e) { this.e = e; }
 
         public int getF() { return f; }
-        public void setF(int f) { this.f = f; }
+        public void setF(final int f) { this.f = f; }
 
         public String getId() { return id; }
     }
@@ -197,7 +197,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         private int d;
         private int e;
 
-        public Klass2( int b, int c, int d, int e ) {
+        public Klass2( final int b, final int c, final int d, final int e ) {
             this.b = b;
             this.c = c;
             this.d = d;
@@ -205,16 +205,16 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
 
         public int getB() { return b; }
-        public void setB(int b) { this.b = b; }
+        public void setB(final int b) { this.b = b; }
 
         public int getC() { return c; }
-        public void setC(int c) { this.c = c; }
+        public void setC(final int c) { this.c = c; }
 
         public int getD() { return d; }
-        public void setD(int d) { this.d = d; }
+        public void setD(final int d) { this.d = d; }
 
         public int getE() { return e; }
-        public void setE(int e) { this.e = e; }
+        public void setE(final int e) { this.e = e; }
 
         public String getId() { return id; }
     }
@@ -230,7 +230,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      */
 
         // DROOLS-91
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import " + Intf1.class.getCanonicalName() + ";\n" +
@@ -294,10 +294,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( $id + \"@I2\" );\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -312,7 +312,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testScrambleWithInterfacesAndObject() {
         // DROOLS-91
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import " + Intf2.class.getCanonicalName() + ";\n" +
@@ -346,10 +346,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( $o.getClass().getSimpleName() );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -362,14 +362,14 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testWithDeclaredTypeAndTraitInDifferentPackages() {
         // DROOLS-91
-        String str1 =
+        final String str1 =
                 "package org.pkg1;\n" +
                 "declare trait Trait " +
                 "    @propertyReactive\n" +
                 "    a : int\n" +
                 "end";
 
-        String str2 =
+        final String str2 =
                 "package org.pkg2;\n" +
                 "declare Bean " +
                 "    @propertyReactive\n" +
@@ -378,7 +378,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "    b : int\n" +
                 "end";
 
-        String str3 =
+        final String str3 =
                 "package org.pkg3;\n" +
                 "import org.pkg1.Trait;\n" +
                 "import org.pkg2.Bean;\n" +
@@ -395,8 +395,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "   modify(t) { setA(2) };\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str1, str2, str3);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str1, str2, str3);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         ksession.fireAllRules();
     }
@@ -408,7 +408,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         public Bean() { }
 
-        public Bean(int a, int b) {
+        public Bean(final int a, final int b) {
             this.a = a;
             this.b = b;
         }
@@ -417,7 +417,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return a;
         }
 
-        public void setA(int a) {
+        public void setA(final int a) {
             this.a = a;
         }
 
@@ -425,7 +425,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return b;
         }
 
-        public void setB(int b) {
+        public void setB(final int b) {
             this.b = b;
         }
     }
@@ -433,14 +433,14 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testWithBeanAndTraitInDifferentPackages() {
         // DROOLS-91
-        String str1 =
+        final String str1 =
                 "package org.drools.compiler.integrationtests;\n" +
                 "declare trait Trait " +
                 "    @propertyReactive\n" +
                 "    a : int\n" +
                 "end";
 
-        String str2 =
+        final String str2 =
                 "package org.drools.test;\n" +
                 "import org.drools.compiler.integrationtests.Trait;\n" +
                 "import " + Bean.class.getCanonicalName() + ";\n" +
@@ -457,8 +457,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "   modify(t) { setA(2) };\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str1, str2);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str1, str2);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         ksession.fireAllRules();
     }
@@ -466,7 +466,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testRepeatedPatternWithPR() {
         // JBRULES-3705
-        String str1 =
+        final String str1 =
                 "package org.test;\n" +
                 "global java.util.List list; \n" +
                 "" +
@@ -506,9 +506,9 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 " end";
 
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ArrayList list = new ArrayList();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
@@ -520,7 +520,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testPRWithCollections() {
         // DROOLS-135
-        String str1 = "package org.test;\n" +
+        final String str1 = "package org.test;\n" +
                       "import java.util.*\n" +
                       "\n" +
                       "global List list;\n" +
@@ -601,9 +601,9 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                       "end";
 
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ArrayList list = new ArrayList();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
 
@@ -614,7 +614,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testPRWithPositionalUnification() {
         // DROOLS-247
-        String str1 =
+        final String str1 =
                 "package org.test;\n" +
                 "global java.util.List list; \n" +
                 "" +
@@ -672,9 +672,9 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "";
 
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ArrayList list = new ArrayList();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
         ksession.insert( 1 );
@@ -697,7 +697,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      */
     @Test(timeout=10000)
     public void testPRConstraintOnAttributesWithoutSetter(){
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import " + Klass3.class.getCanonicalName() + ";\n" +
@@ -726,10 +726,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -748,7 +748,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      */
     @Test(timeout=10000)
     public void testPRConstraintOnAttributesWithoutSetterUsingWatches(){
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import " + Klass3.class.getCanonicalName() + ";\n" +
@@ -777,10 +777,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -797,7 +797,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      */
     @Test(timeout=10000)
     public void testPRConstraintOnAttributesWithoutSetterUsingModifies(){
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import " + Klass4.class.getCanonicalName() + ";\n" +
@@ -826,10 +826,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -848,7 +848,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      */
     @Test(timeout=10000)
     public void testPRBindingOnAttributesWithoutSetter(){
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import " + Klass3.class.getCanonicalName() + ";\n" +
@@ -877,10 +877,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -898,7 +898,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      */
     @Test(timeout=10000)
     public void testPRBindingOnAttributesWithoutSetterUsingWatches(){
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import " + Klass3.class.getCanonicalName() + ";\n" +
@@ -927,10 +927,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -948,7 +948,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
      */
     @Test(timeout=10000)
     public void testPRBindingOnAttributesWithoutSetterUsingModifies(){
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import " + Klass4.class.getCanonicalName() + ";\n" +
@@ -977,10 +977,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -992,7 +992,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testPRBindingOnNonexistingAttributes(){
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import " + Klass4.class.getCanonicalName() + ";\n" +
@@ -1008,7 +1008,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( $fullName );\n" +
                 "end\n";
 
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        final KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( str.getBytes() ), ResourceType.DRL );
 
         System.out.println( knowledgeBuilder.getErrors() );
@@ -1017,7 +1017,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testPRBindingOnNonexistingWatchedAttribute(){
-        String str =
+        final String str =
                 "package org.drools.test;\n" +
                 "\n" +
                 "import org.drools.compiler.integrationtests.PropertyReactivityTest.Klass4;\n" +
@@ -1032,7 +1032,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        final KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( str.getBytes() ), ResourceType.DRL );
 
         System.out.println( knowledgeBuilder.getErrors() );
@@ -1041,7 +1041,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testModifyAfterInsertWithPropertyReactive() {
-        String rule1 =
+        final String rule1 =
                 "\n" +
                 "package com.sample;\n" +
                 "import " + MyClass.class.getCanonicalName() + ";\n" +
@@ -1071,11 +1071,11 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( 3 );\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
+        final KieHelper helper = new KieHelper();
         helper.addContent(rule1, ResourceType.DRL);
-        KieSession ksession = helper.build().newKieSession();
+        final KieSession ksession = helper.build().newKieSession();
 
-        List list = new ArrayList();
+        final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
         assertEquals(4, ksession.fireAllRules());
@@ -1092,7 +1092,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         private String name;
         private String lastName;
 
-        public Klass3(String name, String lastName) {
+        public Klass3(final String name, final String lastName) {
             this.name = name;
             this.lastName = lastName;
         }
@@ -1101,7 +1101,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return name;
         }
 
-        public void setName(String name) {
+        public void setName(final String name) {
             this.name = name;
         }
 
@@ -1109,7 +1109,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return lastName;
         }
 
-        public void setLastName(String lastName) {
+        public void setLastName(final String lastName) {
             this.lastName = lastName;
         }
 
@@ -1127,7 +1127,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return value;
         }
 
-        public void setValue(String value) {
+        public void setValue(final String value) {
             this.value = value;
         }
 
@@ -1135,7 +1135,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return data;
         }
 
-        public void setData(String data) {
+        public void setData(final String data) {
             this.data = data;
         }
     }
@@ -1148,7 +1148,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         private String name;
         private String lastName;
 
-        public Klass4(String name, String lastName) {
+        public Klass4(final String name, final String lastName) {
             this.name = name;
             this.lastName = lastName;
         }
@@ -1158,7 +1158,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
 
         @Modifies("fullName")
-        public void setName(String name) {
+        public void setName(final String name) {
             this.name = name;
         }
 
@@ -1167,7 +1167,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
 
         @Modifies("fullName")
-        public void setLastName(String lastName) {
+        public void setLastName(final String lastName) {
             this.lastName = lastName;
         }
 
@@ -1179,7 +1179,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testIndexedNotWatchedProperty() {
         // DROOLS-569
-        String rule1 =
+        final String rule1 =
                 "package com.sample;\n" +
                 "import " + MyClass.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
@@ -1198,14 +1198,14 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "    modify( $m ) { setValue(\"3\"), setData(\"y\") };\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
+        final KieHelper helper = new KieHelper();
         helper.addContent(rule1, ResourceType.DRL);
-        KieSession ksession = helper.build().newKieSession();
+        final KieSession ksession = helper.build().newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
-        MyClass myClass = new MyClass();
+        final MyClass myClass = new MyClass();
         myClass.setValue("1");
         myClass.setData("x");
         ksession.insert(myClass);
@@ -1226,7 +1226,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
     @Test
     public void testModifyWithGetter() {
-        String rule1 =
+        final String rule1 =
                 "package foo.bar\n" +
                 "import " + Person.class.getName() + "\n" +
                 "declare Person @propertyReactive end\n" +
@@ -1237,15 +1237,15 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "       modify($p){getAddress().setStreet(\"foo\");}\n" +
                 "end";
 
-        KieHelper helper = new KieHelper();
+        final KieHelper helper = new KieHelper();
         helper.addContent(rule1, ResourceType.DRL);
-        KieSession ksession = helper.build().newKieSession();
+        final KieSession ksession = helper.build().newKieSession();
 
-        Person p = new Person();
+        final Person p = new Person();
         p.setAddress(new Address());
         ksession.insert(p);
 
-        int fired = ksession.fireAllRules(10);
+        final int fired = ksession.fireAllRules(10);
 
         assertEquals(1, fired);
         assertEquals("foo", p.getAddress().getStreet());
@@ -1253,11 +1253,11 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000L)
     public void testMoreThan64Fields() {
-        StringBuilder fields = new StringBuilder();
+        final StringBuilder fields = new StringBuilder();
         for (int i = 10; i < 100; i++) {
             fields.append("  a").append(i).append(" : int\n");
         }
-        String str =
+        final String str =
                 "package org.drools.test\n" +
                 "global java.util.List list;\n" +
                 "declare BigType @propertyReactive\n" +
@@ -1274,11 +1274,11 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add(1);\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+        final KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
                                              .build()
                                              .newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -1287,11 +1287,11 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000L)
     public void testMoreThan64FieldsMultipleFirings() {
-        StringBuilder fields = new StringBuilder();
+        final StringBuilder fields = new StringBuilder();
         for (int i = 10; i < 100; i++) {
             fields.append("  a").append(i).append(" : int\n");
         }
-        String str =
+        final String str =
                 "package org.drools.test\n" +
                 "global java.util.List list;\n" +
                 "declare BigType @propertyReactive\n" +
@@ -1308,11 +1308,11 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add(1);\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+        final KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
                                              .build()
                                              .newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -1321,11 +1321,11 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000L)
     public void testMoreThan64FieldsWithWatch() {
-        StringBuilder fields = new StringBuilder();
+        final StringBuilder fields = new StringBuilder();
         for (int i = 10; i < 100; i++) {
             fields.append("  a").append(i).append(" : int\n");
         }
-        String str =
+        final String str =
                 "package org.drools.test\n" +
                 "global java.util.List list;\n" +
                 "declare BigType @propertyReactive\n" +
@@ -1342,11 +1342,11 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add(1);\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+        final KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
                                              .build()
                                              .newKieSession();
 
-        List<Integer> list = new ArrayList<Integer>();
+        final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
@@ -1356,7 +1356,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test
     public void testPropReactiveAnnotationOnDifferentDrl() {
         // DROOLS-800
-        String str1 =
+        final String str1 =
                 "package org.jboss.ddoyle.drools.propertyreactive;\n" +
                 "\n" +
                 "import " + Event1.class.getCanonicalName() + ";\n" +
@@ -1368,7 +1368,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "    @propertyReactive\n" +
                 "end\n";
 
-        String str2 =
+        final String str2 =
                 "package org.jboss.ddoyle.drools.propertyreactive;\n" +
                 "\n" +
                 "import " + Event1.class.getCanonicalName() + ";\n" +
@@ -1380,7 +1380,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "       System.out.println(\"Rule fired.\");\n" +
                 "end\n";
 
-        KieBase kbase = new KieHelper().addContent(str1, "a.drl")
+        final KieBase kbase = new KieHelper().addContent(str1, "a.drl")
                                        .addContent(str2, "rules.drl")
                                        .build();
     }
@@ -1392,7 +1392,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         private long timestamp;
 
-        public Event1( String code, int id ) {
+        public Event1( final String code, final int id ) {
             this.code = code;
             this.id = id;
         }
@@ -1409,15 +1409,15 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return timestamp;
         }
 
-        public void setTimestamp( long timestamp ) {
+        public void setTimestamp( final long timestamp ) {
             this.timestamp = timestamp;
         }
 
-        public void setId( int id ) {
+        public void setId( final int id ) {
             this.id = id;
         }
 
-        public void setCode( String code ) {
+        public void setCode( final String code ) {
             this.code = code;
         }
     }
@@ -1425,10 +1425,10 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     public static class ParentDummyBean {
         private String id;
 
-        public ParentDummyBean(String id) { this.id = id; }
+        public ParentDummyBean(final String id) { this.id = id; }
 
         public String getId() { return id; }
-        public void setId(String id) { this.id = id; }
+        public void setId(final String id) { this.id = id; }
     }
 
     @PropertyReactive
@@ -1441,7 +1441,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     public static class DummyBean extends ParentDummyBean implements DummyBeanInterface {
         private boolean active;
 
-        public DummyBean(String id) {
+        public DummyBean(final String id) {
             super(id);
         }
 
@@ -1449,7 +1449,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return active;
         }
 
-        public void setActive(boolean active) {
+        public void setActive(final boolean active) {
             this.active = active;
         }
 
@@ -1462,7 +1462,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test
     public void testPropReactiveWithParentClassNotImplementingChildInterface() {
         // DROOLS-1090
-        String str1 =
+        final String str1 =
                 "import " + DummyBeanInterface.class.getCanonicalName() + "\n" +
                 "import " + DummyBean.class.getCanonicalName() + "\n" +
                 "rule \"RG_TEST_1\"\n" +
@@ -1491,7 +1491,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "        System.out.println(\"RG_TEST_3 fired\");\n" +
                 "end";
 
-        KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
+        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
@@ -1505,7 +1505,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test
     public void testPropReactiveUpdate() {
         // DROOLS-1275
-        String str1 =
+        final String str1 =
                 "import " + Klass.class.getCanonicalName() + "\n" +
                 "global java.util.List list;\n" +
                 "rule R when\n" +
@@ -1514,15 +1514,15 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add(\"fired\");\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
+        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
 
-        Klass bean = new Klass( 1, 2, 3, 4, 5, 6 );
-        FactHandle fh = ksession.insert( bean );
+        final Klass bean = new Klass( 1, 2, 3, 4, 5, 6 );
+        final FactHandle fh = ksession.insert( bean );
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
 
@@ -1538,15 +1538,15 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test
     public void testSetterInConcreteClass() {
         // DROOLS-1368
-        String drl = "import " + BaseFact.class.getCanonicalName() + ";\n"
+        final String drl = "import " + BaseFact.class.getCanonicalName() + ";\n"
                      + "import " + MyFact.class.getCanonicalName() + ";\n"
                      + "rule R when\n"
                      + "    $b : BaseFact( $n : name, name != null )\n"
                      + "then end\n";
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
 
-        MyFact f = new MyFact();
-        FactHandle fh = ksession.insert(f);
+        final MyFact f = new MyFact();
+        final FactHandle fh = ksession.insert(f);
         assertEquals( 0, ksession.fireAllRules() );
         f.setName("hello");
         ksession.update(fh, f, "name");
@@ -1566,7 +1566,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return name;
         }
 
-        public void setName(String name) {
+        public void setName(final String name) {
             this.name = name;
         }
     }
@@ -1587,7 +1587,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return visitedByCoach;
         }
 
-        public BusStop setVisitedByCoach(boolean visitedByCoach) {
+        public BusStop setVisitedByCoach(final boolean visitedByCoach) {
             this.visitedByCoach = visitedByCoach;
             return this;
         }
@@ -1602,7 +1602,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             return destination;
         }
 
-        public Shuttle setDestination(StopOrHub destination) {
+        public Shuttle setDestination(final StopOrHub destination) {
             this.destination = destination;
             return this;
         }
@@ -1612,7 +1612,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test
     public void testSetterInConcreteClass2() {
         // DROOLS-1369
-        String drl = "package org.test;\n"
+        final String drl = "package org.test;\n"
                      + "import " + BusStop.class.getCanonicalName() + ";\n"
                      + "import " + Shuttle.class.getCanonicalName() + ";\n"
                      + "import " + StopOrHub.class.getCanonicalName() + ";\n"
@@ -1622,14 +1622,14 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                      + "        Shuttle(destination == $destination)\n"
                      + "    then\n"
                      + "end";
-        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        final KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
 
-        BusStop busStop = new BusStop();
-        Shuttle shuttle = new Shuttle();
+        final BusStop busStop = new BusStop();
+        final Shuttle shuttle = new Shuttle();
         busStop.setVisitedByCoach(true);
 
-        FactHandle fhShuttle = kieSession.insert(shuttle);
-        FactHandle fhBusStop = kieSession.insert(busStop);
+        final FactHandle fhShuttle = kieSession.insert(shuttle);
+        final FactHandle fhBusStop = kieSession.insert(busStop);
 
         kieSession.update(fhShuttle, shuttle.setDestination(busStop));
         assertEquals(0, kieSession.fireAllRules());
@@ -1649,7 +1649,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test
     public void testWatchFieldInExternalPattern() {
         // DROOLS-1445
-        String drl =
+        final String drl =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
                 "rule R when\n" +
@@ -1665,17 +1665,17 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n";
 
         // making the default explicit:
-        KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
+        final KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
                                                                           .build()
                                                                           .newKieSession();
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
-        Person mario = new Person("Mario", 40);
-        Person mark = new Person("Mark", 37);
-        FactHandle fh_mario = ksession.insert(mario);
+        final Person mario = new Person("Mario", 40);
+        final Person mark = new Person("Mark", 37);
+        final FactHandle fh_mario = ksession.insert(mario);
         ksession.insert(mark);
-        int x = ksession.fireAllRules();
+        final int x = ksession.fireAllRules();
         assertEquals(1, list.size());
         assertEquals("t0", list.get(0));
     }
@@ -1683,7 +1683,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     @Test
     public void testWatchFieldInExternalNotPattern() {
         // DROOLS-1445
-        String drl =
+        final String drl =
                 "import " + Person.class.getCanonicalName() + ";\n" +
                 "global java.util.List list;\n" +
                 "rule R when\n" +
@@ -1699,18 +1699,46 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n";
 
         // making the default explicit:
-        KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
+        final KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
                                                                           .build()
                                                                           .newKieSession();
-        List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
-        Person mario = new Person("Mario", 40);
-        Person mark = new Person("Mark", 37);
-        FactHandle fh_mario = ksession.insert(mario);
+        final Person mario = new Person("Mario", 40);
+        final Person mark = new Person("Mark", 37);
+        final FactHandle fh_mario = ksession.insert(mario);
         ksession.insert(mark);
-        int x = ksession.fireAllRules();
+        final int x = ksession.fireAllRules();
         assertEquals(1, list.size());
         assertEquals("t0", list.get(0));
+    }
+
+    @Test
+    public void testPropertyChangeSupportNewAPI() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_PropertyChangeTypeDecl.drl"));
+        final KieSession session = createKnowledgeSession(kbase);
+
+        final List list = new ArrayList();
+        session.setGlobal("list", list);
+
+        final State state = new State("initial");
+        session.insert(state);
+        session.fireAllRules();
+
+        assertEquals(1, ((List) session.getGlobal("list")).size());
+
+        state.setFlag(true);
+        assertEquals(1, ((List) session.getGlobal("list")).size());
+
+        session.fireAllRules();
+        assertEquals(2, ((List) session.getGlobal("list")).size());
+
+        state.setState("finished");
+
+        session.dispose();
+
+        // checks that the session removed itself from the bean listeners list
+        assertEquals(0, state.getPropertyChangeListeners().length);
     }
 }
