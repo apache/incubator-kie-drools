@@ -22,10 +22,10 @@ import java.util.List;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.I18nPerson;
 import org.drools.compiler.Person;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -56,9 +56,9 @@ public class I18nTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -88,9 +88,9 @@ public class I18nTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -141,9 +141,9 @@ public class I18nTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List messages = new ArrayList();
         ksession.setGlobal( "messages", messages );
@@ -168,9 +168,9 @@ public class I18nTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );

@@ -24,6 +24,8 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -42,10 +44,10 @@ import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -235,11 +237,11 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 3, liaNode.getSinkPropagator().size() );
@@ -306,11 +308,11 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         LeftInputAdapterNode liaNodeA = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         ExistsNode existsNode2 = ( ExistsNode) liaNodeA.getSinkPropagator().getSinks()[1];
@@ -409,11 +411,11 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
@@ -502,11 +504,11 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 2, liaNode.getSinkPropagator().size() );
@@ -568,11 +570,11 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 2, liaNode.getSinkPropagator().size() );
@@ -630,11 +632,11 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
@@ -714,11 +716,11 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         JoinNode bNode = ( JoinNode) liaNode.getSinkPropagator().getSinks()[0];
@@ -889,14 +891,14 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode botn = getObjectTypeNode(kbase, B.class );
         ObjectTypeNode cotn = getObjectTypeNode(kbase, C.class );
 
-        InternalWorkingMemory wm = (InternalWorkingMemory)kbase.newStatefulKnowledgeSession();
+        InternalWorkingMemory wm = (InternalWorkingMemory)kbase.newKieSession();
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -974,17 +976,17 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
+        KieSession wm = kbase.newKieSession();
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
         wm.fireAllRules();        
         assertEquals( 0, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1025,11 +1027,11 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
 
-        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();        List list = new ArrayList();
+        KieSession wm = kbase.newKieSession();        List list = new ArrayList();
         wm.setGlobal( "list", list );
         
         for ( int i = 0; i < 3; i++ ) {
@@ -1043,7 +1045,7 @@ public class LinkingTest {
         wm.fireAllRules();        
         assertEquals( 0, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1092,12 +1094,12 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
 
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1176,12 +1178,12 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
 
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1235,17 +1237,17 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
         wm.fireAllRules();        
         assertEquals( 1, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1287,14 +1289,14 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode cotn = getObjectTypeNode(kbase, A.class );
 
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1309,7 +1311,7 @@ public class LinkingTest {
         wm.fireAllRules();        
         assertEquals( 9, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1357,11 +1359,11 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
@@ -1418,11 +1420,11 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
@@ -1480,14 +1482,14 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode cotn = getObjectTypeNode(kbase, A.class );
 
-        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
+        KieSession wm = kbase.newKieSession();
         List list = new ArrayList();
 //        wm.setGlobal( "list", list );
 //        
@@ -1504,7 +1506,7 @@ public class LinkingTest {
 //        wm.fireAllRules();        
 //        assertEquals( 0, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1553,17 +1555,17 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
+        KieSession wm = kbase.newKieSession();
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
         wm.fireAllRules();        
         assertEquals( 1, list.size() );
         
-        wm = kbase.newStatefulKnowledgeSession();
+        wm = kbase.newKieSession();
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1603,17 +1605,17 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
+        KieSession wm = kbase.newKieSession();
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
         wm.fireAllRules();        
         assertEquals( 0, list.size() );
         
-        wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1657,14 +1659,14 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode cotn = getObjectTypeNode(kbase, A.class );
 
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1718,14 +1720,14 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode botn = getObjectTypeNode(kbase, A.class );
         ObjectTypeNode cotn = getObjectTypeNode(kbase, A.class );
 
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
@@ -1767,7 +1769,7 @@ public class LinkingTest {
         assertEquals( 1, list.size() );         
     }      
     
-    public static ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
+    public static ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {

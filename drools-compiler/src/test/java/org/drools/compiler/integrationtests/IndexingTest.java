@@ -42,6 +42,7 @@ import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
@@ -50,7 +51,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
@@ -90,12 +90,12 @@ public class IndexingTest extends CommonTestMethodBase {
         drl += "then\n";
         drl += "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = loadKnowledgeBaseFromString( drl );
 
         Map<String, Rule> rules = rulestoMap(kbase);
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         assertEquals( 2, otn.getObjectSinkPropagator().size() );
 
@@ -127,10 +127,10 @@ public class IndexingTest extends CommonTestMethodBase {
         drl += "then\n";
         drl += "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = loadKnowledgeBaseFromString( drl );
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[0];
         CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter)alphaNode1.getObjectSinkPropagator();
@@ -168,10 +168,10 @@ public class IndexingTest extends CommonTestMethodBase {
         drl += "then\n";
         drl += "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = loadKnowledgeBaseFromString( drl );
         
         ObjectTypeNode node = getObjectTypeNode(kbase, Person.class );
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         JoinNode j2 = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[0]; // $p2
@@ -266,7 +266,7 @@ public class IndexingTest extends CommonTestMethodBase {
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = loadKnowledgeBaseFromString( str );
         
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
@@ -277,7 +277,7 @@ public class IndexingTest extends CommonTestMethodBase {
             }
         }
 
-        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
         
         AlphaNode alphanode = ( AlphaNode ) node.getObjectSinkPropagator().getSinks()[0];
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getObjectSinkPropagator().getSinks()[0];
@@ -300,7 +300,7 @@ public class IndexingTest extends CommonTestMethodBase {
         str += "    not $p2 : Person( $name := name, age > $age ) \n";
         str += "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = loadKnowledgeBaseFromString( str );
 
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
@@ -311,7 +311,7 @@ public class IndexingTest extends CommonTestMethodBase {
             }
         }
 
-        StatefulKnowledgeSessionImpl wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        StatefulKnowledgeSessionImpl wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         AlphaNode alphanode = ( AlphaNode ) node.getObjectSinkPropagator().getSinks()[0];
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getObjectSinkPropagator().getSinks()[0];
@@ -442,7 +442,7 @@ public class IndexingTest extends CommonTestMethodBase {
         str += "    not $p2 : Person( $name := name, age > $age ) \n";
         str += "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = loadKnowledgeBaseFromString( str );
 
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
@@ -453,7 +453,7 @@ public class IndexingTest extends CommonTestMethodBase {
             }
         }
 
-        StatefulKnowledgeSessionImpl wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        StatefulKnowledgeSessionImpl wm = ((StatefulKnowledgeSessionImpl)kbase.newKieSession());
 
         AlphaNode alphanode = ( AlphaNode ) node.getObjectSinkPropagator().getSinks()[0];
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getObjectSinkPropagator().getSinks()[0];
@@ -521,7 +521,7 @@ public class IndexingTest extends CommonTestMethodBase {
         }
     }
 
-    public static ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
+    public static ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
@@ -542,8 +542,8 @@ public class IndexingTest extends CommonTestMethodBase {
                 "   System.out.println( $s );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "cheddar" );
         ksession.insert( "gorgonzola" );
@@ -564,8 +564,8 @@ public class IndexingTest extends CommonTestMethodBase {
                 "   System.out.println( $s );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( "gorgonzola" );
         ksession.insert( new Cheese( "cheddar", 10 ) );
@@ -592,8 +592,8 @@ public class IndexingTest extends CommonTestMethodBase {
                 "   modify($p) { setAge(15); }\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "mario", 10 ) );
         ksession.insert( new Cheese( "gorgonzola", 20 ) );
@@ -616,8 +616,8 @@ public class IndexingTest extends CommonTestMethodBase {
                 "   modify($c) { setPrice(15); }\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "A", 10 ) );
         ksession.insert( new Cheese( "C1", 20 ) );
@@ -642,8 +642,8 @@ public class IndexingTest extends CommonTestMethodBase {
                 "   modify($c) { setPrice(8); }\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Person( "A", 10 ) );
         ksession.insert( new Cheese( "C1", 30 ) );
@@ -672,8 +672,8 @@ public class IndexingTest extends CommonTestMethodBase {
                 "   System.out.println( $a + \", \" + $b );\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         FactType aType = kbase.getFactType( "org.drools.compiler.test", "A" );
         FactType bType = kbase.getFactType( "org.drools.compiler.test", "B" );
