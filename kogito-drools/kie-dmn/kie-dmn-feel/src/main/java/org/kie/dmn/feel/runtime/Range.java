@@ -30,6 +30,6 @@ public interface Range {
 
     RangeBoundary getHighBoundary();
 
-    Boolean includes(Comparable param);
+    Boolean includes(Object param);
 
 }

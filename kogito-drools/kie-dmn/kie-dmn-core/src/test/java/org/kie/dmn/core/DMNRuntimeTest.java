@@ -1437,18 +1437,26 @@ public class DMNRuntimeTest {
         assertThat( result.get("Every are negative"), is( false ) );
     }
 
-    private Map<String, Object> createProfile( String name, String gender, String city, int age,
-                                               List<String> interests, int minAge, int maxAge, List<String> genders,
-                                               int matchingInterests ) {
-        return prototype( entry( "Name", name ),
-                          entry( "Gender", gender ),
-                          entry( "City", city ),
-                          entry( "Age", age ),
-                          entry( "List of Interests", interests ),
-                          entry( "Minimum Acceptable Age", minAge ),
-                          entry( "Maximum Acceptable Age", maxAge ),
-                          entry( "Acceptable Genders", genders ),
-                          entry( "Minimum Matching Interests", matchingInterests ) );
+    @Test
+    public void testDateAllowedValues() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "date_allowed_values.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_fbf002a3-615b-4f02-98e4-c28d4676225a",
+                "Error with constraints verification" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext ctx = runtime.newContext();
+        Object duration = BuiltInType.DURATION.fromString( "P20Y" );
+        ctx.set( "yearsMonth", duration );
+        Object dateTime = BuiltInType.DATE_TIME.fromString( "2017-05-16T17:58:00.000" );
+        ctx.set( "dateTime", dateTime );
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, ctx );
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        assertThat( (Map<String,Object>) result.get( "Decision Logic 1" ), hasEntry( "years and months", duration ) );
+        assertThat( (Map<String,Object>) result.get( "Decision Logic 1" ), hasEntry( "Date Time", dateTime ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {

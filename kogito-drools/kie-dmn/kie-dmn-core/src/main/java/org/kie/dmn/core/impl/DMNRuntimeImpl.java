@@ -178,7 +178,7 @@ public class DMNRuntimeImpl
         try {
             eventManager.fireBeforeEvaluateBKM( bkm, result );
             for( DMNNode dep : bkm.getDependencies().values() ) {
-                if ( !checkDependencyValueIsValid(dep, result.getContext()) ) {
+                if ( !checkDependencyValueIsValid(dep, result ) ) {
                     DMNMessage message = MsgUtil.reportMessage( logger,
                                                                 DMNMessage.Severity.ERROR,
                                                                 ((DMNBaseNode) dep).getSource(),
@@ -250,20 +250,32 @@ public class DMNRuntimeImpl
             boolean missingInput = false;
             DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById( decision.getId() );
             for( DMNNode dep : decision.getDependencies().values() ) {
-                if ( !checkDependencyValueIsValid(dep, result.getContext()) ) {
-                    missingInput = true;
-                    DMNMessage message = MsgUtil.reportMessage( logger,
-                            DMNMessage.Severity.ERROR,
-                            ((DMNBaseNode) dep).getSource(),
-                            result,
-                            null,
-                            null,
-                            Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
-                            getIdentifier( decision ),
-                            getIdentifier( dep ),
-                            result.getContext().get( dep.getName() )
-                            );
-                    reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
+                try {
+                    if ( !checkDependencyValueIsValid(dep, result ) ) {
+                        missingInput = true;
+                        DMNMessage message = MsgUtil.reportMessage( logger,
+                                DMNMessage.Severity.ERROR,
+                                ((DMNBaseNode) dep).getSource(),
+                                result,
+                                null,
+                                null,
+                                Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
+                                getIdentifier( decision ),
+                                getIdentifier( dep ),
+                                result.getContext().get( dep.getName() )
+                                );
+                        reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
+                    }
+                } catch ( Exception e ) {
+                    MsgUtil.reportMessage( logger,
+                                           DMNMessage.Severity.ERROR,
+                                           ((DMNBaseNode)dep).getSource(),
+                                           result,
+                                           e,
+                                           null,
+                                           Msg.ERROR_CHECKING_ALLOWED_VALUES,
+                                           getIdentifier( dep ),
+                                           e.getMessage() );
                 }
                 if( ! result.getContext().isDefined( dep.getName() ) ) {
                     if( dep instanceof DecisionNode ) {
@@ -324,22 +336,35 @@ public class DMNRuntimeImpl
                         // and vice-versa
                         value = ((Collection)value).toArray()[0];
                     }
-                    
-                    if ( !d.getResultType().isAssignableValue(value) ) {
-                        DMNMessage message = MsgUtil.reportMessage( logger,
-                                DMNMessage.Severity.ERROR,
-                                decision.getSource(),
-                                result,
-                                null,
-                                null,
-                                Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
-                                getIdentifier( decision ),
-                                decision.getResultType(),
-                                value);
-                        reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED );
+
+                    try {
+                        if ( !d.getResultType().isAssignableValue(value) ) {
+                            DMNMessage message = MsgUtil.reportMessage( logger,
+                                    DMNMessage.Severity.ERROR,
+                                    decision.getSource(),
+                                    result,
+                                    null,
+                                    null,
+                                    Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
+                                    getIdentifier( decision ),
+                                    decision.getResultType(),
+                                    value);
+                            reportFailure( dr, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED );
+                            return false;
+                        }
+                    } catch ( Exception e ) {
+                        MsgUtil.reportMessage( logger,
+                                               DMNMessage.Severity.ERROR,
+                                               decision.getSource(),
+                                               result,
+                                               e,
+                                               null,
+                                               Msg.ERROR_CHECKING_ALLOWED_VALUES,
+                                               getIdentifier( decision ),
+                                               e.getMessage() );
                         return false;
                     }
-                    
+
                     result.getContext().set( decision.getDecision().getVariable().getName(), value );
                     dr.setResult( value );
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED );
@@ -365,11 +390,11 @@ public class DMNRuntimeImpl
         }
     }
 
-    private boolean checkDependencyValueIsValid(DMNNode dep, DMNContext context) {
+    private boolean checkDependencyValueIsValid(DMNNode dep, DMNResultImpl result) {
         if (dep instanceof InputDataNode) {
-            InputDataNode inputDataNode = (InputDataNode) dep;
+            InputDataNodeImpl inputDataNode = (InputDataNodeImpl) dep;
             BaseDMNTypeImpl dmnType = (BaseDMNTypeImpl) inputDataNode.getType();
-            return dmnType.isAssignableValue( context.get( dep.getName() ) );
+            return dmnType.isAssignableValue( result.getContext().get( dep.getName() ) );
         }
         // if the dependency is NOT an InputData, the type coherence was checked at evaluation result assignment.
         return true;
