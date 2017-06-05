@@ -15,6 +15,7 @@
 
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.core.WorkingMemory;
@@ -23,22 +24,20 @@ import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.ActivationLogEvent;
 import org.drools.core.audit.event.LogEvent;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
 public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
-    private static final String LOG = "session";
 
     @Test
     public void testOutOfMemory() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( "empty.drl");
+        final KieBase kbase = loadKnowledgeBase( "empty.drl");
 
         for (int i = 0; i < 10000; i++) {
-            StatefulKnowledgeSession session = createKnowledgeSession(kbase);
-            WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);
+            final KieSession session = createKnowledgeSession(kbase);
+            final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger((WorkingMemory) session);
             session.fireAllRules();
             session.dispose();
         }
@@ -47,7 +46,7 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
     @Test
     public void testLogAllBoundVariables() throws Exception {
         // BZ-1271909
-        String drl =
+        final String drl =
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule \"Hello World\" no-loop\n" +
                 "    when\n" +
@@ -56,18 +55,18 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
                 "        update($messageInstance);\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
-        WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger((WorkingMemory) ksession);
+        final WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger((WorkingMemory) ksession);
 
-        Message message = new Message();
+        final Message message = new Message();
         message.setMessage("Hello World");
         ksession.insert(message);
         ksession.fireAllRules();
 
-        for (LogEvent logEvent : logger.getLogEvents()) {
+        for (final LogEvent logEvent : logger.getLogEvents()) {
             if (logEvent instanceof ActivationLogEvent) {
                 assertTrue( ((ActivationLogEvent) logEvent ).getDeclarations().contains( "$messageInstance" ));
                 assertTrue( ((ActivationLogEvent) logEvent ).getDeclarations().contains( "$myMessage" ));
@@ -87,7 +86,7 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
             return typeId.intValue();
         }
 
-        public void setTypeId(Integer id) {
+        public void setTypeId(final Integer id) {
             typeId = id;
         }
 
@@ -96,7 +95,7 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
             typeName = "test";
         }
 
-        public AnyType(Integer id, String type) {
+        public AnyType(final Integer id, final String type) {
             typeId = id;
             typeName = type;
         }
@@ -105,26 +104,44 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
     @Test
     public void testRetraction() throws Exception {
         // RHBRMS-2641
-        String drl =
+        final String drl =
                  "import " + AnyType.class.getCanonicalName() + ";\n" +
                  "rule \"retract\" when\n" +
-                 "		$any : AnyType( $typeId :typeId, typeName in (\"Standard\", \"Extended\") )\n" +
-                 "		$any_c1 : AnyType( typeId == $typeId, typeName not in (\"Standard\", \"Extended\") ) \r\n" +
-                 "	then\n" +
-                 "		delete($any);\n" +
-                 "		$any.setTypeId(null);\n" +
+                 "    $any : AnyType( $typeId :typeId, typeName in (\"Standard\", \"Extended\") )\n" +
+                 "    $any_c1 : AnyType( typeId == $typeId, typeName not in (\"Standard\", \"Extended\") ) \r\n" +
+                 "then\n" +
+                 "    delete($any);\n" +
+                 "    $any.setTypeId(null);\n" +
                  "end";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
-        WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( (WorkingMemory) ksession );
+        final WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( (WorkingMemory) ksession );
 
         ksession.insert(new AnyType(1, "Standard"));
         ksession.insert(new AnyType(1, "Extended"));
         ksession.insert(new AnyType(1, "test"));
 
         assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testWorkingMemoryLoggerWithUnbalancedBranches() throws Exception {
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_Logger.drl"));
+        final KieSession wm = createKnowledgeSession(kbase);
+
+        try {
+            wm.fireAllRules();
+
+            wm.insert(new Cheese("a", 10));
+            wm.insert(new Cheese("b", 11));
+            wm.fireAllRules();
+
+        } catch (final Exception e) {
+            e.printStackTrace();
+            fail("No exception should be raised ");
+        }
     }
 }

@@ -15,6 +15,10 @@
 
 package org.drools.compiler;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Collection;
+import java.util.function.Predicate;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -46,17 +50,16 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Collection;
-import java.util.function.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This contains methods common to many of the tests in drools-compiler. </p>
@@ -66,195 +69,205 @@ import java.util.function.Predicate;
  */
 public class CommonTestMethodBase extends Assert {
 
-	protected KieSession createKieSession(KieBase kbase) {
-		return kbase.newKieSession();
-	}
+    private static Logger logger = LoggerFactory.getLogger(CommonTestMethodBase.class);
 
-	protected KieSession createKieSession(KieBase kbase, KieSessionOption option) {
-		KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-		ksconf.setOption(option);
-		return kbase.newKieSession(ksconf, null);
-	}
+    protected KieSession createKieSession(KieBase kbase) {
+        return kbase.newKieSession();
+    }
 
-	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-	    return kbase.newStatefulKnowledgeSession();
-	}
+    protected KieSession createKieSession(KieBase kbase, KieSessionOption option) {
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption(option);
+        return kbase.newKieSession(ksconf, null);
+    }
 
-	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionOption option) {
-		KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-		ksconf.setOption(option);
-		return kbase.newStatefulKnowledgeSession(ksconf, null);
-	}
+    protected KieSession createKieSession(KieBase kbase, KieSessionConfiguration sessionConfiguration, Environment env) {
+        return kbase.newKieSession(sessionConfiguration, env);
+    }
 
-	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionConfiguration ksconf) {
-		return kbase.newStatefulKnowledgeSession(ksconf, null);
-	}
+    @Deprecated
+    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
+        return kbase.newStatefulKnowledgeSession();
+    }
 
-	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionConfiguration ksconf, Environment env) {
-		return kbase.newStatefulKnowledgeSession(ksconf, env);
-	}
+    protected KieSession createKnowledgeSession(KieBase kbase) {
+        return kbase.newKieSession();
+    }
 
-	protected StatelessKnowledgeSession createStatelessKnowledgeSession(KnowledgeBase kbase) {
-		return kbase.newStatelessKnowledgeSession();
-	}
+    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionOption option) {
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption(option);
+        return kbase.newStatefulKnowledgeSession(ksconf, null);
+    }
 
-	protected KnowledgeBase loadKnowledgeBaseFromString(NodeFactory nodeFactory, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, null, nodeFactory, drlContentStrings);
-	}
+    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionConfiguration ksconf) {
+        return kbase.newStatefulKnowledgeSession(ksconf, null);
+    }
 
-	protected KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, null, drlContentStrings);
-	}
+    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionConfiguration ksconf, Environment env) {
+        return kbase.newStatefulKnowledgeSession(ksconf, env);
+    }
 
-	protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(config, null, drlContentStrings);
-	}
+    protected StatelessKnowledgeSession createStatelessKnowledgeSession(KnowledgeBase kbase) {
+        return kbase.newStatelessKnowledgeSession();
+    }
 
-	protected KnowledgeBase loadKnowledgeBaseFromString(
-			KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, kBaseConfig, drlContentStrings);
-	}
+    protected KnowledgeBase loadKnowledgeBaseFromString(NodeFactory nodeFactory, String... drlContentStrings) {
+        return loadKnowledgeBaseFromString(null, null, nodeFactory, drlContentStrings);
+    }
 
-	protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString( config, kBaseConfig, (NodeFactory)null, drlContentStrings);
-	}
+    protected KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
+        return loadKnowledgeBaseFromString(null, null, drlContentStrings);
+    }
 
-	protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, NodeFactory nodeFactory, String... drlContentStrings) {
-		KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder(config);
-		for (String drlContentString : drlContentStrings) {
-			kbuilder.add(ResourceFactory.newByteArrayResource(drlContentString
-					.getBytes()), ResourceType.DRL);
-		}
+    protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, String... drlContentStrings) {
+        return loadKnowledgeBaseFromString(config, null, drlContentStrings);
+    }
 
-		if (kbuilder.hasErrors()) {
-			fail(kbuilder.getErrors().toString());
-		}
-		if (kBaseConfig == null) {
-			kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-		}
-		KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
-		if (nodeFactory != null) {
-			((KnowledgeBaseImpl) kbase).getConfiguration().getComponentFactory().setNodeFactoryProvider( nodeFactory);
-		}
-		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-		return kbase;
-	}
+    protected KnowledgeBase loadKnowledgeBaseFromString(
+            KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
+        return loadKnowledgeBaseFromString(null, kBaseConfig, drlContentStrings);
+    }
 
-	protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf, KieBaseConfiguration kbaseConf, String... classPathResources) {
-		Collection<KnowledgePackage> knowledgePackages = loadKnowledgePackages(kbuilderConf, classPathResources);
+    protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
+        return loadKnowledgeBaseFromString(config, kBaseConfig, (NodeFactory) null, drlContentStrings);
+    }
 
-		if (kbaseConf == null) {
-			kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-		}
-		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
-		kbase.addKnowledgePackages(knowledgePackages);
-		try {
-			kbase = SerializationHelper.serializeObject(kbase);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return kbase;
-	}
+    protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, NodeFactory nodeFactory, String... drlContentStrings) {
+        KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder(config);
+        for (String drlContentString : drlContentStrings) {
+            kbuilder.add(ResourceFactory.newByteArrayResource(drlContentString
+                    .getBytes()), ResourceType.DRL);
+        }
 
-	protected KnowledgeBase loadKnowledgeBase(PackageDescr descr) {
-		return loadKnowledgeBase(null, null, descr);
-	}
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
+        if (kBaseConfig == null) {
+            kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        }
+        KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+        if (nodeFactory != null) {
+            ((KnowledgeBaseImpl) kbase).getConfiguration().getComponentFactory().setNodeFactoryProvider(nodeFactory);
+        }
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        return kbase;
+    }
 
-	protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf,KieBaseConfiguration kbaseConf, PackageDescr descr) {
-		Collection<KnowledgePackage> knowledgePackages = loadKnowledgePackages(kbuilderConf, descr);
+    protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf, KieBaseConfiguration kbaseConf, String... classPathResources) {
+        Collection<KnowledgePackage> knowledgePackages = loadKnowledgePackages(kbuilderConf, classPathResources);
 
-		if (kbaseConf == null) {
-			kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-		}
-		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
-		kbase.addKnowledgePackages(knowledgePackages);
-		try {
-			kbase = SerializationHelper.serializeObject(kbase);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return kbase;
-	}
+        if (kbaseConf == null) {
+            kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
+        kbase.addKnowledgePackages(knowledgePackages);
+        try {
+            kbase = SerializationHelper.serializeObject(kbase);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return kbase;
+    }
 
-	public Collection<KnowledgePackage> loadKnowledgePackages(String... classPathResources) {
-		return loadKnowledgePackages(null, classPathResources);
-	}
+    protected KnowledgeBase loadKnowledgeBase(PackageDescr descr) {
+        return loadKnowledgeBase(null, null, descr);
+    }
 
-	public Collection<KnowledgePackage> loadKnowledgePackages(PackageDescr descr) {
-		return loadKnowledgePackages(null, descr);
-	}
+    protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf, KieBaseConfiguration kbaseConf, PackageDescr descr) {
+        Collection<KnowledgePackage> knowledgePackages = loadKnowledgePackages(kbuilderConf, descr);
 
-	public Collection<KnowledgePackage> loadKnowledgePackages(KnowledgeBuilderConfiguration kbuilderConf, PackageDescr descr) {
-		if (kbuilderConf == null) {
-			kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-		}
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
-		kbuilder.add(ResourceFactory.newDescrResource(descr), ResourceType.DESCR);
-		if (kbuilder.hasErrors()) {
-			fail(kbuilder.getErrors().toString());
-		}
-		Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
-		return knowledgePackages;
-	}
+        if (kbaseConf == null) {
+            kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
+        kbase.addKnowledgePackages(knowledgePackages);
+        try {
+            kbase = SerializationHelper.serializeObject(kbase);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return kbase;
+    }
 
-    public Collection<KnowledgePackage> loadKnowledgePackages( KnowledgeBuilderConfiguration kbuilderConf, String... classPathResources) {
+    public Collection<KnowledgePackage> loadKnowledgePackages(String... classPathResources) {
+        return loadKnowledgePackages(null, classPathResources);
+    }
+
+    public Collection<KnowledgePackage> loadKnowledgePackages(PackageDescr descr) {
+        return loadKnowledgePackages(null, descr);
+    }
+
+    public Collection<KnowledgePackage> loadKnowledgePackages(KnowledgeBuilderConfiguration kbuilderConf, PackageDescr descr) {
+        if (kbuilderConf == null) {
+            kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        }
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
+        kbuilder.add(ResourceFactory.newDescrResource(descr), ResourceType.DESCR);
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
+        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
+        return knowledgePackages;
+    }
+
+    public Collection<KnowledgePackage> loadKnowledgePackages(KnowledgeBuilderConfiguration kbuilderConf, String... classPathResources) {
         return loadKnowledgePackages(kbuilderConf, true, classPathResources);
     }
 
-	public Collection<KnowledgePackage> loadKnowledgePackages( KnowledgeBuilderConfiguration kbuilderConf, boolean serialize, String... classPathResources) {
-		if (kbuilderConf == null) {
-			kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-		}
+    public Collection<KnowledgePackage> loadKnowledgePackages(KnowledgeBuilderConfiguration kbuilderConf, boolean serialize, String... classPathResources) {
+        if (kbuilderConf == null) {
+            kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        }
 
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
-		for (String classPathResource : classPathResources) {
-			kbuilder.add(ResourceFactory.newClassPathResource(classPathResource, getClass()), ResourceType.DRL);
-		}
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
+        for (String classPathResource : classPathResources) {
+            kbuilder.add(ResourceFactory.newClassPathResource(classPathResource, getClass()), ResourceType.DRL);
+        }
 
-		if (kbuilder.hasErrors()) {
-			fail(kbuilder.getErrors().toString());
-		}
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
 
-		Collection<KnowledgePackage> knowledgePackages = null;
-        if ( serialize ) {
+        Collection<KnowledgePackage> knowledgePackages = null;
+        if (serialize) {
             try {
-                knowledgePackages = SerializationHelper.serializeObject(kbuilder.getKnowledgePackages(),  ((KnowledgeBuilderConfigurationImpl)kbuilderConf).getClassLoader() );
+                knowledgePackages = SerializationHelper.serializeObject(kbuilder.getKnowledgePackages(), ((KnowledgeBuilderConfigurationImpl) kbuilderConf).getClassLoader());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } else {
             knowledgePackages = kbuilder.getKnowledgePackages();
         }
-		return knowledgePackages;
-	}
+        return knowledgePackages;
+    }
 
-	public Collection<KnowledgePackage> loadKnowledgePackagesFromString(String... content) {
-		return loadKnowledgePackagesFromString(null, content);
-	}
+    public Collection<KnowledgePackage> loadKnowledgePackagesFromString(String... content) {
+        return loadKnowledgePackagesFromString(null, content);
+    }
 
-	public Collection<KnowledgePackage> loadKnowledgePackagesFromString(KnowledgeBuilderConfiguration kbuilderConf, String... content) {
-		if (kbuilderConf == null) {
-			kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-		}
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
-		for (String r : content) {
-			kbuilder.add(ResourceFactory.newByteArrayResource(r.getBytes()),ResourceType.DRL);
-		}
-		if (kbuilder.hasErrors()) {
-			fail(kbuilder.getErrors().toString());
-		}
-		Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
-		return knowledgePackages;
-	}
+    public Collection<KnowledgePackage> loadKnowledgePackagesFromString(KnowledgeBuilderConfiguration kbuilderConf, String... content) {
+        if (kbuilderConf == null) {
+            kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        }
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
+        for (String r : content) {
+            kbuilder.add(ResourceFactory.newByteArrayResource(r.getBytes()), ResourceType.DRL);
+        }
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
+        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
+        return knowledgePackages;
+    }
 
-	protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf,String... classPathResources) {
-		return loadKnowledgeBase(kbuilderConf, null, classPathResources);
-	}
+    protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf, String... classPathResources) {
+        return loadKnowledgeBase(kbuilderConf, null, classPathResources);
+    }
 
-	protected KnowledgeBase loadKnowledgeBase(KieBaseConfiguration kbaseConf, String... classPathResources) {
-		return loadKnowledgeBase(null, kbaseConf, classPathResources);
-	}
-
+    protected KnowledgeBase loadKnowledgeBase(KieBaseConfiguration kbaseConf, String... classPathResources) {
+        return loadKnowledgeBase(null, kbaseConf, classPathResources);
+    }
 
     protected KnowledgeBase getKnowledgeBase() {
         KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -286,79 +299,89 @@ public class CommonTestMethodBase extends Assert {
         }
     }
 
-	public static byte[] createJar(KieServices ks,
-			                       ReleaseId releaseId,
-			                       String... drls) {
-		KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML(
-				releaseId);
-		for (int i = 0; i < drls.length; i++) {
-			if (drls[i] != null) {
-				kfs.write("src/main/resources/r" + i + ".drl", drls[i]);
-			}
-		}
-		KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
-		assertFalse( kb.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).toString(),
-		        kb.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR) );
-		InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
-				.getKieModule(releaseId);
-		byte[] jar = kieModule.getBytes();
-		return jar;
-	}
+    protected void testInvalidDrl(final String drl) {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
 
-	public static KieModule createAndDeployJar(KieServices ks, ReleaseId releaseId, String... drls) {
-		byte[] jar = createJar(ks, releaseId, drls);
+        if (kbuilder.hasErrors()) {
+            logger.warn(kbuilder.getErrors().toString());
+        }
+        assertTrue(kbuilder.hasErrors());
+    }
 
-		// Deploy jar into the repository
-		KieModule km = deployJarIntoRepository(ks, jar);
-		return km;
-	}
+    public static byte[] createJar(KieServices ks,
+            ReleaseId releaseId,
+            String... drls) {
+        KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML(
+                releaseId);
+        for (int i = 0; i < drls.length; i++) {
+            if (drls[i] != null) {
+                kfs.write("src/main/resources/r" + i + ".drl", drls[i]);
+            }
+        }
+        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
+        assertFalse(kb.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).toString(),
+                kb.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR));
+        InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
+                .getKieModule(releaseId);
+        byte[] jar = kieModule.getBytes();
+        return jar;
+    }
 
-	public static KieModule createAndDeployJar(KieServices ks, String kmoduleContent, ReleaseId releaseId, Resource... resources) {
-	    return createAndDeployJar( ks, kmoduleContent, o -> true, releaseId, resources );
-	}
+    public static KieModule createAndDeployJar(KieServices ks, ReleaseId releaseId, String... drls) {
+        byte[] jar = createJar(ks, releaseId, drls);
+
+        // Deploy jar into the repository
+        KieModule km = deployJarIntoRepository(ks, jar);
+        return km;
+    }
+
+    public static KieModule createAndDeployJar(KieServices ks, String kmoduleContent, ReleaseId releaseId, Resource... resources) {
+        return createAndDeployJar(ks, kmoduleContent, o -> true, releaseId, resources);
+    }
 
     public static KieModule createAndDeployJar(KieServices ks,
-                                               String kmoduleContent,
-                                               Predicate<String> classFilter,
-                                               ReleaseId releaseId,
-                                               Resource... resources) {
-		byte[] jar = createJar(ks, kmoduleContent, classFilter, releaseId, resources);
+            String kmoduleContent,
+            Predicate<String> classFilter,
+            ReleaseId releaseId,
+            Resource... resources) {
+        byte[] jar = createJar(ks, kmoduleContent, classFilter, releaseId, resources);
 
-		KieModule km = deployJarIntoRepository(ks, jar);
-		return km;
-	}
+        KieModule km = deployJarIntoRepository(ks, jar);
+        return km;
+    }
 
-	public static byte[] createJar(KieServices ks, String kmoduleContent, Predicate<String> classFilter, ReleaseId releaseId, Resource... resources) {
-		KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML(releaseId).writeKModuleXML(kmoduleContent);
-		for (int i = 0; i < resources.length; i++) {
-			if (resources[i] != null) {
-				kfs.write(resources[i]);
-			}
-		}
-		KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-		((InternalKieBuilder) kieBuilder).buildAll(classFilter);
-		Results results = kieBuilder.getResults();
-		if (results.hasMessages(Message.Level.ERROR)) {
-			throw new IllegalStateException(results.getMessages(Message.Level.ERROR).toString());
-		}
-		InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
-				.getKieModule(releaseId);
-		byte[] jar = kieModule.getBytes();
-		return jar;
-	}
+    public static byte[] createJar(KieServices ks, String kmoduleContent, Predicate<String> classFilter, ReleaseId releaseId, Resource... resources) {
+        KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML(releaseId).writeKModuleXML(kmoduleContent);
+        for (int i = 0; i < resources.length; i++) {
+            if (resources[i] != null) {
+                kfs.write(resources[i]);
+            }
+        }
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        ((InternalKieBuilder) kieBuilder).buildAll(classFilter);
+        Results results = kieBuilder.getResults();
+        if (results.hasMessages(Message.Level.ERROR)) {
+            throw new IllegalStateException(results.getMessages(Message.Level.ERROR).toString());
+        }
+        InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
+                .getKieModule(releaseId);
+        byte[] jar = kieModule.getBytes();
+        return jar;
+    }
 
-	private static KieModule deployJarIntoRepository(KieServices ks, byte[] jar) {
-		Resource jarRes = ks.getResources().newByteArrayResource(jar);
-		KieModule km = ks.getRepository().addKieModule(jarRes);
-		return km;
-	}
+    private static KieModule deployJarIntoRepository(KieServices ks, byte[] jar) {
+        Resource jarRes = ks.getResources().newByteArrayResource(jar);
+        KieModule km = ks.getRepository().addKieModule(jarRes);
+        return km;
+    }
 
     public static byte[] createKJar(KieServices ks,
-                                    ReleaseId releaseId,
-                                    Resource pom,
-                                    Resource... resources) {
+            ReleaseId releaseId,
+            Resource pom,
+            Resource... resources) {
         KieFileSystem kfs = ks.newKieFileSystem();
-        if( pom != null ) {
+        if (pom != null) {
             kfs.write(pom);
         } else {
             kfs.generateAndWritePomXML(releaseId);
@@ -375,23 +398,23 @@ public class CommonTestMethodBase extends Assert {
         return jar;
     }
 
-	public static byte[] createKJar(KieServices ks,
-									ReleaseId releaseId,
-									String pom,
-									String... drls) {
-		return createKJar( ks, null, releaseId, pom, drls );
-	}
+    public static byte[] createKJar(KieServices ks,
+            ReleaseId releaseId,
+            String pom,
+            String... drls) {
+        return createKJar(ks, null, releaseId, pom, drls);
+    }
 
     public static byte[] createKJar(KieServices ks,
-									KieModuleModel kproj,
-									ReleaseId releaseId,
-                                    String pom,
-                                    String... drls) {
+            KieModuleModel kproj,
+            ReleaseId releaseId,
+            String pom,
+            String... drls) {
         KieFileSystem kfs = ks.newKieFileSystem();
-		if (kproj != null) {
-			kfs.writeKModuleXML(kproj.toXML());
-		}
-        if( pom != null ) {
+        if (kproj != null) {
+            kfs.writeKModuleXML(kproj.toXML());
+        }
+        if (pom != null) {
             kfs.write("pom.xml", pom);
         } else {
             kfs.generateAndWritePomXML(releaseId);
@@ -401,24 +424,24 @@ public class CommonTestMethodBase extends Assert {
                 kfs.write("src/main/resources/r" + i + ".drl", drls[i]);
             }
         }
-		return buildKJar( ks, kfs, releaseId );
+        return buildKJar(ks, kfs, releaseId);
     }
 
-	public static byte[] buildKJar( KieServices ks, KieFileSystem kfs, ReleaseId releaseId ) {
-		KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
-		if( kb.getResults().hasMessages( Message.Level.ERROR ) ) {
-            for( Message result : kb.getResults().getMessages() ) {
+    public static byte[] buildKJar(KieServices ks, KieFileSystem kfs, ReleaseId releaseId) {
+        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
+        if (kb.getResults().hasMessages(Message.Level.ERROR)) {
+            for (Message result : kb.getResults().getMessages()) {
                 System.out.println(result.getText());
             }
             return null;
         }
-		InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
-															.getKieModule(releaseId);
-		byte[] jar = kieModule.getBytes();
-		return jar;
-	}
+        InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
+                .getKieModule(releaseId);
+        byte[] jar = kieModule.getBytes();
+        return jar;
+    }
 
-	public static KieModule deployJar(KieServices ks, byte[] jar) {
+    public static KieModule deployJar(KieServices ks, byte[] jar) {
         // Deploy jar into the repository
         Resource jarRes = ks.getResources().newByteArrayResource(jar);
         KieModule km = ks.getRepository().addKieModule(jarRes);
@@ -445,5 +468,33 @@ public class CommonTestMethodBase extends Assert {
             fail("unexpected exception :" + e.getMessage());
         }
         return ksession;
+    }
+
+    public StatefulKnowledgeSession genSession(String source) {
+        return genSession(new String[] {source},0);
+    }
+
+    public StatefulKnowledgeSession genSession(String source, int numerrors)  {
+        return genSession(new String[] {source},numerrors);
+    }
+
+    public StatefulKnowledgeSession genSession(String[] sources, int numerrors)  {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        for (String source : sources)
+            kbuilder.add( ResourceFactory.newClassPathResource(source, getClass()), ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( kbuilder.getErrors().size() > 0 ) {
+            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
+                System.err.println( error );
+            }
+        }
+        assertEquals(numerrors, errors.size() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        return createKnowledgeSession(kbase);
+
     }
 }
