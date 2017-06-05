@@ -23,13 +23,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.drools.core.definitions.rule.impl.GlobalImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
@@ -84,9 +84,9 @@ public class KnowledgePackageMetaDataTest {
             fail( kBuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
-        KnowledgePackage pack = kBase.getKnowledgePackage( "org.drools.compiler.test.definitions" );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addPackages( kBuilder.getKnowledgePackages() );
+        KiePackage pack = kBase.getPackage( "org.drools.compiler.test.definitions" );
 
         assertNotNull( pack );
 
