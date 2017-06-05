@@ -28,6 +28,8 @@ import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -40,8 +42,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
@@ -58,7 +58,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     @Test
     public void testExtends() throws Exception {
         //Test Base Fact Type
-        StatefulKnowledgeSession ksession = genSession("test_Extends.drl");
+        KieSession ksession = genSession("test_Extends.drl");
 
         FactType person = ksession.getKieBase().getFactType("defaultpkg","Person");
         FactType eqPair = ksession.getKieBase().getFactType("defaultpkg","EqualityPair");
@@ -79,7 +79,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testGeneratedMethods() throws Exception {
-        StatefulKnowledgeSession ksession = genSession("test_Extends.drl");
+        KieSession ksession = genSession("test_Extends.drl");
 
         FactType student = ksession.getKieBase().getFactType("defaultpkg","Student");
 
@@ -126,7 +126,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testDeepExt() throws Exception {
-        StatefulKnowledgeSession ksession = genSession("test_Extends.drl");
+        KieSession ksession = genSession("test_Extends.drl");
         FactType LTstudent = ksession.getKieBase().getFactType("defaultpkg","LongTermStudent");
 
         Constructor constructor = LTstudent.getFactClass().getConstructor(String.class,int.class,String.class,String.class,int.class);
@@ -151,7 +151,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testExtendsLegacy() throws Exception {
-        StatefulKnowledgeSession ksession = genSession("test_ExtLegacy.drl",0);
+        KieSession ksession = genSession("test_ExtLegacy.drl",0);
 
         FactType leg = ksession.getKieBase().getFactType("org.drools.compiler","BetterLegacy");
         assertNotNull(leg);
@@ -174,7 +174,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
      public void testExtendsAcrossFiles() throws Exception {
-        StatefulKnowledgeSession ksession = genSession(new String[] {"test_Ext1.drl","test_Ext2.drl","test_Ext3.drl","test_Ext4.drl"} ,0);
+        KieSession ksession = genSession(new String[] {"test_Ext1.drl","test_Ext2.drl","test_Ext3.drl","test_Ext4.drl"} ,0);
 
         FactType person = ksession.getKieBase().getFactType("org.drools.compiler.ext.test","Person");
             assertNotNull(person);
@@ -202,7 +202,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
      public void testFieldInit() throws Exception {
-        StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
+        KieSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler", "MyBean3");
 
         Object x = test.newInstance();
@@ -231,7 +231,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testBoxedFieldInit() throws Exception {
-        StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
+        KieSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler","MyBoxBean");
 
         Object x = test.newInstance();
@@ -255,7 +255,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testExpressionFieldInit() throws Exception {
-        StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
+        KieSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler","MyBoxExpressionBean");
 
         Object x = test.newInstance();
@@ -300,7 +300,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testHierarchy() throws Exception {
-        StatefulKnowledgeSession ksession = genSession("test_ExtHierarchy.drl");
+        KieSession ksession = genSession("test_ExtHierarchy.drl");
         ksession.setGlobal("list",new LinkedList());
 
         ksession.fireAllRules();
@@ -350,9 +350,9 @@ public class ExtendsTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List out = new ArrayList();
         ksession.setGlobal("ans",out);
@@ -375,7 +375,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     @Test
     public void testRedefineDefaults() throws Exception {
         //Test Base Fact Type
-        StatefulKnowledgeSession ksession = genSession("test_Extends.drl");
+        KieSession ksession = genSession("test_Extends.drl");
 
         FactType person = ksession.getKieBase().getFactType("defaultpkg","Person");
         FactType student = ksession.getKieBase().getFactType("defaultpkg","Student");
@@ -574,7 +574,7 @@ public class ExtendsTest extends CommonTestMethodBase {
                     " foo : int @key\n" +
                     "end\n";
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
 
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( );
         kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
@@ -618,7 +618,7 @@ public class ExtendsTest extends CommonTestMethodBase {
             .end();
         String drl = new DrlDumper().dump( pkgd.getDescr() );
 
-        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        KieBase kb = loadKnowledgeBaseFromString( drl );
 
         FactType bar = kb.getFactType( "org.test", "Bar" );
         try {
@@ -656,8 +656,8 @@ public class ExtendsTest extends CommonTestMethodBase {
         }
         assertFalse( kBuilder.hasErrors() );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addPackages( kBuilder.getKnowledgePackages() );
 
         FactType sw = knowledgeBase.getFactType( "org.drools.test", "MultiInhPosTrait" );
         assertEquals( 5, sw.getFields().size() );
@@ -692,8 +692,8 @@ public class ExtendsTest extends CommonTestMethodBase {
         }
         assertFalse( kBuilder.hasErrors() );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addPackages( kBuilder.getKnowledgePackages() );
 
         FactType sw = knowledgeBase.getFactType( "org.drools.test", "MultiInhPosTrait" );
         assertEquals( 5, sw.getFields().size() );
@@ -728,8 +728,8 @@ public class ExtendsTest extends CommonTestMethodBase {
         }
         assertFalse( kBuilder.hasErrors() );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addPackages( kBuilder.getKnowledgePackages() );
 
         FactType sw = knowledgeBase.getFactType( "org.drools.test", "MultiInhPosTrait" );
         assertEquals( 5, sw.getFields().size() );
@@ -764,8 +764,8 @@ public class ExtendsTest extends CommonTestMethodBase {
         }
         assertFalse( kBuilder.hasErrors() );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addPackages( kBuilder.getKnowledgePackages() );
 
         FactType sw = knowledgeBase.getFactType( "org.drools.test", "MultiInhPosTrait" );
         assertEquals( 5, sw.getFields().size() );
@@ -800,8 +800,8 @@ public class ExtendsTest extends CommonTestMethodBase {
         }
         assertFalse( kBuilder.hasErrors() );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addPackages( kBuilder.getKnowledgePackages() );
 
         FactType sw = knowledgeBase.getFactType( "org.drools.test", "MultiInhPosTrait" );
         assertEquals( 5, sw.getFields().size() );
@@ -842,8 +842,8 @@ public class ExtendsTest extends CommonTestMethodBase {
         }
         assertFalse( kBuilder.hasErrors() );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addPackages( kBuilder.getKnowledgePackages() );
 
         FactType sw = knowledgeBase.getFactType( "org.drools.test", "MultiInhPosTrait" );
         assertEquals( 6, sw.getFields().size() );
@@ -885,8 +885,8 @@ public class ExtendsTest extends CommonTestMethodBase {
         }
         assertFalse( kBuilder.hasErrors() );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addPackages( kBuilder.getKnowledgePackages() );
 
         FactType sw = knowledgeBase.getFactType( "org.drools.test", "MultiInhPosTrait" );
         assertEquals( 6, sw.getFields().size() );
@@ -937,10 +937,10 @@ public class ExtendsTest extends CommonTestMethodBase {
         }
         assertFalse( kBuilder.hasErrors() );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addPackages( kBuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = knowledgeBase.newKieSession();
         FactHandle h = knowledgeSession.insert( new X() );
 
         assertTrue( ( (InternalFactHandle) h ).isEvent() );

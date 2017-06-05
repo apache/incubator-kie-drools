@@ -18,12 +18,12 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -47,7 +47,7 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
 
     @Before
     public void setUp() throws Exception {
-        kbase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
+        kbase = KnowledgeBaseFactory.newKnowledgeBase();
         addRule("raiseAlarm");
     }
 
@@ -120,7 +120,7 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
             final List<String> events = new ArrayList<String>();
 
             try {
-                StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+                KieSession ksession = createKnowledgeSession(kbase);
                 ksession.setGlobal("events", events);
 
                 Room room1 = new Room("Room 1");
@@ -172,7 +172,7 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
 
         CommonTestMethodBase testBaseMethod = new CommonTestMethodBase();
 
-        kbase.addKnowledgePackages(testBaseMethod.loadKnowledgePackagesFromString( rule ));
+        kbase.addPackages(testBaseMethod.loadKnowledgePackagesFromString( rule ));
 
         if (firingRule != null) {
             kbase.removeRule("defaultpkg", firingRule.getName());

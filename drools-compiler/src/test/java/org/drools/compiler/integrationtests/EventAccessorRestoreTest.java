@@ -27,7 +27,6 @@ import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -69,9 +68,9 @@ public class EventAccessorRestoreTest extends CommonTestMethodBase {
                 "end\n" +
                 "";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = loadKnowledgeBaseFromString( str );
 
-        KieSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
 
         try {
             kbaseFile = temp.newFile( "test.bin" );
@@ -103,7 +102,7 @@ public class EventAccessorRestoreTest extends CommonTestMethodBase {
         KieSession ksession = null;
         DroolsObjectInputStream droolsIn = new DroolsObjectInputStream( input, this.getClass().getClassLoader() );
         try {
-            KnowledgeBase kbase = (KnowledgeBase) droolsIn.readObject();
+            KieBase kbase = (KieBase) droolsIn.readObject();
             Marshaller mas = createMarshaller( kbase );
             ksession = mas.unmarshall(droolsIn);
         } catch ( EOFException e ) {
