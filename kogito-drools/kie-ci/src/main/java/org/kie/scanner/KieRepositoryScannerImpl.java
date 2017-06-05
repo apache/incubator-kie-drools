@@ -335,9 +335,9 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             }
 
             if ( allUpdatesSucceeded ) {
-                log.error("Some errors occured while updating the following artifacts: " + updatedArtifacts);
-            } else {
                 log.info("The following artifacts have been updated: " + updatedArtifacts);
+            } else {
+                log.error("Some errors occured while updating the following artifacts: " + updatedArtifacts);
             }
             
             // show we catch exceptions here and shutdown the scanner if one happens?
