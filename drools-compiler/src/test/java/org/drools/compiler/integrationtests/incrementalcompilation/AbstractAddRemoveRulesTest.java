@@ -23,12 +23,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.TurtleTestCategory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Assert;
 import org.junit.experimental.categories.Category;
+import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -46,7 +48,7 @@ public abstract class AbstractAddRemoveRulesTest {
     protected static final String RULE3_NAME = "R3";
 
     // TODO - remove these two methods - they are also in TestContext
-    protected KnowledgeBuilder createKnowledgeBuilder(final KnowledgeBase kbase, final String drl) {
+    protected KnowledgeBuilder createKnowledgeBuilder(final KieBase kbase, final String drl) {
         final KnowledgeBuilder kbuilder;
         if (kbase == null) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -61,22 +63,22 @@ public abstract class AbstractAddRemoveRulesTest {
         return kbuilder;
     }
 
-    protected StatefulKnowledgeSession buildSessionInSteps(final String... drls) {
+    protected KieSession buildSessionInSteps(final String... drls) {
         if (drls == null || drls.length == 0) {
-            return KnowledgeBaseFactory.newKnowledgeBase().newStatefulKnowledgeSession();
+            return KnowledgeBaseFactory.newKnowledgeBase().newKieSession();
         } else {
             String drl = drls[0];
             final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
-            final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+            final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            kbase.addPackages(kbuilder.getKnowledgePackages());
 
-            final StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+            final KieSession kSession = kbase.newKieSession();
             kSession.fireAllRules();
 
             for (int i = 1; i < drls.length; i++) {
                 drl = drls[i];
                 final KnowledgeBuilder kbuilder2 = createKnowledgeBuilder(kSession.getKieBase(), drl);
-                kSession.getKieBase().addKnowledgePackages(kbuilder2.getKnowledgePackages());
+                ((InternalKnowledgeBase)kSession.getKieBase()).addPackages(kbuilder2.getKnowledgePackages());
             }
             return kSession;
         }
@@ -96,7 +98,7 @@ public abstract class AbstractAddRemoveRulesTest {
         }
     }
 
-    protected StatefulKnowledgeSession runAddRemoveTest(final List<TestOperation> testOperations,
+    protected KieSession runAddRemoveTest(final List<TestOperation> testOperations,
             final Map<String, Object> additionalGlobals) {
 
         final List resultsList = new ArrayList();
@@ -111,7 +113,7 @@ public abstract class AbstractAddRemoveRulesTest {
         return testContext.getSession();
     }
 
-    protected int getRulesCount(final KnowledgeBase kBase) {
+    protected int getRulesCount(final KieBase kBase) {
         int result = 0;
         for (KiePackage kiePackage : kBase.getKiePackages()) {
             result += kiePackage.getRules().size();
