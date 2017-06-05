@@ -43,7 +43,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -77,8 +77,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                         "when\n" +
                         "then\n" +
                         "end\n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "InitialFactImpl" );
         assertNotNull( otn );
@@ -199,8 +199,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                       "   exists(eval(1==1))\n" +
                       "then\n" +
                       "end\n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "InitialFactImpl" );
         assertNotNull( otn );
@@ -293,7 +293,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     }       
     
 
-    private KnowledgeBase getKnowledgeBase(String... rules) {
+    private KieBase getKnowledgeBase(String... rules) {
         String rule = "package org.drools.compiler.integrationtests\n" +
                 "global java.util.List list;\n" +
                 "declare A\n" +
@@ -331,15 +331,15 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                     "then\n" +
                     "end\n";
         }
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
         return kbase;
     }
     
     @Test
     public void testRtnNoConstraintsNoWatches() {
         String rule1 = "A()";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -354,8 +354,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testRtnNoConstraintsWithWatches() {
         String rule1 = "A() @watch(a)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -372,8 +372,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testRtnWithConstraintsNoWatches() {
         String rule1 = "A( a == 10 )";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -394,8 +394,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testRtnWithConstraintsWithWatches() {
         String rule1 = "A( a == 10 ) @watch(b)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -417,8 +417,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testRtnSharedAlphaNoWatches() {
         String rule1 = "A( a == 10, b == 15 )";
         String rule2 = "A( a == 10, i == 20 )";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -487,8 +487,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testRtnSharedAlphaWithWatches() {
         String rule1 = "A( a == 10, b == 15 ) @watch(c, !a)";
         String rule2 = "A( a == 10, i == 20 ) @watch(s, !i)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -560,8 +560,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testBetaNoConstraintsNoWatches() {
         String rule1 = "B() A()";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -577,8 +577,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testBetaNoConstraintsWithWatches() {
         String rule1 = "B() @watch(a) A() @watch(a)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -595,8 +595,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testBetaWithConstraintsNoWatches() {
         String rule1 = "$b : B(a == 15) A( a == 10, b == $b.b )";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -623,8 +623,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testBetaWithConstraintsWithWatches() {
         String rule1 = "$b : B( a == 15) @watch(c) A( a == 10, b == $b.b ) @watch(s)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -653,8 +653,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testBetaWithConstraintsWithNegativeWatches() {
         String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, b == $b.b ) @watch(s, !a, !b)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -684,8 +684,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testBetaSharedAlphaNoWatches() {
         String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, s == 15, b == $b.b  )";
         String rule2 = "$b : B( a == 15) @watch(j, !i) A( a == 10, i == 20, b == $b.b  )";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -764,8 +764,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testBetaSharedAlphaWithWatches() {
         String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, b == 15, b == $b.b  ) @watch(c, !b)";
         String rule2 = "$b : B( a == 15) @watch(j) A( a == 10, i == 20, b == $b.b ) @watch(s, !a)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -851,8 +851,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "$b : B( b == 15) @watch(i) A( a == 10, b == 15 ) @watch(c)";
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2, rule3);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
         assertNotNull( otn );
@@ -907,8 +907,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "$b : B( b == 15) @watch(i) A( a == 10, b == 15 ) @watch(c)";
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2, rule3);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         kbase.removeRule( "org.drools.compiler.integrationtests", "r0" );
         
@@ -951,8 +951,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "$b : B( b == 15) @watch(i) A( a == 10, b == 15 ) @watch(c)";
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2, rule3);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         kbase.removeRule( "org.drools.compiler.integrationtests", "r1" );
         
@@ -1001,8 +1001,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule1 = "$b : B( b == 15) @watch(i) A( a == 10, b == 15 ) @watch(c)";
         String rule2 = "$b : B( b == 15) @watch(j) A( a == 10, i == 20 ) @watch(s)";
         String rule3 = "$b : B( c == 15) @watch(k) A( a == 10, i == 20, b == 10 ) @watch(j)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2, rule3);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2, rule3);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         kbase.removeRule( "org.drools.compiler.integrationtests", "r2" );
         
@@ -1068,8 +1068,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    modify($b) { setOn(true) }\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         FactType factTypeA = kbase.getFactType( "org.drools.compiler.integrationtests", "A" );
         Object factA = factTypeA.newInstance();
@@ -1116,8 +1116,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    modify($b) { setOn(true) }\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         FactType factTypeA = kbase.getFactType( "org.drools.compiler.integrationtests", "A" );
         Object factA = factTypeA.newInstance();
@@ -1256,8 +1256,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    modify($c) { turnOn() }\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         FactType factTypeA = kbase.getFactType( "org.drools.compiler.integrationtests", "A" );
         Object factA = factTypeA.newInstance();
@@ -1288,8 +1288,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    modify($c) { setOn(true) }\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         C c = new C();
         c.setOn(false);
@@ -1314,8 +1314,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "   update($c);\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         C c = new C();
         c.setOn(false);
@@ -1341,8 +1341,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    if (counter.incrementAndGet() > 10) throw new RuntimeException();\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         AtomicInteger counter = new AtomicInteger(0);
         ksession.setGlobal( "counter", counter );
@@ -1379,8 +1379,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         config.setOption(PropertySpecificOption.ALWAYS);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( config, rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( config, rule );
+        KieSession ksession = kbase.newKieSession();
 
         AtomicInteger counter = new AtomicInteger(0);
         ksession.setGlobal( "counter", counter );
@@ -1429,8 +1429,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    modify($a) { setI(1) }\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         FactType factTypeA = kbase.getFactType( "org.drools.compiler.integrationtests", "A" );
         Object factA = factTypeA.newInstance();
@@ -1492,8 +1492,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "   System.out.println( \"Move: \" + $h + \" : \" + $mc );" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         Hero hero = new Hero();
         hero.setPosition(0);
@@ -1533,8 +1533,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    modify($b) { setA(null) };\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         FactType factTypeA = kbase.getFactType( "org.drools.compiler.integrationtests", "A" );
         Object factA = factTypeA.newInstance();
@@ -1570,8 +1570,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    modify($b) { setI($i+1) };\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         FactType typeA = kbase.getFactType( "org.drools.compiler.integrationtests", "A" );
         FactType typeB = kbase.getFactType( "org.drools.compiler.integrationtests", "B" );
@@ -1609,8 +1609,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         config.setOption(PropertySpecificOption.ALWAYS);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( config, rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( config, rule );
+        KieSession ksession = kbase.newKieSession();
 
         FactType typeA = kbase.getFactType( "org.drools.compiler.integrationtests", "A" );
         Object a = typeA.newInstance();
@@ -1646,8 +1646,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "   modify( $cin ) { hero = \"\" };\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(rule);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Init());
 
@@ -1681,8 +1681,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "   modify( $c ) { hidden = true };\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(rule);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Cell());
 
@@ -1718,8 +1718,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "   System.out.println( \"R4\");\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(rule);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Cell());
 
@@ -1867,8 +1867,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "   modify( $o ) { setDiscounted( true ) };\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(rule);
+        KieSession ksession = kbase.newKieSession();
 
         Order order1 = new Order("1");
         OrderItem orderItem11 = new OrderItem("1", 1, 1.1);
@@ -1898,8 +1898,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "   modify( $i ) { setPrice( $price - 0.1 ) };\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(rule);
+        KieSession ksession = kbase.newKieSession();
 
         Order order1 = new Order("1");
         OrderItem orderItem11 = new OrderItem("1", 1, 1.1);
@@ -1932,8 +1932,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "   modify( $o ) { setDiscounted( true ) };\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(rule);
+        KieSession ksession = kbase.newKieSession();
 
         Order order1 = new Order("1");
         OrderItem orderItem11 = new OrderItem("1", 1, 1.1);
@@ -2023,8 +2023,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testBetaWithWatchAfterBeta() {
         String rule1 = "$b : B(a == 15) @watch(k) C() A(i == $b.j) @watch(b, c)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
         ObjectTypeNode otnC = getObjectTypeNode(kbase, "C" );
@@ -2046,8 +2046,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     @Test
     public void testBetaAfterBetaWithWatch() {
         String rule1 = "$b : B(a == 15) @watch(k) A(i == $b.j) @watch(b, c) C()";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
         ObjectTypeNode otnC = getObjectTypeNode(kbase, "C" );
@@ -2070,8 +2070,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void test2DifferentAlphaWatchBeforeSameBeta() {
         String rule1 = "B(a == 15) @watch(b) C()";
         String rule2 = "B(a == 15) @watch(c) C()";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otnB = getObjectTypeNode(kbase, "B" );
         List<String> sp = getSettableProperties(wm, otnB);
@@ -2116,8 +2116,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testSameBetasWith2RTNSinks() {
         String rule1 = "B(a == 15) C() A()";
         String rule2 = "B(a == 15) C() A() @watch(b, c)";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
         ObjectTypeNode otnC = getObjectTypeNode(kbase, "C");
@@ -2154,8 +2154,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testBetaWith2BetaSinks() {
         String rule1 = "B(a == 15) @watch(b) A() @watch(i) C()";
         String rule2 = "B(a == 15) @watch(c) A() @watch(j) D()";
-        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        KieBase kbase = getKnowledgeBase(rule1, rule2);
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode otnB = getObjectTypeNode(kbase, "B" );
         List<String> sp = getSettableProperties(wm, otnB);
@@ -2247,8 +2247,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "   modify( $c ) { setY( 1 ) };\n" +
                 "end;\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         AtomicInteger counter = new AtomicInteger(0);
         ksession.setGlobal( "counter", counter );
@@ -2326,8 +2326,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "   modify( $c ) { setY( 1 ) };\n" +
                 "end;\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         AtomicInteger counter = new AtomicInteger(0);
         ksession.setGlobal( "counter", counter );
@@ -2403,8 +2403,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Model());
         ksession.fireAllRules();
@@ -2531,8 +2531,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    if ($p.getAge() != 100 || $p.getWeight() != 100) throw new RuntimeException();\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = kbase.newKieSession();
 
         ksession.fireAllRules();
     }

@@ -36,6 +36,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.base.mvel.MVELDebugHandler;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.constraint.MvelConstraint;
@@ -50,8 +51,6 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -105,10 +104,10 @@ public class MVELTest extends CommonTestMethodBase {
         kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
         assertFalse(kbuilder.hasErrors());
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
         ksession.insert(5);
@@ -141,10 +140,10 @@ public class MVELTest extends CommonTestMethodBase {
         }
         assertFalse(kbuilder.hasErrors());
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
         ksession.insert(new BigDecimal(1.5));
@@ -254,10 +253,10 @@ public class MVELTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             throw new RuntimeException(kbuilder.getErrors().toString());
         }
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
         final int result = ksession.fireAllRules();
         assertEquals(1, result);
         final Collection<? extends Object> insertedObjects = ksession.getObjects();
@@ -306,10 +305,10 @@ public class MVELTest extends CommonTestMethodBase {
             fail(kbuilder.getErrors().toString());
         }
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
         final Triangle t = new Triangle(Triangle.Type.ACUTE);
@@ -339,10 +338,10 @@ public class MVELTest extends CommonTestMethodBase {
             fail(kbuilder.getErrors().toString());
         }
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -375,10 +374,10 @@ public class MVELTest extends CommonTestMethodBase {
             fail(kbuilder.getErrors().toString());
         }
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -430,10 +429,10 @@ public class MVELTest extends CommonTestMethodBase {
             fail(kbuilder.getErrors().toString());
         }
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -493,10 +492,10 @@ public class MVELTest extends CommonTestMethodBase {
             fail(kbuilder.getErrors().toString());
         }
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -555,10 +554,10 @@ public class MVELTest extends CommonTestMethodBase {
             fail(kbuilder.getErrors().toString());
         }
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -966,9 +965,9 @@ public class MVELTest extends CommonTestMethodBase {
         }
         final KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbConf.setOption(EqualityBehaviorOption.EQUALITY);
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbConf);
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbConf);
+        kbase.addPackages(kbuilder.getKnowledgePackages());
+        final KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
