@@ -15,14 +15,14 @@
 
 package org.drools.core.common;
 
+import java.io.Serializable;
+
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
-
-import java.io.Serializable;
 
 public class PhreakPropagationContextFactory implements PropagationContextFactory, Serializable  {
 
@@ -35,52 +35,40 @@ public class PhreakPropagationContextFactory implements PropagationContextFactor
     public PropagationContext createPropagationContext(final long number,
                                                        final PropagationContext.Type type,
                                                        final RuleImpl rule,
-                                                       final Tuple leftTuple,
+                                                       final TerminalNode terminalNode,
                                                        final InternalFactHandle factHandle,
                                                        final EntryPointId entryPoint,
                                                        final BitMask modificationMask,
                                                        final Class<?> modifiedClass,
                                                        final MarshallerReaderContext readerContext) {
-        return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, entryPoint, modificationMask, modifiedClass, readerContext);
+        return new PhreakPropagationContext(number, type, rule, terminalNode, factHandle, entryPoint, modificationMask, modifiedClass, readerContext);
     }
 
     public PropagationContext createPropagationContext(final long number,
                                                        final PropagationContext.Type type,
                                                        final RuleImpl rule,
-                                                       final Tuple leftTuple,
+                                                       final TerminalNode terminalNode,
                                                        final InternalFactHandle factHandle,
                                                        final EntryPointId entryPoint,
                                                        final MarshallerReaderContext readerContext) {
-        return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, entryPoint, readerContext);
+        return new PhreakPropagationContext(number, type, rule, terminalNode, factHandle, entryPoint, readerContext);
     }
 
     public PropagationContext createPropagationContext(final long number,
                                                        final PropagationContext.Type type,
                                                        final RuleImpl rule,
-                                                       final Tuple leftTuple,
-                                                       final InternalFactHandle factHandle,
-                                                       final int activeActivations,
-                                                       final int dormantActivations,
-                                                       final EntryPointId entryPoint,
-                                                       final BitMask modificationMask) {
-        return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, activeActivations, dormantActivations, entryPoint, modificationMask);
-    }
-
-    public PropagationContext createPropagationContext(final long number,
-                                                       final PropagationContext.Type type,
-                                                       final RuleImpl rule,
-                                                       final Tuple leftTuple,
+                                                       final TerminalNode terminalNode,
                                                        final InternalFactHandle factHandle,
                                                        final EntryPointId entryPoint) {
-        return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, entryPoint);
+        return new PhreakPropagationContext(number, type, rule, terminalNode, factHandle, entryPoint);
     }
 
     public PropagationContext createPropagationContext(final long number,
                                                        final PropagationContext.Type type,
                                                        final RuleImpl rule,
-                                                       final Tuple leftTuple,
+                                                       final TerminalNode terminalNode,
                                                        final InternalFactHandle factHandle) {
-        return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle);
+        return new PhreakPropagationContext(number, type, rule, terminalNode, factHandle);
     }
 
     public static PropagationContext createPropagationContextForFact( InternalWorkingMemory workingMemory, InternalFactHandle factHandle, PropagationContext.Type propagationType ) {

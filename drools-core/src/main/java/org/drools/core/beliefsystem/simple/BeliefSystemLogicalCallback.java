@@ -15,6 +15,8 @@
 
 package org.drools.core.beliefsystem.simple;
 
+import java.io.IOException;
+
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -28,8 +30,6 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
-
-import java.io.IOException;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
@@ -126,7 +126,7 @@ public class BeliefSystemLogicalCallback
             if ( fullyRetract ) {
                 ((NamedEntryPoint) handle.getEntryPoint()).delete( this.handle,
                                                                    context.getRuleOrigin(),
-                                                                   this.activation );
+                                                                   this.activation.getTuple().getTupleSink() );
             } else {
                 final ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(),
                                                                                                             handle.getObject() );

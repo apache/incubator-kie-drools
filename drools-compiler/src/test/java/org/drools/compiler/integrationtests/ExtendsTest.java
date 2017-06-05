@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
+import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.api.DescrFactory;
@@ -30,6 +30,7 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -53,36 +54,6 @@ import org.kie.internal.utils.KieHelper;
  * Test for declared bean Extension
  */
 public class ExtendsTest extends CommonTestMethodBase {
-
-
-
-    public StatefulKnowledgeSession genSession(String source) {
-        return genSession(new String[] {source},0);
-    }
-
-    public StatefulKnowledgeSession genSession(String source, int numerrors)  {
-        return genSession(new String[] {source},numerrors);
-    }
-
-    public StatefulKnowledgeSession genSession(String[] sources, int numerrors)  {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for (String source : sources)
-            kbuilder.add( ResourceFactory.newClassPathResource(source, getClass()), ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( kbuilder.getErrors().size() > 0 ) {
-            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
-                System.err.println( error );
-            }
-        }
-        assertEquals(numerrors, errors.size() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        return createKnowledgeSession(kbase);
-
-    }
 
     @Test
     public void testExtends() throws Exception {
@@ -1035,6 +1006,87 @@ public class ExtendsTest extends CommonTestMethodBase {
 
         assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
 
+    }
+
+    @Test
+    public void testExtendsBasic() throws Exception {
+        final KieBase kbase = loadKnowledgeBase("extend_rule_test.drl");
+        final KieSession session = createKnowledgeSession(kbase);
+
+        //Test 2 levels of inheritance, and basic rule
+        List list = new ArrayList();
+        session.setGlobal("list", list);
+        final Cheese mycheese = new Cheese("cheddar", 4);
+        final FactHandle handle = session.insert(mycheese);
+        session.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.contains("rule 4"));
+        assertTrue(list.contains("rule 2b"));
+
+        //Test 2nd level (parent) to make sure rule honors the extend rule
+        list = new ArrayList();
+        session.setGlobal("list", list);
+        session.delete(handle);
+        final Cheese mycheese2 = new Cheese("notcheddar", 4);
+        final FactHandle handle2 = session.insert(mycheese2);
+        session.fireAllRules();
+
+        assertEquals("rule 4", list.get(0));
+        assertEquals(1, list.size());
+
+        //Test 3 levels of inheritance, all levels
+        list = new ArrayList();
+        session.setGlobal("list", list);
+        session.delete(handle2);
+        final Cheese mycheese3 = new Cheese("stilton", 6);
+        final FactHandle handle3 = session.insert(mycheese3);
+        session.fireAllRules();
+        //System.out.println(list.toString());
+        assertEquals("rule 3", list.get(0));
+        assertEquals(1, list.size());
+
+        //Test 3 levels of inheritance, third only
+        list = new ArrayList();
+        session.setGlobal("list", list);
+        session.delete(handle3);
+        final Cheese mycheese4 = new Cheese("notstilton", 6);
+        final FactHandle handle4 = session.insert(mycheese4);
+        session.fireAllRules();
+        //System.out.println(((List) session.getGlobal( "list" )).toString());
+        assertTrue(((List) session.getGlobal("list")).size() == 0);
+
+        //Test 3 levels of inheritance, 2nd only
+        list = new ArrayList();
+        session.setGlobal("list", list);
+        session.delete(handle4);
+        final Cheese mycheese5 = new Cheese("stilton", 7);
+        session.insert(mycheese5);
+        session.fireAllRules();
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void testExtendsBasic2() {
+        final KieBase kbase = loadKnowledgeBase("test_RuleExtend.drl");
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        final List results = new ArrayList();
+        ksession.setGlobal("results", results);
+
+        final Cheese stilton = new Cheese("stilton", 5);
+        final Cheese cheddar = new Cheese("cheddar", 7);
+        final Cheese brie = new Cheese("brie", 5);
+
+        ksession.insert(stilton);
+        ksession.insert(cheddar);
+        ksession.insert(brie);
+
+        ksession.fireAllRules();
+
+        assertEquals(2, results.size());
+        assertEquals("stilton", results.get(0));
+        assertEquals("brie", results.get(1));
     }
 
 }

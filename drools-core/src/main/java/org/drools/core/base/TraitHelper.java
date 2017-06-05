@@ -15,6 +15,19 @@
 
 package org.drools.core.base;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.PriorityQueue;
+
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
@@ -39,6 +52,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.metadata.Metadatable;
 import org.drools.core.metadata.Modify;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
@@ -48,19 +62,6 @@ import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.runtime.beliefs.Mode;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.PriorityQueue;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
 
@@ -136,7 +137,7 @@ public class TraitHelper implements Externalizable {
                     PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
                                                                                                            PropagationContext.Type.MODIFICATION,
                                                                                                            activation != null ? activation.getRule() : null,
-                                                                                                           activation != null ? activation.getTuple() : null,
+                                                                                                           activation != null ? activation.getTuple().getTupleSink() : null,
                                                                                                            h,
                                                                                                            nep.getEntryPoint(),
                                                                                                            mask,
@@ -146,7 +147,6 @@ public class TraitHelper implements Externalizable {
                                 t,
                                 t,
                                 nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(), t ),
-                                activation != null ? activation.getRule() : null,
                                 propagationContext );
                 }
             }
@@ -295,7 +295,7 @@ public class TraitHelper implements Externalizable {
             PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
                                                                                                    PropagationContext.Type.MODIFICATION,
                                                                                                    activation.getRule(),
-                                                                                                   activation.getTuple(),
+                                                                                                   activation.getTuple().getTupleSink(),
                                                                                                    h,
                                                                                                    nep.getEntryPoint(),
                                                                                                    mask,
@@ -305,13 +305,12 @@ public class TraitHelper implements Externalizable {
                         o,
                         o,
                         nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(), o ),
-                        activation.getRule(),
                         propagationContext );
         } else {
             handle = this.workingMemory.insert( inner,
                                                 false,
                                                 activation.getRule(),
-                                                activation );
+                                                activation.getTuple().getTupleSink() );
         }
 
     }
@@ -439,7 +438,7 @@ public class TraitHelper implements Externalizable {
                 h = (InternalFactHandle) this.workingMemory.insert( core,
                                                                     false,
                                                                     activation.getRule(),
-                                                                    activation );
+                                                                    activation.getTuple().getTupleSink() );
             }
             if ( ! h.isTraitOrTraitable() ) {
                 throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
@@ -478,7 +477,7 @@ public class TraitHelper implements Externalizable {
                     handle = this.workingMemory.insert( inner,
                                                         false,
                                                         activation.getRule(),
-                                                        activation );
+                                                        activation.getTuple().getTupleSink() );
                 }
                 if ( ftms.needsInit() ) {
                     ftms.init( workingMemory );
@@ -601,7 +600,7 @@ public class TraitHelper implements Externalizable {
     public void delete( final FactHandle handle, Activation activation ) {
         ((InternalFactHandle) handle).getEntryPoint().delete( handle,
                                                               activation.getRule(),
-                                                              activation );
+                                                              activation.getTuple().getTupleSink() );
     }
 
     public FactHandle insert(final Object object,
@@ -609,7 +608,7 @@ public class TraitHelper implements Externalizable {
         FactHandle handle = this.workingMemory.insert( object,
                                                        false,
                                                        activation.getRule(),
-                                                       activation );
+                                                       activation.getTuple().getTupleSink() );
         return handle;
     }
 
@@ -629,7 +628,7 @@ public class TraitHelper implements Externalizable {
 
     }
 
-    public void deleteWMAssertedTraitProxies( InternalFactHandle handle, RuleImpl rule, Activation activation ) {
+    public void deleteWMAssertedTraitProxies( InternalFactHandle handle, RuleImpl rule, TerminalNode terminalNode ) {
         TraitableBean traitableBean = (TraitableBean) handle.getObject();
         if( traitableBean.hasTraits() ){
             PriorityQueue<TraitProxy> removedTypes =
@@ -643,7 +642,7 @@ public class TraitHelper implements Externalizable {
                     if ( proxyHandle.getEqualityKey() == null || proxyHandle.getEqualityKey().getLogicalFactHandle() != proxyHandle ) {
                         entryPoint.delete( proxyHandle,
                                            rule,
-                                           activation );
+                                           terminalNode );
                     }
                 }
             }

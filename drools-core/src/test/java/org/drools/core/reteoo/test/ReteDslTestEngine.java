@@ -684,17 +684,15 @@ public class ReteDslTestEngine {
                             ((ObjectSink) sink).assertObject( handle,
                                                               pContext,
                                                               wm );
-                            pContext.evaluateActionQueue( wm );
                         } else {
                             List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
                             LeftTuple tuple = createTuple( context,
                                                            tlist );
                             PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
-                                                                                               null, tuple, null);
+                                                                                               null, tuple != null ? tuple.getTupleSink() : null, null);
                             ((LeftTupleSink) sink).assertLeftTuple( tuple,
                                                                     pContext,
                                                                     wm );
-                            pContext.evaluateActionQueue( wm );
                         }
 
                     }
@@ -786,7 +784,6 @@ public class ReteDslTestEngine {
                                 handle.forEachLeftTuple( lt -> lt.retractTuple( pContext, wm ) );
                                 handle.clearLeftTuples();
                             }
-                            pContext.evaluateActionQueue( wm );
                         } else {
                             List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
                             String id = getTupleId( tlist );
@@ -795,11 +792,10 @@ public class ReteDslTestEngine {
                                 throw new IllegalArgumentException( "Tuple not found: " + id + " : " + tlist.toString() );
                             }
                             PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
-                                                                                               null, tuple, null);
+                                                                                               null, tuple != null ? tuple.getTupleSink() : null, null);
                             ((LeftTupleSink) sink).retractLeftTuple( tuple,
                                                                      pContext,
                                                                      wm );
-                            pContext.evaluateActionQueue( wm );
                         }
 
                     }
@@ -857,7 +853,6 @@ public class ReteDslTestEngine {
                                                               wm );
                             modifyPreviousTuples.retractTuples( pContext,
                                                                 wm );
-                            pContext.evaluateActionQueue( wm );
                         } else {
                             List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
                             String id = getTupleId( tlist );
@@ -866,8 +861,7 @@ public class ReteDslTestEngine {
                                 throw new IllegalArgumentException( "Tuple not found: " + id + " : " + tlist.toString() );
                             }
                             PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
-                                                                                               null, tuple, new DefaultFactHandle(1, ""));
-                            pContext.evaluateActionQueue( wm );
+                                                                                               null, tuple != null ? tuple.getTupleSink() : null, new DefaultFactHandle(1, ""));
                         }
                     }
                 } catch ( Exception e ) {

@@ -17,18 +17,17 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Triangle;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.builder.Results;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.utils.KieHelper;
 
 
@@ -37,43 +36,10 @@ import org.kie.internal.utils.KieHelper;
  */
 public class EnumTest extends CommonTestMethodBase {
 
-
-
-    public StatefulKnowledgeSession genSession(String source) {
-        return genSession(new String[] {source},0);
-    }
-
-    public StatefulKnowledgeSession genSession(String source, int numerrors)  {
-
-        return genSession(new String[] {source},numerrors);
-    }
-
-
-    public StatefulKnowledgeSession genSession(String[] sources, int numerrors)  {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for (String source : sources)
-            kbuilder.add( ResourceFactory.newClassPathResource(source, getClass()), ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( kbuilder.getErrors().size() > 0 ) {
-            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
-                System.err.println( error );
-            }
-        }
-        assertEquals(numerrors, errors.size() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        return createKnowledgeSession(kbase);
-
-    }
-
     @Test
     public void testEnums() throws Exception {
-
-        StatefulKnowledgeSession ksession = genSession( "test_Enums.drl" );
-        java.util.List list = new java.util.ArrayList();
+        final KieSession ksession = genSession( "test_Enums.drl" );
+        final java.util.List list = new java.util.ArrayList();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
@@ -83,13 +49,11 @@ public class EnumTest extends CommonTestMethodBase {
         assertTrue( list.contains( "Mercury" ) );
 
         ksession.dispose();
-
-
     }
 
     @Test
     public void testEnumsWithCompositeBuildingProcess() throws Exception {
-        String drl = "package org.test; " +
+        final String drl = "package org.test; " +
                      "" +
                      "declare enum DaysOfWeek " +
                      "    SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY;\n" +
@@ -99,16 +63,16 @@ public class EnumTest extends CommonTestMethodBase {
                      "  field: DaysOfWeek " +
                      "end";
 
-        KieHelper kieHelper = new KieHelper();
+        final KieHelper kieHelper = new KieHelper();
         kieHelper.addContent( drl, ResourceType.DRL );
-        Results res = kieHelper.verify();
+        final Results res = kieHelper.verify();
         assertEquals( 0, res.getMessages().size() );
     }
 
 
     @Test
     public void testQueryEnum() {
-        String str = "package org.kie.test;\n" +
+        final String str = "package org.kie.test;\n" +
                 "\n" +
                 "declare enum Ennumm\n" +
                 "  ONE, TWO;\n" +
@@ -136,46 +100,54 @@ public class EnumTest extends CommonTestMethodBase {
                 "  System.out.println( $bx );\n" +
                 "end";
 
-        String str2 = "package org.drools.compiler.test2; \n" +
+        final String str2 = "package org.drools.compiler.test2; \n" +
                         "" +
                         "declare Naeb \n" +
                         "   fld : String \n" +
                         "end \n";
 
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
 
-        KnowledgeBuilder kbuilder =  KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
+        final KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder2.add(ResourceFactory.newByteArrayResource(str2.getBytes()), ResourceType.DRL);
 
-
-        KnowledgeBuilder kbuilder2 =  KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-
-        if ( kbuilder2.hasErrors() ) {
-            fail( kbuilder2.getErrors().toString() );
+        if (kbuilder2.hasErrors()) {
+            fail(kbuilder2.getErrors().toString());
         }
-        kbase.addKnowledgePackages( kbuilder2.getKnowledgePackages() );
+        kbase.addKnowledgePackages(kbuilder2.getKnowledgePackages());
 
-
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-
-
+        final KieSession ksession = kbase.newKieSession();
+        kbuilder.add(ResourceFactory.newByteArrayResource(str2.getBytes()), ResourceType.DRL);
         ksession.fireAllRules();
 
         ksession.dispose();
     }
 
+    @Test
+    public void testInnerEnum() throws Exception {
+        final StringBuilder rule = new StringBuilder();
+        rule.append( "package org.drools.compiler\n" );
+        rule.append( "rule X\n" );
+        rule.append( "when\n" );
+        rule.append( "    Triangle( type == Triangle.Type.UNCLASSIFIED )\n" );
+        rule.append( "then\n" );
+        rule.append( "end\n" );
 
+        final KieBase kbase = loadKnowledgeBaseFromString(rule.toString());
+        final KieSession ksession = createKnowledgeSession(kbase);
 
-
+        ksession.insert(new Triangle());
+        final int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+        ksession.dispose();
+    }
 }
 

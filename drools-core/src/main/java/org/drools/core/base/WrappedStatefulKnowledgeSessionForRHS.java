@@ -39,6 +39,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
@@ -333,17 +334,17 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		delegate.removeEventListener(listener);
 	}
 
-	public void delete(FactHandle factHandle, RuleImpl rule, Activation activation, State fhState) {
-		delegate.delete(factHandle, rule, activation, fhState);
+	public void delete( FactHandle factHandle, RuleImpl rule, TerminalNode terminalNode, State fhState ) {
+		delegate.delete(factHandle, rule, terminalNode, fhState);
 	}
 
-	public void delete(FactHandle handle, RuleImpl rule, Activation activation) {
-		delegate.delete(handle, rule, activation);
+	public void delete(FactHandle handle, RuleImpl rule, TerminalNode terminalNode) {
+		delegate.delete(handle, rule, terminalNode);
 	}
 
 	@Override
-	public FactHandle insert( Object object, boolean dynamic, RuleImpl rule, Activation activation ) {
-		return delegate.insert( object, dynamic, rule, activation);
+	public FactHandle insert( Object object, boolean dynamic, RuleImpl rule, TerminalNode terminalNode ) {
+		return delegate.insert( object, dynamic, rule, terminalNode);
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.FEELFunction;
@@ -27,32 +28,29 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class DMNFEELHelper
-        implements FEELEventListener {
+public class DMNFEELHelper {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNFEELHelper.class );
 
-    private final FEEL             feel;
-    private final Queue<FEELEvent> feelEvents;
+    private final FEEL                   feel;
+    private final FEELEventsListenerImpl listener;
 
     public DMNFEELHelper() {
-        this.feelEvents = new LinkedList<>();
+        this.listener = new FEELEventsListenerImpl();
         this.feel = createFEELInstance();
     }
 
     private FEEL createFEELInstance() {
         FEEL feel = FEEL.newInstance();
-        feel.addListener( this );
+        feel.addListener( listener );
         return feel;
     }
 
-    @Override
-    public void onEvent(FEELEvent event) {
-        feelEvents.add( event );
-    }
-    
     public static boolean valueMatchesInUnaryTests(List<UnaryTest> unaryTests, Object value, DMNContext dmnContext) {
-        EvaluationContextImpl ctx = new EvaluationContextImpl( null );
+        FEELEventListenersManager manager = new FEELEventListenersManager();
+        FEELEventsListenerImpl listener = new FEELEventsListenerImpl();
+        manager.addListener( listener );
+        EvaluationContextImpl ctx = new EvaluationContextImpl( manager );
         try {
             ctx.enterFrame();
             if ( dmnContext != null ) {
@@ -64,7 +62,7 @@ public class DMNFEELHelper
     
             for ( UnaryTest t : unaryTests ) {
                 try {
-                    Boolean applyT = t.apply(ctx, value);
+                    Boolean applyT = t.apply( ctx, value );
                     // the unary test above can actually return null, so we have to handle it here
                     if ( applyT == null ) {
                         return false;
@@ -72,8 +70,12 @@ public class DMNFEELHelper
                         return true;
                     }
                 } catch ( Throwable e ) {
-                    // if an unaryTest fail for any treason, is simply considered FALSE.
-                    logger.warn("A non-critical error happened while evaluating a unary test. Execution will continue.", e);
+                    StringBuilder message = new StringBuilder(  );
+                    for( FEELEvent feelEvent : listener.getFeelEvents() ) {
+                        message.append( feelEvent.getMessage() );
+                        message.append( "\n" );
+                    }
+                    throw new RuntimeException( message.toString(), e );
                 }
             }
         } finally {
@@ -131,6 +133,7 @@ public class DMNFEELHelper
     }
 
     public void processEvents(DMNModelImpl model, DMNElement element, Msg.Message msg, Object... msgParams) {
+        Queue<FEELEvent> feelEvents = listener.getFeelEvents();
         while ( !feelEvents.isEmpty() ) {
             FEELEvent event = feelEvents.remove();
             if ( !isDuplicateEvent( model, msg, element ) ) {
@@ -193,6 +196,19 @@ public class DMNFEELHelper
                                                               (msg.getSourceId() != null &&
                                                                element.getId() != null &&
                                                                msg.getSourceId().equals( element.getId() ))) );
+    }
+
+    public static class FEELEventsListenerImpl implements FEELEventListener {
+        private final Queue<FEELEvent> feelEvents = new LinkedList<>();
+
+        @Override
+        public void onEvent(FEELEvent event) {
+            feelEvents.add( event );
+        }
+
+        public Queue<FEELEvent> getFeelEvents() {
+            return feelEvents;
+        }
     }
 
 }
