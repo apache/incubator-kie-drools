@@ -26,29 +26,31 @@ import org.drools.core.command.builder.KnowledgeBuilderGetErrorsCommand;
 import org.drools.core.command.builder.KnowledgeBuilderGetKnowledgePackagesCommand;
 import org.drools.core.command.builder.KnowledgeBuilderHasErrorsCommand;
 import org.drools.core.command.builder.NewKnowledgeBuilderCommand;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.compiler.integrationtests.DroolsTest.Bar;
 import org.drools.compiler.integrationtests.DroolsTest.Foo;
 import org.junit.After;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
+import org.kie.api.KieBase;
 import org.kie.api.command.Command;
+import org.kie.api.definition.KiePackage;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.KieSession;
 
 public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
 
     private static final String source = "org/drools/compiler/lang/misplaced_parenthesis.drl";
 
-    private StatefulKnowledgeSession ksession = null;
+    private KieSession ksession = null;
     
     @After
     public void disposeKSession() throws Exception {
@@ -63,7 +65,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         Resource res = ResourceFactory.newClassPathResource(source);
         assertNotNull(res);
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = createKnowledgeSession(kbase);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -85,7 +87,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         Resource res = ResourceFactory.newClassPathResource(source);
         assertNotNull(res);
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = createKnowledgeSession(kbase);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -107,7 +109,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         Resource res = ResourceFactory.newClassPathResource(source);
         assertNotNull(res);
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = createKnowledgeSession(kbase);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -148,7 +150,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         + "   " + KBuilderBatchExecutionTest.class.getSimpleName() + ".incCounter();\n"
         + "end\n";
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = createKnowledgeSession(kbase);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
@@ -161,7 +163,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         assertNotNull(result);
         Object pkgsObject = result.getValue("pkgs");
         assertTrue(pkgsObject != null && pkgsObject instanceof Collection<?>);
-        kbase.addKnowledgePackages( ((Collection<KnowledgePackage>) pkgsObject) );
+        kbase.addPackages( ((Collection<KiePackage>) pkgsObject) );
 
         ksession.dispose();
         ksession = createKnowledgeSession(kbase);

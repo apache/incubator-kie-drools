@@ -20,10 +20,10 @@ import java.util.List;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.After;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.command.Command;
@@ -32,11 +32,12 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 
 public class MoreBatchExecutionTest extends CommonTestMethodBase {
 
-    private StatefulKnowledgeSession ksession = null;
+    private KieSession ksession = null;
     
     @After
     public void disposeKSession() throws Exception {
@@ -53,8 +54,8 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         ksession = createKnowledgeSession(kbase);
 
         final Cheese cheese = new Cheese("stilton", 15);
@@ -88,8 +89,8 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         ksession = createKnowledgeSession(kbase);
         
         ksession.insert( new Cheese( "stinky", 5 ) );
