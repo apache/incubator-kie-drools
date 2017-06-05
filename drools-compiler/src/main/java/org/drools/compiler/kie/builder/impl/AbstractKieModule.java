@@ -206,7 +206,7 @@ public abstract class AbstractKieModule
     }
 
     public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
-        Collection<? extends KiePackage> pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
+        Collection<KiePackage> pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
 
         if ( pkgs == null ) {
             KnowledgeBuilder kbuilder = buildKnowledgePackages(kBaseModel, kieProject, messages);
@@ -236,7 +236,7 @@ public abstract class AbstractKieModule
         }
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
-        kBase.addPackages( (Collection<InternalKnowledgePackage>) pkgs );
+        kBase.addPackages( pkgs );
         return kBase;
     }
 

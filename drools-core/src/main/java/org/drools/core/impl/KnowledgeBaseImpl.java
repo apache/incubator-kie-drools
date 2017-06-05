@@ -689,14 +689,16 @@ public class KnowledgeBaseImpl
         }
     }
 
+    // TODO WARN: the below must be mutale as that is used by TraitFactory.getClassFieldAccessorStore
     @Override
     public Map<String, InternalKnowledgePackage> getPackagesMap() {
-        return Collections.unmodifiableMap( this.pkgs );
+        return this.pkgs;
     }
 
+    // TODO WARN: the below must be mutable as it's used by org.drools.compiler.builder.impl.KnowledgeBuilderTest
     @Override
     public Map<String, Class<?>> getGlobals() {
-        return Collections.unmodifiableMap( this.globals );
+        return this.globals;
     }
 
     public void lock() {
