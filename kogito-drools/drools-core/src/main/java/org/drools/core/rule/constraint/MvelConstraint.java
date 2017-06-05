@@ -555,7 +555,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         clone.constraintType = constraintType;
         clone.declarations = clonedDeclarations;
         clone.operators = operators;
-        clone.indexingDeclaration = indexingDeclaration;
+        if (indexingDeclaration != null) {
+            clone.indexingDeclaration = indexingDeclaration.cloneWithPattern();
+        }
         clone.extractor = extractor;
         clone.isUnification = isUnification;
         clone.isDynamic = isDynamic;

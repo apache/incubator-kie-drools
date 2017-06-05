@@ -347,4 +347,14 @@ public class Declaration
                                 this.readAccessor,
                                 this.pattern );
     }
+
+    public Declaration cloneWithPattern() {
+        return new Declaration( this.identifier,
+                                this.readAccessor,
+                                new Pattern( this.pattern.getIndex(),
+                                             this.pattern.getOffset(),
+                                             this.pattern.getObjectType(),
+                                             getIdentifier(),
+                                             isInternalFact()) );
+    }
 }
