@@ -96,7 +96,7 @@ public class ConsequenceTest extends CommonTestMethodBase {
         String drl = "";
         drl += "package test\n";
         drl += "import org.drools.compiler.Person\n";
-        drl += "global org.drools.core.runtime.StatefulKnowledgeSession ksession\n";
+        drl += "global "+KieSession.class.getCanonicalName()+" ksession\n";
         drl += "rule test dialect 'mvel'\n";
         drl += "when\n";
         drl += "    $person:Person( name == 'mark' )\n";

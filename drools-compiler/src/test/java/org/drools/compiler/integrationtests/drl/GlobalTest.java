@@ -23,13 +23,14 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.base.MapGlobalResolver;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -82,9 +83,9 @@ public class GlobalTest extends CommonTestMethodBase {
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        final StatefulKnowledgeSession session1 = kbase.newStatefulKnowledgeSession();
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
+        final KieSession session1 = kbase.newKieSession();
 
         final String sample = "default string";
 
@@ -102,7 +103,7 @@ public class GlobalTest extends CommonTestMethodBase {
 
         // Testing 2.
         System.out.println("Start testing 2.");
-        final StatelessKnowledgeSession session2 = session1.getKieBase().newStatelessKnowledgeSession();
+        final StatelessKieSession session2 = session1.getKieBase().newStatelessKieSession();
         session2.setGlobal("myGlobal", "Testing 2");
         session2.execute(sample);
         final Map.Entry[] entries2 = ((MapGlobalResolver) session2.getGlobals()).getGlobals();
