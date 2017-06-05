@@ -89,11 +89,11 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
     }
 
     protected RequestContext internalExecute( Executable executable, RequestContext ctx ) {
-        int attempt = 1;
+        int attempt = 0;
         long sleepTime = delay;
         RuntimeException originException = null;
 
-        while (attempt <= retries) {
+        while (true) {
             if (attempt > 1) {
                 logger.trace("retrying (attempt {})...", attempt);
             }
@@ -113,11 +113,14 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
                     throw ex;
                 }
                 attempt++;
-                logger.trace("Command failed due to optimistic locking {} waiting {} millis before retry", ex, sleepTime);
                 // save origin exception in case it needs to be rethrown
                 if (originException == null) {
                     originException = ex;
                 }
+                if (attempt > retries) {
+                    break;
+                }
+                logger.trace("Command failed due to optimistic locking {} waiting {} millis before retry", ex, sleepTime);
                 try {
                     Thread.sleep(sleepTime);
                 } catch (InterruptedException e1) {
