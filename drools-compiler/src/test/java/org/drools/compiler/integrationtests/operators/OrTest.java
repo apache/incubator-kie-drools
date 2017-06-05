@@ -19,6 +19,7 @@ package org.drools.compiler.integrationtests.operators;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
@@ -37,6 +38,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
 
 public class OrTest extends CommonTestMethodBase {
 
@@ -409,4 +411,37 @@ public class OrTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals(4, result.size());
     }
+
+    @Test
+    public void testIndexAfterOr() {
+        // DROOLS-1604
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mark\") or\n" +
+                "  ( $mark : Person(name == \"Mark\")\n" +
+                "    and\n" +
+                "    $p : Person(age > $mark.age) )\n" +
+                "  $s: String(this == $p.name)" +
+                "then\n" +
+                "  list.add($s);\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build().newKieSession();
+
+        ksession.insert( "Mario" );
+        ksession.insert( "Edson" );
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( "Mario", list.get(0) );
+    }
+
 }
