@@ -23,14 +23,15 @@ import org.drools.compiler.Cheesery;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.Worker;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.debug.SessionInspector;
 import org.drools.core.util.debug.SessionReporter;
 import org.drools.core.util.debug.StatefulKnowledgeSessionInfo;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -54,10 +55,10 @@ public class SessionInspectorTest extends CommonTestMethodBase {
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.setGlobal( "results", new ArrayList<Object>() );
         
         ksession.insert( new Dimension( 100, 50 ) );
@@ -138,10 +139,10 @@ public class SessionInspectorTest extends CommonTestMethodBase {
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.setGlobal( "results", new ArrayList<Object>() );
         
         ksession.insert( new Dimension( 100, 50 ) );
