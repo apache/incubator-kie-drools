@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mockito.ArgumentCaptor;
 
@@ -41,8 +40,8 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final Person mark1 = new Person("mark");
         mark1.setCheese(new Cheese("gorgonzola", 10));
@@ -62,8 +61,8 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
                 "   sb.append( $type );\n" +
                 "end\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final StringBuilder sb = new StringBuilder();
         ksession.setGlobal("sb", sb);
@@ -85,8 +84,8 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final Person mark1 = new Person("mark");
         mark1.setCheese(new Cheese("gorgonzola", 10));
@@ -104,8 +103,8 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("street", "suburb", "zipCode", "uk"));
