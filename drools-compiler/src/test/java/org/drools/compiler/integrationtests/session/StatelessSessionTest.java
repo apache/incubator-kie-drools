@@ -22,22 +22,22 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.command.Command;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.mockito.Mockito;
@@ -55,7 +55,7 @@ public class StatelessSessionTest extends CommonTestMethodBase {
 
     @Test
     public void testSingleObjectAssert() throws Exception {
-        final StatelessKnowledgeSession session = getSession2( "statelessSessionTest.drl" );
+        final StatelessKieSession session = getSession2( "statelessSessionTest.drl" );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
@@ -68,7 +68,7 @@ public class StatelessSessionTest extends CommonTestMethodBase {
 
     @Test
     public void testArrayObjectAssert() throws Exception {
-        final StatelessKnowledgeSession session = getSession2( "statelessSessionTest.drl" );
+        final StatelessKieSession session = getSession2( "statelessSessionTest.drl" );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
@@ -81,7 +81,7 @@ public class StatelessSessionTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectionObjectAssert() throws Exception {
-        final StatelessKnowledgeSession session = getSession2( "statelessSessionTest.drl" );
+        final StatelessKieSession session = getSession2( "statelessSessionTest.drl" );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
@@ -109,7 +109,7 @@ public class StatelessSessionTest extends CommonTestMethodBase {
         
         Cheese stilton = new Cheese( "stilton", 5 );
         
-        final StatelessKnowledgeSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
+        final StatelessKieSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
         final ExecutableCommand cmd = (ExecutableCommand) CommandFactory.newInsert( stilton, "outStilton" );
         final BatchExecutionCommandImpl batch = new BatchExecutionCommandImpl(  Arrays.asList( new ExecutableCommand<?>[] { cmd } ) );
         
@@ -143,7 +143,7 @@ public class StatelessSessionTest extends CommonTestMethodBase {
         List list2 = new ArrayList();
         List list3 = new ArrayList();
         
-        final StatelessKnowledgeSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
+        final StatelessKieSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
         final Command setGlobal1 = CommandFactory.newSetGlobal( "list1", list1 );
         final Command setGlobal2 = CommandFactory.newSetGlobal( "list2", list2, true );
         final Command setGlobal3 = CommandFactory.newSetGlobal( "list3", list3, "outList3" );
@@ -190,12 +190,12 @@ public class StatelessSessionTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         kbase = SerializationHelper.serializeObject( kbase );
 
-        final StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+        final StatelessKieSession ksession = kbase.newStatelessKieSession();
         final Cheese stilton1 = new Cheese( "stilton", 1);
         final Cheese cheddar1 = new Cheese( "cheddar", 1);
         final Cheese stilton2 = new Cheese( "stilton", 2);
@@ -289,11 +289,11 @@ public class StatelessSessionTest extends CommonTestMethodBase {
         assertNull(ksession.getChannels().get("x"));
     }
 
-    private StatelessKnowledgeSession getSession2(final String fileName) throws Exception {
+    private StatelessKieSession getSession2(final String fileName) throws Exception {
         return getSession2( ResourceFactory.newClassPathResource( fileName, getClass() ) );
     }
         
-    private StatelessKnowledgeSession getSession2(final Resource resource) throws Exception {
+    private StatelessKieSession getSession2(final Resource resource) throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( resource, ResourceType.DRL );
         
@@ -302,14 +302,14 @@ public class StatelessSessionTest extends CommonTestMethodBase {
         }
         
         assertFalse( kbuilder.hasErrors() );
-        final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        final Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         
        
-        kbase.addKnowledgePackages( pkgs );
+        kbase.addPackages( pkgs );
         kbase    = SerializationHelper.serializeObject( kbase );
-        final StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
+        final StatelessKieSession session = kbase.newStatelessKieSession();
 
         session.setGlobal( "list",
                            this.list );
