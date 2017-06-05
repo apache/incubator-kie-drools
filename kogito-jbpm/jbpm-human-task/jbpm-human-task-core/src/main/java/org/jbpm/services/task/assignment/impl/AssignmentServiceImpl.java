@@ -63,11 +63,6 @@ public class AssignmentServiceImpl implements AssignmentService {
             logger.debug("AssignmentService is not enabled - to enable it set system property '" + ENABLED_PROPERTY + "' to true");
             return;
         }
-
-        if (task.getTaskData().getActualOwner() != null) {
-            logger.debug("Task {} has already been assigned to single actor {}", task.getId(), task.getTaskData().getActualOwner());
-            return;
-        }
  
         Assignment assignTo = this.strategy.apply(task, context, excludedUser);
         if (assignTo == null || assignTo.getUser() == null) {
