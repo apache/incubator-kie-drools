@@ -26,7 +26,6 @@ import org.drools.compiler.CommonTestMethodBase;
 
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.internal.KnowledgeBase;
 import org.kie.api.runtime.KieSession;
 
 /**
@@ -73,7 +72,7 @@ public abstract class Waltz extends CommonTestMethodBase {
     }
 
     public KieBase readKnowledegBase() {
-        KnowledgeBase kbase = loadKnowledgeBase( "waltz.drl");
+        KieBase kbase = loadKnowledgeBase( "waltz.drl");
         return ( KieBase ) kbase;
     }
 
