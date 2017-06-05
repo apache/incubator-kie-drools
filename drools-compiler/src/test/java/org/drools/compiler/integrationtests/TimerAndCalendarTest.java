@@ -35,10 +35,13 @@ import org.drools.compiler.Foo;
 import org.drools.compiler.Pet;
 import org.drools.compiler.StockTick;
 import org.drools.core.base.UndefinedCalendarExcption;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.io.ResourceType;
@@ -51,8 +54,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.Calendar;
 import org.kie.api.time.SessionClock;
 import org.kie.api.time.SessionPseudoClock;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -64,7 +65,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=15000)
     public void testDuration() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_Duration.drl");
+        KieBase kbase = loadKnowledgeBase("test_Duration.drl");
         KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
@@ -93,7 +94,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testDurationWithNoLoop() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_Duration_with_NoLoop.drl");
+        KieBase kbase = loadKnowledgeBase("test_Duration_with_NoLoop.drl");
         KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
@@ -138,7 +139,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
@@ -161,7 +162,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     
     @Test(timeout=10000)
     public void testFireRuleAfterDuration() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_FireRuleAfterDuration.drl");
+        KieBase kbase = loadKnowledgeBase("test_FireRuleAfterDuration.drl");
         KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
@@ -204,7 +205,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         List list = new ArrayList();
@@ -252,7 +253,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
@@ -302,7 +303,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
         conf.setOption( TimedRuleExecutionOption.YES );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         List list = new ArrayList();
@@ -341,7 +342,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         List list = new ArrayList();
@@ -422,7 +423,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
@@ -483,7 +484,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
@@ -526,7 +527,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "then \n";
         str += "end  \n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase);
 
         try {
@@ -551,7 +552,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         Calendar calFalse = new Calendar() {
@@ -616,7 +617,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
@@ -702,7 +703,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
@@ -788,7 +789,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
@@ -847,7 +848,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(ClockTypeOption.get("pseudo"));
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
@@ -911,7 +912,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             conf.setOption(ClockTypeOption.get("pseudo"));
 
-            KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+            KieBase kbase = loadKnowledgeBaseFromString(str );
             KieSession ksession = createKnowledgeSession(kbase, conf);
             
             List list = new ArrayList();
@@ -979,7 +980,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             conf.setOption(ClockTypeOption.get("pseudo"));
 
-            KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+            KieBase kbase = loadKnowledgeBaseFromString(str );
             KieSession ksession = createKnowledgeSession(kbase, conf);
 
             List list = new ArrayList();
@@ -1027,7 +1028,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     
     @Test(timeout=10000)
     public void testTimerWithNot() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_Timer_With_Not.drl");
+        KieBase kbase = loadKnowledgeBase("test_Timer_With_Not.drl");
         KieSession ksession = createKnowledgeSession(kbase);
 
         ksession.fireAllRules();
@@ -1041,7 +1042,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testHaltWithTimer() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_Halt_With_Timer.drl");
+        KieBase kbase = loadKnowledgeBase("test_Halt_With_Timer.drl");
         final KieSession ksession = createKnowledgeSession(kbase);
 
         new Thread( new Runnable(){
@@ -1072,7 +1073,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                     "        list.add(list.size()); \n" +  
                     " end";
 
-            KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+            KieBase kbase = loadKnowledgeBaseFromString(str );
             KieSession ksession = createKnowledgeSession(kbase);
 
             CountDownLatch latch = new CountDownLatch(1);
@@ -1126,7 +1127,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(ClockTypeOption.get("pseudo"));
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         List list = new ArrayList();
@@ -1209,7 +1210,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(ClockTypeOption.get("pseudo"));
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         List list = new ArrayList();
@@ -1287,7 +1288,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
+        KieBase kbase = loadKnowledgeBaseFromString(text);
         KieSession ksession = createKnowledgeSession(kbase, conf);
         
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
@@ -1356,7 +1357,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
+        KieBase kbase = loadKnowledgeBaseFromString(text);
         KieSession ksession = createKnowledgeSession(kbase, conf);
         
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
@@ -1459,7 +1460,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 ;
 
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
         final KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
@@ -1511,7 +1512,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "\n"
                 ;
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
         final KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
@@ -1580,12 +1581,12 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ) , ResourceType.DRL );
         if ( kbuilder.hasErrors() ) { fail( kbuilder.getErrors().toString() ); }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        KieSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        KieSession ksession = kbase.newKieSession( conf, null );
         ArrayList list = new ArrayList( );
         ksession.setGlobal( "list", list );
 
@@ -1644,8 +1645,8 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieSession ksession = kbase.newKieSession();
 
         int repetitions = 10000;
         for (int j = 0; j < repetitions; j++ ) {
@@ -1673,7 +1674,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         conf.setOption(ClockTypeOption.get("pseudo"));
         conf.setOption(TimedRuleExecutionOption.YES);
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         final CyclicBarrier barrier = new CyclicBarrier(2);
@@ -1790,7 +1791,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         conf.setOption(ClockTypeOption.get("pseudo"));
         conf.setOption(TimedRuleExecutionOption.YES);
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         List<String> list = new ArrayList<String>();
@@ -1826,7 +1827,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(TimedRuleExecutionOption.YES);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         List list = new ArrayList();

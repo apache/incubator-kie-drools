@@ -31,6 +31,8 @@ import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.EntryPointId;
@@ -38,6 +40,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
@@ -46,12 +49,11 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionClock;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -68,14 +70,14 @@ import static org.mockito.Mockito.*;
  */
 public class StreamsTest extends CommonTestMethodBase {
 
-    private KnowledgeBase loadKnowledgeBase( final String fileName ) throws IOException,
+    private KieBase loadKnowledgeBase( final String fileName ) throws IOException,
             DroolsParserException,
             Exception {
         return loadKnowledgeBase( fileName,
                                   KnowledgeBaseFactory.newKnowledgeBaseConfiguration() );
     }
 
-    private KnowledgeBase loadKnowledgeBase( final String fileName,
+    private KieBase loadKnowledgeBase( final String fileName,
             KieBaseConfiguration kconf ) throws IOException,
             DroolsParserException,
             Exception {
@@ -88,8 +90,8 @@ public class StreamsTest extends CommonTestMethodBase {
             System.out.println( kbuilder.getErrors() );
             return null;
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         return SerializationHelper.serializeObject(kbase);
         //return kbase;
@@ -98,13 +100,12 @@ public class StreamsTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testEventAssertion() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase("test_EntryPoint.drl");
+        KieBase kbase = loadKnowledgeBase("test_EntryPoint.drl");
         //final RuleBase ruleBase = loadRuleBase( reader );
 
         KieSessionConfiguration conf = SessionConfiguration.newInstance();
         ( (SessionConfiguration) conf ).setClockType( ClockType.PSEUDO_CLOCK );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf,
-                                                                              null );
+        KieSession session = kbase.newKieSession( conf, null );
 
         final List results = new ArrayList();
 
@@ -194,8 +195,8 @@ public class StreamsTest extends CommonTestMethodBase {
     @Test//(timeout=10000)
     public void testEntryPointReference() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase("test_EntryPointReference.drl");
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBase("test_EntryPointReference.drl");
+        KieSession session = kbase.newKieSession();
 
         final List<StockTick> results = new ArrayList<StockTick>();
         session.setGlobal("results",
@@ -247,8 +248,8 @@ public class StreamsTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testModifyRetracOnEntryPointFacts() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase("test_modifyRetractEntryPoint.drl");
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBase("test_modifyRetractEntryPoint.drl");
+        KieSession session = kbase.newKieSession();
 
         final List<? extends Number> results = new ArrayList<Number>();
         session.setGlobal( "results",
@@ -336,8 +337,8 @@ public class StreamsTest extends CommonTestMethodBase {
                      "end\n";
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, str );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         org.kie.api.event.rule.AgendaEventListener ael = mock(org.kie.api.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
@@ -387,8 +388,8 @@ public class StreamsTest extends CommonTestMethodBase {
                 "end\n";
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, str );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         org.kie.api.event.rule.AgendaEventListener ael = mock(org.kie.api.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
@@ -415,8 +416,8 @@ public class StreamsTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testGetEntryPointList() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase("test_EntryPointReference.drl");
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBase("test_EntryPointReference.drl");
+        KieSession session = kbase.newKieSession();
 
         EntryPoint def = session.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId());
         EntryPoint s1 = session.getEntryPoint("stream1");
@@ -436,12 +437,12 @@ public class StreamsTest extends CommonTestMethodBase {
     public void testEventDoesNotExpireIfNotInPattern() throws Exception {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = loadKnowledgeBase("test_EventExpiration.drl",
+        KieBase kbase = loadKnowledgeBase("test_EventExpiration.drl",
                 kconf);
 
         KieSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksessionConfig.setOption(ClockTypeOption.get("pseudo"));
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksessionConfig,
+        KieSession ksession = kbase.newKieSession(ksessionConfig,
                 null);
 
         RuleRuntimeEventListener wml = mock(RuleRuntimeEventListener.class);
@@ -482,12 +483,12 @@ public class StreamsTest extends CommonTestMethodBase {
     public void testEventExpirationSetToZero() throws Exception {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = loadKnowledgeBase("test_EventExpirationSetToZero.drl",
+        KieBase kbase = loadKnowledgeBase("test_EventExpirationSetToZero.drl",
                                                 kconf);
 
         KieSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksessionConfig.setOption(ClockTypeOption.get("pseudo"));
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksessionConfig,
+        KieSession ksession = kbase.newKieSession(ksessionConfig,
                                                                               null);
 
         RuleRuntimeEventListener wml = mock(RuleRuntimeEventListener.class);
@@ -561,8 +562,8 @@ public class StreamsTest extends CommonTestMethodBase {
                     kbuilder.hasErrors());
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         List<ObjectTypeNode> otns = ( (KnowledgeBaseImpl) kbase ).getRete().getObjectTypeNodes();
         ObjectType stot = new ClassObjectType( StockTick.class );
@@ -586,8 +587,8 @@ public class StreamsTest extends CommonTestMethodBase {
                            "        // consequences\n" +
                            "end\n";
         
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, drl );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, drl );
+        KieSession ksession = kbase.newKieSession();
 
         assertNotNull(ksession.getEntryPoint("UsedEntryPoint"));
         assertNotNull(ksession.getEntryPoint("UnusedEntryPoint"));
@@ -614,10 +615,10 @@ public class StreamsTest extends CommonTestMethodBase {
                      "end\n";
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf,
+        KieBase kbase = loadKnowledgeBaseFromString(kconf,
                                                           drl);
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         AgendaEventListener ael = mock(AgendaEventListener.class);
         ksession.addEventListener(ael);
 
@@ -665,10 +666,10 @@ public class StreamsTest extends CommonTestMethodBase {
                      "end";
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf,
+        KieBase kbase = loadKnowledgeBaseFromString(kconf,
                                                           drl);
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         AgendaEventListener ael = mock(AgendaEventListener.class);
         ksession.addEventListener(ael);
 
@@ -702,10 +703,10 @@ public class StreamsTest extends CommonTestMethodBase {
                      "end";
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf,
+        KieBase kbase = loadKnowledgeBaseFromString(kconf,
                                                           drl);
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         AgendaEventListener ael = mock(AgendaEventListener.class);
         ksession.addEventListener(ael);
         
@@ -790,8 +791,8 @@ public class StreamsTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kBaseConfig.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kBaseConfig, str);
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = loadKnowledgeBaseFromString(kBaseConfig, str);
+        KieSession ksession = createKnowledgeSession( kbase );
         
         ksession.addEventListener(new org.kie.api.event.rule.DebugAgendaEventListener());
 

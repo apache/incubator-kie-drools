@@ -17,6 +17,8 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.ConditionalBranchNode;
@@ -31,10 +33,9 @@ import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -47,9 +48,9 @@ public class SegmentCreationTest {
     
     @Test
     public void testSingleEmptyLhs() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase(" ");
+        KieBase kbase = buildKnowledgeBase(" ");
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, InitialFactImpl.class );
 
@@ -71,9 +72,9 @@ public class SegmentCreationTest {
   
     @Test
     public void testSingleSharedEmptyLhs() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase( " ", " ");
+        KieBase kbase = buildKnowledgeBase( " ", " ");
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, InitialFactImpl.class );
 
@@ -102,9 +103,9 @@ public class SegmentCreationTest {
     
     @Test
     public void testSinglePattern() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase("   A() \n");
+        KieBase kbase = buildKnowledgeBase("   A() \n");
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
@@ -126,10 +127,10 @@ public class SegmentCreationTest {
     
     @Test
     public void testSingleSharedPattern() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase( "   A() \n",
+        KieBase kbase = buildKnowledgeBase( "   A() \n",
                                                   "   A() \n");
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
@@ -158,11 +159,11 @@ public class SegmentCreationTest {
     
     @Test
     public void testMultiSharedPattern() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase( "   A() \n", 
+        KieBase kbase = buildKnowledgeBase( "   A() \n", 
                                                   "   A() B() \n",
                                                   "   A() B() C() \n");
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
@@ -213,9 +214,9 @@ public class SegmentCreationTest {
   
     @Test
     public void testSubnetworkNoSharing() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase( " A()  not ( B() and C() ) \n" );
+        KieBase kbase = buildKnowledgeBase( " A()  not ( B() and C() ) \n" );
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
@@ -254,10 +255,10 @@ public class SegmentCreationTest {
     
     @Test
     public void tesSubnetworkAfterShare() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase( "   A() \n", 
+        KieBase kbase = buildKnowledgeBase( "   A() \n", 
                                                   "   A()  not ( B() and C() ) \n" );
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
@@ -300,11 +301,11 @@ public class SegmentCreationTest {
     
     @Test
     public void tesShareInSubnetwork() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase( "   A() \n", 
+        KieBase kbase = buildKnowledgeBase( "   A() \n", 
                                                   "   A() B() C() \n",
                                                   "   A()  not ( B() and C() ) \n" );
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
@@ -357,11 +358,11 @@ public class SegmentCreationTest {
 
     @Test
     public void testBranchCESingleSegment() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase( "   $a : A() \n" +
+        KieBase kbase = buildKnowledgeBase( "   $a : A() \n" +
                                                   "   if ( $a != null ) do[t1] \n" +
                                                   "   B() \n" );
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
@@ -404,7 +405,7 @@ public class SegmentCreationTest {
 
     @Test
     public void testBranchCEMultipleSegments() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase( "   $a : A() \n", // r1
+        KieBase kbase = buildKnowledgeBase( "   $a : A() \n", // r1
                                                   "   $a : A() \n" +
                                                   "   if ( $a != null ) do[t1] \n" +
                                                   "   B() \n", // r2
@@ -414,7 +415,7 @@ public class SegmentCreationTest {
                                                   "   C() \n" // r3
                                                 );
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
@@ -470,7 +471,7 @@ public class SegmentCreationTest {
         assertTrue( pmemr3.isRuleLinked() );
     }
 
-    private KnowledgeBase buildKnowledgeBase(String... rules) {
+    private KieBase buildKnowledgeBase(String... rules) {
         String str = "";
         str += "package org.kie \n";
         str += "import " + LinkingTest.A.class.getCanonicalName() + "\n" ;
@@ -494,12 +495,12 @@ public class SegmentCreationTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         return kbase;
     }      
 
-    public ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
+    public ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
