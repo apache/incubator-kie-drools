@@ -83,6 +83,7 @@ public class Msg {
     public static final Message1 FUNC_DEF_BODY_NOT_CONTEXT                           = new Message1( DMNMessageType.INVALID_SYNTAX, "A non-FEEL function definition requires a context as it's body in node '%s'" );
     public static final Message3 FUNC_DEF_COMPILATION_ERR                            = new Message3( DMNMessageType.ERR_COMPILING_FEEL, "Error compiling Java function '%s' on node '%s': %s" );
     public static final Message2 FUNC_DEF_MISSING_ENTRY                              = new Message2( DMNMessageType.INVALID_SYNTAX, "A Java function definition requires both the 'class' and the 'method signature' attributes. Invalid definition for function '%s' on node '%s'" );
+    public static final Message2 ERROR_CHECKING_ALLOWED_VALUES                       = new Message2( DMNMessageType.FEEL_EVALUATION_ERROR, "Error checking allowed values for node '%s': %s" );
 
     public static interface Message {
         String getMask();
