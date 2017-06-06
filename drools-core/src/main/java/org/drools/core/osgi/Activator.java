@@ -36,7 +36,6 @@ public class Activator
     protected static final transient Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private ServiceRegistration resourceReg;
-    private ServiceRegistration kbaseReg;
     private ServiceRegistration marshallerProviderReg;
 
     public void start(BundleContext bc) throws Exception {
@@ -53,7 +52,6 @@ public class Activator
     }
 
     public void stop(BundleContext bc) throws Exception {
-        this.kbaseReg.unregister();
         this.resourceReg.unregister();
         this.marshallerProviderReg.unregister();
     }
