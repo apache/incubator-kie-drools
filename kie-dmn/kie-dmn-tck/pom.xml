@@ -40,7 +40,11 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-scm-plugin</artifactId>
-            <version>1.9.5</version>
+            <!--
+              Not using latest version 1.9.5 here, because there is this bug:
+              https://issues.apache.org/jira/browse/SCM-836
+            -->
+            <version>1.9.4</version>
             <executions>
               <execution>
                 <id>run-tck-suite</id>
@@ -54,7 +58,6 @@
                   <goalsDirectory>runners</goalsDirectory>
                   <profiles>drools</profiles>
                   <pushChanges>false</pushChanges>
-                  <mavenHome>${maven.home}</mavenHome>
                 </configuration>
               </execution>
             </executions>
