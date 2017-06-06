@@ -29,12 +29,6 @@
   <artifactId>kie-dmn-tck</artifactId>
   <name>KIE :: Decision Model Notation :: TCK</name>
 
-  <scm>
-    <url>https://github.com/agilepro/dmn-tck</url>
-    <connection>scm:git:https://github.com/agilepro/dmn-tck.git</connection>
-    <developerConnection>scm:git:https://github.com/agilepro/dmn-tck.git</developerConnection>
-  </scm>
-
   <profiles>
     <profile>
       <id>tck</id>
@@ -55,6 +49,7 @@
                   <goal>bootstrap</goal>
                 </goals>
                 <configuration>
+                  <connectionUrl>scm:git:https://github.com/agilepro/dmn-tck.git</connectionUrl>
                   <goals>install</goals>
                   <goalsDirectory>runners</goalsDirectory>
                   <profiles>drools</profiles>
