@@ -17,7 +17,6 @@
 package org.kie.internal.runtime;
 
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
 
 
 /**
@@ -116,7 +115,7 @@ import org.kie.internal.event.KnowledgeRuntimeEventManager;
  */
 public interface StatelessKnowledgeSession
     extends
-        StatelessKieSession, KnowledgeRuntimeEventManager {
+        StatelessKieSession {
 
 
 }

@@ -19,7 +19,8 @@ package org.kie.internal.builder;
 import java.util.Properties;
 
 import com.sun.tools.xjc.Options;
-import org.kie.internal.KnowledgeBase;
+
+import org.kie.api.KieBase;
 import org.kie.internal.utils.ServiceRegistryImpl;
 
 /**
@@ -57,11 +58,11 @@ public class KnowledgeBuilderFactory {
         return FactoryServiceHolder.factoryService.newKnowledgeBuilder( conf );
     }
 
-    public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase) {
+    public static KnowledgeBuilder newKnowledgeBuilder(KieBase kbase) {
         return FactoryServiceHolder.factoryService.newKnowledgeBuilder( kbase );
     }
 
-    public static KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
+    public static KnowledgeBuilder newKnowledgeBuilder(KieBase kbase,
                                                        KnowledgeBuilderConfiguration conf) {
         return FactoryServiceHolder.factoryService.newKnowledgeBuilder( kbase, conf );
     }

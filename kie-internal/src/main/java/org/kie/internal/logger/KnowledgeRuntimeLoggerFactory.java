@@ -16,8 +16,9 @@
 
 package org.kie.internal.logger;
 
+import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.logger.KieLoggers;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
+import org.kie.api.logger.KieRuntimeLogger;
 
 /**
  * <p>
@@ -48,9 +49,9 @@ public class KnowledgeRuntimeLoggerFactory {
      * @param fileName - .log is appended to this.
      * @return
      */
-    public static KnowledgeRuntimeLogger newFileLogger(KnowledgeRuntimeEventManager session,
+    public static KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
                                                        String fileName) {
-        return (KnowledgeRuntimeLogger) getKnowledgeRuntimeLoggerProvider().newFileLogger( session,
+        return getKnowledgeRuntimeLoggerProvider().newFileLogger( session,
                                                                   fileName );
     }
 
@@ -63,10 +64,10 @@ public class KnowledgeRuntimeLoggerFactory {
      * @param interval - in milliseconds.
      * @return
      */
-    public static KnowledgeRuntimeLogger newThreadedFileLogger(KnowledgeRuntimeEventManager session,
+    public static KieRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
                                                                String fileName,
                                                                int interval) {
-        return (KnowledgeRuntimeLogger) getKnowledgeRuntimeLoggerProvider().newThreadedFileLogger( session,
+        return getKnowledgeRuntimeLoggerProvider().newThreadedFileLogger( session,
                                                                           fileName,
                                                                           interval );
     }
@@ -78,8 +79,8 @@ public class KnowledgeRuntimeLoggerFactory {
      * @param session
      * @return
      */
-    public static KnowledgeRuntimeLogger newConsoleLogger(KnowledgeRuntimeEventManager session) {
-        return (KnowledgeRuntimeLogger) getKnowledgeRuntimeLoggerProvider().newConsoleLogger( session );
+    public static KieRuntimeLogger newConsoleLogger(KieRuntimeEventManager session) {
+        return getKnowledgeRuntimeLoggerProvider().newConsoleLogger( session );
     }
 
     private static synchronized void setKnowledgeRuntimeLoggerProvider(KieLoggers provider) {
