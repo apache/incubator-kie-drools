@@ -20,14 +20,12 @@ package org.drools.pmml.pmml_4_2;
 import org.dmg.pmml.pmml_4_2.descr.NeuralLayer;
 import org.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
-import org.drools.compiler.compiler.PMMLCompiler;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;

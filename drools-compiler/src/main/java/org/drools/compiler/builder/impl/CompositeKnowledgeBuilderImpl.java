@@ -150,7 +150,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResourceType(PKG_RESOURCE_BUILDER, ResourceType.PKG);
         buildResourceType(CHANGE_SET_RESOURCE_BUILDER, ResourceType.CHANGE_SET);
         buildResourceType(XSD_RESOURCE_BUILDER, ResourceType.XSD);
-        buildResourceType(PMML_RESOURCE_BUILDER, ResourceType.PMML);
     }
 
     private void buildResourceType(ResourceBuilder resourceBuilder, ResourceType resourceType) {
@@ -183,13 +182,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         @Override
         public void build( KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr ) throws Exception {
             kBuilder.addDsl( resourceDescr.resource );
-        }
-    };
-
-    private static final ResourceBuilder PMML_RESOURCE_BUILDER = new ResourceBuilder() {
-        @Override
-        public void build( KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr ) throws Exception {
-            kBuilder.addPackageFromPMML(resourceDescr.resource, ResourceType.PMML, resourceDescr.configuration);
         }
     };
 

@@ -24,11 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import org.drools.compiler.compiler.PMMLCompiler;
-import org.drools.compiler.compiler.PMMLCompilerFactory;
-import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.DroolsStreamUtils;
@@ -449,60 +445,6 @@ public class KnowledgeBuilderTest {
 
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
         assertEquals( 2, kpkgs.size() );
-    }
-
-
-    @Test
-    public void testResourceMapping() throws Exception {
-        String rule = "package org.drools.compiler.test\n" +
-                "rule R1 when\n" +
-                " \n" +
-                "then\n" +
-                "end\n";
-
-        Resource res1 = ResourceFactory.newByteArrayResource( rule.getBytes() );
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( res1, ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        KnowledgePackage kp1 = kbuilder.getKnowledgePackages().iterator().next();
-        assertEquals( 1, kp1.getRules().size() );
-        Rule r = kp1.getRules().iterator().next();
-        assertEquals( res1, ((RuleImpl) r).getResource() );
-
-        String pmml = "<PMML version=\"4.0\"><Header/></PMML>";
-
-        Resource res2 = ResourceFactory.newByteArrayResource( pmml.getBytes() );
-        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        PMMLCompilerFactory.setProvider(new PMMLCompiler() {
-            public String compile(InputStream stream, ClassLoader cl) {
-                return "rule R2 when then end";
-            }
-
-            @Override
-            public List<KnowledgeBuilderResult> getResults() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public void clearResults() {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public Resource[] transform( Resource input, ClassLoader classLoader ) {
-                return new Resource[ 0 ];
-            }
-        });
-
-        kbuilder2.add( res2, ResourceType.PMML );
-        assertFalse( kbuilder2.getErrors().toString(), kbuilder2.hasErrors() );
-
-        KnowledgePackage kp2 = kbuilder2.getKnowledgePackages().iterator().next();
-        assertEquals( 1, kp2.getRules().size() );
-        Rule r2 = kp2.getRules().iterator().next();
-        assertEquals( res2, ((RuleImpl) r2).getResource() );
-
     }
 
     @Test
