@@ -25,7 +25,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 import static org.junit.Assert.assertEquals;
 
@@ -44,7 +44,7 @@ public class PropertyChangeListenerTest {
     
     @Test
     public void test1() {
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   this.entryPoint,

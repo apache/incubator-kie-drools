@@ -72,7 +72,7 @@ public class SegmentPropagationTest {
         sinkNode2 = (JoinNode) BetaNodeBuilder.create( NodeTypeEnums.JoinNode, buildContext ).build();
         joinNode.addTupleSink( sinkNode2 );
 
-        wm = ((StatefulKnowledgeSessionImpl)buildContext.getKnowledgeBase().newStatefulKnowledgeSession());
+        wm = ((StatefulKnowledgeSessionImpl)buildContext.getKnowledgeBase().newKieSession());
         
         bm =(BetaMemory)  wm.getNodeMemory( joinNode );
         

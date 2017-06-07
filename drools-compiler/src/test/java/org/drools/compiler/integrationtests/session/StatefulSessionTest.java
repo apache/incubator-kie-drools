@@ -28,13 +28,13 @@ import org.drools.compiler.PersonInterface;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBaseFactory;
 
 public class StatefulSessionTest extends CommonTestMethodBase {
 

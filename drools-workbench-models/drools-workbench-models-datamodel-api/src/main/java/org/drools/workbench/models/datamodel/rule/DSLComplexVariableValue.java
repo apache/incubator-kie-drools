@@ -26,9 +26,9 @@ public class DSLComplexVariableValue extends DSLVariableValue {
     public DSLComplexVariableValue() {
     }
 
-    public DSLComplexVariableValue( String id,
-                                    String value ) {
-        super( value );
+    public DSLComplexVariableValue(String id,
+                                   String value) {
+        super(value);
         this.id = id;
     }
 
@@ -36,18 +36,24 @@ public class DSLComplexVariableValue extends DSLVariableValue {
         return id;
     }
 
-    public void setId( String id ) {
+    public void setId(String id) {
         this.id = id;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         DSLComplexVariableValue that = (DSLComplexVariableValue) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) {
+            return false;
+        }
 
         return true;
     }
@@ -59,5 +65,11 @@ public class DSLComplexVariableValue extends DSLVariableValue {
         result = 31 * result + (id != null ? id.hashCode() : 0);
         result = ~~result;
         return result;
+    }
+
+    @Override
+    public DSLVariableValue copy() {
+        return new DSLComplexVariableValue(id,
+                                           getValue());
     }
 }

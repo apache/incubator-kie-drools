@@ -17,9 +17,9 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBaseFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class DynamicRuleRemovalTest extends CommonTestMethodBase {
 
     private void addRule(InternalKnowledgeBase kbase, String ruleName) {
         String rule = createDRL(ruleName);
-        kbase.addKnowledgePackages(loadKnowledgePackagesFromString(rule));
+        kbase.addPackages(loadKnowledgePackagesFromString(rule));
     }
 
     private void removeRule(InternalKnowledgeBase kbase, String ruleName) {

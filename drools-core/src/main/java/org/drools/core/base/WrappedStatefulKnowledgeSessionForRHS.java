@@ -48,6 +48,7 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessEventListener;
@@ -71,7 +72,6 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.RuleUnit;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.KnowledgeRuntime;
@@ -138,7 +138,7 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		delegate.removeEventListener(listener);
 	}
 
-	public KnowledgeBase getKieBase() {
+	public KieBase getKieBase() {
 		return delegate.getKieBase();
 	}
 

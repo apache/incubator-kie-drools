@@ -17,6 +17,8 @@ package org.drools.compiler.compiler;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.TypeDeclaration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
@@ -36,13 +39,10 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
@@ -463,8 +463,8 @@ public class TypeDeclarationTest {
         System.err.println( kbuilder.getErrors() );
         assertFalse(kbuilder.hasErrors());
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addPackages( kbuilder.getKnowledgePackages() );
 
         FactType bean = kBase.getFactType( "org.drools.compiler.test", "Bean" );
         FactType pers = kBase.getFactType( "org.drools", "Person" );
@@ -529,9 +529,9 @@ public class TypeDeclarationTest {
         System.err.println( kbuilder.getErrors() );
         assertFalse( kbuilder.hasErrors() );
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession knowledgeSession = kBase.newKieSession();
         FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
 
         assertTrue( handle instanceof EventFactHandle );
@@ -558,9 +558,9 @@ public class TypeDeclarationTest {
         System.err.println( kbuilder.getErrors() );
         assertFalse( kbuilder.hasErrors() );
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession knowledgeSession = kBase.newKieSession();
         FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
 
         assertTrue( handle instanceof EventFactHandle );
@@ -735,7 +735,7 @@ public class TypeDeclarationTest {
         }
 
 
-        for( KnowledgePackage kp : kbuilder.getKnowledgePackages() ) {
+        for( KiePackage kp : kbuilder.getKnowledgePackages() ) {
             if ( kp.getName().equals( "org.drools" ) ) {
                 Collection<FactType> types = kp.getFactTypes();
                 for ( FactType type : types ) {

@@ -16,6 +16,8 @@
 package org.drools.persistence.timer.integrationtests;
 
 import org.drools.core.ClockType;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Assert;
@@ -25,23 +27,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionClock;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -87,8 +89,8 @@ public class TimerAndCalendarTest {
 
     @Test @Ignore("beta4 phreak")
     public void testTimerRuleAfterIntReloadSession() throws Exception {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = createSession( kbase );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieSession ksession = createSession( kbase );
 
         // must advance time or it won't save.
         SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
@@ -118,9 +120,9 @@ public class TimerAndCalendarTest {
                            "        list.add(list.size()); \n" +
                            " end";
         Resource resource = ResourceFactory.newByteArrayResource(timerRule.getBytes());
-        Collection<KnowledgePackage> kpackages = buildKnowledgePackage( resource,
+        Collection<KiePackage> kpackages = buildKnowledgePackage( resource,
                                                                         ResourceType.DRL );
-        kbase.addKnowledgePackages( kpackages );
+        kbase.addPackages( kpackages );
 
         clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 10,
@@ -166,8 +168,8 @@ public class TimerAndCalendarTest {
 
     @Test @Ignore("beta4 phreak")
     public void testTimerRuleAfterCronReloadSession() throws Exception {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = createSession( kbase );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieSession ksession = createSession( kbase );
 
         // must advance time or it won't save.
         SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
@@ -197,9 +199,9 @@ public class TimerAndCalendarTest {
                            "        list.add(list.size()); \n" +
                            " end";
         Resource resource = ResourceFactory.newByteArrayResource( timerRule.getBytes() );
-        Collection<KnowledgePackage> kpackages = buildKnowledgePackage( resource,
+        Collection<KiePackage> kpackages = buildKnowledgePackage( resource,
                                                                         ResourceType.DRL );
-        kbase.addKnowledgePackages( kpackages );
+        kbase.addPackages( kpackages );
 
         List<Integer> list = Collections.synchronizedList( new ArrayList<Integer>() );
         ksession.setGlobal( "list",
@@ -262,12 +264,12 @@ public class TimerAndCalendarTest {
                            "end";
         KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbconf );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbconf );
         Resource resource = ResourceFactory.newByteArrayResource( timerRule.getBytes() );
-        Collection<KnowledgePackage> kpackages = buildKnowledgePackage( resource,
+        Collection<KiePackage> kpackages = buildKnowledgePackage( resource,
                                                                         ResourceType.DRL );
-        kbase.addKnowledgePackages( kpackages );
-        StatefulKnowledgeSession ksession = createSession( kbase );
+        kbase.addPackages( kpackages );
+        KieSession ksession = createSession( kbase );
 
         FactType type = kbase.getFactType( "org.drools.test",
                                            "TestEvent" );
@@ -289,7 +291,7 @@ public class TimerAndCalendarTest {
     public void testTimerWithRemovingRule() throws Exception {
         // DROOLS-576
         // Only reproducible with RETEOO
-        KnowledgeBase kbase1  = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase1  = KnowledgeBaseFactory.newKnowledgeBase();
 
         String str1 = "package org.test; " +
                 "import java.util.*; " +
@@ -305,9 +307,9 @@ public class TimerAndCalendarTest {
                 "end\n";
 
         Resource resource1 = ResourceFactory.newByteArrayResource(str1.getBytes());
-        Collection<KnowledgePackage> kpackages1 = buildKnowledgePackage( resource1,
+        Collection<KiePackage> kpackages1 = buildKnowledgePackage( resource1,
                                                                 ResourceType.DRL );
-        kbase1.addKnowledgePackages( kpackages1 );
+        kbase1.addPackages( kpackages1 );
 
         StatefulKnowledgeSession ksession1 = JPAKnowledgeService.newStatefulKnowledgeSession(kbase1, null,
                 createEnvironment(context));
@@ -326,7 +328,7 @@ public class TimerAndCalendarTest {
         Thread.sleep(5000);
 
         // A new kbase without the timer's activated rule
-        KnowledgeBase kbase2  = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase2  = KnowledgeBaseFactory.newKnowledgeBase();
 
         String str2 = "package org.test; " +
                 "import java.util.*; " +
@@ -341,9 +343,9 @@ public class TimerAndCalendarTest {
                 "end\n";
 
         Resource resource2 = ResourceFactory.newByteArrayResource(str2.getBytes());
-        Collection<KnowledgePackage> kpackages2 = buildKnowledgePackage( resource2,
+        Collection<KiePackage> kpackages2 = buildKnowledgePackage( resource2,
                                                                         ResourceType.DRL );
-        kbase2.addKnowledgePackages( kpackages2 );
+        kbase2.addPackages( kpackages2 );
 
         StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession(ksessionId, kbase2, null,
                 createEnvironment(context));
@@ -357,7 +359,7 @@ public class TimerAndCalendarTest {
         Assert.assertEquals(0, list.size());
     }
 
-    private StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
+    private KieSession createSession(KieBase kbase) {
         final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         Environment env = createEnvironment(context);
@@ -370,8 +372,7 @@ public class TimerAndCalendarTest {
         return ksession;
     }
 
-    private StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession,
-                                                             KnowledgeBase kbase) {
+    private KieSession disposeAndReloadSession(KieSession ksession, KieBase kbase) {
         long ksessionId = ksession.getIdentifier();
         ksession.dispose();
 
@@ -385,7 +386,7 @@ public class TimerAndCalendarTest {
         return newksession;
     }
 
-    private Collection<KnowledgePackage> buildKnowledgePackage(Resource resource,
+    private Collection<KiePackage> buildKnowledgePackage(Resource resource,
                                                                ResourceType resourceType) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( resource,
@@ -397,7 +398,7 @@ public class TimerAndCalendarTest {
             }
             Assert.fail( "KnowledgeBase did not build" );
         }
-        Collection<KnowledgePackage> packages = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> packages = kbuilder.getKnowledgePackages();
         return packages;
     }
 

@@ -47,6 +47,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.CompositeObjectSinkAdapterTest;
 import org.drools.core.reteoo.LeftTupleImpl;
@@ -62,7 +63,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -112,12 +112,12 @@ public class MVELConsequenceBuilderTest {
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
         builder.build( context, RuleImpl.DEFAULT_CONSEQUENCE_NAME );
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
 
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         kBase.addPackage(pkg);
 
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final Cheese cheddar = new Cheese( "cheddar", 10 );
         final InternalFactHandle f0 = (InternalFactHandle) ksession.insert( cheddar );
@@ -180,8 +180,8 @@ public class MVELConsequenceBuilderTest {
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
         builder.build( context, RuleImpl.DEFAULT_CONSEQUENCE_NAME );
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );

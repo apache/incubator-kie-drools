@@ -20,10 +20,10 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.util.StringUtils;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Context;
 
 public class NewKnowledgeBuilderCommand
@@ -32,7 +32,7 @@ public class NewKnowledgeBuilderCommand
 
     private KnowledgeBuilderConfiguration kbuilderConf;
     
-    private KnowledgeBase attachedKnowledgeBase;
+    private KieBase attachedKnowledgeBase;
     
     private String kbaseId;
     
@@ -60,11 +60,11 @@ public class NewKnowledgeBuilderCommand
         this.outIdentifier = outIdentifier;
     }    
 
-    public KnowledgeBase getAttachedKnowledgeBase() {
+    public KieBase getAttachedKnowledgeBase() {
         return attachedKnowledgeBase;
     }
 
-    public void setAttachedKnowledgeBase(KnowledgeBase attachedKnowledgeBase) {
+    public void setAttachedKnowledgeBase(KieBase attachedKnowledgeBase) {
         this.attachedKnowledgeBase = attachedKnowledgeBase;
     }
     
@@ -79,7 +79,7 @@ public class NewKnowledgeBuilderCommand
         KnowledgeBuilder kbuilder = null;
         
         if ( !StringUtils.isEmpty( kbaseId )) {
-            attachedKnowledgeBase = ( KnowledgeBase ) context.get( kbaseId );
+            attachedKnowledgeBase = ( KieBase ) context.get( kbaseId );
         }
         
         if ( this.kbuilderConf == null ) {

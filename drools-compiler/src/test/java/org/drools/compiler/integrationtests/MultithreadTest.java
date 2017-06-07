@@ -20,6 +20,8 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -35,8 +37,6 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -311,8 +311,8 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf, str );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kbconf, str );
+        final KieSession ksession = kbase.newKieSession();
         final EntryPoint ep = ksession.getEntryPoint( "X" );
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -407,8 +407,8 @@ public class MultithreadTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        final KieSession session = kbase.newKieSession();
 
         Thread t = new Thread() {
             public void run()
@@ -489,9 +489,9 @@ public class MultithreadTest extends CommonTestMethodBase {
         KieBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconfig.setOption(EventProcessingOption.STREAM);
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconfig, drl);
+        KieBase kbase = loadKnowledgeBaseFromString(kbconfig, drl);
 
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        final KieSession session = kbase.newKieSession();
         EntryPoint ep01 = session.getEntryPoint("ep01");
 
         Runner t = new Runner(session);
@@ -566,11 +566,11 @@ public class MultithreadTest extends CommonTestMethodBase {
         KieBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconfig.setOption(EventProcessingOption.STREAM);
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconfig, drl);
+        KieBase kbase = loadKnowledgeBaseFromString(kbconfig, drl);
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get("REALTIME"));
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(conf,null);
+        final KieSession ksession = kbase.newKieSession(conf,null);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -616,10 +616,10 @@ public class MultithreadTest extends CommonTestMethodBase {
 
     public static class Runner extends Thread {
 
-        private final StatefulKnowledgeSession ksession;
+        private final KieSession ksession;
         private Throwable error;
 
-        public Runner(StatefulKnowledgeSession ksession) {
+        public Runner(KieSession ksession) {
             this.ksession = ksession;
         }
 
@@ -655,10 +655,10 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.toString().getBytes() ), ResourceType.DRL );
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( knowledgeBuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieSession ksession = kbase.newKieSession();
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {

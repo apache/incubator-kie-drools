@@ -18,14 +18,14 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Order;
 import org.drools.compiler.OrderItem;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 
 
 public class QueryTest2 extends CommonTestMethodBase {
@@ -58,9 +58,9 @@ public class QueryTest2 extends CommonTestMethodBase {
         final OrderItem item12 = new OrderItem( order1,
                                                 2 );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.insert( order1 );
         ksession.insert( item11 );
         ksession.insert( item12 );

@@ -57,7 +57,7 @@ public class PhreakNotNodeTest {
 
         notNode.addTupleSink( sinkNode );
 
-        wm = ((StatefulKnowledgeSessionImpl)buildContext.getKnowledgeBase().newStatefulKnowledgeSession());
+        wm = ((StatefulKnowledgeSessionImpl)buildContext.getKnowledgeBase().newKieSession());
         
         bm =(BetaMemory)  wm.getNodeMemory( notNode );
         

@@ -23,9 +23,11 @@ import java.util.List;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.definition.KnowledgePackage;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class AddRuleTest extends CommonTestMethodBase {
@@ -55,10 +57,10 @@ public class AddRuleTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KnowledgeBase kbase = getKnowledgeBase();
-        kbase.newStatefulKnowledgeSession();
-        kbase.addKnowledgePackages(loadKnowledgePackagesFromString(rule1));
-        kbase.addKnowledgePackages(loadKnowledgePackagesFromString(rule2));
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
+        kbase.newKieSession();
+        kbase.addPackages(loadKnowledgePackagesFromString(rule1));
+        kbase.addPackages(loadKnowledgePackagesFromString(rule2));
     }
 
     @Test
@@ -77,8 +79,8 @@ public class AddRuleTest extends CommonTestMethodBase {
                 " list.add( $p );\n" +
                 "end";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str1);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBaseFromString(str1);
+        final KieSession ksession = kbase.newKieSession();
 
         final List<String> names = new ArrayList<String>();
         names.add("Mark");
@@ -92,7 +94,7 @@ public class AddRuleTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        kbase.addKnowledgePackages(loadKnowledgePackagesFromString(str2));
+        kbase.addPackages(loadKnowledgePackagesFromString(str2));
 
         ksession.fireAllRules();
 
@@ -110,8 +112,8 @@ public class AddRuleTest extends CommonTestMethodBase {
                 "then\n" +
                 "   list.add(i);\n" +
                 "end";
-        final KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
-        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
+        final KieSession session = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         session.setGlobal("list", list);
@@ -127,8 +129,8 @@ public class AddRuleTest extends CommonTestMethodBase {
                 "then\n" +
                 "   list.add(\"x\");\n" +
                 "end";
-        final Collection<KnowledgePackage> kpkgs = loadKnowledgePackagesFromString(rule);
-        kbase.addKnowledgePackages(kpkgs);
+        final Collection<KiePackage> kpkgs = loadKnowledgePackagesFromString(rule);
+        kbase.addPackages(kpkgs);
 
         session.fireAllRules();
 

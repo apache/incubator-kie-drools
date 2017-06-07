@@ -31,13 +31,13 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
-import org.kie.internal.definition.KnowledgePackage;
 
 public interface InternalKieModule extends KieModule {
 
@@ -45,7 +45,7 @@ public interface InternalKieModule extends KieModule {
 
     KnowledgeBuilder getKnowledgeBuilderForKieBase(String kieBaseName);
 
-    Collection<KnowledgePackage> getKnowledgePackagesForKieBase(String kieBaseName);
+    Collection<KiePackage> getKnowledgePackagesForKieBase(String kieBaseName);
 
     void cacheResultsForKieBase(String kieBaseName, Results results);
 

@@ -15,6 +15,7 @@
 
 package org.drools.compiler.integrationtests;
 
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Test;
 import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
@@ -29,7 +30,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
@@ -107,7 +107,7 @@ public class DynamicEvalTest {
                 "\nend";
 
         loadPackages( ResourceFactory.newByteArrayResource( test.getBytes() ), ResourceType.DRL );
-        ((KnowledgeBaseImpl)session.getKieBase()).addKnowledgePackages(kbuilder.getKnowledgePackages());
+        ((KnowledgeBaseImpl)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
         session.addEventListener( new DebugRuleRuntimeEventListener( ) );
 
         int fired = session.fireAllRules(); // 1
@@ -125,7 +125,7 @@ public class DynamicEvalTest {
                 "\nend";
 
         loadPackages(ResourceFactory.newByteArrayResource(test2.getBytes()), ResourceType.DRL);
-        ((KnowledgeBaseImpl)session.getKieBase()).addKnowledgePackages(kbuilder.getKnowledgePackages());
+        ((KnowledgeBaseImpl)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
 
 
         fired = session.fireAllRules(); // 0
@@ -154,7 +154,7 @@ public class DynamicEvalTest {
 
 
         loadPackages( ResourceFactory.newByteArrayResource( test.getBytes() ), ResourceType.DRL );
-        ((KnowledgeBaseImpl)session.getKieBase()).addKnowledgePackages(kbuilder.getKnowledgePackages());
+        ((KnowledgeBaseImpl)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
         session.addEventListener( new DebugRuleRuntimeEventListener( ) );
 
         session.insert( "go" );
@@ -177,7 +177,7 @@ public class DynamicEvalTest {
                 "\nend";
 
         loadPackages(ResourceFactory.newByteArrayResource(test2.getBytes()), ResourceType.DRL);
-        ((KnowledgeBaseImpl)session.getKieBase()).addKnowledgePackages(kbuilder.getKnowledgePackages());
+        ((KnowledgeBaseImpl)session.getKieBase()).addPackages(kbuilder.getKnowledgePackages());
 
 
         fired = session.fireAllRules(); // 0

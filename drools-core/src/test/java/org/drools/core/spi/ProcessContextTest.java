@@ -22,7 +22,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.process.CaseData;
 import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;

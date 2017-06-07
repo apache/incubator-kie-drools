@@ -18,6 +18,7 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.StockTick;
 import org.drools.core.ClockType;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -27,7 +28,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;

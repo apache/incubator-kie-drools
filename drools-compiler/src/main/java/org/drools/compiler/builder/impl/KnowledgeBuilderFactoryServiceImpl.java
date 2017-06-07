@@ -22,7 +22,7 @@ import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.builder.conf.impl.ScoreCardConfigurationImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieBase;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.JaxbConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -58,7 +58,7 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
         return new KnowledgeBuilderImpl( (KnowledgeBuilderConfigurationImpl) conf );
     }
 
-    public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase) {
+    public KnowledgeBuilder newKnowledgeBuilder(KieBase kbase) {
         if ( kbase != null ) {
             return new KnowledgeBuilderImpl( (InternalKnowledgeBase)kbase );
         } else {
@@ -66,7 +66,7 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
         }
     }
 
-    public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
+    public KnowledgeBuilder newKnowledgeBuilder(KieBase kbase,
                                                 KnowledgeBuilderConfiguration conf) {
         if ( kbase != null ) {
             return new KnowledgeBuilderImpl( (InternalKnowledgeBase)kbase, (KnowledgeBuilderConfigurationImpl) conf );

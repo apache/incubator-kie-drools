@@ -22,15 +22,17 @@ import java.util.Set;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.core.base.mvel.MVELDebugHandler;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.mvel2.MVELRuntime;
 import org.mvel2.debug.Debugger;
@@ -44,12 +46,11 @@ public class HelloWorldTest extends CommonTestMethodBase {
     @Test
     public void testHelloWorld() throws Exception {
         // load up the knowledge base
-        KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = readKnowledgeBase();
+        KieSession ksession = createKnowledgeSession(kbase);
         File testTmpDir = new File("target/test-tmp/");
         testTmpDir.mkdirs();
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession,
-                 "target/test-tmp/testHelloWorld" );
+        KieRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "target/test-tmp/testHelloWorld" );
         ksession.getAgendaEventListeners().size();
         // go !
         Message message = new Message();
@@ -77,12 +78,11 @@ public class HelloWorldTest extends CommonTestMethodBase {
         String source = "org.drools.integrationtests.Rule_Hello_World";
         MVELRuntime.registerBreakpoint(source, 1);
         // load up the knowledge base
-        KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = readKnowledgeBase();
+        KieSession ksession = createKnowledgeSession(kbase);
         File testTmpDir = new File("target/test-tmp/");
         testTmpDir.mkdirs();
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession,
-                 "target/test-tmp/testHelloWorldDebug" );
+        KieRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "target/test-tmp/testHelloWorldDebug" );
         // go !
         Message message = new Message();
         message.setMessage("Hello World");
@@ -100,7 +100,7 @@ public class HelloWorldTest extends CommonTestMethodBase {
         assertTrue(knownVariables.contains("myMessage"));
     }
 
-    private KnowledgeBase readKnowledgeBase() throws Exception {
+    private KieBase readKnowledgeBase() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(
             ResourceFactory.newClassPathResource("Sample.drl", HelloWorldTest.class),
@@ -108,8 +108,8 @@ public class HelloWorldTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
            fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         return kbase;
     }
 

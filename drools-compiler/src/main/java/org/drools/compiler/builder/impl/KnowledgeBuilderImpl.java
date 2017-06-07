@@ -114,6 +114,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.BaseResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.DescrResource;
@@ -129,15 +130,15 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.XmlChangeSetReader;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ChangeSet;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.assembler.KieAssemblerService;
 import org.kie.internal.assembler.KieAssemblers;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
@@ -150,7 +151,6 @@ import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.ScoreCardConfiguration;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -910,8 +910,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         if (object instanceof Collection) {
             // KnowledgeBuilder API
             @SuppressWarnings("unchecked")
-            Collection<KnowledgePackage> pkgs = (Collection<KnowledgePackage>) object;
-            for (KnowledgePackage kpkg : pkgs) {
+            Collection<KiePackage> pkgs = (Collection<KiePackage>) object;
+            for (KiePackage kpkg : pkgs) {
                 overrideReSource((KnowledgePackageImpl) kpkg, resource);
                 addPackage((KnowledgePackageImpl) kpkg);
             }
@@ -2249,24 +2249,25 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         addKnowledgeResource(resource, type, configuration);
     }
 
-    public Collection<KnowledgePackage> getKnowledgePackages() {
+    @Override
+    public Collection<KiePackage> getKnowledgePackages() {
         if ( hasErrors() ) {
-            return new ArrayList<KnowledgePackage>( 0 );
+            return new ArrayList<KiePackage>( 0 );
         }
 
         InternalKnowledgePackage[] pkgs = getPackages();
-        List<KnowledgePackage> list = new ArrayList<KnowledgePackage>( pkgs.length );
+        List<KiePackage> list = new ArrayList<KiePackage>( pkgs.length );
 
         Collections.addAll(list, pkgs);
 
         return list;
     }
 
-    public KnowledgeBase newKnowledgeBase() {
+    public KieBase newKieBase() {
         return newKnowledgeBase(null);
     }
 
-    public KnowledgeBase newKnowledgeBase(KieBaseConfiguration conf) {
+    public KieBase newKnowledgeBase(KieBaseConfiguration conf) {
         KnowledgeBuilderErrors errors = getErrors();
         if (errors.size() > 0) {
             for (KnowledgeBuilderError error: errors) {
@@ -2274,8 +2275,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             }
             throw new IllegalArgumentException("Could not parse knowledge.");
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(conf);
-        kbase.addKnowledgePackages(getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(conf);
+        kbase.addPackages( Arrays.asList( getPackages() ) );
         return kbase;
     }
 

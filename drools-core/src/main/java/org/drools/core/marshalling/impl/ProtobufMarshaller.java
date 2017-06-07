@@ -20,19 +20,20 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeTimerInputMarshaller;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.marshalling.MarshallingConfiguration;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.time.SessionClock;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.IOException;
@@ -95,7 +96,7 @@ public class ProtobufMarshaller
         }
 
         if ( environment == null ) {
-            environment = KnowledgeBaseFactory.newEnvironment();
+            environment = KieServices.get().newEnvironment();
         }
 
         MarshallerReaderContext context = new MarshallerReaderContext( stream,

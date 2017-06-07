@@ -24,14 +24,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.ReteDumper;
 import org.junit.Assert;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -46,7 +46,7 @@ public class TestContext {
     private final String rulesPackageName;
     private final List resultsList;
 
-    private StatefulKnowledgeSession session;
+    private KieSession session;
 
     private boolean failFast = true;
     private final List<String> errorMessages = new ArrayList<String>();
@@ -137,7 +137,7 @@ public class TestContext {
         executedOperations.clear();
     }
 
-    public StatefulKnowledgeSession getSession() {
+    public KieSession getSession() {
         return session;
     }
 
@@ -175,7 +175,7 @@ public class TestContext {
             } else {
                 kBuilder = createKnowledgeBuilder(null, drl);
             }
-            session.getKieBase().addKnowledgePackages(kBuilder.getKnowledgePackages());
+            ((InternalKnowledgeBase)session.getKieBase()).addPackages(kBuilder.getKnowledgePackages());
         }
     }
 
@@ -226,17 +226,17 @@ public class TestContext {
         }
     }
 
-    private StatefulKnowledgeSession buildSessionInSteps(final String[] drls,
+    private KieSession buildSessionInSteps(final String[] drls,
             final boolean reuseKieBaseWhenAddingRules) {
         if (drls == null || drls.length == 0) {
-            return KnowledgeBaseFactory.newKnowledgeBase().newStatefulKnowledgeSession();
+            return KnowledgeBaseFactory.newKnowledgeBase().newKieSession();
         } else {
             String drl = drls[0];
             final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
-            final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+            final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            kbase.addPackages(kbuilder.getKnowledgePackages());
 
-            final StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+            final KieSession kSession = kbase.newKieSession();
 
             for (int i = 1; i < drls.length; i++) {
                 drl = drls[i];
@@ -246,13 +246,13 @@ public class TestContext {
                 } else {
                     kbuilder2 = createKnowledgeBuilder(null, drl);
                 }
-                kSession.getKieBase().addKnowledgePackages(kbuilder2.getKnowledgePackages());
+                ((InternalKnowledgeBase)kSession.getKieBase()).addPackages(kbuilder2.getKnowledgePackages());
             }
             return kSession;
         }
     }
 
-    private KnowledgeBuilder createKnowledgeBuilder(final KnowledgeBase kbase, final String drl) {
+    private KnowledgeBuilder createKnowledgeBuilder(final KieBase kbase, final String drl) {
         final KnowledgeBuilder kbuilder;
         if (kbase == null) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -267,7 +267,7 @@ public class TestContext {
         return kbuilder;
     }
 
-    private void insertGlobals(final StatefulKnowledgeSession session, final Map<String, Object> globals) {
+    private void insertGlobals(final KieSession session, final Map<String, Object> globals) {
         for (Map.Entry<String, Object> globalEntry : globals.entrySet()) {
             session.setGlobal(globalEntry.getKey(), globalEntry.getValue());
         }

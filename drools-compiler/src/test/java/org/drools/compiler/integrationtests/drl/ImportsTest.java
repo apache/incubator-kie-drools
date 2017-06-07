@@ -26,14 +26,14 @@ import org.drools.compiler.FirstClass;
 import org.drools.compiler.Person;
 import org.drools.compiler.SecondClass;
 import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,11 +87,11 @@ public class ImportsTest extends CommonTestMethodBase {
 
     @Test
     public void testImportColision() throws Exception {
-        final Collection<KnowledgePackage> kpkgs1 = loadKnowledgePackages("nested1.drl");
-        final Collection<KnowledgePackage> kpkgs2 = loadKnowledgePackages("nested2.drl");
-        final KnowledgeBase kbase = loadKnowledgeBase();
-        kbase.addKnowledgePackages(kpkgs1);
-        kbase.addKnowledgePackages(kpkgs2);
+        final Collection<KiePackage> kpkgs1 = loadKnowledgePackages("nested1.drl");
+        final Collection<KiePackage> kpkgs2 = loadKnowledgePackages("nested2.drl");
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBase();
+        kbase.addPackages(kpkgs1);
+        kbase.addPackages(kpkgs2);
 
         final KieSession ksession = createKnowledgeSession(kbase);
 

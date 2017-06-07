@@ -19,11 +19,11 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Results;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 
 import java.util.Collection;
@@ -66,11 +66,11 @@ public class KnowledgeBuilderTest {
         str += "end\n";
         builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 
-        Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+        Collection<KiePackage> pkgs = builder.getKnowledgePackages();
         assertNotNull( pkgs );
         assertEquals( 2, pkgs.size() );
 
-        KnowledgePackage test1 = getKnowledgePackage(pkgs, "org.drools.compiler.test1" );
+        KiePackage test1 = getKnowledgePackage(pkgs, "org.drools.compiler.test1" );
         Collection<Rule> rules = test1.getRules();
         assertEquals( 2, rules.size() );
         Rule rule = getRule( rules, "rule1" );
@@ -78,7 +78,7 @@ public class KnowledgeBuilderTest {
         rule = getRule( rules, "rule2" );
         assertEquals( "rule2", rule.getName() );
 
-        KnowledgePackage test2 = getKnowledgePackage(pkgs, "org.drools.compiler.test2" );
+        KiePackage test2 = getKnowledgePackage(pkgs, "org.drools.compiler.test2" );
         rules = test2.getRules();
         assertEquals( 2, rules.size() );
         rule = getRule( rules, "rule3" );
@@ -96,8 +96,8 @@ public class KnowledgeBuilderTest {
         return null;
     }
 
-    public KnowledgePackage getKnowledgePackage(Collection<KnowledgePackage> pkgs, String name) {
-        for ( KnowledgePackage pkg : pkgs ) {
+    public KiePackage getKnowledgePackage(Collection<KiePackage> pkgs, String name) {
+        for ( KiePackage pkg : pkgs ) {
             if ( pkg.getName().equals( name ) ) {
                 return pkg;
             }

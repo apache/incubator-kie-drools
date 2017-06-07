@@ -19,12 +19,12 @@ package org.drools.core.util;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +37,8 @@ public class ObjectHashMapTest {
     public void testEqualityWithResize() {        
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EqualityBehaviorOption.EQUALITY );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KieSession ksession = kbase.newKieSession();
         
         int length = 1 * 300 * 1000 ;
         
@@ -80,8 +80,8 @@ public class ObjectHashMapTest {
     public void testIdentityWithResize() {        
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EqualityBehaviorOption.IDENTITY );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KieSession ksession = kbase.newKieSession();
         
         int length = 1 * 300 * 1000 ;
         

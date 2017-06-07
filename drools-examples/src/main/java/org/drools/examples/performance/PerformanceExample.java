@@ -2,6 +2,10 @@ package org.drools.examples.performance;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -11,8 +15,6 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -40,7 +42,7 @@ public class PerformanceExample {
         } else {
             /* Alternative way to load knowledge base without using kjars.
             Found slowness issue with internalInvalidateSegmentPrototype() when number of rules are increased.*/
-            KnowledgeBase kbase = loadKnowledgeBaseFromString( rules );
+            KieBase kbase = loadKnowledgeBaseFromString( rules );
             kSession = kbase.newStatelessKieSession();
             ft = kbase.getFactType("org.drools.examples.performance", "TransactionC");
         }
@@ -86,7 +88,7 @@ public class PerformanceExample {
         return kContainer;
     }
 
-    protected static KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
+    protected static KieBase loadKnowledgeBaseFromString(String... drlContentStrings) {
         long startTime = System.currentTimeMillis();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for (String drlContentString : drlContentStrings) {
@@ -101,8 +103,8 @@ public class PerformanceExample {
         System.out.println("Time to build rules: " + (endTime - startTime)  + " ms" );
 
         startTime = System.currentTimeMillis();
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         endTime = System.currentTimeMillis();
         System.out.println("Time to create knowledgebase: " + (endTime - startTime)  + " ms" );
 

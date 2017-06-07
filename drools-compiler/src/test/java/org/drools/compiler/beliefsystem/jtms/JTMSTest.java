@@ -26,17 +26,18 @@ import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.event.rule.RuleEventListener;
@@ -48,7 +49,7 @@ import static org.junit.Assert.*;
 
 public class JTMSTest {
 
-    protected StatefulKnowledgeSession getSessionFromString( String drlString) {
+    protected KieSession getSessionFromString( String drlString) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         try {
@@ -63,17 +64,17 @@ public class JTMSTest {
             System.setProperty("drools.negatable", "off");
         }
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( );
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( );
+        kBase.addPackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
         
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
+        KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;
     }
     
-    protected StatefulKnowledgeSession getSessionFromFile( String ruleFile ) {
+    protected KieSession getSessionFromFile( String ruleFile ) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add( ResourceFactory.newClassPathResource( ruleFile, getClass() ),
                 ResourceType.DRL );
@@ -82,13 +83,13 @@ public class JTMSTest {
             fail();
         }
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( );
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( );
+        kBase.addPackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
         
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
+        KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;
     }    
     
@@ -131,7 +132,7 @@ public class JTMSTest {
                 "    l.add( s ); \n" +
                 "end\n";
 
-        StatefulKnowledgeSession kSession =  getSessionFromString( s );
+        KieSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
 
@@ -232,7 +233,7 @@ public class JTMSTest {
                    "end\n" +
                 "";
 
-        StatefulKnowledgeSession kSession =  getSessionFromString( s );
+        KieSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
 
@@ -302,7 +303,7 @@ public class JTMSTest {
                 "end\n" +                 
                 "\n";
         
-        StatefulKnowledgeSession kSession =  getSessionFromString( s );
+        KieSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
         
@@ -399,7 +400,7 @@ public class JTMSTest {
                 "end\n" +                 
                 "\n";
 
-        StatefulKnowledgeSession kSession =  getSessionFromString( s );
+        KieSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
         
@@ -495,7 +496,7 @@ public class JTMSTest {
                 "    l.add( s ); \n" +
                 "end\n";
         
-        StatefulKnowledgeSession kSession =  getSessionFromString( s );
+        KieSession kSession =  getSessionFromString( s );
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
 
@@ -539,7 +540,7 @@ public class JTMSTest {
     
     @Test(timeout = 10000 )
     public void testConflictStrict() {
-        StatefulKnowledgeSession kSession = getSessionFromFile( "posNegConflict.drl" );
+        KieSession kSession = getSessionFromFile( "posNegConflict.drl" );
 
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
@@ -561,7 +562,7 @@ public class JTMSTest {
     @Test(timeout = 10000 )
     @Ignore("Currently cannot support updates")
     public void testConflictTMS() {
-        StatefulKnowledgeSession kSession = getSessionFromFile( "posNegTms.drl" );
+        KieSession kSession = getSessionFromFile( "posNegTms.drl" );
 
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
@@ -632,7 +633,7 @@ public class JTMSTest {
         }
     }
 
-    public List getNegativeObjects(StatefulKnowledgeSession kSession) {
+    public List getNegativeObjects(KieSession kSession) {
         List list = new ArrayList();
         Iterator it = ((StatefulKnowledgeSessionImpl) kSession).getObjectStore().iterateNegObjects(null);
         while ( it.hasNext() ) {
@@ -671,7 +672,7 @@ public class JTMSTest {
                 " System.out.println( $b );  \n" +
                 "end \n" ;
 
-        StatefulKnowledgeSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString( droolsSource );
 
         FactHandle handle1 = session.insert( 10 );
         FactHandle handle2 = session.insert( 20 );

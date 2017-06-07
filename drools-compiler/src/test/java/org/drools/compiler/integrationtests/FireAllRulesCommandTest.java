@@ -23,9 +23,9 @@ import java.util.List;
 
 import org.drools.compiler.Cheese;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.command.Command;
@@ -34,6 +34,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.StatelessKieSession;
 
 public class FireAllRulesCommandTest {
     @Test
@@ -48,7 +49,7 @@ public class FireAllRulesCommandTest {
         str += " System.out.println($c); \n";
         str += "end \n";
 
-        StatelessKnowledgeSession ksession = getSession(str);
+        StatelessKieSession ksession = getSession(str);
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newInsert(new Cheese("stilton")));
@@ -72,7 +73,7 @@ public class FireAllRulesCommandTest {
         str += " System.out.println($c); \n";
         str += "end \n";
 
-        StatelessKnowledgeSession ksession = getSession(str);
+        StatelessKieSession ksession = getSession(str);
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newInsert(new Cheese("stilton")));
@@ -100,7 +101,7 @@ public class FireAllRulesCommandTest {
         str += " System.out.println($c); \n";
         str += "end \n";
 
-        StatelessKnowledgeSession ksession = getSession(str);
+        StatelessKieSession ksession = getSession(str);
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newInsert("not cheese"));
@@ -124,7 +125,7 @@ public class FireAllRulesCommandTest {
         str += " System.out.println($c); \n";
         str += "end \n";
 
-        StatelessKnowledgeSession ksession = getSession(str);
+        StatelessKieSession ksession = getSession(str);
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newInsert(new Cheese("stilton")));
@@ -150,7 +151,7 @@ public class FireAllRulesCommandTest {
         str += " update($c); \n";
         str += "end \n";
 
-        StatelessKnowledgeSession ksession = getSession(str);
+        StatelessKieSession ksession = getSession(str);
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newInsert(new Cheese("stilton")));
@@ -164,7 +165,7 @@ public class FireAllRulesCommandTest {
         assertEquals(10, fired);
     }
 
-    private StatelessKnowledgeSession getSession(String drl) {
+    private StatelessKieSession getSession(String drl) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
@@ -174,10 +175,10 @@ public class FireAllRulesCommandTest {
         }
         assertFalse(kbuilder.hasErrors());
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
-        return kbase.newStatelessKnowledgeSession();
+        return kbase.newStatelessKieSession();
     }
 
 }

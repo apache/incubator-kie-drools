@@ -36,7 +36,7 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.test.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -73,7 +73,7 @@ public class FieldConstraintTest {
     @Test
     public void testLiteralConstraint() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
                 "type");
@@ -113,7 +113,7 @@ public class FieldConstraintTest {
     @Test
     public void testPrimitiveLiteralConstraint() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
                 "price");
@@ -153,7 +153,7 @@ public class FieldConstraintTest {
     @Test
     public void testPredicateConstraint() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final InternalReadAccessor priceExtractor = store.getReader( Cheese.class,
                                                                      "price" );

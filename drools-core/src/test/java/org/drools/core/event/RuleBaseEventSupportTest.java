@@ -26,6 +26,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.rule.MvelConstraintTestUtil;
 import org.drools.core.rule.Pattern;
@@ -54,7 +55,6 @@ import org.kie.api.event.kiebase.BeforeProcessRemovedEvent;
 import org.kie.api.event.kiebase.BeforeRuleAddedEvent;
 import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
 import org.kie.api.event.kiebase.KieBaseEventListener;
-import org.kie.internal.KnowledgeBaseFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;
