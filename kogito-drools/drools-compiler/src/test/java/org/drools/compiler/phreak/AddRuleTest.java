@@ -17,6 +17,8 @@ package org.drools.compiler.phreak;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EvalConditionNode;
@@ -28,13 +30,12 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 
 import java.util.ArrayList;
@@ -50,8 +51,8 @@ public class AddRuleTest {
 
     @Test
     public void testPopulatedSingleRuleNoSharing() throws Exception {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         wm.insert(new A(1));
         wm.insert(new B(1));
@@ -63,7 +64,7 @@ public class AddRuleTest {
         wm.fireAllRules();
 
 
-        kbase.addKnowledgePackages( buildKnowledgePackage("r1", "   A() B() C(object == 2) D() E()\n") );
+        kbase.addPackages( buildKnowledgePackage("r1", "   A() B() C(object == 2) D() E()\n") );
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -83,8 +84,8 @@ public class AddRuleTest {
 
     @Test
     public void testPopulatedSingleRuleNoSharingWithSubnetworkAtStart() throws Exception {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
 
         wm.insert(new A(1));
         wm.insert(new A(2));
@@ -95,7 +96,7 @@ public class AddRuleTest {
         wm.fireAllRules();
 
 
-        kbase.addKnowledgePackages( buildKnowledgePackage("r1", "   A() not( B() and C() ) D() E()\n") );
+        kbase.addPackages( buildKnowledgePackage("r1", "   A() not( B() and C() ) D() E()\n") );
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -127,8 +128,8 @@ public class AddRuleTest {
 
     @Test
     public void testPopulatedRuleMidwayShare() throws Exception {
-        KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a : A() B() C(1;) D() E()\n");
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a : A() B() C(1;) D() E()\n");
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -144,7 +145,7 @@ public class AddRuleTest {
         wm.fireAllRules();
         assertEquals( 3, list.size() );
 
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   a : A() B() C(2;) D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B() C(2;) D() E()\n") );
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
@@ -190,8 +191,8 @@ public class AddRuleTest {
 
     @Test
     public void testPopulatedRuleWithEvals() throws Exception {
-        KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a:A() B() eval(1==1) eval(1==1) C(1;) \n");
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a:A() B() eval(1==1) eval(1==1) C(1;) \n");
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -205,7 +206,7 @@ public class AddRuleTest {
         wm.fireAllRules();
         assertEquals( 3, list.size() );
 
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   a:A() B() eval(1==1) eval(1==1) C(2;) \n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   a:A() B() eval(1==1) eval(1==1) C(2;) \n") );
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
@@ -254,8 +255,8 @@ public class AddRuleTest {
 
     @Test
     public void testPopulatedSharedLiaNode() throws Exception {
-        KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B(1;) C() D() E()\n");
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B(1;) C() D() E()\n");
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -271,7 +272,7 @@ public class AddRuleTest {
         wm.fireAllRules();
         assertEquals( 3, list.size() );
 
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   a : A() B(2;) C() D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   a : A() B(2;) C() D() E()\n") );
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
@@ -305,8 +306,8 @@ public class AddRuleTest {
 
     @Test
     public void testPopulatedSharedToRtn() throws Exception {
-        KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C() D() E()\n");
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C() D() E()\n");
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -320,7 +321,7 @@ public class AddRuleTest {
         wm.fireAllRules();
         assertEquals( 2, list.size() );
 
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   A() B() C() D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   A() B() C() D() E()\n") );
 
         ObjectTypeNode eotn = getObjectTypeNode(kbase1, E.class );
         JoinNode eNode = (JoinNode) eotn.getObjectSinkPropagator().getSinks()[0];
@@ -344,8 +345,8 @@ public class AddRuleTest {
 
     @Test
     public void testPopulatedMultipleShares() throws Exception {
-        KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) D() E()\n" );
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
+        InternalKnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) D() E()\n" );
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -363,9 +364,9 @@ public class AddRuleTest {
         wm.fireAllRules();
         assertEquals( 2, list.size() );
 
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(2;) D() E()\n") );
 
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) D() E()\n") );
+        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(3;) B(1;) B(2;) C(2;) D() E()\n") );
 
 
         wm.fireAllRules();
@@ -381,12 +382,12 @@ public class AddRuleTest {
 
     @Test
     public void testSplitTwoBeforeCreatedSegment() throws Exception {
-        KnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n" );
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n") );
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
+        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n" );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n") );
+        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
+        kbase1.addPackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -410,7 +411,7 @@ public class AddRuleTest {
         assertEquals( 4, sm.getSegmentPosMaskBit() );
         assertEquals( 4, pm1.getLinkedSegmentMask() );
 
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r5",  "   A(1;)  A(2;) B(1;) B(2;) \n") );
+        kbase1.addPackages( buildKnowledgePackage("r5",  "   A(1;)  A(2;) B(1;) B(2;) \n") );
 
         smems = pm1.getSegmentMemories();
         assertEquals(5, smems.length);
@@ -434,12 +435,12 @@ public class AddRuleTest {
 
     @Test
     public void testSplitOneBeforeCreatedSegment() throws Exception {
-        KnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n" );
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n") );
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
+        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n" );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n") );
+        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
+        kbase1.addPackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -473,7 +474,7 @@ public class AddRuleTest {
         assertEquals( 2, sm.getSegmentPosMaskBit() );
         assertEquals( 2, pm1.getLinkedSegmentMask() );
 
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r5",  "   A(1;)  A(2;) B(1;) B(2;) \n") );
+        kbase1.addPackages( buildKnowledgePackage("r5",  "   A(1;)  A(2;) B(1;) B(2;) \n") );
 
         smems = pm1.getSegmentMemories();
         assertEquals(5, smems.length);
@@ -507,12 +508,12 @@ public class AddRuleTest {
     @Test
     public void testSplitOnCreatedSegment() throws Exception {
         // this test splits D1 and D2 on the later add rule
-        KnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n" );
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n") );
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
+        InternalKnowledgeBase kbase1 =          buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n" );
+        kbase1.addPackages( buildKnowledgePackage("r2", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;) E(1;) E(2;)\n") );
+        kbase1.addPackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
+        kbase1.addPackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
 
-        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newKieSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -535,7 +536,7 @@ public class AddRuleTest {
         assertEquals( 2, sm.getSegmentPosMaskBit() );
 
 
-        kbase1.addKnowledgePackages( buildKnowledgePackage("r5", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(3;)\n") );
+        kbase1.addPackages( buildKnowledgePackage("r5", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(3;)\n") );
         wm.fireAllRules();
 
         assertEquals( 6, pm1.getLinkedSegmentMask() );
@@ -569,11 +570,11 @@ public class AddRuleTest {
     }
 
 
-    private RuleTerminalNode getRtn(String ruleName, KnowledgeBase kbase) {
+    private RuleTerminalNode getRtn(String ruleName, KieBase kbase) {
         return ( RuleTerminalNode ) ((KnowledgeBaseImpl) kbase).getReteooBuilder().getTerminalNodes(ruleName)[0];
     }
 
-    private KnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
+    private InternalKnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
         String str = "";
         str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
@@ -597,12 +598,12 @@ public class AddRuleTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         return kbase;
     }
 
-    private Collection<KnowledgePackage> buildKnowledgePackage(String ruleName, String rule) {
+    private Collection<KiePackage> buildKnowledgePackage(String ruleName, String rule) {
         String str = "";
         str += "package org.kie \n";
         str += "import " + A.class.getCanonicalName() + "\n" ;
@@ -629,7 +630,7 @@ public class AddRuleTest {
         return kbuilder.getKnowledgePackages();
     }
 
-    public ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
+    public ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {

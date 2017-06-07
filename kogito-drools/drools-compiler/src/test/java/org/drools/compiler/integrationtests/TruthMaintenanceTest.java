@@ -30,6 +30,8 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.EntryPointId;
@@ -39,18 +41,16 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.io.ResourceType;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.ConsequenceException;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
@@ -77,10 +77,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
 
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
-        KnowledgeBase kbase = getKnowledgeBase();
-        kbase.addKnowledgePackages( kpkgs );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
+        kbase.addPackages( kpkgs );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final Cheese c1 = new Cheese( "a",
                                       1 );
@@ -114,8 +114,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        Collection<KnowledgePackage> kpkgs2 = kbuilder.getKnowledgePackages();
-        kbase.addKnowledgePackages( kpkgs2 );
+        Collection<KiePackage> kpkgs2 = kbuilder.getKnowledgePackages();
+        kbase.addPackages( kpkgs2 );
         kbase = SerializationHelper.serializeObject(kbase);
 
         ksession.fireAllRules();
@@ -123,7 +123,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
 
-        kbase = ksession.getKieBase();
+        kbase = (InternalKnowledgeBase) ksession.getKieBase();
 
         // check all now have just one logical assertion each
         list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
@@ -137,10 +137,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                                                           true );
 
         // check the packages are correctly populated
-        assertEquals( 3, kbase.getKnowledgePackages().size() );
-        KnowledgePackage test = null, test2 = null;
+        assertEquals( 3, kbase.getKiePackages().size() );
+        KiePackage test = null, test2 = null;
         // different JVMs return the package list in different order
-        for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
+        for( KiePackage kpkg : kbase.getKiePackages() ) {
             if( kpkg.getName().equals( "org.drools.compiler.test" )) {
                 test = kpkg;
             } else if( kpkg.getName().equals( "org.drools.compiler.test2" )) {
@@ -159,7 +159,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kbase.removeRule( test.getName(),
                           test.getRules().iterator().next().getName() );
         // different JVMs return the package list in different order
-        for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
+        for( KiePackage kpkg : kbase.getKiePackages() ) {
             if( kpkg.getName().equals( "org.drools.compiler.test" )) {
                 test = kpkg;
             } else if( kpkg.getName().equals( "org.drools.compiler.test2" )) {
@@ -205,7 +205,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                     list.contains( new Person( c1.getType() ) ) );
 
         // different JVMs return the package list in different order
-        for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
+        for( KiePackage kpkg : kbase.getKiePackages() ) {
             if( kpkg.getName().equals( "org.drools.compiler.test" )) {
                 test = kpkg;
             } else if( kpkg.getName().equals( "org.drools.compiler.test2" )) {
@@ -220,7 +220,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kbase = SerializationHelper.serializeObject(kbase);
 
         // different JVMs return the package list in different order
-        for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
+        for( KiePackage kpkg : kbase.getKiePackages() ) {
             if( kpkg.getName().equals( "org.drools.compiler.test" )) {
                 test = kpkg;
             } else if( kpkg.getName().equals( "org.drools.compiler.test2" )) {
@@ -245,12 +245,12 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertions.drl",
                                                             getClass() ),
                       ResourceType.DRL );
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kpkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kpkgs );
         kbase = SerializationHelper.serializeObject(kbase);
-        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        KieSession session = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         session.setGlobal( "list",
@@ -299,12 +299,12 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsBacking.drl",
                                                             getClass() ),
                       ResourceType.DRL );
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kpkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kpkgs );
         kbase = SerializationHelper.serializeObject(kbase);
-        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        KieSession session = createKnowledgeSession(kbase);
 
         final Cheese cheese1 = new Cheese( "c",
                                            1 );
@@ -374,12 +374,12 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsSelfreferencing.drl",
                                                             getClass() ),
                       ResourceType.DRL );
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kpkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kpkgs );
         kbase = SerializationHelper.serializeObject(kbase);
-        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        final KieSession session = createKnowledgeSession(kbase);
 
         final Person b = new Person( "b" );
         final Person a = new Person( "a" );
@@ -420,12 +420,12 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsLoop.drl",
                                                             getClass() ),
                       ResourceType.DRL );
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kpkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kpkgs );
         kbase = SerializationHelper.serializeObject(kbase);
-        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        final KieSession session = createKnowledgeSession(kbase);
 
         final List l = new ArrayList();
         final Person a = new Person( "a" );
@@ -841,9 +841,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testLogicalInsertionsAccumulatorPattern() throws Exception {
         // JBRULES-449
-        KnowledgeBase kbase = loadKnowledgeBase( "test_LogicalInsertionsAccumulatorPattern.drl" );
+        KieBase kbase = loadKnowledgeBase( "test_LogicalInsertionsAccumulatorPattern.drl" );
         kbase = SerializationHelper.serializeObject(kbase);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal( "ga",
                             "a" );
@@ -896,12 +896,12 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion.drl",
                                                             getClass() ),
                       ResourceType.DRL );
-        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
 
-        KnowledgeBase kbase = getKnowledgeBase();
-        kbase.addKnowledgePackages( pkgs );
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
+        kbase.addPackages( pkgs );
         kbase = SerializationHelper.serializeObject(kbase);
-        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        KieSession session = createKnowledgeSession(kbase);
 
         Sensor sensor1 = new Sensor( 100,
                                      0 );
@@ -948,11 +948,11 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertOrder.drl",
                                                             getClass() ),
                       ResourceType.DRL );
-        KnowledgeBase kbase = getKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         kbase = SerializationHelper.serializeObject(kbase);
 
-        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        final KieSession session = createKnowledgeSession(kbase);
         RuleRuntimeEventListener wmel = mock( RuleRuntimeEventListener.class );
         session.addEventListener( wmel );
 
@@ -1017,9 +1017,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
                 ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession kSession = createKnowledgeSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieSession kSession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         kSession.setGlobal("list",list);
@@ -1048,8 +1048,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                 "    insertLogical(new YoungestFather($h));\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession kSession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieSession kSession = createKnowledgeSession(kbase);
 
         Father abraham = new Father("abraham");
         Father bart = new Father("bart");
@@ -1156,14 +1156,14 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         List totallyCovered = new ArrayList();      // Interval requirements totally covered by shift assignments (staffing requirement met or exceeded)
 
         // load up the knowledge base
-        KnowledgeBase kbase = loadKnowledgeBase( "test_RepetitiveUpdatesOnSameFacts.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBase( "test_RepetitiveUpdatesOnSameFacts.drl" );
+        KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal("totallyCovered", totallyCovered);
         ksession.setGlobal("partiallyCovered", partiallyCovered);
         ksession.setGlobal("notCovered", notCovered);
 
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "target/test");
+        KieRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "target/test");
 
         // Using 4 IntervalRequirement objects that never change during the execution of the test
         // Staffing required at interval 100
@@ -1326,10 +1326,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
         conf.setSequentialAgenda( RuleBaseConfiguration.SequentialAgenda.SEQUENTIAL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
-        kbase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
+        kbase.addPackages( kBuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieSession session = kbase.newKieSession();
 
         session.fireAllRules();
 
@@ -1368,7 +1368,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         /////////////////////////////////////
 
 
-        StatefulKnowledgeSession session = loadKnowledgeBaseFromString( droolsSource ).newStatefulKnowledgeSession();
+        KieSession session = loadKnowledgeBaseFromString( droolsSource ).newKieSession();
 
         session.fireAllRules();
         FactHandle handle = session.insert( "go" );
@@ -1420,8 +1420,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kieConf.setOption( EqualityBehaviorOption.EQUALITY );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        KieSession session = kbase.newKieSession();
 
         FactHandle handle1 = session.insert( 10 );
         FactHandle handle2 = session.insert( 20 );
@@ -1463,8 +1463,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kieConf.setOption( EqualityBehaviorOption.EQUALITY );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        KieSession session = kbase.newKieSession();
 
         session.fireAllRules();
 
@@ -1494,8 +1494,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kieConf.setOption( EqualityBehaviorOption.IDENTITY );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        KieSession session = kbase.newKieSession();
 
         List list = new ArrayList();
         session.setGlobal("list", list);
@@ -1527,8 +1527,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kieConf.setOption( EqualityBehaviorOption.IDENTITY );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        KieSession session = kbase.newKieSession();
 
         List list = new ArrayList();
         session.setGlobal("list", list);
@@ -1589,8 +1589,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kieConf.setOption( EqualityBehaviorOption.IDENTITY );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        KieSession session = kbase.newKieSession();
 
         List list = new ArrayList();
         session.setGlobal("list", list);
@@ -1636,8 +1636,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kieConf.setOption( EqualityBehaviorOption.IDENTITY );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        KieSession session = kbase.newKieSession();
 
         List list = new ArrayList();
         session.setGlobal("list", list);
@@ -1698,8 +1698,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kieConf.setOption( EqualityBehaviorOption.IDENTITY );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        KieSession session = kbase.newKieSession();
 
         List list = new ArrayList();
         session.setGlobal("list", list);
@@ -1756,8 +1756,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kieConf.setOption( EqualityBehaviorOption.IDENTITY );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        KieSession session = kbase.newKieSession();
 
         List list = new ArrayList();
         session.setGlobal("list", list);
@@ -1811,8 +1811,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kieConf.setOption( EqualityBehaviorOption.IDENTITY );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        KieSession session = kbase.newKieSession();
 
         List list = new ArrayList();
         session.setGlobal("list", list);
@@ -1904,8 +1904,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kieConf.setOption( EqualityBehaviorOption.IDENTITY );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        KieSession session = kbase.newKieSession();
 
         List list = new ArrayList();
 

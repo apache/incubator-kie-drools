@@ -40,6 +40,7 @@ import org.drools.core.factmodel.traits.TripleBasedBean;
 import org.drools.core.factmodel.traits.TripleBasedStruct;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
@@ -70,11 +71,10 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
@@ -185,9 +185,9 @@ public class TraitTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kb );
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kb.addPackages( kbuilder.getKnowledgePackages() );
 
         TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
 
@@ -383,8 +383,8 @@ public class TraitTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactory.setMode( mode, kb );
         TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
 
@@ -461,8 +461,8 @@ public class TraitTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
 
         TraitFactory.setMode( mode, kb );
         TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
@@ -589,8 +589,8 @@ public class TraitTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactory.setMode( mode, kb );
 
         TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
@@ -670,8 +670,8 @@ public class TraitTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
 
 
         TraitFactory.setMode( mode, kb );
@@ -794,8 +794,8 @@ public class TraitTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
 
         TraitFactory.setMode( mode, kb );
         TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
@@ -857,8 +857,8 @@ public class TraitTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactory.setMode( mode, kb );
 
         TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
@@ -955,8 +955,8 @@ public class TraitTest extends CommonTestMethodBase {
         if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
         TraitFactory.setMode( mode, kb );
         TraitFactory tFactory = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
 
@@ -1585,10 +1585,10 @@ public class TraitTest extends CommonTestMethodBase {
 
         List list = new ArrayList();
 
-        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        KieBase kbase = kbuilder.newKieBase();
         TraitFactory.setMode( mode, kbase );
 
-        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+        StatelessKieSession ksession = kbase.newStatelessKieSession();
 
 
         ksession.setGlobal( "list", list );
@@ -1854,8 +1854,8 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
         TraitFactory.setMode( mode, ksession.getKieBase() );
@@ -1923,13 +1923,13 @@ public class TraitTest extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
         TraitFactory.setMode( mode, ksession.getKieBase() );
@@ -1974,8 +1974,8 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages(kbuilder.getKnowledgePackages());
         TraitFactory traitBuilder = ((KnowledgeBaseImpl) kb).getConfiguration().getComponentFactory().getTraitFactory();
         TraitFactory.setMode( mode, kb );
 
@@ -2054,13 +2054,13 @@ public class TraitTest extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
         TraitFactory.setMode( mode, ksession.getKieBase() );
@@ -2112,10 +2112,10 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase );
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
@@ -2188,10 +2188,10 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase );
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         TraitRegistry tr = ((KnowledgeBaseImpl) kbase).getConfiguration().getComponentFactory().getTraitRegistry();
         System.out.println( tr.getHierarchy() );
@@ -2231,10 +2231,10 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase );
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
 
@@ -2353,10 +2353,10 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase );
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
@@ -2452,10 +2452,10 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase ); // not relevant
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
         int k = ksession.fireAllRules();
@@ -2517,9 +2517,9 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase ); // not relevant
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         KieSession ksession = kbase.newKieSession();
 
         ArrayList list = new ArrayList(  );
@@ -2617,10 +2617,10 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase ); // not relevant
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         List list = new ArrayList();
         KieSession ksession = kbase.newKieSession();
@@ -2735,10 +2735,10 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase ); // not relevant
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         List<Integer> list = new ArrayList<Integer>();
         KieSession ksession = kbase.newKieSession();
@@ -2782,10 +2782,10 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase );
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder2.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
@@ -2793,7 +2793,7 @@ public class TraitTest extends CommonTestMethodBase {
             fail( kbuilder2.getErrors().toString() );
         }
 
-        kbase.addKnowledgePackages( kbuilder2.getKnowledgePackages() );
+        kbase.addPackages( kbuilder2.getKnowledgePackages() );
 
     }
 
@@ -3763,10 +3763,10 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase ); // not relevant
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         List list = new ArrayList();
         KieSession ksession = kbase.newKieSession();
@@ -3833,10 +3833,10 @@ public class TraitTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, kbase );
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         List list = new ArrayList();
         KieSession ksession = kbase.newKieSession();
@@ -5302,7 +5302,7 @@ public class TraitTest extends CommonTestMethodBase {
                      "";
 
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = loadKnowledgeBaseFromString( drl );
         TraitFactory.setMode( mode, kbase );
         ArrayList list = new ArrayList();
 
@@ -5334,21 +5334,21 @@ public class TraitTest extends CommonTestMethodBase {
 
                      "";
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
         TraitFactory.setMode( mode, knowledgeBase );
 
         KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kb.add( new ByteArrayResource( drl0.getBytes() ), ResourceType.DRL );
         assertFalse( kb.hasErrors() );
 
-        knowledgeBase.addKnowledgePackages( kb.getKnowledgePackages() );
+        knowledgeBase.addPackages( kb.getKnowledgePackages() );
 
         KnowledgeBuilder kb2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kb2.add( new ByteArrayResource( drl1.getBytes() ), ResourceType.DRL );
         System.out.print( kb2.getErrors() );
         assertFalse( kb2.hasErrors() );
 
-        knowledgeBase.addKnowledgePackages( kb2.getKnowledgePackages() );
+        knowledgeBase.addPackages( kb2.getKnowledgePackages() );
 
         HierarchyEncoder<String> hier = ( (KnowledgeBaseImpl) knowledgeBase ).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
         BitSet b = (BitSet) hier.getCode( "org.drools.test.B" ).clone();

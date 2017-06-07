@@ -25,6 +25,7 @@ import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerProviderImpl;
@@ -43,7 +44,6 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 
 import java.io.ByteArrayInputStream;

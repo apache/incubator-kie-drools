@@ -19,6 +19,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                         "end\n" +
                         "\n";
 
-        StatefulKnowledgeSession ks = loadKnowledgeBaseFromString( source ).newStatefulKnowledgeSession();
+        KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
         TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
 
         List list = new ArrayList();
@@ -132,7 +133,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                         "   System.out.println( $p ); " +
                         "end \n";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString( source ).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString( source ).newKieSession();
         TraitFactory.setMode( VirtualPropertyMode.MAP, ksession.getKieBase() );
 
         List list = new ArrayList();
@@ -254,7 +255,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                         "\n" +
                         "\n";
 
-        StatefulKnowledgeSession ks = loadKnowledgeBaseFromString( source ).newStatefulKnowledgeSession();
+        KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
         TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
 
         List list = new ArrayList();
@@ -325,7 +326,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                         "" +
                         "\n";
 
-        StatefulKnowledgeSession ks = loadKnowledgeBaseFromString( source ).newStatefulKnowledgeSession();
+        KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
         TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
 
         List list = new ArrayList();
@@ -385,7 +386,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                         "" +
                         "\n";
 
-        StatefulKnowledgeSession ks = loadKnowledgeBaseFromString( source ).newStatefulKnowledgeSession();
+        KieSession ks = loadKnowledgeBaseFromString( source ).newKieSession();
         TraitFactory.setMode( VirtualPropertyMode.MAP, ks.getKieBase() );
 
         List list = new ArrayList();
@@ -479,7 +480,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                 "    list.add(\"worker is donned\");\n" +
                 "end\n";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
         TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
@@ -568,7 +569,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                 "    list.add(\"worker is donned\");\n" +
                 "end\n";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
         TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
@@ -687,7 +688,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
         TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
@@ -790,7 +791,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                 "    list.add(\"person has personID\");\n" +
                 "end\n";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
 
         TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
         List list = new ArrayList();
@@ -854,7 +855,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                      "    list.add( ct );\n" +
                      "end";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
@@ -912,7 +913,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                      "    list.add(\"correct2\");\n" +
                      "end";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
@@ -962,7 +963,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                      "\n" +
                      "";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactory.setMode( VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
@@ -1033,7 +1034,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                      "\n" +
                      "";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
@@ -1106,7 +1107,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                      "\n" +
                      "";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
@@ -1179,7 +1180,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                      "\n" +
                      "";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactory.setMode(VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();
@@ -1255,7 +1256,7 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
                      "\n" +
                      "";
 
-        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        KieSession ksession = loadKnowledgeBaseFromString(drl).newKieSession();
         TraitFactory.setMode( VirtualPropertyMode.MAP, ksession.getKieBase());
 
         List list = new ArrayList();

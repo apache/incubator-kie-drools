@@ -16,22 +16,23 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.core.ClockType;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class FireUntilHaltAccumulateTest {
 
-    private StatefulKnowledgeSession statefulSession;
+    private KieSession statefulSession;
 
     private StockFactory stockFactory;
 
@@ -81,14 +82,14 @@ public class FireUntilHaltAccumulateTest {
                 KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM);
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         final KieSessionConfiguration sessionConfig =
                 KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ));
 
-        this.statefulSession = kbase.newStatefulKnowledgeSession(sessionConfig, null);
+        this.statefulSession = kbase.newKieSession(sessionConfig, null);
         this.stockFactory = new StockFactory(kbase);
     }
 
@@ -157,9 +158,9 @@ public class FireUntilHaltAccumulateTest {
 
         private static final String DRL_FACT_NAME = "Stock";
 
-        private final KnowledgeBase kbase;
+        private final KieBase kbase;
 
-        public StockFactory(final KnowledgeBase kbase) {
+        public StockFactory(final KieBase kbase) {
             this.kbase = kbase;
         }
 

@@ -19,21 +19,23 @@ package org.drools.compiler.integrationtests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
 public class QueryTest3 {
 
-    private KnowledgeBase knowledgeBase;
+    private InternalKnowledgeBase knowledgeBase;
 
     /**
      * @throws java.lang.Exception
@@ -63,7 +65,7 @@ public class QueryTest3 {
                               ResourceType.DRL );
         assertFalse( knowledgeBuilder.hasErrors() );
         knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+        knowledgeBase.addPackages( knowledgeBuilder.getKnowledgePackages() );
     }
 
     private void doIt(Object o1,
@@ -72,7 +74,7 @@ public class QueryTest3 {
                       int expected,
                       boolean doUpdate,
                       boolean doRetract) {
-        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = knowledgeBase.newKieSession();
         try {
             knowledgeSession.insert( o1 );
             FactHandle handle2 = knowledgeSession.insert( o2 );

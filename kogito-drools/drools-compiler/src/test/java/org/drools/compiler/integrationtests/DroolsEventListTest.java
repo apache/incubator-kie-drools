@@ -19,10 +19,11 @@ import java.util.Comparator;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -53,10 +54,10 @@ public class DroolsEventListTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
         Cheese stilton1 = new Cheese( "stilton",
                                       1 );
         Cheese cheddar1 = new Cheese( "cheddar",

@@ -34,22 +34,23 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.definition.KnowledgePackage;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 
 public class KnowledgeBuilderTest {
 
@@ -107,9 +108,9 @@ public class KnowledgeBuilderTest {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder2.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder2.getKnowledgePackages() );
+        KieSession ksession = kbase.newKieSession();
 
         FactType aType = kbase.getFactType( "org.drools.compiler.test", "FactA" );
         Object a = aType.newInstance();
@@ -180,9 +181,9 @@ public class KnowledgeBuilderTest {
         kbuilder.undo();
         assertFalse( kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -253,9 +254,9 @@ public class KnowledgeBuilderTest {
 
         assertFalse( kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -332,9 +333,9 @@ public class KnowledgeBuilderTest {
 
         assertFalse( kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -368,10 +369,10 @@ public class KnowledgeBuilderTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ), ResourceType.DRL );
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
         assertEquals( 2, kpkgs.size() );
 
-        KnowledgePackage kpkg = kpkgs.iterator().next();
+        KiePackage kpkg = kpkgs.iterator().next();
 
         byte[] skpkg = DroolsStreamUtils.streamOut( kpkg );
 
@@ -399,7 +400,7 @@ public class KnowledgeBuilderTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ), ResourceType.DRL );
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
         assertEquals( 2, kpkgs.size() );
 
         byte[] skpkg = DroolsStreamUtils.streamOut( kpkgs );
@@ -426,9 +427,9 @@ public class KnowledgeBuilderTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
         assertEquals( 2, kpkgs.size() );
-        KnowledgePackage kpkg = kpkgs.iterator().next();
+        KiePackage kpkg = kpkgs.iterator().next();
         assertEquals( 1, kpkg.getRules().size() );
     }
 
@@ -447,7 +448,7 @@ public class KnowledgeBuilderTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
         assertEquals( 2, kpkgs.size() );
     }
 
@@ -465,7 +466,7 @@ public class KnowledgeBuilderTest {
         kbuilder.add( res1, ResourceType.DRL );
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgePackage kp1 = kbuilder.getKnowledgePackages().iterator().next();
+        KiePackage kp1 = kbuilder.getKnowledgePackages().iterator().next();
         assertEquals( 1, kp1.getRules().size() );
         Rule r = kp1.getRules().iterator().next();
         assertEquals( res1, ((RuleImpl) r).getResource() );
@@ -498,7 +499,7 @@ public class KnowledgeBuilderTest {
         kbuilder2.add( res2, ResourceType.PMML );
         assertFalse( kbuilder2.getErrors().toString(), kbuilder2.hasErrors() );
 
-        KnowledgePackage kp2 = kbuilder2.getKnowledgePackages().iterator().next();
+        KiePackage kp2 = kbuilder2.getKnowledgePackages().iterator().next();
         assertEquals( 1, kp2.getRules().size() );
         Rule r2 = kp2.getRules().iterator().next();
         assertEquals( res2, ((RuleImpl) r2).getResource() );
@@ -527,7 +528,7 @@ public class KnowledgeBuilderTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
 
         assertEquals( 3, kbuilder.getKnowledgePackages().size() );
-        for ( KnowledgePackage kp : kbuilder.getKnowledgePackages() ) {
+        for ( KiePackage kp : kbuilder.getKnowledgePackages() ) {
             KnowledgePackageImpl kpi = (KnowledgePackageImpl) kp;
             TypeDeclaration cheez = kpi.getTypeDeclaration( "Cheese" );
             if ( "org.drools.compiler".equals( kpi.getName() ) ) {

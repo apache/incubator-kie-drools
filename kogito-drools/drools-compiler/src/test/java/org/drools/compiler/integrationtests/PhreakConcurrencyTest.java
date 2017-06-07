@@ -30,10 +30,10 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
@@ -91,8 +91,8 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                       "end\n");
         }
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(sb.toString());
-        KieSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(sb.toString());
+        KieSession ksession = kbase.newKieSession();
 
         boolean success = true;
         if (PARALLEL) {
@@ -189,8 +189,8 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                      "    results.add( $s );\n" +
                      "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        KieSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> results = new ArrayList<String>();
         ksession.setGlobal("results", results);
@@ -300,8 +300,8 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                      "   results.add(\"R3\");\n" +
                      "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        return kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        return kbase.newKieSession();
     }
 
     @Test
@@ -706,8 +706,8 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                      "end";
         int N = 1100;
 
-        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
-        final StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        KieBase kb = loadKnowledgeBaseFromString( drl );
+        final KieSession ks = kb.newKieSession();
         ConcurrentLinkedQueue list = new ConcurrentLinkedQueue<Integer>();
         AtomicInteger counter = new AtomicInteger(0);
         ks.setGlobal( "list", list );

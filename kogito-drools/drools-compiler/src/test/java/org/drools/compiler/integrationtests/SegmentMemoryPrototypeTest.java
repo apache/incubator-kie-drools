@@ -19,12 +19,12 @@ import org.drools.compiler.integrationtests.DynamicRulesChangesTest.Fire;
 import org.drools.compiler.integrationtests.DynamicRulesChangesTest.Room;
 import org.drools.compiler.integrationtests.DynamicRulesChangesTest.Sprinkler;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -89,8 +89,8 @@ public class SegmentMemoryPrototypeTest {
         kbuilder.add( ResourceFactory.newByteArrayResource(DRL.getBytes()),
                       ResourceType.DRL );
 
-        InternalKnowledgeBase kbase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSession ksession = kbase.newKieSession();
         checkKieSession(ksession);
@@ -106,8 +106,8 @@ public class SegmentMemoryPrototypeTest {
         kbuilder.add( ResourceFactory.newByteArrayResource(DRL.getBytes()),
                       ResourceType.DRL );
 
-        InternalKnowledgeBase kbase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kbase.newKieSession();
         checkKieSession(ksession);

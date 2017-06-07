@@ -24,23 +24,24 @@ import java.io.PrintWriter;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.junit.Test;
+import org.kie.api.KieBase;
+
 import static org.junit.Assert.*;
 
 import com.thoughtworks.xstream.XStream;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 
 public class ReteooBuilderTest {
 
     private final boolean writeTree = false;
 
     /** Implementation specific subclasses must provide this. */
-    protected KnowledgeBase getKnowledgeBase() throws Exception {
+    protected KieBase getKnowledgeBase() throws Exception {
         return KnowledgeBaseFactory.newKnowledgeBase();
     }
 

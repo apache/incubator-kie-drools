@@ -22,12 +22,12 @@ import java.util.List;
 
 import org.junit.Test;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.KieBase;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.*;
@@ -42,8 +42,8 @@ public class RuleRuntimeEventSupportTest {
 
     @Test
     public void testRuleRuntimeEventListener() {
-        final KnowledgeBase rb = KnowledgeBaseFactory.newKnowledgeBase();
-        final StatefulKnowledgeSession wm = rb.newStatefulKnowledgeSession();
+        final KieBase rb = KnowledgeBaseFactory.newKnowledgeBase();
+        final KieSession wm = rb.newKieSession();
 
         final List wmList = new ArrayList();
         final RuleRuntimeEventListener workingMemoryListener = new RuleRuntimeEventListener() {

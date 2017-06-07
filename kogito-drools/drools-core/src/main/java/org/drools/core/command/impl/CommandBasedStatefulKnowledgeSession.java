@@ -28,7 +28,7 @@ import org.drools.core.command.runtime.GetFactCountCommand;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.GetGlobalsCommand;
 import org.drools.core.command.runtime.GetIdCommand;
-import org.drools.core.command.runtime.GetKnowledgeBaseCommand;
+import org.drools.core.command.runtime.GetKieBaseCommand;
 import org.drools.core.command.runtime.RegisterChannelCommand;
 import org.drools.core.command.runtime.RemoveEventListenerCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
@@ -73,6 +73,7 @@ import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.rule.EntryPointId;
+import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -97,7 +98,6 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.RuleFlowGroup;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -309,8 +309,8 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         this.runner.execute( new FireUntilHaltCommand( agendaFilter ) );
     }
 
-    public KnowledgeBase getKieBase() {
-        return this.runner.execute( new GetKnowledgeBaseCommand() );
+    public KieBase getKieBase() {
+        return this.runner.execute( new GetKieBaseCommand() );
     }
 
     public void registerChannel(String name,

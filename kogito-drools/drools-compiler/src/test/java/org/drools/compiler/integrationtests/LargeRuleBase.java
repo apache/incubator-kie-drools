@@ -27,12 +27,13 @@ import java.io.StringReader;
 
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
@@ -73,8 +74,8 @@ public class LargeRuleBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(buf.toString().getBytes()), ResourceType.DRL );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         File f = new File("foo.rulebase");
         if (f.exists())
@@ -85,7 +86,7 @@ public class LargeRuleBase {
         out.flush();
         out.close();
         ObjectInputStream in = new DroolsObjectInputStream(new FileInputStream(f));
-        KnowledgeBase rb_ = (KnowledgeBase) in.readObject();
+        KieBase rb_ = (KieBase) in.readObject();
     }
     public static String getHeader() {
         return "package org.kie.test; \n " + "import org.drools.compiler.Person; \n "

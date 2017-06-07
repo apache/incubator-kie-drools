@@ -33,6 +33,8 @@ import org.drools.core.InitialFact;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.AccumulateNode;
@@ -47,6 +49,8 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -56,12 +60,9 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
@@ -124,8 +125,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                "   list.add( $name1 + \" : \" + $age1 );\n" +
                "end \n";
         
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
@@ -258,8 +259,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                "   list.add( $name1 + \" : \" + $age1 );\n" +
                "end \n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
@@ -379,8 +380,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                "   list.add( $name1 + \" : \" + $age1 );\n" +
                "end \n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
@@ -471,8 +472,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                "   list.add( $name1 + \" : \" + $age1 );\n" +
                "end \n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
@@ -543,8 +544,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                "   list.add( $name1 + \" : \" + $likes1 + \" : \" +  $street1 );\n" +
                "end \n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
@@ -592,8 +593,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                "   list.add( $name1 + \" : \" + $likes1 + \" : \" +  $s );\n" +
                "end \n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
@@ -649,8 +650,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                "   list.add( $p );\n" +
                "end \n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
@@ -716,8 +717,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                "   list.add( $p );\n" +
                "end \n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
@@ -795,8 +796,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "end\n" +
                      "";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list",
@@ -954,8 +955,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "   ?parent( gp, p; ) ?parent( p, gc; )\n" +
                      "end\n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
@@ -1567,7 +1568,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
         logger.debug( str );
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
         
 
         // Get the accumulate node, so we can test it's memory later
@@ -1595,7 +1596,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         RightInputAdapterNode riaNode3 = (RightInputAdapterNode) fromNode.getSinkPropagator().getSinks()[0];
         NotNode notNode = (NotNode) riaNode3.getObjectSinkPropagator().getSinks()[0];
 
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieSession ksession = createKnowledgeSession( kbase );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl) ksession);
         AccumulateMemory accMemory = (AccumulateMemory) wm.getNodeMemory( accNode );
         BetaMemory existsMemory = (BetaMemory) wm.getNodeMemory( existsNode );
@@ -1862,16 +1863,16 @@ public class BackwardChainingTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }        
 
-        Map<String, KnowledgePackage> pkgs = new HashMap<String, KnowledgePackage>();
-        for ( KnowledgePackage pkg : kbuilder.getKnowledgePackages() ) {
+        Map<String, KiePackage> pkgs = new HashMap<String, KiePackage>();
+        for ( KiePackage pkg : kbuilder.getKnowledgePackages() ) {
             pkgs.put(  pkg.getName(), pkg );
         }
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.compiler.test1" ), pkgs.get( "org.drools.compiler.test2" ) } ) );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(  Arrays.asList( new KiePackage[] { pkgs.get( "org.drools.compiler.test1" ), pkgs.get( "org.drools.compiler.test2" ) } ) );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         ksession.setGlobal( "list",
@@ -1885,7 +1886,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         list ); 
         
         list.clear();
-        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.compiler.test3" ) } ) );
+        kbase.addPackages(  Arrays.asList( new KiePackage[] { pkgs.get( "org.drools.compiler.test3" ) } ) );
         
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
@@ -1893,7 +1894,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         list );
 
         list.clear();
-        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.compiler.test4" ) } ) );
+        kbase.addPackages(  Arrays.asList( new KiePackage[] { pkgs.get( "org.drools.compiler.test4" ) } ) );
         
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
@@ -2014,8 +2015,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
@@ -2139,7 +2140,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
               + "( Location(z := thing, y := location) and ?isContainedIn( x := x, z := y ) )\n"
               + "end\n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( drl ) );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( drl ) );
     }
 
     @Test(timeout = 10000)
@@ -2244,10 +2245,10 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         "";
 
         // System.out.println( str );
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
 
         for ( int i = 0; i < f; i++ ) {
-            StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+            KieSession ksession = createKnowledgeSession( kbase );
             List<String> list = new ArrayList<String>();
             ksession.setGlobal( "list",
                                 list );
@@ -2321,7 +2322,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }
 
         for ( int i = f; i < h; i++ ) { //h; i++) {
-            StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+            KieSession ksession = createKnowledgeSession(kbase);
             List<String> list = new ArrayList<String>();
             ksession.setGlobal( "list",
                                 list );
@@ -2489,11 +2490,11 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "\n" +
                      "\n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
         
 
         for ( int i = 1; i <= 6; i++ ) {
-            StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+            KieSession ksession = createKnowledgeSession( kbase );
             List<String> list = new ArrayList<String>();
             ksession.setGlobal( "list",
                                 list );
@@ -2585,8 +2586,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
         logger.debug( str );
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         ksession.setGlobal( "queryList",
                             queryList );
@@ -2643,8 +2644,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "end\n" +
                      "";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( str ) );
+        KieSession ksession = createKnowledgeSession( kbase );
         
         List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list",
@@ -2702,7 +2703,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     }
 
     public InternalFactHandle getFactHandle(FactHandle factHandle,
-                                            StatefulKnowledgeSession ksession) {
+                                            KieSession ksession) {
         Map<Integer, FactHandle> handles = new HashMap<Integer, FactHandle>();
         for ( FactHandle fh : ksession.getFactHandles() ) {
             handles.put( ((InternalFactHandle) fh).getId(),
@@ -3079,12 +3080,12 @@ public class BackwardChainingTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -3142,12 +3143,12 @@ public class BackwardChainingTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
         List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list",
                 list );
@@ -3215,8 +3216,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      " list.add( $z ); \n" +
                      "end";
 
-        KnowledgeBase knowledgeBase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
+        KieSession knowledgeSession = knowledgeBase.newKieSession();
         ArrayList list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
 
@@ -3258,8 +3259,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "    list.add( 42 );\n" +
                      "end";
 
-        KnowledgeBase knowledgeBase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        KieBase knowledgeBase = loadKnowledgeBaseFromString( drl );
+        KieSession knowledgeSession = knowledgeBase.newKieSession();
         ArrayList list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
 

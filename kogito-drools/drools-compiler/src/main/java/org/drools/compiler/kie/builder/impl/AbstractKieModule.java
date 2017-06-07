@@ -46,8 +46,10 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.common.ResourceProvider;
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.Drools;
@@ -61,10 +63,10 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.RuleTemplateModel;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
@@ -75,7 +77,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.ResultSeverity;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceTypeImpl;
 import org.slf4j.Logger;
@@ -158,7 +159,8 @@ public abstract class AbstractKieModule
         return kBuilders.get(kieBaseName);
     }
 
-    public Collection<KnowledgePackage> getKnowledgePackagesForKieBase(String kieBaseName) {
+    @Override
+    public Collection<KiePackage> getKnowledgePackagesForKieBase(String kieBaseName) {
         KnowledgeBuilder kbuilder = kBuilders.get(kieBaseName);
         return kbuilder != null ? kbuilder.getKnowledgePackages() : null;
     }
@@ -204,7 +206,7 @@ public abstract class AbstractKieModule
     }
 
     public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
-        Collection<KnowledgePackage> pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
+        Collection<KiePackage> pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
 
         if ( pkgs == null ) {
             KnowledgeBuilder kbuilder = buildKnowledgePackages(kBaseModel, kieProject, messages);
@@ -219,7 +221,7 @@ public abstract class AbstractKieModule
 
         if ( kBaseModel.getEventProcessingMode() == EventProcessingOption.CLOUD &&
              (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
-            for (KnowledgePackage kpkg : pkgs) {
+            for (KiePackage kpkg : pkgs) {
                 if ( ((KnowledgePackageImpl) kpkg).needsStreamMode() ) {
                     throw new RuntimeException( "The requested KieBase \"" + kBaseModel.getName() + "\" has been set to run in CLOUD mode but requires features only available in STREAM mode" );
                 }
@@ -234,7 +236,7 @@ public abstract class AbstractKieModule
         }
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
-        kBase.addKnowledgePackages( pkgs );
+        kBase.addPackages( pkgs );
         return kBase;
     }
 

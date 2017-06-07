@@ -20,17 +20,17 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.MethodCountingNodeFactory;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.utils.KieHelper;
 
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 
 public class SharingTest extends CommonTestMethodBase {
 
-    private KnowledgeBase kbase;
+    private KieBase kbase;
     private Map<String, Rule> rules;
     private AlphaNode alphaNode_1;
     private AlphaNode alphaNode_2;
@@ -57,7 +57,7 @@ public class SharingTest extends CommonTestMethodBase {
         joinNode = (JoinNode) lian.getSinkPropagator().getSinks()[0]; //this == $personCheese
     }
 
-    public static ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
+    public static ObjectTypeNode getObjectTypeNode(KieBase kbase, Class<?> nodeClass) {
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {

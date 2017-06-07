@@ -23,21 +23,22 @@ import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.junit.Test;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mockito.ArgumentCaptor;
@@ -67,7 +68,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                       pkg.getAttribute( "dialect" ).getValue() );
         assertNull( pkg.getAttribute( "salience" ) );
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
 
         assertEquals( "org.drools",
                       kpkg.getName() );
@@ -102,7 +103,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                       pkg.getAttribute( "lock-on-active" ).getType() );
         assertNull( pkg.getAttribute( "no-loop" ) );
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools",
                       kpkg.getName() );
     }
@@ -142,7 +143,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertEquals( "bob",
                       pkg.getGlobals().get( 1 ).getIdentifier() );
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",
                       kpkg.getName() );
     }
@@ -175,13 +176,13 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertEquals( 1,
                       pkg.getRules().size() );
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools",
                       kpkg.getName() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Collections.singletonList( kpkg ) );
+        KieSession ksession = createKnowledgeSession(kbase);
         int rules = ksession.fireAllRules();
         assertEquals( 1,
                       rules );
@@ -205,13 +206,13 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertEquals( 1,
                       pkg.getRules().size() );
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",
                 kpkg.getName() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Collections.singletonList( kpkg ) );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         Cheese stilton = new Cheese( "stilton", 5 );
         Cheese cheddar = new Cheese( "cheddar", 7 );
@@ -262,13 +263,13 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         String drl = new DrlDumper().dump( pkg );
         assertEqualsIgnoreWhitespace(expected, drl);
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",
                 kpkg.getName() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Collections.singletonList( kpkg ) );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         Cheese stilton = new Cheese( "stilton", 5 );
         Cheese cheddar = new Cheese( "cheddar", 7 );
@@ -312,12 +313,12 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertEquals( 1,
                       pkg.getEnumDeclarations().size() );
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.beans",
                       kpkg.getName() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Collections.singletonList( kpkg ) );
 
         FactType stType = kbase.getFactType( "org.beans",
                                              "StockTick" );
@@ -355,12 +356,12 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertEquals( 2,
                       pkg.getEntryPointDeclarations().size() );
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools",
                       kpkg.getName() );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Collections.singletonList( kpkg ) );
 
         assertEquals( 2,
                       kbase.getEntryPointIds().size() );
@@ -379,14 +380,14 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                 .end()
                 .getDescr();
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",
                       kpkg.getName() );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Collections.singletonList( kpkg ) );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
@@ -405,14 +406,14 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                 .end()
                 .getDescr();
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",
                       kpkg.getName() );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Collections.singletonList( kpkg ) );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
@@ -437,14 +438,14 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                 .end()
                 .getDescr();
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",
                       kpkg.getName() );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Collections.singletonList( kpkg ) );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
         
@@ -485,19 +486,19 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                 String drl = new DrlDumper().dump( packBuilder.getDescr() );
         System.out.println(drl);
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",
                       kpkg.getName() );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Collections.singletonList( kpkg ) );
         
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
         ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 0, rules );
 
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession = kbase.newKieSession();
         ksession.insert( new StockTick(2, "RHT", 150, 1 ) );
         rules = ksession.fireAllRules();
         assertEquals( 1, rules );
@@ -515,14 +516,14 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                 .rhs("//System.out.println(s);")
                 .end().getDescr();
 
-        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        KiePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools",
                       kpkg.getName() );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Collections.singletonList( kpkg ) );
         
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
         EntryPoint ep = ksession.getEntryPoint( "EventStream" );
         ep.insert( "Hello World!" );
         int rules = ksession.fireAllRules();
@@ -554,11 +555,11 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertFalse(  knowledgeBuilder.getErrors().toString(), knowledgeBuilder.hasErrors() );
 
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( knowledgeBuilder.getKnowledgePackages() );
+        KieSession knowledgeSession = kbase.newKieSession();
 
-        KnowledgePackage rebuiltPkg = knowledgeBuilder.getKnowledgePackages().iterator().next();
+        KiePackage rebuiltPkg = knowledgeBuilder.getKnowledgePackages().iterator().next();
         org.kie.api.definition.rule.Rule rule = rebuiltPkg.getRules().iterator().next();
         RuleImpl r = ((RuleImpl) rule);
 
@@ -613,9 +614,9 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertFalse(  knowledgeBuilder.getErrors().toString(), knowledgeBuilder.hasErrors() );
 
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( knowledgeBuilder.getKnowledgePackages() );
+        KieSession knowledgeSession = kbase.newKieSession();
         List list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
 
@@ -671,14 +672,14 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertTrue( drl.contains("timer (cron:0/5 * * * * ?)" ) );
     }
 
-    private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {
+    private KiePackage compilePkgDescr( PackageDescr pkg ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newDescrResource( pkg ),
                       ResourceType.DESCR );
 
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );
-        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
         assertEquals( 1,
                       kpkgs.size() );
 

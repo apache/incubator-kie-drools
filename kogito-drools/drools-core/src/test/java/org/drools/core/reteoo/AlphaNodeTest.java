@@ -35,7 +35,7 @@ import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
@@ -56,7 +56,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         BuildContext buildContext = new BuildContext( kBase );
         buildContext.setRule(new RuleImpl("test"));
 
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final RuleImpl rule = new RuleImpl( "test-rule" );
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
@@ -127,7 +127,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         BuildContext buildContext = new BuildContext( kBase );
         buildContext.setRule(new RuleImpl("test"));
 
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final RuleImpl rule = new RuleImpl( "test-rule" );
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
@@ -190,7 +190,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         BuildContext buildContext = new BuildContext( kBase );
         buildContext.setRule(new RuleImpl("test"));
 
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final RuleImpl rule = new RuleImpl( "test-rule" );
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();

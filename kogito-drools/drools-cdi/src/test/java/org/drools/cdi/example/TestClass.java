@@ -15,8 +15,8 @@
 
 package org.drools.cdi.example;
 
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieBase;
 
 public interface TestClass {
-    public KnowledgeBase getKBase1();
+    KieBase getKBase1();
 }

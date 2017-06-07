@@ -19,9 +19,9 @@ package org.drools.template.parser;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.template.model.*;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBaseFactory;
 
 import java.io.Reader;
 import java.io.StringReader;

@@ -16,21 +16,21 @@
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SubnetworkTuple;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
@@ -129,7 +129,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
 
 
-    private KnowledgeBase base = KnowledgeBaseFactory.newKnowledgeBase();
+    private InternalKnowledgeBase base = KnowledgeBaseFactory.newKnowledgeBase();
 
     public String getPrefix() {
         return "package " + PKG_NAME_TEST + " \n"+
@@ -151,7 +151,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add( ResourceFactory.newReaderResource( new StringReader( prefix ) ), ResourceType.DRL);
-        final Collection<KnowledgePackage> pkgs = this.buildKnowledge(builder);
+        final Collection<KiePackage> pkgs = this.buildKnowledge(builder);
         this.addKnowledgeToBase(pkgs);
 
         return true;
@@ -167,15 +167,15 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         return true;
     }
 
-    private Collection<KnowledgePackage> buildKnowledge(final KnowledgeBuilder builder)  {
+    private Collection<KiePackage> buildKnowledge(final KnowledgeBuilder builder)  {
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
         }
         return builder.getKnowledgePackages();
     }
 
-    private void addKnowledgeToBase(final Collection<KnowledgePackage> pkgs) {
-        this.base.addKnowledgePackages( pkgs );
+    private void addKnowledgeToBase(final Collection<KiePackage> pkgs) {
+        this.base.addPackages( pkgs );
     }
 
     @Test
@@ -254,14 +254,14 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
 
         final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         // Create kSession and initialize it
-        final StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        final KieSession kSession = kbase.newKieSession();
         kSession.fireAllRules();
 
-        kSession.getKieBase().addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        ((InternalKnowledgeBase)kSession.getKieBase()).addPackages( kbuilder.getKnowledgePackages() );
 
     }
 
@@ -279,15 +279,15 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "";
 
         final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         // Create kSession and initialize it
-        final StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        final KieSession kSession = kbase.newKieSession();
         final FactHandle fh = kSession.insert(new Float( 0.0f ) );
         kSession.fireAllRules();
 
-        kSession.getKieBase().addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        ((InternalKnowledgeBase)kSession.getKieBase()).addPackages( kbuilder.getKnowledgePackages() );
         kSession.delete(fh);
     }
 
@@ -326,11 +326,11 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "";
 
         final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         // Create kSession and initialize it
-        final StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        final KieSession kSession = kbase.newKieSession();
         kSession.fireAllRules();
 
         kSession.getKieBase().removeRule( "org.drools.test", "Two" );
@@ -497,7 +497,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
     }
 
     private void testAddRemoveWithReloadInSamePackage(final String drl) {
-        final StatefulKnowledgeSession knowledgeSession = buildSessionInSteps(drl, simpleRuleInTestPackage);
+        final KieSession knowledgeSession = buildSessionInSteps(drl, simpleRuleInTestPackage);
         final List list = new ArrayList();
         knowledgeSession.setGlobal("list", list);
 
@@ -518,9 +518,9 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "System.out.println('test same condition rule'); \n"+
                 "end";
         final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, rule);
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        kbase.removeKnowledgePackage(packageName);
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        kbase.removeKiePackage(packageName);
     }
 
     @Test
@@ -544,8 +544,8 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "then \n" +
                 "System.out.println('test same condition rule 2'); \n"+
                 "end";
-        final StatefulKnowledgeSession session = buildSessionInSteps( rule1, rule2 );
-        session.getKieBase().removeKnowledgePackage(packageName);
+        final KieSession session = buildSessionInSteps( rule1, rule2 );
+        session.getKieBase().removeKiePackage(packageName);
         session.fireAllRules();
         final Map<String, Object> fact = new HashMap<String, Object>();
         fact.put("name", "Michael");
@@ -574,7 +574,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "System.out.println('Child rule!'); \n"+
                 "end";
 
-        final StatefulKnowledgeSession session = buildSessionInSteps( rule1, rule2);
+        final KieSession session = buildSessionInSteps( rule1, rule2);
         session.fireAllRules();
         final Map<String, Object> fact = new HashMap<String, Object>();
         fact.put("name", "Michael");
@@ -604,10 +604,10 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "end";
 
         final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, rule1);
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        kbase.removeKnowledgePackage(packageName);
-        final StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        kbase.removeKiePackage(packageName);
+        final StatelessKieSession session = kbase.newStatelessKieSession();
         session.execute(new HashMap());
     }
 
@@ -680,7 +680,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "System.out.println('test rule 2'); \n"+
                 "end";
 
-        final StatelessKnowledgeSession statelessSession = base.newStatelessKnowledgeSession();
+        final StatelessKieSession statelessSession = base.newStatelessKieSession();
 
         this.addRuleToEngine(rule1);
         statelessSession.execute(new Object());
@@ -752,9 +752,9 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 " System.out.println('test in rule2'); \n"+
                 "end";
 
-        final StatefulKnowledgeSession session = buildSessionInSteps( rule1, rule2 );
-        session.getKieBase().removeKnowledgePackage(packageName);
-        session.getKieBase().removeKnowledgePackage(packageName2);
+        final KieSession session = buildSessionInSteps( rule1, rule2 );
+        session.getKieBase().removeKiePackage(packageName);
+        session.getKieBase().removeKiePackage(packageName2);
         session.insert(new String());
         session.fireAllRules();
     }
@@ -773,14 +773,14 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "end\n";
 
 
-        final StatefulKnowledgeSession session = buildSessionInSteps( rule1 );
+        final KieSession session = buildSessionInSteps( rule1 );
 
         session.setGlobal( "globalInt", new AtomicInteger(0) );
         session.insert( 1 );
         session.insert( "1" );
 
         session.fireAllRules();
-        session.getKieBase().removeKnowledgePackage(packageName);
+        session.getKieBase().removeKiePackage(packageName);
     }
 
     @Test
@@ -1269,7 +1269,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
 
-        StatefulKnowledgeSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
+        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
         assertNotNull( fh1.getFirstLeftTuple() );
     }
@@ -1288,7 +1288,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
 
-        StatefulKnowledgeSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
+        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
     }
 
@@ -1306,7 +1306,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
 
-        StatefulKnowledgeSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
+        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
         Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
 
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
@@ -1329,7 +1329,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
 
-        StatefulKnowledgeSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
+        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
         Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
 
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
@@ -1390,7 +1390,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
 
-        StatefulKnowledgeSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
+        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
         Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
 
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
@@ -1415,7 +1415,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
 
-        StatefulKnowledgeSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
+        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
         Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
 
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
@@ -1441,7 +1441,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
 
-        StatefulKnowledgeSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
+        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
         Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
 
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
@@ -1469,7 +1469,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
 
-        StatefulKnowledgeSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
+        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
         Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
 
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
@@ -1542,7 +1542,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
 
-        StatefulKnowledgeSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
+        KieSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
         Map<String, Rule>        rulesMap = rulestoMap(ksession.getKieBase());
 
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);

@@ -22,12 +22,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Assert;
 
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.conf.EventProcessingOption;
@@ -57,10 +58,10 @@ public class UnmarshallingTest {
                         "   //System.out.println(\"Vilgax..\");\n" +
                         "end\n";
 
-        KnowledgeBase knowledgeBase = initializeKnowledgeBase( whenBenNotVilgaxRule );
+        KieBase knowledgeBase = initializeKnowledgeBase( whenBenNotVilgaxRule );
 
         // Initialize Knowledge session and insert Ben
-        KieSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        KieSession ksession = knowledgeBase.newKieSession();
         ksession.insert( new Ben() );
 
         // Marshall
@@ -88,7 +89,7 @@ public class UnmarshallingTest {
                              rules );
     }
 
-    private KnowledgeBase initializeKnowledgeBase( String rule ) {
+    private KieBase initializeKnowledgeBase( String rule ) {
         // Setup knowledge base
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newReaderResource(new StringReader(rule)),
@@ -98,8 +99,8 @@ public class UnmarshallingTest {
         }
         KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
-        knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
+        knowledgeBase.addPackages( kbuilder.getKnowledgePackages() );
 
         return knowledgeBase;
     }

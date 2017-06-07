@@ -33,7 +33,6 @@ import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
@@ -55,8 +54,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 " modify($k2) { setD(1) }\n" +
                 "end\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final Klass2 k2 = new Klass2(0, 0, 0, 0);
         ksession.insert(k2);
@@ -111,8 +110,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 " list.add( \"React\" );\n" +
                 " end";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -294,8 +293,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( $id + \"@I2\" );\n" +
                 "end";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -346,8 +345,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( $o.getClass().getSimpleName() );\n" +
                 "end\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -395,8 +394,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "   modify(t) { setA(2) };\n" +
                 "end";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str1, str2, str3);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str1, str2, str3);
+        final KieSession ksession = kbase.newKieSession();
 
         ksession.fireAllRules();
     }
@@ -457,8 +456,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "   modify(t) { setA(2) };\n" +
                 "end";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str1, str2);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str1, str2);
+        final KieSession ksession = kbase.newKieSession();
 
         ksession.fireAllRules();
     }
@@ -506,8 +505,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 " end";
 
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString( str1 );
+        final KieSession ksession = kbase.newKieSession();
         final ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
@@ -601,8 +600,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                       "end";
 
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString( str1 );
+        final KieSession ksession = kbase.newKieSession();
         final ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();
@@ -672,8 +671,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "";
 
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString( str1 );
+        final KieSession ksession = kbase.newKieSession();
         final ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -726,8 +725,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -777,8 +776,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -826,8 +825,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -877,8 +876,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -927,8 +926,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -977,8 +976,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);

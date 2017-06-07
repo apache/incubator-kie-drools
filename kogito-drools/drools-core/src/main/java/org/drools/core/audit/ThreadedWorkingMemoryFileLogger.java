@@ -18,7 +18,7 @@ package org.drools.core.audit;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.event.LogEvent;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
+import org.kie.api.event.KieRuntimeEventManager;
 
 public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {
 
@@ -30,7 +30,7 @@ public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {
         setSplit( false );
     }
 
-    public ThreadedWorkingMemoryFileLogger(KnowledgeRuntimeEventManager session) {
+    public ThreadedWorkingMemoryFileLogger(KieRuntimeEventManager session) {
         super( session );
         setSplit( false );
     }

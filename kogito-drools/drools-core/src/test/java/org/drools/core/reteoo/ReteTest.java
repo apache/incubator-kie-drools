@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 import static org.junit.Assert.*;
 
@@ -95,7 +95,7 @@ public class ReteTest extends DroolsTestCase {
      */
     @Test
     public void testCache() {
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = kBase.getRete();
@@ -161,7 +161,7 @@ public class ReteTest extends DroolsTestCase {
      */
     @Test
     public void testAssertObject() throws Exception {
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = kBase.getRete();
@@ -216,7 +216,7 @@ public class ReteTest extends DroolsTestCase {
 
     @Test
     public void testAssertObjectWithNoMatchingObjectTypeNode() {
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final Rete rete = kBase.getRete();
         assertEquals(1,
@@ -234,7 +234,7 @@ public class ReteTest extends DroolsTestCase {
     @Test
     @Ignore
     public void testHierarchy() {
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final Rete rete = kBase.getRete();
         final IdGenerator idGenerator = kBase.getReteooBuilder().getIdGenerator();
@@ -314,7 +314,7 @@ public class ReteTest extends DroolsTestCase {
      */
     @Test
     public void testRetractObject() throws Exception {
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = kBase.getRete();
@@ -378,7 +378,7 @@ public class ReteTest extends DroolsTestCase {
 
     @Test
     public void testIsShadowed() {
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = kBase.getRete();

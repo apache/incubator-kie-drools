@@ -23,10 +23,12 @@ import java.util.Properties;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.definition.KiePackage;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -34,10 +36,10 @@ import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 
 public class FailureOnRemovalTest extends CommonTestMethodBase {
     
@@ -60,28 +62,28 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
     }
 
     private void runTest(boolean shareBetaNodes) throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase( shareBetaNodes );
-        Collection<KnowledgePackage> rule1 = compileRule( RULE_1 );
-        kbase.addKnowledgePackages( rule1 );
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) createKnowledgeBase( shareBetaNodes );
+        Collection<KiePackage> rule1 = compileRule( RULE_1 );
+        kbase.addPackages( rule1 );
 
         // we need to add at least two rules. Test will not fail with only one rule.
-        Collection<KnowledgePackage> rule2 = compileRule( RULE_2 );
-        kbase.addKnowledgePackages( rule2 );
+        Collection<KiePackage> rule2 = compileRule( RULE_2 );
+        kbase.addPackages( rule2 );
 
         kbase.removeRule( PACKAGE,
                           RULE_1 );
         
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
         int fired = ksession.fireAllRules();
         ksession.dispose();
         
         assertEquals( 1, fired );
 
-        Collection<KnowledgePackage> rule3 = compileRule( RULE_3 );
-        kbase.addKnowledgePackages( rule3 );
+        Collection<KiePackage> rule3 = compileRule( RULE_3 );
+        kbase.addPackages( rule3 );
     }
 
-    private Collection<KnowledgePackage> compileRule(String name) throws DroolsParserException,
+    private Collection<KiePackage> compileRule(String name) throws DroolsParserException,
                                                                  IOException {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(createKnowledgeBuilderConfiguration());
         String drl = getDrl( name );
@@ -103,7 +105,7 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
         return kconf;
     }
 
-    private KnowledgeBase createKnowledgeBase(boolean shareBetaNodes) {
+    private KieBase createKnowledgeBase(boolean shareBetaNodes) {
         KieBaseConfiguration ruleBaseConfiguration = createKnowledgeBaseConfiguration( shareBetaNodes );
         return KnowledgeBaseFactory.newKnowledgeBase( ruleBaseConfiguration );
     }

@@ -16,17 +16,18 @@
 package org.drools.persistence.marshalling.util;
 
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,10 +123,10 @@ public class TestMarshallingUtilsTest {
         printResult(same, testA, testB);
 
         // setup for test
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        KnowledgeBase[] testArrA = { kbase };
-        KnowledgeBase[] testArrB = { kbase, null };
+        KieBase[] testArrA = { kbase };
+        KieBase[] testArrB = { kbase, null };
 
         same = compareInstances(testArrA, testArrB);
         assertTrue(!same);
@@ -204,26 +205,26 @@ public class TestMarshallingUtilsTest {
     @Ignore
     public void testCompareInstances() throws Exception {
 
-        StatefulKnowledgeSession ksessionA = null;
+        KieSession ksessionA = null;
         {
             KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             config.setOption(EventProcessingOption.STREAM);
-            KnowledgeBase knowledgeBaseA = KnowledgeBaseFactory.newKnowledgeBase(config);
+            KieBase knowledgeBaseA = KnowledgeBaseFactory.newKnowledgeBase(config);
             KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             ksconf.setOption(ClockTypeOption.get("pseudo"));
             ksconf.setOption(TimerJobFactoryOption.get("trackable"));
-            ksessionA = knowledgeBaseA.newStatefulKnowledgeSession(ksconf, null);
+            ksessionA = knowledgeBaseA.newKieSession(ksconf, null);
         }
 
-        StatefulKnowledgeSession ksessionB = null;
+        KieSession ksessionB = null;
         {
             KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             config.setOption(EventProcessingOption.STREAM);
-            KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(config);
+            KieBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(config);
             KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             ksconf.setOption(ClockTypeOption.get("pseudo"));
             ksconf.setOption( TimerJobFactoryOption.get("trackable") );
-            ksessionB = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);
+            ksessionB = knowledgeBase.newKieSession(ksconf, null);
         }
 
         Assert.assertTrue(CompareViaReflectionUtil.class.getSimpleName() + " is broken!", compareInstances(ksessionA, ksessionB));

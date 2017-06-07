@@ -15,20 +15,21 @@
 
 package org.drools.compiler.integrationtests;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -41,8 +42,8 @@ import static org.junit.Assert.fail;
 @Ignore
 public class WorkingMemoryActionsSerializationTest {
     private static final List<String> RULES = Arrays.asList("enableRecording", "saveRecord", "processEvent", "ignoreEvent"); //rules expected to be executed
-    private StatefulKnowledgeSession ksession;
-    private KnowledgeBase kbase;
+    private KieSession ksession;
+    private KieBase kbase;
 
     private final Map<String, Integer> ruleCalls = new HashMap<String, Integer>();
 
@@ -101,10 +102,10 @@ public class WorkingMemoryActionsSerializationTest {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession = kbase.newKieSession();
 
         ksession.addEventListener(new DefaultAgendaEventListener() {
             @Override

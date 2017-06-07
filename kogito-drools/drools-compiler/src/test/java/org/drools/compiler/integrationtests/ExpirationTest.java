@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -31,7 +32,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;

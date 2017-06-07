@@ -28,11 +28,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 
@@ -48,25 +48,25 @@ public class ParallelCompilationTest {
         parallelExecute(BuildExecutor.getSolvers());
     }
 
-    private void parallelExecute(Collection<Callable<KnowledgeBase>> solvers) throws Exception {
-        CompletionService<KnowledgeBase> ecs = new ExecutorCompletionService<KnowledgeBase>(executor);
-        for (Callable<KnowledgeBase> s : solvers) {
+    private void parallelExecute(Collection<Callable<KieBase>> solvers) throws Exception {
+        CompletionService<KieBase> ecs = new ExecutorCompletionService<KieBase>(executor);
+        for (Callable<KieBase> s : solvers) {
             ecs.submit(s);
         }
         for (int i = 0; i < PARALLEL_THREADS; ++i) {
-            KnowledgeBase kbase = ecs.take().get();
+            KieBase kbase = ecs.take().get();
         }
     }
 
-    public static class BuildExecutor implements Callable<KnowledgeBase> {
+    public static class BuildExecutor implements Callable<KieBase> {
 
-        public KnowledgeBase call() throws Exception {
+        public KieBase call() throws Exception {
             final Reader source = new InputStreamReader(ParallelCompilationTest.class.getResourceAsStream(DRL_FILE));
 
             final Properties props = new Properties();
             props.setProperty("drools.dialect.java.compiler", "JANINO");
             props.setProperty("drools.dialect.java.compiler.lnglevel", "1.6");
-            KnowledgeBase result;
+            KieBase result;
 
             final KnowledgeBuilderConfiguration configuration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(props, ParallelCompilationTest.class.getClass().getClassLoader());
             final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder(configuration);
@@ -78,13 +78,13 @@ public class ParallelCompilationTest {
             {
                 builder.add(newReaderResource, ResourceType.DRL);
             }
-            result = builder.newKnowledgeBase();
+            result = builder.newKieBase();
 
             return result;
         }
 
-        public static Collection<Callable<KnowledgeBase>> getSolvers() {
-            Collection<Callable<KnowledgeBase>> solvers = new ArrayList<Callable<KnowledgeBase>>();
+        public static Collection<Callable<KieBase>> getSolvers() {
+            Collection<Callable<KieBase>> solvers = new ArrayList<Callable<KieBase>>();
             for (int i = 0; i < PARALLEL_THREADS; ++i) {
                 solvers.add(new BuildExecutor());
             }

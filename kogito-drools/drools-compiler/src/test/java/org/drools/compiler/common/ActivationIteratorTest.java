@@ -20,16 +20,16 @@ import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.Iterator;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
@@ -689,7 +689,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ForceEagerActivationOption.YES );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         final List list = new ArrayList();
@@ -729,7 +729,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
             }
         }));
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
         final List list = new ArrayList();

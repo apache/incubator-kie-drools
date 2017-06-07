@@ -31,14 +31,15 @@ import java.util.Locale;
 import org.drools.compiler.Message;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 
@@ -70,7 +71,7 @@ public class SerializedPackageMergeTest {
         }
     }
 
-    private void testRuleExecution(StatelessKnowledgeSession session) throws Exception {
+    private void testRuleExecution(StatelessKieSession session) throws Exception {
         List<Object> list = new ArrayList<Object>();
         session.setGlobal( "list",
                            list );
@@ -91,8 +92,8 @@ public class SerializedPackageMergeTest {
         return message;
     }
 
-    private StatelessKnowledgeSession getSession(boolean serialize) throws Exception {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+    private StatelessKieSession getSession(boolean serialize) throws Exception {
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         for ( String drl : DRLs ) {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -102,21 +103,21 @@ public class SerializedPackageMergeTest {
             assertFalse( kbuilder.getErrors().toString(),
                          kbuilder.hasErrors() );
             
-            Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+            Collection<KiePackage> kpkgs = kbuilder.getKnowledgePackages();
 
-            Collection<KnowledgePackage> newCollection = null;
+            Collection<KiePackage> newCollection = null;
             if ( serialize ) {
-                newCollection = new ArrayList<KnowledgePackage>();
-                for( KnowledgePackage kpkg : kpkgs) {
+                newCollection = new ArrayList<KiePackage>();
+                for( KiePackage kpkg : kpkgs) {
                     kpkg = SerializationHelper.serializeObject(kpkg);
                     newCollection.add( kpkg );
                 }
             } else {
                 newCollection = kpkgs;
             }
-            kbase.addKnowledgePackages( newCollection );
+            kbase.addPackages( newCollection );
         }
-        return kbase.newStatelessKnowledgeSession();
+        return kbase.newStatelessKieSession();
     }
 
     @Test
@@ -145,17 +146,17 @@ public class SerializedPackageMergeTest {
         // Create 2 knowledgePackages separately (but these rules have the same package name)
         KnowledgeBuilder builder1 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder1.add( ResourceFactory.newByteArrayResource( str1.getBytes() ), ResourceType.DRL );
-        Collection<KnowledgePackage> knowledgePackages1 = builder1.getKnowledgePackages();
+        Collection<KiePackage> knowledgePackages1 = builder1.getKnowledgePackages();
 
         KnowledgeBuilder builder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-        Collection<KnowledgePackage> knowledgePackages2 = builder2.getKnowledgePackages();
+        Collection<KiePackage> knowledgePackages2 = builder2.getKnowledgePackages();
 
         // Combine the knowledgePackages
-        KnowledgeBase knowledgeBase1 = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase1.addKnowledgePackages( knowledgePackages1 );
-        knowledgeBase1.addKnowledgePackages( knowledgePackages2 );
-        Collection<KnowledgePackage> knowledgePackagesCombined = knowledgeBase1.getKnowledgePackages();
+        InternalKnowledgeBase knowledgeBase1 = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase1.addPackages( knowledgePackages1 );
+        knowledgeBase1.addPackages( knowledgePackages2 );
+        Collection<KiePackage> knowledgePackagesCombined = knowledgeBase1.getKiePackages();
 
         // serialize
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -166,11 +167,11 @@ public class SerializedPackageMergeTest {
 
         // deserialize
         ObjectInputStream in = new DroolsObjectInputStream( new ByteArrayInputStream( baos.toByteArray() ) );
-        Collection<KnowledgePackage> deserializedPackages = (Collection<KnowledgePackage>) in.readObject();
+        Collection<KiePackage> deserializedPackages = (Collection<KiePackage>) in.readObject();
 
         // Use the deserialized knowledgePackages
-        KnowledgeBase knowledgeBase2 = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase2.addKnowledgePackages(deserializedPackages);
+        InternalKnowledgeBase knowledgeBase2 = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase2.addPackages(deserializedPackages);
 
         KieSession ksession = knowledgeBase2.newKieSession();
         List<String> list = new ArrayList<String>();

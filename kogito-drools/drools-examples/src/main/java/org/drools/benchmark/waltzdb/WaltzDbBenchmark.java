@@ -16,16 +16,17 @@
 
 package org.drools.benchmark.waltzdb;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.IoUtils;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.definition.KiePackage;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,19 +46,19 @@ public class WaltzDbBenchmark {
         kbuilder.add( ResourceFactory.newClassPathResource("waltzdb.drl",
                 WaltzDbBenchmark.class),
                               ResourceType.DRL );
-        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
 
         KieBaseConfiguration kbaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbaseConfiguration.setProperty( "drools.removeIdentities",
                                         "true" );
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConfiguration );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConfiguration );
         //                final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
         //                                                               conf );
 
-        kbase.addKnowledgePackages( pkgs );
+        kbase.addPackages( pkgs );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
 
         List<Line> lines = WaltzDbBenchmark.loadLines( "waltzdb16.dat" ); //12,8,4
         List<Label> labels = WaltzDbBenchmark.loadLabels( "waltzdb16.dat" ); //12,8,4

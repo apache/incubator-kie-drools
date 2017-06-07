@@ -20,7 +20,8 @@ import com.thoughtworks.xstream.XStream;
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.util.IoUtils;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
+import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,7 @@ import java.util.List;
  * if log becomes too large - automatically write updates to file at certain
  * time intervals - ...
  */
-public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
+public class WorkingMemoryFileLogger extends WorkingMemoryLogger implements KieRuntimeLogger {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(WorkingMemoryFileLogger.class);
 
@@ -69,7 +70,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         super( workingMemory );
     }
 
-    public WorkingMemoryFileLogger(final KnowledgeRuntimeEventManager session) {
+    public WorkingMemoryFileLogger(final KieRuntimeEventManager session) {
         super( session );
     }
 
@@ -223,5 +224,10 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
             terminate = true;
             writeToDisk();
         }
+    }
+
+    @Override
+    public void close() {
+        stop();
     }
 }

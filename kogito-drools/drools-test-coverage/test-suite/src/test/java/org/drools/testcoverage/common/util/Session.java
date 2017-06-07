@@ -26,7 +26,6 @@ import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
 
 import java.util.Collection;
 
@@ -37,7 +36,7 @@ import java.util.Collection;
  * implements CommandExecutor and KnowledgeRuntimeEventManager interfaces by
  * delegating the methods directly to stateless or stateful knowledge session instance.
  */
-public class Session implements CommandExecutor, KnowledgeRuntimeEventManager {
+public class Session implements CommandExecutor, KieRuntimeEventManager {
     private KieRuntimeEventManager session;
     private final boolean stateful;
     private final boolean persisted;

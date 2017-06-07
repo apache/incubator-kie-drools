@@ -38,7 +38,7 @@ import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.ObjectType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 public class CrossProductTest {
     private InternalKnowledgePackage pkg;

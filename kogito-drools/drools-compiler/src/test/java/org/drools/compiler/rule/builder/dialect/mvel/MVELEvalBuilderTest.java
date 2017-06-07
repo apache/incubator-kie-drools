@@ -31,6 +31,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.Declaration;
@@ -40,7 +41,6 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,8 +98,8 @@ public class MVELEvalBuilderTest {
                                                                   evalDescr );
         ((MVELEvalExpression) eval.getEvalExpression()).compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         MockLeftTupleSink sink = new MockLeftTupleSink();
         final Cheese cheddar = new Cheese( "cheddar",

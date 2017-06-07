@@ -23,12 +23,12 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 
 public class AlphaTest extends CommonTestMethodBase {

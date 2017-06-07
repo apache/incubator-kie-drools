@@ -16,13 +16,13 @@
 
 package org.drools.core.event.knowlegebase.impl;
 
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieBase;
 import org.kie.api.event.kiebase.AfterFunctionRemovedEvent;
 
 public class AfterFunctionRemovedEventImpl extends KnowledgeBaseEventImpl implements AfterFunctionRemovedEvent {
     private String function;
     
-    public AfterFunctionRemovedEventImpl(KnowledgeBase knowledgeBase, String function) {
+    public AfterFunctionRemovedEventImpl(KieBase knowledgeBase, String function) {
         super( knowledgeBase );
         this.function = function;
     }

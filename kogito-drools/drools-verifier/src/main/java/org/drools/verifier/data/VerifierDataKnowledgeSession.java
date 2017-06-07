@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.core.ClassObjectFilter;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.verifier.components.EntryPoint;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;
@@ -29,19 +32,17 @@ import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.VerifierRule;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 class VerifierDataKnowledgeSession
     implements
     VerifierData {
 
     private final KnowledgeBuilder kbuilder;
-    private final StatefulKnowledgeSession kSession;
+    private final KieSession kSession;
 
     public VerifierDataKnowledgeSession() {
         this.kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -52,12 +53,12 @@ class VerifierDataKnowledgeSession
             throw new RuntimeException( "Unable to compile queries." );
         }
 
-        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( pkgs );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( pkgs );
 
-        this.kSession = kbase.newStatefulKnowledgeSession();
+        this.kSession = kbase.newKieSession();
     }
 
     public Collection<ObjectType> getObjectTypesByRuleName(String ruleName) {

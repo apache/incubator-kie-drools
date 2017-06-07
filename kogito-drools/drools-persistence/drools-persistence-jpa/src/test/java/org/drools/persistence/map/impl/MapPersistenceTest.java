@@ -15,18 +15,20 @@
  */
 package org.drools.persistence.map.impl;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.junit.Assert;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +39,9 @@ public abstract class MapPersistenceTest {
     
     @Test
     public void createPersistentSession() {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         
-        StatefulKnowledgeSession crmPersistentSession = createSession( kbase );
+        KieSession crmPersistentSession = createSession( kbase );
         crmPersistentSession.fireAllRules();
 
         crmPersistentSession = createSession( kbase );
@@ -71,10 +73,10 @@ public abstract class MapPersistenceTest {
             Assert.fail( "KnowledgeBase did not build" );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = createSession( kbase );
+        KieSession ksession = createSession( kbase );
 
         FactHandle buddyFactHandle = ksession.insert( new Buddy() );
         ksession.fireAllRules();
@@ -99,9 +101,9 @@ public abstract class MapPersistenceTest {
     public void dontCreateMoreSessionsThanNecessary() {
         long initialNumberOfSavedSessions = getSavedSessionsCount();
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        StatefulKnowledgeSession crmPersistentSession = createSession(kbase);
+        KieSession crmPersistentSession = createSession(kbase);
 
         long ksessionId = crmPersistentSession.getIdentifier();
         crmPersistentSession.fireAllRules();
@@ -124,9 +126,9 @@ public abstract class MapPersistenceTest {
 
     @Test
     public void insertObjectIntoKsessionAndRetrieve() {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         
-        StatefulKnowledgeSession crmPersistentSession = createSession(kbase);
+        KieSession crmPersistentSession = createSession(kbase);
         Buddy bestBuddy = new Buddy("john");
         crmPersistentSession.insert(bestBuddy);
 
@@ -139,10 +141,10 @@ public abstract class MapPersistenceTest {
         crmPersistentSession.dispose();
     }
 
-    protected abstract StatefulKnowledgeSession createSession(KnowledgeBase kbase);
+    protected abstract KieSession createSession(KieBase kbase);
     
-    protected abstract StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession crmPersistentSession,
-                                                                        KnowledgeBase kbase);
+    protected abstract KieSession disposeAndReloadSession(KieSession crmPersistentSession,
+                                                                        KieBase kbase);
 
     protected abstract long getSavedSessionsCount();
 }

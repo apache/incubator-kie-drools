@@ -23,8 +23,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.runtime.Context;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -38,15 +38,15 @@ import static org.junit.Assert.*;
 @SuppressWarnings("unchecked")
 public class GetFactHandlesCommandTest {
 
-    private StatefulKnowledgeSession ksession;
+    private KieSession ksession;
     private ExecutableRunner runner;
     private Context context;
     private Random random = new Random();
     
     @Before
     public void setup() { 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ksession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ksession = kbase.newKieSession();
         runner = ExecutableRunner.create();
         context = ( (RegistryContext) runner.createContext() ).register( KieSession.class, ksession );
     }

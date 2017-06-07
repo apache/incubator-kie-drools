@@ -21,17 +21,18 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionClock;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.IOException;
@@ -120,13 +121,12 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
             throws DroolsParserException, IOException, Exception {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, drlContentString);
+        KieBase kbase = loadKnowledgeBaseFromString(kconf, drlContentString);
 
         KieSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksessionConfig.setOption(ClockTypeOption.get("pseudo"));
         ksessionConfig.setProperty("keep.reference", "true");
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksessionConfig,
-                                                                                    null);
+        final KieSession ksession = kbase.newKieSession(ksessionConfig, null);
         ksession.addEventListener(agendaEventListener);
 
         PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();

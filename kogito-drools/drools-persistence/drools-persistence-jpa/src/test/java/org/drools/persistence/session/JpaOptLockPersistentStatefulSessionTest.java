@@ -16,6 +16,8 @@
 package org.drools.persistence.session;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.drools.persistence.util.DroolsPersistenceUtil;
@@ -24,10 +26,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -83,13 +84,13 @@ public class JpaOptLockPersistentStatefulSessionTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         List<?> list = new ArrayList<Object>();
@@ -108,10 +109,10 @@ public class JpaOptLockPersistentStatefulSessionTest {
     private class InsertAndFireThread extends Thread {
 
         private long ksessionId;
-        private KnowledgeBase kbase;
+        private KieBase kbase;
         private List<?> list;
 
-        InsertAndFireThread(long ksessionId, KnowledgeBase kbase, List<?> list) {
+        InsertAndFireThread(long ksessionId, KieBase kbase, List<?> list) {
             this.ksessionId = ksessionId;
             this.kbase = kbase;
             this.list = list;

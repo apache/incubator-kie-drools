@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.event.LogEvent;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
+import org.kie.api.event.KieRuntimeEventManager;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -46,7 +46,7 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
         super( workingMemory );
     }
     
-    public WorkingMemoryInMemoryLogger(final KnowledgeRuntimeEventManager session) {
+    public WorkingMemoryInMemoryLogger(final KieRuntimeEventManager session) {
         super( session );
     }
 

@@ -25,9 +25,9 @@ import java.io.FileNotFoundException;
 
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -51,8 +51,8 @@ public class ColumnReplaceTest {
             fail("Knowledge builder cannot compile package!");
         }
         System.out.println(DecisionTableFactory.loadFromInputStream(new FileInputStream(new File("src/test/resources/org/drools/decisiontable/columnReplaceTest.csv")), dTableConfiguration));
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         
         assertTrue(((RuleImpl)kbase.getRule("org.drools.decisiontable", "lockOnActiveRule")).isLockOnActive());
         // lock-on-active was not set on autoFocusRule, so it should be by default false

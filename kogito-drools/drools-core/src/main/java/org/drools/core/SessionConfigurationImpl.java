@@ -28,6 +28,7 @@ import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.MVELSafeHelper;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -39,7 +40,6 @@ import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.ChainedProperties;
@@ -359,7 +359,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
                                                    "org.jbpm.process.instance.event.DefaultSignalManagerFactory" );
     }
 
-    public ExecutableRunner getRunner( KnowledgeBase kbase, Environment environment ) {
+    public ExecutableRunner getRunner( KieBase kbase, Environment environment ) {
         if ( this.runner == null ) {
             initCommandService( kbase,
                                 environment );
@@ -368,7 +368,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     }
 
     @SuppressWarnings("unchecked")
-    private void initCommandService(KnowledgeBase kbase,
+    private void initCommandService(KieBase kbase,
                                     Environment environment) {
         String className = this.chainedProperties.getProperty( "drools.commandService",
                                                                null );
@@ -384,7 +384,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
 
         if ( clazz != null ) {
             try {
-                this.runner = clazz.getConstructor( KnowledgeBase.class,
+                this.runner = clazz.getConstructor( KieBase.class,
                                                     KieSessionConfiguration.class,
                                                     Environment.class ).newInstance( kbase,
                                                                                      this,

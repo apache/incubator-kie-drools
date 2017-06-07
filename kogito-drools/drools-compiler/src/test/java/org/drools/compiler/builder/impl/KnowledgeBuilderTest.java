@@ -71,6 +71,7 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.CompositeObjectSinkAdapterTest;
 import org.drools.core.reteoo.LeftTupleImpl;
@@ -102,7 +103,6 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.TypeSafe;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBaseFactory;
 
 import static org.junit.Assert.*;
 
@@ -181,9 +181,9 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         kBase.getGlobals().put( "map", Map.class );
-        final KieSession workingMemory = kBase.newStatefulKnowledgeSession();
+        final KieSession workingMemory = kBase.newKieSession();
 
         final HashMap map = new HashMap();
         workingMemory.setGlobal( "map",
@@ -265,7 +265,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         newPkg.getDialectRuntimeRegistry().onBeforeExecute();
 
         kBase.getGlobals().put( "map", Map.class );
-        final KieSession workingMemory = kBase.newStatefulKnowledgeSession();
+        final KieSession workingMemory = kBase.newKieSession();
 
         final HashMap map = new HashMap();
 

@@ -18,18 +18,18 @@ package org.drools.compiler.command;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.DefaultWorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
@@ -57,11 +57,11 @@ public class RegisterWorkItemHandlerTest {
             fail( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         final boolean[] answer = new boolean[] { false };
-        StatelessKnowledgeSession ks = kbase.newStatelessKnowledgeSession();
+        StatelessKieSession ks = kbase.newStatelessKieSession();
         ks.execute( CommandFactory.newRegisterWorkItemHandlerCommand( new WorkItemHandler() {
             
             public void executeWorkItem(org.kie.api.runtime.process.WorkItem workItem,

@@ -21,8 +21,8 @@ import java.io.InputStream;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.kie.api.KieBase;
 
 /**
  * This loads up rulebases from binary packages.
@@ -31,7 +31,7 @@ import org.kie.internal.KnowledgeBaseFactory;
  */
 public class BinaryRuleBaseLoader {
 
-    private KnowledgeBase kBase;
+    private InternalKnowledgeBase kBase;
     private ClassLoader classLoader;
 
     /**
@@ -48,7 +48,7 @@ public class BinaryRuleBaseLoader {
      * Optional parent classLoader for the Package's internal ClassLoader
      * is Thread.currentThread.getContextClassLoader()
      */
-    public BinaryRuleBaseLoader(KnowledgeBase kBase) {
+    public BinaryRuleBaseLoader(InternalKnowledgeBase kBase) {
         this( kBase, null);
     }
 
@@ -58,7 +58,7 @@ public class BinaryRuleBaseLoader {
      * for the Package's internal ClassLoader, is Thread.currentThread.getContextClassLoader()
      * if not user specified.
      */
-    public BinaryRuleBaseLoader(KnowledgeBase kBase, ClassLoader classLoader) {
+    public BinaryRuleBaseLoader(InternalKnowledgeBase kBase, ClassLoader classLoader) {
         if ( classLoader == null ) {
             classLoader = Thread.currentThread().getContextClassLoader();
             if ( classLoader == null ) {
@@ -136,7 +136,7 @@ public class BinaryRuleBaseLoader {
         }
     }
 
-    public KnowledgeBase getKnowledgeBase() {
+    public KieBase getKnowledgeBase() {
         return this.kBase;
     }
 

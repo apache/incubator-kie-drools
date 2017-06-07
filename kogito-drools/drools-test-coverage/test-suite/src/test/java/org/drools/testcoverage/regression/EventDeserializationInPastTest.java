@@ -18,6 +18,7 @@ package org.drools.testcoverage.regression;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.ClockType;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -28,7 +29,6 @@ import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.utils.KieHelper;
 

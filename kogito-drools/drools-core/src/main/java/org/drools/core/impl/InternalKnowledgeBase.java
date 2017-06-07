@@ -41,14 +41,15 @@ import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
+import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
 
-public interface InternalKnowledgeBase extends KnowledgeBase {
+public interface InternalKnowledgeBase extends KieBase {
 
     String getId();
 
@@ -112,11 +113,10 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
     Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException;
 
     InternalKnowledgePackage getPackage(String name);
-    void addPackages(InternalKnowledgePackage[] pkgs );
-    void addPackage(InternalKnowledgePackage pkg);
-    void addPackages( final Collection<InternalKnowledgePackage> newPkgs );
+    void addPackage(KiePackage pkg);
+    void addPackages( final Collection<KiePackage> newPkgs );
     Map<String, InternalKnowledgePackage> getPackagesMap();
-
+    
     ClassFieldAccessorCache getClassFieldAccessorCache();
 
     InternalWorkingMemory[] getWorkingMemories();

@@ -52,16 +52,15 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Results;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
@@ -533,7 +532,7 @@ public class FromTest extends CommonTestMethodBase {
         final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
         final PackageDescr descr = parser.parse(new InputStreamReader(getClass().getResourceAsStream("test_FromWithNewConstructor.drl")));
 
-        final Collection<KnowledgePackage> pkgs = loadKnowledgePackages(descr);
+        final Collection<KiePackage> pkgs = loadKnowledgePackages(descr);
         SerializationHelper.serializeObject(pkgs);
     }
 
@@ -684,8 +683,8 @@ public class FromTest extends CommonTestMethodBase {
         mvelConf.setStrict( false );
         mvelConf.setLangLevel( 5 );
 
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString( pkgBuilderCfg, str );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieBase kbase = loadKnowledgeBaseFromString( pkgBuilderCfg, str );
+        final KieSession ksession = kbase.newKieSession();
 
         final Map<String, String> testMap = new HashMap<String, String>();
         testMap.put( "keyOne", "valone" );

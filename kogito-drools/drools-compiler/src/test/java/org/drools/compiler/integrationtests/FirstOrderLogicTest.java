@@ -44,21 +44,22 @@ import org.drools.compiler.State;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.Triangle;
 import org.drools.core.audit.WorkingMemoryConsoleLogger;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.time.SessionPseudoClock;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.RemoveIdentitiesOption;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.definition.KiePackage;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.SessionClock;
@@ -69,8 +70,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     private static Logger logger = LoggerFactory.getLogger(FirstOrderLogicTest.class);
 
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) { 
-        return kbase.newStatefulKnowledgeSession();
+    protected KieSession createKnowledgeSession(KieBase kbase) { 
+        return kbase.newKieSession();
     }
     
     @Test
@@ -78,7 +79,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         List results = new ArrayList();
 
         KieBase kbase = loadKnowledgeBase("test_Collect.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         wm.setGlobal( "results",
                       results );
@@ -121,7 +122,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testCollectNodeSharing() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_collectNodeSharing.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         List results = new ArrayList();
         wm.setGlobal( "results",
@@ -153,7 +154,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testCollectModify() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_Collect.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         List results = new ArrayList();
 
@@ -222,7 +223,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testCollectResultConstraints() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_CollectResultConstraints.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
         List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -261,7 +262,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testExistsWithBinding() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_ExistsWithBindings.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         wm.setGlobal( "results",
@@ -283,7 +284,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testNot() throws Exception {
         KieBase kbase = loadKnowledgeBase("not_rule_test.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         wm.setGlobal( "list", list );
@@ -314,7 +315,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testNotWithBindings() throws Exception {
         KieBase kbase = loadKnowledgeBase("not_with_bindings_rule_test.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         wm.setGlobal( "list",
@@ -347,7 +348,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testExists() throws Exception {
         KieBase kbase = loadKnowledgeBase("exists_rule_test.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         wm.setGlobal( "list", list );
@@ -380,7 +381,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testExists2() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_exists.drl");
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -419,7 +420,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testExists3() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_Exists_JBRULES_2810.drl");
-        StatefulKnowledgeSession ksession = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
 
         WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger( ksession );
         ksession.fireAllRules();
@@ -429,7 +430,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testForall() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_Forall.drl");
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -459,7 +460,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testForall2() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_Forall2.drl");
-        StatefulKnowledgeSession ksession = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal( "results",
@@ -496,7 +497,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         conf.setOption(RemoveIdentitiesOption.YES);
 
         KieBase kbase = loadKnowledgeBase(conf, "test_removeIdentitiesSubNetwork.drl");
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -541,7 +542,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testCollectWithNestedFromWithParams() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_CollectWithNestedFrom.drl");
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -582,7 +583,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testCollectModifyAlphaRestriction() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_CollectAlphaRestriction.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         final List results = new ArrayList();
 
@@ -630,7 +631,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testForallSinglePattern() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_ForallSinglePattern.drl");
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -685,8 +686,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testForallSinglePattern2() throws Exception {
-        final KnowledgeBase kbase = loadKnowledgeBase( "test_ForallSinglePattern2.drl" );
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = loadKnowledgeBase( "test_ForallSinglePattern2.drl" );
+        final KieSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Triangle( 3,
                                        3,
@@ -706,7 +707,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testMVELCollect() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_MVELCollect.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         final List results = new ArrayList();
 
@@ -741,7 +742,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testNestedCorelatedRulesWithForall() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_NestedCorrelatedRulesWithForall.drl");
-        StatefulKnowledgeSession session = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession session = createKnowledgeSession(kbase);
 
         List list1 = new ArrayList();
         List list2 = new ArrayList();
@@ -801,7 +802,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testFromInsideNotAndExists() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_FromInsideNotAndExists.drl");
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -835,7 +836,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testOr() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_OrNesting.drl");
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -864,7 +865,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testOrWithVariableResolution() throws Exception {
 //        KieBase kbase = loadKnowledgeBase( "test_OrCEFollowedByMultipleEval.drl");
-//        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+//        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByMultipleEval.drl",
@@ -874,10 +875,10 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
 
         final AgendaEventListener al = mock( AgendaEventListener.class );
         ksession.addEventListener( al );
@@ -895,7 +896,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testOrWithVariableResolution2() throws Exception {
         //        KieBase kbase = loadKnowledgeBase( "test_OrCEFollowedByMultipleEval.drl");
-        //        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        //        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByMultipleEval2.drl",
@@ -905,10 +906,10 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
 
         final AgendaEventListener al = mock( AgendaEventListener.class );
         ksession.addEventListener( al );
@@ -925,7 +926,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testCollectWithMemberOfOperators() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_CollectMemberOfOperator.drl");
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -978,7 +979,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testCollectWithContainsOperators() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_CollectContainsOperator.drl");
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -1031,7 +1032,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testForallSinglePatternWithExists() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_ForallSinglePatternWithExists.drl");
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession workingMemory = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -1060,7 +1061,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testCollectResultBetaConstraint() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_CollectResultsBetaConstraint.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         List results = new ArrayList();
 
@@ -1090,7 +1091,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testFromWithOr() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_FromWithOr.drl");
-        StatefulKnowledgeSession session = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession session = createKnowledgeSession(kbase);
 
         final List<Address> results = new ArrayList<Address>();
         session.setGlobal( "results",
@@ -1124,7 +1125,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
         KieBase kbase = loadKnowledgeBase( "test_ForallSlidingWindow.drl");
-        StatefulKnowledgeSession ksession = createKnowledgeSession((KnowledgeBase) kbase, conf);
+        KieSession ksession = createKnowledgeSession(kbase, conf);
 
         final SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         List<String> results = new ArrayList<String>();
@@ -1215,7 +1216,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     public void testCollectFromMVELAfterOr() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_CollectFromMVELAfterOr.drl");
-        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
+        KieSession wm = createKnowledgeSession(kbase);
 
         List results = new ArrayList();
 
@@ -1247,11 +1248,11 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectAfterOrCE() throws Exception {
-        Collection<KnowledgePackage> pkgs = loadKnowledgePackages("test_OrCEFollowedByCollect.drl");
+        Collection<KiePackage> pkgs = loadKnowledgePackages("test_OrCEFollowedByCollect.drl");
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(pkgs);
-        StatefulKnowledgeSession session = createKnowledgeSession((KnowledgeBase) kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(pkgs);
+        KieSession session = createKnowledgeSession(kbase);
 
         //Set up facts
         final Cheesery bonFromage = new Cheesery();
@@ -1267,7 +1268,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         //Serialize and test again
         pkgs = SerializationHelper.serializeObject(pkgs);
         kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( pkgs );
+        kbase.addPackages( pkgs );
         
         session = createKnowledgeSession(kbase);
         session.insert( bonFromage );
@@ -1334,8 +1335,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         
         logger.info( str );
         
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieSession ksession = createKnowledgeSession(kbase);
              
         ksession.insert(new Field("t", "Y"));
         ksession.insert(new Field("a", "b"));
@@ -1357,8 +1358,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                 "    then\n" + 
                 "end\n";
         
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieSession ksession = createKnowledgeSession(kbase);
         
         ksession.insert( new Message( "test" ) );
         int rules = ksession.fireAllRules();

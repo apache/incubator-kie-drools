@@ -20,8 +20,8 @@ import java.util.Collection;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 
 
@@ -53,7 +53,7 @@ public class KnowledgeSessionTest {
         str += "end\n";
         builder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
 
-        Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+        Collection<KiePackage> pkgs = builder.getKnowledgePackages();
 
 
     }

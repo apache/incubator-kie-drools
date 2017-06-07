@@ -17,8 +17,7 @@
 package org.drools.compiler.integrationtests;
 
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -28,6 +27,8 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -91,10 +92,10 @@ public class RuleExtensionTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
         assertFalse(kbuilder.hasErrors());
 
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession knowledgeSession = kb.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kb.newKieSession();
 
         List list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
@@ -138,14 +139,14 @@ public class RuleExtensionTest {
         kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
         assertFalse(kbuilder.hasErrors());
 
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
 
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kb );
         kbuilder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
         assertFalse(kbuilder2.hasErrors());
 
-        StatefulKnowledgeSession knowledgeSession = kb.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kb.newKieSession();
 
         List list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
@@ -188,8 +189,8 @@ public class RuleExtensionTest {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
         assertFalse(kbuilder.hasErrors());
 
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
 
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kb );
         kbuilder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
@@ -232,10 +233,10 @@ public class RuleExtensionTest {
 
         assertFalse( kbuilder.hasErrors() );
 
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession knowledgeSession = kb.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kb.newKieSession();
 
         List list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
@@ -357,10 +358,10 @@ public class RuleExtensionTest {
 
         assertFalse( kbuilder.hasErrors() );
 
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession knowledgeSession = kb.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kb.newKieSession();
 
         List list = new ArrayList();
         knowledgeSession.setGlobal( "list", list );
@@ -415,10 +416,10 @@ public class RuleExtensionTest {
 
         assertFalse( kbuilder.hasErrors() );
 
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession knowledgeSession = kb.newStatefulKnowledgeSession();
+        KieSession knowledgeSession = kb.newKieSession();
 
         List<Integer> list = new ArrayList<Integer>();
         knowledgeSession.setGlobal( "list", list );

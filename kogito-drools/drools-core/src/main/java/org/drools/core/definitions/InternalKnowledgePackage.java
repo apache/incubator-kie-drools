@@ -28,19 +28,19 @@ import org.drools.core.rule.Function;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
-import org.kie.internal.definition.KnowledgePackage;
 
 import java.io.Externalizable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface InternalKnowledgePackage extends KnowledgePackage, Externalizable {
+public interface InternalKnowledgePackage extends KiePackage, Externalizable {
 
     void clear();
     void checkValidity();

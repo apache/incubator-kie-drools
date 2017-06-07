@@ -22,9 +22,10 @@ import java.util.List;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.definition.KnowledgePackage;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class MergePackageTest extends CommonTestMethodBase {
@@ -33,17 +34,17 @@ public class MergePackageTest extends CommonTestMethodBase {
     public void testMergingDifferentPackages2() throws Exception {
         // using different builders
         try {
-            final Collection<KnowledgePackage> kpkgs1 = loadKnowledgePackages("test_RuleNameClashes1.drl");
+            final Collection<KiePackage> kpkgs1 = loadKnowledgePackages("test_RuleNameClashes1.drl");
             assertEquals(1, kpkgs1.iterator().next().getRules().size());
 
-            final Collection<KnowledgePackage> kpkgs2 = loadKnowledgePackages("test_RuleNameClashes2.drl");
+            final Collection<KiePackage> kpkgs2 = loadKnowledgePackages("test_RuleNameClashes2.drl");
             assertEquals(1, kpkgs2.iterator().next().getRules().size());
 
-            KnowledgeBase kbase = loadKnowledgeBase();
-            kbase.addKnowledgePackages(kpkgs1);
-            kbase.addKnowledgePackages(kpkgs2);
+            InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBase();
+            kbase.addPackages(kpkgs1);
+            kbase.addPackages(kpkgs2);
             kbase = SerializationHelper.serializeObject(kbase);
-            final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+            final KieSession ksession = createKnowledgeSession(kbase);
 
             final List results = new ArrayList();
             ksession.setGlobal("results", results);
@@ -66,13 +67,13 @@ public class MergePackageTest extends CommonTestMethodBase {
 
     @Test
     public void testMergePackageWithSameRuleNames() throws Exception {
-        final KnowledgeBase kbase =
-                SerializationHelper.serializeObject(loadKnowledgeBase("test_MergePackageWithSameRuleNames1.drl"));
-        final Collection<KnowledgePackage> kpkgs =
+        final InternalKnowledgeBase kbase =
+                (InternalKnowledgeBase) SerializationHelper.serializeObject(loadKnowledgeBase("test_MergePackageWithSameRuleNames1.drl"));
+        final Collection<KiePackage> kpkgs =
                 loadKnowledgePackages("test_MergePackageWithSameRuleNames2.drl");
-        kbase.addKnowledgePackages(kpkgs);
+        kbase.addPackages(kpkgs);
 
-        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
 
         final List results = new ArrayList();
         ksession.setGlobal("results", results);
@@ -85,10 +86,10 @@ public class MergePackageTest extends CommonTestMethodBase {
     public void testMergingDifferentPackages() throws Exception {
         // using the same builder
         try {
-            final Collection<KnowledgePackage> kpkgs =
+            final Collection<KiePackage> kpkgs =
                     loadKnowledgePackages("test_RuleNameClashes1.drl", "test_RuleNameClashes2.drl");
             assertEquals(3, kpkgs.size());
-            for (final KnowledgePackage kpkg : kpkgs) {
+            for (final KiePackage kpkg : kpkgs) {
                 if (kpkg.getName().equals("org.drools.package1")) {
                     assertEquals("rule 1", kpkg.getRules().iterator().next().getName());
                 }

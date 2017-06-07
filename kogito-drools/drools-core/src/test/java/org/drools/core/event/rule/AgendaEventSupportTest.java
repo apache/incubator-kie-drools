@@ -36,6 +36,7 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.test.model.Cheese;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
@@ -46,16 +47,17 @@ import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -70,7 +72,7 @@ public class AgendaEventSupportTest {
 
     @Test @Ignore
     public void testAgendaEventListener() throws Exception {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         // create a simple package with one rule to test the events
         InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools.test" );
@@ -114,12 +116,10 @@ public class AgendaEventSupportTest {
         } );
         pkg.addRule( rule );
 
-        List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
-        pkgs.add( pkg );
-        kbase.addKnowledgePackages( pkgs );
+        kbase.addPackages( Collections.singleton(pkg) );
 
         // create a new working memory and add an AgendaEventListener
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         final List agendaList = new ArrayList();
         final AgendaEventListener agendaEventListener = new AgendaEventListener() {
 

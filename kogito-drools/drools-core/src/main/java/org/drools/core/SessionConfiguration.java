@@ -24,6 +24,7 @@ import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.util.StringUtils;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -39,7 +40,6 @@ import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.conf.WorkItemHandlerOption;
 import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
@@ -93,7 +93,7 @@ public abstract class SessionConfiguration implements KieSessionConfiguration, E
 
     public abstract String getSignalManagerFactory();
 
-    public abstract ExecutableRunner getRunner( KnowledgeBase kbase, Environment environment );
+    public abstract ExecutableRunner getRunner( KieBase kbase, Environment environment );
 
     public abstract TimerService newTimerService();
 

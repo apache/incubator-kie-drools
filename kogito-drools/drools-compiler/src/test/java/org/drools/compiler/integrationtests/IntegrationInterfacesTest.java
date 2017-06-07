@@ -29,19 +29,21 @@ import java.util.List;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class IntegrationInterfacesTest extends CommonTestMethodBase {
 
-    private KnowledgeBase getKnowledgeBase(final String resourceName) throws IOException,
+    private KieBase getKnowledgeBase(final String resourceName) throws IOException,
                                                                      ClassNotFoundException {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( resourceName,
@@ -51,12 +53,12 @@ public class IntegrationInterfacesTest extends CommonTestMethodBase {
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = getKnowledgeBase( kbuilder );
+        KieBase kbase = getKnowledgeBase( kbuilder );
 
         return kbase;
     }
 
-    private KnowledgeBase getKnowledgeBase(final Reader[] readers) throws IOException,
+    private KieBase getKnowledgeBase(final Reader[] readers) throws IOException,
                                                                   ClassNotFoundException {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for ( Reader reader : readers ) {
@@ -65,14 +67,14 @@ public class IntegrationInterfacesTest extends CommonTestMethodBase {
         }
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );
-        KnowledgeBase kbase = getKnowledgeBase( kbuilder );
+        KieBase kbase = getKnowledgeBase( kbuilder );
         return kbase;
     }
 
-    private KnowledgeBase getKnowledgeBase(final KnowledgeBuilder kbuilder) throws IOException,
+    private KieBase getKnowledgeBase(final KnowledgeBuilder kbuilder) throws IOException,
                                                                            ClassNotFoundException {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         kbase = SerializationHelper.serializeObject( kbase );
         return kbase;
     }
@@ -80,8 +82,8 @@ public class IntegrationInterfacesTest extends CommonTestMethodBase {
     @SuppressWarnings("unchecked")
     @Test
     public void testGlobals() throws Exception {
-        final KnowledgeBase kbase = getKnowledgeBase( "globals_rule_test.drl" );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = getKnowledgeBase( "globals_rule_test.drl" );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List<Object> list = mock( List.class );
         ksession.setGlobal( "list",
@@ -104,8 +106,8 @@ public class IntegrationInterfacesTest extends CommonTestMethodBase {
     @SuppressWarnings("unchecked")
     @Test
     public void testGlobals2() throws Exception {
-        final KnowledgeBase kbase = getKnowledgeBase( "test_globalsAsConstraints.drl" );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = getKnowledgeBase( "test_globalsAsConstraints.drl" );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List<Object> results = mock( List.class );
         ksession.setGlobal( "results",
@@ -163,8 +165,8 @@ public class IntegrationInterfacesTest extends CommonTestMethodBase {
         readers[0] = new StringReader( rule1 );
         readers[1] = new StringReader( rule2 );
 
-        final KnowledgeBase kbase = getKnowledgeBase( readers );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final KieBase kbase = getKnowledgeBase( readers );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         ksession.setGlobal( "str",
                             "boo" );
@@ -179,8 +181,8 @@ public class IntegrationInterfacesTest extends CommonTestMethodBase {
     
     @Test
     public void testChannels() throws IOException, ClassNotFoundException {
-        KnowledgeBase kbase = getKnowledgeBase( "test_Channels.drl" );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = getKnowledgeBase( "test_Channels.drl" );
+        KieSession ksession = createKnowledgeSession(kbase);
         
         Channel someChannel = mock( Channel.class );
         ksession.registerChannel( "someChannel", someChannel );

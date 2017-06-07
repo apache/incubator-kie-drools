@@ -21,6 +21,8 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
@@ -31,11 +33,9 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
 
 import java.util.Arrays;
 
@@ -96,9 +96,9 @@ public class QueryBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(Arrays.asList( new KnowledgePackage[] { builder.getPackage() } ));
-        final KieSession session = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(Arrays.asList( new KiePackage[] { builder.getPackage() } ));
+        final KieSession session = kbase.newKieSession();
 
         session.insert( new Person( "bobba",
                                     "stilton",
@@ -153,10 +153,10 @@ public class QueryBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(Arrays.asList( new KnowledgePackage[] { builder.getPackage() } ) );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(Arrays.asList( new KiePackage[] { builder.getPackage() } ) );
 
-        final KieSession session = kbase.newStatefulKnowledgeSession();
+        final KieSession session = kbase.newKieSession();
 
         session.insert( new Cheese( "stilton",
                                     15 ) );

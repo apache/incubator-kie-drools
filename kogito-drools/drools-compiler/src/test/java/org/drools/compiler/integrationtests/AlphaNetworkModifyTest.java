@@ -25,14 +25,15 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.List;
 
 public class AlphaNetworkModifyTest extends CommonTestMethodBase {
     
-    public ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, String nodeName) {
+    public ObjectTypeNode getObjectTypeNode(KieBase kbase, String nodeName) {
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType().getSimpleName().equals( nodeName ) ) {
@@ -76,9 +77,9 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         str += "then \n";
         str += "end  \n";         
         
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
+        KieSession wm = kbase.newKieSession();
         
         ObjectTypeNode otnPerson = getObjectTypeNode(kbase, "Person" );
         ObjectTypeNode otnCheese = getObjectTypeNode(kbase, "Cheese" );
@@ -130,9 +131,9 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         str += "then \n";
         str += "end  \n";         
         
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
+        KieSession wm = kbase.newKieSession();
         wm.fireAllRules();
 
         ObjectTypeNode otnInit = getObjectTypeNode(kbase, "InitialFactImpl" );
@@ -182,9 +183,9 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         str += "then \n";
         str += "end  \n";         
         
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        KieBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
+        KieSession wm = kbase.newKieSession();
         wm.fireAllRules();
         
         

@@ -24,14 +24,15 @@ import org.drools.beliefs.bayes.runtime.BayesRuntime;
 import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -162,7 +163,7 @@ public class BayesBeliefSystemTest {
         assertTrue(garden.isWetGrass()); // grass is wet again
     }
 
-    protected StatefulKnowledgeSession getSessionFromString( String drlString) {
+    protected KieSession getSessionFromString( String drlString) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add( ResourceFactory.newByteArrayResource(drlString.getBytes()),
                       ResourceType.DRL );
@@ -174,18 +175,18 @@ public class BayesBeliefSystemTest {
             fail();
         }
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addPackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
 
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
+        KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;
     }
 
 
-    protected StatefulKnowledgeSession getSession( String ruleFile ) {
+    protected KieSession getSession( String ruleFile ) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add( ResourceFactory.newClassPathResource( ruleFile ),
                       ResourceType.DRL );
@@ -194,14 +195,14 @@ public class BayesBeliefSystemTest {
             fail();
         }
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addPackages( kBuilder.getKnowledgePackages() );
 
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
 
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
+        KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;
     }
 }

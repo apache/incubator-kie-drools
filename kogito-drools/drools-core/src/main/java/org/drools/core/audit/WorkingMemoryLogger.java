@@ -41,6 +41,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.Tuple;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.kiebase.AfterFunctionRemovedEvent;
 import org.kie.api.event.kiebase.AfterKieBaseLockedEvent;
 import org.kie.api.event.kiebase.AfterKieBaseUnlockedEvent;
@@ -84,7 +85,6 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -140,7 +140,7 @@ public abstract class WorkingMemoryLogger
         }
     }
 
-    public WorkingMemoryLogger(final KnowledgeRuntimeEventManager session) {
+    public WorkingMemoryLogger(final KieRuntimeEventManager session) {
         if (session instanceof StatefulKnowledgeSessionImpl) {
             StatefulKnowledgeSessionImpl statefulSession = ((StatefulKnowledgeSessionImpl) session);
             WorkingMemoryEventManager eventManager = statefulSession;

@@ -16,10 +16,11 @@
 package org.drools.compiler.phreak;
 
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -68,10 +69,10 @@ public class PhreakLiaNodeTest {
             throw new RuntimeException(builder.getErrors().toString());
         }
         
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addPackages(builder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        KieSession ksession = knowledgeBase.newKieSession();
 
         InternalFactHandle fhB = ( InternalFactHandle ) ksession.insert( B.b(1) );
         
@@ -151,10 +152,10 @@ public class PhreakLiaNodeTest {
             throw new RuntimeException(builder.getErrors().toString());
         }
         
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
+        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addPackages(builder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        KieSession ksession = knowledgeBase.newKieSession();
 
         InternalFactHandle fhB = ( InternalFactHandle ) ksession.insert( B.b(1) );
         

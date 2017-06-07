@@ -18,8 +18,9 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -57,8 +58,8 @@ public class BranchTest extends CommonTestMethodBase {
     }
 
     private List<String> executeTestWithDRL(String drl) {
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results", results );

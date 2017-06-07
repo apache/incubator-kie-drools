@@ -20,14 +20,14 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.rule.ConsequenceMetaData;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieBase;
 
 public class RuleMetadataTest extends CommonTestMethodBase {
 
     @Test
     public void testModify() {
         String rule1 = "modify( $a ) { setA( 20 ), setB( $bb ) }";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -50,7 +50,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
     @Test
     public void testModify2() {
         String rule1 = "modify( $a ) { setC( $bc ) };\n modify( $b ) { c = \"Hello\" };";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -78,7 +78,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
     @Test
     public void testRetract() {
         String rule1 = "retract( $b );";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -92,7 +92,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
     @Test
     public void testRetractWithFunction() {
         String rule1 = "retract( getA($a) );";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -106,7 +106,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
     @Test
     public void testUpdate() {
         String rule1 = "$a.setA( 20 );\n $a.setB( $bb );\n update( $a );";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -129,7 +129,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
     @Test
     public void testUpdate2() {
         String rule1 = "$a.setC( $bc );\n $b.c = \"Hello\";\n update( $a );\n update( $b );";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -157,7 +157,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
     @Test
     public void testInsert() {
         String rule1 = "insert( new A(1, $bb, \"3\") );";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -184,7 +184,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
     @Test
     public void testInsert2() {
         String rule1 = "insert( new B(1, $ab) );";
-        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        KieBase kbase = getKnowledgeBase(rule1);
         RuleImpl rule = getRule(kbase, "R0");
 
         ConsequenceMetaData consequenceMetaData = rule.getConsequenceMetaData();
@@ -194,7 +194,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
         assertEquals(RuleMetadataTest.B.class.getName(), statment.getFactClassName());
     }
 
-    private KnowledgeBase getKnowledgeBase(String... consequences) {
+    private KieBase getKnowledgeBase(String... consequences) {
         String rule = "package org.drools\n" +
                 "import " + RuleMetadataTest.B.class.getCanonicalName() + "\n" +
                 "global java.util.List list;\n" +
@@ -221,7 +221,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
         return loadKnowledgeBaseFromString( rule );
     }
 
-    private RuleImpl getRule(KnowledgeBase kbase, String ruleName) {
+    private RuleImpl getRule(KieBase kbase, String ruleName) {
         return ((KnowledgeBaseImpl)kbase).getPackage("org.drools").getRule(ruleName);
     }
 

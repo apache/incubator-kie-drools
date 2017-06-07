@@ -30,7 +30,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,7 +87,7 @@ public class SessionInspector {
                            LeftInputAdapterNodeVisitor.INSTANCE );
     }
     
-    public SessionInspector(StatefulKnowledgeSession session) {
+    public SessionInspector(KieSession session) {
         this.session = (StatefulKnowledgeSessionImpl) session;
     }
 

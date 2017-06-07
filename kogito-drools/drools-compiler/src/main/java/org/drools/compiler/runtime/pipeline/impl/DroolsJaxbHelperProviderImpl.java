@@ -67,8 +67,8 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.xml.jaxb.util.JaxbListWrapper;
+import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.help.DroolsJaxbHelperProvider;
@@ -215,7 +215,7 @@ public class DroolsJaxbHelperProviderImpl
     }
 
     public JAXBContext newJAXBContext(String[] classNames,
-                                          KnowledgeBase kbase) throws JAXBException {
+                                          KieBase kbase) throws JAXBException {
         return newJAXBContext( classNames,
                             Collections.<String, Object> emptyMap(),
                             kbase );
@@ -223,7 +223,7 @@ public class DroolsJaxbHelperProviderImpl
 
     public JAXBContext newJAXBContext(String[] classNames,
                                       Map<String, ? > properties,
-                                      KnowledgeBase kbase) throws JAXBException {
+                                      KieBase kbase) throws JAXBException {
         ClassLoader classLoader = ((InternalKnowledgeBase) kbase).getRootClassLoader();
         int i = 0;
         try {

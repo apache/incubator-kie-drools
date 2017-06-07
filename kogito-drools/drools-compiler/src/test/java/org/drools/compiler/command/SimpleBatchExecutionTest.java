@@ -21,24 +21,24 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class SimpleBatchExecutionTest extends CommonTestMethodBase {
 
-    private StatefulKnowledgeSession ksession;
+    private KieSession ksession;
     protected final static String ruleString = ""
         + "package org.kie.api.persistence \n"
         + "global String globalCheeseCountry\n"
@@ -52,9 +52,9 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
     public void createKSession() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(ruleString.getBytes()), ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         assertFalse( kbuilder.hasErrors() );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         ksession = createKnowledgeSession(kbase);
     }

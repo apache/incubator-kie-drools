@@ -20,19 +20,20 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Results;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.definition.KiePackage;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -90,14 +91,14 @@ public class DslTest extends CommonTestMethodBase {
                       kbuilder.getErrors().size() );
 
         // the compiled package
-        final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        final Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
         assertEquals( 2, pkgs.size() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( pkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( pkgs );
         kbase    = SerializationHelper.serializeObject(kbase);
 
-        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        KieSession session = createKnowledgeSession(kbase);
         session.insert( new Person( "Bob",
                                "http://foo.bar" ) );
         session.insert( new Cheese( "stilton",
@@ -130,14 +131,14 @@ public class DslTest extends CommonTestMethodBase {
                       kbuilder.getErrors().size() );
         
         // the compiled package
-        final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        final Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
         assertEquals( 2, pkgs.size() );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( pkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( pkgs );
         kbase    = SerializationHelper.serializeObject(kbase);
 
-        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        KieSession session = createKnowledgeSession(kbase);
         session.insert( new Person( "rage" ) );
         session.insert( new Cheese( "cheddar",
                                15 ) );
@@ -190,14 +191,14 @@ public class DslTest extends CommonTestMethodBase {
                       kbuilder.getErrors().size() );
         
         // the compiled package
-        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
         assertEquals( 0, pkgs.size() );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( pkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( pkgs );
         kbase    = SerializationHelper.serializeObject(kbase);
 
-        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        KieSession session = createKnowledgeSession(kbase);
 
         pkgs = SerializationHelper.serializeObject(pkgs);
         assertNull( pkgs );
@@ -223,14 +224,14 @@ public class DslTest extends CommonTestMethodBase {
                      kbuilder.getErrors().size());
 
         // the compiled package
-        final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        final Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
         assertEquals(1, pkgs.size());
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(pkgs);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(pkgs);
         kbase    = SerializationHelper.serializeObject(kbase);
 
-        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        KieSession session = createKnowledgeSession(kbase);
         List results = new ArrayList();
         session.setGlobal("results",
                           results);
@@ -339,9 +340,9 @@ public class DslTest extends CommonTestMethodBase {
 
         assertFalse(kbuilder.hasErrors());
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );

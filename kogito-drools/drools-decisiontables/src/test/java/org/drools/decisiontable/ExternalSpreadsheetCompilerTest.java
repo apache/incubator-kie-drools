@@ -24,12 +24,13 @@ import java.util.regex.Pattern;
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
 import org.drools.compiler.compiler.DroolsError;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.TemplateDataListener;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -155,9 +156,9 @@ public class ExternalSpreadsheetCompilerTest {
         kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
         assertFalse(kbuilder.hasErrors());
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieSession kSession = kbase.newKieSession();
 
         //ASSERT AND FIRE
         kSession.insert( new Cheese( "stilton", 42 ) );
@@ -184,9 +185,9 @@ public class ExternalSpreadsheetCompilerTest {
         kbuilder.add(ResourceFactory.newByteArrayResource(l2.renderDRL().getBytes()), ResourceType.DRL);
         assertFalse(kbuilder.hasErrors());
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieSession kSession = kbase.newKieSession();
 
         //now create some test data
         Driver driver = new Driver();

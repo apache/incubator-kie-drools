@@ -34,9 +34,8 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.KnowledgeHelper;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.event.kiebase.AfterFunctionRemovedEvent;
 import org.kie.api.event.kiebase.AfterKieBaseLockedEvent;
 import org.kie.api.event.kiebase.AfterKieBaseUnlockedEvent;
@@ -61,15 +60,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class KnowledgeBaseEventSupportTest {
 
-    private KnowledgeBase        kbase;
-    private TestRuleBaseListener listener1;
-    private TestRuleBaseListener listener2;
+    private InternalKnowledgeBase kbase;
+    private TestRuleBaseListener  listener1;
+    private TestRuleBaseListener  listener2;
     private InternalKnowledgePackage pkg;
 
     /* (non-Javadoc)
@@ -180,9 +180,7 @@ public class KnowledgeBaseEventSupportTest {
         assertEquals( 0,
                       listener2.getAfterRuleAdded() );
 
-        List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
-        pkgs.add( pkg );
-        this.kbase.addKnowledgePackages( pkgs );
+        this.kbase.addPackages( Collections.singleton( pkg ) );
 
         assertEquals( 1,
                       listener1.getBeforePackageAdded() );
@@ -204,9 +202,7 @@ public class KnowledgeBaseEventSupportTest {
 
     @Test
     public void testRemovePackageEvents() throws Exception {
-        List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
-        pkgs.add( pkg );
-        this.kbase.addKnowledgePackages( pkgs );
+        this.kbase.addPackages( Collections.singleton( pkg ) );
 
         assertEquals( 0,
                       listener1.getBeforeKnowledgePackageRemoved() );
@@ -226,7 +222,7 @@ public class KnowledgeBaseEventSupportTest {
         assertEquals( 0,
                       listener2.getAfterRuleRemoved() );
 
-        this.kbase.removeKnowledgePackage( "org.drools.test1" );
+        this.kbase.removeKiePackage( "org.drools.test1" );
 
         assertEquals( 1,
                       listener1.getBeforeKnowledgePackageRemoved() );

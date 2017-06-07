@@ -21,9 +21,10 @@ import java.util.Set;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieBase;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -32,8 +33,8 @@ public class VarargsTest extends CommonTestMethodBase {
     
     @Test
     public void testStrStartsWith() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("varargs.drl");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("varargs.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
         Invoker inv = new Invoker();
         ksession.setGlobal( "invoker", inv );
@@ -46,8 +47,8 @@ public class VarargsTest extends CommonTestMethodBase {
 
     @Test
     public void testVarargs() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("varargs2.drl");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("varargs2.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
         MySet mySet = new MySet( "one", "two" );
         ksession.insert(mySet);

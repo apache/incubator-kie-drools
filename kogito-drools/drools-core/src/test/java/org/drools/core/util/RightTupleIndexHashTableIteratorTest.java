@@ -40,7 +40,9 @@ import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.core.util.index.TupleList;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
@@ -71,8 +73,8 @@ public class RightTupleIndexHashTableIteratorTest {
         
         BetaMemory betaMemory = betaConstraints.createBetaMemory( config, NodeTypeEnums.JoinNode );
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ss = kBase.newStatefulKnowledgeSession();
+        KieBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieSession ss = kBase.newKieSession();
 
         InternalFactHandle fh1 = (InternalFactHandle) ss.insert( new Foo( "brie", 1) );
         InternalFactHandle fh2 = (InternalFactHandle) ss.insert( new Foo( "brie", 1) );

@@ -21,7 +21,8 @@ import java.util.List;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -32,8 +33,8 @@ public class FunctionsTest extends CommonTestMethodBase {
     @Test
     public void testFunction() throws Exception {
 
-        KnowledgeBase kbase = loadKnowledgeBase( "test_FunctionInConsequence.drl" );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase( "test_FunctionInConsequence.drl" );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list",
@@ -51,8 +52,8 @@ public class FunctionsTest extends CommonTestMethodBase {
 
     @Test
     public void testFunctionException() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( "test_FunctionException.drl" );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase( "test_FunctionException.drl" );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
@@ -69,8 +70,8 @@ public class FunctionsTest extends CommonTestMethodBase {
 
     @Test
     public void testFunctionWithPrimitives() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( "test_FunctionWithPrimitives.drl" );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase( "test_FunctionWithPrimitives.drl" );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list",
@@ -90,8 +91,8 @@ public class FunctionsTest extends CommonTestMethodBase {
     public void testFunctionCallingFunctionWithEclipse() throws Exception {
         KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         kbconf.setProperty( "drools.dialect.java.compiler", "ECLIPSE" );
-        KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_functionCallingFunction.drl" );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase( kbconf, "test_functionCallingFunction.drl" );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "results",
@@ -110,9 +111,9 @@ public class FunctionsTest extends CommonTestMethodBase {
     public void testFunctionCallingFunctionWithJanino() throws Exception {
         KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         kbconf.setProperty( "drools.dialect.java.compiler", "JANINO" );
-        KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_functionCallingFunction.drl" );
+        KieBase kbase = loadKnowledgeBase( kbconf, "test_functionCallingFunction.drl" );
 
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "results",
@@ -138,8 +139,8 @@ public class FunctionsTest extends CommonTestMethodBase {
                      "    boolean x = isOutOfRange( Integer.MAX_VALUE, 1 );\n" +
                      "    boolean y = isNotContainedInt( Integer.MAX_VALUE, new int[] { 1, 2, 3 } );\n" +
                      "end\n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( str );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         int rulesFired = ksession.fireAllRules();
         assertEquals( 1,

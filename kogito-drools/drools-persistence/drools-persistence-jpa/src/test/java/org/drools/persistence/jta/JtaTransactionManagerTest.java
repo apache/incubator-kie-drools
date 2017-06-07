@@ -26,6 +26,8 @@ import javax.transaction.UserTransaction;
 
 import bitronix.tm.internal.BitronixRollbackException;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
@@ -34,13 +36,12 @@ import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -84,7 +85,7 @@ public class JtaTransactionManagerTest {
         DroolsPersistenceUtil.cleanUp(context);
     }
 
-    private KnowledgeBase initializeKnowledgeBase(String rule) { 
+    private KieBase initializeKnowledgeBase(String rule) { 
         // Initialize knowledge base/session/etc..
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
@@ -93,8 +94,8 @@ public class JtaTransactionManagerTest {
             fail(kbuilder.getErrors().toString());
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
        
         return kbase;
     }
@@ -252,7 +253,7 @@ public class JtaTransactionManagerTest {
     public void testSingleSessionCommandServiceAndJtaTransactionManagerTogether() throws Exception { 
         // Initialize drools environment stuff
         Environment env = createEnvironment(context);
-        KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
+        KieBase kbase = initializeKnowledgeBase(simpleRule);
         KieSession commandKSession = KieServices.get().getStoreServices().newKieSession( kbase, null, env );
 //        StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         commandKSession.getIdentifier(); // initialize CSEM

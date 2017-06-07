@@ -18,14 +18,16 @@ package org.drools.compiler.test;
 import java.util.ArrayList;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 
 public class PositionalTest extends CommonTestMethodBase {
 
@@ -51,9 +53,9 @@ public class PositionalTest extends CommonTestMethodBase {
         System.out.println( knowledgeBuilder.getErrors().toString() );
         
         assertFalse( knowledgeBuilder.hasErrors() );
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession kSession = createKnowledgeSession(kBase);
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addPackages( knowledgeBuilder.getKnowledgePackages() );
+        KieSession kSession = createKnowledgeSession(kBase);
 
         java.util.ArrayList list = new ArrayList();
         kSession.setGlobal( "list",
@@ -92,8 +94,8 @@ public class PositionalTest extends CommonTestMethodBase {
                 "  modify ( $b ) { setValue( $s ); }\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
         assertEquals(2, ksession.fireAllRules());
     }
 }

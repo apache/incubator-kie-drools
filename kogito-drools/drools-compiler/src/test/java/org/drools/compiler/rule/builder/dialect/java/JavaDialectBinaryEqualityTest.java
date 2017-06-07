@@ -29,6 +29,8 @@ import org.drools.compiler.Person;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PredicateConstraint;
@@ -36,23 +38,22 @@ import org.drools.core.spi.Constraint;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.PredicateExpression;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 
 
 public class JavaDialectBinaryEqualityTest{
     
     @Test
     public void test1() {
-        KnowledgePackage pkg1 = getKnowledgePackage1();
-        KnowledgePackage pkg2 = getKnowledgePackage1();
-        KnowledgePackage pkg3 = getKnowledgePackage2();
+        KiePackage pkg1 = getKnowledgePackage1();
+        KiePackage pkg2 = getKnowledgePackage1();
+        KiePackage pkg3 = getKnowledgePackage2();
 
         RuleImpl rule1 = ((InternalKnowledgePackage)pkg1).getRule( "rule1" );
         RuleImpl rule2 = ((InternalKnowledgePackage)pkg2).getRule("rule1");
@@ -123,7 +124,7 @@ public class JavaDialectBinaryEqualityTest{
         return null;
     }
     
-    public KnowledgePackage getKnowledgePackage1() {
+    public KiePackage getKnowledgePackage1() {
       
         String str = "";
         str += "package org.drools.compiler.test\n";
@@ -144,21 +145,21 @@ public class JavaDialectBinaryEqualityTest{
             fail( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         List<Person> list = new ArrayList<Person>();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         ksession.setGlobal( "list", list );
         ksession.insert( new Person("darth", 34) );
         ksession.fireAllRules();
         
         assertEquals( new Person( "darth", 34 ), list.get( 0 ) );
         
-        return kbase.getKnowledgePackage( "org.drools.compiler.test" );
+        return kbase.getPackage( "org.drools.compiler.test" );
     }
     
-    public KnowledgePackage getKnowledgePackage2() {
+    public KiePackage getKnowledgePackage2() {
         
         String str = "";
         str += "package org.drools.compiler.test\n";
@@ -180,17 +181,17 @@ public class JavaDialectBinaryEqualityTest{
             fail( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         
         List<Person> list = new ArrayList<Person>();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         ksession.setGlobal( "list", list );
         ksession.insert( new Person("darth", 36) );
         ksession.fireAllRules();
         
         assertEquals( new Person( "darth", 36 ), list.get( 0 ) );
 
-        return kbase.getKnowledgePackage( "org.drools.compiler.test" );
+        return kbase.getPackage( "org.drools.compiler.test" );
     }
 }

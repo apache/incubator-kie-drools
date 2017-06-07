@@ -23,11 +23,12 @@ import java.io.ObjectOutput;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.event.LogEvent;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
+import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
+public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger implements KieRuntimeLogger {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(WorkingMemoryConsoleLogger.class);
 
@@ -43,12 +44,17 @@ public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
         super(workingMemory);
     }
     
-    public WorkingMemoryConsoleLogger(KnowledgeRuntimeEventManager session) {
+    public WorkingMemoryConsoleLogger(KieRuntimeEventManager session) {
         super(session);
     }
 
     public void logEventCreated(LogEvent logEvent) {
         logger.info(logEvent.toString());
+    }
+
+    @Override
+    public void close() {
+        // nothing to do.
     }
 
 }

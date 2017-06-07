@@ -20,8 +20,8 @@ import org.drools.core.event.AfterActivationFiredEvent;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 
 import java.io.InputStream;
 import java.util.Iterator;
@@ -34,7 +34,7 @@ public class ReteooMannersTest extends BaseMannersTest {
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         kBase.addPackage( this.pkg );
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+        KieSession kSession = kBase.newKieSession();
 
         final DefaultAgendaEventListener listener = new DefaultAgendaEventListener() {
             private int counter = 0;

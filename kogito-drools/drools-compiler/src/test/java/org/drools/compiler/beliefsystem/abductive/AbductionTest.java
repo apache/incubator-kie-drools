@@ -25,6 +25,7 @@ import org.drools.core.beliefsystem.defeasible.Defeasible;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -45,7 +46,6 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;

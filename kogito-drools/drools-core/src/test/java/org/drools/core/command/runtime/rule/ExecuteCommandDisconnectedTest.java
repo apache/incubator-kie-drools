@@ -25,7 +25,7 @@ import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.internal.command.CommandFactory;
 
 import java.util.ArrayList;

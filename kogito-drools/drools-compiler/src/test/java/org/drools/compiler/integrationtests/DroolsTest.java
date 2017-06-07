@@ -19,8 +19,8 @@ import java.io.Serializable;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
 
 public class DroolsTest extends CommonTestMethodBase  {
     private final static int NUM_FACTS = 20;
@@ -67,7 +67,7 @@ public class DroolsTest extends CommonTestMethodBase  {
 
         counter = 0;
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
 
         KieSession wm = createKnowledgeSession(kbase);
 

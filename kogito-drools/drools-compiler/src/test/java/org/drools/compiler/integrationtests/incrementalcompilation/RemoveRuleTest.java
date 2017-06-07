@@ -28,9 +28,8 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.definition.KnowledgePackage;
 
 public class RemoveRuleTest extends CommonTestMethodBase {
 
@@ -115,14 +114,14 @@ public class RemoveRuleTest extends CommonTestMethodBase {
                         "then\n" +
                         "end\n";
 
-        final Collection<KnowledgePackage> kpgs = loadKnowledgePackagesFromString( str );
+        final Collection<KiePackage> kpgs = loadKnowledgePackagesFromString( str );
 
         Assert.assertEquals(1, kpgs.size());
 
-        final KnowledgeBase kbase = getKnowledgeBase();
-        kbase.addKnowledgePackages( kpgs );
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
+        kbase.addPackages( kpgs );
 
-        kbase.removeKnowledgePackage( kpgs.iterator().next().getName() );
+        kbase.removeKiePackage( kpgs.iterator().next().getName() );
 
         final EntryPointNode epn = ( (InternalKnowledgeBase) kbase ).getRete().getEntryPointNodes().values().iterator().next();
         for (final ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {

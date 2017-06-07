@@ -21,10 +21,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -126,7 +126,7 @@ public class ChangesetUndoTest {
 
         assertFalse( knowledgeBuilder.hasErrors() );
 
-        for ( KnowledgePackage kp : knowledgeBuilder.getKnowledgePackages() ) {
+        for ( KiePackage kp : knowledgeBuilder.getKnowledgePackages() ) {
             assertTrue( kp.getRules().isEmpty() );
             assertTrue( kp.getFactTypes().isEmpty() );
         };
@@ -145,7 +145,7 @@ public class ChangesetUndoTest {
 
         assertFalse( knowledgeBuilder.hasErrors() );
 
-        for ( KnowledgePackage kp : knowledgeBuilder.getKnowledgePackages() ) {
+        for ( KiePackage kp : knowledgeBuilder.getKnowledgePackages() ) {
             if ( "org.drools.test1".equals( kp.getName() ) ) {
                 assertEquals( 1, kp.getRules().size() );
                 assertEquals( 1, kp.getFactTypes().size() );

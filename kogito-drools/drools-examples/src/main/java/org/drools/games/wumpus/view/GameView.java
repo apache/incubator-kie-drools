@@ -17,7 +17,7 @@ package org.drools.games.wumpus.view;
 
 import org.drools.games.wumpus.Cell;
 import org.drools.games.wumpus.WumpusWorldMain;
-import org.kie.internal.logger.KnowledgeRuntimeLogger;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class GameView {
@@ -27,7 +27,7 @@ public class GameView {
     private int                      cellWidth;
     private int                      cellPadding;
 
-    KnowledgeRuntimeLogger           klogger;
+    KieRuntimeLogger           klogger;
 
     private StatefulKnowledgeSession ksession;
     private boolean                  showAllCells;
@@ -83,11 +83,11 @@ public class GameView {
         this.showAllCells = showAllCells;
     }
 
-    public KnowledgeRuntimeLogger getKlogger() {
+    public KieRuntimeLogger getKlogger() {
         return klogger;
     }
 
-    public void setKlogger(KnowledgeRuntimeLogger klogger) {
+    public void setKlogger(KieRuntimeLogger klogger) {
         this.klogger = klogger;
     }
 

@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.decisiontable.parser.RuleMatrixSheetListener;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
@@ -30,9 +32,9 @@ import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DataListener;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -390,8 +392,8 @@ public class SpreadsheetCompilerUnitTest {
 
     @Test
     public void testNegativeNumbers() throws Exception {
-        KnowledgeBase kbase = readKnowledgeBase( "/data/DT_WithNegativeNumbers.xls" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = readKnowledgeBase( "/data/DT_WithNegativeNumbers.xls" );
+        KieSession ksession = kbase.newKieSession();
         IntHolder i1 = new IntHolder( 1 );
         IntHolder i2 = new IntHolder( -1 );
         ksession.insert( i1 );
@@ -655,7 +657,7 @@ public class SpreadsheetCompilerUnitTest {
         }
     }
 
-    private KnowledgeBase readKnowledgeBase( String resource ) throws Exception {
+    private KieBase readKnowledgeBase( String resource ) throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         DecisionTableConfiguration config = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         config.setInputType( DecisionTableInputType.XLS );
@@ -668,8 +670,8 @@ public class SpreadsheetCompilerUnitTest {
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         return kbase;
     }
 

@@ -22,7 +22,7 @@ import org.drools.core.reteoo.ReteComparator;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
@@ -36,7 +36,7 @@ public class MarshallingIssuesTest extends CommonTestMethodBase  {
 
     @Test
     public void testJBRULES_1946() {
-        KnowledgeBase kbase = loadKnowledgeBase("../Sample.drl" );
+        KieBase kbase = loadKnowledgeBase("../Sample.drl" );
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -53,7 +53,7 @@ public class MarshallingIssuesTest extends CommonTestMethodBase  {
             ByteArrayInputStream bais = new ByteArrayInputStream( serializedKb );
             ObjectInputStream ois = new ObjectInputStream( bais );
 
-            KnowledgeBase kb2 = (KnowledgeBase) ois.readObject();
+            KieBase kb2 = (KieBase) ois.readObject();
         } catch ( OptionalDataException ode ) {
             ode.printStackTrace();
             fail( "EOF? " + ode.eof );
@@ -65,7 +65,7 @@ public class MarshallingIssuesTest extends CommonTestMethodBase  {
 
     @Test
     public void testJBRULES_1946_2() {
-        KnowledgeBase kbase = loadKnowledgeBase("../Sample.drl" );
+        KieBase kbase = loadKnowledgeBase("../Sample.drl" );
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -82,7 +82,7 @@ public class MarshallingIssuesTest extends CommonTestMethodBase  {
             ByteArrayInputStream bais = new ByteArrayInputStream( serializedKb );
             DroolsObjectInputStream ois = new DroolsObjectInputStream( bais );
 
-            KnowledgeBase kb2 = (KnowledgeBase) ois.readObject();
+            KieBase kb2 = (KieBase) ois.readObject();
         } catch ( OptionalDataException ode ) {
             ode.printStackTrace();
             fail( "EOF? " + ode.eof );
@@ -94,7 +94,7 @@ public class MarshallingIssuesTest extends CommonTestMethodBase  {
 
     @Test
     public void testJBRULES_1946_3() {
-        KnowledgeBase kbase = loadKnowledgeBase("../Sample.drl" );
+        KieBase kbase = loadKnowledgeBase("../Sample.drl" );
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -111,7 +111,7 @@ public class MarshallingIssuesTest extends CommonTestMethodBase  {
             ByteArrayInputStream bais = new ByteArrayInputStream( serializedKb );
             ObjectInputStream ois = new ObjectInputStream( bais );
 
-            KnowledgeBase kb2 = (KnowledgeBase) ois.readObject();
+            KieBase kb2 = (KieBase) ois.readObject();
             fail( "Should have raised an IllegalArgumentException since the kbase was serialized with a Drools Stream but deserialized with a regular stream" );
         } catch ( IllegalArgumentException ode ) {
             // success
@@ -130,9 +130,9 @@ public class MarshallingIssuesTest extends CommonTestMethodBase  {
         source += "then\n";
         source += "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( source );
+        KieBase kbase = loadKnowledgeBaseFromString( source );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
 
         ksession = org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 

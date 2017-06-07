@@ -25,6 +25,8 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
@@ -34,10 +36,9 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -55,7 +56,7 @@ import static org.junit.Assert.fail;
 
 public class DefeasibilityTest {
 
-    protected StatefulKnowledgeSession getSessionFromString( String drlString) {
+    protected KieSession getSessionFromString( String drlString) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         try {
@@ -73,18 +74,18 @@ public class DefeasibilityTest {
         KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kieBaseConfiguration.setOption( EqualityBehaviorOption.EQUALITY );
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( kieBaseConfiguration );
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( kieBaseConfiguration );
+        kBase.addPackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
 
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
+        KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;
     }
 
 
-    protected StatefulKnowledgeSession getSession( String ruleFile ) {
+    protected KieSession getSession( String ruleFile ) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         try {
@@ -99,14 +100,14 @@ public class DefeasibilityTest {
             System.setProperty("drools.negatable", "off");
         }
 
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addPackages( kBuilder.getKnowledgePackages() );
 
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.DEFEASIBLE );
 
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession( ksConf, null );
+        KieSession kSession = kBase.newKieSession( ksConf, null );
         return kSession;
     }
 
@@ -125,7 +126,7 @@ public class DefeasibilityTest {
 
     @Test(timeout = 10000 )
     public void testStrictEntailment() {
-        StatefulKnowledgeSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/strict.drl" );
+        KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/strict.drl" );
         kSession.fireAllRules();
 
         TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
@@ -156,7 +157,7 @@ public class DefeasibilityTest {
 
     @Test(timeout = 10000 )
     public void testDefeasibleEntailmentWithStrictOverride() {
-        StatefulKnowledgeSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/strictOverride.drl" );
+        KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/strictOverride.drl" );
         kSession.fireAllRules();
 
         TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
@@ -188,7 +189,7 @@ public class DefeasibilityTest {
 
     @Test(timeout = 10000 )
     public void defeasibleEntailmentMultiActivation() {
-        StatefulKnowledgeSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeat.drl" );
+        KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeat.drl" );
         kSession.fireAllRules();
 
         TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
@@ -214,7 +215,7 @@ public class DefeasibilityTest {
 
     @Test(timeout = 10000 )
     public void testDefeaterNeutrality() {
-        StatefulKnowledgeSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeaterOnly.drl" );
+        KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeaterOnly.drl" );
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
@@ -246,7 +247,7 @@ public class DefeasibilityTest {
 
     @Test(timeout = 10000 )
     public void testMultipleDefeats() {
-        StatefulKnowledgeSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/multiDefeat.drl" );
+        KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/multiDefeat.drl" );
         kSession.fireAllRules();
 
         TruthMaintenanceSystem tms = ((NamedEntryPoint) kSession.getEntryPoint( "DEFAULT" )).getTruthMaintenanceSystem();
@@ -279,7 +280,7 @@ public class DefeasibilityTest {
 
     @Test(timeout = 10000 )
     public void testRemoveDefiniteJustifier() {
-        StatefulKnowledgeSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/strictRetract.drl" );
+        KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/strictRetract.drl" );
 
         FactHandle h = kSession.insert( "go" );
         kSession.fireAllRules();
@@ -324,7 +325,7 @@ public class DefeasibilityTest {
 
     @Test(timeout = 10000 )
     public void testRemoveDefeasibleJustifier() {
-        StatefulKnowledgeSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeaterRetract.drl" );
+        KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeaterRetract.drl" );
 
         FactHandle h = kSession.insert( "go" );
         kSession.fireAllRules();
@@ -371,7 +372,7 @@ public class DefeasibilityTest {
 
     @Test(timeout = 10000 )
     public void testRemoveDefeasibleEntailmentMultiActivationWithDefeat() {
-        StatefulKnowledgeSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeatDefeaterRetract.drl" );
+        KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeatDefeaterRetract.drl" );
         ArrayList list = new ArrayList();
 
         kSession.setGlobal( "list", list );
@@ -454,7 +455,7 @@ public class DefeasibilityTest {
 
     @Test(timeout = 10000 )
     public void testDefeaterPositiveVsNegative() {
-        StatefulKnowledgeSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeatersPosNeg.drl" );
+        KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/defeatersPosNeg.drl" );
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
@@ -507,7 +508,7 @@ public class DefeasibilityTest {
     @Test(timeout = 10000 )
     public void testDefeatOutcomePosNeg() {
 
-        StatefulKnowledgeSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/negDefeatPos.drl" );
+        KieSession kSession = getSession( "org/drools/compiler/beliefsystem/defeasible/negDefeatPos.drl" );
         ArrayList list = new ArrayList();
         kSession.setGlobal( "list", list );
         kSession.fireAllRules();
@@ -567,7 +568,7 @@ public class DefeasibilityTest {
                 " System.out.println( $b );  \n" +
                 "end \n" ;
 
-        StatefulKnowledgeSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString( droolsSource );
 
         FactHandle handle1 = session.insert( 10 );
         FactHandle handle2 = session.insert( 20 );
@@ -633,7 +634,7 @@ public class DefeasibilityTest {
 
                 "";
 
-        StatefulKnowledgeSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString( droolsSource );
         List posList = new ArrayList();
         List negList = new ArrayList();
         session.setGlobal( "posList", posList );
@@ -728,7 +729,7 @@ public class DefeasibilityTest {
                 "   System.out.println( ' ---- ' + $b ); " +
                 "end " ;
 
-        StatefulKnowledgeSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString( droolsSource );
         List posList = new ArrayList();
         List negList = new ArrayList();
         session.setGlobal( "posList", posList );
@@ -779,7 +780,7 @@ public class DefeasibilityTest {
                 "   System.out.println( ' ++++ ' + $b ); " +
                 "end " ;
 
-        StatefulKnowledgeSession session = getSessionFromString( droolsSource );
+        KieSession session = getSessionFromString( droolsSource );
         List posList = new ArrayList();
         session.setGlobal( "posList", posList );
 
@@ -834,7 +835,7 @@ public class DefeasibilityTest {
                      "         insertLogical( new Fact( \"wibble\"), \"neg\" ); " +
                      "end";
 
-        StatefulKnowledgeSession session = getSessionFromString( drl );
+        KieSession session = getSessionFromString( drl );
         session.fireAllRules();
 
         FactType factType = session.getKieBase().getFactType( "org.drools.defeasible", "Fact" );
@@ -863,7 +864,7 @@ public class DefeasibilityTest {
                      "then " +
                      "  insertLogical( new Foo(), 'neg' ); " +
                      "end ";
-        StatefulKnowledgeSession session = getSessionFromString( drl );
+        KieSession session = getSessionFromString( drl );
 
         FactHandle h = session.insert( "foo" );
 
@@ -877,7 +878,7 @@ public class DefeasibilityTest {
     }
 
 
-    public List getNegativeObjects(StatefulKnowledgeSession kSession) {
+    public List getNegativeObjects(KieSession kSession) {
         List list = new ArrayList();
         java.util.Iterator it = ((StatefulKnowledgeSessionImpl) kSession).getObjectStore().iterateNegObjects(null);
         while ( it.hasNext() ) {
@@ -886,7 +887,7 @@ public class DefeasibilityTest {
         return list;
     }
 
-    public List getNegativeHandles(StatefulKnowledgeSession kSession) {
+    public List getNegativeHandles(KieSession kSession) {
         List list = new ArrayList();
         java.util.Iterator it = ((StatefulKnowledgeSessionImpl) kSession).getObjectStore().iterateNegFactHandles(null);
         while ( it.hasNext() ) {

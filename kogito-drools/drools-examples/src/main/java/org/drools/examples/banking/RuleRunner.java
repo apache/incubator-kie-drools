@@ -16,14 +16,14 @@
 
 package org.drools.examples.banking;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 
 import java.util.Collection;
 
@@ -35,7 +35,7 @@ public class RuleRunner {
     public void runRules(String[] rules,
                          Object[] facts) {
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         for ( int i = 0; i < rules.length; i++ ) {
@@ -46,9 +46,9 @@ public class RuleRunner {
                                   ResourceType.DRL );
         }
 
-        Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
-        kbase.addKnowledgePackages( pkgs );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
+        kbase.addPackages( pkgs );
+        KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < facts.length; i++ ) {
             Object fact = facts[i];

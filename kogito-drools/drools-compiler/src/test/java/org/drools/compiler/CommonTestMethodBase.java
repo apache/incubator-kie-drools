@@ -15,16 +15,13 @@
 
 package org.drools.compiler;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Collection;
-import java.util.function.Predicate;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.junit.Assert;
@@ -38,28 +35,31 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.KieSessionOption;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Collection;
+import java.util.function.Predicate;
 
 /**
  * This contains methods common to many of the tests in drools-compiler. </p>
@@ -84,56 +84,51 @@ public class CommonTestMethodBase extends Assert {
     protected KieSession createKieSession(KieBase kbase, KieSessionConfiguration sessionConfiguration, Environment env) {
         return kbase.newKieSession(sessionConfiguration, env);
     }
-
-    @Deprecated
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-        return kbase.newStatefulKnowledgeSession();
-    }
-
+    
     protected KieSession createKnowledgeSession(KieBase kbase) {
         return kbase.newKieSession();
     }
 
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionOption option) {
+    protected KieSession createKnowledgeSession(KieBase kbase, KieSessionOption option) {
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption(option);
-        return kbase.newStatefulKnowledgeSession(ksconf, null);
+        return kbase.newKieSession(ksconf, null);
     }
 
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionConfiguration ksconf) {
-        return kbase.newStatefulKnowledgeSession(ksconf, null);
+    protected KieSession createKnowledgeSession(KieBase kbase, KieSessionConfiguration ksconf) {
+        return kbase.newKieSession(ksconf, null);
     }
 
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionConfiguration ksconf, Environment env) {
-        return kbase.newStatefulKnowledgeSession(ksconf, env);
+    protected KieSession createKnowledgeSession(KieBase kbase, KieSessionConfiguration ksconf, Environment env) {
+        return kbase.newKieSession(ksconf, env);
     }
 
-    protected StatelessKnowledgeSession createStatelessKnowledgeSession(KnowledgeBase kbase) {
-        return kbase.newStatelessKnowledgeSession();
+    protected StatelessKieSession createStatelessKnowledgeSession(KieBase kbase) {
+        return kbase.newStatelessKieSession();
     }
 
-    protected KnowledgeBase loadKnowledgeBaseFromString(NodeFactory nodeFactory, String... drlContentStrings) {
+    protected KieBase loadKnowledgeBaseFromString(NodeFactory nodeFactory, String... drlContentStrings) {
         return loadKnowledgeBaseFromString(null, null, nodeFactory, drlContentStrings);
     }
 
-    protected KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
+    protected KieBase loadKnowledgeBaseFromString(String... drlContentStrings) {
         return loadKnowledgeBaseFromString(null, null, drlContentStrings);
     }
 
-    protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, String... drlContentStrings) {
+    protected KieBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, String... drlContentStrings) {
         return loadKnowledgeBaseFromString(config, null, drlContentStrings);
     }
 
-    protected KnowledgeBase loadKnowledgeBaseFromString(
+    protected KieBase loadKnowledgeBaseFromString(
             KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
         return loadKnowledgeBaseFromString(null, kBaseConfig, drlContentStrings);
     }
 
-    protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
-        return loadKnowledgeBaseFromString(config, kBaseConfig, (NodeFactory) null, drlContentStrings);
+    protected KieBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
+        return loadKnowledgeBaseFromString( config, kBaseConfig, (NodeFactory)null, drlContentStrings);
     }
 
-    protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, NodeFactory nodeFactory, String... drlContentStrings) {
+    protected KieBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, NodeFactory nodeFactory, String... drlContentStrings) {
         KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder(config);
         for (String drlContentString : drlContentStrings) {
             kbuilder.add(ResourceFactory.newByteArrayResource(drlContentString
@@ -146,22 +141,22 @@ public class CommonTestMethodBase extends Assert {
         if (kBaseConfig == null) {
             kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
-        KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+        InternalKnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
         if (nodeFactory != null) {
             ((KnowledgeBaseImpl) kbase).getConfiguration().getComponentFactory().setNodeFactoryProvider(nodeFactory);
         }
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        kbase.addPackages( kbuilder.getKnowledgePackages());
         return kbase;
     }
 
-    protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf, KieBaseConfiguration kbaseConf, String... classPathResources) {
-        Collection<KnowledgePackage> knowledgePackages = loadKnowledgePackages(kbuilderConf, classPathResources);
+    protected KieBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf, KieBaseConfiguration kbaseConf, String... classPathResources) {
+        Collection<KiePackage> knowledgePackages = loadKnowledgePackages(kbuilderConf, classPathResources);
 
         if (kbaseConf == null) {
             kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
-        kbase.addKnowledgePackages(knowledgePackages);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
+        kbase.addPackages(knowledgePackages);
         try {
             kbase = SerializationHelper.serializeObject(kbase);
         } catch (Exception e) {
@@ -170,18 +165,18 @@ public class CommonTestMethodBase extends Assert {
         return kbase;
     }
 
-    protected KnowledgeBase loadKnowledgeBase(PackageDescr descr) {
+    protected KieBase loadKnowledgeBase(PackageDescr descr) {
         return loadKnowledgeBase(null, null, descr);
     }
 
-    protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf, KieBaseConfiguration kbaseConf, PackageDescr descr) {
-        Collection<KnowledgePackage> knowledgePackages = loadKnowledgePackages(kbuilderConf, descr);
+    protected KieBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf,KieBaseConfiguration kbaseConf, PackageDescr descr) {
+        Collection<KiePackage> knowledgePackages = loadKnowledgePackages(kbuilderConf, descr);
 
         if (kbaseConf == null) {
             kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
-        kbase.addKnowledgePackages(knowledgePackages);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
+        kbase.addPackages(knowledgePackages);
         try {
             kbase = SerializationHelper.serializeObject(kbase);
         } catch (Exception e) {
@@ -190,15 +185,15 @@ public class CommonTestMethodBase extends Assert {
         return kbase;
     }
 
-    public Collection<KnowledgePackage> loadKnowledgePackages(String... classPathResources) {
+    public Collection<KiePackage> loadKnowledgePackages(String... classPathResources) {
         return loadKnowledgePackages(null, classPathResources);
     }
 
-    public Collection<KnowledgePackage> loadKnowledgePackages(PackageDescr descr) {
+    public Collection<KiePackage> loadKnowledgePackages(PackageDescr descr) {
         return loadKnowledgePackages(null, descr);
     }
 
-    public Collection<KnowledgePackage> loadKnowledgePackages(KnowledgeBuilderConfiguration kbuilderConf, PackageDescr descr) {
+    public Collection<KiePackage> loadKnowledgePackages(KnowledgeBuilderConfiguration kbuilderConf, PackageDescr descr) {
         if (kbuilderConf == null) {
             kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         }
@@ -207,15 +202,15 @@ public class CommonTestMethodBase extends Assert {
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }
-        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> knowledgePackages = kbuilder.getKnowledgePackages();
         return knowledgePackages;
     }
 
-    public Collection<KnowledgePackage> loadKnowledgePackages(KnowledgeBuilderConfiguration kbuilderConf, String... classPathResources) {
+    public Collection<KiePackage> loadKnowledgePackages( KnowledgeBuilderConfiguration kbuilderConf, String... classPathResources) {
         return loadKnowledgePackages(kbuilderConf, true, classPathResources);
     }
 
-    public Collection<KnowledgePackage> loadKnowledgePackages(KnowledgeBuilderConfiguration kbuilderConf, boolean serialize, String... classPathResources) {
+    public Collection<KiePackage> loadKnowledgePackages( KnowledgeBuilderConfiguration kbuilderConf, boolean serialize, String... classPathResources) {
         if (kbuilderConf == null) {
             kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         }
@@ -229,10 +224,10 @@ public class CommonTestMethodBase extends Assert {
             fail(kbuilder.getErrors().toString());
         }
 
-        Collection<KnowledgePackage> knowledgePackages = null;
-        if (serialize) {
+        Collection<KiePackage> knowledgePackages = null;
+        if ( serialize ) {
             try {
-                knowledgePackages = SerializationHelper.serializeObject(kbuilder.getKnowledgePackages(), ((KnowledgeBuilderConfigurationImpl) kbuilderConf).getClassLoader());
+                knowledgePackages = SerializationHelper.serializeObject(kbuilder.getKnowledgePackages(),  ((KnowledgeBuilderConfigurationImpl)kbuilderConf).getClassLoader() );
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -242,40 +237,41 @@ public class CommonTestMethodBase extends Assert {
         return knowledgePackages;
     }
 
-    public Collection<KnowledgePackage> loadKnowledgePackagesFromString(String... content) {
+    public Collection<KiePackage> loadKnowledgePackagesFromString(String... content) {
         return loadKnowledgePackagesFromString(null, content);
     }
 
-    public Collection<KnowledgePackage> loadKnowledgePackagesFromString(KnowledgeBuilderConfiguration kbuilderConf, String... content) {
+    public Collection<KiePackage> loadKnowledgePackagesFromString(KnowledgeBuilderConfiguration kbuilderConf, String... content) {
         if (kbuilderConf == null) {
             kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         }
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
         for (String r : content) {
-            kbuilder.add(ResourceFactory.newByteArrayResource(r.getBytes()), ResourceType.DRL);
+            kbuilder.add(ResourceFactory.newByteArrayResource(r.getBytes()),ResourceType.DRL);
         }
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
         }
-        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> knowledgePackages = kbuilder.getKnowledgePackages();
         return knowledgePackages;
     }
 
-    protected KnowledgeBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf, String... classPathResources) {
+    protected KieBase loadKnowledgeBase(KnowledgeBuilderConfiguration kbuilderConf,String... classPathResources) {
         return loadKnowledgeBase(kbuilderConf, null, classPathResources);
     }
 
-    protected KnowledgeBase loadKnowledgeBase(KieBaseConfiguration kbaseConf, String... classPathResources) {
+    protected KieBase loadKnowledgeBase(KieBaseConfiguration kbaseConf, String... classPathResources) {
         return loadKnowledgeBase(null, kbaseConf, classPathResources);
     }
 
-    protected KnowledgeBase getKnowledgeBase() {
+
+    protected KieBase getKnowledgeBase() {
         KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         return getKnowledgeBase(kBaseConfig);
     }
 
-    protected KnowledgeBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+    protected KieBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
         try {
             kbase = SerializationHelper.serializeObject(kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader());
         } catch (Exception e) {
@@ -284,7 +280,7 @@ public class CommonTestMethodBase extends Assert {
         return kbase;
     }
 
-    protected KnowledgeBase loadKnowledgeBase(String... classPathResources) {
+    protected KieBase loadKnowledgeBase(String... classPathResources) {
         return loadKnowledgeBase(null, null, classPathResources);
     }
 
@@ -469,16 +465,16 @@ public class CommonTestMethodBase extends Assert {
         }
         return ksession;
     }
-
-    public StatefulKnowledgeSession genSession(String source) {
+    
+    public KieSession genSession(String source) {
         return genSession(new String[] {source},0);
     }
 
-    public StatefulKnowledgeSession genSession(String source, int numerrors)  {
+    public KieSession genSession(String source, int numerrors)  {
         return genSession(new String[] {source},numerrors);
     }
 
-    public StatefulKnowledgeSession genSession(String[] sources, int numerrors)  {
+    public KieSession genSession(String[] sources, int numerrors)  {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for (String source : sources)
             kbuilder.add( ResourceFactory.newClassPathResource(source, getClass()), ResourceType.DRL );
@@ -490,9 +486,9 @@ public class CommonTestMethodBase extends Assert {
         }
         assertEquals(numerrors, errors.size() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         return createKnowledgeSession(kbase);
 

@@ -15,10 +15,10 @@
 
 package org.drools.compiler.integrationtests.manners;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -51,8 +51,8 @@ public class MannersBenchmark {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(MannersBenchmark.class.getResourceAsStream("manners.drl")), ResourceType.DRL);
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         String filename;
         if (args.length != 0) {
@@ -65,7 +65,7 @@ public class MannersBenchmark {
         for (int i = 0; i < 3; ++i) {
             InputStream is = MannersBenchmark.class.getResourceAsStream(filename);
             List list = getInputObjects(is);
-            KieSession session = kbase.newStatefulKnowledgeSession();
+            KieSession session = kbase.newKieSession();
 
             for (Iterator it = list.iterator(); it.hasNext();) {
                 Object object = it.next();

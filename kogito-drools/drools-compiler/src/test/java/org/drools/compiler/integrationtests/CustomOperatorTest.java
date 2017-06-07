@@ -30,10 +30,10 @@ import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.EvaluatorOption;
@@ -81,7 +81,7 @@ public class CustomOperatorTest extends CommonTestMethodBase {
         KnowledgeBuilderConfiguration builderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         builderConf.setOption(EvaluatorOption.get("str", new F_StrEvaluatorDefinition()));
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(builderConf, str);
+        KieBase kbase = loadKnowledgeBaseFromString(builderConf, str);
     }
 
     public static class F_StrEvaluatorDefinition implements EvaluatorDefinition {
@@ -207,8 +207,8 @@ public class CustomOperatorTest extends CommonTestMethodBase {
         KnowledgeBuilderConfiguration builderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         builderConf.setOption(EvaluatorOption.get("supersetOf", new SupersetOfEvaluatorDefinition()));
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(builderConf, str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(builderConf, str);
+        KieSession ksession = kbase.newKieSession();
 
         Person alice = new Person("Alice", 30);
         alice.addAddress(new Address("Large Street", "BigTown", "12345"));
