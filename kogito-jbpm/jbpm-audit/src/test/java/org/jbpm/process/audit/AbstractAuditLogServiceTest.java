@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ClassPathResource;
 import org.hamcrest.core.AnyOf;
 import org.hamcrest.core.Is;
@@ -43,8 +45,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
@@ -63,17 +63,17 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractAuditLogServiceTest.class);
    
-    public static KnowledgeBase createKnowledgeBase() {
+    public static KieBase createKnowledgeBase() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(new ClassPathResource("ruleflow.rf"), ResourceType.DRF);
         kbuilder.add(new ClassPathResource("ruleflow2.rf"), ResourceType.DRF);
         kbuilder.add(new ClassPathResource("ruleflow3.rf"), ResourceType.DRF);
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         return kbase;
     }
     
-    public static StatefulKnowledgeSession createKieSession(KieBase kbase, Environment env) { 
+    public static KieSession createKieSession(KieBase kbase, Environment env) { 
         // create a new session
         Properties properties = new Properties();
         properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");

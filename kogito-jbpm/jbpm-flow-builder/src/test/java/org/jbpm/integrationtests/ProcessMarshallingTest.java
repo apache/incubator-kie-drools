@@ -23,14 +23,15 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -90,7 +91,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
         kbuilder.add( ResourceFactory.newReaderResource(new StringReader(rule)), ResourceType.DRL );
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( process ) ), ResourceType.DRF );
 
-        StatefulKnowledgeSession ksession = createKieSession(kbuilder.getKnowledgePackages().toArray(new KnowledgePackage[0]));
+        KieSession ksession = createKieSession(kbuilder.getKnowledgePackages().toArray(new KiePackage[0]));
         ksession.getEnvironment().set("org.jbpm.rule.task.waitstate", true);
 
         List<Object> list = new ArrayList<Object>();
@@ -159,7 +160,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
 			"</process>";
         builder.addProcessFromXml( new StringReader( process ));
 
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Email", handler);
@@ -340,7 +341,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             "end";
         builder.addPackageFromDrl( new StringReader( rule ));
         
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
         TestWorkItemHandler handler1 = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Log", handler1);
@@ -448,7 +449,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             "</process>\n";
         builder.addProcessFromXml( new StringReader( process ));
 
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
         TestListWorkItemHandler handler = new TestListWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -508,7 +509,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             "</process>\n";
         builder.addProcessFromXml( new StringReader( process ));
 
-        final StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        final KieSession session = createKieSession(builder.getPackage());
         
         session.startProcess("com.sample.ruleflow", null);
         assertEquals(1, session.getProcessInstances().size());
@@ -554,7 +555,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             "</process>\n";
         builder.addProcessFromXml( new StringReader( process ));
 
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
         session.startProcess("com.sample.ruleflow", null);
         
@@ -648,7 +649,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             "</process>";
         builder.addProcessFromXml( new StringReader( process ));
 
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Report", handler);

@@ -30,15 +30,15 @@ import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ProcessActionTest  extends AbstractBaseTest {
     
@@ -95,8 +95,8 @@ public class ProcessActionTest  extends AbstractBaseTest {
             "\n" +
             "</process>");
         kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = kbuilder.newKieBase();
+        KieSession ksession = kbase.newKieSession();
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         List<String> list = new ArrayList<String>();
@@ -158,8 +158,8 @@ public class ProcessActionTest  extends AbstractBaseTest {
             "\n" +
             "</process>");
         kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = kbuilder.newKieBase();
+        KieSession ksession = kbase.newKieSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ProcessInstance processInstance =
@@ -226,8 +226,8 @@ public class ProcessActionTest  extends AbstractBaseTest {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = kbuilder.newKieBase();
+        KieSession ksession = kbase.newKieSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ProcessInstance processInstance =
@@ -285,8 +285,8 @@ public class ProcessActionTest  extends AbstractBaseTest {
             "\n" +
             "</process>");
         kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = kbuilder.newKieBase();
+        KieSession ksession = kbase.newKieSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         TestVariable person = new TestVariable("John Doe");
@@ -340,8 +340,8 @@ public class ProcessActionTest  extends AbstractBaseTest {
             "\n" +
             "</process>");
         kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = kbuilder.newKieBase();
+        KieSession ksession = kbase.newKieSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         TestVariable person = new TestVariable("John Doe");
@@ -413,8 +413,8 @@ public class ProcessActionTest  extends AbstractBaseTest {
             "\n" +
             "</process>");
         kbuilder.add(new ReaderResource(source), ResourceType.DRF);
-        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = kbuilder.newKieBase();
+        KieSession ksession = kbase.newKieSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ProcessInstance processInstance =

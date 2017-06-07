@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -31,6 +30,8 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
@@ -41,9 +42,7 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 
 public class JavaActionBuilderTest extends AbstractBaseTest {
 
@@ -82,9 +81,9 @@ public class JavaActionBuilderTest extends AbstractBaseTest {
         javaDialect.compileAll();            
         assertEquals( 0, javaDialect.getResults().size() );
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( (Collection) Arrays.asList(pkgBuilder.getPackage()) );
-        final StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( Arrays.asList(pkgBuilder.getPackage()) );
+        final KieSession wm = kbase.newKieSession();
 
         List<String> list = new ArrayList<String>();
         wm.setGlobal( "list", list );        

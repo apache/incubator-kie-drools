@@ -25,6 +25,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.bpmn2.concurrency.MultipleProcessesPerThreadTest;
 import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -32,17 +34,16 @@ import org.jbpm.test.util.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,28 +63,28 @@ public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
         cleanUp(context);
     }
 
-    private static KnowledgeBase loadKnowledgeBase(String bpmn2FileName) {
+    private static KieBase loadKnowledgeBase(String bpmn2FileName) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource(bpmn2FileName, UnmarshallingOverdueTimersTest.class), ResourceType.BPMN2);
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         return kbase;
     }
 
-    private StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) {
+    private KieSession createStatefulKnowledgeSession(KieBase kbase) {
         Environment env = createEnvironment(context);
         return JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
     }
 
-    private static long knowledgeSessionDispose(StatefulKnowledgeSession ksession) {
+    private static long knowledgeSessionDispose(KieSession ksession) {
         long ksessionId = ksession.getIdentifier();
         logger.debug("disposing of ksesssion");
         ksession.dispose();
         return ksessionId;
     }
 
-    private StatefulKnowledgeSession reloadStatefulKnowledgeSession(String bpmn2FileName, int ksessionId) {
-        KnowledgeBase kbase = loadKnowledgeBase(bpmn2FileName);
+    private KieSession reloadStatefulKnowledgeSession(String bpmn2FileName, int ksessionId) {
+        KieBase kbase = loadKnowledgeBase(bpmn2FileName);
 
         logger.debug("reloading ksession {}", ksessionId);
         Environment env = null;
@@ -115,8 +116,8 @@ public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
         String processPropVal = System.getenv(sessionPropName);
         
         if (sessionPropVal == null || debug ) {
-            KnowledgeBase kbase = loadKnowledgeBase(bpmn2FileName);
-            StatefulKnowledgeSession ksession = createStatefulKnowledgeSession(kbase);
+            KieBase kbase = loadKnowledgeBase(bpmn2FileName);
+            KieSession ksession = createStatefulKnowledgeSession(kbase);
             ksession.addEventListener(countDownListener);
             // setup parameters
             Map<String, Object> params = new HashMap<String, Object>();
@@ -160,7 +161,7 @@ public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
         if( sessionPropVal != null || debug ) {
             // reload session
             int ksessionId = Integer.parseInt(sessionPropVal);
-            StatefulKnowledgeSession ksession = reloadStatefulKnowledgeSession(bpmn2FileName, ksessionId);
+            KieSession ksession = reloadStatefulKnowledgeSession(bpmn2FileName, ksessionId);
             ksession.addEventListener(countDownListener);
             long processInstanceId = Integer.parseInt(processPropVal);
 

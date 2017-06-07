@@ -24,21 +24,22 @@ import java.util.List;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DebugProcessEventListener;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.command.Command;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
@@ -122,7 +123,7 @@ public class AgendaFilterTest extends AbstractBaseTest {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KieSession ksession = createKieSession(kbuilder.getKnowledgePackages().toArray(new KnowledgePackage[0]));
+        KieSession ksession = createKieSession(kbuilder.getKnowledgePackages().toArray(new KiePackage[0]));
 
         // go !
         Message message = new Message();
@@ -255,9 +256,9 @@ public class AgendaFilterTest extends AbstractBaseTest {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieSession ksession = kbase.newKieSession();
 
         ksession.addEventListener(new DebugAgendaEventListener());
         ksession.addEventListener(new DebugProcessEventListener());
@@ -273,7 +274,7 @@ public class AgendaFilterTest extends AbstractBaseTest {
         ksession.execute(CommandFactory.newBatchExecution(commands));
     }
 
-    private Object newCancelFact(StatefulKnowledgeSession ksession, boolean cancel) {
+    private Object newCancelFact(KieSession ksession, boolean cancel) {
         FactType type = ksession.getKieBase().getFactType("org.jboss.qa.brms.agendafilter", "CancelFact");
         Object instance = null;
         try {
@@ -304,7 +305,7 @@ public class AgendaFilterTest extends AbstractBaseTest {
             throw new RuntimeException(kbuilder.getErrors().toString());
         }
 
-        StatefulKnowledgeSession ksession = kbuilder.newKnowledgeBase().newStatefulKnowledgeSession();
+        KieSession ksession = kbuilder.newKieBase().newKieSession();
 
         ksession.getAgendaEventListeners();
         ksession.getProcessEventListeners();

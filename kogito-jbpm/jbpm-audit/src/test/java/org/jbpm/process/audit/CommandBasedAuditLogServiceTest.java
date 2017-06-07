@@ -29,9 +29,9 @@ import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
 
 /**
  * This class tests the following classes: 
@@ -52,7 +52,7 @@ public class CommandBasedAuditLogServiceTest extends AbstractAuditLogServiceTest
         context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
         
         // load the process
-        KnowledgeBase kbase = createKnowledgeBase();
+        KieBase kbase = createKnowledgeBase();
         // create a new session
         Environment env = createEnvironment(context);
         session = createKieSession(kbase, env);

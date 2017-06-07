@@ -53,7 +53,7 @@ public class RuleContextProviderImpl implements RuleContextProvider {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             kbuilder.add(addTask, ResourceType.DRL);
             
-            kieBases.put(TaskRuleService.ADD_TASK_SCOPE, kbuilder.newKnowledgeBase());
+            kieBases.put(TaskRuleService.ADD_TASK_SCOPE, kbuilder.newKieBase());
         } catch (Exception e) {
             
         }
@@ -62,7 +62,7 @@ public class RuleContextProviderImpl implements RuleContextProvider {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             kbuilder.add(completeTask, ResourceType.DRL);
             
-            kieBases.put(TaskRuleService.COMPLETE_TASK_SCOPE, kbuilder.newKnowledgeBase());
+            kieBases.put(TaskRuleService.COMPLETE_TASK_SCOPE, kbuilder.newKieBase());
         } catch (Exception e) {
             
         }

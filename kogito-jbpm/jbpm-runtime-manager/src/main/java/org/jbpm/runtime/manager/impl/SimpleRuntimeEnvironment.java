@@ -198,7 +198,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     @Override
     public KieBase getKieBase() {
         if (this.kbase == null) {
-            this.kbase = kbuilder.newKnowledgeBase();
+            this.kbase = kbuilder.newKieBase();
         }
         return this.kbase;
     }

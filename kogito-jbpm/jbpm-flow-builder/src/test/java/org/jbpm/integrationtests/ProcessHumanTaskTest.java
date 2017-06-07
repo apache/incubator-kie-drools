@@ -26,8 +26,8 @@ import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ProcessHumanTaskTest extends AbstractBaseTest {
    
@@ -74,7 +74,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -153,7 +153,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -218,7 +218,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -277,7 +277,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);

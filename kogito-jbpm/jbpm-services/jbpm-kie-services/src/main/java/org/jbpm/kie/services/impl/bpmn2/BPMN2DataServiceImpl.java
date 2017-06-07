@@ -34,15 +34,13 @@ import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.ProcessDefinitionNotFoundException;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
-import org.jbpm.services.api.DeploymentService;
-import org.jbpm.services.api.model.DeployedUnit;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,7 +124,7 @@ public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventL
             return null;
         }
 
-        KnowledgePackage pckg = kbuilder.getKnowledgePackages().iterator().next();
+        KiePackage pckg = kbuilder.getKnowledgePackages().iterator().next();
 
         Process process = pckg.getProcesses().iterator().next();
 

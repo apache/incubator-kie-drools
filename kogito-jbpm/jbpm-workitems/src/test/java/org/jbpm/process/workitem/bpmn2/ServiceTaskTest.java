@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.KnowledgeBaseFactoryServiceImpl;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -34,7 +34,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.KnowledgeBaseFactory;
 
 public class ServiceTaskTest extends AbstractBaseTest {
 
@@ -48,7 +47,6 @@ public class ServiceTaskTest extends AbstractBaseTest {
                         "     } " +
                         " }";
         
-        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(ks.newKieModuleModel().toXML())

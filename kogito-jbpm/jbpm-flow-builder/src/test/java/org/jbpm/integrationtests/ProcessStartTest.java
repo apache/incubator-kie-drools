@@ -29,7 +29,7 @@ import org.jbpm.integrationtests.test.Message;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,7 +94,7 @@ public class ProcessStartTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 		
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
@@ -166,7 +166,7 @@ public class ProcessStartTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 		
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);

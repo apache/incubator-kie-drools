@@ -24,8 +24,8 @@ import java.util.List;
 import org.drools.compiler.compiler.DroolsError;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class ProcessMultiThreadTest extends AbstractBaseTest {
             	fail("Could not parse process");
             }
 
-            StatefulKnowledgeSession session = createKieSession(true, builder.getPackage());
+            KieSession session = createKieSession(true, builder.getPackage());
             
             session = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession(session);
             List<String> list = new ArrayList<String>();

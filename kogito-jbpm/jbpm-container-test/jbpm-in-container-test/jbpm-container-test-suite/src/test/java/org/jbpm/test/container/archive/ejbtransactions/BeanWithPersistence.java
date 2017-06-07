@@ -18,9 +18,9 @@ package org.jbpm.test.container.archive.ejbtransactions;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
+import org.kie.api.KieServices;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.internal.KnowledgeBaseFactory;
 
 /**
  * Common base of all EJBs using persistence. Contains: - entity manager factory
@@ -37,7 +37,7 @@ public abstract class BeanWithPersistence implements ProcessEJB {
     
     protected Environment getEnvironment() {
 
-        Environment env = KnowledgeBaseFactory.newEnvironment();
+        Environment env = KieServices.get().newEnvironment();
         env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 
         return env;

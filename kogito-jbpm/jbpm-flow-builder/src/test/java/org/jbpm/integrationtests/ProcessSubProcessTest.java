@@ -20,26 +20,26 @@ import static org.junit.Assert.assertEquals;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ProcessSubProcessTest extends AbstractBaseTest {
 
     @Test
     public void testSubProcess() throws Exception {
-        StatefulKnowledgeSession workingMemory = createStatefulKnowledgeSessionFromRule(true);
+        KieSession workingMemory = createStatefulKnowledgeSessionFromRule(true);
         ProcessInstance processInstance = ( ProcessInstance )
     		workingMemory.startProcess("com.sample.ruleflow");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -52,7 +52,7 @@ public class ProcessSubProcessTest extends AbstractBaseTest {
 
     @Test
     public void testSubProcessCancel() throws Exception {
-        StatefulKnowledgeSession workingMemory = createStatefulKnowledgeSessionFromRule(true);
+        KieSession workingMemory = createStatefulKnowledgeSessionFromRule(true);
         org.jbpm.process.instance.ProcessInstance processInstance = ( org.jbpm.process.instance.ProcessInstance )
     		workingMemory.startProcess("com.sample.ruleflow");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -63,7 +63,7 @@ public class ProcessSubProcessTest extends AbstractBaseTest {
 
     @Test
     public void testIndependentSubProcessCancel() throws Exception {
-        StatefulKnowledgeSession workingMemory = createStatefulKnowledgeSessionFromRule(false);
+        KieSession workingMemory = createStatefulKnowledgeSessionFromRule(false);
         org.jbpm.process.instance.ProcessInstance processInstance = ( org.jbpm.process.instance.ProcessInstance )
     		workingMemory.startProcess("com.sample.ruleflow");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -74,7 +74,7 @@ public class ProcessSubProcessTest extends AbstractBaseTest {
 
     @Test
     public void testVariableMapping() throws Exception {
-        StatefulKnowledgeSession workingMemory = createStatefulKnowledgeSessionFromRule(true);
+        KieSession workingMemory = createStatefulKnowledgeSessionFromRule(true);
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("x", "x-value");
         org.jbpm.process.instance.ProcessInstance processInstance = ( org.jbpm.process.instance.ProcessInstance )
@@ -103,12 +103,12 @@ public class ProcessSubProcessTest extends AbstractBaseTest {
         assertEquals(0, workingMemory.getProcessInstances().size());
     }
 
-    private static StatefulKnowledgeSession createStatefulKnowledgeSessionFromRule(boolean independentSubProcess) throws Exception { 
-        KnowledgeBase ruleBase = readRule(independentSubProcess);
-        return ruleBase.newStatefulKnowledgeSession();
+    private static KieSession createStatefulKnowledgeSessionFromRule(boolean independentSubProcess) throws Exception { 
+        KieBase ruleBase = readRule(independentSubProcess);
+        return ruleBase.newKieSession();
     }
     
-	private static KnowledgeBase readRule(boolean independent) throws Exception {
+	private static KieBase readRule(boolean independent) throws Exception {
 		KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -193,15 +193,15 @@ public class ProcessSubProcessTest extends AbstractBaseTest {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
-		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addKnowledgePackages((Collection) Arrays.asList(builder.getPackage()));
+		InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addPackages(Arrays.asList(builder.getPackage()));
 		return kbase;
 	}
 	
 	@Test
     public void testDynamicSubProcess() throws Exception {
-        KnowledgeBase kbase = readDynamicSubProcess();
-        StatefulKnowledgeSession workingMemory = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = readDynamicSubProcess();
+        KieSession workingMemory = kbase.newKieSession();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "subflow");
         ProcessInstance processInstance = ( ProcessInstance )
@@ -214,7 +214,7 @@ public class ProcessSubProcessTest extends AbstractBaseTest {
         assertEquals(0, workingMemory.getProcessInstances().size());
     }
 
-	private static KnowledgeBase readDynamicSubProcess() throws Exception {
+	private static KieBase readDynamicSubProcess() throws Exception {
 		KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
 		Reader source = new StringReader(
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -273,8 +273,8 @@ public class ProcessSubProcessTest extends AbstractBaseTest {
 			"\n" +
 			"</process>");
 		builder.addRuleFlow(source);
-		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addKnowledgePackages((Collection) Arrays.asList(builder.getPackage()));
+		InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addPackages(Arrays.asList(builder.getPackage()));
 		return kbase;
 	}
 	

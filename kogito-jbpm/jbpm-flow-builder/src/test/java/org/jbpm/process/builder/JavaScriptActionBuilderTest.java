@@ -8,6 +8,8 @@ import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
@@ -19,13 +21,10 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 
 import java.io.StringReader;
 import java.util.Arrays;
-import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
@@ -69,9 +68,9 @@ public class JavaScriptActionBuilderTest extends AbstractBaseTest {
                 actionNode);
 
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages((Collection) Arrays.asList(pkgBuilder.getPackage()));
-        final StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(Arrays.asList(pkgBuilder.getPackage()));
+        final KieSession wm = kbase.newKieSession();
 
         wm.setGlobal("testField", "vagon");
 

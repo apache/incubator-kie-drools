@@ -22,11 +22,11 @@ import java.util.Collection;
 
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 
 public class KnowledgeBuilderTest extends AbstractBaseTest {
@@ -55,17 +55,17 @@ public class KnowledgeBuilderTest extends AbstractBaseTest {
 	    str += "</process>";	
 	    builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRF );
 	    
-		Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
+		Collection<KiePackage> pkgs = builder.getKnowledgePackages();
 		assertNotNull( pkgs );
 		assertEquals( 2, pkgs.size() );	 
 		
-		KnowledgePackage test1 = getKnowledgePackage(pkgs, "org.test1" );
+		KiePackage test1 = getKnowledgePackage(pkgs, "org.test1" );
 		Collection<Process> processes = test1.getProcesses();		
 		assertEquals( 1, processes.size() );
 		Process process = getProcess( processes, "flow1" );
 		assertEquals("flow1", process.getName() );	
 		
-		KnowledgePackage test2 = getKnowledgePackage(pkgs, "org.test2" );
+		KiePackage test2 = getKnowledgePackage(pkgs, "org.test2" );
 		processes = test2.getProcesses();		
 		assertEquals( 1, processes.size() );
 		process = getProcess( processes, "flow2" );
@@ -83,8 +83,8 @@ public class KnowledgeBuilderTest extends AbstractBaseTest {
 	}	
 	
 	
-	public KnowledgePackage getKnowledgePackage(Collection<KnowledgePackage> pkgs, String name) {
-		for ( KnowledgePackage pkg : pkgs ) {
+	public KiePackage getKnowledgePackage(Collection<KiePackage> pkgs, String name) {
+		for ( KiePackage pkg : pkgs ) {
 			if ( pkg.getName().equals( name ) ) {
 				return pkg;
 			}

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.jbpm.process.test.TestProcessEventListener;
@@ -28,10 +29,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.kie.api.KieBase;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.slf4j.Logger;
 
 public abstract class AbstractBaseTest {
@@ -52,11 +52,11 @@ public abstract class AbstractBaseTest {
     protected static AtomicInteger uniqueIdGen = new AtomicInteger(0);
 
     public KieSession createKieSession(Process... process) {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         for (Process processToAdd : process) {
             ((KnowledgeBaseImpl) kbase).addProcess(processToAdd);
         }
-        return kbase.newStatefulKnowledgeSession();
+        return kbase.newKieSession();
     }
 
     public void showEventHistory(KieSession ksession) {

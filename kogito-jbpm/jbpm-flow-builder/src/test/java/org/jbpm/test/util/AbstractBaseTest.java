@@ -16,20 +16,19 @@
 package org.jbpm.test.util;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.integrationtests.JbpmSerializationHelper;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
 import java.util.Arrays;
-import java.util.Collection;
 
 import static org.junit.Assert.fail;
 
@@ -42,7 +41,7 @@ public abstract class AbstractBaseTest {
         builder = new KnowledgeBuilderImpl();
     }
     
-    public StatefulKnowledgeSession createKieSession(KnowledgePackage... pkg) { 
+    public KieSession createKieSession(KiePackage... pkg) { 
         try { 
             return createKieSession(false, pkg);
         } catch(Exception e ) { 
@@ -52,16 +51,16 @@ public abstract class AbstractBaseTest {
         }
     } 
    
-    public StatefulKnowledgeSession createKieSession(boolean serializeKbase, KnowledgePackage... pkg) throws Exception {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages((Collection) Arrays.asList(pkg));
+    public KieSession createKieSession(boolean serializeKbase, KiePackage... pkg) throws Exception {
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(Arrays.asList(pkg));
         if( serializeKbase ) { 
             kbase = JbpmSerializationHelper.serializeObject( kbase );
         }
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ForceEagerActivationOption.YES );
-        return kbase.newStatefulKnowledgeSession(conf, null);
+        return kbase.newKieSession(conf, null);
     }
     
     @BeforeClass

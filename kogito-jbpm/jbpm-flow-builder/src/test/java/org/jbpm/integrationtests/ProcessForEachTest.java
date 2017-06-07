@@ -27,10 +27,10 @@ import java.util.Map;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ProcessForEachTest extends AbstractBaseTest {
   
@@ -80,7 +80,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
@@ -144,7 +144,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         final List<String> myList = new ArrayList<String>();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Log", new WorkItemHandler() {
@@ -214,7 +214,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
@@ -272,7 +272,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
@@ -353,7 +353,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 		
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         List<String> collection = new ArrayList<String>();
         collection.add("one");
@@ -441,7 +441,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
         
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         List<String> collection = new ArrayList<String>();
         collection.add("one");
@@ -515,7 +515,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);

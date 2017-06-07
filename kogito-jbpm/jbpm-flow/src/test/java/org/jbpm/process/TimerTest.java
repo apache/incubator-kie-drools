@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
@@ -29,8 +30,8 @@ import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +54,8 @@ public class TimerTest extends AbstractBaseTest  {
 //        ExecutorService executorService = new DefaultExecutorService();
 //        final StatefulSession workingMemory = new ReteooStatefulSession(1, ruleBase, executorService);
 //        executorService.setCommandExecutor( new CommandExecutor( workingMemory ) );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        final StatefulKnowledgeSession workingMemory = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final KieSession workingMemory = kbase.newKieSession();
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance() {
 			private static final long serialVersionUID = 510l;

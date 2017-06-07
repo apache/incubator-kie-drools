@@ -30,7 +30,7 @@ import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.KnowledgeBaseFactoryServiceImpl;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
@@ -53,7 +53,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -79,7 +78,6 @@ public class BusinessRuleTaskTest {
     
     @Test
     public void testBusinessRuleTaskProcess() throws Exception {
-        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
         KieBase kbase = readKnowledgeBase();
         KieSession ksession = createSession(kbase);
         
@@ -98,7 +96,6 @@ public class BusinessRuleTaskTest {
     
     @Test
     public void testDecisionTaskProcess() throws Exception {
-        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
         KieBase kbase = readKnowledgeBase();
         KieSession ksession = createSession(kbase);
         
@@ -124,7 +121,7 @@ public class BusinessRuleTaskTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource("businessRuleTaskProcess.bpmn2"), ResourceType.BPMN2);
         kbuilder.add(ResourceFactory.newClassPathResource("businessRuleTaskDMN.bpmn2"), ResourceType.BPMN2);
-        return kbuilder.newKnowledgeBase();
+        return kbuilder.newKieBase();
     }
     
     private static KieSession createSession(KieBase kbase) {

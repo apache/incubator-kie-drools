@@ -19,11 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.bpmn2.objects.Status;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -31,9 +34,8 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -51,8 +53,8 @@ public class MultipleProcessesPerThreadTest extends AbstractBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
     
-    protected static StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) {
-        return kbase.newStatefulKnowledgeSession();
+    protected static KieSession createStatefulKnowledgeSession(KieBase kbase) {
+        return kbase.newKieSession();
     }
     
     @Test
@@ -88,13 +90,13 @@ public class MultipleProcessesPerThreadTest extends AbstractBaseTest {
 
         public void run() {
             this.status = Status.SUCCESS;
-            StatefulKnowledgeSession ksession = null;
+            KieSession ksession = null;
             
             try { 
                 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
                 kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MultiThreadServiceProcess-Timer.bpmn", getClass()), ResourceType.BPMN2);
-                KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-                kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+                InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+                kbase.addPackages(kbuilder.getKnowledgePackages());
 
                 ksession = createStatefulKnowledgeSession(kbase);
             } catch(Exception e) { 
@@ -143,13 +145,13 @@ public class MultipleProcessesPerThreadTest extends AbstractBaseTest {
 
         public void run() {
             this.status = Status.SUCCESS;
-            StatefulKnowledgeSession ksession = null;
+            KieSession ksession = null;
             
             try { 
                 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
                 kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MultiThreadServiceProcess-Task.bpmn", getClass()), ResourceType.BPMN2);
-                KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-                kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+                InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+                kbase.addPackages(kbuilder.getKnowledgePackages());
 
                 ksession = createStatefulKnowledgeSession(kbase);
             } catch(Exception e) { 

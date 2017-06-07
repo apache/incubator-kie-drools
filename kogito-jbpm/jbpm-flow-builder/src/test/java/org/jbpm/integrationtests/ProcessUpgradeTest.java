@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
@@ -32,11 +34,9 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.WorkflowProcessInstanceUpgrader;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ProcessUpgradeTest extends AbstractBaseTest {
     
@@ -82,9 +82,9 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 //        RuleBaseConfiguration config = new RuleBaseConfiguration();
 //        config.setRuleBaseUpdateHandler(null);
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( builder.getKnowledgePackages() );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( builder.getKnowledgePackages() );
+        KieSession session = kbase.newKieSession();
 
         TestWorkItemHandler handler = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -129,7 +129,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             "</process>";
         builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add( new ReaderResource( new StringReader( process2 )), ResourceType.DRF );
-        kbase.addKnowledgePackages( builder.getKnowledgePackages() );
+        kbase.addPackages( builder.getKnowledgePackages() );
         
         WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
             session, processInstance.getId(), "org.test.ruleflow2", new HashMap<String, Long>());
@@ -183,9 +183,9 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 //      RuleBaseConfiguration config = new RuleBaseConfiguration();
 //      config.setRuleBaseUpdateHandler(null);
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( builder.getKnowledgePackages() );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( builder.getKnowledgePackages() );
+        KieSession session = kbase.newKieSession();
         TestWorkItemHandler handler = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
@@ -229,7 +229,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             "</process>";
         builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add( new ReaderResource( new StringReader( process2 )), ResourceType.DRF );
-        kbase.addKnowledgePackages( builder.getKnowledgePackages() );
+        kbase.addPackages( builder.getKnowledgePackages() );
         
         Map<String, Long> mapping = new HashMap<String, Long>();
         mapping.put("2", 102L);
@@ -298,9 +298,9 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
 //      RuleBaseConfiguration config = new RuleBaseConfiguration();
 //      config.setRuleBaseUpdateHandler(null);
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( builder.getKnowledgePackages() );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( builder.getKnowledgePackages() );
+        KieSession session = kbase.newKieSession();
         TestWorkItemHandler handler = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
@@ -356,7 +356,7 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             "</process>";
         builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add( new ReaderResource( new StringReader( process2 )), ResourceType.DRF );
-        kbase.addKnowledgePackages( builder.getKnowledgePackages() );
+        kbase.addPackages( builder.getKnowledgePackages() );
         
         Map<String, Long> mapping = new HashMap<String, Long>();
         mapping.put("2:1", 101L);

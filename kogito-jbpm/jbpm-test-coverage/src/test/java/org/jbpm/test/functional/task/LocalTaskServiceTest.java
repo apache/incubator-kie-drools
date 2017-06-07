@@ -34,7 +34,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 
 public class LocalTaskServiceTest extends JbpmTestCase {
@@ -119,7 +118,7 @@ public class LocalTaskServiceTest extends JbpmTestCase {
     @Test 
     public void groupTaskQueryTest() throws Exception {
 
-        KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) kieSession);
+        KnowledgeRuntimeLoggerFactory.newConsoleLogger(kieSession);
  
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();

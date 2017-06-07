@@ -23,11 +23,11 @@ import java.util.List;
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ActionNodeTest extends AbstractBaseTest {
     
@@ -35,9 +35,9 @@ public class ActionNodeTest extends AbstractBaseTest {
     public void testSingleActionNode() throws Exception {                
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ClassPathResource( "ActionNodeTest.xml", ActionNodeTest.class ), ResourceType.DRF );
-        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        KieBase kbase = kbuilder.newKieBase();
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         

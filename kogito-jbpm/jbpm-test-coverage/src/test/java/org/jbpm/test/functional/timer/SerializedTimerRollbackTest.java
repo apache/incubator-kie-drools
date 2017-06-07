@@ -112,7 +112,7 @@ public class SerializedTimerRollbackTest extends JbpmTestCase {
             assertNotNull(b);
 
             KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            ProtobufMarshaller marshaller = new ProtobufMarshaller(builder.newKnowledgeBase(), new MarshallingConfigurationImpl());
+            ProtobufMarshaller marshaller = new ProtobufMarshaller(builder.newKieBase(), new MarshallingConfigurationImpl());
             StatefulKnowledgeSession session = marshaller.unmarshall(b.getBinaryStream());
             assertNotNull(session);
 
@@ -179,7 +179,7 @@ public class SerializedTimerRollbackTest extends JbpmTestCase {
             assertNotNull(b);
 
             KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            ProtobufMarshaller marshaller = new ProtobufMarshaller(builder.newKnowledgeBase(), new MarshallingConfigurationImpl());
+            ProtobufMarshaller marshaller = new ProtobufMarshaller(builder.newKieBase(), new MarshallingConfigurationImpl());
             StatefulKnowledgeSession session = marshaller.unmarshall(b.getBinaryStream());
             assertNotNull(session);
 

@@ -30,6 +30,8 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.jbpm.process.builder.dialect.mvel.MVELReturnValueEvaluatorBuilder;
 import org.jbpm.process.instance.impl.MVELReturnValueEvaluator;
@@ -38,10 +40,8 @@ import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.node.SplitInstance;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.KieSession;
 
 public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseTest {
 
@@ -74,11 +74,11 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
                        descr,
                        null );
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        List<KnowledgePackage> packages = new ArrayList<KnowledgePackage>();
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        List<KiePackage> packages = new ArrayList<KiePackage>();
         packages.add( pkgBuilder.getPackage() );
-        kbase.addKnowledgePackages( packages );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        kbase.addPackages( packages );
+        final KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal( "value", true );        
 

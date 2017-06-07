@@ -19,6 +19,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.persistence.map.impl.ProcessCreatorForHelp;
@@ -34,8 +36,6 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.task.api.TaskModelProvider;
@@ -293,7 +293,7 @@ public final class TestPersistenceContext {
      * @return Basic KieBase.
      */
     private KieBase createKieBase(final String... processIds) {
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         for (String processId : processIds) {
             ((KnowledgeBaseImpl) kbase).addProcess(ProcessCreatorForHelp.newSimpleEventProcess(processId, "test"));
         }

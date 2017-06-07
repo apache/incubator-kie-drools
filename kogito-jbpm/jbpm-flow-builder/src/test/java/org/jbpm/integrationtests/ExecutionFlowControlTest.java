@@ -22,13 +22,13 @@ import java.util.List;
 
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ExecutionFlowControlTest  extends AbstractBaseTest {
 
@@ -40,8 +40,8 @@ public class ExecutionFlowControlTest  extends AbstractBaseTest {
 
         kbuilder.add( ResourceFactory.newClassPathResource("ruleflow.drl", ExecutionFlowControlTest.class), ResourceType.DRL);
         kbuilder.add( ResourceFactory.newClassPathResource("ruleflow40.rfm", ExecutionFlowControlTest.class), ResourceType.DRF);
-        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = kbuilder.newKieBase();
+        final KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
         ksession.fireAllRules();

@@ -15,8 +15,8 @@
 
 package org.jbpm.test;
 
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -34,17 +34,17 @@ public class ProcessMain {
 	public static final void main(String[] args) throws Exception {
 	    JBPMHelper.startUp();
 		// load up the knowledge base
-		KnowledgeBase kbase = readKnowledgeBase();
+		KieBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = JBPMHelper.newStatefulKnowledgeSession(kbase);
 		// start a new process instance
 		ksession.startProcess("com.sample.bpmn.hello");
 		logger.info("Process started ...");
 	}
 
-	private static KnowledgeBase readKnowledgeBase() throws Exception {
+	private static KieBase readKnowledgeBase() throws Exception {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newClassPathResource("humantask.bpmn"), ResourceType.BPMN2);
-		return kbuilder.newKnowledgeBase();
+		return kbuilder.newKieBase();
 	}
 	
 	private static void startUp() {

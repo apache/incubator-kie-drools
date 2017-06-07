@@ -35,6 +35,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.process.core.ParameterDefinition;
 import org.drools.core.process.core.Work;
@@ -65,17 +66,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +112,7 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
        cleanUp(context); 
     }
    
-    protected StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
+    protected KieSession createSession(KieBase kbase) {
         return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, createEnvironment(context) );
     }
 
@@ -122,9 +122,9 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
         String processId = "org.drools.actions";
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId, workName );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ((KnowledgeBaseImpl) kbase).addProcess( process );
-        StatefulKnowledgeSession ksession = createSession(kbase);
+        KieSession ksession = createSession(kbase);
 
         ksession.getWorkItemManager().registerWorkItemHandler( workName, new DoNothingWorkItemHandler() );
 
@@ -267,9 +267,9 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newReaderResource(source), ResourceType.DRF );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );        
-        StatefulKnowledgeSession ksession = createSession(kbase);
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );        
+        KieSession ksession = createSession(kbase);
         final List<WorkItem> workItems = new ArrayList<WorkItem>();
         DoNothingWorkItemHandler handler = new DoNothingWorkItemHandler() {
 

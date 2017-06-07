@@ -22,6 +22,8 @@ import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.impl.WorkImpl;
 import org.drools.persistence.PersistableRunner;
@@ -50,14 +52,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,9 +106,9 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
     public void testPersistenceWorkItems() throws Exception {
         setUp();
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> kpkgs = getProcessWorkItems();
-        kbase.addKnowledgePackages( kpkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<KiePackage> kpkgs = getProcessWorkItems();
+        kbase.addPackages( kpkgs );
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
@@ -220,9 +220,9 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
     public void testPersistenceWorkItemsUserTransaction() throws Exception {
         setUp();
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> kpkgs = getProcessWorkItems();
-        kbase.addKnowledgePackages( kpkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<KiePackage> kpkgs = getProcessWorkItems();
+        kbase.addPackages( kpkgs );
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
@@ -346,7 +346,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         service.dispose();
     }
 
-	private Collection<KnowledgePackage> getProcessWorkItems() {
+	private Collection<KiePackage> getProcessWorkItems() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
@@ -413,7 +413,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
-        List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
+        List<KiePackage> list = new ArrayList<KiePackage>();
         list.addAll( packageBuilder.getKnowledgePackages() );
         return list;
     }
@@ -435,9 +435,9 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                                 JpaJDKTimerService.class.getName() );
         SessionConfiguration config = SessionConfiguration.newInstance( properties );
 
-        KnowledgeBase ruleBase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgePackage pkg = getProcessSubProcess();
-        ruleBase.addKnowledgePackages( (Collection) Arrays.asList(pkg) );
+        InternalKnowledgeBase ruleBase = KnowledgeBaseFactory.newKnowledgeBase();
+        KiePackage pkg = getProcessSubProcess();
+        ruleBase.addPackages( (Collection) Arrays.asList(pkg) );
 
         PersistableRunner service = new PersistableRunner( ruleBase,
                                                                                config,
@@ -622,9 +622,9 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         SessionConfiguration config = SessionConfiguration.newInstance( properties );
         config.setOption( TimerJobFactoryOption.get(TimerJobFactoryType.JPA.getId()) );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> kpkgs = getProcessTimer();
-        kbase.addKnowledgePackages( kpkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<KiePackage> kpkgs = getProcessTimer();
+        kbase.addPackages( kpkgs );
 
         PersistableRunner service = new PersistableRunner( kbase,
                                                                                config,
@@ -660,7 +660,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNull( processInstance );
     }
 
-	private List<KnowledgePackage> getProcessTimer() {
+	private List<KiePackage> getProcessTimer() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
@@ -705,7 +705,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
-        List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
+        List<KiePackage> list = new ArrayList<KiePackage>();
         list.add( packageBuilder.getPackage() );
         return list;
     }
@@ -727,9 +727,9 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         SessionConfiguration config = SessionConfiguration.newInstance( properties );
         config.setOption( TimerJobFactoryOption.get(TimerJobFactoryType.JPA.getId()) );
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> kpkgs = getProcessTimer2();
-        kbase.addKnowledgePackages( kpkgs );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<KiePackage> kpkgs = getProcessTimer2();
+        kbase.addPackages( kpkgs );
 
         PersistableRunner service = new PersistableRunner( kbase,
                                                                                config,
@@ -752,7 +752,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNull( processInstance );
     }
 
-	private List<KnowledgePackage> getProcessTimer2() {
+	private List<KiePackage> getProcessTimer2() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
@@ -797,7 +797,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
-        List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
+        List<KiePackage> list = new ArrayList<KiePackage>();
         list.add( packageBuilder.getPackage() );
         return list;
     }

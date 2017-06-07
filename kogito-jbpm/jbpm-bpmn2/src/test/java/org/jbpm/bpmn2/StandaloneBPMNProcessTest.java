@@ -28,6 +28,8 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.IoUtils;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
@@ -57,8 +59,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -89,11 +89,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     @BeforeClass
     public static void setup() throws Exception {
         setUpDataSource();
-    }
-    
-    @After
-    public void tearDown() {
-        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(null);
     }
 
     /**
@@ -513,8 +508,8 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
             }
             throw new IllegalArgumentException("Errors while parsing knowledge base");
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         KieSession ksession = createKnowledgeSession(kbase);
         
         Map<String, Object> params = new HashMap<String, Object>();

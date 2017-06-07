@@ -66,7 +66,6 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.TaskService;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -219,15 +218,15 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
         return environment.getKieBase();
     }
 
-    protected KnowledgeBase createKnowledgeBaseGuvnor(String... packages) throws Exception {
+    protected KieBase createKnowledgeBaseGuvnor(String... packages) throws Exception {
         return createKnowledgeBaseGuvnor(false, "http://localhost:8080/drools-guvnor", "admin", "admin", packages);
     }
 
-    protected KnowledgeBase createKnowledgeBaseGuvnorAssets(String pkg, String... assets) throws Exception {
+    protected KieBase createKnowledgeBaseGuvnorAssets(String pkg, String... assets) throws Exception {
         return createKnowledgeBaseGuvnor(false, "http://localhost:8080/drools-guvnor", "admin", "admin", pkg, assets);
     }
 
-    protected KnowledgeBase createKnowledgeBaseGuvnor(boolean dynamic, String url, String username,
+    protected KieBase createKnowledgeBaseGuvnor(boolean dynamic, String url, String username,
             String password, String pkg, String... assets) throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         String changeSet =
@@ -245,10 +244,10 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
                 "    </add>" + EOL
                 + "</change-set>";
         kbuilder.add(ResourceFactory.newByteArrayResource(changeSet.getBytes()), ResourceType.CHANGE_SET);
-        return kbuilder.newKnowledgeBase();
+        return kbuilder.newKieBase();
     }
 
-    protected KnowledgeBase createKnowledgeBaseGuvnor(boolean dynamic, String url, String username,
+    protected KieBase createKnowledgeBaseGuvnor(boolean dynamic, String url, String username,
             String password, String... packages) throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         String changeSet =
@@ -263,7 +262,7 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
                 "    </add>" + EOL
                 + "</change-set>";
         kbuilder.add(ResourceFactory.newByteArrayResource(changeSet.getBytes()), ResourceType.CHANGE_SET);
-        return kbuilder.newKnowledgeBase();
+        return kbuilder.newKieBase();
     }
 
     protected KieSession createKnowledgeSession() {

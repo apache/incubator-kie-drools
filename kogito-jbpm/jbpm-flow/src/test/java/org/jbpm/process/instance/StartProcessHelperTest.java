@@ -26,8 +26,8 @@ import java.util.List;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.process.Process;
-import org.kie.internal.KnowledgeBase;
 import org.slf4j.LoggerFactory;
 
 public class StartProcessHelperTest extends AbstractBaseTest {
@@ -39,7 +39,7 @@ public class StartProcessHelperTest extends AbstractBaseTest {
     @Test
     public void testFindLatestProcessByNameNoInput() {
         
-        String foundProcessId = StartProcessHelper.findLatestProcessByName((KnowledgeBase)null, "Hello");
+        String foundProcessId = StartProcessHelper.findLatestProcessByName((KieBase)null, "Hello");
         
         assertNull(foundProcessId);
     }

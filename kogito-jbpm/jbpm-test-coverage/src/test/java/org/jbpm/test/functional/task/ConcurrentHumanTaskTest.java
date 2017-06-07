@@ -121,7 +121,7 @@ class ProcessRunner implements Runnable {
 		properties.setProperty("john", "PM");
 
 		KnowledgeBuilder knowledgeBuilder = createKBuilder(process, ResourceType.BPMN2);
-		KieBase kieBase = knowledgeBuilder.newKnowledgeBase();
+		KieBase kieBase = knowledgeBuilder.newKieBase();
 
 		UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl( properties);
 		// load up the knowledge base

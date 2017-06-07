@@ -33,16 +33,16 @@ import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,7 +108,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
             logger.error(error.toString());
         }
         
-        StatefulKnowledgeSession ksession = createKieSession(pkg);
+        KieSession ksession = createKieSession(pkg);
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -174,7 +174,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
             logger.error(error.toString());
         }
         
-        StatefulKnowledgeSession ksession = createKieSession(pkg);
+        KieSession ksession = createKieSession(pkg);
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -225,9 +225,9 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                 "</process>");
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
-		KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
+		KieBase kbase = kbuilder.newKieBase();
+		KieSession ksession = kbase.newKieSession();
+		KieRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
 		TestWorkItemHandler handler = new TestWorkItemHandler();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 		// start a new process instance
@@ -313,9 +313,9 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newReaderResource(source), ResourceType.DRF);
 		kbuilder.add(ResourceFactory.newReaderResource(source2), ResourceType.DRF);
-		KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
+		KieBase kbase = kbuilder.newKieBase();
+		KieSession ksession = kbase.newKieSession();
+		KieRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
 		TestWorkItemHandler handler = new TestWorkItemHandler();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 		// start a new process instance

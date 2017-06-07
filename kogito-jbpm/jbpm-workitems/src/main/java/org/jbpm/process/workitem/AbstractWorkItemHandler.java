@@ -19,26 +19,26 @@ import java.util.Collection;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public abstract class AbstractWorkItemHandler implements WorkItemHandler {
 	
-	private StatefulKnowledgeSession ksession;
+	private KieSession ksession;
 	
-	public AbstractWorkItemHandler(StatefulKnowledgeSession ksession) {
+	public AbstractWorkItemHandler(KieSession ksession) {
 		if (ksession == null) {
 			throw new IllegalArgumentException("ksession cannot be null");
 		}
 		this.ksession = ksession;
 	}
 	
-	public StatefulKnowledgeSession getSession() {
+	public KieSession getSession() {
 		return ksession;
 	}
 	

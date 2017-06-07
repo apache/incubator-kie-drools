@@ -8,16 +8,16 @@ import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.process.builder.dialect.javascript.JavaScriptReturnValueEvaluatorBuilder;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.instance.node.SplitInstance;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.KieSession;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -62,11 +62,11 @@ public class JavaScriptReturnValueConstraintEvaluatorBuilderTest {
                 descr,
                 null);
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        List<KnowledgePackage> packages = new ArrayList<KnowledgePackage>();
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        List<KiePackage> packages = new ArrayList<KiePackage>();
         packages.add( pkgBuilder.getPackage() );
-        kbase.addKnowledgePackages(packages);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        kbase.addPackages(packages);
+        final KieSession ksession = kbase.newKieSession();
 
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();

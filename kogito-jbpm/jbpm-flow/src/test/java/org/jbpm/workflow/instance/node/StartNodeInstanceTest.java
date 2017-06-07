@@ -24,6 +24,7 @@ import static org.junit.Assert.assertSame;
 import java.util.List;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
@@ -32,10 +33,9 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.LoggerFactory;
 
 public class StartNodeInstanceTest extends AbstractBaseTest {
@@ -47,8 +47,8 @@ public class StartNodeInstanceTest extends AbstractBaseTest {
     @Test
     public void testStartNode() {
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieSession ksession = kbase.newKieSession();        
         
         MockNode mockNode = new MockNode();
         MockNodeInstanceFactory mockNodeFactory = new MockNodeInstanceFactory( new MockNodeInstance( mockNode ) );

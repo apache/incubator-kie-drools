@@ -25,7 +25,7 @@ import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 
 public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
     
@@ -69,7 +69,7 @@ public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
         builder.addRuleFlow(source);
         builder.addPackageFromDrl(source2);
 
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         workingMemory.getEnvironment().set("org.jbpm.rule.task.waitstate", "true");
         
         Person person = new Person();

@@ -18,6 +18,7 @@ package org.jbpm.services.task.test;
 import org.drools.core.impl.AbstractRuntime;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -38,7 +39,6 @@ import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public class TestStatefulKnowledgeSession extends AbstractRuntime implements Sta
         return null;
     }
 
-    public KnowledgeBase getKieBase() {
+    public KieBase getKieBase() {
         return null;
     }
 

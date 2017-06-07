@@ -44,12 +44,12 @@ import org.jbpm.test.container.tools.KieUtils;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -432,7 +432,7 @@ public class TransactionsTest extends JbpmContainerTest {
             throw new IllegalStateException("Uninitialised EntityManagerFactory");
         }
 
-        Environment env = KnowledgeBaseFactory.newEnvironment();
+        Environment env = KieServices.get().newEnvironment();
         env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
         return env;
     }

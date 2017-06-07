@@ -40,7 +40,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.EventService;
@@ -90,7 +89,7 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
         KieSession ksession = runtimeEngine.getKieSession();
         TaskService taskService = runtimeEngine.getTaskService();
 
-        KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
+        KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 
         ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));
         
@@ -168,7 +167,7 @@ public class AdminAPIsWithListenerTest extends JbpmTestCase {
         KieSession ksession = runtimeEngine.getKieSession();
         TaskService taskService = runtimeEngine.getTaskService();
         
-        KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
+        KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 
         ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));
 

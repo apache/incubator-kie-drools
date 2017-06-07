@@ -20,7 +20,7 @@ import java.util.Map;
 import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.WorkItem;
@@ -29,9 +29,9 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 
 public class JavaHandlerWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
-	private StatefulKnowledgeSession ksession;
+	private KieSession ksession;
 	
-	public JavaHandlerWorkItemHandler(StatefulKnowledgeSession ksession) {
+	public JavaHandlerWorkItemHandler(KieSession ksession) {
 		this.ksession = ksession;
 	}
 	

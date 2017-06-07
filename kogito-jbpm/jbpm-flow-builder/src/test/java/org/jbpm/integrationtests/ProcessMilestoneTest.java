@@ -30,7 +30,7 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public class ProcessMilestoneTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         ProcessInstance processInstance = ( ProcessInstance ) workingMemory.startProcess("org.drools.milestone");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -121,7 +121,7 @@ public class ProcessMilestoneTest extends AbstractBaseTest {
         	logger.error(error.toString());
         }
 
-        StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackage());
         
         Person john = new Person("John Doe", 20);
         Person jane = new Person("Jane Doe", 20);

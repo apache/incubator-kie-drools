@@ -57,11 +57,11 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,9 +93,9 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
     public void testAsyncAuditProducer() throws Exception {
         Environment env = createEnvironment(context);
         // load the process
-        KnowledgeBase kbase = createKnowledgeBase();
+        KieBase kbase = createKnowledgeBase();
         // create a new session
-        StatefulKnowledgeSession session = createSession(kbase, env);
+        KieSession session = createSession(kbase, env);
 
         Map<String, Object> jmsProps = new HashMap<String, Object>();
         jmsProps.put("jbpm.audit.jms.transacted", false);
@@ -122,9 +122,9 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         ut.begin();
         Environment env = createEnvironment(context);
         // load the process
-        KnowledgeBase kbase = createKnowledgeBase();
+        KieBase kbase = createKnowledgeBase();
         // create a new session
-        StatefulKnowledgeSession session = createSession(kbase, env);
+        KieSession session = createSession(kbase, env);
         
         Map<String, Object> jmsProps = new HashMap<String, Object>();
         jmsProps.put("jbpm.audit.jms.transacted", true);
@@ -152,9 +152,9 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         ut.begin();
         Environment env = createEnvironment(context);
         // load the process
-        KnowledgeBase kbase = createKnowledgeBase();
+        KieBase kbase = createKnowledgeBase();
         // create a new session
-        StatefulKnowledgeSession session = createSession(kbase, env);
+        KieSession session = createSession(kbase, env);
         
         Map<String, Object> jmsProps = new HashMap<String, Object>();
         jmsProps.put("jbpm.audit.jms.transacted", true);
@@ -182,9 +182,9 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         ut.begin();
         Environment env = createEnvironment(context);
         // load the process
-        KnowledgeBase kbase = createKnowledgeBase();
+        KieBase kbase = createKnowledgeBase();
         // create a new session
-        StatefulKnowledgeSession session = createSession(kbase, env);
+        KieSession session = createSession(kbase, env);
         
         Map<String, Object> jmsProps = new HashMap<String, Object>();
         jmsProps.put("jbpm.audit.jms.transacted", false);
@@ -212,9 +212,9 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
     public void testAsyncAuditLoggerComplete() throws Exception {
         Environment env = createEnvironment(context);
         // load the process
-        KnowledgeBase kbase = createKnowledgeBase();
+        KieBase kbase = createKnowledgeBase();
         // create a new session
-        StatefulKnowledgeSession session = createSession(kbase, env);
+        KieSession session = createSession(kbase, env);
         
         Map<String, Object> jmsProps = new HashMap<String, Object>();
         jmsProps.put("jbpm.audit.jms.transacted", false);
@@ -253,9 +253,9 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
     public void testAsyncAuditLoggerCompleteDirectCreation() throws Exception {
         Environment env = createEnvironment(context);
         // load the process
-        KnowledgeBase kbase = createKnowledgeBase();
+        KieBase kbase = createKnowledgeBase();
         // create a new session
-        StatefulKnowledgeSession session = createSession(kbase, env);
+        KieSession session = createSession(kbase, env);
         
 
         AbstractAuditLogger logger = AuditLoggerFactory.newJMSInstance(true, factory, queue);
@@ -291,9 +291,9 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
     public void testAsyncAuditLoggerCompleteWithVariables() throws Exception {
         Environment env = createEnvironment(context);
         // load the process
-        KnowledgeBase kbase = createKnowledgeBase();
+        KieBase kbase = createKnowledgeBase();
         // create a new session
-        StatefulKnowledgeSession session = createSession(kbase, env);
+        KieSession session = createSession(kbase, env);
         
         Map<String, Object> jmsProps = new HashMap<String, Object>();
         jmsProps.put("jbpm.audit.jms.transacted", false);
@@ -358,9 +358,9 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
     public void testAsyncAuditLoggerCompleteWithVariablesCustomIndexer() throws Exception {
         Environment env = createEnvironment(context);
         // load the process
-        KnowledgeBase kbase = createKnowledgeBase();
+        KieBase kbase = createKnowledgeBase();
         // create a new session
-        StatefulKnowledgeSession session = createSession(kbase, env);
+        KieSession session = createSession(kbase, env);
         
         Map<String, Object> jmsProps = new HashMap<String, Object>();
         jmsProps.put("jbpm.audit.jms.transacted", false);
@@ -441,9 +441,9 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         assertTrue(processInstances.isEmpty());
     }
     
-    public StatefulKnowledgeSession createSession(KnowledgeBase kbase, Environment env) {
+    public KieSession createSession(KieBase kbase, Environment env) {
         
-        StatefulKnowledgeSession session = createKieSession(kbase, env);
+        KieSession session = createKieSession(kbase, env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
         return session;
     }

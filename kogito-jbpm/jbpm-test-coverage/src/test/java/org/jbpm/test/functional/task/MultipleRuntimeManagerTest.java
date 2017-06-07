@@ -93,7 +93,7 @@ public class MultipleRuntimeManagerTest extends JbpmTestCase  {
                     .persistence(false)
                     .entityManagerFactory(getEmf())
                     .userGroupCallback(userGroupCallback)
-                    .knowledgeBase(kbuilder.newKnowledgeBase())
+                    .knowledgeBase(kbuilder.newKieBase())
                     .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
                         @Override
                         public List<TaskLifeCycleEventListener> getTaskListeners() {

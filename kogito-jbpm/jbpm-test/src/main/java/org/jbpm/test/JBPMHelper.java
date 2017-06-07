@@ -27,13 +27,13 @@ import javax.persistence.Persistence;
 import org.h2.tools.Server;
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.UserGroupCallback;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
@@ -129,12 +129,12 @@ public final class JBPMHelper {
     }
 
     @Deprecated
-    public static StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase) {
+    public static StatefulKnowledgeSession newStatefulKnowledgeSession(KieBase kbase) {
         return loadStatefulKnowledgeSession(kbase, -1);
     }
 
     @Deprecated
-    public static StatefulKnowledgeSession loadStatefulKnowledgeSession(KnowledgeBase kbase, int sessionId) {
+    public static StatefulKnowledgeSession loadStatefulKnowledgeSession(KieBase kbase, int sessionId) {
         Properties properties = getProperties();
         String persistenceEnabled = properties.getProperty("persistence.enabled", "false");
         RuntimeEnvironmentBuilder builder = null;

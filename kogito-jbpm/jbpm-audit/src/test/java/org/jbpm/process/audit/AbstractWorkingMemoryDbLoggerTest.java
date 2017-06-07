@@ -26,21 +26,21 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
         logService.dispose();
     }
    
-    protected static KnowledgeBase createKnowledgeBase() {
+    protected static KieBase createKnowledgeBase() {
         // create a builder
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         // load the process
@@ -88,8 +88,8 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
         source = new InputStreamReader(AbstractWorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow3.rf"));
         builder.addProcessFromXml(source);
         // create the knowledge base 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages((Collection) Arrays.asList(builder.getPackage()));
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(Arrays.asList(builder.getPackage()));
         return kbase;
     }
 

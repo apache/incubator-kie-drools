@@ -29,9 +29,9 @@ import org.jbpm.persistence.api.PersistentProcessInstance;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.junit.Before;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -48,7 +48,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest {
     protected StatefulKnowledgeSession createSession(KieBase kbase) {
         
         EnvironmentBuilder envBuilder = new ProcessStorageEnvironmentBuilder( storage );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
+        Environment env = KieServices.get().newEnvironment();
         env.set( EnvironmentName.TRANSACTION_MANAGER,
                  envBuilder.getTransactionManager() );
         env.set( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER,
@@ -64,7 +64,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest {
                                                              KieBase kbase) {
         ksession.dispose();
         EnvironmentBuilder envBuilder = new ProcessStorageEnvironmentBuilder( storage );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
+        Environment env = KieServices.get().newEnvironment();
         env.set( EnvironmentName.TRANSACTION_MANAGER,
                  envBuilder.getTransactionManager() );
         env.set( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER,

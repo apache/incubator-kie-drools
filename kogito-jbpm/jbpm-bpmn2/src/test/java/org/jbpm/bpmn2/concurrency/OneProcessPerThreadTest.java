@@ -27,15 +27,15 @@ import org.jbpm.bpmn2.objects.Status;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +51,8 @@ public class OneProcessPerThreadTest extends AbstractBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(OneProcessPerThreadTest.class);
     
-    protected StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) { 
-        return kbase.newStatefulKnowledgeSession();
+    protected KieSession createStatefulKnowledgeSession(KieBase kbase) { 
+        return kbase.newKieSession();
     }
     
     @Test
@@ -62,9 +62,9 @@ public class OneProcessPerThreadTest extends AbstractBaseTest {
         try {
             final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MultiThreadServiceProcess.bpmn"), ResourceType.BPMN2 );
-            KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+            KieBase kbase = kbuilder.newKieBase();
             
-            StatefulKnowledgeSession ksession = createStatefulKnowledgeSession(kbase);
+            KieSession ksession = createStatefulKnowledgeSession(kbase);
             
             ksession.getWorkItemManager().registerWorkItemHandler("Log", new WorkItemHandler() {
 				public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -93,7 +93,7 @@ public class OneProcessPerThreadTest extends AbstractBaseTest {
         }
 	}
 	
-    private static void startThreads(StatefulKnowledgeSession ksession) throws Throwable { 
+    private static void startThreads(KieSession ksession) throws Throwable { 
         boolean success = true;
         final Thread[] t = new Thread[THREAD_COUNT];
         
@@ -120,12 +120,12 @@ public class OneProcessPerThreadTest extends AbstractBaseTest {
     
     public static class ProcessInstanceStartRunner implements Runnable {
 
-    	private StatefulKnowledgeSession ksession;
+    	private KieSession ksession;
 	    private String processId;
         private long id;
         private Status status;
 	
-	    public ProcessInstanceStartRunner(StatefulKnowledgeSession ksession, int id, String processId) {
+	    public ProcessInstanceStartRunner(KieSession ksession, int id, String processId) {
 	    	this.ksession = ksession;
 	        this.id = id;
 	        this.processId = processId;

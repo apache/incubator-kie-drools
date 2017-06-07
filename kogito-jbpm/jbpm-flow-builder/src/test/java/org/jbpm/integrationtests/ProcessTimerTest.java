@@ -20,6 +20,8 @@ import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.time.SessionPseudoClock;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -27,10 +29,8 @@ import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +99,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 		
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
@@ -193,7 +192,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
@@ -299,7 +298,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
@@ -361,7 +360,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 
-        final StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        final KieSession session = createKieSession(builder.getPackage());
 
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
@@ -427,7 +426,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
@@ -527,7 +526,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
@@ -589,16 +588,16 @@ public class ProcessTimerTest extends AbstractBaseTest {
 		builder.addRuleFlow(source);
 	
         
-		final StatefulKnowledgeSession session;
+		final KieSession session;
 		{ 
 		    InternalKnowledgePackage pkg = builder.getPackage();
-		    KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		    kbase.addKnowledgePackages((Collection) Arrays.asList(builder.getPackages()));
+		    InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		    kbase.addPackages(Arrays.asList(builder.getPackages()));
 		    
 		    SessionConfiguration conf = SessionConfiguration.newInstance();
 		    conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );  
         
-		    session = kbase.newStatefulKnowledgeSession(conf, null);
+		    session = kbase.newKieSession(conf, null);
 		}
 		
         SessionPseudoClock clock = ( SessionPseudoClock) session.getSessionClock();
@@ -662,7 +661,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);

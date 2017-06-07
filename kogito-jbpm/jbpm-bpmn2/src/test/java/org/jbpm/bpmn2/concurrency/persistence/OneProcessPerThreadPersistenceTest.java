@@ -24,10 +24,10 @@ import org.jbpm.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.TransactionManagerServices;
@@ -56,7 +56,7 @@ public class OneProcessPerThreadPersistenceTest extends OneProcessPerThreadTest 
         cleanUp(context);
     }
 
-    protected StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) {
+    protected KieSession createStatefulKnowledgeSession(KieBase kbase) {
         Environment env = createEnvironment(context);
         return JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
     }

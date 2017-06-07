@@ -21,11 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
@@ -34,21 +33,20 @@ import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class JavaInvokerTest extends AbstractBaseTest {
 
     @Test
 	public void testStaticMethod1() throws Exception {
-		KnowledgeBase kbase = readKnowledgeBase();
-		StatefulKnowledgeSession ksession = createSession(kbase);
+		KieBase kbase = readKnowledgeBase();
+		KieSession ksession = createSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Java", new JavaInvocationWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("Class", "org.jbpm.process.workitem.java.MyJavaClass");
@@ -59,8 +57,8 @@ public class JavaInvokerTest extends AbstractBaseTest {
 
     @Test
 	public void testStaticMethod2() throws Exception {
-		KnowledgeBase kbase = readKnowledgeBase();
-		StatefulKnowledgeSession ksession = createSession(kbase);
+		KieBase kbase = readKnowledgeBase();
+		KieSession ksession = createSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Java", new JavaInvocationWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("Class", "org.jbpm.process.workitem.java.MyJavaClass");
@@ -74,8 +72,8 @@ public class JavaInvokerTest extends AbstractBaseTest {
 
     @Test
 	public void testMyFirstMethod1() throws Exception {
-		KnowledgeBase kbase = readKnowledgeBase();
-		StatefulKnowledgeSession ksession = createSession(kbase);
+		KieBase kbase = readKnowledgeBase();
+		KieSession ksession = createSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Java", new JavaInvocationWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("Class", "org.jbpm.process.workitem.java.MyJavaClass");
@@ -94,8 +92,8 @@ public class JavaInvokerTest extends AbstractBaseTest {
 
     @Test
 	public void testMyFirstMethod2() throws Exception {
-		KnowledgeBase kbase = readKnowledgeBase();
-		StatefulKnowledgeSession ksession = createSession(kbase);
+		KieBase kbase = readKnowledgeBase();
+		KieSession ksession = createSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Java", new JavaInvocationWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("Class", "org.jbpm.process.workitem.java.MyJavaClass");
@@ -114,8 +112,8 @@ public class JavaInvokerTest extends AbstractBaseTest {
 
     @Test
 	public void testMyFirstMethod3() throws Exception {
-		KnowledgeBase kbase = readKnowledgeBase();
-		StatefulKnowledgeSession ksession = createSession(kbase);
+		KieBase kbase = readKnowledgeBase();
+		KieSession ksession = createSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Java", new JavaInvocationWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("Class", "org.jbpm.process.workitem.java.MyJavaClass");
@@ -131,8 +129,8 @@ public class JavaInvokerTest extends AbstractBaseTest {
 
     @Test
 	public void testMySecondMethod() throws Exception {
-		KnowledgeBase kbase = readKnowledgeBase();
-		StatefulKnowledgeSession ksession = createSession(kbase);
+		KieBase kbase = readKnowledgeBase();
+		KieSession ksession = createSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Java", new JavaInvocationWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("Class", "org.jbpm.process.workitem.java.MyJavaClass");
@@ -149,8 +147,8 @@ public class JavaInvokerTest extends AbstractBaseTest {
 
     @Test
 	public void failingtestHello() throws Exception {
-		KnowledgeBase kbase = readKnowledgeBase();
-		StatefulKnowledgeSession ksession = createSession(kbase);
+		KieBase kbase = readKnowledgeBase();
+		KieSession ksession = createSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Java", new JavaInvocationWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("Class", "org.jbpm.process.workitem.java.MyJavaClass");
@@ -161,7 +159,7 @@ public class JavaInvokerTest extends AbstractBaseTest {
 		ksession.startProcess("com.sample.bpmn.java", params);
 	}
 
-	private static KnowledgeBase readKnowledgeBase() throws Exception {
+	private static KieBase readKnowledgeBase() throws Exception {
 		ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
 		ProcessMarshallerFactory.setProcessMarshallerFactoryService(new ProcessMarshallerFactoryServiceImpl());
 		ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
@@ -169,14 +167,14 @@ public class JavaInvokerTest extends AbstractBaseTest {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newClassPathResource("JavaInvoker.bpmn"), ResourceType.BPMN2);
 		kbuilder.add(ResourceFactory.newClassPathResource("JavaInvokerListResult.bpmn"), ResourceType.BPMN2);
-		return kbuilder.newKnowledgeBase();
+		return kbuilder.newKieBase();
 	}
 	
-	private static StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
+	private static KieSession createSession(KieBase kbase) {
 		Properties properties = new Properties();
 		properties.put("drools.processInstanceManagerFactory", "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory");
 		properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
 		KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
-		return kbase.newStatefulKnowledgeSession(config, EnvironmentFactory.newEnvironment());
+		return kbase.newKieSession(config, EnvironmentFactory.newEnvironment());
 	}
 }

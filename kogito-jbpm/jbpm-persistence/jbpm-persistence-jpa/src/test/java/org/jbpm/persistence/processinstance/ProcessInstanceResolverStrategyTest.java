@@ -46,12 +46,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
@@ -95,17 +95,17 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         if( useLocking ) { 
             env.set(USE_PESSIMISTIC_LOCKING, true);
         }
-        KnowledgeBase kbase = loadKnowledgeBase();
+        KieBase kbase = loadKnowledgeBase();
 
         // create session
         ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
         Assert.assertTrue("Valid KnowledgeSession could not be created.", ksession != null && ksession.getIdentifier() > 0);
     }
     
-    private KnowledgeBase loadKnowledgeBase() { 
+    private KieBase loadKnowledgeBase() { 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ClassPathResource( RF_FILE ), ResourceType.DRF );
-        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        KieBase kbase = kbuilder.newKieBase();
         return kbase;
     }
     

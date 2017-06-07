@@ -29,7 +29,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +68,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
 	        }
 	        fail("Package could not be compiled");
         }
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
         ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.drools.exception");
         assertEquals(ProcessInstance.STATE_ABORTED, processInstance.getState());
@@ -114,7 +114,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
         List<String> list = new ArrayList<String>();
         session.setGlobal("list", list);
@@ -155,7 +155,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.drools.exception");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
@@ -224,7 +224,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
             "</process>");
 
 		builder.addRuleFlow(source);
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
         List<String> list = new ArrayList<String>();
         session.setGlobal("list", list);
@@ -298,7 +298,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
             "</process>");
 
 		builder.addRuleFlow(source);
-        StatefulKnowledgeSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackage());
         
         List<String> list = new ArrayList<String>();
         session.setGlobal("list", list);

@@ -30,17 +30,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 
 public class ProcessInstanceExecutorFrame extends JFrame {
 
     private static final long serialVersionUID = 510l;
     
-    private StatefulKnowledgeSession workingMemory;
+    private KieSession workingMemory;
     private JTextField processIdTextField;
     private JButton startButton;
 
-    public ProcessInstanceExecutorFrame(StatefulKnowledgeSession workingMemory) {
+    public ProcessInstanceExecutorFrame(KieSession workingMemory) {
         this.workingMemory = workingMemory;
         setSize(new Dimension(200, 150));
         setTitle("Start Process");

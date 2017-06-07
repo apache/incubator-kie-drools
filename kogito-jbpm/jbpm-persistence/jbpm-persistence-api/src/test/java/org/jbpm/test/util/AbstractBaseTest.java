@@ -15,12 +15,12 @@
 
 package org.jbpm.test.util;
 
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.Process;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

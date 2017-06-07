@@ -76,7 +76,7 @@ public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             kbuilder.add(addTask, ResourceType.DRL);
             
-            ruleContextProvider.addKieBase(TaskRuleService.ADD_TASK_SCOPE, kbuilder.newKnowledgeBase());
+            ruleContextProvider.addKieBase(TaskRuleService.ADD_TASK_SCOPE, kbuilder.newKieBase());
         } catch (Exception e) {
             
         }
@@ -85,7 +85,7 @@ public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             kbuilder.add(completeTask, ResourceType.DRL);
             
-            ruleContextProvider.addKieBase(TaskRuleService.COMPLETE_TASK_SCOPE, kbuilder.newKnowledgeBase());
+            ruleContextProvider.addKieBase(TaskRuleService.COMPLETE_TASK_SCOPE, kbuilder.newKieBase());
         } catch (Exception e) {
             
         }
