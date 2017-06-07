@@ -58,6 +58,9 @@
                   <goalsDirectory>runners</goalsDirectory>
                   <profiles>drools</profiles>
                   <pushChanges>false</pushChanges>
+                  <systemProperties>
+                    <drools.version>${project.version}</drools.version>
+                  </systemProperties>
                 </configuration>
               </execution>
             </executions>
