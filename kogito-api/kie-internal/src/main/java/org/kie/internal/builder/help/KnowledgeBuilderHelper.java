@@ -23,8 +23,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import com.sun.tools.xjc.Options;
+
+import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 
 /**
@@ -87,7 +88,7 @@ public class KnowledgeBuilderHelper {
      * @throws JAXBException
      */
     public static JAXBContext newJAXBContext(String[] classNames,
-                                             KnowledgeBase kbase) throws JAXBException {
+                                             KieBase kbase) throws JAXBException {
         return newJAXBContext( classNames,
                                Collections.<String, Object> emptyMap(),
                                kbase );
@@ -95,7 +96,7 @@ public class KnowledgeBuilderHelper {
 
     public static JAXBContext newJAXBContext(String[] classNames,
                                              Map<String, ? > properties,
-                                             KnowledgeBase kbase) throws JAXBException {
+                                             KieBase kbase) throws JAXBException {
         return getDroolsJaxbHelperProvider().newJAXBContext( classNames,
                                                              properties,
                                                              kbase );

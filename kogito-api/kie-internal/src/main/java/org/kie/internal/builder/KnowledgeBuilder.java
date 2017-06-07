@@ -18,11 +18,11 @@ package org.kie.internal.builder;
 
 import java.util.Collection;
 
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.definition.KnowledgePackage;
 
 /**
  * <p>
@@ -161,13 +161,13 @@ public interface KnowledgeBuilder
      * @return
      *     The Collection of KnowledgePackages
      */
-    Collection<KnowledgePackage> getKnowledgePackages();
+    Collection<KiePackage> getKnowledgePackages();
 
     /**
      * Creates a new KnowledgeBase from the knowledge packages that have been added to
      * this builder.  An exception is thrown if there are any errors.
      */
-    KnowledgeBase newKnowledgeBase();
+    KieBase newKieBase();
 
     /**
      * If errors occurred during the build process they are added here

@@ -19,8 +19,9 @@ package org.kie.internal.builder;
 import java.util.Properties;
 
 import com.sun.tools.xjc.Options;
+
+import org.kie.api.KieBase;
 import org.kie.api.Service;
-import org.kie.internal.KnowledgeBase;
 
 /**
  * KnowledgeBuilderFactoryService is used by the KnowledgeBuilderFactory to "provide" it's concrete implementation.
@@ -83,9 +84,9 @@ public interface KnowledgeBuilderFactoryService  extends Service {
      */
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf);
 
-    public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase);
+    public KnowledgeBuilder newKnowledgeBuilder(KieBase kbase);
 
-    public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
+    public KnowledgeBuilder newKnowledgeBuilder(KieBase kbase,
                                                 KnowledgeBuilderConfiguration conf);
 
     public JaxbConfiguration newJaxbConfiguration(Options xjcOpts,
