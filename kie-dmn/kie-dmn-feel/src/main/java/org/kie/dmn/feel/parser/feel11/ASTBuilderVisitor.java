@@ -18,18 +18,29 @@ package org.kie.dmn.feel.parser.feel11;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.kie.dmn.feel.lang.CompositeType;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.RelExpressionValueContext;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class ASTBuilderVisitor
         extends FEEL_1_1BaseVisitor<BaseNode> {
+
+    private final Map<String, Type> inputTypes;
+
+    public ASTBuilderVisitor(Map<String, Type> inputTypes) {
+        this.inputTypes = inputTypes;
+    }
 
     @Override
     public BaseNode visitNumberLiteral(FEEL_1_1Parser.NumberLiteralContext ctx) {
@@ -64,7 +75,8 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitLogicalNegation(FEEL_1_1Parser.LogicalNegationContext ctx) {
-        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key() );
+        // TODO finish return type for this case...
+        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.UNKNOWN );
         BaseNode node = visit( ctx.unaryExpression() );
         ListNode params = ASTBuilderFactory.newListNode( ctx.unaryExpression(), Arrays.asList( node ) );
 
@@ -292,10 +304,18 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitQualifiedName(FEEL_1_1Parser.QualifiedNameContext ctx) {
         ArrayList<NameRefNode> parts = new ArrayList<>();
+        Type typeCursor = new MapBackedType(null, inputTypes);
         for ( FEEL_1_1Parser.NameRefContext t : ctx.nameRef() ) {
-            parts.add( ASTBuilderFactory.newNameRefNode( t ) );
+            if ( typeCursor instanceof CompositeType ) {
+                String originalText = ParserHelper.getOriginalText(t);
+                typeCursor = ((CompositeType) typeCursor).getFields().get(originalText);
+            } else {
+                // TODO throw error here?
+                typeCursor = BuiltInType.UNKNOWN;
+            }
+            parts.add( ASTBuilderFactory.newNameRefNode( t, typeCursor ) );
         }
-        return parts.size() > 1 ? ASTBuilderFactory.newQualifiedNameNode( ctx, parts ) : parts.get( 0 );
+        return parts.size() > 1 ? ASTBuilderFactory.newQualifiedNameNode( ctx, parts, typeCursor ) : parts.get( 0 );
     }
 
     @Override
@@ -320,9 +340,10 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newQuantifiedExpression( ctx, QuantifiedExpressionNode.Quantifier.EVERY, list, expr );
     }
 
+    // TODO verify, this is never covered in test, possibly as qualifiedName visitor "ingest" it directly.
     @Override
     public BaseNode visitNameRef(FEEL_1_1Parser.NameRefContext ctx) {
-        return ASTBuilderFactory.newNameRefNode( ctx );
+        return ASTBuilderFactory.newNameRefNode( ctx, BuiltInType.UNKNOWN );
     }
 
     @Override
@@ -482,7 +503,8 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
-        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key() );
+        // TODO finish return type for this case...
+        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.UNKNOWN );
         ListNode value = (ListNode) visit( ctx.simpleUnaryTests() );
         return buildFunctionCall( ctx, name, value );
     }

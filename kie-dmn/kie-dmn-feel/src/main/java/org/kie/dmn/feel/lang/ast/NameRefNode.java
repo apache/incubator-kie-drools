@@ -19,6 +19,7 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
@@ -28,8 +29,11 @@ import org.kie.dmn.feel.util.Msg;
 public class NameRefNode
         extends BaseNode {
 
-    public NameRefNode(ParserRuleContext ctx) {
+    private Type resultType;
+
+    public NameRefNode(ParserRuleContext ctx, Type type) {
         super( ctx );
+        this.resultType = type;
     }
 
     @Override
@@ -41,4 +45,11 @@ public class NameRefNode
         }
         return ctx.getValue( varName );
     }
+
+    @Override
+    public Type getResultType() {
+        return resultType;
+    }
+    
+    
 }

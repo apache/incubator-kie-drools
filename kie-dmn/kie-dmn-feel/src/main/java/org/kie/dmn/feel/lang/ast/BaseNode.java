@@ -139,6 +139,7 @@ public class BaseNode
         return null;
     }
 
+    // TODO this is actually duplicated on ParserHelper
     private String getOriginalText( ParserRuleContext ctx ) {
         int a = ctx.start.getStartIndex();
         int b = ctx.stop.getStopIndex();

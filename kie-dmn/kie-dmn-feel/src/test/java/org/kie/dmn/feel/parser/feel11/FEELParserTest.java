@@ -18,11 +18,14 @@ package org.kie.dmn.feel.parser.feel11;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Msg;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -30,6 +33,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.*;
 
 public class FEELParserTest {
 
@@ -156,18 +160,30 @@ public class FEELParserTest {
     @Test
     public void testNameReference() {
         String inputExpression = "someSimpleName";
-        BaseNode nameRef = parse( inputExpression );
+        BaseNode nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
 
         assertThat( nameRef, is( instanceOf( NameRefNode.class ) ) );
+        assertThat( nameRef.getResultType(), is( BuiltInType.STRING ) );
         assertLocation( inputExpression, nameRef );
     }
     
     @Test
     public void testQualifiedName() {
         String inputExpression = "My Person.Full Name";
-        BaseNode qualRef = parse( inputExpression );
+        MapBackedType personType = new MapBackedType("Person", mapOf( entry("Full Name", BuiltInType.STRING), entry("Age", BuiltInType.NUMBER) ) );
+        BaseNode qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
 
         assertThat( qualRef, is( instanceOf( QualifiedNameNode.class ) ) );
+        assertThat( qualRef.getResultType(), is( BuiltInType.STRING ) );
+        
+        List<NameRefNode> parts = ((QualifiedNameNode) qualRef).getParts();
+        // `My Person` ...
+        assertThat( parts.get(0), is( instanceOf( NameRefNode.class ) ) );
+        assertThat( parts.get(0).getResultType(), is( personType ) );
+        // ... `.Full Name`
+        assertThat( parts.get(1), is( instanceOf( NameRefNode.class ) ) );
+        assertThat( parts.get(1).getResultType(), is( BuiltInType.STRING ) );
+        
         assertLocation( inputExpression, qualRef );
     }
 
@@ -1196,12 +1212,12 @@ public class FEELParserTest {
         return parse( input, Collections.emptyMap() );
     }
 
-    private BaseNode parse(String input, Map<String, Object> inputVariables) {
-        FEEL_1_1Parser parser = FEELParser.parse( null, input, Collections.EMPTY_MAP, inputVariables );
+    private BaseNode parse(String input, Map<String, Type> inputTypes) {
+        FEEL_1_1Parser parser = FEELParser.parse( null, input, inputTypes, Collections.emptyMap() );
 
         ParseTree tree = parser.expression();
 
-        ASTBuilderVisitor v = new ASTBuilderVisitor();
+        ASTBuilderVisitor v = new ASTBuilderVisitor(inputTypes);
         BaseNode expr = v.visit( tree );
         return expr;
     }

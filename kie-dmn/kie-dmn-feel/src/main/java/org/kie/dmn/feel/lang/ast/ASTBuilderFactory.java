@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,12 +96,12 @@ public class ASTBuilderFactory {
         return new ForExpressionNode( ctx, list, expr );
     }
 
-    public static NameRefNode newNameRefNode( ParserRuleContext ctx ) {
-        return new NameRefNode( ctx );
+    public static NameRefNode newNameRefNode( ParserRuleContext ctx, Type type ) {
+        return new NameRefNode( ctx, type );
     }
 
-    public static QualifiedNameNode newQualifiedNameNode(ParserRuleContext ctx, ArrayList<NameRefNode> parts) {
-        return new QualifiedNameNode( ctx, parts );
+    public static QualifiedNameNode newQualifiedNameNode(ParserRuleContext ctx, ArrayList<NameRefNode> parts, Type type ) {
+        return new QualifiedNameNode( ctx, parts, type );
     }
 
     public static IfExpressionNode newIfExpression(ParserRuleContext ctx, BaseNode c, BaseNode t, BaseNode e) {
