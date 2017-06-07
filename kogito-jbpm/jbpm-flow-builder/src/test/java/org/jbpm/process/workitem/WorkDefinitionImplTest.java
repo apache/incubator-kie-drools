@@ -15,6 +15,10 @@
 
 package org.jbpm.process.workitem;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.process.core.datatype.impl.type.EnumDataType;
 import org.drools.core.process.core.datatype.impl.type.ListDataType;
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
@@ -22,10 +26,6 @@ import org.jbpm.process.workitem.enums.AnimalsEnum;
 import org.jbpm.process.workitem.enums.CarsEnum;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -122,7 +122,7 @@ public class WorkDefinitionImplTest extends AbstractBaseTest {
             if (entry.getKey().equals("param1")) {
                 EnumDataType paramEnum = (EnumDataType) entry.getValue();
                 assertEquals("org.jbpm.process.workitem.enums.AnimalsEnum", paramEnum.getClassName());
-                Map<String, Object> paramValuesMap = paramEnum.getValueMap();
+                Map<String, Object> paramValuesMap = paramEnum.getValueMap(null);
                 assertNotNull(paramValuesMap);
                 assertEquals(5, paramValuesMap.size());
 
@@ -141,7 +141,7 @@ public class WorkDefinitionImplTest extends AbstractBaseTest {
             } else if(entry.getKey().equals("param3")) {
                 EnumDataType paramEnum = (EnumDataType) entry.getValue();
                 assertEquals("org.jbpm.process.workitem.enums.CarsEnum", paramEnum.getClassName());
-                Map<String, Object> paramValuesMap = paramEnum.getValueMap();
+                Map<String, Object> paramValuesMap = paramEnum.getValueMap(null);
                 assertNotNull(paramValuesMap);
                 assertEquals(5, paramValuesMap.size());
 
@@ -232,7 +232,7 @@ public class WorkDefinitionImplTest extends AbstractBaseTest {
                 assertTrue( entry.getValue() instanceof  EnumDataType );
                 EnumDataType paramEnum = (EnumDataType) entry.getValue();
                 assertEquals("org.jbpm.process.workitem.enums.AnimalsEnum", paramEnum.getClassName());
-                Map<String, Object> paramValuesMap = paramEnum.getValueMap();
+                Map<String, Object> paramValuesMap = paramEnum.getValueMap(null);
                 assertNotNull(paramValuesMap);
                 assertEquals(5, paramValuesMap.size());
 
