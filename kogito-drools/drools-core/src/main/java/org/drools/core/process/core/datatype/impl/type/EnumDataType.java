@@ -61,11 +61,11 @@ public class EnumDataType implements DataType {
         if (value == null) {
             return true;
         }
-        return getValueMap().containsValue(value);
+        return getValueMap(null).containsValue(value);
     }
     
     public Object readValue(String value) {
-        return getValueMap().get(value);
+        return getValueMap(null).get(value);
     }
 
     public String writeValue(Object value) {
@@ -76,22 +76,30 @@ public class EnumDataType implements DataType {
         return className == null ? "java.lang.Object" : className;
     }
 
+    public Object[] getValues(ClassLoader classLoader) {
+        return getValueMap(classLoader).values().toArray();
+    }
+
     public Object[] getValues() {
-        return getValueMap().values().toArray();
+        return getValues(null);
+    }
+
+    public String[] getValueNames(ClassLoader classLoader) {
+        return getValueMap(classLoader).keySet().toArray(new String[0]);
     }
 
     public String[] getValueNames() {
-        return getValueMap().keySet().toArray(new String[0]);
+        return getValueNames(null);
     }
 
-    public Map<String, Object> getValueMap() {
+    public Map<String, Object> getValueMap(ClassLoader classLoader) {
         if (this.valueMap == null) {
             try {
                 this.valueMap = new HashMap<String, Object>();
                 if (className == null) {
                     return null;
                 }
-                Class<?> clazz = Class.forName(className);
+                Class<?> clazz = classLoader == null ? Class.forName(className):Class.forName(className,true,classLoader);
                 if (!clazz.isEnum()) {
                     return null;
                 }
