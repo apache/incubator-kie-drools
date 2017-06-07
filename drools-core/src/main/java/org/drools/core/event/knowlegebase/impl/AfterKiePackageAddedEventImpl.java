@@ -16,19 +16,19 @@
 
 package org.drools.core.event.knowlegebase.impl;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.definition.KnowledgePackage;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.event.kiebase.AfterKiePackageAddedEvent;
 
 public class AfterKiePackageAddedEventImpl extends KnowledgeBaseEventImpl implements AfterKiePackageAddedEvent {
-    private KnowledgePackage knowledgePackage;
+    private KiePackage knowledgePackage;
     
-    public AfterKiePackageAddedEventImpl(KnowledgeBase knowledgeBase, KnowledgePackage knowledgePackage) {
+    public AfterKiePackageAddedEventImpl(KieBase knowledgeBase, KiePackage knowledgePackage) {
         super( knowledgeBase );
         this.knowledgePackage = knowledgePackage;
     }
 
-    public KnowledgePackage getKiePackage() {
+    public KiePackage getKiePackage() {
         return this.knowledgePackage;
     }
 

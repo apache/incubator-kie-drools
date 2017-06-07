@@ -20,14 +20,14 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.Context;
-import org.kie.internal.definition.KnowledgePackage;
 
 import java.util.Collection;
 
 public class KnowledgeBuilderGetKnowledgePackagesCommand
     implements
-    ExecutableCommand<Collection<KnowledgePackage>> {
+    ExecutableCommand<Collection<KiePackage>> {
 
     private String outIdentifier;
 
@@ -38,10 +38,10 @@ public class KnowledgeBuilderGetKnowledgePackagesCommand
         this.outIdentifier = outIdentifier;
     }
 
-    public Collection<KnowledgePackage> execute(Context context) {
+    public Collection<KiePackage> execute(Context context) {
         KnowledgeBuilder kbuilder = ((RegistryContext) context).lookup(KnowledgeBuilder.class);
         
-        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
+        Collection<KiePackage> knowledgePackages = kbuilder.getKnowledgePackages();
         if ( this.outIdentifier != null ) {
             ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, knowledgePackages );
         }

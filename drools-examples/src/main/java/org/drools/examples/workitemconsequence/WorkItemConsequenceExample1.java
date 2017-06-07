@@ -15,13 +15,13 @@
  */
 package org.drools.examples.workitemconsequence;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -39,14 +39,14 @@ public class WorkItemConsequenceExample1 {
                                                             WorkItemConsequenceExample1.class ),
                                                             ResourceType.DRL );
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         if ( kbuilder.hasErrors() ) {
             throw new RuntimeException( "Compilation error.\n" + kbuilder.getErrors().toString() );
         }
 
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieSession ksession = kbase.newKieSession();
         ksession.getWorkItemManager().registerWorkItemHandler( "EmailWorkItemHandler",
                                                                new EmailWorkItemHandler() );
 

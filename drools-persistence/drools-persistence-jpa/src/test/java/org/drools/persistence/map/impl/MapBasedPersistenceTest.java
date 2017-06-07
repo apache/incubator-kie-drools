@@ -24,12 +24,12 @@ import org.drools.persistence.map.EnvironmentBuilder;
 import org.drools.persistence.map.KnowledgeSessionStorage;
 import org.drools.persistence.map.KnowledgeSessionStorageEnvironmentBuilder;
 import org.junit.Before;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 
 public class MapBasedPersistenceTest extends MapPersistenceTest{
     
@@ -41,7 +41,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest{
     }
     
     @Override
-    protected StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
+    protected KieSession createSession(KieBase kbase) {
         
         EnvironmentBuilder envBuilder = new KnowledgeSessionStorageEnvironmentBuilder( storage );
         Environment env = KieServices.Factory.get().newEnvironment();
@@ -56,8 +56,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest{
     }
     
     @Override
-    protected StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession,
-                                                             KnowledgeBase kbase) {
+    protected KieSession disposeAndReloadSession(KieSession ksession, KieBase kbase) {
         long sessionId = ksession.getIdentifier();
         ksession.dispose();
         EnvironmentBuilder envBuilder = new KnowledgeSessionStorageEnvironmentBuilder( storage );

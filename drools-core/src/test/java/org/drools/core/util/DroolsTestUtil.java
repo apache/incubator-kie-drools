@@ -17,9 +17,9 @@
 package org.drools.core.util;
 
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
-import org.kie.internal.KnowledgeBase;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +36,7 @@ public class DroolsTestUtil {
         return ret;
     }
 
-    public static Map<String, Rule> rulestoMap( KnowledgeBase kbase ) {
+    public static Map<String, Rule> rulestoMap( KieBase kbase ) {
         List<Rule> rules = new ArrayList();
         for ( KiePackage pkg : ((KnowledgeBaseImpl)kbase).getPackages() ) {
             for ( Rule rule : pkg.getRules() ) {

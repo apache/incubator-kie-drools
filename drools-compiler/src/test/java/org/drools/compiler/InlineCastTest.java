@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class InlineCastTest extends CommonTestMethodBase {
@@ -32,8 +33,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -58,8 +59,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -84,8 +85,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -110,8 +111,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -130,8 +131,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -151,8 +152,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -171,8 +172,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -198,8 +199,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -225,8 +226,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -251,8 +252,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -279,8 +280,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                      "then\n" +
                      "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person mark1 = new Person("mark");
         mark1.setAddress(new LongAddress("uk"));
@@ -307,8 +308,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                      + " then\n"
                      + "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieSession ksession = kbase.newKieSession();
         try {
             Person mark1 = new Person("mark");
             mark1.setAddress(new Address());
@@ -338,8 +339,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                      + " then\n"
                      + "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieSession ksession = kbase.newKieSession();
         try {
             Person mark1 = new Person("mark");
             mark1.setAddress(new LongAddress("United States"));
@@ -370,8 +371,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                      + " then\n"
                      + "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieSession ksession = kbase.newKieSession();
         try {
             Person mark1 = new Person("mark");
             mark1.setAddress(new LongAddress("United States"));
@@ -401,8 +402,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                      + " then "
                      + "end ";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieSession ksession = kbase.newKieSession();
         try {
             ksession.insert( "United States" );
             ksession.insert( "United Kingdom" );
@@ -425,8 +426,8 @@ public class InlineCastTest extends CommonTestMethodBase {
                 "   list.add($x);" +
                 "end\n";
  
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
  
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );

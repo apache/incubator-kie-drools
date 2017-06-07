@@ -16,20 +16,20 @@
 
 package org.drools.core.event.knowlegebase.impl;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.definition.KnowledgePackage;
+import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.event.kiebase.BeforeKiePackageRemovedEvent;
 
 
 public class BeforeKiePackageRemovedEventImpl extends KnowledgeBaseEventImpl implements BeforeKiePackageRemovedEvent {
-    private KnowledgePackage knowledgePackage;
+    private KiePackage knowledgePackage;
     
-    public BeforeKiePackageRemovedEventImpl(KnowledgeBase knowledgeBase, KnowledgePackage knowledgePackage) {
+    public BeforeKiePackageRemovedEventImpl(KieBase knowledgeBase, KiePackage knowledgePackage) {
         super( knowledgeBase );
         this.knowledgePackage = knowledgePackage;
     }
 
-    public KnowledgePackage getKiePackage() {
+    public KiePackage getKiePackage() {
         return this.knowledgePackage;
     }
 

@@ -23,7 +23,7 @@ import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
 
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 public class
         AddRemoveTest extends DroolsTestCase {
@@ -45,7 +45,7 @@ public class
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
-        kBase.newStatefulKnowledgeSession();
+        kBase.newKieSession();
 
         // objectTypeNode.
     }

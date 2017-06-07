@@ -16,7 +16,9 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -36,8 +38,6 @@ import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
@@ -70,8 +70,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        KieSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -122,8 +122,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        KieSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -152,7 +152,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
     @Test//(timeout=10000)
     public void testApplyBlockerFirst() {
-        StatefulKnowledgeSession ksession = getStatefulKnowledgeSession();
+        KieSession ksession = getStatefulKnowledgeSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -178,7 +178,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testApplyBlockerFirstWithFireAllRulesInbetween() {
-        StatefulKnowledgeSession ksession = getStatefulKnowledgeSession();
+        KieSession ksession = getStatefulKnowledgeSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -207,7 +207,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testApplyBlockerSecond() {
-        StatefulKnowledgeSession ksession = getStatefulKnowledgeSession();
+        KieSession ksession = getStatefulKnowledgeSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -232,7 +232,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testApplyBlockerSecondWithUpdate() {
-        StatefulKnowledgeSession ksession = getStatefulKnowledgeSession();
+        KieSession ksession = getStatefulKnowledgeSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -266,7 +266,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testApplyBlockerSecondAfterUpdate() {
-        StatefulKnowledgeSession ksession = getStatefulKnowledgeSession();
+        KieSession ksession = getStatefulKnowledgeSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -307,7 +307,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
-    public StatefulKnowledgeSession getStatefulKnowledgeSession() {
+    public KieSession getStatefulKnowledgeSession() {
         String str = "";
         str += "package org.domain.test \n";
         str += "import " + Match.class.getName() + "\n";
@@ -332,8 +332,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         return ksession;
     }
@@ -382,8 +382,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        KieSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -474,8 +474,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        KieSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -548,8 +548,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        KieSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -675,8 +675,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List cancelled = new ArrayList();
 
@@ -767,8 +767,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -815,8 +815,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -859,8 +859,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -1050,8 +1050,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, drl );
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString( kconf, drl );
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );

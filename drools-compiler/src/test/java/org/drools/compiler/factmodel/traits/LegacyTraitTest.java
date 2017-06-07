@@ -23,14 +23,15 @@ import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.StandaloneTraitFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -63,7 +64,7 @@ public class LegacyTraitTest {
 
 
 
-    private StatefulKnowledgeSession getSessionFromString( String drl ) {
+    private KieSession getSessionFromString( String drl ) {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
                               ResourceType.DRL );
@@ -71,10 +72,10 @@ public class LegacyTraitTest {
             throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( knowledgeBuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KieSession session = kbase.newKieSession();
         return session;
     }
 
@@ -193,7 +194,7 @@ public class LegacyTraitTest {
                         "end " +
                         "\n";
 
-        StatefulKnowledgeSession ks = getSessionFromString( source );
+        KieSession ks = getSessionFromString( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
 
         ExtendedProcedureImpl procedure1 = new ExtendedProcedureImpl();
@@ -274,7 +275,7 @@ public class LegacyTraitTest {
 
                         "";
 
-        StatefulKnowledgeSession ks = getSessionFromString( source );
+        KieSession ks = getSessionFromString( source );
         TraitFactory.setMode( mode, ks.getKieBase() );
         ArrayList list = new ArrayList();
         ks.setGlobal( "list", list );

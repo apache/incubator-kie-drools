@@ -18,13 +18,13 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Triangle;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -113,8 +113,8 @@ public class EnumTest extends CommonTestMethodBase {
             fail(kbuilder.getErrors().toString());
         }
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
 
         final KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder2.add(ResourceFactory.newByteArrayResource(str2.getBytes()), ResourceType.DRL);
@@ -122,7 +122,7 @@ public class EnumTest extends CommonTestMethodBase {
         if (kbuilder2.hasErrors()) {
             fail(kbuilder2.getErrors().toString());
         }
-        kbase.addKnowledgePackages(kbuilder2.getKnowledgePackages());
+        kbase.addPackages(kbuilder2.getKnowledgePackages());
 
         final KieSession ksession = kbase.newKieSession();
         kbuilder.add(ResourceFactory.newByteArrayResource(str2.getBytes()), ResourceType.DRL);

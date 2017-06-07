@@ -41,6 +41,8 @@ import org.drools.compiler.OuterClass;
 import org.drools.compiler.Person;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectSink;
@@ -68,8 +70,6 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.time.SessionPseudoClock;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
@@ -883,8 +883,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                       "        System.out.println($p2.getName());\n" +
                       "end\n";
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession wm = createKnowledgeSession( kbase );
 
         wm.insert( new Cheese( "stilton", 10 ) );
         wm.insert( new Person( "Alice", "brie" ) );
@@ -916,8 +916,8 @@ public class AccumulateTest extends CommonTestMethodBase {
 
                       "";
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession wm = createKnowledgeSession( kbase );
 
         List list = new ArrayList();
         wm.setGlobal( "list", list );
@@ -1603,8 +1603,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                       "    list.add( $c );\n" +
                       "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = loadKnowledgeBaseFromString( rule );
+        KieSession ksession = createKnowledgeSession( kbase );
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -1803,8 +1803,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                      "    results.add($min); results.add($max); \n" +
                      "end \n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieSession ksession = createKnowledgeSession( kbase );
 
         final List<Number> results = new ArrayList<Number>();
         ksession.setGlobal( "results",
@@ -1849,8 +1849,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                      "    results.add( $c + \" facts\" );\n" +
                      "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieSession ksession = createKnowledgeSession( kbase );
 
         final List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results",
@@ -2026,15 +2026,15 @@ public class AccumulateTest extends CommonTestMethodBase {
                       "  System.out.println(\"ok\");\n" +
                       "end\n";
 
-        final KnowledgeBase kbase = getKnowledgeBase();
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         // To reproduce, Need to have 3 object asserted (not less) :
         ksession.insert( new Triple( "<http://deductions.sf.net/samples/princing.n3p.n3#CN1>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "200" ) );
         ksession.insert( new Triple( "<http://deductions.sf.net/samples/princing.n3p.n3#CN2>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "100" ) );
         ksession.insert( new Triple( "<http://deductions.sf.net/samples/princing.n3p.n3#CN3>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "100" ) );
 
-        kbase.addKnowledgePackages( loadKnowledgePackagesFromString( rule ) );
+        kbase.addPackages( loadKnowledgePackagesFromString( rule ) );
         ksession.fireAllRules();
     }
 
@@ -2100,10 +2100,10 @@ public class AccumulateTest extends CommonTestMethodBase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        final KnowledgeBase kbase = getKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        final InternalKnowledgeBase kbase = (InternalKnowledgeBase) getKnowledgeBase();
+        KieSession ksession = createKnowledgeSession( kbase );
 
-        kbase.addKnowledgePackages( loadKnowledgePackagesFromString( rule ) );
+        kbase.addPackages( loadKnowledgePackagesFromString( rule ) );
         ksession.fireAllRules();
 
         QueryResults res = ksession.getQueryResults( "getResults", "1", Variable.v );
@@ -2450,12 +2450,12 @@ public class AccumulateTest extends CommonTestMethodBase {
         KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbConf.setOption( EventProcessingOption.STREAM );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbConf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbConf );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksConf.setOption( ClockTypeOption.get( "pseudo" ) );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksConf, null );
+        KieSession ksession = kbase.newKieSession( ksConf, null );
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -2513,10 +2513,10 @@ public class AccumulateTest extends CommonTestMethodBase {
         System.out.println( kbuilder.getErrors() );
         assertFalse( kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 

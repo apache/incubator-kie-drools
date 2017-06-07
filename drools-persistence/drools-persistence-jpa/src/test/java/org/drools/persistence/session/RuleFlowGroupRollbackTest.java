@@ -19,6 +19,8 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
@@ -31,8 +33,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.runtime.Context;
@@ -110,13 +110,13 @@ public class RuleFlowGroupRollbackTest {
 		
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ClassPathResource("ruleflowgroup_rollback.drl"), ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         Environment env = createEnvironment(context);
         if( locking ) { 

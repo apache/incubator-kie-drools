@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.compiler.DecisionTableFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -34,8 +34,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 
 public class UnicodeInCSVTest {
 
@@ -51,10 +51,10 @@ public class UnicodeInCSVTest {
             System.out.println(DecisionTableFactory.loadFromInputStream(getClass().getResourceAsStream("unicode.xls"), dtconf));
             fail("Cannot build CSV decision table containing utf-8 characters\n" + kbuilder.getErrors().toString() );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
         List<Člověk> dospělí = new ArrayList<Člověk>();

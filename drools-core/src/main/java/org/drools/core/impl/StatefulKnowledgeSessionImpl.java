@@ -116,6 +116,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
+import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
@@ -142,7 +143,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.marshalling.MarshallerFactory;
@@ -490,7 +490,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         getProcessRuntime().removeEventListener(listener);
     }
 
-    public KnowledgeBase getKieBase() {
+    @Override
+    public KieBase getKieBase() {
         return this.kBase;
     }
 

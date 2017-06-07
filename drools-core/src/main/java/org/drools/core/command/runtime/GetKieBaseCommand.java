@@ -19,23 +19,23 @@ package org.drools.core.command.runtime;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Context;
 
-public class GetKnowledgeBaseCommand
+public class GetKieBaseCommand
     implements
-    ExecutableCommand<KnowledgeBase> {
+    ExecutableCommand<KieBase> {
 
-    public GetKnowledgeBaseCommand() {
+    public GetKieBaseCommand() {
     }
 
-    public KnowledgeBase execute(Context context) {
+    public KieBase execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        return (KnowledgeBase)ksession.getKieBase();
+        return ksession.getKieBase();
     }
 
     public String toString() {
-        return "session.getRuleBase();";
+        return "session.getKieBase();";
     }
 
 }

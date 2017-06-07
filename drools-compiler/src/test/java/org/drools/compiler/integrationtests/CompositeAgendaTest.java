@@ -17,6 +17,7 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.integrationtests.facts.A;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,7 +26,6 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
 

@@ -20,10 +20,10 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.StockTick;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
@@ -66,8 +66,8 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
     }
 
     private List<String> executeTestWithDRL(String drl) {
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results", results );
@@ -620,8 +620,8 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "    results.add( $a.getType() );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results", results );
@@ -678,8 +678,8 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                         "  results.add( \"Car is NOT cheap\" ); \n" +
                         "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> results = new ArrayList<String>();
         ksession.setGlobal("results", results);
@@ -718,8 +718,8 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
                 "    delete(fact);\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         List<String> results = new ArrayList<String>();
         ksession.setGlobal("results", results);

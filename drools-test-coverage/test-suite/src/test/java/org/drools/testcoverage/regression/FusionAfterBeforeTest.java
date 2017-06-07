@@ -22,6 +22,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.kie.api.time.SessionPseudoClock;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.testcoverage.common.listener.TrackingAgendaEventListener;
 import org.drools.testcoverage.common.model.Event;
 import org.drools.testcoverage.common.model.EventA;
@@ -44,7 +45,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.utils.KieHelper;
 
 /**

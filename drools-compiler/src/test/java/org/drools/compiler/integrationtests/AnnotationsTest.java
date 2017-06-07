@@ -23,11 +23,14 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.Message;
 import org.kie.api.conf.EventProcessingOption;
@@ -38,8 +41,6 @@ import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
@@ -132,7 +133,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
                      " field : String @Annot \n" +
                      "end \n";
         
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = loadKnowledgeBaseFromString( drl );
 
         Class clazz = kbase.getFactType( "org.drools.compiler.test",
                                          "AnnotatedBean" ).getFactClass();
@@ -266,7 +267,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         conf.setOption( EventProcessingOption.STREAM );
         conf.setOption( MBeansOption.ENABLED );
 
-        KnowledgeBase kbase = loadKnowledgeBase( "kb1",
+        KieBase kbase = loadKnowledgeBase( "kb1",
                                                  drl,
                                                  conf );
 
@@ -298,7 +299,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         conf.setOption( EventProcessingOption.STREAM );
         conf.setOption( MBeansOption.ENABLED );
 
-        KnowledgeBase kbase = loadKnowledgeBase( "kb1",
+        KieBase kbase = loadKnowledgeBase( "kb1",
                                                  drl,
                                                  conf );
 
@@ -310,7 +311,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
 
     }
 
-    private KnowledgeBase loadKnowledgeBase( String id,
+    private KieBase loadKnowledgeBase( String id,
                                              String drl,
                                              KieBaseConfiguration conf ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -319,9 +320,9 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         Assert.assertFalse( kbuilder.getErrors().toString(),
                             kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( id,
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( id,
                                                                      conf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
         return kbase;
     }
 
@@ -344,7 +345,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
 
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 
-        KnowledgeBase kbase = loadKnowledgeBase( "kb1", drl, conf );
+        KieBase kbase = loadKnowledgeBase( "kb1", drl, conf );
         FactType ft = kbase.getFactType( "org.drools.test", "Annot" );
         try {
             Object o = ft.newInstance();
@@ -377,7 +378,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
 
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 
-        KnowledgeBase kbase = loadKnowledgeBase( "kb1", drl, conf );
+        KieBase kbase = loadKnowledgeBase( "kb1", drl, conf );
         FactType ft = kbase.getFactType( "org.drools.test", "Annot" );
         assertNotNull( ft );
     }

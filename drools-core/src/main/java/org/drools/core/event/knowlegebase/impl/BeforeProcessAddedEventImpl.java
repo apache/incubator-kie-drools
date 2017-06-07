@@ -16,14 +16,14 @@
 
 package org.drools.core.event.knowlegebase.impl;
 
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieBase;
 import org.kie.api.definition.process.Process;
 import org.kie.api.event.kiebase.BeforeProcessAddedEvent;
 
 public class BeforeProcessAddedEventImpl extends KnowledgeBaseEventImpl implements BeforeProcessAddedEvent {
     private Process process;
     
-    public BeforeProcessAddedEventImpl(KnowledgeBase knowledgeBase, Process process) {
+    public BeforeProcessAddedEventImpl(KieBase knowledgeBase, Process process) {
         super( knowledgeBase );
         this.process = process;
     }

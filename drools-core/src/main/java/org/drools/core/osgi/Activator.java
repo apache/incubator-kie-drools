@@ -18,10 +18,8 @@ package org.drools.core.osgi;
 
 import java.util.Hashtable;
 
-import org.drools.core.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.core.io.impl.ResourceFactoryServiceImpl;
 import org.drools.core.marshalling.impl.MarshallerProviderImpl;
-import org.kie.internal.KnowledgeBaseFactoryService;
 import org.kie.api.Service;
 import org.kie.api.io.KieResources;
 import org.kie.api.marshalling.KieMarshallers;
@@ -38,7 +36,6 @@ public class Activator
     protected static final transient Logger logger = LoggerFactory.getLogger(Activator.class);
 
     private ServiceRegistration resourceReg;
-    private ServiceRegistration kbaseReg;
     private ServiceRegistration marshallerProviderReg;
 
     public void start(BundleContext bc) throws Exception {
@@ -46,10 +43,6 @@ public class Activator
         this.resourceReg = bc.registerService( new String[]{KieResources.class.getName(), Service.class.getName()},
                                                new ResourceFactoryServiceImpl(),
                                                new Hashtable() );
-        
-        this.kbaseReg = bc.registerService( new String[]{KnowledgeBaseFactoryService.class.getName(), Service.class.getName()},
-                                            new KnowledgeBaseFactoryServiceImpl(),
-                                            new Hashtable() );
 
         this.marshallerProviderReg = bc.registerService( new String[]{KieMarshallers.class.getName(), Service.class.getName()},
                 new MarshallerProviderImpl(),
@@ -59,7 +52,6 @@ public class Activator
     }
 
     public void stop(BundleContext bc) throws Exception {
-        this.kbaseReg.unregister();
         this.resourceReg.unregister();
         this.marshallerProviderReg.unregister();
     }

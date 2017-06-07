@@ -29,13 +29,13 @@ import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
 
 import static org.junit.Assert.assertEquals;
 
@@ -74,8 +74,8 @@ public class MVELAccumulateBuilderTest {
 
         ((MVELCompileable) acc.getAccumulators()[0]).compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         MockLeftTupleSink sink = new MockLeftTupleSink();
         final Cheese cheddar1 = new Cheese( "cheddar",

@@ -34,11 +34,12 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 import org.drools.verifier.visitor.PackageDescrVisitor;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
@@ -49,8 +50,8 @@ public class VerifierImpl
     implements
     Verifier {
 
-    private KnowledgeBase verifierKnowledgeBase;
-    private StatefulKnowledgeSession    ksession;
+    private KieBase verifierKnowledgeBase;
+    private KieSession    ksession;
 
     private final VerifierConfiguration conf;
 
@@ -70,7 +71,7 @@ public class VerifierImpl
         this.conf = new DefaultVerifierConfiguration();
     }
 
-    public StatefulKnowledgeSession getKnowledgeSession() {
+    public KieSession getKnowledgeSession() {
         return ksession;
     }
 
@@ -156,7 +157,7 @@ public class VerifierImpl
             this.ksession.dispose();
         }
 
-        ksession = verifierKnowledgeBase.newStatefulKnowledgeSession();
+        ksession = verifierKnowledgeBase.newKieSession();
     }
 
     /**

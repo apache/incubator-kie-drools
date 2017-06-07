@@ -61,7 +61,7 @@ public class ScenarioTest {
         
         joinNode.addTupleSink( sinkNode );
 
-        wm = ((StatefulKnowledgeSessionImpl)buildContext.getKnowledgeBase().newStatefulKnowledgeSession());
+        wm = ((StatefulKnowledgeSessionImpl)buildContext.getKnowledgeBase().newKieSession());
         
         bm =(BetaMemory)  wm.getNodeMemory( joinNode );
         

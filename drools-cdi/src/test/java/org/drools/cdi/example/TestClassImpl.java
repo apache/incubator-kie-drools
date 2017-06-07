@@ -15,8 +15,7 @@
 
 package org.drools.cdi.example;
 
-import org.kie.internal.KnowledgeBase;
-
+import org.kie.api.KieBase;
 
 public class TestClassImpl implements TestClass {
     
@@ -25,9 +24,9 @@ public class TestClassImpl implements TestClass {
     }
 
     private //@Inject @KBase("org.droosl.test1")  
-            KnowledgeBase kBase1;
+            KieBase kBase1;
     
-    public KnowledgeBase getKBase1() {
+    public KieBase getKBase1() {
         return kBase1;
     }
 }

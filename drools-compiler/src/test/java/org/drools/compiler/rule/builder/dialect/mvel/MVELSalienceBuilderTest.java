@@ -32,6 +32,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
@@ -44,7 +45,6 @@ import org.drools.core.spi.Salience;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
-import org.kie.internal.KnowledgeBaseFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -91,7 +91,7 @@ public class MVELSalienceBuilderTest {
         declarationResolver.setDeclarations( map );
         context.setDeclarationResolver( declarationResolver );
 
-        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+        kBase = KnowledgeBaseFactory.newKnowledgeBase();
         SalienceBuilder salienceBuilder = new MVELSalienceBuilder();
         salienceBuilder.build( context );
 
@@ -102,7 +102,7 @@ public class MVELSalienceBuilderTest {
 
     @Test
     public void testSimpleExpression() {
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newKieSession();
 
         final Person p = new Person( "mark",
                                      "",
@@ -182,7 +182,7 @@ public class MVELSalienceBuilderTest {
                                  Rule rule,
                                  Salience salience,
                                  Person person) {
-            wm = ((StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession());
+            wm = ((StatefulKnowledgeSessionImpl)kBase.newKieSession());
 
             this.context = context;
             final InternalFactHandle f0 = (InternalFactHandle) wm.insert( person );

@@ -19,15 +19,15 @@ import java.io.InputStream;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.
@@ -54,11 +54,11 @@ public class PricingRuleLauncher {
         }
 
         //BUILD RULEBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages( kbuilder.getKnowledgePackages() );
 
         //NEW WORKING MEMORY
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        final KieSession session = kbase.newKieSession();
 
         //now create some test data
         Driver driver = new Driver();

@@ -45,7 +45,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 
 import static org.junit.Assert.*;
 

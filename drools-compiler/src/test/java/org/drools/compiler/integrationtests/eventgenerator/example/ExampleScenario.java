@@ -26,10 +26,10 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.integrationtests.eventgenerator.PseudoSessionClock;
 import org.drools.compiler.integrationtests.eventgenerator.SimpleEventGenerator;
 import org.drools.compiler.integrationtests.eventgenerator.SimpleEventListener;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -57,9 +57,9 @@ public class ExampleScenario {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(ExampleScenario.class.getResourceAsStream(FILE_NAME_RULES)), ResourceType.DRL);
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        wm = kbase.newStatefulKnowledgeSession();
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
+        wm = kbase.newKieSession();
     }
 
     public static final void main (String[] args) {

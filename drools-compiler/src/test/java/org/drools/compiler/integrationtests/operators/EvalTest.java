@@ -34,7 +34,6 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -320,8 +319,8 @@ public class EvalTest extends CommonTestMethodBase {
         rule += "    System.out.println(\"OK!\");\n";
         rule += "end";
 
-        final KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
-        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
+        final KieSession session = createKnowledgeSession(kbase);
 
         session.fireAllRules();
     }

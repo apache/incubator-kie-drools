@@ -18,10 +18,12 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.RoutingMessage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
@@ -36,8 +38,8 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
 
     @Test
     public void testStrStartsWith() throws Exception {
-        KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = readKnowledgeBase();
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -58,8 +60,8 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
 
     @Test
     public void testStrEndsWith() throws Exception {
-        KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = readKnowledgeBase();
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -80,8 +82,8 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
 
     @Test
     public void testStrLengthEquals() throws Exception {
-        KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = readKnowledgeBase();
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -98,8 +100,8 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
 
     @Test
     public void testStrNotStartsWith() throws Exception {
-        KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = readKnowledgeBase();
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -115,8 +117,8 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
 
     @Test
     public void testStrNotEndsWith() throws Exception {
-        KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = readKnowledgeBase();
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -134,8 +136,8 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
 
     @Test
     public void testStrLengthNoEquals() throws Exception {
-        KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = readKnowledgeBase();
+        KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -161,9 +163,9 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
                      + " RoutingMessage( routingValue == \"R2\" || routingValue str[startsWith] \"R1\" )\n"
                      + " then\n"
                      + "end\n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = loadKnowledgeBaseFromString( drl );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         try {
             for (String msgValue : new String[]{ "R1something", "R2something", "R2" }) {
                 RoutingMessage msg = new RoutingMessage();
@@ -186,9 +188,9 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
                      " Object( this#" + Person.class.getName() + ".name str[startsWith] \"M\" ) " +
                      " then " +
                      "end ";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         try {
             ksession.insert( new Person( "Mark" ) );
 
@@ -206,9 +208,9 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
                      " Object( this#String str[startsWith] \"M\" ) " +
                      " then " +
                      "end ";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = loadKnowledgeBaseFromString(drl);
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         try {
             ksession.insert( "Mark" );
 
@@ -218,7 +220,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
         }
     }
 
-    private KnowledgeBase readKnowledgeBase() throws Exception {
+    private KieBase readKnowledgeBase() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("strevaluator_test.drl")),
                 ResourceType.DRL );
@@ -229,8 +231,8 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
             }
             throw new IllegalArgumentException("Could not parse knowledge." + errors.toArray());
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addPackages(kbuilder.getKnowledgePackages());
         return kbase;
     }
 

@@ -35,6 +35,7 @@ import junit.framework.TestCase;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.process.instance.WorkItem;
@@ -45,12 +46,11 @@ import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -435,9 +435,9 @@ public class MarshallingTestUtil {
     
     protected static KieSession unmarshallSession(MarshalledData marshalledData) throws Exception { 
         // Setup marshaller
-        KnowledgeBase kbase;
+        KieBase kbase;
         if( STORE_KNOWLEDGE_BASE ) { 
-            kbase = (KnowledgeBase) DroolsStreamUtils.streamIn(marshalledData.serializedKnowledgeBase);
+            kbase = (KieBase) DroolsStreamUtils.streamIn(marshalledData.serializedKnowledgeBase);
         }
         else { 
             kbase = KnowledgeBaseFactory.newKnowledgeBase();

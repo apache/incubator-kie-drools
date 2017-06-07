@@ -23,12 +23,12 @@ import org.drools.core.test.model.Cheese;
 
 import org.junit.Test;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
+import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.KieBase;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.*;
@@ -37,8 +37,8 @@ public class RuleRuntimeEventSupportTest {
 
     @Test
     public void testAddRuleRuntimeEventListener() {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieSession ksession = kbase.newKieSession();
 
         final List wmList = new ArrayList();
         final RuleRuntimeEventListener eventListener = new RuleRuntimeEventListener() {
@@ -86,8 +86,8 @@ public class RuleRuntimeEventSupportTest {
     
     @Test
     public void testRemoveRuleRuntimeEventListener() {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieSession ksession = kbase.newKieSession();
 
         final List wmList = new ArrayList();
         final RuleRuntimeEventListener eventListener = new RuleRuntimeEventListener() {
