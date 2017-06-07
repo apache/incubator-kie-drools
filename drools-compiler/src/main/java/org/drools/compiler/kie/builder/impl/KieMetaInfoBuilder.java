@@ -57,6 +57,10 @@ public class KieMetaInfoBuilder {
                       true );
     }
 
+    public KieModuleMetaInfo getKieModuleMetaInfo(){
+        return generateKieModuleMetaInfo();
+    }
+
     private KieModuleMetaInfo generateKieModuleMetaInfo() {
         // TODO: I think this method is wrong because it is only inspecting packages that are included
         // in at least one kbase, but I believe it should inspect all packages, even if not included in
