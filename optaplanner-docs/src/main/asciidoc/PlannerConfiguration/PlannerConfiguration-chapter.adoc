@@ -1308,7 +1308,7 @@ Those can even return a `Collection` with the same entity class type.
 
 [NOTE]
 ====
-A `@PlanningEntityCollectionProperty annotation needs to be on a member in a class with a @PlanningSolution annotation.
+A `@PlanningEntityCollectionProperty` annotation needs to be on a member in a class with a `@PlanningSolution` annotation.
 It is ignored on parent classes or subclasses without that annotation.
 ====
 
@@ -1462,7 +1462,7 @@ Where a score constraint needs to check that no two exams with a topic that shar
 ==== Auto Discover Solution Properties
 
 Instead of configuring each property (or field) annotation explicitly,
-some can also be deducted automatically by Planner.
+some can also be deduced automatically by Planner.
 For example, on the cloud balancing example:
 
 [source,java,options="nowrap"]
