@@ -54,13 +54,10 @@
                 </goals>
                 <configuration>
                   <connectionUrl>scm:git:https://github.com/agilepro/dmn-tck.git</connectionUrl>
-                  <goals>install</goals>
+                  <goals>install -Ddrools.version=${project.version}</goals>
                   <goalsDirectory>runners</goalsDirectory>
                   <profiles>drools</profiles>
                   <pushChanges>false</pushChanges>
-                  <systemProperties>
-                    <drools.version>${project.version}</drools.version>
-                  </systemProperties>
                 </configuration>
               </execution>
             </executions>
