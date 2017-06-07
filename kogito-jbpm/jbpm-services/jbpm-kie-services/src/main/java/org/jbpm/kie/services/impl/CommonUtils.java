@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.api.command.Command;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.kie.internal.identity.IdentityProvider;
 
@@ -54,4 +55,15 @@ public class CommonUtils {
         
         return roles;
     }
+
+	// to compensate https://hibernate.atlassian.net/browse/HHH-8091 add empty element to the roles in case it's empty
+    public static List<String> getCallbackUserRoles(UserGroupCallback userGroupCallback, String userId) {
+		List<String> roles = userGroupCallback != null ? userGroupCallback.getGroupsForUser(userId) : new ArrayList<>();
+		if (roles == null || roles.isEmpty()) {
+			roles = new ArrayList<>();
+			roles.add("");
+		}
+
+		return roles;
+	}
 }

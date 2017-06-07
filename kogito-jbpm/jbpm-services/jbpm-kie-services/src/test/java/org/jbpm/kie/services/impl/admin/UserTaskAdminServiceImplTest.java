@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -47,6 +48,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.model.Status;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.task.api.TaskModelFactory;
@@ -324,11 +326,15 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         
         List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsBusinessAdministrator("Administrator", new QueryFilter());
         Assertions.assertThat(tasks).hasSize(1);
-        TaskSummary task = tasks.get(0);              
+        TaskSummary task = tasks.get(0);
         
         userTaskAdminService.removeBusinessAdmins(task.getId(), factory.newUser("Administrator"));
+
+        List<Status> readyStatuses = Arrays.asList(new Status[]{
+                org.kie.api.task.model.Status.Ready
+        });
         
-        tasks = runtimeDataService.getTasksAssignedAsBusinessAdministrator("Administrator", new QueryFilter());
+        tasks = runtimeDataService.getTasksAssignedAsBusinessAdministratorByStatus("Administrator", readyStatuses, new QueryFilter());
         Assertions.assertThat(tasks).hasSize(0);
     }
     
