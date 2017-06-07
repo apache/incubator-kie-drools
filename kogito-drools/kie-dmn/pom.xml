@@ -23,6 +23,7 @@
     <module>kie-dmn-backend</module>
     <module>kie-dmn-core</module>
     <module>kie-dmn-validation</module>
+    <module>kie-dmn-tck</module>
   </modules>
 
   <dependencyManagement>
