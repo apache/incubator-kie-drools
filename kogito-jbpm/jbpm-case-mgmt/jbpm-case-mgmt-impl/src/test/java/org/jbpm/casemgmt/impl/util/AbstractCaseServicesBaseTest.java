@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 - 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,23 @@
 
 package org.jbpm.casemgmt.impl.util;
 
-import static java.util.stream.Collectors.toMap;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-
 import javax.persistence.EntityManagerFactory;
 
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.dashbuilder.DataSetCore;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.CaseRuntimeDataService;
 import org.jbpm.casemgmt.api.CaseService;
 import org.jbpm.casemgmt.api.auth.AuthorizationManager;
@@ -44,6 +42,7 @@ import org.jbpm.casemgmt.api.model.CaseDefinition;
 import org.jbpm.casemgmt.api.model.CaseMilestone;
 import org.jbpm.casemgmt.api.model.CaseRole;
 import org.jbpm.casemgmt.api.model.CaseStage;
+import org.jbpm.casemgmt.api.model.CaseStatus;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.jbpm.casemgmt.impl.AuthorizationManagerImpl;
@@ -54,6 +53,7 @@ import org.jbpm.casemgmt.impl.generator.TableCaseIdGenerator;
 import org.jbpm.casemgmt.impl.marshalling.CaseMarshallerFactory;
 import org.jbpm.kie.services.impl.FormManagerServiceImpl;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
+import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.ProcessServiceImpl;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
 import org.jbpm.kie.services.impl.UserTaskServiceImpl;
@@ -68,6 +68,7 @@ import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.UserTaskService;
+import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
@@ -75,6 +76,8 @@ import org.jbpm.services.api.query.QueryService;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.junit.After;
+import org.junit.Before;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -90,14 +93,19 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.query.QueryContext;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.DeploymentDescriptorBuilder;
+import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
+import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import static java.util.stream.Collectors.toMap;
+import static org.assertj.core.api.Assertions.*;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 public abstract class AbstractCaseServicesBaseTest {
 
@@ -122,7 +130,7 @@ public abstract class AbstractCaseServicesBaseTest {
 
     protected TestIdentityProvider identityProvider;
     protected CaseIdGenerator caseIdGenerator;
-    
+
     protected AuthorizationManager authorizationManager;
 
     protected static final String EMPTY_CASE_P_ID = "EmptyCase";
@@ -140,6 +148,76 @@ public abstract class AbstractCaseServicesBaseTest {
     protected static final String FIRST_CASE_ID = "CASE-0000000001";
     protected static final String HR_CASE_ID = "HR-0000000001";
 
+    protected static final String USER = "john";
+
+    private static final String TEST_DOC_STORAGE = "target/docs";
+
+    protected DeploymentUnit deploymentUnit;
+
+    protected abstract List<String> getProcessDefinitionFiles();
+
+    @Before
+    public void setUp() throws Exception {
+        prepareDocumentStorage();
+
+        configureServices();
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
+        List<String> processes = getProcessDefinitionFiles();
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
+        File pom = new File("target/kmodule", "pom.xml");
+        pom.getParentFile().mkdir();
+
+        FileOutputStream fs = new FileOutputStream(pom);
+        fs.write(getPom(releaseId).getBytes());
+        fs.close();
+
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, pom);
+        // use user name who is part of the case roles assignment
+        // so (s)he will be authorized to access case instance
+        identityProvider.setName(USER);
+
+        deploymentUnit = prepareDeploymentUnit();
+    }
+
+    protected DeploymentUnit prepareDeploymentUnit() {
+        assertThat(deploymentService).isNotNull();
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        final DeploymentDescriptor descriptor = new DeploymentDescriptorImpl();
+        descriptor.getBuilder().addEventListener(new NamedObjectModel(
+                "mvel",
+                "processIdentity",
+                "new org.jbpm.kie.services.impl.IdentityProviderAwareProcessListener(ksession)"
+        ));
+        deploymentUnit.setDeploymentDescriptor(descriptor);
+        deploymentUnit.setStrategy(RuntimeStrategy.PER_CASE);
+
+        deploymentService.deploy(deploymentUnit);
+        return deploymentUnit;
+    }
+
+    @After
+    public void tearDown() {
+        clearDocumentStorageProperty();
+
+        List<CaseStatus> caseStatuses = Collections.singletonList(CaseStatus.OPEN);
+        caseRuntimeDataService.getCaseInstances(caseStatuses, new QueryContext(0, Integer.MAX_VALUE))
+                .forEach(caseInstance -> caseService.cancelCase(caseInstance.getCaseId()));
+
+        identityProvider.reset();
+        identityProvider.setRoles(new ArrayList<>());
+        cleanupSingletonSessionId();
+
+        if (deploymentUnit != null) {
+            deploymentService.undeploy(deploymentUnit);
+            deploymentUnit = null;
+        }
+
+        close();
+    }
+
     protected void close() {
         DataSetCore.set(null);
         if (emf != null) {
@@ -147,6 +225,15 @@ public abstract class AbstractCaseServicesBaseTest {
         }
         EntityManagerFactoryManager.get().clear();
         closeDataSource();
+    }
+
+    private void prepareDocumentStorage() {
+        System.setProperty("org.jbpm.document.storage", TEST_DOC_STORAGE);
+        deleteFolder(TEST_DOC_STORAGE);
+    }
+
+    private void clearDocumentStorageProperty() {
+        System.clearProperty("org.jbpm.document.storage");
     }
 
     protected void configureServices() {
@@ -425,34 +512,48 @@ public abstract class AbstractCaseServicesBaseTest {
     protected Map<String, AdHocFragment> mapAdHocFragments(Collection<AdHocFragment> adHocFragments) {
         return adHocFragments.stream().collect(toMap(AdHocFragment::getName, t -> t));
     }
-    
+
     protected Map<String, ProcessDefinition> mapProcesses(Collection<ProcessDefinition> processes) {
         return processes.stream().collect(toMap(ProcessDefinition::getId, p -> p));
     }
-    
+
     protected Map<String, NodeInstanceDesc> mapNodeInstances(Collection<NodeInstanceDesc> nodes) {
         return nodes.stream().collect(toMap(NodeInstanceDesc::getName, n -> n));
     }
 
-    
     protected void assertComment(CommentInstance comment, String author, String content) {
-        assertNotNull(comment);
-        assertEquals(author, comment.getAuthor());
-        assertEquals(content, comment.getComment());
+        assertThat(comment).isNotNull();
+        assertThat(comment.getAuthor()).isEqualTo(author);
+        assertThat(comment.getComment()).isEqualTo(content);
     }
-    
+
     protected void assertTask(TaskSummary task, String actor, String name, Status status) {
-        assertNotNull(task);            
-        assertEquals(name, task.getName());
-        assertEquals(actor, task.getActualOwnerId());
-        assertEquals(status, task.getStatus());
+        assertThat(task).isNotNull();
+        assertThat(task.getName()).isEqualTo(name);
+        assertThat(task.getActualOwnerId()).isEqualTo(actor);
+        assertThat(task.getStatus()).isEqualTo(status);
     }
-    
+
     protected void assertCaseInstance(String caseId, String name) {
         CaseInstance cInstance = caseService.getCaseInstance(caseId, true, false, false, false);
-        assertNotNull(cInstance);
-        assertEquals(caseId, cInstance.getCaseId());
-        assertNotNull(cInstance.getCaseFile());
-        assertEquals(name, cInstance.getCaseFile().getData("name"));
+        assertThat(cInstance).isNotNull();
+        assertThat(cInstance.getCaseId()).isEqualTo(caseId);
+        assertThat(cInstance.getCaseFile()).isNotNull();
+        assertThat(cInstance.getCaseFile().getData("name")).isEqualTo(name);
+    }
+
+    public void assertCaseInstanceActive(String caseId) {
+        try {
+            CaseInstance caseInstance = caseService.getCaseInstance(caseId);
+            assertThat(caseInstance).isNotNull();
+            assertThat(caseInstance.getStatus()).isEqualTo(CaseStatus.OPEN.getId());
+        } catch (CaseNotFoundException ex) {
+            fail("Case instance is not active");
+        }
+    }
+
+    public void assertCaseInstanceNotActive(String caseId) {
+        Throwable thrown = catchThrowable(() -> caseService.getCaseInstance(caseId));
+        assertThat(thrown).as("Case instance is still active").isInstanceOf(CaseNotFoundException.class);
     }
 }

@@ -16,15 +16,6 @@
 
 package org.jbpm.casemgmt.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseStatus;
@@ -41,41 +31,28 @@ import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseStageInstance;
 import org.jbpm.casemgmt.api.model.instance.StageStatus;
 import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
-import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
-import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
 
 public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(CaseRuntimeDataServiceImplTest.class);
 
-    private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
-
-    public static final String SORT_BY_CASE_DEFINITION_NAME = "CaseName";
-
-    @Before
-    public void prepare() {
-        configureServices();
-        KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
+    @Override
+    protected List<String> getProcessDefinitionFiles() {
         List<String> processes = new ArrayList<String>();
         processes.add("cases/EmptyCase.bpmn2");
         processes.add("cases/UserTaskCase.bpmn2");
@@ -86,45 +63,14 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         // add processes that can be used by cases but are not cases themselves
         processes.add("processes/DataVerificationProcess.bpmn2");
         processes.add("processes/UserTaskProcess.bpmn2");
-        
-        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
-        File pom = new File("target/kmodule", "pom.xml");
-        pom.getParentFile().mkdir();
-        try {
-            FileOutputStream fs = new FileOutputStream(pom);
-            fs.write(getPom(releaseId).getBytes());
-            fs.close();
-        } catch (Exception e) {
-            
-        }
-        MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, pom);
-    }
-
-    @After
-    public void cleanup() {
-        identityProvider.reset();
-        cleanupSingletonSessionId();
-        if (units != null && !units.isEmpty()) {
-            for (DeploymentUnit unit : units) {
-                deploymentService.undeploy(unit);
-            }
-            units.clear();
-        }
-        close();
+        return processes;
     }
 
     /*
      * Case instance queries
      */
-
     @Test
     public void testStartEmptyCaseWithCaseFile() {
-        assertNotNull(deploymentService);
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
         data.put("name", "my first case");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
@@ -149,13 +95,13 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             assertEquals(FIRST_CASE_ID, instance.getCaseId());
             assertEquals(EMPTY_CASE_P_ID, instance.getCaseDefinitionId());
             assertEquals("my first case", instance.getCaseDescription());
-            assertEquals("testUser", instance.getOwner());
+            assertEquals(USER, instance.getOwner());
             assertEquals(ProcessInstance.STATE_ACTIVE, instance.getStatus().intValue());
             assertEquals(deploymentUnit.getIdentifier(), instance.getDeploymentId());
             assertNotNull(instance.getStartedAt());
 
             // add dynamic user task to empty case instance - first by case id
-            Map<String, Object> parameters = new HashMap<>();            
+            Map<String, Object> parameters = new HashMap<>();
             caseService.addDynamicTask(FIRST_CASE_ID, caseService.newHumanTaskSpec("First task", "test", "john", null, parameters));
 
             Collection<NodeInstanceDesc> activeNodes = caseRuntimeDataService.getActiveNodesForCase(FIRST_CASE_ID, new QueryContext());
@@ -165,14 +111,13 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             NodeInstanceDesc activeNode = activeNodes.iterator().next();
             assertNotNull(activeNodes);
             assertEquals("[Dynamic] First task", activeNode.getName());
-            
+
             List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
             assertNotNull(tasks);
             assertEquals(1, tasks.size());
             TaskSummary task = tasks.get(0);
             assertEquals("First task", task.getName());
             assertEquals("test", task.getDescription());
-
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
@@ -182,20 +127,12 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             }
         }
     }
-    
+
     @Test
     public void testUserTasksInCase() {
-        // use user name who is part of the case roles assignment
-        // so (s)he will be authorized to access case instance
-        identityProvider.setName("john");
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
-        roleAssignments.put("owner", new UserImpl("john"));
-        
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
+        roleAssignments.put("owner", new UserImpl(USER));
+
         Map<String, Object> data = new HashMap<>();
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
         String caseId2 = null;
@@ -207,50 +144,48 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
             assertEquals(deploymentUnit.getIdentifier(),
-                         cInstance.getDeploymentId());
-            
+                    cInstance.getDeploymentId());
+
             List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
             assertNotNull(tasks);
             assertEquals(0, tasks.size());
-            
+
             Map<String, Object> taskInput = new HashMap<>();
             taskInput.put("ActorId", "john");
             taskInput.put("Comment",
-                          "Need to provide data");
+                    "Need to provide data");
             caseService.triggerAdHocFragment(caseId,
-                                             "Missing data",
-                                             taskInput);
-            
+                    "Missing data",
+                    taskInput);
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
             assertNotNull(tasks);
             assertEquals(1, tasks.size());
             TaskSummary task = tasks.get(0);
             assertEquals("Missing data", task.getName());
             assertEquals("Need to provide data", task.getSubject());
-            
-            
+
             caseId2 = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
             assertNotNull(caseId2);
             assertEquals("CASE-0000000002", caseId2);
-            
+
             caseService.triggerAdHocFragment(caseId2,
-                                             "Missing data",
-                                             taskInput);
-            
+                    "Missing data",
+                    taskInput);
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId2, "john", null, new QueryContext());
             assertNotNull(tasks);
             assertEquals(1,
-                         tasks.size());
+                    tasks.size());
             task = tasks.get(0);
             assertEquals("Missing data",
-                         task.getName());
-            
+                    task.getName());
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
             assertNotNull(tasks);
             assertEquals(1, tasks.size());
             task = tasks.get(0);
             assertEquals("Missing data", task.getName());
-            
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
@@ -263,23 +198,15 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             }
         }
     }
-    
+
     @Test
     public void testUserTasksInCaseWithSubprocess() {
-        // use user name who is part of the case roles assignment
-        // so (s)he will be authorized to access case instance
-        identityProvider.setName("john");
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
-        roleAssignments.put("owner", new UserImpl("john"));
-        
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
+        roleAssignments.put("owner", new UserImpl(USER));
+
         Map<String, Object> data = new HashMap<>();
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
-        
+
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
         assertNotNull(caseId);
         assertEquals(FIRST_CASE_ID, caseId);
@@ -287,45 +214,43 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID,
-                         cInstance.getCaseId());
+                    cInstance.getCaseId());
             assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
-            
+
             List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId,
-                                                                                                  "john",
-                                                                                                  null,
-                                                                                                  new QueryContext());
+                    "john",
+                    null,
+                    new QueryContext());
             assertNotNull(tasks);
             assertEquals(0, tasks.size());
-            
+
             Map<String, Object> taskInput = new HashMap<>();
             taskInput.put("ActorId", "john");
             caseService.triggerAdHocFragment(caseId,
-                                             "Missing data",
-                                             taskInput);
-            
+                    "Missing data",
+                    taskInput);
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
             assertNotNull(tasks);
             assertEquals(1, tasks.size());
             TaskSummary task = tasks.get(0);
             assertEquals("Missing data",
-                         task.getName());
-            
+                    task.getName());
+
             caseService.addDynamicSubprocess(caseId,
-                                             "UserTask",
-                                             null);
-            
+                    "UserTask",
+                    null);
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId,
-                                                                                "john",
-                                                                                null,
-                                                                                new QueryContext());
+                    "john",
+                    null,
+                    new QueryContext());
             assertNotNull(tasks);
             assertEquals(2, tasks.size());
             task = tasks.get(0);
             assertEquals("Hello", task.getName());
             task = tasks.get(1);
             assertEquals("Missing data", task.getName());
-
-            
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
@@ -333,23 +258,14 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             if (caseId != null) {
                 caseService.cancelCase(caseId);
             }
-            
         }
     }
-    
+
     @Test
     public void testUserTasksInCaseAdBusinessAdmin() {
-        // use user name who is part of the case roles assignment
-        // so (s)he will be authorized to access case instance
-        identityProvider.setName("john");
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
-        roleAssignments.put("owner", new UserImpl("john"));
-        
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
+        roleAssignments.put("owner", new UserImpl(USER));
+
         Map<String, Object> data = new HashMap<>();
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
         String caseId2 = null;
@@ -361,47 +277,45 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
             assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
-            
+
             List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsBusinessAdmin(caseId, "Administrator", null, new QueryContext());
             assertNotNull(tasks);
             assertEquals(0, tasks.size());
-            
+
             Map<String, Object> taskInput = new HashMap<>();
             taskInput.put("ActorId",
-                          "john");
+                    "john");
             caseService.triggerAdHocFragment(caseId,
-                                             "Missing data",
-                                             taskInput);
-            
+                    "Missing data",
+                    taskInput);
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsBusinessAdmin(caseId, "Administrator", null, new QueryContext());
             assertNotNull(tasks);
             assertEquals(1, tasks.size());
             TaskSummary task = tasks.get(0);
             assertEquals("Missing data", task.getName());
-            
-            
+
             caseId2 = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
             assertNotNull(caseId2);
             assertEquals("CASE-0000000002", caseId2);
-            
+
             caseService.triggerAdHocFragment(caseId2,
-                                             "Missing data",
-                                             taskInput);
-            
+                    "Missing data",
+                    taskInput);
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsBusinessAdmin(caseId2, "Administrator", null, new QueryContext());
             assertNotNull(tasks);
             assertEquals(1,
-                         tasks.size());
+                    tasks.size());
             task = tasks.get(0);
             assertEquals("Missing data",
-                         task.getName());
-            
+                    task.getName());
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsBusinessAdmin(caseId, "Administrator", null, new QueryContext());
             assertNotNull(tasks);
             assertEquals(1, tasks.size());
             task = tasks.get(0);
             assertEquals("Missing data", task.getName());
-            
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
@@ -414,20 +328,12 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             }
         }
     }
-    
+
     @Test
     public void testUserTasksInCaseAdStakeholder() {
-     // use user name who is part of the case roles assignment
-        // so (s)he will be authorized to access case instance
-        identityProvider.setName("john");
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
-        roleAssignments.put("owner", new UserImpl("john"));
-        
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
+        roleAssignments.put("owner", new UserImpl(USER));
+
         Map<String, Object> data = new HashMap<>();
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data, roleAssignments);
         String caseId2 = null;
@@ -439,53 +345,51 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
             assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
-            
+
             List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsStakeholder(caseId,
-                                                                                               "john",
-                                                                                               null,
-                                                                                               new QueryContext());
+                    "john",
+                    null,
+                    new QueryContext());
             assertNotNull(tasks);
             assertEquals(0, tasks.size());
-            
+
             Map<String, Object> taskInput = new HashMap<>();
             taskInput.put("ActorId", "mary");
             taskInput.put("TaskStakeholderId", "john");
             caseService.triggerAdHocFragment(caseId, "Missing data", taskInput);
-            
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsStakeholder(caseId,
-                                                                             "john",
-                                                                             null,
-                                                                             new QueryContext());
+                    "john",
+                    null,
+                    new QueryContext());
             assertNotNull(tasks);
             assertEquals(1, tasks.size());
             TaskSummary task = tasks.get(0);
             assertEquals("Missing data", task.getName());
-            
-            
+
             caseId2 = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
             assertNotNull(caseId2);
             assertEquals("CASE-0000000002", caseId2);
-            
+
             caseService.triggerAdHocFragment(caseId2, "Missing data", taskInput);
-            
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsStakeholder(caseId2,
-                                                                             "john",
-                                                                             null,
-                                                                             new QueryContext());
+                    "john",
+                    null,
+                    new QueryContext());
             assertNotNull(tasks);
             assertEquals(1, tasks.size());
             task = tasks.get(0);
             assertEquals("Missing data", task.getName());
-            
+
             tasks = caseRuntimeDataService.getCaseTasksAssignedAsStakeholder(caseId,
-                                                                             "john",
-                                                                             null,
-                                                                             new QueryContext());
+                    "john",
+                    null,
+                    new QueryContext());
             assertNotNull(tasks);
             assertEquals(1, tasks.size());
             task = tasks.get(0);
             assertEquals("Missing data", task.getName());
-            
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
@@ -498,102 +402,87 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             }
         }
     }
-    
+
     @Test
     public void testGetProcessDefinitions() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Collection<ProcessDefinition> processes = caseRuntimeDataService.getProcessDefinitions(new QueryContext());
         assertNotNull(processes);
         assertEquals(2, processes.size());
 
-        Map<String, ProcessDefinition> mappedProcesses = mapProcesses(processes);        
+        Map<String, ProcessDefinition> mappedProcesses = mapProcesses(processes);
         assertTrue(mappedProcesses.containsKey("UserTask"));
         assertTrue(mappedProcesses.containsKey("DataVerification"));
-        
+
         processes = caseRuntimeDataService.getProcessDefinitions("User", new QueryContext());
         assertNotNull(processes);
         assertEquals(1,
-                     processes.size());
-        
-        mappedProcesses = mapProcesses(processes);        
+                processes.size());
+
+        mappedProcesses = mapProcesses(processes);
         assertTrue(mappedProcesses.containsKey("UserTask"));
-        
+
         processes = caseRuntimeDataService.getProcessDefinitionsByDeployment(deploymentUnit.getIdentifier(), new QueryContext());
         assertNotNull(processes);
         assertEquals(2, processes.size());
 
-        mappedProcesses = mapProcesses(processes);        
+        mappedProcesses = mapProcesses(processes);
         assertTrue(mappedProcesses.containsKey("UserTask"));
         assertTrue(mappedProcesses.containsKey("DataVerification"));
     }
 
     @Test
     public void testTransitionBetweenStagesInCase() {
-        // use user name who is part of the case roles assignment
-        // so (s)he will be authorized to access case instance
-        identityProvider.setName("john");
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
-        roleAssignments.put("owner",
-                            new UserImpl("john"));
-        
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
+        roleAssignments.put("owner", new UserImpl(USER));
+
         Map<String, Object> data = new HashMap<>();
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), TWO_STAGES_CASE_P_ID, data, roleAssignments);
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), TWO_STAGES_CASE_P_ID, caseFile);
         assertNotNull(caseId);
         try {
-            
+
             Collection<CaseStageInstance> stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
             assertNotNull(stage);
             assertEquals(1, stage.size());
             assertEquals("Stage One", stage.iterator().next().getName());
             assertEquals(StageStatus.Active, stage.iterator().next().getStatus());
-            
+
             Collection<AdHocFragment> adhocTasks = caseRuntimeDataService.getAdHocFragmentsForCase(caseId);
             assertNotNull(adhocTasks);
             assertEquals(1, adhocTasks.size());
             assertEquals("Task 1", adhocTasks.iterator().next().getName());
-            
+
             Collection<NodeInstanceDesc> activeNodes = caseRuntimeDataService.getActiveNodesForCase(caseId, new QueryContext(0, 10));
             assertNotNull(activeNodes);
             assertEquals(1, activeNodes.size());
             assertEquals("Stage One", activeNodes.iterator().next().getName());
-            
+
             Collection<NodeInstanceDesc> completedNodes = caseRuntimeDataService.getCompletedNodesForCase(caseId, new QueryContext(0, 10));
             assertNotNull(completedNodes);
             assertEquals(0, completedNodes.size());
-            
+
             caseService.addDataToCaseFile(caseId, "customData", "nextStagePlease");
-                        
+
             stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
             assertNotNull(stage);
             assertEquals(1, stage.size());
             assertEquals("Stage Two", stage.iterator().next().getName());
             assertEquals(StageStatus.Active, stage.iterator().next().getStatus());
-            
+
             adhocTasks = caseRuntimeDataService.getAdHocFragmentsForCase(caseId);
             assertNotNull(adhocTasks);
             assertEquals(1, adhocTasks.size());
             assertEquals("Task 2", adhocTasks.iterator().next().getName());
-            
+
             activeNodes = caseRuntimeDataService.getActiveNodesForCase(caseId, new QueryContext(0, 10));
             assertNotNull(activeNodes);
             assertEquals(1, activeNodes.size());
             assertEquals("Stage Two", activeNodes.iterator().next().getName());
-            
+
             completedNodes = caseRuntimeDataService.getCompletedNodesForCase(caseId, new QueryContext(0, 10));
             assertNotNull(completedNodes);
             assertEquals(1, completedNodes.size());
             assertEquals("Stage One", completedNodes.iterator().next().getName());
-            
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
@@ -603,80 +492,74 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             }
         }
     }
-    
+
     @Test
     public void testAddSubprocessToEmptyCaseCheckCaseNodes() {
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
         Map<String, Object> data = new HashMap<>();
         data.put("name", "my first case");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
-        
+
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, caseFile);
         assertNotNull(caseId);
         assertEquals(FIRST_CASE_ID,
-                     caseId);
+                caseId);
         try {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
             assertEquals(deploymentUnit.getIdentifier(),
-                         cInstance.getDeploymentId());
-            
+                    cInstance.getDeploymentId());
+
             Collection<NodeInstanceDesc> activeNodes = caseRuntimeDataService.getActiveNodesForCase(caseId, new QueryContext(0, 10));
             assertNotNull(activeNodes);
             assertEquals(0, activeNodes.size());
-            
+
             Collection<NodeInstanceDesc> completedNodes = caseRuntimeDataService.getCompletedNodesForCase(caseId,
-                                                                                                          new QueryContext(0,
-                                                                                                                           10));
+                    new QueryContext(0,
+                            10));
             assertNotNull(completedNodes);
             assertEquals(0, completedNodes.size());
-            
-            Map<String, Object> parameters = new HashMap<>();            
+
+            Map<String, Object> parameters = new HashMap<>();
             caseService.addDynamicSubprocess(caseId,
-                                             "UserTask",
-                                             parameters);
-            
+                    "UserTask",
+                    parameters);
+
             Collection<ProcessInstanceDesc> caseProcessInstances = caseRuntimeDataService.getProcessInstancesForCase(caseId,
-                                                                                                                     new QueryContext());
+                    new QueryContext());
             assertNotNull(caseProcessInstances);
             assertEquals(2, caseProcessInstances.size());
-            
+
             activeNodes = caseRuntimeDataService.getActiveNodesForCase(caseId, new QueryContext(0, 10));
             assertNotNull(activeNodes);
             assertEquals(2,
-                         activeNodes.size());
+                    activeNodes.size());
             Map<String, NodeInstanceDesc> mappedNodes = mapNodeInstances(activeNodes);
             assertEquals("HumanTaskNode", mappedNodes.get("Hello").getNodeType());
             assertEquals("SubProcessNode", mappedNodes.get("[Dynamic] Sub Process").getNodeType());
-            
+
             completedNodes = caseRuntimeDataService.getCompletedNodesForCase(caseId, new QueryContext(0, 10));
             assertNotNull(completedNodes);
             assertEquals(0,
-                         completedNodes.size());
-            
+                    completedNodes.size());
+
             List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
             assertEquals(1, tasks.size());
-            
+
             userTaskService.completeAutoProgress(tasks.get(0).getId(),
-                                                 "john",
-                                                 null);
-            
+                    "john",
+                    null);
+
             activeNodes = caseRuntimeDataService.getActiveNodesForCase(caseId, new QueryContext(0, 10));
             assertNotNull(activeNodes);
             assertEquals(0, activeNodes.size());
-            
+
             completedNodes = caseRuntimeDataService.getCompletedNodesForCase(caseId, new QueryContext(0, 10));
             assertNotNull(completedNodes);
             assertEquals(2,
-                         completedNodes.size());
+                    completedNodes.size());
             assertEquals("HumanTaskNode", mappedNodes.get("Hello").getNodeType());
             assertEquals("SubProcessNode", mappedNodes.get("[Dynamic] Sub Process").getNodeType());
-            
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
@@ -686,90 +569,82 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             }
         }
     }
-    
+
     @Test
     public void testTransitionBetweenStagesWithConditionsInCase() {
-        // use user name who is part of the case roles assignment
-        // so (s)he will be authorized to access case instance
-        identityProvider.setName("john");
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
-        roleAssignments.put("owner", new UserImpl("john"));
-        
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
+        roleAssignments.put("owner", new UserImpl(USER));
+
         Map<String, Object> data = new HashMap<>();
         data.put("customData", "none");
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), TWO_STAGES_CONDITIONS_CASE_P_ID, data, roleAssignments);
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), TWO_STAGES_CONDITIONS_CASE_P_ID, caseFile);
         assertNotNull(caseId);
         try {
-            
+
             Collection<CaseStageInstance> stage = caseRuntimeDataService.getCaseInstanceStages(caseId,
-                                                                                               true,
-                                                                                               new QueryContext(0,
-                                                                                                                1));
+                    true,
+                    new QueryContext(0,
+                            1));
             assertNotNull(stage);
             assertEquals(1,
-                         stage.size());
+                    stage.size());
             assertEquals("Stage One", stage.iterator().next().getName());
             assertEquals(StageStatus.Active, stage.iterator().next().getStatus());
-            
+
             Collection<AdHocFragment> adhocTasks = caseRuntimeDataService.getAdHocFragmentsForCase(caseId);
             assertNotNull(adhocTasks);
             assertEquals(1, adhocTasks.size());
             assertEquals("Task 1",
-                         adhocTasks.iterator().next().getName());
-            
+                    adhocTasks.iterator().next().getName());
+
             caseService.triggerAdHocFragment(caseId,
-                                             "Task 1",
-                                             null);
-            
+                    "Task 1",
+                    null);
+
             List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
             assertNotNull(tasks);
             assertEquals(1,
-                         tasks.size());
+                    tasks.size());
             assertTask(tasks.get(0),
-                       "john",
-                       "Task 1",
-                       Status.Reserved);
-            
+                    "john",
+                    "Task 1",
+                    Status.Reserved);
+
             Map<String, Object> params = new HashMap<>();
             params.put("myData",
-                       "nextStage");
+                    "nextStage");
             userTaskService.completeAutoProgress(tasks.get(0).getId(), "john", params);
-            
+
             stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
             assertNotNull(stage);
             assertEquals(1, stage.size());
             assertEquals("Stage Two", stage.iterator().next().getName());
             assertEquals(StageStatus.Active, stage.iterator().next().getStatus());
-            
+
             adhocTasks = caseRuntimeDataService.getAdHocFragmentsForCase(caseId);
             assertNotNull(adhocTasks);
             assertEquals(1, adhocTasks.size());
             assertEquals("Task 2",
-                         adhocTasks.iterator().next().getName());
-            
+                    adhocTasks.iterator().next().getName());
+
             caseService.triggerAdHocFragment(caseId, "Task 2", null);
-            
+
             tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
             assertNotNull(tasks);
-            assertEquals(1, tasks.size());            
+            assertEquals(1, tasks.size());
             assertTask(tasks.get(0),
-                       "john",
-                       "Task 2",
-                       Status.Reserved);
-            
+                    "john",
+                    "Task 2",
+                    Status.Reserved);
+
             params = new HashMap<>();
             params.put("myData",
-                       "none");
+                    "none");
             userTaskService.completeAutoProgress(tasks.get(0).getId(),
-                                                 "john",
-                                                 params);
-            
+                    "john",
+                    params);
+
             try {
                 caseService.getCaseInstance(caseId);
                 fail("Case should already be finished");
@@ -777,7 +652,6 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
                 // expected
                 caseId = null;
             }
-            
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
@@ -787,87 +661,77 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             }
         }
     }
-    
+
     @Test
     public void testTransitionBetweenStagesInCaseWithActiveElements() {
-        // use user name who is part of the case roles assignment
-        // so (s)he will be authorized to access case instance
-        identityProvider.setName("john");
         Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
-        roleAssignments.put("owner",
-                            new UserImpl("john"));
-        
-        assertNotNull(deploymentService);        
-        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
+        roleAssignments.put("owner", new UserImpl(USER));
+
         Map<String, Object> data = new HashMap<>();
         CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), TWO_STAGES_CASE_P_ID, data, roleAssignments);
         String caseId = caseService.startCase(deploymentUnit.getIdentifier(), TWO_STAGES_CASE_P_ID, caseFile);
         assertNotNull(caseId);
         try {
-            
+
             Collection<CaseStageInstance> stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
             assertNotNull(stage);
             assertEquals(1, stage.size());
-            
+
             CaseStageInstance stageInstance = stage.iterator().next();
             assertEquals("Stage One", stageInstance.getName());
-            assertEquals(StageStatus.Active, stageInstance.getStatus());  
-            
+            assertEquals(StageStatus.Active, stageInstance.getStatus());
+
             Collection<NodeInstanceDesc> activeNodes = stageInstance.getActiveNodes();
             assertNotNull(activeNodes);
-            assertEquals(0, activeNodes.size());            
-            
+            assertEquals(0, activeNodes.size());
+
             caseService.triggerAdHocFragment(caseId, "Task 1", data);
             stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
             assertNotNull(stage);
             assertEquals(1, stage.size());
-            
+
             stageInstance = stage.iterator().next();
             assertEquals("Stage One", stageInstance.getName());
-            assertEquals(StageStatus.Active, stageInstance.getStatus());  
-            
+            assertEquals(StageStatus.Active, stageInstance.getStatus());
+
             activeNodes = stageInstance.getActiveNodes();
             assertNotNull(activeNodes);
             assertEquals(1, activeNodes.size());
             assertEquals("Task 1", activeNodes.iterator().next().getName());
-            
+
             caseService.addDataToCaseFile(caseId, "customData", "nextStagePlease");
-                        
+
             stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
             assertNotNull(stage);
             assertEquals(1, stage.size());
             assertEquals("Stage Two", stage.iterator().next().getName());
             assertEquals(StageStatus.Active, stage.iterator().next().getStatus());
-                    
+
             stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
             assertNotNull(stage);
             assertEquals(1, stage.size());
-            
+
             stageInstance = stage.iterator().next();
             assertEquals("Stage Two", stageInstance.getName());
-            assertEquals(StageStatus.Active, stageInstance.getStatus()); 
-            
+            assertEquals(StageStatus.Active, stageInstance.getStatus());
+
             activeNodes = stageInstance.getActiveNodes();
             assertNotNull(activeNodes);
             assertEquals(0, activeNodes.size());
-            
+
             caseService.triggerAdHocFragment(caseId, "Task 2", data);
             stage = caseRuntimeDataService.getCaseInstanceStages(caseId, true, new QueryContext(0, 1));
             assertNotNull(stage);
             assertEquals(1, stage.size());
-            
+
             stageInstance = stage.iterator().next();
             assertEquals("Stage Two", stageInstance.getName());
-            assertEquals(StageStatus.Active, stageInstance.getStatus());  
-            
+            assertEquals(StageStatus.Active, stageInstance.getStatus());
+
             activeNodes = stageInstance.getActiveNodes();
             assertNotNull(activeNodes);
             assertEquals(1, activeNodes.size());
             assertEquals("Task 2", activeNodes.iterator().next().getName());
-            
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
@@ -881,16 +745,16 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
     @Test
     public void testResolveCaseStatuses() {
         List<CaseStatus> testStatuses = Arrays.asList(CaseStatus.CANCELLED,
-                                                      CaseStatus.CLOSED,
-                                                      CaseStatus.OPEN);
+                CaseStatus.CLOSED,
+                CaseStatus.OPEN);
         List<Integer> resolvedTestStatuses = ((CaseRuntimeDataServiceImpl) caseRuntimeDataService).resolveCaseStatuses(testStatuses);
 
         List<Integer> resultStatuses = Arrays.asList(3,
-                                                     2,
-                                                     1);
+                2,
+                1);
         List<Integer> invalidResultStatuses = Arrays.asList(1,
-                                                            2,
-                                                            3);
+                2,
+                3);
 
         assertTrue(resolvedTestStatuses.equals(resultStatuses));
         assertFalse(resolvedTestStatuses.equals(invalidResultStatuses));
@@ -903,18 +767,16 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         List<CaseStatus> testCaseStatusesFromIds = CaseStatus.fromIdList(testStatuses);
         List<CaseStatus> testCaseStatusesFromNames = CaseStatus.fromNameList(testStatusesString);
 
-
         assertNotNull(testCaseStatusesFromIds);
         assertNotNull(testCaseStatusesFromNames);
         assertEquals(1,
-                     testCaseStatusesFromIds.size());
+                testCaseStatusesFromIds.size());
         assertEquals(1,
-                     testCaseStatusesFromNames.size());
+                testCaseStatusesFromNames.size());
         assertTrue(testCaseStatusesFromIds.contains(CaseStatus.OPEN));
         assertTrue(testCaseStatusesFromNames.contains(CaseStatus.OPEN));
 
-
-        testStatuses = Arrays.asList(1,2);
+        testStatuses = Arrays.asList(1, 2);
         testStatusesString = Arrays.asList("open", "closed");
         testCaseStatusesFromIds = CaseStatus.fromIdList(testStatuses);
         testCaseStatusesFromNames = CaseStatus.fromNameList(testStatusesString);
@@ -922,15 +784,15 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         assertNotNull(testCaseStatusesFromIds);
         assertNotNull(testCaseStatusesFromNames);
         assertEquals(2,
-                     testCaseStatusesFromIds.size());
+                testCaseStatusesFromIds.size());
         assertEquals(2,
-                     testCaseStatusesFromNames.size());
+                testCaseStatusesFromNames.size());
         assertTrue(testCaseStatusesFromIds.contains(CaseStatus.OPEN));
         assertTrue(testCaseStatusesFromIds.contains(CaseStatus.CLOSED));
         assertTrue(testCaseStatusesFromNames.contains(CaseStatus.OPEN));
         assertTrue(testCaseStatusesFromNames.contains(CaseStatus.CLOSED));
 
-        testStatuses = Arrays.asList(1,2, 3);
+        testStatuses = Arrays.asList(1, 2, 3);
         testStatusesString = Arrays.asList("open", "closed", "cancelled");
         testCaseStatusesFromIds = CaseStatus.fromIdList(testStatuses);
         testCaseStatusesFromNames = CaseStatus.fromNameList(testStatusesString);
@@ -938,15 +800,14 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         assertNotNull(testCaseStatusesFromIds);
         assertNotNull(testCaseStatusesFromNames);
         assertEquals(3,
-                     testCaseStatusesFromIds.size());
+                testCaseStatusesFromIds.size());
         assertEquals(3,
-                     testCaseStatusesFromNames.size());
+                testCaseStatusesFromNames.size());
         assertTrue(testCaseStatusesFromIds.contains(CaseStatus.OPEN));
         assertTrue(testCaseStatusesFromIds.contains(CaseStatus.CLOSED));
         assertTrue(testCaseStatusesFromIds.contains(CaseStatus.CANCELLED));
         assertTrue(testCaseStatusesFromNames.contains(CaseStatus.OPEN));
         assertTrue(testCaseStatusesFromNames.contains(CaseStatus.CLOSED));
         assertTrue(testCaseStatusesFromNames.contains(CaseStatus.CANCELLED));
-
     }
 }

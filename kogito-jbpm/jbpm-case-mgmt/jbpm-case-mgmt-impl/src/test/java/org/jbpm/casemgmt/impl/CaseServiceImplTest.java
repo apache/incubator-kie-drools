@@ -16,8 +16,6 @@
 
 package org.jbpm.casemgmt.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +28,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.assertj.core.api.Assertions;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.casemgmt.api.AdHocFragmentNotFoundException;
 import org.jbpm.casemgmt.api.CaseActiveException;
 import org.jbpm.casemgmt.api.CaseCommentNotFoundException;
@@ -53,19 +50,13 @@ import org.jbpm.casemgmt.impl.objects.EchoService;
 import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
 import org.jbpm.document.Document;
 import org.jbpm.document.service.impl.DocumentImpl;
-import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.TaskNotFoundException;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.VariableDesc;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
@@ -73,34 +64,21 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.query.QueryFilter;
-import org.kie.internal.runtime.conf.DeploymentDescriptor;
-import org.kie.internal.runtime.conf.NamedObjectModel;
-import org.kie.internal.runtime.conf.RuntimeStrategy;
-import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
-import static org.kie.scanner.MavenRepository.*;
 
 public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(CaseServiceImplTest.class);
-    private static final String TEST_DOC_STORAGE = "target/docs";
 
-    private KModuleDeploymentUnit deploymentUnit;
-
-    @Before
-    public void prepare() {
-        System.setProperty("org.jbpm.document.storage", TEST_DOC_STORAGE);
-        deleteFolder(TEST_DOC_STORAGE);
-        configureServices();
-        KieServices ks = KieServices.Factory.get();
-        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
+    @Override
+    protected List<String> getProcessDefinitionFiles() {
         List<String> processes = new ArrayList<String>();
         processes.add("cases/EmptyCase.bpmn2");
         processes.add("cases/UserTaskCase.bpmn2");
@@ -114,48 +92,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         processes.add("cases/CaseWithTwoStagesConditions.bpmn2");
         // add processes that can be used by cases but are not cases themselves
         processes.add("processes/DataVerificationProcess.bpmn2");
-
-        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
-        File pom = new File("target/kmodule", "pom.xml");
-        pom.getParentFile().mkdir();
-        try {
-            FileOutputStream fs = new FileOutputStream(pom);
-            fs.write(getPom(releaseId).getBytes());
-            fs.close();
-        } catch (Exception e) {
-
-        }
-        MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, pom);
-        // use user name who is part of the case roles assignment
-        // so (s)he will be authorized to access case instance
-        identityProvider.setName("john");
-
-        assertNotNull(deploymentService);
-        deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-
-        final DeploymentDescriptor descriptor = new DeploymentDescriptorImpl();
-        descriptor.getBuilder().addEventListener(new NamedObjectModel(
-                "mvel",
-                "processIdentity",
-                "new org.jbpm.kie.services.impl.IdentityProviderAwareProcessListener(ksession)"
-        ));
-        deploymentUnit.setDeploymentDescriptor(descriptor);
-        deploymentUnit.setStrategy(RuntimeStrategy.PER_CASE);
-
-        deploymentService.deploy(deploymentUnit);
-    }
-
-    @After
-    public void cleanup() {
-        identityProvider.reset();
-        identityProvider.setRoles(new ArrayList<>());
-        System.clearProperty("org.jbpm.document.storage");
-        cleanupSingletonSessionId();
-        if (deploymentUnit != null) {
-            deploymentService.undeploy(deploymentUnit);
-        }
-        close();
+        return processes;
     }
 
     @Test

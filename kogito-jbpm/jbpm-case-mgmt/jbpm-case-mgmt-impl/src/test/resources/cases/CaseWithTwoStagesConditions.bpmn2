@@ -145,7 +145,7 @@
     </bpmn2:endEvent>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="__T-3WO4EEeal0opAuGgvLw">
-    <bpmndi:BPMNPlane id="__T-3We4EEeal0opAuGgvLw" bpmnElement="CaseWithTwoStages">
+    <bpmndi:BPMNPlane id="__T-3We4EEeal0opAuGgvLw" bpmnElement="CaseWithTwoStagesConditions">
       <bpmndi:BPMNShape id="__T-3Wu4EEeal0opAuGgvLw" bpmnElement="_51298678-656D-434C-A1D1-912CA47417AE">
         <dc:Bounds height="160.0" width="200.0" x="184.0" y="134.0"/>
       </bpmndi:BPMNShape>
