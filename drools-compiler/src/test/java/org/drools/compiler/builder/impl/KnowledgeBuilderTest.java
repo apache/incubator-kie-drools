@@ -182,7 +182,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
 
         InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.getGlobals().put( "map", Map.class );
+        kBase.addGlobal( "map", Map.class );
         final KieSession workingMemory = kBase.newKieSession();
 
         final HashMap map = new HashMap();

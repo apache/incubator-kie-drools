@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
 import org.drools.compiler.compiler.AnnotationDeclarationError;
@@ -1577,7 +1578,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
             // if there is a rulebase then add the package.
             if (this.kBase != null) {
-                pkg = (InternalKnowledgePackage) this.kBase.addPackage(pkg);
+                try {
+                    pkg = (InternalKnowledgePackage) this.kBase.addPackage(pkg).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException( e );
+                }
             } else {
                 // the RuleBase will also initialise the
                 pkg.getDialectRuntimeRegistry().onAdd(this.rootClassLoader);

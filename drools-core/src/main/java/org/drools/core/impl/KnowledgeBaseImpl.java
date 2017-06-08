@@ -31,8 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -720,10 +722,14 @@ public class KnowledgeBaseImpl
     }
     
     @Override
-    public KiePackage addPackage(final KiePackage newPkg) {
+    public Future<KiePackage> addPackage( final KiePackage newPkg ) {
         InternalKnowledgePackage clonedPkg = ((InternalKnowledgePackage)newPkg).deepCloneIfAlreadyInUse(rootClassLoader);
-        enqueueModification( () -> internalAddPackages( Collections.singletonList(clonedPkg) ) );
-        return clonedPkg;
+        CompletableFuture<KiePackage> result = new CompletableFuture<>();
+        enqueueModification( () -> {
+            internalAddPackages( Collections.singletonList(clonedPkg) );
+            result.complete( getPackage(newPkg.getName()) );
+        } );
+        return result;
     }
 
     public void enqueueModification(Runnable modification) {
@@ -919,12 +925,12 @@ public class KnowledgeBaseImpl
 
             // add the window declarations to the kbase
             for( WindowDeclaration window : newPkg.getWindowDeclarations().values() ) {
-                addWindowDeclaration( window );
+                this.reteooBuilder.addNamedWindow(window);
             }
 
             // add entry points to the kbase
             for (String id : newPkg.getEntryPointIds()) {
-                addEntryPoint( id );
+                this.reteooBuilder.addEntryPoint(id);
             }
 
             // add the rules to the RuleBase
@@ -1552,23 +1558,8 @@ public class KnowledgeBaseImpl
 
     private void internalAddRule( InternalKnowledgePackage pkg, RuleImpl rule ) {
         this.eventSupport.fireBeforeRuleAdded( pkg, rule );
-        addRule( rule );
-        this.eventSupport.fireAfterRuleAdded(pkg, rule);
-    }
-
-    protected void addRule(final RuleImpl rule) throws InvalidPatternException {
-        // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
         this.reteooBuilder.addRule(rule);
-    }
-
-    protected void addEntryPoint(final String id) throws InvalidPatternException {
-        // This adds the entry point. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
-        this.reteooBuilder.addEntryPoint(id);
-    }
-
-    private void addWindowDeclaration(final WindowDeclaration window) throws InvalidPatternException {
-        // This adds the named window. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
-        this.reteooBuilder.addNamedWindow(window);
+        this.eventSupport.fireAfterRuleAdded(pkg, rule);
     }
 
     public void removeQuery( final String packageName,

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
@@ -110,7 +111,7 @@ public interface InternalKnowledgeBase extends KieBase {
     Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException;
 
     InternalKnowledgePackage getPackage(String name);
-    KiePackage addPackage(KiePackage pkg);
+    Future<KiePackage> addPackage( KiePackage pkg );
     void addPackages( Collection<KiePackage> newPkgs );
     Map<String, InternalKnowledgePackage> getPackagesMap();
     
