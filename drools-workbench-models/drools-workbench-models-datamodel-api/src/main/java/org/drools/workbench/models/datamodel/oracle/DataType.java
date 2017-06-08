@@ -16,6 +16,9 @@
 
 package org.drools.workbench.models.datamodel.oracle;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 /**
  * An Oracle for all things "data type" related
  */
@@ -45,41 +48,147 @@ public class DataType {
     public static final String TYPE_VOID = "void";
 
     public enum DataTypes {
-        STRING,
-        NUMERIC,
-        NUMERIC_BIGDECIMAL,
-        NUMERIC_BIGINTEGER,
-        NUMERIC_BYTE,
-        NUMERIC_DOUBLE,
-        NUMERIC_FLOAT,
-        NUMERIC_INTEGER,
-        NUMERIC_LONG,
-        NUMERIC_SHORT,
-        DATE,
-        BOOLEAN
+        STRING {
+            @Override
+            public boolean isValidValue(String value) {
+                return true;
+            }
+        },
+        NUMERIC {
+            @Override
+            public boolean isValidValue(String value) {
+                try {
+                    new BigDecimal(value);
+                    return true;
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
+        },
+        NUMERIC_BIGDECIMAL {
+            @Override
+            public boolean isValidValue(String value) {
+                try {
+                    new BigDecimal(value);
+                    return true;
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
+        },
+        NUMERIC_BIGINTEGER {
+            @Override
+            public boolean isValidValue(String value) {
+                try {
+                    new BigInteger(value);
+                    return true;
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
+        },
+        NUMERIC_BYTE {
+            @Override
+            public boolean isValidValue(String value) {
+                try {
+                    Byte.valueOf(value);
+                    return true;
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
+        },
+        NUMERIC_DOUBLE {
+            @Override
+            public boolean isValidValue(String value) {
+                try {
+                    Double.valueOf(value);
+                    return true;
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
+        },
+        NUMERIC_FLOAT {
+            @Override
+            public boolean isValidValue(String value) {
+                try {
+                    Float.valueOf(value);
+                    return true;
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
+        },
+        NUMERIC_INTEGER {
+            @Override
+            public boolean isValidValue(String value) {
+                try {
+                    Integer.valueOf(value);
+                    return true;
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
+        },
+        NUMERIC_LONG {
+            @Override
+            public boolean isValidValue(String value) {
+                try {
+                    Long.valueOf(value);
+                    return true;
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
+        },
+        NUMERIC_SHORT {
+            @Override
+            public boolean isValidValue(String value) {
+                try {
+                    Short.valueOf(value);
+                    return true;
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
+        },
+        DATE {
+            @Override
+            public boolean isValidValue(String value) {
+                return true;
+            }
+        },
+        BOOLEAN {
+            @Override
+            public boolean isValidValue(String value) {
+                return value.trim().equalsIgnoreCase("true") || value.trim().equalsIgnoreCase("false");
+            }
+        };
+
+        public abstract boolean isValidValue(String value);
     }
 
-    public static boolean isNumeric( final String type ) {
-        if ( type.equals( TYPE_NUMERIC ) ) {
+    public static boolean isNumeric(final String type) {
+        if (type.equals(TYPE_NUMERIC)) {
             return true;
-        } else if ( type.equals( TYPE_NUMERIC_BIGDECIMAL ) ) {
+        } else if (type.equals(TYPE_NUMERIC_BIGDECIMAL)) {
             return true;
-        } else if ( type.equals( TYPE_NUMERIC_BIGINTEGER ) ) {
+        } else if (type.equals(TYPE_NUMERIC_BIGINTEGER)) {
             return true;
-        } else if ( type.equals( TYPE_NUMERIC_BYTE ) ) {
+        } else if (type.equals(TYPE_NUMERIC_BYTE)) {
             return true;
-        } else if ( type.equals( TYPE_NUMERIC_DOUBLE ) ) {
+        } else if (type.equals(TYPE_NUMERIC_DOUBLE)) {
             return true;
-        } else if ( type.equals( TYPE_NUMERIC_FLOAT ) ) {
+        } else if (type.equals(TYPE_NUMERIC_FLOAT)) {
             return true;
-        } else if ( type.equals( TYPE_NUMERIC_INTEGER ) ) {
+        } else if (type.equals(TYPE_NUMERIC_INTEGER)) {
             return true;
-        } else if ( type.equals( TYPE_NUMERIC_LONG ) ) {
+        } else if (type.equals(TYPE_NUMERIC_LONG)) {
             return true;
-        } else if ( type.equals( TYPE_NUMERIC_SHORT ) ) {
+        } else if (type.equals(TYPE_NUMERIC_SHORT)) {
             return true;
         }
         return false;
     }
-
 }
