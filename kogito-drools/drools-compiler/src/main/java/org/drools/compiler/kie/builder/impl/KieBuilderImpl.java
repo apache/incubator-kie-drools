@@ -215,7 +215,7 @@ public class KieBuilderImpl
     }
 
     void updateKieModuleMetaInfo() {
-        new KieMetaInfoBuilder( trgMfs, kModule ).writeKieModuleMetaInfo();
+        new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
     }
 
     public static String getCompilationCachePath( ReleaseId releaseId,
@@ -237,7 +237,7 @@ public class KieBuilderImpl
 
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
             if ( trgMfs != null ) {
-                new KieMetaInfoBuilder( trgMfs, kModule ).writeKieModuleMetaInfo();
+                new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
             }
             KieRepository kieRepository = KieServices.Factory.get().getRepository();
             kieRepository.addKieModule( kModule );
