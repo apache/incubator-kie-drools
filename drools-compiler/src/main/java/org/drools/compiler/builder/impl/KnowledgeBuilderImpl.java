@@ -1148,8 +1148,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             }
 
             if (needsRemoval) {
-                try {
-                    this.kBase.lock();
+                kBase.enqueueModification( () -> {
                     for( org.kie.api.definition.rule.Rule rule : pkg.getRules() ) {
                         if (filterAcceptsRemoval( ResourceChange.Type.RULE, rule.getPackageName(), rule.getName() ) ) {
                             this.kBase.removeRule(pkg, pkg.getRule(rule.getName()));
@@ -1169,9 +1168,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                     if (!rulesToBeRemoved.isEmpty()) {
                         kBase.removeRules( pkg, rulesToBeRemoved );
                     }
-                } finally {
-                    this.kBase.unlock();
-                }
+                } );
             }
         }
 
@@ -1580,14 +1577,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
             // if there is a rulebase then add the package.
             if (this.kBase != null) {
-                // Must lock here, otherwise the assumption about addPackage/getPackage behavior below might be violated
-                this.kBase.lock();
-                try {
-                    this.kBase.addPackage(pkg);
-                    pkg = this.kBase.getPackage(packageDescr.getName());
-                } finally {
-                    this.kBase.unlock();
-                }
+                pkg = (InternalKnowledgePackage) this.kBase.addPackage(pkg);
             } else {
                 // the RuleBase will also initialise the
                 pkg.getDialectRuntimeRegistry().onAdd(this.rootClassLoader);
