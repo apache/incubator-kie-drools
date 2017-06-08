@@ -15,6 +15,15 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.protobuf.ByteString;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
@@ -31,33 +40,26 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 public class KieMetaInfoBuilder {
 
-    private final ResourceStore trgMfs;
     private final InternalKieModule kModule;
 
-    public KieMetaInfoBuilder(ResourceStore trgMfs, InternalKieModule kModule) {
-        this.trgMfs = trgMfs;
+    public KieMetaInfoBuilder(InternalKieModule kModule) {
         this.kModule = kModule;
     }
 
-    public void writeKieModuleMetaInfo() {
-        KieModuleMetaInfo info = generateKieModuleMetaInfo();
+    public void writeKieModuleMetaInfo(ResourceStore trgMfs) {
+        KieModuleMetaInfo info = generateKieModuleMetaInfo(trgMfs);
         trgMfs.write( KieModuleModelImpl.KMODULE_INFO_JAR_PATH,
                       info.marshallMetaInfos().getBytes( IoUtils.UTF8_CHARSET ),
                       true );
     }
 
-    private KieModuleMetaInfo generateKieModuleMetaInfo() {
+    public KieModuleMetaInfo getKieModuleMetaInfo(){
+        return generateKieModuleMetaInfo(null);
+    }
+
+    private KieModuleMetaInfo generateKieModuleMetaInfo(ResourceStore trgMfs) {
         // TODO: I think this method is wrong because it is only inspecting packages that are included
         // in at least one kbase, but I believe it should inspect all packages, even if not included in
         // any kbase, as they could be included in the future
@@ -86,9 +88,11 @@ public class KieMetaInfoBuilder {
 
                     String className = factType.getName();
                     String internalName = className.replace('.', '/') + ".class";
-                    byte[] bytes = runtimeData.getBytecode(internalName);
-                    if (bytes != null) {
-                        trgMfs.write( internalName, bytes, true );
+                    if (trgMfs != null) {
+                        byte[] bytes = runtimeData.getBytecode( internalName );
+                        if ( bytes != null ) {
+                            trgMfs.write( internalName, bytes, true );
+                        }
                     }
                     types.add( internalName );
                 }
@@ -110,7 +114,9 @@ public class KieMetaInfoBuilder {
             }
 
             _kmoduleCacheBuilder.addCompilationData( _compData.build() );
-            writeCompilationDataToTrg( _kmoduleCacheBuilder.build(), kieBaseName );
+            if (trgMfs != null) {
+                writeCompilationDataToTrg( _kmoduleCacheBuilder.build(), kieBaseName, trgMfs );
+            }
         }
         return new KieModuleMetaInfo(typeInfos, rulesPerPackage);
     }
@@ -139,7 +145,7 @@ public class KieMetaInfoBuilder {
     }
 
     private void writeCompilationDataToTrg(KieModuleCache.KModuleCache _kmoduleCache,
-                                           String kieBaseName) {
+                                           String kieBaseName, ResourceStore trgMfs) {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             KieModuleCacheHelper.writeToStreamWithHeader( out, _kmoduleCache );
