@@ -1194,8 +1194,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.kBase.readLock();
             startOperation();
             // Make sure the global has been declared in the RuleBase
-            final Map globalDefintions = this.kBase.getGlobals();
-            final Class type = (Class) globalDefintions.get( identifier );
+            Class type = this.kBase.getGlobals().get( identifier );
             if ( (type == null) ) {
                 throw new RuntimeException( "Unexpected global [" + identifier + "]" );
             } else if ( !type.isInstance( value ) ) {

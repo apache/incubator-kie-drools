@@ -21,10 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,8 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -98,22 +98,16 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.Expires.Policy;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Role;
-import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
-import org.kie.api.marshalling.Marshaller;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.io.ResourceTypePackage;
-import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.internal.weaver.KieWeaverService;
 import org.kie.internal.weaver.KieWeavers;
@@ -279,40 +273,11 @@ public class KnowledgeBaseImpl
         return Collections.unmodifiableCollection( kieBaseListeners );
     }
 
-    public StatefulKnowledgeSession newStatefulKnowledgeSession() {
-        return newStatefulKnowledgeSession(null, EnvironmentFactory.newEnvironment());
-    }
-    
-    public StatefulKnowledgeSession newStatefulKnowledgeSession(KieSessionConfiguration conf, Environment environment) {
-        // NOTE if you update here, you'll also need to update the JPAService
-        if ( conf == null ) {
-            conf = getSessionConfiguration();
-        }
-        
-        if ( environment == null ) {
-            environment = EnvironmentFactory.newEnvironment();
-        }
-
-        return newStatefulSession((SessionConfiguration) conf, environment);
-    }
-
     public SessionConfiguration getSessionConfiguration() {
         return sessionConfiguration;
     }
 
-    public Collection<StatefulKnowledgeSession> getStatefulKnowledgeSessions() {
-        return statefulSessions;
-    }
-    
-    public StatelessKnowledgeSession newStatelessKnowledgeSession() {
-        return new StatelessKnowledgeSessionImpl( this, null );
-    }
-    
-    public StatelessKnowledgeSession newStatelessKnowledgeSession(KieSessionConfiguration conf) {
-        return new StatelessKnowledgeSessionImpl( this, conf );
-    }
-
-    public void removeKnowledgePackage(String packageName) {
+    public void removeKiePackage(String packageName) {
         lock();
         try {
             final InternalKnowledgePackage pkg = this.pkgs.get( packageName );
@@ -323,7 +288,7 @@ public class KnowledgeBaseImpl
             this.eventSupport.fireBeforePackageRemoved( pkg );
 
             for (Rule rule : pkg.getRules()) {
-                removeRule( pkg, (RuleImpl)rule );
+                internalRemoveRule( pkg, (RuleImpl)rule );
             }
 
             // getting the list of referenced globals
@@ -341,7 +306,7 @@ public class KnowledgeBaseImpl
             }
             //and now the rule flows
             for ( String processName : new ArrayList<String>(pkg.getRuleFlows().keySet()) ) {
-                removeProcess( processName );
+                internalRemoveProcess( processName );
             }
             // removing the package itself from the list
             this.pkgs.remove( pkg.getName() );
@@ -368,13 +333,39 @@ public class KnowledgeBaseImpl
         return getPackage(packageName).getRule( queryName );
     }
     
-    public KieSession newKieSession(KieSessionConfiguration conf,
-                                    Environment environment) {
-        return newStatefulKnowledgeSession( conf, environment );
+    public KieSession newKieSession() {
+        return newKieSession(null, EnvironmentFactory.newEnvironment());
     }
 
-    public KieSession newKieSession() {
-        return newStatefulKnowledgeSession();
+    public KieSession newKieSession(KieSessionConfiguration conf, Environment environment) {
+        // NOTE if you update here, you'll also need to update the JPAService
+        if ( conf == null ) {
+            conf = getSessionConfiguration();
+        }
+
+        SessionConfiguration sessionConfig = (SessionConfiguration) conf;
+
+        if ( environment == null ) {
+            environment = EnvironmentFactory.newEnvironment();
+        }
+
+        if ( this.getConfiguration().isSequential() ) {
+            throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
+        }
+
+        readLock();
+        try {
+            WorkingMemoryFactory wmFactory = kieComponentFactory.getWorkingMemoryFactory();
+            StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) wmFactory.createWorkingMemory( nextWorkingMemoryCounter(), this,
+                                                                                                                   sessionConfig, environment );
+            if ( sessionConfig.isKeepReference() ) {
+                addStatefulSession(session);
+            }
+
+            return session;
+        } finally {
+            readUnlock();
+        }
     }
 
     public Collection<? extends KieSession> getKieSessions() {
@@ -386,11 +377,11 @@ public class KnowledgeBaseImpl
     }
 
     public StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf) {
-        return newStatelessKnowledgeSession( conf );
+        return new StatelessKnowledgeSessionImpl( this, conf );
     }
 
     public StatelessKieSession newStatelessKieSession() {
-        return newStatelessKnowledgeSession();
+        return new StatelessKnowledgeSessionImpl( this, null );
     }
 
     public Collection<KiePackage> getKiePackages() {
@@ -403,11 +394,6 @@ public class KnowledgeBaseImpl
     public KiePackage getKiePackage(String packageName) {
         return getPackage(packageName);
     }
-
-    public void removeKiePackage(String packageName) {
-        removeKnowledgePackage(packageName);
-    }
-
 
     // ------------------------------------------------------------
     // Instance methods
@@ -468,12 +454,8 @@ public class KnowledgeBaseImpl
         try {
             cls = droolsStream.getParentClassLoader().loadClass(droolsStream.readUTF());
             this.factHandleFactory = (FactHandleFactory) cls.newInstance();
-        } catch (InstantiationException e) {
-            DroolsObjectInputStream.newInvalidClassException(cls,
-                                                             e);
-        } catch (IllegalAccessException e) {
-            DroolsObjectInputStream.newInvalidClassException(cls,
-                                                             e);
+        } catch (InstantiationException | IllegalAccessException e) {
+            DroolsObjectInputStream.newInvalidClassException(cls, e);
         }
 
         for (InternalKnowledgePackage pkg : this.pkgs.values()) {
@@ -635,15 +617,6 @@ public class KnowledgeBaseImpl
         return this.id;
     }
 
-    public RuleBaseConfiguration getConfig() {
-        return config;
-    }
-
-    public StatefulKnowledgeSessionImpl newStatefulSession() {
-        return newStatefulSession(getSessionConfiguration(),
-                                  EnvironmentFactory.newEnvironment());
-    }
-
     public void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulSession) {
         synchronized (statefulSessions) {
             if (sessionsCache != null) {
@@ -655,10 +628,6 @@ public class KnowledgeBaseImpl
 
     public StatefulKnowledgeSessionImpl getCachedSession(SessionConfiguration config, Environment environment) {
         return sessionsCache != null ? sessionsCache.getCachedSession(config) : null;
-    }
-
-    public FactHandleFactory getFactHandleFactory() {
-        return this.factHandleFactory;
     }
 
     public FactHandleFactory newFactHandleFactory() {
@@ -701,7 +670,7 @@ public class KnowledgeBaseImpl
         return this.globals;
     }
 
-    public void lock() {
+    private void lock() {
         // The lock is reentrant, so we need additional magic here to skip
         // notifications for locked if this thread already has locked it.
         boolean firstLock = !this.lock.isWriteLockedByCurrentThread();
@@ -715,7 +684,7 @@ public class KnowledgeBaseImpl
         }
     }
 
-    public void unlock() {
+    private void unlock() {
         boolean lastUnlock = this.lock.getWriteHoldCount() == 1;
         if (lastUnlock) {
             this.eventSupport.fireBeforeRuleBaseUnlocked();
@@ -743,23 +712,24 @@ public class KnowledgeBaseImpl
      * @param newPkgs The package to add.
      */
     @Override
-    public void addPackages( final Collection<KiePackage> newPkgs ) {
+    public void addPackages( Collection<KiePackage> newPkgs ) {
         final List<InternalKnowledgePackage> clonedPkgs = new ArrayList<InternalKnowledgePackage>();
         for (KiePackage newPkg : newPkgs) {
             clonedPkgs.add(((InternalKnowledgePackage)newPkg).deepCloneIfAlreadyInUse(rootClassLoader));
         }
 
-        enqueueModification(new Runnable() {
-            @Override
-            public void run() {
-                internalAddPackages(clonedPkgs);
-            }
-        });
+        enqueueModification( () -> internalAddPackages( clonedPkgs ) );
     }
     
     @Override
-    public void addPackage(final KiePackage newPkg) {
-        addPackages( Collections.singleton(newPkg) );
+    public Future<KiePackage> addPackage( final KiePackage newPkg ) {
+        InternalKnowledgePackage clonedPkg = ((InternalKnowledgePackage)newPkg).deepCloneIfAlreadyInUse(rootClassLoader);
+        CompletableFuture<KiePackage> result = new CompletableFuture<>();
+        enqueueModification( () -> {
+            internalAddPackages( Collections.singletonList(clonedPkg) );
+            result.complete( getPackage(newPkg.getName()) );
+        } );
+        return result;
     }
 
     public void enqueueModification(Runnable modification) {
@@ -890,9 +860,7 @@ public class KnowledgeBaseImpl
         for ( InternalKnowledgePackage newPkg : clonedPkgs ) {
             // we have to do this before the merging, as it does some classloader resolving
             if ( newPkg.getTypeDeclarations() != null ) {
-                for ( TypeDeclaration newDecl : newPkg.getTypeDeclarations().values() ) {
-                    allTypeDeclarations.add( newDecl );
-                }
+                allTypeDeclarations.addAll( newPkg.getTypeDeclarations().values() );
             }
         }
         Collections.sort(allTypeDeclarations);
@@ -957,27 +925,26 @@ public class KnowledgeBaseImpl
 
             // add the window declarations to the kbase
             for( WindowDeclaration window : newPkg.getWindowDeclarations().values() ) {
-                addWindowDeclaration( window );
+                this.reteooBuilder.addNamedWindow(window);
             }
 
             // add entry points to the kbase
             for (String id : newPkg.getEntryPointIds()) {
-                addEntryPoint( id );
+                this.reteooBuilder.addEntryPoint(id);
             }
 
             // add the rules to the RuleBase
             for ( Rule r : newPkg.getRules() ) {
                 RuleImpl rule = (RuleImpl)r;
                 checkMultithreadedEvaluation( rule );
-                addRule( newPkg, rule );
+                internalAddRule( newPkg, rule );
             }
 
             // add the flows to the RuleBase
             if ( newPkg.getRuleFlows() != null ) {
                 final Map<String, Process> flows = newPkg.getRuleFlows();
                 for ( Process process : flows.values() ) {
-                    // XXX: we could take the lock inside addProcess() out, but OTOH: this is what the VM is supposed to do ...
-                    addProcess( process );
+                    internalAddProcess( process );
                 }
             }
 
@@ -1466,107 +1433,6 @@ public class KnowledgeBaseImpl
                                 workingMemory);
     }
 
-    public StatefulKnowledgeSessionImpl newStatefulSession(boolean keepReference) {
-        SessionConfiguration config = getSessionConfiguration();
-        config.setKeepReference( keepReference );
-
-        return newStatefulSession( config,
-                                   EnvironmentFactory.newEnvironment() );
-    }
-
-    public StatefulKnowledgeSessionImpl newStatefulSession(java.io.InputStream stream) {
-        return newStatefulSession( stream,
-                                   true );
-    }
-
-    public StatefulKnowledgeSessionImpl newStatefulSession(java.io.InputStream stream,
-                                                           boolean keepReference) {
-        return newStatefulSession( stream,
-                                   keepReference,
-                                   getSessionConfiguration() );
-    }
-
-    public StatefulKnowledgeSessionImpl newStatefulSession(java.io.InputStream stream,
-                                                           boolean keepReference,
-                                                           SessionConfiguration conf) {
-        StatefulKnowledgeSessionImpl session;
-        try {
-            readLock();
-            try {
-                // first unwrap the byte[]
-                ObjectInputStream ois = new ObjectInputStream( stream );
-
-                // standard serialisation would have written the statateful session instance info to the stream first
-                // so we read it, but we don't need it, so just ignore.
-                StatefulKnowledgeSessionImpl rsession = (StatefulKnowledgeSessionImpl) ois.readObject();
-
-                // now unmarshall that byte[]
-                ByteArrayInputStream bais = new ByteArrayInputStream( rsession.bytes );
-                Marshaller marshaller = MarshallerFactory.newMarshaller(this, new ObjectMarshallingStrategy[]{MarshallerFactory.newSerializeMarshallingStrategy()});
-
-                Environment environment = EnvironmentFactory.newEnvironment();
-                KieSession ksession = marshaller.unmarshall( bais,
-                                                             conf,
-                                                             environment );
-                session = (StatefulKnowledgeSessionImpl) ksession;
-
-                if ( keepReference ) {
-                    addStatefulSession(session);
-                }
-
-                bais.close();
-            } finally {
-                readUnlock();
-            }
-
-        } catch ( Exception e ) {
-            throw new RuntimeException( "Unable to unmarshall session",
-                                        e );
-        } finally {
-            try {
-                stream.close();
-            } catch ( IOException e ) {
-                throw new RuntimeException( "Unable to close stream", e );
-            }
-        }
-        return session;
-    }
-
-    public StatefulKnowledgeSessionImpl newStatefulSession(SessionConfiguration sessionConfig,
-                                                           Environment environment) {
-        if ( sessionConfig == null ) {
-            sessionConfig = getSessionConfiguration();
-        }
-        if ( environment == null ) {
-            environment = EnvironmentFactory.newEnvironment();
-        }
-        return newStatefulSession( nextWorkingMemoryCounter(),
-                                   sessionConfig,
-                                   environment );
-    }
-
-    StatefulKnowledgeSessionImpl newStatefulSession(int id,
-                                                    SessionConfiguration sessionConfig,
-                                                    Environment environment) {
-        if ( this.getConfiguration().isSequential() ) {
-            throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
-        }
-
-        readLock();
-        try {
-            WorkingMemoryFactory wmFactory = kieComponentFactory.getWorkingMemoryFactory();
-            StatefulKnowledgeSessionImpl session = ( StatefulKnowledgeSessionImpl ) wmFactory.createWorkingMemory( id, this,
-                                                                                                                   sessionConfig, environment );
-            if ( sessionConfig.isKeepReference() ) {
-                addStatefulSession(session);
-            }
-
-            return session;
-        } finally {
-            readUnlock();
-        }
-    }
-
     public int getNodeCount() {
         // may start in 0
         return this.reteooBuilder.getIdGenerator().getLastId() + 1;
@@ -1684,32 +1550,16 @@ public class KnowledgeBaseImpl
                          final RuleImpl rule ) throws InvalidPatternException {
         lock();
         try {
-            this.eventSupport.fireBeforeRuleAdded( pkg,
-                                                   rule );
-            //        if ( !rule.isValid() ) {
-            //            throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
-            //        }
-            addRule( rule );
-            this.eventSupport.fireAfterRuleAdded(pkg,
-                                                 rule);
+            internalAddRule( pkg, rule );
         } finally {
             unlock();
         }
     }
 
-    protected void addRule(final RuleImpl rule) throws InvalidPatternException {
-        // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
+    private void internalAddRule( InternalKnowledgePackage pkg, RuleImpl rule ) {
+        this.eventSupport.fireBeforeRuleAdded( pkg, rule );
         this.reteooBuilder.addRule(rule);
-    }
-
-    protected void addEntryPoint(final String id) throws InvalidPatternException {
-        // This adds the entry point. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
-        this.reteooBuilder.addEntryPoint(id);
-    }
-
-    private void addWindowDeclaration(final WindowDeclaration window) throws InvalidPatternException {
-        // This adds the named window. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
-        this.reteooBuilder.addNamedWindow(window);
+        this.eventSupport.fireAfterRuleAdded(pkg, rule);
     }
 
     public void removeQuery( final String packageName,
@@ -1720,29 +1570,26 @@ public class KnowledgeBaseImpl
 
     public void removeRule( final String packageName,
                             final String ruleName ) {
-        enqueueModification(new Runnable() {
-            @Override
-            public void run() {
-                final InternalKnowledgePackage pkg = pkgs.get( packageName );
-                if (pkg == null) {
-                    throw new IllegalArgumentException( "Package name '" + packageName +
-                                                        "' does not exist for this Rule Base." );
-                }
-
-                RuleImpl rule = pkg.getRule( ruleName );
-                if (rule == null) {
-                    throw new IllegalArgumentException( "Rule name '" + ruleName +
-                                                        "' does not exist in the Package '" +
-                                                        packageName +
-                                                        "'." );
-                }
-
-                internalRemoveRule(pkg, rule);
-
-                pkg.removeRule( rule );
-                addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
+        enqueueModification( () -> {
+            final InternalKnowledgePackage pkg = pkgs.get( packageName );
+            if (pkg == null) {
+                throw new IllegalArgumentException( "Package name '" + packageName +
+                                                    "' does not exist for this Rule Base." );
             }
-        });
+
+            RuleImpl rule = pkg.getRule( ruleName );
+            if (rule == null) {
+                throw new IllegalArgumentException( "Rule name '" + ruleName +
+                                                    "' does not exist in the Package '" +
+                                                    packageName +
+                                                    "'." );
+            }
+
+            internalRemoveRule(pkg, rule);
+
+            pkg.removeRule( rule );
+            addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
+        } );
     }
 
     /**
@@ -1750,22 +1597,12 @@ public class KnowledgeBaseImpl
      */
     public void removeRule( final InternalKnowledgePackage pkg,
                             final RuleImpl rule ) {
-        enqueueModification(new Runnable() {
-            @Override
-            public void run() {
-                internalRemoveRule(pkg, rule);
-            }
-        });
+        enqueueModification( () -> internalRemoveRule( pkg, rule ) );
     }
 
     public void removeRules( final InternalKnowledgePackage pkg,
                              final List<RuleImpl> rules ) {
-        enqueueModification(new Runnable() {
-            @Override
-            public void run() {
-                internalRemoveRules(pkg, rules);
-            }
-        });
+        enqueueModification( () -> internalRemoveRules( pkg, rules ) );
     }
 
     private void internalRemoveRules(InternalKnowledgePackage pkg, List<RuleImpl> rules) {
@@ -1786,89 +1623,63 @@ public class KnowledgeBaseImpl
 
     public void removeFunction( final String packageName,
                                 final String functionName ) {
-        lock();
-        try {
-            final InternalKnowledgePackage pkg = this.pkgs.get( packageName );
-            if (pkg == null) {
-                throw new IllegalArgumentException( "Package name '" + packageName +
-                                                    "' does not exist for this Rule Base." );
-            }
+        enqueueModification( () -> internalRemoveFunction( packageName, functionName ) );
+    }
 
-            Function function = pkg.getFunctions().get(functionName);
-            if (function == null) {
-                throw new IllegalArgumentException( "function name '" + packageName +
-                                                    "' does not exist in the Package '" +
-                                                    packageName +
-                                                    "'." );
-            }
-
-            removeFunction( pkg,
-                            functionName );
-            pkg.removeFunction( functionName );
-            if (rootClassLoader instanceof ProjectClassLoader) {
-                ((ProjectClassLoader)rootClassLoader).undefineClass(function.getClassName());
-            }
-
-            addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
-        } finally {
-            unlock();
+    private void internalRemoveFunction( String packageName, String functionName ) {
+        final InternalKnowledgePackage pkg = this.pkgs.get( packageName );
+        if (pkg == null) {
+            throw new IllegalArgumentException( "Package name '" + packageName +
+                                                "' does not exist for this Rule Base." );
         }
-    }
 
-    /**
-     * Handle function removal.
-     *
-     * This method is intended for sub-classes, and called after the
-     *  {@link KieBaseEventListener#beforeRuleRemoved(BeforeRuleRemovedEvent)} before-rule-removed}
-     * event is fired, and before the function is physically removed from the package.
-     *
-     * This method is called with the rulebase lock held.
-     */
-    protected/* abstract */void removeFunction( String functionName ) {
-        // Nothing in default.
-    }
+        Function function = pkg.getFunctions().get( functionName );
+        if (function == null) {
+            throw new IllegalArgumentException( "function name '" + packageName +
+                                                "' does not exist in the Package '" +
+                                                packageName +
+                                                "'." );
+        }
 
-    /**
-     * Notify listeners and sub-classes about imminent removal of a function from a package.
-     *
-     * This method is called with the rulebase lock held.
-     */
-    private void removeFunction( final InternalKnowledgePackage pkg,
-                                 final String functionName ) {
-        this.eventSupport.fireBeforeFunctionRemoved( pkg,
-                                                     functionName );
-        removeFunction( functionName );
-        this.eventSupport.fireAfterFunctionRemoved( pkg,
-                                                    functionName );
+        this.eventSupport.fireBeforeFunctionRemoved( pkg, functionName );
+        pkg.removeFunction( functionName );
+        this.eventSupport.fireAfterFunctionRemoved( pkg, functionName );
+        if (rootClassLoader instanceof ProjectClassLoader ) {
+            ((ProjectClassLoader)rootClassLoader).undefineClass(function.getClassName());
+        }
+
+        addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
     }
 
     public void addProcess( final Process process ) {
         // XXX: could use a synchronized(processes) here.
-        this.eventSupport.fireBeforeProcessAdded(process);
         lock();
         try {
-            this.processes.put( process.getId(),
-                                process );
+            internalAddProcess( process );
         } finally {
             unlock();
         }
+    }
+
+    private void internalAddProcess( Process process ) {
+        this.eventSupport.fireBeforeProcessAdded(process);
+        this.processes.put( process.getId(), process );
         this.eventSupport.fireAfterProcessAdded(process);
     }
 
     public void removeProcess( final String id ) {
+        enqueueModification( () -> internalRemoveProcess( id ) );
+    }
+
+    private void internalRemoveProcess( String id ) {
         Process process = this.processes.get( id );
-        if (process == null) {
+        if ( process == null ) {
             throw new IllegalArgumentException( "Process '" + id + "' does not exist for this Rule Base." );
         }
-        this.eventSupport.fireBeforeProcessRemoved(process);
-        lock();
-        try {
-            this.processes.remove( id );
-            this.pkgs.get(process.getPackageName()).removeRuleFlow(id);
-        } finally {
-            unlock();
-        }
-        this.eventSupport.fireAfterProcessRemoved(process);
+        this.eventSupport.fireBeforeProcessRemoved( process );
+        this.processes.remove( id );
+        this.pkgs.get( process.getPackageName() ).removeRuleFlow( id );
+        this.eventSupport.fireAfterProcessRemoved( process );
     }
 
     public Process getProcess( final String id ) {
@@ -1922,12 +1733,8 @@ public class KnowledgeBaseImpl
         return RuleBasePartitionId.createPartition();
     }
 
-    public FactType getFactType(String packageName,
-                                String typeName) {
-        return getFactType(packageName + "." + typeName);
-    }
-
-    public FactType getFactType( final String name ) {
+    public FactType getFactType(String packageName, String typeName) {
+        String name = packageName + "." + typeName;
         readLock();
         try {
             for (InternalKnowledgePackage pkg : this.pkgs.values()) {
@@ -1976,7 +1783,7 @@ public class KnowledgeBaseImpl
 
             List<Function> functionsToBeRemoved = pkg.removeFunctionsGeneratedFromResource(resource);
             for (Function function : functionsToBeRemoved) {
-                removeFunction(function.getName());
+                internalRemoveFunction(pkg.getName(), function.getName());
             }
 
             List<Process> processesToBeRemoved = pkg.removeProcessesGeneratedFromResource(resource);
