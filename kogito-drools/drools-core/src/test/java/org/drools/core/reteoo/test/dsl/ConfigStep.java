@@ -68,8 +68,7 @@ public class ConfigStep implements Step {
         KnowledgeBaseImpl rbase = new KnowledgeBaseImpl("ID", conf);
         BuildContext buildContext = new BuildContext(rbase);
 
-        InternalWorkingMemory wm = (InternalWorkingMemory) rbase
-                .newStatefulSession(true);
+        InternalWorkingMemory wm = (InternalWorkingMemory) rbase.newKieSession();
 
         // Overwrite values now taking into account the configuration options.
         context.put(BUILD_CONTEXT, buildContext);

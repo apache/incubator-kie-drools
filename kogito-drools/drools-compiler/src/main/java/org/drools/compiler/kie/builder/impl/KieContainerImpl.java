@@ -260,13 +260,8 @@ public class KieContainerImpl
                 kbasesToRemove.add( kbaseName );
             } else {
                 final InternalKnowledgeBase kBase = (InternalKnowledgeBase) kBaseEntry.getValue();
-                kBase.enqueueModification( new Runnable() {
-                    @Override
-                    public void run() {
-                        updateKBase( kBase, currentKM, newReleaseId, newKM, cs, modifiedClasses, modifyingUsedClass,
-                                     unchangedResources, results, newKieBaseModel, currentKieBaseModel);
-                    }
-                } );
+                kBase.enqueueModification( () -> updateKBase( kBase, currentKM, newReleaseId, newKM, cs, modifiedClasses, modifyingUsedClass,
+                                                              unchangedResources, results, newKieBaseModel, currentKieBaseModel ) );
             }
         }
 
