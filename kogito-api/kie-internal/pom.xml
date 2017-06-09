@@ -62,6 +62,7 @@
               org.jbpm.process.builder;resolution:=optional,
               org.jbpm.runtime.manager.impl;resolution:=optional,
               org.jbpm.services.task.persistence;resolution:=optional,
+              org.kie.mavensupport,
               org.kie.api,
               org.kie.api.builder,
               org.kie.api.builder.model,
