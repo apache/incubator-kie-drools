@@ -46,7 +46,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.common.ResourceProvider;
-import org.drools.core.definitions.InternalKnowledgePackage;
+
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -95,9 +95,9 @@ public abstract class AbstractKieModule
 
     private final Map<String, Results> resultsCache = new HashMap<String, Results>();
 
-    protected final ReleaseId releaseId;
+    protected  ReleaseId releaseId;
 
-    private final KieModuleModel kModuleModel;
+    private  KieModuleModel kModuleModel;
 
     private Map<ReleaseId, InternalKieModule> kieDependencies;
 
@@ -111,6 +111,8 @@ public abstract class AbstractKieModule
     protected PomModel pomModel;
 
     private Collection<ReleaseId> unresolvedDependencies;
+
+    public AbstractKieModule(){}
 
     public AbstractKieModule(ReleaseId releaseId, KieModuleModel kModuleModel) {
         this.releaseId = releaseId;
