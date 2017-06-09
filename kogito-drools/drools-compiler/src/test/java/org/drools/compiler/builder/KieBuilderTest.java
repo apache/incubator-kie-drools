@@ -28,7 +28,7 @@ import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.compiler.kproject.xml.PomModel;
+import org.appformer.maven.support.PomModel;
 import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;

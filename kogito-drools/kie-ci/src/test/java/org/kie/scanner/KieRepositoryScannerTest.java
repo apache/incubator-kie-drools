@@ -15,10 +15,6 @@
 
 package org.kie.scanner;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,16 +24,10 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.core.util.FileManager;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.repository.LocalRepository;
-import org.eclipse.aether.repository.LocalRepositoryManager;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Before;
@@ -58,11 +48,17 @@ import org.kie.api.event.kiescanner.KieScannerStatusChangeEvent;
 import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.scanner.embedder.MavenEmbedderUtils;
+import org.appformer.maven.integration.MavenRepository;
+import org.appformer.maven.integration.embedder.MavenEmbedderUtils;
 import org.kie.scanner.event.KieScannerStatusChangeEventImpl;
 import org.kie.scanner.event.KieScannerUpdateResultsEventImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Arrays.asList;
+import static org.junit.Assert.*;
+import static org.appformer.maven.integration.MavenRepository.getMavenRepository;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
 @RunWith(Parameterized.class)
@@ -114,7 +110,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         InternalKieModule kJar1 = createKieJar(ks, releaseId, "rule1", "rule2");
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
 
         // create a ksesion and check it works as expected
@@ -196,7 +192,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         // scan the maven repo to get the new kjar version before it is deployed into Maven repo
         // should not throw NPE because of uninitialized dependencies due to parsing parent pom failure
         scanner.scanNow();
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
 
         // create a ksesion and check it works as expected
@@ -214,7 +210,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         InternalKieModule kJar1 = createKieJar(ks, releaseId1, "rule1", "rule2");
         KieContainer kieContainer = ks.newKieContainer(releaseRange);
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
 
         // create a ksesion and check it works as expected
@@ -248,7 +244,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
     @Test
     public void testKScannerWithRange_withListener() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         
         String artifactId = "scanner-range-test-withlistener";
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", artifactId, "1.0.1");
@@ -323,7 +319,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
     @Test
     public void testKScannerWithRange_withListener_errors() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         
         String artifactId = "scanner-range-test-withlistener-errors";
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", artifactId, "1.0.1");
@@ -431,7 +427,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId, useTypeDeclaration, 2, 7);
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
 
         KieContainer kieContainer = ks.newKieContainer(releaseId);
@@ -519,7 +515,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         InternalKieModule kJar1 = createKieJarFromDrl(ks, releaseId, drl1);
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
 
         KieContainer kieContainer = ks.newKieContainer(releaseId);
@@ -576,7 +572,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         InternalKieModule kJar1 = createKieJarFromDrl(ks, releaseId, drl);
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
 
         KieContainer kieContainer = ks.newKieContainer(releaseId);
@@ -593,7 +589,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0");
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "2.0");
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom("scanner-test"));
 
         resetFileManager();
@@ -625,7 +621,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0");
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "2.0");
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom("scanner-test", "1.0"));
 
         resetFileManager();
@@ -658,7 +654,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0");
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "2.0");
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom("scanner-test", "1.0"));
 
         resetFileManager();
@@ -730,7 +726,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         ReleaseId depId = ks.newReleaseId("org.kie", "test-types", "1.0");
         InternalKieModule kJar1 = createKieJarWithType(ks, depId);
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(depId, kJar1, createKPom(fileManager, depId));
 
         ReleaseId releaseId = ks.newReleaseId("org.kie", "test-rules", "1.0");
@@ -770,7 +766,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0");
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "2.0");
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployPomArtifact("org.kie", "scanner-master-test", "1.0", createMasterKPom("scanner-test"));
 
         resetFileManager();
@@ -818,7 +814,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
     @Test
     public void testScanIncludedDependency() throws Exception {
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         KieServices ks = KieServices.Factory.get();
 
         ReleaseId containerReleaseId = KieServices.Factory.get().newReleaseId( "org.kie", "test-container", "1.0.0-SNAPSHOT" );
@@ -860,7 +856,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
     @Test @Ignore
     public void testScanIncludedAndIncludingDependency() throws Exception {
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         KieServices ks = KieServices.Factory.get();
 
         ReleaseId containerReleaseId = KieServices.Factory.get().newReleaseId( "org.kie", "test-container", "1.0.0-SNAPSHOT" );
@@ -940,7 +936,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         InternalKieModule kJar1 = createKieJarWithGDRL(ks, releaseId, rule1);
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
 
         // create a ksesion and check it works as expected
@@ -1015,7 +1011,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         InternalKieModule kJar1 = createKieJar(ks, releaseId, "rule1", "rule2");
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
 
         // create a ksesion and check it works as expected
@@ -1060,7 +1056,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         InternalKieModule kJar1 = createKieJarWithJavaClass(ks, releaseId, "KBase1", 7);
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
         ks.getRepository().removeKieModule(releaseId);
 

@@ -32,6 +32,15 @@
     </dependency>
 
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-maven-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-maven-integration</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
     </dependency>
@@ -97,6 +106,8 @@
         <configuration>
           <instructions>
             <Export-Package>
+              org.appformer.maven.support.*,
+              org.appformer.maven.integration.*,
               org.kie.scanner.*
             </Export-Package>
             <Import-Package>

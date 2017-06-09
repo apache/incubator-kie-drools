@@ -15,6 +15,10 @@
 
 package org.kie.scanner.management;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.management.ObjectName;
+
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.core.util.FileManager;
@@ -27,16 +31,12 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.scanner.AbstractKieCiTest;
+import org.kie.scanner.KieMavenRepository;
 import org.kie.scanner.KieRepositoryScannerImpl;
-import org.kie.scanner.MavenRepository;
-
-import javax.management.ObjectName;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class KieScannerMBeanTest extends AbstractKieCiTest {
     
@@ -65,7 +65,7 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
         InternalKieModule kJar1 = createKieJar(ks, releaseId, "rule1", "rule2");
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
 
         // create a ksesion and check it works as expected

@@ -16,11 +16,10 @@
 
 package org.drools.testcoverage.memory;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.drools.compiler.TurtleTestCategory;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
@@ -37,9 +36,11 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertFalse;
 
 @Category(TurtleTestCategory.class)
 public class KieScannerMemoryTest {
@@ -63,7 +64,7 @@ public class KieScannerMemoryTest {
     public void testScannerMemoryFootprint() throws IOException {
         final KieServices kieServices = KieServices.Factory.get();
 
-        final MavenRepository repository = MavenRepository.getMavenRepository();
+        final KieMavenRepository repository = KieMavenRepository.getKieMavenRepository();
         final KieModule kieModule = KieBaseUtil.getKieModuleAndBuildInstallModuleFromDrl(
                 TestConstants.PACKAGE_FUNCTIONAL,
                 KieBaseTestConfiguration.CLOUD_IDENTITY,

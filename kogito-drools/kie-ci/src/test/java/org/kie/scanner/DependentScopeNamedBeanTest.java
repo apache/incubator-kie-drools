@@ -17,9 +17,9 @@ package org.kie.scanner;
 
 import java.io.InputStream;
 
-import org.drools.compiler.kproject.xml.PomModel;
-import org.drools.compiler.kproject.xml.PomModelGenerator;
-import org.junit.Ignore;
+import org.appformer.maven.integration.MavenPomModelGenerator;
+import org.appformer.maven.support.PomModel;
+import org.appformer.maven.support.PomModelGenerator;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

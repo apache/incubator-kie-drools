@@ -33,17 +33,19 @@ import java.util.zip.ZipFile;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.eclipse.aether.artifact.Artifact;
-import org.kie.api.builder.ReleaseId;
+import org.appformer.maven.integration.ArtifactResolver;
+import org.appformer.maven.integration.DependencyDescriptor;
+import org.appformer.maven.support.ReleaseId;
+import org.appformer.maven.support.DependencyFilter;
 
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.IoUtils.UTF8_CHARSET;
 import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
-import static org.kie.scanner.ArtifactResolver.getResolverFor;
+import static org.appformer.maven.integration.ArtifactResolver.getResolverFor;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
@@ -159,7 +161,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
                 addArtifact( artifactResolver.resolveArtifact( releaseId ) );
             }
         } else {
-            for ( DependencyDescriptor dep : artifactResolver.getAllDependecies(dependencyFilter) ) {
+            for ( DependencyDescriptor dep : artifactResolver.getAllDependecies( dependencyFilter ) ) {
                 addArtifact( artifactResolver.resolveArtifact( dep.getReleaseId() ) );
             }
         }

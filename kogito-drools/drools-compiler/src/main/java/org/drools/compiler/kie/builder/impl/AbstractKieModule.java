@@ -40,8 +40,6 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.kproject.xml.DependencyFilter;
-import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
@@ -79,10 +77,13 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceTypeImpl;
+import org.appformer.maven.support.DependencyFilter;
+import org.appformer.maven.support.PomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.compiler.kproject.ReleaseIdImpl.adaptAll;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public abstract class AbstractKieModule
@@ -132,13 +133,13 @@ public abstract class AbstractKieModule
         kieDependencies.put(dependency.getReleaseId(), dependency);
     }
 
-    public Collection<ReleaseId> getJarDependencies(DependencyFilter filter) {
+    public Collection<ReleaseId> getJarDependencies(DependencyFilter filter ) {
         if( pomModel == null ) {
             getPomModel();
         }
         Collection<ReleaseId> deps = null;
         if( pomModel != null ) {
-            deps = pomModel.getDependencies(filter);
+            deps = adaptAll( pomModel.getDependencies(filter) );
         }
         return deps == null ? Collections.<ReleaseId> emptyList() : deps;
     }
@@ -500,7 +501,7 @@ public abstract class AbstractKieModule
     }
 
     private void validatePomModel(PomModel pomModel) {
-        ReleaseId pomReleaseId = pomModel.getReleaseId();
+        org.appformer.maven.support.ReleaseId pomReleaseId = pomModel.getReleaseId();
         if (StringUtils.isEmpty(pomReleaseId.getGroupId()) || StringUtils.isEmpty(pomReleaseId.getArtifactId()) || StringUtils.isEmpty(pomReleaseId.getVersion())) {
             throw new RuntimeException("Maven pom.properties exists but ReleaseId content is malformed");
         }

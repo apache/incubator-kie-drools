@@ -15,15 +15,15 @@
 
 package org.kie.scanner;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kproject.xml.DependencyFilter;
-import org.drools.core.rule.TypeMetaInfo;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.ReleaseId;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.Map;
+
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.rule.TypeMetaInfo;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.ReleaseId;
+import org.appformer.maven.support.DependencyFilter;
 
 public interface KieModuleMetaData {
 
