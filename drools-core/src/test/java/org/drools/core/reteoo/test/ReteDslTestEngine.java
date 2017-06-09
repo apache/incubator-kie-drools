@@ -273,7 +273,7 @@ public class ReteDslTestEngine {
         context.put( "ClassFieldAccessorStore",
                      this.reteTesterHelper.getStore() );
 
-        InternalWorkingMemory wm = rbase.newStatefulSession( true );
+        InternalWorkingMemory wm = (InternalWorkingMemory) rbase.newKieSession();
         context.put( WORKING_MEMORY,
                      wm );
         return context;

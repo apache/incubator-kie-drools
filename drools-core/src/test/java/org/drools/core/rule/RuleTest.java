@@ -16,10 +16,6 @@
 
 package org.drools.core.rule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
@@ -36,11 +32,13 @@ import org.drools.core.spi.Salience;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class RuleTest {
 
     @Test
     public void testDateEffective() {
-        WorkingMemory wm = new KnowledgeBaseImpl("x", null).newStatefulSession();
+        WorkingMemory wm = (WorkingMemory) new KnowledgeBaseImpl( "x", null).newKieSession();
 
         final RuleImpl rule = new RuleImpl( "myrule" );
 
@@ -65,7 +63,7 @@ public class RuleTest {
 
     @Test
     public void testDateExpires() throws Exception {
-        WorkingMemory wm = new KnowledgeBaseImpl("x", null).newStatefulSession();
+        WorkingMemory wm = (WorkingMemory) new KnowledgeBaseImpl("x", null).newKieSession();
         
         final RuleImpl rule = new RuleImpl( "myrule" );
 
@@ -88,7 +86,7 @@ public class RuleTest {
 
     @Test
     public void testDateEffectiveExpires() {
-        WorkingMemory wm = new KnowledgeBaseImpl("x",null).newStatefulSession();
+        WorkingMemory wm = (WorkingMemory) new KnowledgeBaseImpl("x",null).newKieSession();
         
         final RuleImpl rule = new RuleImpl( "myrule" );
 
@@ -117,7 +115,7 @@ public class RuleTest {
 
     @Test
     public void testRuleEnabled() {
-        WorkingMemory wm = new KnowledgeBaseImpl("x", null).newStatefulSession();
+        WorkingMemory wm = (WorkingMemory) new KnowledgeBaseImpl("x", null).newKieSession();
         
         final RuleImpl rule = new RuleImpl( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_FALSE );
@@ -137,7 +135,7 @@ public class RuleTest {
     public void testTimeMachine() {
         SessionConfiguration conf = SessionConfiguration.newInstance();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        WorkingMemory wm = new KnowledgeBaseImpl("x", null).newStatefulSession(conf, null);
+        WorkingMemory wm = (WorkingMemory) new KnowledgeBaseImpl("x", null).newKieSession(conf, null);
         
         final Calendar future = Calendar.getInstance();
         ((PseudoClockScheduler)wm.getSessionClock()).setStartupTime( future.getTimeInMillis() );
