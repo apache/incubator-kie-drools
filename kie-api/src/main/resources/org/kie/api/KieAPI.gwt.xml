@@ -3,6 +3,8 @@
 
 <module>
 
+  <inherits name="org.appformer.maven.support.AFMavenSupportAPI"/>
+
   <source path='builder' includes="ReleaseId.java"/>
 
 </module>

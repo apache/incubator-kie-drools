@@ -27,6 +27,7 @@
         <configuration>
           <instructions>
             <Import-Package>
+              org.kie.mavensupport,
               *;resolution:=optional,
               org.jbpm.runtime.manager.impl;resolution:=optional,
               org.drools.compiler.kie.builder.impl,
@@ -119,6 +120,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-maven-support</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.spec.javax.xml.bind</groupId>
       <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
       <scope>provided</scope>
@@ -152,6 +157,5 @@
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
     </dependency>
-
   </dependencies>
 </project>
