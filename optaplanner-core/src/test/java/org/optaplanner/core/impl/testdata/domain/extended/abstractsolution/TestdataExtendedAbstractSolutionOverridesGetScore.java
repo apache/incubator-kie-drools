@@ -31,8 +31,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution
 public class TestdataExtendedAbstractSolutionOverridesGetScore extends AbstractSolution<BendableScore> {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedAbstractSolutionOverridesGetScore.class, TestdataEntity.class);
+    public static SolutionDescriptor<TestdataExtendedAbstractSolutionOverridesGetScore> buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(
+                TestdataExtendedAbstractSolutionOverridesGetScore.class, TestdataEntity.class);
     }
 
     private List<TestdataValue> valueList;

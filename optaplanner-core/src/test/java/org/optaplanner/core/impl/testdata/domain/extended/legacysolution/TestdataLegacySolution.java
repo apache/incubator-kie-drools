@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @Deprecated
 public class TestdataLegacySolution implements Solution<SimpleScore> {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataLegacySolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataLegacySolution.class, TestdataEntity.class);
     }
 

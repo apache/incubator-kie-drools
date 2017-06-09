@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution
 public class TestdataProblemFactIsPlanningEntityCollectionPropertySolution extends TestdataObject {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataProblemFactIsPlanningEntityCollectionPropertySolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(
                 TestdataProblemFactIsPlanningEntityCollectionPropertySolution.class, TestdataEntity.class);
     }

@@ -33,8 +33,9 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution
 public class TestdataReadMethodProblemFactCollectionPropertySolution extends TestdataObject {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataReadMethodProblemFactCollectionPropertySolution.class, TestdataEntity.class);
+    public static SolutionDescriptor<TestdataReadMethodProblemFactCollectionPropertySolution> buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(
+                TestdataReadMethodProblemFactCollectionPropertySolution.class, TestdataEntity.class);
     }
 
     private List<TestdataValue> valueList;

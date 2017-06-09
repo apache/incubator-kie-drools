@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution
 public class TestdataExtendedAbstractSolution extends AbstractSolution<HardSoftScore> {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataExtendedAbstractSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedAbstractSolution.class, TestdataEntity.class);
     }
 

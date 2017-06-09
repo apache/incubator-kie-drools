@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution(autoDiscoverMemberType = AutoDiscoverMemberType.FIELD)
 public class TestdataAutoDiscoverFieldSolution extends TestdataObject {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataAutoDiscoverFieldSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataAutoDiscoverFieldSolution.class, TestdataEntity.class);
     }
 
