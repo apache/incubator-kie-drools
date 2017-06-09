@@ -15,6 +15,11 @@
 
 package org.kie.scanner;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
 import org.junit.Before;
@@ -27,13 +32,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
 
@@ -62,7 +62,7 @@ public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
 
     private void checkIncrementalCompilation(boolean useJavaInDrl) throws IOException {
         KieServices ks = KieServices.Factory.get();
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
 
         InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId, FIRST_VALUE, useJavaInDrl);
         repository.installArtifact(releaseId, kJar1, createKPom(releaseId));

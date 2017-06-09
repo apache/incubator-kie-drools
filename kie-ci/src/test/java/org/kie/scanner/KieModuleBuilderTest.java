@@ -34,9 +34,9 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.appformer.maven.integration.MavenRepository;
 
 import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 public class KieModuleBuilderTest extends AbstractKieCiTest {
 
@@ -82,9 +82,7 @@ public class KieModuleBuilderTest extends AbstractKieCiTest {
         Assert.assertTrue( kieBuilder1.buildAll().getResults().getMessages().isEmpty() );
         InternalKieModule kieModule = (InternalKieModule) kieBuilder1.getKieModule();
 
-        MavenRepository.getMavenRepository().installArtifact( releaseId,
-                                                              kieModule,
-                                                              pomFile );
+        KieMavenRepository.getKieMavenRepository().installArtifact( releaseId, kieModule, pomFile );
 
         //Build a second KieModule, depends on the first KieModule jar which we have deployed into Maven
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie",
@@ -153,7 +151,7 @@ public class KieModuleBuilderTest extends AbstractKieCiTest {
         fileManager.write(pomFile, pom);
 
         InternalKieModule kJar1 = createKieJarWithPomDependencies( ks, releaseIdNoDep, pom );
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = KieMavenRepository.getKieMavenRepository();
         repository.installArtifact(releaseIdNoDep, kJar1, pomFile);
 
         InternalKieModule kJar2 = createKieJarWithDependencies( ks, releaseIdWithDep, true, "rule1", releaseIdNoDep);
