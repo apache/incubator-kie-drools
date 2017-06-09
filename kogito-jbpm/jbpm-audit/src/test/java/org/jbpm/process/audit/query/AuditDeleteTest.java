@@ -21,6 +21,7 @@ import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSour
 import static org.junit.Assert.assertEquals;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -61,13 +62,12 @@ public class AuditDeleteTest extends JPAAuditLogService {
     private ProcessInstanceLog [] pilTestData;
     private VariableInstanceLog [] vilTestData;
     private NodeInstanceLog [] nilTestData;
-    
+
+    private boolean firstRun = true;
     
     @BeforeClass
     public static void configure() { 
         LoggingPrintStream.interceptSysOutSysErr();
-        
-        
     }
     
     @AfterClass
@@ -80,17 +80,23 @@ public class AuditDeleteTest extends JPAAuditLogService {
     public void setUp() throws Exception {
     	context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
-        if( pilTestData == null ) { 
+        this.persistenceStrategy = new StandaloneJtaStrategy(emf);
+
+        if (firstRun) {
+            clearTables(ProcessInstanceLog.class, VariableInstanceLog.class, NodeInstanceLog.class);
+            firstRun = false;
+        }
+        if (pilTestData == null) {
             pilTestData = createTestProcessInstanceLogData();
             vilTestData = createTestVariableInstanceLogData();
             nilTestData = createTestNodeInstanceLogData();
         }
-        this.persistenceStrategy = new StandaloneJtaStrategy(emf);
     }
     
     @After
     public void cleanup() {
-    	cleanUp(context);
+        clearTables(ProcessInstanceLog.class, VariableInstanceLog.class, NodeInstanceLog.class);
+        cleanUp(context);
     }
    
     private static Random random = new Random();
@@ -506,4 +512,17 @@ public class AuditDeleteTest extends JPAAuditLogService {
         int result = updateBuilder.build().execute();
         assertEquals(2, result);
     }
+
+    private void clearTables(Class<? extends Serializable>... entities) {
+        EntityManager em = getEntityManager();
+        Object newTx = joinTransaction(em);
+        try {
+            for (Class<? extends Serializable> entity : entities) {
+                em.createQuery("DELETE FROM " + entity.getSimpleName()).executeUpdate();
+            }
+        } finally {
+            closeEntityManager(em, newTx);
+        }
+    }
+
 }

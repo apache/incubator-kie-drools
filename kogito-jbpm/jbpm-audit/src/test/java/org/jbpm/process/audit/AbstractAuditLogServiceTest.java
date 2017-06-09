@@ -488,7 +488,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         assertEquals("One", var.getValue());
         // Various DBs return various empty values. (E.g. Oracle returns null.)
         assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
-        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessInstanceId(), var.getProcessInstanceId());
         assertEquals(processInstance.getProcessId(), var.getProcessId());
         assertEquals("list[0]", var.getVariableId());
         assertEquals("list", var.getVariableInstanceId());
@@ -496,7 +496,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         var = listVariables.get(1);
         assertEquals("Two", var.getValue());
         assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
-        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessInstanceId(), var.getProcessInstanceId());
         assertEquals(processInstance.getProcessId(), var.getProcessId());
         assertEquals("list[1]", var.getVariableId());
         assertEquals("list", var.getVariableInstanceId());
@@ -504,7 +504,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         var = listVariables.get(2);        
         assertEquals("Three", var.getValue());
         assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
-        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessInstanceId(), var.getProcessInstanceId());
         assertEquals(processInstance.getProcessId(), var.getProcessId());
         assertEquals("list[2]", var.getVariableId());
         assertEquals("list", var.getVariableInstanceId());
