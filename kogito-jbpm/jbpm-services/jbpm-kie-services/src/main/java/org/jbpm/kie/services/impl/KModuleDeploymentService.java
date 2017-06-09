@@ -16,8 +16,6 @@
 
 package org.jbpm.kie.services.impl;
 
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
@@ -29,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.persistence.EntityManagerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -41,7 +38,7 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.drools.compiler.kproject.xml.DependencyFilter;
+import org.appformer.maven.support.DependencyFilter;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
@@ -77,12 +74,14 @@ import org.kie.internal.runtime.conf.ObjectModelResolver;
 import org.kie.internal.runtime.conf.ObjectModelResolverProvider;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
+
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
 public class KModuleDeploymentService extends AbstractDeploymentService {
@@ -131,7 +130,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
 	            releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
 
-	            MavenRepository repository = getMavenRepository();
+	            KieMavenRepository repository = getKieMavenRepository();
 	            repository.resolveArtifact(releaseId.toExternalForm());
 
 	            kieContainer = ks.newKieContainer(releaseId);

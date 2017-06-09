@@ -16,6 +16,14 @@
 
 package org.jbpm.services.ejb.test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.ejb.EJB;
+
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
@@ -34,21 +42,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.Context;
-import org.kie.scanner.MavenRepository;
-
-import javax.ejb.EJB;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.kie.scanner.KieMavenRepository;
 
 import static org.junit.Assert.*;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 @RunWith(Arquillian.class)
 public class AsyncExecutionProcessServiceEJBIntegrationTest extends AbstractTestSupport {
@@ -84,7 +84,7 @@ public class AsyncExecutionProcessServiceEJBIntegrationTest extends AbstractTest
         } catch (Exception e) {
             
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, pom);
 	}
 	

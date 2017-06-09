@@ -16,17 +16,15 @@
 
 package org.jbpm.kie.services.impl.admin;
 
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -47,16 +45,18 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.task.api.TaskModelFactory;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.EmailNotification;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
 
@@ -95,7 +95,7 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, pom);
 
         userTaskAdminService = new UserTaskAdminServiceImpl();

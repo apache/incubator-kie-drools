@@ -16,21 +16,16 @@
 
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.*;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.objects.Building;
@@ -61,9 +56,12 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class FilteredKModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
 
@@ -93,7 +91,7 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractKieServicesBas
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
     }
 
@@ -448,7 +446,7 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractKieServicesBas
         ReleaseId pojoReleaseId = ks.newReleaseId( groupId, pojoArtifactId, VERSION );
         File pojojar = new File( "src/test/resources/multi-remotable/pojo.jar" ); // contains two @Remotable classes MyPojo, MyPojo2
         File pojopom = new File( this.getClass().getResource("/multi-remotable/pojo-pom.xml").getFile());
-        MavenRepository.getMavenRepository().installArtifact( pojoReleaseId, pojojar, pojopom );
+        KieMavenRepository.getKieMavenRepository().installArtifact( pojoReleaseId, pojojar, pojopom );
 
         FluentKieModuleDeploymentHelper.newFluentInstance()
             .setGroupId( groupId )

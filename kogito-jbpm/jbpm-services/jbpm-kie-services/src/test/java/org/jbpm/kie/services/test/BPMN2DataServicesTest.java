@@ -15,12 +15,6 @@
  */
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,17 +28,20 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
+import org.jbpm.services.api.DeploymentNotFoundException;
+import org.jbpm.services.api.ProcessDefinitionNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
-import org.jbpm.services.api.DeploymentNotFoundException;
-import org.jbpm.services.api.ProcessDefinitionNotFoundException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
 public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
@@ -76,7 +73,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
     }
 

@@ -16,18 +16,11 @@
 
 package org.jbpm.services.ejb.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.ejb.EJB;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -49,7 +42,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
 @RunWith(Arquillian.class)
@@ -106,7 +102,7 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
         } catch (Exception e) {
             
         }
-        MavenRepository repository = getMavenRepository();
+		KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, pom);
         
         ReleaseId releaseIdSupport = ks.newReleaseId(GROUP_ID, "support", VERSION);

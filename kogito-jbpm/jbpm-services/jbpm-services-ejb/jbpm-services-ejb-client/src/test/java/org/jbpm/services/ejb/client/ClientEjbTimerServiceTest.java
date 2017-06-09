@@ -16,11 +16,6 @@
 
 package org.jbpm.services.ejb.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -45,7 +40,10 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class ClientEjbTimerServiceTest extends AbstractKieServicesBaseTest {
 	
@@ -67,7 +65,7 @@ public class ClientEjbTimerServiceTest extends AbstractKieServicesBaseTest {
         ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
         File kjar = new File("src/test/resources/kjar/custom-data-project-1.0.jar");
         File pom = new File("src/test/resources/kjar/pom.xml");
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kjar, pom);
        
     }

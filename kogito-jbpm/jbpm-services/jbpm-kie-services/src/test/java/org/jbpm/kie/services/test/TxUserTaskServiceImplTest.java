@@ -16,18 +16,12 @@
 
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
@@ -42,9 +36,12 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class TxUserTaskServiceImplTest extends AbstractKieServicesBaseTest {
 
@@ -74,7 +71,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         } catch (Exception e) {
             
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, pom);
         
         assertNotNull(deploymentService);

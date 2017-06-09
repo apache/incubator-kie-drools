@@ -37,8 +37,9 @@ import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.NamedObjectModel;
 
-import static org.junit.Assert.*;
-import static org.kie.scanner.MavenRepository.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class IdentityProviderAwareProcessListenerTest extends AbstractKieServicesBaseTest {
 
@@ -60,7 +61,7 @@ public class IdentityProviderAwareProcessListenerTest extends AbstractKieService
             e.printStackTrace();
         }
 
-        getMavenRepository().deployArtifact(releaseId, kJar1, pom);
+        getKieMavenRepository().deployArtifact(releaseId, kJar1, pom);
 
         deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
 

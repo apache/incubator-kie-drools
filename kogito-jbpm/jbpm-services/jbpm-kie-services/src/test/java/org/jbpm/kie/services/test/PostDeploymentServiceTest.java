@@ -16,13 +16,6 @@
 
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -51,7 +44,10 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class PostDeploymentServiceTest extends AbstractKieServicesBaseTest {
     
@@ -80,7 +76,7 @@ public class PostDeploymentServiceTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
             
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
     }

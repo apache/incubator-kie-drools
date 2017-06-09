@@ -16,13 +16,6 @@
 
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -31,7 +24,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
@@ -56,9 +48,12 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
 
@@ -89,7 +84,7 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+		KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
         ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
@@ -104,7 +99,7 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        repository = getMavenRepository();
+        repository = getKieMavenRepository();
         repository.deployArtifact(releaseId3, kJar3, pom3);
     }
 

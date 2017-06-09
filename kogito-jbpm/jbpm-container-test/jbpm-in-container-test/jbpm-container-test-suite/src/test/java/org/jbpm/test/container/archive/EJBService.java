@@ -22,13 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.appformer.maven.integration.embedder.MavenSettings;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.jbpm.test.container.AbstractEJBServicesTest;
-import org.jbpm.test.container.AbstractRuntimeEJBServicesTest;
-import org.jbpm.test.container.JbpmContainerTest;
-import org.jbpm.test.container.listeners.TrackingAgendaEventListener;
-import org.jbpm.test.container.webspherefix.WebSphereFixedJtaPlatform;
-import org.jbpm.test.container.tools.IntegrationMavenResolver;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -38,6 +33,12 @@ import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.test.container.AbstractEJBServicesTest;
+import org.jbpm.test.container.AbstractRuntimeEJBServicesTest;
+import org.jbpm.test.container.JbpmContainerTest;
+import org.jbpm.test.container.listeners.TrackingAgendaEventListener;
+import org.jbpm.test.container.tools.IntegrationMavenResolver;
+import org.jbpm.test.container.webspherefix.WebSphereFixedJtaPlatform;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -51,8 +52,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.scanner.MavenRepository;
-import org.kie.scanner.embedder.MavenSettings;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -293,8 +293,8 @@ public class EJBService {
             kJar1 = createKieJar(ks, releaseId, assets, extraResources);
         }
 
-        MavenRepository repository = MavenRepository.getMavenRepository();
-        System.out.println("Local repo is: " + MavenSettings.getSettings().getLocalRepository());
+        KieMavenRepository repository = KieMavenRepository.getKieMavenRepository();
+        System.out.println( "Local repo is: " + MavenSettings.getSettings().getLocalRepository() );
         repository.installArtifact(releaseId, kJar1, pom);
     }
 

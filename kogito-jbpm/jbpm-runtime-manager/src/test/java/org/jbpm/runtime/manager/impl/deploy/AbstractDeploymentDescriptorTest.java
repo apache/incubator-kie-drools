@@ -15,8 +15,6 @@
 
 package org.jbpm.runtime.manager.impl.deploy;
 
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Map;
@@ -36,7 +34,9 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
+
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public abstract class AbstractDeploymentDescriptorTest extends AbstractBaseTest {
 
@@ -59,7 +59,7 @@ public abstract class AbstractDeploymentDescriptorTest extends AbstractBaseTest 
 		} catch (Exception e) {
 
 		}
-		MavenRepository repository = getMavenRepository();
+		KieMavenRepository repository = getKieMavenRepository();
 		repository.installArtifact(releaseId, kJar1, pom);
 	}
 	

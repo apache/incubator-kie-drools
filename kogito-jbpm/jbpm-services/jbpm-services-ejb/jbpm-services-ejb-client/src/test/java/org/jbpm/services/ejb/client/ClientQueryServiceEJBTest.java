@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 
 public class ClientQueryServiceEJBTest extends QueryServiceImplTest {
 	
@@ -73,7 +73,7 @@ public class ClientQueryServiceEJBTest extends QueryServiceImplTest {
 	}
 	
 	@Override
-    protected void prepareJPAModule(KieServices ks, MavenRepository repository) {
+    protected void prepareJPAModule(KieServices ks, KieMavenRepository repository ) {
         // no op here
     }
     @Override

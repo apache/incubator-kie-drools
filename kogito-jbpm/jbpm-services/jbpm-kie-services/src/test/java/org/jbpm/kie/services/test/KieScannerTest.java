@@ -15,10 +15,6 @@
 
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +42,11 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 @Ignore
 public class KieScannerTest {
@@ -78,7 +78,7 @@ public class KieScannerTest {
         InternalKieModule kJar1 = createJbpmKieJar("Hello");
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, kPom);
 
         // create a ksesion and check it works as expected

@@ -16,10 +16,6 @@
 
 package org.jbpm.services.ejb.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -48,7 +44,11 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class ClientProcessServiceWithCustomDataEJBTest extends AbstractKieServicesBaseTest {
 	
@@ -73,7 +73,7 @@ public class ClientProcessServiceWithCustomDataEJBTest extends AbstractKieServic
         ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
         File kjar = new File("src/test/resources/kjar/custom-data-project-1.0.jar");
         File pom = new File("src/test/resources/kjar/pom.xml");
-        MavenRepository repository = getMavenRepository();
+		KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kjar, pom);
         
         URL[] urls = new URL[]{kjar.toURI().toURL()};

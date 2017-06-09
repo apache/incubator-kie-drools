@@ -15,12 +15,6 @@
 
 package org.jbpm.runtime.manager.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
@@ -30,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
@@ -63,9 +58,10 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
 
@@ -97,7 +93,7 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
         } catch (Exception e) {
             
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, pom);
         
         Properties properties= new Properties();
@@ -367,7 +363,7 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
         ReleaseId releaseId = ks.newReleaseId(GROUP_ID, "xstream-test", VERSION);
         File kjar = new File("src/test/resources/kjar/jbpm-module.jar");
         File pom = new File("src/test/resources/kjar/pom.xml");
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kjar, pom);
         
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()

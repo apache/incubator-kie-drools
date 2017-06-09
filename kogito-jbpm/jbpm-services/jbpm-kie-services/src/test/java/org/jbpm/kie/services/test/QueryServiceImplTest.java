@@ -16,19 +16,6 @@
 
 package org.jbpm.kie.services.test;
 
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSID;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSINSTANCEID;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSNAME;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_STATUS;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASK_VAR_NAME;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_TASK_VAR_VALUE;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_VAR_NAME;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
@@ -79,9 +66,13 @@ import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.jbpm.services.api.query.QueryResultMapper.*;
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
 
@@ -129,7 +120,7 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
         assertNotNull(deploymentService);
@@ -144,7 +135,7 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         assertNotNull(processService);
     }
 
-    protected void prepareJPAModule(KieServices ks, MavenRepository repository) {
+    protected void prepareJPAModule(KieServices ks, KieMavenRepository repository) {
         // jpa module
         ReleaseId releaseIdJPA = ks.newReleaseId("org.jbpm.test", "persistence-test", "1.0.0");
         File kjarJPA = new File("src/test/resources/kjar-jpa/persistence-test.jar");

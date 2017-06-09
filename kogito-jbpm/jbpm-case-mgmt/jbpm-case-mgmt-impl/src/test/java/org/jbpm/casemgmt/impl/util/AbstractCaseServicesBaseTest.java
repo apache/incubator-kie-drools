@@ -99,13 +99,13 @@ import org.kie.internal.runtime.conf.DeploymentDescriptorBuilder;
 import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.*;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public abstract class AbstractCaseServicesBaseTest {
 
@@ -172,7 +172,7 @@ public abstract class AbstractCaseServicesBaseTest {
         fs.write(getPom(releaseId).getBytes());
         fs.close();
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
         // use user name who is part of the case roles assignment
         // so (s)he will be authorized to access case instance

@@ -16,13 +16,6 @@
 
 package org.jbpm.services.ejb.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -31,7 +24,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.ejb.EJB;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -64,7 +56,10 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelProvider;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 @RunWith(Arquillian.class)
 public class UserTaskServiceEJBIntegrationTest extends AbstractTestSupport {
@@ -111,7 +106,7 @@ public class UserTaskServiceEJBIntegrationTest extends AbstractTestSupport {
         } catch (Exception e) {
             
         }
-        MavenRepository repository = getMavenRepository();
+		KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, pom);
 	}
 	

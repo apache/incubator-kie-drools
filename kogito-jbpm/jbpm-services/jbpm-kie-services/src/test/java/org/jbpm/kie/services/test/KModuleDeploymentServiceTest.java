@@ -16,12 +16,6 @@
 
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -53,9 +47,12 @@ import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
 public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
@@ -86,7 +83,7 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
     }
 
@@ -316,7 +313,7 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
@@ -391,7 +388,7 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
@@ -457,7 +454,7 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");
@@ -567,7 +564,7 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2");

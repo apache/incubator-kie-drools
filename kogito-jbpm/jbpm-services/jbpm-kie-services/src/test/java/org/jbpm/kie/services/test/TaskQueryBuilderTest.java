@@ -16,11 +16,6 @@
 
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -43,9 +38,12 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.query.TaskSummaryQueryBuilder.OrderBy;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class TaskQueryBuilderTest extends AbstractKieServicesBaseTest {
 
@@ -84,7 +82,7 @@ public class TaskQueryBuilderTest extends AbstractKieServicesBaseTest {
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
         assertNotNull(deploymentService);
@@ -99,7 +97,7 @@ public class TaskQueryBuilderTest extends AbstractKieServicesBaseTest {
         assertNotNull(processService);
     }
 
-    protected void prepareJPAModule(KieServices ks, MavenRepository repository) {
+    protected void prepareJPAModule(KieServices ks, KieMavenRepository repository) {
         // jpa module
         ReleaseId releaseIdJPA = ks.newReleaseId("org.jbpm.test", "persistence-test", "1.0.0");
         File kjarJPA = new File("src/test/resources/kjar-jpa/persistence-test.jar");

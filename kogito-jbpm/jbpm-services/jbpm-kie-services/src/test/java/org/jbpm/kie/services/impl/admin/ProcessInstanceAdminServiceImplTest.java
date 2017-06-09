@@ -16,13 +16,6 @@
 
 package org.jbpm.kie.services.impl.admin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -55,9 +48,12 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.error.ExecutionError;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBaseTest {
 
@@ -97,7 +93,7 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
         } catch (Exception e) {
 
         }
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kJar1, pom);
 
         processAdminService = new ProcessInstanceAdminServiceImpl();

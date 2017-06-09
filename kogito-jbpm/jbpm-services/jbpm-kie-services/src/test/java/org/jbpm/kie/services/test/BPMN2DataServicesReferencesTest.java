@@ -15,14 +15,6 @@
  */
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,9 +48,12 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 
 public class BPMN2DataServicesReferencesTest extends AbstractKieServicesBaseTest {
@@ -148,7 +143,7 @@ public class BPMN2DataServicesReferencesTest extends AbstractKieServicesBaseTest
            logger.info("Unable to close fileystem used to write pom.xml" );
         }
 
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
 
         // check

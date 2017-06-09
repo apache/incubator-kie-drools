@@ -15,9 +15,6 @@
 
 package org.jbpm.process.workitem.bpmn2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -44,7 +41,10 @@ import org.kie.api.event.kiebase.AfterRuleAddedEvent;
 import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.InternalKieBuilder;
-import org.kie.scanner.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class BusinessRuleTaskHandlerTest {
 
@@ -195,7 +195,7 @@ public class BusinessRuleTaskHandlerTest {
         byte[] pomXmlContent = IOUtils.toByteArray(kieModule.getPomAsStream());
         File pom = new File("target", UUID.randomUUID().toString());
         Files.write(pom.toPath(), pomXmlContent);
-        MavenRepository.getMavenRepository().installArtifact(releaseId, kieModule, pom);
+        KieMavenRepository.getKieMavenRepository().installArtifact( releaseId, kieModule, pom );
         
         byte[] jar = kieModule.getBytes();
         return jar;
