@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.drools.compiler.kproject.xml.DependencyFilter;
-import org.drools.compiler.kproject.xml.PomModel;
+import org.appformer.maven.support.DependencyFilter;
+import org.appformer.maven.support.PomModel;
 import org.drools.core.common.ResourceProvider;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBaseConfiguration;

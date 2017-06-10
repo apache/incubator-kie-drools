@@ -15,19 +15,6 @@
 
 package org.kie.api.builder.helper;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.core.util.IoUtils;
-import org.kie.api.KieBase;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.runtime.KieSession;
-import org.kie.scanner.MavenRepository;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,8 +29,22 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.core.util.IoUtils;
+import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.runtime.KieSession;
+import org.appformer.maven.integration.MavenRepository;
+import org.kie.scanner.KieMavenRepository;
+
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
+import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 /**
  * This is the main class where all interfaces and code comes together. 
@@ -276,7 +277,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
             throw new RuntimeException("Unable to write pom.xml to temporary file : " + ioe.getMessage(), ioe);
         }
     
-        MavenRepository repository = getMavenRepository();
+        KieMavenRepository repository = getKieMavenRepository();
         repository.installArtifact(releaseId, kjar, pomFile);
     }
 

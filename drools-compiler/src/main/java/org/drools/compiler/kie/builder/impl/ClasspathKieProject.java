@@ -15,20 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
-import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
-import org.drools.core.util.IoUtils;
-import org.drools.core.util.StringUtils;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.kproject.xml.PomModel;
-import org.kie.api.KieServices;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.KieRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -45,6 +31,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
+import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.util.IoUtils;
+import org.drools.core.util.StringUtils;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.appformer.maven.support.PomModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;

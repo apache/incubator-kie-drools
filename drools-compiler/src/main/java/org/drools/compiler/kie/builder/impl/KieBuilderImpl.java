@@ -35,10 +35,7 @@ import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.DiskResourceReader;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.kproject.xml.DependencyFilter;
-import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.util.IoUtils;
@@ -49,7 +46,6 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message.Level;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
@@ -60,6 +56,12 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
+import org.appformer.maven.support.ReleaseId;
+import org.appformer.maven.support.DependencyFilter;
+import org.appformer.maven.support.PomModel;
+import org.appformer.maven.support.ReleaseIdImpl;
+
+import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
 public class KieBuilderImpl
         implements
@@ -145,7 +147,7 @@ public class KieBuilderImpl
             // add all the pom dependencies to this builder ... not sure this is a good idea (?)
             KieRepositoryImpl repository = (KieRepositoryImpl) ks.getRepository();
             for ( ReleaseId dep : pomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
-                KieModule depModule = repository.getKieModule( dep, pomModel );
+                KieModule depModule = repository.getKieModule( adapt( dep ), pomModel );
                 if ( depModule != null ) {
                     addKieDependency( depModule );
                 }
@@ -181,7 +183,7 @@ public class KieBuilderImpl
             addKBasesFilesToTrg();
             markSource();
 
-            kModule = new MemoryKieModule( releaseId,
+            kModule = new MemoryKieModule( adapt( releaseId ),
                                            kModuleModel,
                                            trgMfs );
 
@@ -298,7 +300,7 @@ public class KieBuilderImpl
         }
         trgMfs = trgMfs.clone();
         init();
-        kModule = kModule.cloneForIncrementalCompilation( releaseId, kModuleModel, trgMfs );
+        kModule = kModule.cloneForIncrementalCompilation( adapt( releaseId ), kModuleModel, trgMfs );
     }
 
     private void addMetaInfBuilder() {
