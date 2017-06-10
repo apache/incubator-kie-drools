@@ -31,16 +31,13 @@ import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class FileKieModule extends AbstractKieModule implements InternalKieModule, Serializable {
 
-    private File file;
+    private final File file;
 
     public FileKieModule(ReleaseId releaseId,
                       KieModuleModel kieProject,
                       File file) {
         super(releaseId, kieProject );
         this.file = file;
-    }
-
-    public FileKieModule(){
     }
 
     @Override
