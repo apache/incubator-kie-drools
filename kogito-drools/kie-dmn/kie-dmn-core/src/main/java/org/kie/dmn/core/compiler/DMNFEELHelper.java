@@ -150,6 +150,12 @@ public class DMNFEELHelper {
                                 msgParams[0],
                                 msgParams[1] );
                     } else if ( msg instanceof Msg.Message3 ) {
+                        Object message3 = null;
+                        if ( msgParams.length == 3 ) {
+                            message3 = msgParams[2];
+                        } else {
+                            message3 = event.getMessage(); // wrap the originating FEEL error as the last message
+                        }
                         MsgUtil.reportMessage(
                                 logger,
                                 DMNMessage.Severity.ERROR,
@@ -160,7 +166,7 @@ public class DMNFEELHelper {
                                 (Msg.Message3) msg,
                                 msgParams[0],
                                 msgParams[1],
-                                msgParams[2] );
+                                message3 );
                     } else if ( msg instanceof Msg.Message4 ) {
                         String message = null;
                         if( event.getOffendingSymbol() == null ) {
