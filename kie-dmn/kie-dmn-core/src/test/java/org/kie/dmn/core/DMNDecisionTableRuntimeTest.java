@@ -18,7 +18,6 @@ package org.kie.dmn.core;
 
     import static org.hamcrest.CoreMatchers.is;
     import static org.hamcrest.CoreMatchers.notNullValue;
-    import static org.hamcrest.CoreMatchers.nullValue;
     import static org.hamcrest.Matchers.empty;
     import static org.hamcrest.Matchers.hasEntry;
     import static org.junit.Assert.*;
@@ -31,16 +30,13 @@ package org.kie.dmn.core;
     import java.util.Map;
     import org.junit.Test;
     import org.kie.dmn.api.core.DMNContext;
-    import org.kie.dmn.api.core.DMNMessage;
     import org.kie.dmn.api.core.DMNModel;
     import org.kie.dmn.api.core.DMNResult;
     import org.kie.dmn.api.core.DMNRuntime;
     import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
     import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
-    import org.kie.dmn.api.feel.runtime.events.FEELEvent;
     import org.kie.dmn.core.api.DMNFactory;
     import org.kie.dmn.core.util.DMNRuntimeUtil;
-    import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
     import org.mockito.ArgumentCaptor;
     import org.mockito.Mockito;
 
@@ -99,20 +95,59 @@ public class DMNDecisionTableRuntimeTest {
     }
 
     @Test
-    public void testDecisionTableInvalidInputErrorMessage() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "InvalidInput.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147", "Dessin 1" );
-        assertThat( dmnModel, notNullValue() );
+    public void testSimpleDecisionTableMultipleOutputWrongOutputType() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-P-multiple-outputs-wrong-output.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-P-multiple-outputs-wrong-output");
+        assertThat(dmnModel, notNullValue());
 
         final DMNContext context = DMNFactory.newContext();
-        context.set( "Branches dispersion", "Province" );
-        context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
+        context.set("Age", BigDecimal.valueOf(18));
+        context.set("RiskCategory", "Medium");
+        context.set("isAffordable", true);
 
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        assertThat( dmnResult.hasErrors(), is( true ) );
+        assertThat(dmnResult.hasErrors(), is(true));
+        assertThat(dmnResult.getMessages().stream().filter(
+                message -> message.getFeelEvent().getSourceException() instanceof NullPointerException).count(), is(0L));
+    }
+
+    @Test
+    public void testDecisionTableInvalidInputErrorMessage() {
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Branches dispersion", "Province");
+        context.set("Number of Branches", BigDecimal.valueOf(10));
+
+        testDecisionTableInvalidInput(context);
+    }
+
+    @Test
+    public void testDecisionTableInvalidInputTypeErrorMessage() {
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Branches dispersion", 1);
+        context.set("Number of Branches", BigDecimal.valueOf(10));
+
+        testDecisionTableInvalidInput(context);
+    }
+
+    @Test
+    public void testDecisionTableNonexistingInputErrorMessage() {
+        final DMNContext context = DMNFactory.newContext();
+        context.set("Not exists", "Province");
+        context.set("Number of Branches", BigDecimal.valueOf(10));
+
+        testDecisionTableInvalidInput(context);
+    }
+
+    private void testDecisionTableInvalidInput(final DMNContext inputContext) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("InvalidInput.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147", "Dessin 1");
+        assertThat(dmnModel, notNullValue());
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, inputContext);
+        assertThat(dmnResult.hasErrors(), is(true));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat( result.isDefined("Branches distribution"), is( false ) );
+        assertThat(result.isDefined("Branches distribution"), is(false));
     }
 
     @Test
