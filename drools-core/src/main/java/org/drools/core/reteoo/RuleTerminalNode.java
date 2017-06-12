@@ -232,7 +232,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     private void initDeclarations() {
         Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
         this.allDeclarations = decls.values().toArray( new Declaration[decls.size()] );
-        Arrays.sort( this.allDeclarations, SortDeclarations.instance );
 
         String[] requiredDeclarationNames = rule.getRequiredDeclarationsForConsequence(getConsequenceName());
         this.requiredDeclarations = new Declaration[requiredDeclarationNames.length];
@@ -240,7 +239,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         for ( String str : requiredDeclarationNames ) {
             this.requiredDeclarations[i++] = decls.get( str );
         }
-        Arrays.sort( this.requiredDeclarations, SortDeclarations.instance );
     }
     
     public Declaration[][] getTimerDeclarations() {
