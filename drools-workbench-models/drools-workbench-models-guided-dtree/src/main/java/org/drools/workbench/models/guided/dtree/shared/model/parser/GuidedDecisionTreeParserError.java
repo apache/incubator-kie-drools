@@ -18,7 +18,7 @@ package org.drools.workbench.models.guided.dtree.shared.model.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.appformer.project.datamodel.util.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.ParserMessage;
 
 public class GuidedDecisionTreeParserError {

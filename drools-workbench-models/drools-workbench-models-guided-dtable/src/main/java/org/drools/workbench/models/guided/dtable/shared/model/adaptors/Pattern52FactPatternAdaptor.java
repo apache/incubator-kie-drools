@@ -20,7 +20,7 @@ import java.util.List;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.appformer.project.datamodel.util.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 
 /**

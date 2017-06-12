@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.appformer.project.datamodel.util.PortablePreconditions;
 
 /**
  * Meta Data for a ExpressionMethod's parameter definitions.

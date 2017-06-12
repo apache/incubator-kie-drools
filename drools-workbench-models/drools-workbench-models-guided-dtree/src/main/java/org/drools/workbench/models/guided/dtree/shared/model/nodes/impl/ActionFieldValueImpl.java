@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.appformer.project.datamodel.util.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 

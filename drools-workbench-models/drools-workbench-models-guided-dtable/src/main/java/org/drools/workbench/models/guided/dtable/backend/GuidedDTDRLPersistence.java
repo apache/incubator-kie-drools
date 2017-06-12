@@ -25,11 +25,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
-import org.drools.workbench.models.commons.backend.imports.ImportsWriter;
-import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
-import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
+import org.appformer.project.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.OperatorsOracle;
+import org.appformer.project.datamodel.commons.imports.ImportsWriter;
+import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldList;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -954,7 +953,7 @@ public class GuidedDTDRLPersistence {
         } else {
 
             sfc.setOperator(c.getOperator());
-            if (OperatorsOracle.operatorRequiresList(c.getOperator())) {
+            if (OperatorsOracle.operatorRequiresList( c.getOperator())) {
                 sfc.setValue(makeInList(cell));
             } else {
                 if (!c.getOperator().equals("== null") && !c.getOperator().equals("!= null")) {

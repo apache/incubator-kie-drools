@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.testscenarios.backend.util;
 
-import org.drools.workbench.models.datamodel.imports.Imports;
+import org.appformer.project.datamodel.imports.Imports;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Expectation;
 import org.drools.workbench.models.testscenarios.shared.FactData;

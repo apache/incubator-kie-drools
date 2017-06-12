@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.parser.messages;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.appformer.project.datamodel.util.PortablePreconditions;
 
 /**
  * Generic message that cannot be represented by one of the more explicit concrete implementations

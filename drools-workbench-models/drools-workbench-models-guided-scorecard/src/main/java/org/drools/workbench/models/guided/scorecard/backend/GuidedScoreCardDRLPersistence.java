@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.appformer.project.datamodel.imports.Import;
 import org.dmg.pmml.pmml_4_2.descr.Attribute;
 import org.dmg.pmml.pmml_4_2.descr.Characteristic;
 import org.dmg.pmml.pmml_4_2.descr.Characteristics;
@@ -38,7 +39,6 @@ import org.drools.scorecards.parser.xls.XLSKeywords;
 import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLGenerator;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
-import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 
 public class GuidedScoreCardDRLPersistence {
