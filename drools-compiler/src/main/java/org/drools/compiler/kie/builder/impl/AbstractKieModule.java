@@ -40,14 +40,14 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.DependencyFilter;
+import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.common.ResourceProvider;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.Drools;
@@ -61,10 +61,10 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.RuleTemplateModel;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
@@ -75,15 +75,13 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceTypeImpl;
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.compiler.kproject.ReleaseIdImpl.adaptAll;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public abstract class AbstractKieModule
@@ -133,13 +131,13 @@ public abstract class AbstractKieModule
         kieDependencies.put(dependency.getReleaseId(), dependency);
     }
 
-    public Collection<ReleaseId> getJarDependencies(DependencyFilter filter ) {
+    public Collection<ReleaseId> getJarDependencies(DependencyFilter filter) {
         if( pomModel == null ) {
             getPomModel();
         }
         Collection<ReleaseId> deps = null;
         if( pomModel != null ) {
-            deps = adaptAll( pomModel.getDependencies(filter) );
+            deps = pomModel.getDependencies(filter);
         }
         return deps == null ? Collections.<ReleaseId> emptyList() : deps;
     }
@@ -160,8 +158,7 @@ public abstract class AbstractKieModule
         return kBuilders.get(kieBaseName);
     }
 
-    @Override
-    public Collection<KiePackage> getKnowledgePackagesForKieBase(String kieBaseName) {
+    public Collection<KnowledgePackage> getKnowledgePackagesForKieBase(String kieBaseName) {
         KnowledgeBuilder kbuilder = kBuilders.get(kieBaseName);
         return kbuilder != null ? kbuilder.getKnowledgePackages() : null;
     }
@@ -207,7 +204,7 @@ public abstract class AbstractKieModule
     }
 
     public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
-        Collection<KiePackage> pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
+        Collection<KnowledgePackage> pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
 
         if ( pkgs == null ) {
             KnowledgeBuilder kbuilder = buildKnowledgePackages(kBaseModel, kieProject, messages);
@@ -221,8 +218,8 @@ public abstract class AbstractKieModule
         pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
 
         if ( kBaseModel.getEventProcessingMode() == EventProcessingOption.CLOUD &&
-             (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
-            for (KiePackage kpkg : pkgs) {
+                (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
+            for (KnowledgePackage kpkg : pkgs) {
                 if ( ((KnowledgePackageImpl) kpkg).needsStreamMode() ) {
                     throw new RuntimeException( "The requested KieBase \"" + kBaseModel.getName() + "\" has been set to run in CLOUD mode but requires features only available in STREAM mode" );
                 }
@@ -237,7 +234,7 @@ public abstract class AbstractKieModule
         }
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
-        kBase.addPackages( pkgs );
+        kBase.addKnowledgePackages( pkgs );
         return kBase;
     }
 
@@ -379,8 +376,8 @@ public abstract class AbstractKieModule
         Resource resource = getResource(fileName);
         if (resource != null) {
             ResourceType resourceType = conf instanceof ResourceConfigurationImpl && ((ResourceConfigurationImpl)conf).getResourceType() != null ?
-                                        ((ResourceConfigurationImpl)conf).getResourceType() :
-                                        ResourceType.determineResourceType(fileName);
+                    ((ResourceConfigurationImpl)conf).getResourceType() :
+                    ResourceType.determineResourceType(fileName);
 
             if (resourceType == ResourceType.DTABLE && conf instanceof DecisionTableConfiguration) {
                 for (RuleTemplateModel template : kieBaseModel.getRuleTemplates()) {
@@ -459,7 +456,7 @@ public abstract class AbstractKieModule
                                              _header.getVersion().getVersionRevision())) {
                         // if cache has been built with an incompatible version avoid to use it
                         log.warn("The compilation cache has been built with an incompatible version. " +
-                                 "You should recompile your project in order to use it with current release.");
+                                         "You should recompile your project in order to use it with current release.");
                         return null;
                     }
 
@@ -501,7 +498,7 @@ public abstract class AbstractKieModule
     }
 
     private void validatePomModel(PomModel pomModel) {
-        org.appformer.maven.support.ReleaseId pomReleaseId = pomModel.getReleaseId();
+        ReleaseId pomReleaseId = pomModel.getReleaseId();
         if (StringUtils.isEmpty(pomReleaseId.getGroupId()) || StringUtils.isEmpty(pomReleaseId.getArtifactId()) || StringUtils.isEmpty(pomReleaseId.getVersion())) {
             throw new RuntimeException("Maven pom.properties exists but ReleaseId content is malformed");
         }
@@ -525,19 +522,19 @@ public abstract class AbstractKieModule
         if (resource != null) {
             if (conf == null) {
                 ckbuilder.add(resource,
-                        ResourceType.determineResourceType(resourceName),
-                        changes );
+                              ResourceType.determineResourceType(resourceName),
+                              changes );
             } else {
                 ckbuilder.add(resource,
-                        ResourceType.determineResourceType(resourceName),
-                        conf,
-                        changes );
+                              ResourceType.determineResourceType(resourceName),
+                              conf,
+                              changes );
             }
             return true;
         }
         return false;
     }
-    
+
     public static class CompilationCache implements Serializable {
         private static final long serialVersionUID = 3812243055974412935L;
         // this is a { DIALECT -> ( RESOURCE, List<CompilationEntry> ) } cache
@@ -549,8 +546,8 @@ public abstract class AbstractKieModule
                 resourceEntries = new HashMap<String, List<CompilationCacheEntry>>();
                 compilationCache.put(dialect, resourceEntries);
             }
-                    
-            String key = className.contains("$") ? className.substring(0, className.indexOf('$') ) + ".class" : className; 
+
+            String key = className.contains("$") ? className.substring(0, className.indexOf('$') ) + ".class" : className;
             List<CompilationCacheEntry> bytes = resourceEntries.get(key);
             if( bytes == null ) {
                 bytes = new ArrayList<CompilationCacheEntry>();
@@ -563,14 +560,14 @@ public abstract class AbstractKieModule
         public Map<String, List<CompilationCacheEntry>> getCacheForDialect(String dialect) {
             return compilationCache.get(dialect);
         }
-        
+
     }
-    
+
     public static class CompilationCacheEntry implements Serializable {
         private static final long serialVersionUID = 1423987159014688588L;
         public final String className;
         public final byte[] bytecode;
-        
+
         public CompilationCacheEntry( String className, byte[] bytecode) {
             this.className = className;
             this.bytecode = bytecode;

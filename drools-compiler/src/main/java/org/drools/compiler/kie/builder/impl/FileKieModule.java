@@ -24,12 +24,14 @@ import org.kie.internal.io.ResourceFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collection;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
-public class FileKieModule extends AbstractKieModule implements InternalKieModule {
-    private final File             file;   
+public class FileKieModule extends AbstractKieModule implements InternalKieModule, Serializable {
+
+    private final File file;
 
     public FileKieModule(ReleaseId releaseId,
                       KieModuleModel kieProject,
