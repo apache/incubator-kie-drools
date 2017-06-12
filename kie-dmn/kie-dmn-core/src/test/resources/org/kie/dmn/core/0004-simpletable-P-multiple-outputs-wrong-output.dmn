@@ -34,11 +34,11 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              id="_edbd2d8e-a5a8-4660-9bb9-adaa792d900c"
              namespace="https://github.com/kiegroup/kie-dmn"
-             name="0004-simpletable-P-multiple-outputs"
+             name="0004-simpletable-P-multiple-outputs-wrong-output"
              xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
              expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
              typeLanguage="http://www.omg.org/spec/FEEL/20140401">
-  <decision id="_0004-simpletable-P-multiple-outputs" name="0004-simpletable-P-multiple-outputs">
+  <decision id="_0004-simpletable-P-multiple-outputs-wrong-output" name="0004-simpletable-P-multiple-outputs-wrong-output">
     <variable name="Decision Result"/>
     <informationRequirement>
       <requiredInput href="#_Age"/>
@@ -89,7 +89,7 @@
           <text>true</text>
         </inputEntry>
         <outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-3">
-          <text>"Approved"</text>
+          <text>1</text>
         </outputEntry>
         <outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-4">
           <text>"Decision final"</text>
@@ -106,7 +106,6 @@
           <text>true</text>
         </inputEntry>
         <outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab691-3">
-
           <text>"Approved"</text>
         </outputEntry>
         <outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab691-4">
