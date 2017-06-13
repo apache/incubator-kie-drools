@@ -16,29 +16,29 @@
 
 package org.kie.dmn.core;
 
-    import static org.hamcrest.CoreMatchers.is;
-    import static org.hamcrest.CoreMatchers.notNullValue;
-    import static org.hamcrest.Matchers.empty;
-    import static org.hamcrest.Matchers.hasEntry;
-    import static org.junit.Assert.*;
-    import static org.mockito.Mockito.verify;
-    import static org.mockito.internal.verification.VerificationModeFactory.times;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-    import java.math.BigDecimal;
-    import java.math.RoundingMode;
-    import java.util.Collections;
-    import java.util.Map;
-    import org.junit.Test;
-    import org.kie.dmn.api.core.DMNContext;
-    import org.kie.dmn.api.core.DMNModel;
-    import org.kie.dmn.api.core.DMNResult;
-    import org.kie.dmn.api.core.DMNRuntime;
-    import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
-    import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
-    import org.kie.dmn.core.api.DMNFactory;
-    import org.kie.dmn.core.util.DMNRuntimeUtil;
-    import org.mockito.ArgumentCaptor;
-    import org.mockito.Mockito;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.Map;
+import org.junit.Test;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
+import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
+import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 public class DMNDecisionTableRuntimeTest {
 
