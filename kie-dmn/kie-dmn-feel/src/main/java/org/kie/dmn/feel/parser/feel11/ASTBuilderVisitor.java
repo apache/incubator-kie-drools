@@ -503,8 +503,7 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
-        // TODO finish return type for this case...
-        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.UNKNOWN );
+        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.BOOLEAN ); // negating a unary tests: BOOLEAN-type anyway
         ListNode value = (ListNode) visit( ctx.simpleUnaryTests() );
         return buildFunctionCall( ctx, name, value );
     }
