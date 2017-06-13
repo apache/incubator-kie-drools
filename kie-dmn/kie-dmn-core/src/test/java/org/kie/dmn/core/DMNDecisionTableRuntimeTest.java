@@ -106,13 +106,6 @@ public class DMNDecisionTableRuntimeTest {
         context.set( "RiskCategory", "Medium" );
         context.set( "isAffordable", true );
 
-<<<<<<<HEAD
-        final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        assertThat( dmnResult.hasErrors(), is( true ) );
-
-        final DMNContext result = dmnResult.getContext();
-        assertThat( result.isDefined( "Branches distribution" ), is( false ) );
-=======
         final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         assertThat( dmnResult.hasErrors(), is( true ) );
         assertThat( dmnResult.getMessages().stream().filter(
@@ -156,7 +149,6 @@ public class DMNDecisionTableRuntimeTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat( result.isDefined( "Branches distribution" ), is( false ) );
->>>>>>>Add input and output tests
     }
 
     @Test
