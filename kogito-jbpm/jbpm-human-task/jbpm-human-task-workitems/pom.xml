@@ -141,7 +141,6 @@
               !org.jbpm.services.task.wih,
               *
             </Import-Package>
-            <Private-Package/>
             <Export-Package>
               org.jbpm.services.task.wih*
             </Export-Package>

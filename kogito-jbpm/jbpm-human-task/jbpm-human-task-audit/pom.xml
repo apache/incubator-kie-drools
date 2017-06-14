@@ -174,7 +174,6 @@
               org.jbpm.services.task.lifecycle.listeners,
               *
             </Import-Package>
-            <Private-Package/>
             <Export-Package>
               org.jbpm.services.task.audit*,
               org.jbpm.services.task.lifecycle.listeners

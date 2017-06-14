@@ -283,7 +283,6 @@
               org.drools.persistence.jta;resolution:=optional,
               *
             </Import-Package>
-            <Private-Package/>
             <Export-Package>
               org.jbpm.services.task*
             </Export-Package>

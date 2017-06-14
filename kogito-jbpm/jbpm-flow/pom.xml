@@ -68,7 +68,6 @@
                 org.kie.dmn.api.core;resolution:=optional,                
                 *
             </Import-Package>
-            <Private-Package/>
             <Export-Package>
                 org.jbpm.flow.util.*,
                 org.jbpm.marshalling.*,

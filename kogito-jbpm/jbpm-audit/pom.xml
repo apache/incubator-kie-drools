@@ -190,7 +190,6 @@
               org.hibernate.proxy;resolution:=optional,
               *
             </Import-Package>
-            <Private-Package/>
             <Export-Package>
               org.jbpm.process.audit*
             </Export-Package>

@@ -83,8 +83,6 @@
             <Import-Package>
               !org.jbpm.shared.services, org.jboss.solder.core;resolution:=optional,*
             </Import-Package>
-            <Private-Package>
-            </Private-Package>
             <Export-Package>
               org.jbpm.shared.services*
             </Export-Package>
