@@ -60,13 +60,13 @@ public class ParserTest extends CommonTestMethodBase {
         final KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
         final JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
         switch (javaConf.getCompiler()) {
-            case JavaDialectConfiguration.NATIVE:
+            case NATIVE:
                 assertTrue(errors[2].getMessage().contains("illegal"));
                 break;
-            case JavaDialectConfiguration.ECLIPSE:
+            case ECLIPSE:
                 assertTrue(errors[2].getMessage().contains("add"));
                 break;
-            case JavaDialectConfiguration.JANINO:
+            case JANINO:
                 assertTrue(errors[2].getMessage().contains("Unexpected"));
                 break;
             default:

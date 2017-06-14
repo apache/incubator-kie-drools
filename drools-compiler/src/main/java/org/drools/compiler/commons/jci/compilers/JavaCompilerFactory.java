@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration.CompilerType;
 import org.drools.core.util.ClassUtils;
 
 
@@ -90,29 +91,32 @@ public final class JavaCompilerFactory {
     }
 
     public JavaCompiler loadCompiler(JavaDialectConfiguration configuration) {
+        return loadCompiler( configuration.getCompiler(), configuration.getJavaLanguageLevel() );
+    }
+
+    public JavaCompiler loadCompiler( CompilerType compilerType, String lngLevel ) {
         JavaCompiler compiler;
-        switch ( configuration.getCompiler() ) {
-            case JavaDialectConfiguration.JANINO : {
+        switch ( compilerType ) {
+            case JANINO : {
                 compiler = createCompiler( "janino" );
                 break;
             }
-            case JavaDialectConfiguration.NATIVE : {
+            case NATIVE : {
                 compiler = createCompiler( "native" );
-                updateSettings( compiler.createDefaultSettings(), configuration );
+                updateSettings( compiler.createDefaultSettings(), lngLevel );
                 break;
             }
-            case JavaDialectConfiguration.ECLIPSE :
+            case ECLIPSE :
             default : {
                 compiler = createCompiler( "eclipse" );
-                updateSettings( compiler.createDefaultSettings(), configuration );
+                updateSettings( compiler.createDefaultSettings(), lngLevel );
                 break;
             }
         }
         return compiler;
     }
 
-    private JavaCompilerSettings updateSettings( JavaCompilerSettings settings, JavaDialectConfiguration javaDialectConfiguration ) {
-        String lngLevel = javaDialectConfiguration.getJavaLanguageLevel();
+    private JavaCompilerSettings updateSettings( JavaCompilerSettings settings, String lngLevel ) {
         settings.setTargetVersion( lngLevel );
         settings.setSourceVersion( lngLevel );
         return settings;
