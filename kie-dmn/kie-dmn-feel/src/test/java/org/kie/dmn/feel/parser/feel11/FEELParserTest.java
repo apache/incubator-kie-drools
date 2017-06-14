@@ -215,9 +215,10 @@ public class FEELParserTest {
     @Test
     public void testMultiplication() {
         String inputExpression = "10 * x";
-        BaseNode infix = parse( inputExpression );
+        BaseNode infix = parse( inputExpression, mapOf(entry("x", BuiltInType.NUMBER)) );
 
         assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( infix.getText(), is( inputExpression ) );
 
         InfixOpNode mult = (InfixOpNode) infix;
@@ -233,9 +234,10 @@ public class FEELParserTest {
     @Test
     public void testDivision() {
         String inputExpression = "y / 5 * ( x )";
-        BaseNode infix = parse( inputExpression );
+        BaseNode infix = parse( inputExpression, mapOf(entry("x", BuiltInType.NUMBER), entry("y", BuiltInType.NUMBER)) );
 
         assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( infix.getText(), is( inputExpression ) );
 
         InfixOpNode mult = (InfixOpNode) infix;
@@ -260,9 +262,10 @@ public class FEELParserTest {
     @Test
     public void testPower1() {
         String inputExpression = "y * 5 ** 3";
-        BaseNode infix = parse( inputExpression );
+        BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
         assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( infix.getText(), is( inputExpression ) );
 
         InfixOpNode mult = (InfixOpNode) infix;
@@ -287,9 +290,10 @@ public class FEELParserTest {
     @Test
     public void testPower2() {
         String inputExpression = "(y * 5) ** 3";
-        BaseNode infix = parse( inputExpression );
+        BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
         assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( infix.getText(), is( inputExpression ) );
 
         InfixOpNode exp = (InfixOpNode) infix;
@@ -314,9 +318,10 @@ public class FEELParserTest {
     @Test
     public void testPower3() {
         String inputExpression = "y ** 5 * 3";
-        BaseNode infix = parse( inputExpression );
+        BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
         assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( infix.getText(), is( inputExpression ) );
 
         InfixOpNode mult = (InfixOpNode) infix;
@@ -341,9 +346,10 @@ public class FEELParserTest {
     @Test
     public void testPower4() {
         String inputExpression = "y ** ( 5 * 3 )";
-        BaseNode infix = parse( inputExpression );
+        BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
         assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( infix.getText(), is( inputExpression ) );
 
         InfixOpNode exp = (InfixOpNode) infix;
@@ -368,9 +374,10 @@ public class FEELParserTest {
     @Test
     public void testAdd1() {
         String inputExpression = "y + 5 * 3";
-        BaseNode infix = parse( inputExpression );
+        BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
         assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( infix.getText(), is( inputExpression ) );
 
         InfixOpNode add = (InfixOpNode) infix;
@@ -395,9 +402,10 @@ public class FEELParserTest {
     @Test
     public void testSub1() {
         String inputExpression = "(y - 5) ** 3";
-        BaseNode infix = parse( inputExpression );
+        BaseNode infix = parse( inputExpression, mapOf(entry("y", BuiltInType.NUMBER)) );
 
         assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( infix.getText(), is( inputExpression ) );
 
         InfixOpNode sub = (InfixOpNode) infix;
@@ -425,6 +433,7 @@ public class FEELParserTest {
         BaseNode between = parse( inputExpression );
 
         assertThat( between, is( instanceOf( BetweenNode.class ) ) );
+        assertThat( between.getResultType(), is( BuiltInType.BOOLEAN ) );
         assertThat( between.getText(), is( inputExpression ) );
 
         BetweenNode btw = (BetweenNode) between;
@@ -440,10 +449,12 @@ public class FEELParserTest {
 
     @Test
     public void testInValueList() {
+        // TODO review this test might be wrong as list is not homogeneous 
         String inputExpression = "x / 4 in ( 10+y, true, 80, someVar )";
         BaseNode inNode = parse( inputExpression );
 
         assertThat( inNode, is( instanceOf( InNode.class ) ) );
+        assertThat( inNode.getResultType(), is( BuiltInType.BOOLEAN ) );
         assertThat( inNode.getText(), is( inputExpression ) );
 
         InNode in = (InNode) inNode;
@@ -466,6 +477,7 @@ public class FEELParserTest {
         BaseNode inNode = parse( inputExpression );
 
         assertThat( inNode, is( instanceOf( InNode.class ) ) );
+        assertThat( inNode.getResultType(), is( BuiltInType.BOOLEAN ) );
         assertThat( inNode.getText(), is( inputExpression ) );
 
         InNode in = (InNode) inNode;
@@ -517,6 +529,7 @@ public class FEELParserTest {
         BaseNode inNode = parse( inputExpression );
 
         assertThat( inNode, is( instanceOf( InNode.class ) ) );
+        assertThat( inNode.getResultType(), is( BuiltInType.BOOLEAN ) );
         assertThat( inNode.getText(), is( inputExpression ) );
 
         InNode in = (InNode) inNode;
@@ -533,6 +546,7 @@ public class FEELParserTest {
         BaseNode infix = parse( inputExpression );
 
         assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getResultType(), is( BuiltInType.BOOLEAN ) );
         assertThat( infix.getText(), is( inputExpression ) );
 
         InfixOpNode in = (InfixOpNode) infix;
@@ -549,6 +563,7 @@ public class FEELParserTest {
         BaseNode infix = parse( inputExpression );
 
         assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getResultType(), is( BuiltInType.BOOLEAN ) );
         assertThat( infix.getText(), is( inputExpression ) );
 
         InfixOpNode or = (InfixOpNode) infix;
@@ -576,6 +591,7 @@ public class FEELParserTest {
         BaseNode list = parse( inputExpression );
 
         assertThat( list, is( instanceOf( ListNode.class ) ) );
+        assertThat( list.getResultType(), is( BuiltInType.LIST ) );
         assertThat( list.getText(), is( inputExpression ) );
 
         ListNode ln = (ListNode) list;
@@ -584,10 +600,12 @@ public class FEELParserTest {
 
     @Test
     public void testExpressionList() {
+        // TODO review this test is potentially wrong as the list is not homogeneous
         String inputExpression = "[ 10, foo * bar, true ]";
         BaseNode list = parse( inputExpression );
 
         assertThat( list, is( instanceOf( ListNode.class ) ) );
+        assertThat( list.getResultType(), is( BuiltInType.LIST ) );
         assertThat( list.getText(), is( "10, foo * bar, true" ) );
 
         ListNode ln = (ListNode) list;
@@ -600,12 +618,13 @@ public class FEELParserTest {
     @Test
     public void testEmptyContext() {
         String inputExpression = "{}";
-        BaseNode list = parse( inputExpression );
+        BaseNode context = parse( inputExpression );
 
-        assertThat( list, is( instanceOf( ContextNode.class ) ) );
-        assertThat( list.getText(), is( inputExpression ) );
+        assertThat( context, is( instanceOf( ContextNode.class ) ) );
+        assertThat( context.getResultType(), is( BuiltInType.CONTEXT ) );
+        assertThat( context.getText(), is( inputExpression ) );
 
-        ContextNode ctx = (ContextNode) list;
+        ContextNode ctx = (ContextNode) context;
         assertThat( ctx.getEntries(), is( empty() ));
     }
 
@@ -614,9 +633,10 @@ public class FEELParserTest {
         String inputExpression = "{ \"a string key\" : 10,"
                        + " a non-string key : foo+bar,"
                        + " a key.with + /' odd chars : [10..50] }";
-        BaseNode ctxbase = parse( inputExpression );
+        BaseNode ctxbase = parse( inputExpression, mapOf(entry("foo", BuiltInType.NUMBER), entry("bar", BuiltInType.NUMBER)) );
 
         assertThat( ctxbase, is( instanceOf( ContextNode.class ) ) );
+        assertThat( ctxbase.getResultType(), is( BuiltInType.CONTEXT ) );
         assertThat( ctxbase.getText(), is( inputExpression ) );
 
         ContextNode ctx = (ContextNode) ctxbase;
@@ -628,6 +648,7 @@ public class FEELParserTest {
         assertThat( name.getName(), is( notNullValue() ) );
         assertThat( name.getName(), is("\"a string key\"") );
         assertThat( entry.getValue(), is( instanceOf( NumberNode.class ) ) );
+        assertThat( entry.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( entry.getValue().getText(), is("10") );
 
         entry = ctx.getEntries().get( 1 );
@@ -637,6 +658,7 @@ public class FEELParserTest {
         assertThat( name.getParts().size(), is( 5 ) );
         assertThat( entry.getName().getText(), is("a non-string key") );
         assertThat( entry.getValue(), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( entry.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( entry.getValue().getText(), is( "foo+bar" ) );
 
         entry = ctx.getEntries().get( 2 );
@@ -646,6 +668,7 @@ public class FEELParserTest {
         assertThat( name.getParts().size(), is( 9 ) );
         assertThat( entry.getName().getText(), is("a key.with + /' odd chars") );
         assertThat( entry.getValue(), is( instanceOf( RangeNode.class ) ) );
+        assertThat( entry.getResultType(), is( BuiltInType.RANGE ) );
         assertThat( entry.getValue().getText(), is( "[10..50]" ) );
     }
 
@@ -666,6 +689,7 @@ public class FEELParserTest {
         BaseNode ctxbase = parse( inputExpression );
 
         assertThat( ctxbase, is( instanceOf( ContextNode.class ) ) );
+        assertThat( ctxbase.getResultType(), is( BuiltInType.CONTEXT ) );
         assertThat( ctxbase.getText(), is( inputExpression ) );
 
         ContextNode ctx = (ContextNode) ctxbase;
@@ -676,6 +700,7 @@ public class FEELParserTest {
         NameDefNode name = (NameDefNode) entry.getName();
         assertThat( name.getText(), is("a value") );
         assertThat( entry.getValue(), is( instanceOf( NumberNode.class ) ) );
+        assertThat( entry.getResultType(), is( BuiltInType.NUMBER ) );
         assertThat( entry.getValue().getText(), is("10") );
 
         entry = ctx.getEntries().get( 1 );
@@ -683,19 +708,26 @@ public class FEELParserTest {
         name = (NameDefNode) entry.getName();
         assertThat( name.getText(), is( "an applicant" ) );
         assertThat( entry.getValue(), is( instanceOf( ContextNode.class ) ) );
+        assertThat( entry.getResultType(), is( BuiltInType.CONTEXT ) );
 
         ContextNode applicant = (ContextNode) entry.getValue();
         assertThat( applicant.getEntries().size(), is( 5 ) );
         assertThat( applicant.getEntries().get( 0 ).getName().getText(), is("first name") );
+        assertThat( applicant.getEntries().get( 0 ).getResultType(), is( BuiltInType.STRING ) );
         assertThat( applicant.getEntries().get( 1 ).getName().getText(), is("last + name") );
+        assertThat( applicant.getEntries().get( 1 ).getResultType(), is( BuiltInType.STRING ) );
         assertThat( applicant.getEntries().get( 2 ).getName().getText(), is("full name") );
+        assertThat( applicant.getEntries().get( 2 ).getResultType(), is( BuiltInType.STRING ) );
         assertThat( applicant.getEntries().get( 3 ).getName().getText(), is("address") );
         assertThat( applicant.getEntries().get( 3 ).getValue(), is( instanceOf( ContextNode.class ) ) );
+        assertThat( applicant.getEntries().get( 3 ).getResultType(), is( BuiltInType.CONTEXT ) );
 
         ContextNode address = (ContextNode) applicant.getEntries().get( 3 ).getValue();
         assertThat( address.getEntries().size(), is( 2 ) );
         assertThat( address.getEntries().get( 0 ).getName().getText(), is("street") );
+        assertThat( address.getEntries().get( 0 ).getResultType(), is( BuiltInType.STRING ) );
         assertThat( address.getEntries().get( 1 ).getName().getText(), is("city") );
+        assertThat( address.getEntries().get( 0 ).getResultType(), is( BuiltInType.STRING ) );
     }
 
     @Test

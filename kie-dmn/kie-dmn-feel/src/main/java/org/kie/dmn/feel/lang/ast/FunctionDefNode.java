@@ -192,6 +192,7 @@ public class FunctionDefNode
 
     @Override
     public Type getResultType() {
+        // TODO FIXME wrong: this should be FUNCTION<type>
         return body.getResultType();
     }
 }

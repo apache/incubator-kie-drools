@@ -19,6 +19,8 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Msg;
@@ -93,5 +95,10 @@ public class InNode
             // value == null, expr != null
             return Boolean.FALSE;
         }
+    }
+
+    @Override
+    public Type getResultType() {
+        return BuiltInType.BOOLEAN;
     }
 }
