@@ -27,7 +27,7 @@
         <configuration>
           <instructions>
             <Import-Package>
-              org.kie.mavensupport,
+              org.appformer.maven.support,
               *;resolution:=optional,
               org.jbpm.runtime.manager.impl;resolution:=optional,
               org.drools.compiler.kie.builder.impl,
