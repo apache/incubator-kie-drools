@@ -79,6 +79,7 @@
             <configuration>
               <artifactSet>
                 <excludes>
+                  <exclude>org.uberfire:uberfire-maven-support</exclude>
                   <exclude>org.kie:kie-api</exclude>
                   <exclude>org.kie:kie-internal</exclude>
                   <exclude>org.drools:*</exclude>
@@ -106,7 +107,6 @@
         <configuration>
           <instructions>
             <Export-Package>
-              org.appformer.maven.support.*,
               org.appformer.maven.integration.*,
               org.kie.scanner.*
             </Export-Package>
@@ -117,10 +117,10 @@
               javax.net.ssl,
               javax.security.auth.x500,
               org.apache.commons.logging,
+              org.appformer.maven.support,
               org.drools.compiler.kie.builder.impl,
               org.drools.compiler.kproject,
               org.drools.compiler.kproject.models,
-              org.drools.compiler.kproject.xml,
               org.drools.core.common,
               org.drools.core.event,
               org.drools.core.rule,
