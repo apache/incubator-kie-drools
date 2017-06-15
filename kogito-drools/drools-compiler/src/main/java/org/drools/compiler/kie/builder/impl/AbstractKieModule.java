@@ -32,6 +32,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.google.protobuf.ExtensionRegistry;
+import org.appformer.maven.support.DependencyFilter;
+import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
@@ -44,7 +46,6 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.common.ResourceProvider;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -77,8 +78,6 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceTypeImpl;
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,17 +87,17 @@ import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public abstract class AbstractKieModule
         implements
-        InternalKieModule {
+        InternalKieModule, Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractKieModule.class);
 
-    private final Map<String, KnowledgeBuilder> kBuilders = new HashMap<String, KnowledgeBuilder>();
+    private transient final Map<String, KnowledgeBuilder> kBuilders = new HashMap<String, KnowledgeBuilder>();
 
-    private final Map<String, Results> resultsCache = new HashMap<String, Results>();
+    private transient final Map<String, Results> resultsCache = new HashMap<String, Results>();
 
-    protected final ReleaseId releaseId;
+    protected ReleaseId releaseId;
 
-    private final KieModuleModel kModuleModel;
+    private transient KieModuleModel kModuleModel;
 
     private Map<ReleaseId, InternalKieModule> kieDependencies;
 
@@ -107,11 +106,13 @@ public abstract class AbstractKieModule
 
     private Map<String, TypeMetaInfo> typesMetaInfo;
 
-    private Map<String, ResourceConfiguration> resourceConfigurationCache = new HashMap<String, ResourceConfiguration>();
+    private transient Map<String, ResourceConfiguration> resourceConfigurationCache = new HashMap<String, ResourceConfiguration>();
 
-    protected PomModel pomModel;
+    protected transient PomModel pomModel;
 
     private Collection<ReleaseId> unresolvedDependencies;
+
+    public AbstractKieModule() { }
 
     public AbstractKieModule(ReleaseId releaseId, KieModuleModel kModuleModel) {
         this.releaseId = releaseId;

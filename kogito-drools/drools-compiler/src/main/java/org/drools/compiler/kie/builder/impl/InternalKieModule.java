@@ -17,12 +17,13 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
-import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.common.ResourceProvider;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
@@ -39,7 +40,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 
-public interface InternalKieModule extends KieModule {
+public interface InternalKieModule extends KieModule, Serializable {
 
     void cacheKnowledgeBuilderForKieBase(String kieBaseName, KnowledgeBuilder kbuilder);
 
