@@ -621,7 +621,6 @@ public class FEELParserTest {
         BaseNode context = parse( inputExpression );
 
         assertThat( context, is( instanceOf( ContextNode.class ) ) );
-        assertThat( context.getResultType(), is( BuiltInType.CONTEXT ) );
         assertThat( context.getText(), is( inputExpression ) );
 
         ContextNode ctx = (ContextNode) context;
@@ -636,7 +635,6 @@ public class FEELParserTest {
         BaseNode ctxbase = parse( inputExpression, mapOf(entry("foo", BuiltInType.NUMBER), entry("bar", BuiltInType.NUMBER)) );
 
         assertThat( ctxbase, is( instanceOf( ContextNode.class ) ) );
-        assertThat( ctxbase.getResultType(), is( BuiltInType.CONTEXT ) );
         assertThat( ctxbase.getText(), is( inputExpression ) );
 
         ContextNode ctx = (ContextNode) ctxbase;
@@ -689,7 +687,6 @@ public class FEELParserTest {
         BaseNode ctxbase = parse( inputExpression );
 
         assertThat( ctxbase, is( instanceOf( ContextNode.class ) ) );
-        assertThat( ctxbase.getResultType(), is( BuiltInType.CONTEXT ) );
         assertThat( ctxbase.getText(), is( inputExpression ) );
 
         ContextNode ctx = (ContextNode) ctxbase;
@@ -708,7 +705,6 @@ public class FEELParserTest {
         name = (NameDefNode) entry.getName();
         assertThat( name.getText(), is( "an applicant" ) );
         assertThat( entry.getValue(), is( instanceOf( ContextNode.class ) ) );
-        assertThat( entry.getResultType(), is( BuiltInType.CONTEXT ) );
 
         ContextNode applicant = (ContextNode) entry.getValue();
         assertThat( applicant.getEntries().size(), is( 5 ) );
@@ -720,7 +716,6 @@ public class FEELParserTest {
         assertThat( applicant.getEntries().get( 2 ).getResultType(), is( BuiltInType.STRING ) );
         assertThat( applicant.getEntries().get( 3 ).getName().getText(), is("address") );
         assertThat( applicant.getEntries().get( 3 ).getValue(), is( instanceOf( ContextNode.class ) ) );
-        assertThat( applicant.getEntries().get( 3 ).getResultType(), is( BuiltInType.CONTEXT ) );
 
         ContextNode address = (ContextNode) applicant.getEntries().get( 3 ).getValue();
         assertThat( address.getEntries().size(), is( 2 ) );
