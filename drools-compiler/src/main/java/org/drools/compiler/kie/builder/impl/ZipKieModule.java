@@ -17,6 +17,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +33,7 @@ import org.kie.api.builder.model.KieModuleModel;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
-public class ZipKieModule extends AbstractKieModule implements InternalKieModule {
+public class ZipKieModule extends AbstractKieModule implements InternalKieModule, Serializable {
     private File file;
     private Map<String, byte[]> zipEntries;
     private List<String> fileNames;

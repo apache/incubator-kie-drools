@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
 
 public class MemoryKieModule extends AbstractKieModule
         implements
-        ResourceReader {
+        ResourceReader, Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(MemoryKieModule.class);
 

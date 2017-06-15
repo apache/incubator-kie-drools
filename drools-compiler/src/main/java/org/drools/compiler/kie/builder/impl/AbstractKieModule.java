@@ -87,7 +87,7 @@ import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public abstract class AbstractKieModule
         implements
-        InternalKieModule {
+        InternalKieModule, Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractKieModule.class);
 
@@ -102,7 +102,7 @@ public abstract class AbstractKieModule
     private Map<ReleaseId, InternalKieModule> kieDependencies;
 
     // Map< KBaseName, CompilationCache>
-    protected transient Map<String, CompilationCache> compilationCache = new HashMap<String, CompilationCache>();
+    protected Map<String, CompilationCache> compilationCache = new HashMap<String, CompilationCache>();
 
     private Map<String, TypeMetaInfo> typesMetaInfo;
 
