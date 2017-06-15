@@ -15,6 +15,18 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Resource;
@@ -27,27 +39,18 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-
 public class MemoryKieModule extends AbstractKieModule
         implements
-        ResourceReader {
+        ResourceReader, Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(MemoryKieModule.class);
 
     private static final String MEMORY_URL_PROTOCOL = "mfs";
 
-    private final MemoryFileSystem mfs;
+    private MemoryFileSystem mfs;
     private final long creationTimestamp = System.currentTimeMillis();
+
+    public MemoryKieModule() { }
 
     public MemoryKieModule(ReleaseId releaseId) {
         this( releaseId, new KieModuleModelImpl(), new MemoryFileSystem() );
