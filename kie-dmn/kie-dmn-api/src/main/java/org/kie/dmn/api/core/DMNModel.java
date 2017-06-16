@@ -16,15 +16,12 @@
 
 package org.kie.dmn.api.core;
 
+import java.util.Set;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.model.v1_1.Definitions;
-
-import javax.xml.namespace.QName;
-import java.util.List;
-import java.util.Set;
 
 public interface DMNModel extends DMNMessageContainer {
 
@@ -55,10 +52,6 @@ public interface DMNModel extends DMNMessageContainer {
     BusinessKnowledgeModelNode getBusinessKnowledgeModelByName(String name);
 
     Set<BusinessKnowledgeModelNode> getBusinessKnowledgeModels();
-
-    Set<InputDataNode> getRequiredInputsForBusinessKnowledgeModelName(String bkmName );
-
-    Set<InputDataNode> getRequiredInputsForBusinessKnowledgeModelId( String bkmId );
 
     ItemDefNode getItemDefinitionById(String id);
 
