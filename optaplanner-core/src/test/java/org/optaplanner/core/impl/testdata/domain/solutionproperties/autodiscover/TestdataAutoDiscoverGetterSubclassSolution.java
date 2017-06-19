@@ -17,12 +17,19 @@ package org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscove
 
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
+@PlanningSolution
 public class TestdataAutoDiscoverGetterSubclassSolution extends TestdataAutoDiscoverGetterSolution {
+
+    public static SolutionDescriptor<TestdataAutoDiscoverGetterSubclassSolution> buildSubclassSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataAutoDiscoverGetterSubclassSolution.class, TestdataEntity.class);
+    }
 
     private TestdataObject singleProblemFactFieldOverride;
     private List<TestdataValue> problemFactListFieldOverride;
@@ -52,7 +59,7 @@ public class TestdataAutoDiscoverGetterSubclassSolution extends TestdataAutoDisc
         return singleProblemFactFieldOverride;
     }
 
-    @ProblemFactProperty // CHANGE! from a collection to a single fact
+    @ProblemFactProperty // Override from a fact collection to a single fact
     @Override
     public List<TestdataValue> getProblemFactList() {
         return problemFactListFieldOverride;

@@ -332,8 +332,8 @@ public class SolutionDescriptorTest {
 
     @Test
     public void autoDiscoverGettersOverriddenInSubclass() {
-        SolutionDescriptor<TestdataAutoDiscoverGetterSolution> solutionDescriptor
-                = TestdataAutoDiscoverGetterSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataAutoDiscoverGetterSubclassSolution> solutionDescriptor
+                = TestdataAutoDiscoverGetterSubclassSolution.buildSubclassSolutionDescriptor();
         assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap(), "singleProblemFact");
         assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
                 "problemFactList");
@@ -342,12 +342,12 @@ public class SolutionDescriptorTest {
                 "entityList");
 
         TestdataObject singleProblemFact = new TestdataObject("p1");
-        List<TestdataValue> valueList = new TestdataCodeAssertableArrayList<>(
+        List<TestdataValue> listAsSingleProblemFact = new TestdataCodeAssertableArrayList<>(
                 "L1", Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         List<TestdataEntity> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"));
         TestdataEntity otherEntity = new TestdataEntity("otherE1");
         TestdataAutoDiscoverGetterSubclassSolution solution = new TestdataAutoDiscoverGetterSubclassSolution(
-                "s1", singleProblemFact, valueList, entityList, otherEntity);
+                "s1", singleProblemFact, listAsSingleProblemFact, entityList, otherEntity);
 
         assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "p1", "e1", "e2", "L1");
     }
