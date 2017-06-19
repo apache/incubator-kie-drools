@@ -26,29 +26,29 @@ public class FEELTernaryLogicTest extends BaseFEELTest {
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // ternary logic operations as per the spec
-                { "true and true", Boolean.TRUE },
-                { "true and false", Boolean.FALSE },
-                { "true and null",  null },
-                { "false and true", Boolean.FALSE },
-                { "false and false", Boolean.FALSE },
-                { "false and null", Boolean.FALSE },
-                { "null and true", null },
-                { "null and false", Boolean.FALSE },
-                { "null and null", null },
-                { "true or true", Boolean.TRUE },
-                { "true or false", Boolean.TRUE },
-                { "true or null",  Boolean.TRUE },
-                { "false or true", Boolean.TRUE },
-                { "false or false", Boolean.FALSE },
-                { "false or null", null },
-                { "null or true", Boolean.TRUE },
-                { "null or false", null },
-                { "null or null", null },
+                { "true and true", Boolean.TRUE , null},
+                { "true and false", Boolean.FALSE , null},
+                { "true and null",  null , null},
+                { "false and true", Boolean.FALSE , null},
+                { "false and false", Boolean.FALSE , null},
+                { "false and null", Boolean.FALSE , null},
+                { "null and true", null , null},
+                { "null and false", Boolean.FALSE , null},
+                { "null and null", null , null},
+                { "true or true", Boolean.TRUE , null},
+                { "true or false", Boolean.TRUE , null},
+                { "true or null",  Boolean.TRUE , null},
+                { "false or true", Boolean.TRUE , null},
+                { "false or false", Boolean.FALSE , null},
+                { "false or null", null , null},
+                { "null or true", Boolean.TRUE , null},
+                { "null or false", null , null},
+                { "null or null", null , null},
                 // logical operator priority
-                { "false and false or true", Boolean.TRUE },
-                { "false and (false or true)", Boolean.FALSE },
-                { "true or false and false", Boolean.TRUE },
-                { "(true or false) and false", Boolean.FALSE }
+                { "false and false or true", Boolean.TRUE , null},
+                { "false and (false or true)", Boolean.FALSE , null},
+                { "true or false and false", Boolean.TRUE , null},
+                { "(true or false) and false", Boolean.FALSE , null}
         };
         return Arrays.asList( cases );
     }

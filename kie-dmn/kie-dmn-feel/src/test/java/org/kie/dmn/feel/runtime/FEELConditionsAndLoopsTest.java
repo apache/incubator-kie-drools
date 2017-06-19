@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELConditionsAndLoopsTest extends BaseFEELTest {
 
@@ -28,14 +29,15 @@ public class FEELConditionsAndLoopsTest extends BaseFEELTest {
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // if expressions
-                { "if true then 10+5 else 10-5", BigDecimal.valueOf( 15 ) },
-                { "if false then \"foo\" else \"bar\"", "bar" },
-                { "if date(\"2016-08-02\") > date(\"2015-12-25\") then \"yey\" else \"nay\"", "yey" },
-                { "if null then \"foo\" else \"bar\"", null },
+                { "if true then 10+5 else 10-5", BigDecimal.valueOf( 15 ) , null},
+                { "if false then \"foo\" else \"bar\"", "bar" , null},
+                { "if date(\"2016-08-02\") > date(\"2015-12-25\") then \"yey\" else \"nay\"", "yey" , null},
+                {"if null then \"foo\" else \"bar\"", null , FEELEvent.Severity.ERROR },
 
                 // for
                 {"for x in [ 10, 20, 30 ], y in [ 1, 2, 3 ] return x * y",
-                        Arrays.asList( 10, 20, 30, 20, 40, 60, 30, 60, 90 ).stream().map( x -> BigDecimal.valueOf( x ) ).collect( Collectors.toList() ) }
+                        Arrays.asList( 10, 20, 30, 20, 40, 60, 30, 60, 90 ).stream().map( x -> BigDecimal.valueOf( x ) ).collect( Collectors.toList() ),
+                 null }
 
         };
         return Arrays.asList( cases );

@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELValuesConstantsTest extends BaseFEELTest {
 
@@ -27,27 +28,27 @@ public class FEELValuesConstantsTest extends BaseFEELTest {
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // constants
-                { "null", null },
-                { "true", Boolean.TRUE },
-                { "false", Boolean.FALSE },
+                { "null", null , null},
+                {"true", Boolean.TRUE , null},
+                { "false", Boolean.FALSE , null},
                 // dash is an unary test that always matches, so for now, returning true.
                 // have to double check to know if this is not the case
-                { "-", UnaryTest.class },
-                { ".872", new BigDecimal( "0.872" ) },
-                { "-.872", new BigDecimal( "-0.872" ) },
-                { "+.872", new BigDecimal( "0.872" ) },
-                { "50", new BigDecimal( "50" ) },
-                { "-50", new BigDecimal( "-50" ) },
-                { "+50", new BigDecimal( "50" ) },
-                { "50.872", new BigDecimal( "50.872" ) },
-                { "-50.567", new BigDecimal( "-50.567" ) },
-                { "+50.567", new BigDecimal( "50.567" ) },
+                { "-", UnaryTest.class , null},
+                { ".872", new BigDecimal( "0.872" ) , null},
+                { "-.872", new BigDecimal( "-0.872" ) , null},
+                { "+.872", new BigDecimal( "0.872" ) , null},
+                { "50", new BigDecimal( "50" ) , null},
+                { "-50", new BigDecimal( "-50" ) , null},
+                { "+50", new BigDecimal( "50" ) , null},
+                { "50.872", new BigDecimal( "50.872" ) , null},
+                { "-50.567", new BigDecimal( "-50.567" ) , null},
+                { "+50.567", new BigDecimal( "50.567" ) , null},
                 // quotes are a syntactical markup character for strings, so they disappear when the expression is evaluated
-                { "\"foo bar\"", "foo bar" },
-                { "\"šomeÚnicodeŠtriňg\"", "šomeÚnicodeŠtriňg" },
-                { "\"横綱\"", "横綱" },
-                { "\"thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong\"", "thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong" },
-                { "\"\"", "" }
+                { "\"foo bar\"", "foo bar" , null},
+                { "\"šomeÚnicodeŠtriňg\"", "šomeÚnicodeŠtriňg" , null},
+                { "\"横綱\"", "横綱" , null},
+                { "\"thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong\"", "thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong" , null},
+                { "\"\"", "" , null}
         };
         return Arrays.asList( cases );
     }

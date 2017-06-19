@@ -90,8 +90,7 @@ public class InNode
         } else if ( value != null ) {
             return value.equals( expr );
         } else {
-            // value == null, expr != null and not Unary test
-            ctx.notifyEvt( astEvent(Severity.WARN, Msg.createMessage(Msg.VALUE_NULL_EXPR_NOT_NULL_AND_NOT_UNARY_TEST_EVALUATING_THIS_NODE_AS_FALSE)));
+            // value == null, expr != null
             return Boolean.FALSE;
         }
     }

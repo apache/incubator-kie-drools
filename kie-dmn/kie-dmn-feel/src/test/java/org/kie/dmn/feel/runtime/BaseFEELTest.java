@@ -20,12 +20,19 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
+import org.mockito.ArgumentCaptor;
 
 @RunWith(Parameterized.class)
 public abstract class BaseFEELTest {
@@ -38,10 +45,25 @@ public abstract class BaseFEELTest {
     @Parameterized.Parameter(1)
     public Object result;
 
+    @Parameterized.Parameter(2)
+    public FEELEvent.Severity severity;
+
     @Test
     public void testExpression() {
-        feel.addListener( (evt) -> { if (evt.getSeverity() == Severity.ERROR) System.err.println(evt); } );
+        FEELEventListener listener = mock( FEELEventListener.class );
+        feel.addListener( listener );
+        feel.addListener( evt -> {
+            System.out.println(evt);
+        } );
         assertResult( expression, result );
+
+        if( severity != null ) {
+            ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass( FEELEvent.class );
+            verify( listener ).onEvent( captor.capture() );
+            assertThat( captor.getValue().getSeverity(), is( severity ) );
+        } else {
+            verify( listener, never() ).onEvent( any(FEELEvent.class) );
+        }
     }
 
     protected void assertResult( String expression, Object result ) {
