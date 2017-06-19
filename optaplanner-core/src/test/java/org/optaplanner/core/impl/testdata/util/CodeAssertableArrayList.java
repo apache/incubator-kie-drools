@@ -18,13 +18,13 @@ package org.optaplanner.core.impl.testdata.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class TestdataCodeAssertableArrayList<E> extends ArrayList<E> implements CodeAssertable {
+public class CodeAssertableArrayList<E> extends ArrayList<E> implements CodeAssertable {
 
     private static final long serialVersionUID = -6085607048567865778L;
 
     private final String code;
 
-    public TestdataCodeAssertableArrayList(String code, Collection<? extends E> c) {
+    public CodeAssertableArrayList(String code, Collection<? extends E> c) {
         super(c);
         this.code = code;
     }

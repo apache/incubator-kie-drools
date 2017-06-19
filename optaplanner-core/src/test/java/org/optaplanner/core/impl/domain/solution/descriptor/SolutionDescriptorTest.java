@@ -49,7 +49,7 @@ import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.Test
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnknownFactTypeSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnsupportedFactTypeSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-import org.optaplanner.core.impl.testdata.util.TestdataCodeAssertableArrayList;
+import org.optaplanner.core.impl.testdata.util.CodeAssertableArrayList;
 
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -275,7 +275,7 @@ public class SolutionDescriptorTest {
         List<TestdataValue> valueList = Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2"));
         List<TestdataEntity> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"));
         TestdataEntity otherEntity = new TestdataEntity("otherE1");
-        List<String> listFact = new TestdataCodeAssertableArrayList<>("list1", Arrays.asList("x", "y"));
+        List<String> listFact = new CodeAssertableArrayList<>("list1", Arrays.asList("x", "y"));
         TestdataAutoDiscoverFieldOverrideSolution solution = new TestdataAutoDiscoverFieldOverrideSolution(
                 "s1", singleProblemFact, valueList, entityList, otherEntity, listFact);
 
@@ -299,7 +299,7 @@ public class SolutionDescriptorTest {
         List<TestdataValue> valueList = Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2"));
         List<TestdataEntity> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"));
         TestdataEntity otherEntity = new TestdataEntity("otherE1");
-        List<String> listFact = new TestdataCodeAssertableArrayList<>("list1", Arrays.asList("x", "y"));
+        List<String> listFact = new CodeAssertableArrayList<>("list1", Arrays.asList("x", "y"));
         TestdataAutoDiscoverGetterOverrideSolution solution = new TestdataAutoDiscoverGetterOverrideSolution(
                 "s1", singleProblemFact, valueList, entityList, otherEntity, listFact);
 
@@ -342,7 +342,7 @@ public class SolutionDescriptorTest {
                 "entityList");
 
         TestdataObject singleProblemFact = new TestdataObject("p1");
-        List<TestdataValue> listAsSingleProblemFact = new TestdataCodeAssertableArrayList<>(
+        List<TestdataValue> listAsSingleProblemFact = new CodeAssertableArrayList<>(
                 "L1", Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         List<TestdataEntity> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"));
         TestdataEntity otherEntity = new TestdataEntity("otherE1");
