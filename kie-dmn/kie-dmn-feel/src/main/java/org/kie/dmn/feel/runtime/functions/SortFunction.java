@@ -39,7 +39,7 @@ public class SortFunction
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         } else if ( function == null ){
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "precedes", "cannot be null"));
+            return invoke( list );
         }
         List<Object> newList = new ArrayList<Object>( list );
         AtomicBoolean hasError = new AtomicBoolean( false );
