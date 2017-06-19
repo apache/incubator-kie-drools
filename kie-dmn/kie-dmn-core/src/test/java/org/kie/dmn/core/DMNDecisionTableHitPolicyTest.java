@@ -241,13 +241,12 @@ public class DMNDecisionTableHitPolicyTest {
 
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true);
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        assertThat(dmnResult.hasErrors(), is(true));
 
         final DMNContext result = dmnResult.getContext();
         final Map<String, Object> decisionResult = (Map<String, Object>) result.get("Decision Result");
         assertThat(decisionResult.values(), hasSize(2));
-        assertThat(decisionResult, hasEntry(is("Approval Status"), is(nullValue())));
-        assertThat(decisionResult, hasEntry(is("Decision Review"), is(nullValue())));
+        assertThat(decisionResult, hasEntry( "Value1", BigDecimal.valueOf( 25 ) ));
+        assertThat(decisionResult, hasEntry( "Value2", BigDecimal.valueOf( 32 ) ));
     }
 
     @Test

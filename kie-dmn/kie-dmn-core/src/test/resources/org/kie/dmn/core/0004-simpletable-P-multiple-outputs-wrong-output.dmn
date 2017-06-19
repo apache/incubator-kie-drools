@@ -38,7 +38,7 @@
              xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
              expressionLanguage="http://www.omg.org/spec/FEEL/20140401"
              typeLanguage="http://www.omg.org/spec/FEEL/20140401">
-  <decision id="_0004-simpletable-P-multiple-outputs-wrong-output" name="0004-simpletable-P-multiple-outputs-wrong-output">
+  <decision id="_0004-simpletable-P-multiple-outputs-wrong-output" name="Decision Result">
     <variable name="Decision Result"/>
     <informationRequirement>
       <requiredInput href="#_Age"/>
@@ -109,7 +109,7 @@
           <text>"Approved"</text>
         </outputEntry>
         <outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab691-4">
-          <text>"Needs verification"</text>
+          <text>"foo"</text>
         </outputEntry>
       </rule>
       <rule id="_7f03803d-2636-40ab-8346-7fd7f38ab693">

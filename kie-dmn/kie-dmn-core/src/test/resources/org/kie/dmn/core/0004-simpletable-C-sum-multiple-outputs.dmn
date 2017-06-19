@@ -68,15 +68,9 @@
           <text>isAffordable</text>
         </inputExpression>
       </input>
-      <output id="_oApprovalStatus" name="Approval Status" typeRef="feel:string">
-        <outputValues>
-          <text>"Approved", "Declined"</text>
-        </outputValues>
+      <output id="_oApprovalStatus" name="Value1" typeRef="feel:number">
       </output>
-      <output id="_oDecisionReview" name="Decision Review" typeRef="feel:string">
-        <outputValues>
-          <text>"Needs verification", "Decision final"</text>
-        </outputValues>
+      <output id="_oDecisionReview" name="Value2" typeRef="feel:number">
       </output>
       <rule id="_7f03803d-2636-40ab-8346-7fd7f38ab695">
         <inputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-0">
@@ -89,10 +83,10 @@
           <text>true</text>
         </inputEntry>
         <outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-3">
-          <text>"Approved"</text>
+          <text>10</text>
         </outputEntry>
         <outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab695-4">
-          <text>"Decision final"</text>
+          <text>12</text>
         </outputEntry>
       </rule>
       <rule id="_7f03803d-2636-40ab-8346-7fd7f38ab691">
@@ -106,10 +100,10 @@
           <text>true</text>
         </inputEntry>
         <outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab691-3">
-          <text>"Approved"</text>
+          <text>15</text>
         </outputEntry>
         <outputEntry id="_7f03803d-2636-40ab-8346-7fd7f38ab691-4">
-          <text>"Needs verification"</text>
+          <text>20</text>
         </outputEntry>
       </rule>
     </decisionTable>
