@@ -149,6 +149,8 @@ public class KieModuleKieProject extends AbstractKieProject {
         synchronized (this) {
             cleanIndex();
             init(); // this might override class definitions, not sure we can do it any other way though
+            // reset resource provider so it will serve resources from updated kmodule
+            this.cl.setResourceProvider(kieModule.createResourceProvider());
         }
 
         return oldKieBaseModels;

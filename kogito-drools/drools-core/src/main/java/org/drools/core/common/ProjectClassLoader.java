@@ -54,7 +54,7 @@ public class ProjectClassLoader extends ClassLoader {
 
     private final Map<String, Class<?>> loadedClasses = new ConcurrentHashMap<String, Class<?>>();
 
-    private final ResourceProvider resourceProvider;
+    private ResourceProvider resourceProvider;
 
     private ProjectClassLoader(ClassLoader parent, ResourceProvider resourceProvider) {
         super(parent);
@@ -332,6 +332,10 @@ public class ProjectClassLoader extends ClassLoader {
                 nonExistingClasses.clear();
             }
         }
+    }
+
+    public void setResourceProvider(ResourceProvider resourceProvider) {
+        this.resourceProvider = resourceProvider;
     }
 
     public void initFrom(ProjectClassLoader other) {
