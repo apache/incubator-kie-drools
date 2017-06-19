@@ -25,10 +25,10 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataAutoDiscoverGetterSubclassSolution extends TestdataAutoDiscoverGetterSolution {
+public class TestdataExtendedAutoDiscoverGetterSolution extends TestdataAutoDiscoverGetterSolution {
 
-    public static SolutionDescriptor<TestdataAutoDiscoverGetterSubclassSolution> buildSubclassSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataAutoDiscoverGetterSubclassSolution.class, TestdataEntity.class);
+    public static SolutionDescriptor<TestdataExtendedAutoDiscoverGetterSolution> buildSubclassSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedAutoDiscoverGetterSolution.class, TestdataEntity.class);
     }
 
     private TestdataObject singleProblemFactFieldOverride;
@@ -37,14 +37,14 @@ public class TestdataAutoDiscoverGetterSubclassSolution extends TestdataAutoDisc
     private List<TestdataEntity> entityListFieldOverride;
     private TestdataEntity otherEntityFieldOverride;
 
-    public TestdataAutoDiscoverGetterSubclassSolution() {
+    public TestdataExtendedAutoDiscoverGetterSolution() {
     }
 
-    public TestdataAutoDiscoverGetterSubclassSolution(String code) {
+    public TestdataExtendedAutoDiscoverGetterSolution(String code) {
         super(code);
     }
 
-    public TestdataAutoDiscoverGetterSubclassSolution(String code, TestdataObject singleProblemFact,
+    public TestdataExtendedAutoDiscoverGetterSolution(String code, TestdataObject singleProblemFact,
             List<TestdataValue> problemFactList, List<TestdataEntity> entityList,
             TestdataEntity otherEntity) {
         super(code);

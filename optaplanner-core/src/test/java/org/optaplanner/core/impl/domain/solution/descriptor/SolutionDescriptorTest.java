@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverFieldSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverGetterOverrideSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverGetterSolution;
-import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverGetterSubclassSolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataExtendedAutoDiscoverGetterSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover.TestdataAutoDiscoverUnannotatedEntitySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningScorePropertySolution;
@@ -332,8 +332,8 @@ public class SolutionDescriptorTest {
 
     @Test
     public void autoDiscoverGettersOverriddenInSubclass() {
-        SolutionDescriptor<TestdataAutoDiscoverGetterSubclassSolution> solutionDescriptor
-                = TestdataAutoDiscoverGetterSubclassSolution.buildSubclassSolutionDescriptor();
+        SolutionDescriptor<TestdataExtendedAutoDiscoverGetterSolution> solutionDescriptor
+                = TestdataExtendedAutoDiscoverGetterSolution.buildSubclassSolutionDescriptor();
         assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap(), "singleProblemFact");
         assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
                 "problemFactList");
@@ -346,7 +346,7 @@ public class SolutionDescriptorTest {
                 "L1", Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         List<TestdataEntity> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"));
         TestdataEntity otherEntity = new TestdataEntity("otherE1");
-        TestdataAutoDiscoverGetterSubclassSolution solution = new TestdataAutoDiscoverGetterSubclassSolution(
+        TestdataExtendedAutoDiscoverGetterSolution solution = new TestdataExtendedAutoDiscoverGetterSolution(
                 "s1", singleProblemFact, listAsSingleProblemFact, entityList, otherEntity);
 
         assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "p1", "e1", "e2", "L1");
