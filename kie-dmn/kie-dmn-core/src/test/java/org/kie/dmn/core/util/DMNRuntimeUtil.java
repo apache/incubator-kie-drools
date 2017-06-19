@@ -16,9 +16,12 @@
 
 package org.kie.dmn.core.util;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.Assert;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
@@ -78,6 +81,10 @@ public final class DMNRuntimeUtil {
                 logger.info(event.toString());
             }
         };
+    }
+
+    public static String formatMessages(final List<DMNMessage> messages) {
+        return messages.stream().map(Object::toString).collect(Collectors.joining("\n"));
     }
 
     private DMNRuntimeUtil() {

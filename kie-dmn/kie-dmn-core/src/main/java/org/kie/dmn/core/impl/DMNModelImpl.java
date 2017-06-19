@@ -16,10 +16,16 @@
 
 package org.kie.dmn.core.impl;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
-import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -27,15 +33,12 @@ import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNMessageManager;
-import org.kie.dmn.core.ast.*;
+import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
+import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
-import org.kie.dmn.model.v1_1.DMNElement;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Definitions;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager {
@@ -179,26 +182,6 @@ public class DMNModelImpl
     @Override
     public Set<BusinessKnowledgeModelNode> getBusinessKnowledgeModels() {
         return this.bkms.values().stream().collect( Collectors.toSet() );
-    }
-
-    @Override
-    public Set<InputDataNode> getRequiredInputsForBusinessKnowledgeModelName(String bkmName) {
-        BusinessKnowledgeModelNodeImpl bkm = (BusinessKnowledgeModelNodeImpl) getBusinessKnowledgeModelByName( bkmName );
-        Set<InputDataNode> inputs = new HashSet<>();
-        if ( bkm != null ) {
-            collectRequiredInputs( bkm.getDependencies().values(), inputs );
-        }
-        return inputs;
-    }
-
-    @Override
-    public Set<InputDataNode> getRequiredInputsForBusinessKnowledgeModelId(String bkmId) {
-        BusinessKnowledgeModelNodeImpl bkm = (BusinessKnowledgeModelNodeImpl) getBusinessKnowledgeModelById( bkmId );
-        Set<InputDataNode> inputs = new HashSet<>();
-        if ( bkm != null ) {
-            collectRequiredInputs( bkm.getDependencies().values(), inputs );
-        }
-        return inputs;
     }
 
     private void collectRequiredInputs(Collection<DMNNode> deps, Set<InputDataNode> inputs) {

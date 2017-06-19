@@ -16,25 +16,24 @@
 
 package org.kie.dmn.core;
 
-import org.junit.Test;
-import org.kie.dmn.api.core.*;
-import org.kie.dmn.core.api.*;
-import org.kie.dmn.core.api.event.*;
-import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.mockito.ArgumentCaptor;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
-import java.time.*;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.Test;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 public class FlightRebookingTest {
 
@@ -43,7 +42,7 @@ public class FlightRebookingTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) ); // need proper type support to enable this
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) ); // need proper type support to enable this
 
         DMNContext context = DMNFactory.newContext();
 
@@ -65,7 +64,7 @@ public class FlightRebookingTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking-alternative.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
 
         DMNContext context = DMNFactory.newContext();
 
@@ -87,7 +86,7 @@ public class FlightRebookingTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking-singleton-lists.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
         
         DMNContext context = DMNFactory.newContext();
 
@@ -109,7 +108,7 @@ public class FlightRebookingTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0019-flight-rebooking-bad-example.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://www.drools.org/kie-dmn", "0019-flight-rebooking" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
 
         DMNContext context = DMNFactory.newContext();
 
@@ -132,7 +131,7 @@ public class FlightRebookingTest {
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_188d6caf-a355-49b5-a692-bd6ce713da08", "0019-flight-rebooking" );
         runtime.addListener( DMNRuntimeUtil.createListener() );
         assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is(false) );
 
         DMNContext context = DMNFactory.newContext();
 
@@ -219,10 +218,5 @@ public class FlightRebookingTest {
     private BigDecimal number( Number n ) {
         return BigDecimal.valueOf( n.longValue() );
     }
-
-    private String formatMessages(List<DMNMessage> messages) {
-        return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
-    }
-
 }
 
