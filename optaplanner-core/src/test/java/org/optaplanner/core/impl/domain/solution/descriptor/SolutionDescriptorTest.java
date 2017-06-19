@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolu
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
-import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolutionOverridesGetScore;
+import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataScoreGetterOverrideExtendedAbstractSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
@@ -186,8 +186,8 @@ public class SolutionDescriptorTest {
 
     @Test
     public void extendedAbstractSolutionOverridesGetScore() {
-        SolutionDescriptor<TestdataExtendedAbstractSolutionOverridesGetScore> solutionDescriptor
-                = TestdataExtendedAbstractSolutionOverridesGetScore.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataScoreGetterOverrideExtendedAbstractSolution> solutionDescriptor
+                = TestdataScoreGetterOverrideExtendedAbstractSolution.buildSolutionDescriptor();
         assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap());
         assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
                 "problemFactList");
@@ -195,7 +195,7 @@ public class SolutionDescriptorTest {
         assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
                 "entityList");
 
-        TestdataExtendedAbstractSolutionOverridesGetScore solution = new TestdataExtendedAbstractSolutionOverridesGetScore();
+        TestdataScoreGetterOverrideExtendedAbstractSolution solution = new TestdataScoreGetterOverrideExtendedAbstractSolution();
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         solution.setExtraObject(new TestdataValue("extra"));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
@@ -330,7 +330,7 @@ public class SolutionDescriptorTest {
         assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherU1", "p1", "u1", "u2", "v1", "v2");
     }
 
-    @Test @Ignore("Ignore to fix the build - but this is a BUG I'll fix now")
+    @Test
     public void autoDiscoverGettersOverriddenInSubclass() {
         SolutionDescriptor<TestdataAutoDiscoverGetterSolution> solutionDescriptor
                 = TestdataAutoDiscoverGetterSolution.buildSolutionDescriptor();

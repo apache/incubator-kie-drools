@@ -29,11 +29,11 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataExtendedAbstractSolutionOverridesGetScore extends AbstractSolution<BendableScore> {
+public class TestdataScoreGetterOverrideExtendedAbstractSolution extends AbstractSolution<BendableScore> {
 
-    public static SolutionDescriptor<TestdataExtendedAbstractSolutionOverridesGetScore> buildSolutionDescriptor() {
+    public static SolutionDescriptor<TestdataScoreGetterOverrideExtendedAbstractSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(
-                TestdataExtendedAbstractSolutionOverridesGetScore.class, TestdataEntity.class);
+                TestdataScoreGetterOverrideExtendedAbstractSolution.class, TestdataEntity.class);
     }
 
     private List<TestdataValue> valueList;
@@ -41,7 +41,7 @@ public class TestdataExtendedAbstractSolutionOverridesGetScore extends AbstractS
 
     private List<TestdataEntity> entityList;
 
-    public TestdataExtendedAbstractSolutionOverridesGetScore() {
+    public TestdataScoreGetterOverrideExtendedAbstractSolution() {
     }
 
     @ValueRangeProvider(id = "valueRange")
