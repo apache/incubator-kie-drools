@@ -16,16 +16,17 @@
 
 package org.jbpm.casemgmt.impl.command;
 
+import java.util.Map;
+
 import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
+import org.jbpm.services.api.ProcessDefinitionNotFoundException;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.workflow.instance.node.DynamicUtils;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.identity.IdentityProvider;
-import org.kie.api.runtime.Context;
-
-import java.util.Map;
 
 /**
  * Adds subprocess (identified by processId) to selected ad hoc process instance with given parameters
@@ -38,14 +39,18 @@ public class AddDynamicProcessCommand extends CaseCommand<Long> {
     private String processId;
     private long processInstanceId;
     private Map<String, Object> parameters;
-    
-    public AddDynamicProcessCommand(IdentityProvider identityProvider, String caseId, Long processInstanceId, String processId, Map<String, Object> parameters) {        
+
+    public AddDynamicProcessCommand(IdentityProvider identityProvider,
+                                    String caseId,
+                                    Long processInstanceId,
+                                    String processId,
+                                    Map<String, Object> parameters) {
         super(identityProvider);
         this.caseId = caseId;
         this.processInstanceId = processInstanceId;
         this.processId = processId;
         this.parameters = parameters;
-        
+
         if (processInstanceId == null || processId == null) {
             throw new IllegalArgumentException("Mandatory parameters are missing - process instance id and process id");
         }
@@ -53,19 +58,32 @@ public class AddDynamicProcessCommand extends CaseCommand<Long> {
 
     @Override
     public Long execute(Context context) {
-        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        
+        KieSession ksession = ((RegistryContext) context).lookup(KieSession.class);
+
         ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
         if (processInstance == null) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId);
         }
-        CaseEventSupport caseEventSupport = getCaseEventSupport(context);
-        caseEventSupport.fireBeforeDynamicProcessAdded(caseId, processInstanceId, processId, parameters);
-        
-        long subProcessInstanceId = DynamicUtils.addDynamicSubProcess(processInstance, ksession, processId, parameters);
-        
-        caseEventSupport.fireAfterDynamicProcessAdded(caseId, processInstanceId, processId, parameters, subProcessInstanceId);
-        return subProcessInstanceId;
-    }
 
+        try {
+            CaseEventSupport caseEventSupport = getCaseEventSupport(context);
+            caseEventSupport.fireBeforeDynamicProcessAdded(caseId,
+                                                           processInstanceId,
+                                                           processId,
+                                                           parameters);
+
+            long subProcessInstanceId = DynamicUtils.addDynamicSubProcess(processInstance,
+                                                                          ksession,
+                                                                          processId,
+                                                                          parameters);
+            caseEventSupport.fireAfterDynamicProcessAdded(caseId,
+                                                          processInstanceId,
+                                                          processId,
+                                                          parameters,
+                                                          subProcessInstanceId);
+            return subProcessInstanceId;
+        } catch (IllegalArgumentException e) {
+            throw new ProcessDefinitionNotFoundException(e.getMessage());
+        }
+    }
 }
