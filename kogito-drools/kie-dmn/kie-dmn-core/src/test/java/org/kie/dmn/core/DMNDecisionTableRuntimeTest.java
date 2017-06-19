@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -29,6 +30,7 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -266,4 +268,88 @@ public class DMNDecisionTableRuntimeTest {
         assertThat( captor.getAllValues().get( 1 ).getDecisionTableName(), is( "b" ) );
     }
 
+    @Test
+    public void testDTInputExpressionLocalXmlnsInference() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "drools1502-InputExpression.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "https://www.drools.org/kie-dmn/definitions",
+                "definitions" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = runtime.newContext();
+        context.set("MyInput", "a");
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "MyDecision" ), is( "Decision taken" ) );
+    }
+
+    @Test
+    public void testDTInContext() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_in_context.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_4acdcb25-b298-435e-abd5-efd00ed686a5", "Drawing 1" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        assertThat( dmnResult.getDecisionResults().size(), is( 1 ) );
+        assertThat( dmnResult.getDecisionResultByName( "D1" ).getResult(), is( instanceOf( Map.class ) ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( ((Map)result.get( "D1" )).get( "Text color" ), is( "red" ) );
+    }
+
+    @Test
+    public void testDTUsingEqualsUnaryTestWithVariable1() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_using_variables.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        Map<String, Object> complex = new HashMap<>(  );
+        complex.put( "aBoolean", true );
+        complex.put( "aNumber", 10 );
+        complex.put( "aString", "bar" );
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Complex", complex );
+        context.set( "Another boolean", true );
+        context.set( "Another String", "bar");
+        context.set( "Another number", 10 );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Compare Boolean" ), is( "Same boolean" ) );
+        assertThat( result.get( "Compare Number" ), is( "Equals" ) );
+        assertThat( result.get( "Compare String" ), is( "Same String" ) );
+    }
+
+    @Test
+    public void testDTUsingEqualsUnaryTestWithVariable2() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "DT_using_variables.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_ed1ec15b-40aa-424d-b1d0-4936df80b135", "DT Using variables" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.hasErrors(), is( false ) );
+
+        Map<String, Object> complex = new HashMap<>();
+        complex.put( "aBoolean", true );
+        complex.put( "aNumber", 10 );
+        complex.put( "aString", "bar" );
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Complex", complex );
+        context.set( "Another boolean", false );
+        context.set( "Another String", "foo" );
+        context.set( "Another number", 20 );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Compare Boolean" ), is( "Not same boolean" ) );
+        assertThat( result.get( "Compare Number" ), is( "Bigger" ) );
+        assertThat( result.get( "Compare String" ), is( "Different String" ) );
+    }
 }
