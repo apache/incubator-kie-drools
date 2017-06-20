@@ -188,6 +188,16 @@ public final class ReflectionHelper {
         return methods[0];
     }
 
+    public static boolean isMethodOverwritten(Method parentMethod, Class<?> childClass) {
+        Method leafMethod;
+        try {
+            leafMethod = childClass.getDeclaredMethod(parentMethod.getName(), parentMethod.getParameterTypes());
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
+        return !leafMethod.getDeclaringClass().equals(parentMethod.getClass());
+    }
+
     public static void assertGetterMethod(Method getterMethod, Class<? extends Annotation> annotationClass) {
         if (getterMethod.getParameterTypes().length != 0) {
             throw new IllegalStateException("The getterMethod (" + getterMethod + ") with a "

@@ -36,7 +36,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -190,14 +192,23 @@ public class SolutionDescriptor<Solution_> {
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy, ScoreDefinition deprecatedScoreDefinition, List<Class<?>> entityClassList) {
         processSolutionAnnotations(descriptorPolicy);
+        ArrayList<Method> potentiallyOverwrittenMethodList = new ArrayList<>();
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
         // to make sure each one is registered
         for (Class<?> lineageClass : ConfigUtils.getAllAnnotatedLineageClasses(solutionClass, PlanningSolution.class)) {
             List<Member> memberList = ConfigUtils.getDeclaredMembers(lineageClass);
             for (Member member : memberList) {
+                if (member instanceof Method && potentiallyOverwrittenMethodList.stream().anyMatch(
+                        m -> member.getName().equals(m.getName())
+                                && ReflectionHelper.isMethodOverwritten((Method) member, m.getDeclaringClass()))) {
+                    continue;
+                }
                 processValueRangeProviderAnnotation(descriptorPolicy, member);
                 processFactEntityOrScoreAnnotation(descriptorPolicy, member, deprecatedScoreDefinition, entityClassList);
             }
+            potentiallyOverwrittenMethodList.ensureCapacity(potentiallyOverwrittenMethodList.size() + memberList.size());
+            memberList.stream().filter(member -> member instanceof Method)
+                    .forEach(member -> potentiallyOverwrittenMethodList.add((Method) member));
         }
         if (entityCollectionMemberAccessorMap.isEmpty() && entityMemberAccessorMap.isEmpty()) {
             throw new IllegalStateException("The solutionClass (" + solutionClass

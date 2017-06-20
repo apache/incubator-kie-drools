@@ -334,22 +334,21 @@ public class SolutionDescriptorTest {
     public void autoDiscoverGettersOverriddenInSubclass() {
         SolutionDescriptor<TestdataExtendedAutoDiscoverGetterSolution> solutionDescriptor
                 = TestdataExtendedAutoDiscoverGetterSolution.buildSubclassSolutionDescriptor();
-        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap(), "singleProblemFact");
-        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
-                "problemFactList");
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap(), "singleProblemFact",  "problemFactList");
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap());
         assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap(), "otherEntity");
         assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
                 "entityList");
 
         TestdataObject singleProblemFact = new TestdataObject("p1");
         List<TestdataValue> listAsSingleProblemFact = new CodeAssertableArrayList<>(
-                "L1", Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+                "f1", Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         List<TestdataEntity> entityList = Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"));
         TestdataEntity otherEntity = new TestdataEntity("otherE1");
         TestdataExtendedAutoDiscoverGetterSolution solution = new TestdataExtendedAutoDiscoverGetterSolution(
                 "s1", singleProblemFact, listAsSingleProblemFact, entityList, otherEntity);
 
-        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "p1", "e1", "e2", "L1");
+        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "otherE1", "f1", "p1", "e1", "e2");
     }
 
     // ************************************************************************
