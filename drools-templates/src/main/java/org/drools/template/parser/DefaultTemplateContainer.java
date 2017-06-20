@@ -114,7 +114,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
                     if (trimmed.startsWith("template header")) {
                         inHeader = true;
 
-                    } else if (trimmed.startsWith("template")) {
+                    } else if (trimmed.startsWith("template ")) {
                         inTemplate = true;
                         inHeader = false;
                         String quotedName = trimmed.substring(8).trim();
@@ -122,7 +122,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
                         template = new RuleTemplate(quotedName, this, replaceOptionals );
                         addTemplate(template);
 
-                    } else if (trimmed.startsWith("package")) {
+                    } else if (trimmed.startsWith("package ")) {
                         if ( !inHeader ) {
                             throw new DecisionTableParseException(
                                     "Missing header");
@@ -130,7 +130,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
                         inHeader = false;
                         header.append(line).append("\n");
 
-                    } else if (trimmed.startsWith("import")) {
+                    } else if (trimmed.startsWith("import ")) {
                         inHeader = false;
                         header.append(line).append("\n");
 
@@ -140,7 +140,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
                     } else if (!inTemplate) {
                         header.append(line).append("\n");
 
-                    } else if (!inContents && trimmed.startsWith("rule")) {
+                    } else if (!inContents && trimmed.startsWith("rule ")) {
                         inContents = true;
                         contents.append(line).append("\n");
 
