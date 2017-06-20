@@ -19,6 +19,7 @@ package org.kie.dmn.feel.parser.feel11;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.RelExpressionValueContext;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 import java.util.ArrayList;
@@ -159,6 +160,13 @@ public class ASTBuilderVisitor
     public BaseNode visitRelExpressionTest(FEEL_1_1Parser.RelExpressionTestContext ctx) {
         BaseNode value = visit( ctx.val );
         BaseNode test = visit( ctx.simpleUnaryTest() );
+        return ASTBuilderFactory.newInNode( ctx, value, test );
+    }
+    
+    @Override
+    public BaseNode visitRelExpressionValue(RelExpressionValueContext ctx) {
+        BaseNode value = visit( ctx.val );
+        BaseNode test = visit( ctx.expression() );
         return ASTBuilderFactory.newInNode( ctx, value, test );
     }
 

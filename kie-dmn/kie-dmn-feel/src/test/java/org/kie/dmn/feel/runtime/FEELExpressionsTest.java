@@ -75,8 +75,13 @@ public class FEELExpressionsTest extends BaseFEELTest {
 
                 // unary tests with context evaluation, i.e., the test is defined before the variable "x"
                 {"{ test : > x, y : 20, x : 10, result : y in ( test ) }.result", Boolean.TRUE , null},
-                {"{ test : > x, y : 20, x : 10, result : test( y ) }.result", Boolean.TRUE , null}
-
+                {"{ test : > x, y : 20, x : 10, result : test( y ) }.result", Boolean.TRUE , null},
+                
+                {"2 in 2", Boolean.TRUE , null},
+                {"{ x : 2, result : x in 2 }.result", Boolean.TRUE , null},
+                {"{ someList : [1, 2, 3], result : 2 in someList }.result", Boolean.TRUE , null},
+                {"{ someList : [1, 2, 3], x : 2, result : x in someList }.result", Boolean.TRUE , null},
+                {"{ someNestedList : { theList : [1, 2, 3] } , x : 2, result : x in someNestedList.theList }.result", Boolean.TRUE , null}
 
         };
         return Arrays.asList( cases );
