@@ -32,15 +32,10 @@ import org.kie.dmn.feel.util.Either;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public class DecisionTableImpl {
@@ -92,9 +87,18 @@ public class DecisionTableImpl {
         List<DTDecisionRule> matches = findMatches( ctx, actualInputs );
         if( !matches.isEmpty() ) {
             List<Object> results = evaluateResults( ctx, feel, actualInputs, matches );
-            Object result = hitPolicy.getDti().dti( ctx, this, actualInputs, matches, results );
-
-            return FEELFnResult.ofResult( result );
+            Map<Integer, String> msgs = checkResults( ctx, matches, results );
+            if( msgs.isEmpty() ) {
+                Object result = hitPolicy.getDti().dti( ctx, this, actualInputs, matches, results );
+                return FEELFnResult.ofResult( result );
+            } else {
+                List<Integer> offending = msgs.keySet().stream().collect( Collectors.toList());
+                return FEELFnResult.ofError( new HitPolicyViolationEvent(
+                        Severity.ERROR,
+                        "Errors found evaluating decision table '"+getName()+"': \n"+(msgs.values().stream().collect( Collectors.joining( "\n" ) )),
+                        name,
+                        offending ) );
+            }
         } else {
             // check if there is a default value set for the outputs
             if( hasDefaultValues ) {
@@ -106,6 +110,52 @@ public class DecisionTableImpl {
                                                     "No rule matched for decision table '" + name + "' and no default values were defined. Setting result to null.",
                                                     name,
                                                     Collections.EMPTY_LIST ) );
+            }
+        }
+    }
+
+    private Map<Integer, String> checkResults(EvaluationContext ctx, List<DTDecisionRule> matches, List<Object> results) {
+        Map<Integer, String> msgs = new TreeMap<>(  );
+        int i = 0;
+        for( Object result : results ) {
+            if( outputs.size() == 1 ) {
+                checkOneResult( ctx, matches.get( i ), msgs, outputs.get( 0 ), result );
+            } else if( outputs.size() > 1 ) {
+                Map<String, Object> r = (Map<String, Object>) result;
+                for ( DTOutputClause output : outputs ) {
+                    checkOneResult( ctx, matches.get( i ), msgs, output, r.get( output.getName() ) );
+                }
+            }
+            i++;
+        }
+        return msgs;
+    }
+
+    private void checkOneResult(EvaluationContext ctx, DTDecisionRule rule, Map<Integer, String> msgs, DTOutputClause dtOutputClause, Object result) {
+        if( ! dtOutputClause.getType().isAssignableValue( result ) ) {
+            // invalid type
+            int index = outputs.indexOf( dtOutputClause ) + 1;
+            msgs.put( index,
+                      "Invalid result type on rule #" + rule.getIndex() + ", output " +
+                      (dtOutputClause.getName() != null ? "'"+dtOutputClause.getName()+"'" : "#" + index) +
+                      ". Value "+result+" is not of type "+dtOutputClause.getType().getName() +".");
+            return;
+        }
+        if( dtOutputClause.getOutputValues() != null && ! dtOutputClause.getOutputValues().isEmpty() ) {
+            boolean found = false;
+            for( UnaryTest test : dtOutputClause.getOutputValues() ) {
+                Boolean succeeded = test.apply( ctx, result );
+                if( succeeded != null && succeeded ) {
+                    found = true;
+                }
+            }
+            if( ! found ) {
+                // invalid result
+                int index = outputs.indexOf( dtOutputClause ) + 1;
+                msgs.put( index,
+                          "Invalid result value on rule #"+rule.getIndex()+", output "+
+                          (dtOutputClause.getName() != null ? "'"+dtOutputClause.getName()+"'" : "#"+index ) +
+                          ". Value "+result+" does not match list of allowed values.");
             }
         }
     }

@@ -33,7 +33,7 @@ import java.util.function.Function;
 
 public enum BuiltInType implements SimpleType {
 
-    UNKNOWN("unknown"),
+    UNKNOWN("any", "unknown"),
     NUMBER("number"),
     STRING("string"),
     DATE("date"),
