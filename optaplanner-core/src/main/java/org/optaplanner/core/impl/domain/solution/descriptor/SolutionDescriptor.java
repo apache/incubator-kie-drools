@@ -192,23 +192,24 @@ public class SolutionDescriptor<Solution_> {
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy, ScoreDefinition deprecatedScoreDefinition, List<Class<?>> entityClassList) {
         processSolutionAnnotations(descriptorPolicy);
-        ArrayList<Method> potentiallyOverwrittenMethodList = new ArrayList<>();
+        ArrayList<Method> potentiallyOverwritingMethodList = new ArrayList<>();
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
         // to make sure each one is registered
         for (Class<?> lineageClass : ConfigUtils.getAllAnnotatedLineageClasses(solutionClass, PlanningSolution.class)) {
             List<Member> memberList = ConfigUtils.getDeclaredMembers(lineageClass);
             for (Member member : memberList) {
-                if (member instanceof Method && potentiallyOverwrittenMethodList.stream().anyMatch(
-                        m -> member.getName().equals(m.getName())
+                if (member instanceof Method && potentiallyOverwritingMethodList.stream().anyMatch(
+                        m -> member.getName().equals(m.getName()) // Short cut to discard negatives faster
                                 && ReflectionHelper.isMethodOverwritten((Method) member, m.getDeclaringClass()))) {
+                    // Ignore member because it is an overwritten method
                     continue;
                 }
                 processValueRangeProviderAnnotation(descriptorPolicy, member);
                 processFactEntityOrScoreAnnotation(descriptorPolicy, member, deprecatedScoreDefinition, entityClassList);
             }
-            potentiallyOverwrittenMethodList.ensureCapacity(potentiallyOverwrittenMethodList.size() + memberList.size());
+            potentiallyOverwritingMethodList.ensureCapacity(potentiallyOverwritingMethodList.size() + memberList.size());
             memberList.stream().filter(member -> member instanceof Method)
-                    .forEach(member -> potentiallyOverwrittenMethodList.add((Method) member));
+                    .forEach(member -> potentiallyOverwritingMethodList.add((Method) member));
         }
         if (entityCollectionMemberAccessorMap.isEmpty() && entityMemberAccessorMap.isEmpty()) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
