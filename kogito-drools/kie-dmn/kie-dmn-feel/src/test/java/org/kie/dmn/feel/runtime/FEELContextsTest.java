@@ -34,7 +34,7 @@ public class FEELContextsTest extends BaseFEELTest {
                             put( "first name", "Bob" );
                             put( "birthday", LocalDate.of(1978, 9, 12) );
                             put( "salutation", "Hello Bob" );
-                        }} },
+                        }}, null },
                 // nested contexts + qualified name
                 { "{ full name : { first name: \"Bob\", last name : \"Doe\" }, birthday : date(\"1978-09-12\"), salutation : \"Hello \"+full name.first name }",
                         new HashMap<String,Object>() {{
@@ -44,21 +44,21 @@ public class FEELContextsTest extends BaseFEELTest {
                             }} );
                             put( "birthday", LocalDate.of(1978, 9, 12) );
                             put( "salutation", "Hello Bob" );
-                        }} },
+                        }}, null },
                 // Example from spec. chapter "10.3.2.7 Ranges"
                 { "{ startdate: date(\"1978-09-12\"), enddate: date(\"1978-10-13\"), rangedates: [startdate..enddate] }",
                         new HashMap<String,Object>() {{
                             put( "startdate", LocalDate.of(1978, 9, 12) );
                             put( "enddate", LocalDate.of(1978, 10, 13) );
                             put( "rangedates", new RangeImpl( Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED ) );
-                }} },
+                }}, null },
 
                 // testing the non-breakable space character
-                {"5\u00A0+\u00A03", BigDecimal.valueOf( 8 ) },
-                {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first\u00A0\u00A0name+\"!\"}.salutation", "Hello Bob!" },
-                {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!" },
-                {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first  name+\"!\"}.salutation", "Hello Bob!" },
-                {"{ first name : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!" }
+                {"5\u00A0+\u00A03", BigDecimal.valueOf( 8 ), null },
+                {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first\u00A0\u00A0name+\"!\"}.salutation", "Hello Bob!", null },
+                {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!", null },
+                {"{ first\u00A0\u00A0name : \"Bob\", salutation : \"Hello \"+first  name+\"!\"}.salutation", "Hello Bob!", null },
+                {"{ first name : \"Bob\", salutation : \"Hello \"+first\u00A0name+\"!\"}.salutation", "Hello Bob!", null }
 
 
         };

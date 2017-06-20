@@ -27,10 +27,10 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // function definition and invocation
-                {"{ hello world : function() \"Hello World!\", message : hello world() }.message", "Hello World!" },
-                {"{ is minor : function( person's age ) person's age < 18, bob is minor : is minor( 16 ) }.bob is minor", Boolean.TRUE },
+                {"{ hello world : function() \"Hello World!\", message : hello world() }.message", "Hello World!", null },
+                {"{ is minor : function( person's age ) person's age < 18, bob is minor : is minor( 16 ) }.bob is minor", Boolean.TRUE, null },
                 {"{ maximum : function( v1, v2 ) external { java : { class : \"java.lang.Math\", method signature: \"max(long,long)\" } }, the max : maximum( 10, 20 ) }.the max",
-                        BigDecimal.valueOf( 20 ) },
+                        BigDecimal.valueOf( 20 ), null },
                 // variable number of parameters
                 {"{ \n"
                  + "    string format : function( mask, value ) external {\n"
@@ -44,7 +44,7 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
                  + "    ,\n"
                  + "   result : format currency( 76499.3456 )\n"
                  + "}.result",
-                 "$76,499.35"
+                 "$76,499.35", null
                 }
         };
         return Arrays.asList( cases );

@@ -131,7 +131,12 @@ public class QuantifiedExpressionNode
         QEIteration[] ictx = new QEIteration[iterationContexts.size()];
         int i = 0;
         for ( IterationContextNode icn : iterationContexts ) {
-            ictx[i++] = createQuantifiedExpressionIterationContext( ctx, icn );
+            ictx[i] = createQuantifiedExpressionIterationContext( ctx, icn );
+            if( i < ictx.length - 1 ) {
+                // initalize all contexts except the very last one, as it will be initialized in the nextIteration() method
+                setValueIntoContext( ctx, ictx[i] );
+            }
+            i++;
         }
         return ictx;
     }

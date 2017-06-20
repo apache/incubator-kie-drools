@@ -26,16 +26,16 @@ public class FEELExpressionsTest extends BaseFEELTest {
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // quantified expressions
-                { "some price in [ 80, 11, 110 ] satisfies price > 100", Boolean.TRUE },
-                { "some price in [ 80, 11, 90 ] satisfies price > 100", Boolean.FALSE },
-                { "some x in [ 5, 6, 7 ], y in [ 10, 11, 6 ] satisfies x > y", Boolean.TRUE },
-                { "every price in [ 80, 11, 90 ] satisfies price > 10", Boolean.TRUE },
-                { "every price in [ 80, 11, 90 ] satisfies price > 70", Boolean.FALSE },
-                { "some x in [ 5, 6, 7 ], y in [ 10, 11, 12 ] satisfies x < y", Boolean.TRUE },
-                { "some price in [ 80, 11, 110 ] satisfies price > max(100, 50, 10)", Boolean.TRUE },
+                { "some price in [ 80, 11, 110 ] satisfies price > 100", Boolean.TRUE , null},
+                { "some price in [ 80, 11, 90 ] satisfies price > 100", Boolean.FALSE , null},
+                { "some x in [ 5, 6, 7 ], y in [ 10, 11, 6 ] satisfies x > y", Boolean.TRUE , null},
+                { "every price in [ 80, 11, 90 ] satisfies price > 10", Boolean.TRUE , null},
+                { "every price in [ 80, 11, 90 ] satisfies price > 70", Boolean.FALSE , null},
+                { "some x in [ 5, 6, 7 ], y in [ 10, 11, 12 ] satisfies x < y", Boolean.TRUE , null},
+                { "some price in [ 80, 11, 110 ] satisfies price > max(100, 50, 10)", Boolean.TRUE , null},
 
                 // path expressions
-                {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.last name", "Doe" },
+                {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.last name", "Doe" , null},
 
                 // filter expressions with proper precedence
                 {"{ EmployeeTable : [ \n"+
@@ -48,34 +48,34 @@ public class FEELExpressionsTest extends BaseFEELTest {
                  "  Dept : EmployeeTable[ name = \"Clark\" ].dept[1],\n" +
                  "  Manager : DeptTable[ number = Dept ].manager[1],\n" +
                  "  ManagerInline : DeptTable[ number = EmployeeTable[ name = \"Clark\" ].dept[1] ].manager[1]\n"+
-                 "}.ManagerInline", "Susie" },
+                 "}.ManagerInline", "Susie", null },
 
                 // named parameters: in this case foo is null
-                {"{ is minor : function( foo, person's age ) foo = null and person's age < 18, bob is minor : is minor( person's age : 16 ) }.bob is minor", Boolean.TRUE },
+                {"{ is minor : function( foo, person's age ) foo = null and person's age < 18, bob is minor : is minor( person's age : 16 ) }.bob is minor", Boolean.TRUE , null},
 
                 // unary test invocation
-                {"{ is minor : < 18, bob is minor : is minor(16) }.bob is minor", Boolean.TRUE },
+                {"{ is minor : < 18, bob is minor : is minor(16) }.bob is minor", Boolean.TRUE , null},
 
                 // negated unary tests
-                {"10 in ( not( <5, >=20, =15 ) )", Boolean.TRUE},
-                {"10 in ( not( <5, >=20, =10 ) )", Boolean.FALSE},
-                {"10 in ( not( <5 ) )", Boolean.TRUE},
-                {"10 in ( not( (10..20] ) )", Boolean.TRUE},
-                {"10 in ( not( 10 ) )", Boolean.FALSE},
-                {"10 in ( not( 5 ) )", Boolean.TRUE},
-                {"10 in ( not( 5, (5+5), (20+10) ) )", Boolean.FALSE},
-                {"10 in ( not( 5, (20+10) ) )", Boolean.TRUE},
-                {"10 in ( not( >5*20 ) )", Boolean.TRUE },
-                {"10 in ( not( 10 ), not( 20 ) )", Boolean.TRUE },
-                {"10 in ( not( null, 10 ) )", Boolean.FALSE },
-                {"10 in ( not( 5, 10 ) )", Boolean.FALSE },
-                {"null in ( not( 10, null ) )", Boolean.FALSE },
-                {"\"Boston\" in ( not( \"Toronto\", \"Montreal\" ) )", Boolean.TRUE },
-                {"\"Boston\" in ( not( \"Toronto\", \"Boston\" ) )", Boolean.FALSE },
+                {"10 in ( not( <5, >=20, =15 ) )", Boolean.TRUE, null},
+                {"10 in ( not( <5, >=20, =10 ) )", Boolean.FALSE, null},
+                {"10 in ( not( <5 ) )", Boolean.TRUE, null},
+                {"10 in ( not( (10..20] ) )", Boolean.TRUE, null},
+                {"10 in ( not( 10 ) )", Boolean.FALSE, null},
+                {"10 in ( not( 5 ) )", Boolean.TRUE, null},
+                {"10 in ( not( 5, (5+5), (20+10) ) )", Boolean.FALSE, null},
+                {"10 in ( not( 5, (20+10) ) )", Boolean.TRUE, null},
+                {"10 in ( not( >5*20 ) )", Boolean.TRUE , null},
+                {"10 in ( not( 10 ), not( 20 ) )", Boolean.TRUE , null},
+                {"10 in ( not( null, 10 ) )", Boolean.FALSE , null},
+                {"10 in ( not( 5, 10 ) )", Boolean.FALSE , null},
+                {"null in ( not( 10, null ) )", Boolean.FALSE , null},
+                {"\"Boston\" in ( not( \"Toronto\", \"Montreal\" ) )", Boolean.TRUE , null},
+                {"\"Boston\" in ( not( \"Toronto\", \"Boston\" ) )", Boolean.FALSE , null},
 
                 // unary tests with context evaluation, i.e., the test is defined before the variable "x"
-                {"{ test : > x, y : 20, x : 10, result : y in ( test ) }.result", Boolean.TRUE },
-                {"{ test : > x, y : 20, x : 10, result : test( y ) }.result", Boolean.TRUE }
+                {"{ test : > x, y : 20, x : 10, result : y in ( test ) }.result", Boolean.TRUE , null},
+                {"{ test : > x, y : 20, x : 10, result : test( y ) }.result", Boolean.TRUE , null}
 
 
         };

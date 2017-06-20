@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class FEELRangesTest extends BaseFEELTest {
@@ -30,58 +31,58 @@ public class FEELRangesTest extends BaseFEELTest {
     @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][]{
-                {"[1..2]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED)},
-                {"[2..1]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE, Range.RangeBoundary.CLOSED)},
-                {"[1..2)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN)},
-                {"(1..2]", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED)},
-                {"(1..2)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN)},
+                {"[1..2]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED), null},
+                {"[2..1]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(2), BigDecimal.ONE, Range.RangeBoundary.CLOSED), null},
+                {"[1..2)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN), null},
+                {"(1..2]", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.CLOSED), null},
+                {"(1..2)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.ONE, BigDecimal.valueOf(2), Range.RangeBoundary.OPEN), null},
 
-                {"[\"a\"..\"z\"]", new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED)},
-                {"[\"a\"..\"z\")", new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN)},
-                {"(\"a\"..\"z\"]", new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.CLOSED)},
-                {"(\"a\"..\"z\")", new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.OPEN)},
-                {"(\"ab\"..\"yz\")", new RangeImpl(Range.RangeBoundary.OPEN, "ab", "yz", Range.RangeBoundary.OPEN)},
-                {"[\"ab\"+\"cd\"..\"yz\")", new RangeImpl(Range.RangeBoundary.CLOSED, "abcd", "yz", Range.RangeBoundary.OPEN)},
-                {"[(\"ab\"+\"cd\")..\"yz\"]", new RangeImpl(Range.RangeBoundary.CLOSED, "abcd", "yz", Range.RangeBoundary.CLOSED)},
+                {"[\"a\"..\"z\"]", new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.CLOSED), null},
+                {"[\"a\"..\"z\")", new RangeImpl(Range.RangeBoundary.CLOSED, "a", "z", Range.RangeBoundary.OPEN), null},
+                {"(\"a\"..\"z\"]", new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.CLOSED), null},
+                {"(\"a\"..\"z\")", new RangeImpl(Range.RangeBoundary.OPEN, "a", "z", Range.RangeBoundary.OPEN), null},
+                {"(\"ab\"..\"yz\")", new RangeImpl(Range.RangeBoundary.OPEN, "ab", "yz", Range.RangeBoundary.OPEN), null},
+                {"[\"ab\"+\"cd\"..\"yz\")", new RangeImpl(Range.RangeBoundary.CLOSED, "abcd", "yz", Range.RangeBoundary.OPEN), null},
+                {"[(\"ab\"+\"cd\")..\"yz\"]", new RangeImpl(Range.RangeBoundary.CLOSED, "abcd", "yz", Range.RangeBoundary.CLOSED), null},
 
                 {"[date(\"1978-09-12\")..date(\"1978-10-13\")]",
-                        new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED)},
+                        new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED), null},
                 {"[date(\"1978-09-12\")..date(\"1978-10-13\"))",
-                        new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN)},
+                        new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN), null},
                 {"(date(\"1978-09-12\")..date(\"1978-10-13\")]",
-                        new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED)},
+                        new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED), null},
                 {"(date(\"1978-09-12\")..date(\"1978-10-13\"))",
-                        new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN)},
+                        new RangeImpl(Range.RangeBoundary.OPEN, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.OPEN), null},
                 {"[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]",
-                        new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED)},
+                        new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED), null},
                 {"[duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))",
-                        new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN)},
+                        new RangeImpl(Range.RangeBoundary.CLOSED, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN), null},
                 {"(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\")]",
-                        new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED)},
+                        new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED), null},
                 {"(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))",
-                        new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN)},
+                        new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN), null},
 
-                {"[1+2..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
-                {"[1+2..8)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.OPEN)},
-                {"(1+2..8]", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
-                {"(1+2..8)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.OPEN)},
+                {"[1+2..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
+                {"[1+2..8)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.OPEN), null},
+                {"(1+2..8]", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
+                {"(1+2..8)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.OPEN), null},
 
-                {"[3..2+6]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
-                {"[3..2+6)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.OPEN)},
-                {"(3..2+6]", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
-                {"(3..2+6)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.OPEN)},
+                {"[3..2+6]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
+                {"[3..2+6)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.OPEN), null},
+                {"(3..2+6]", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
+                {"(3..2+6)", new RangeImpl(Range.RangeBoundary.OPEN, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.OPEN), null},
 
-                {"[3..(2+6)]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
-                {"[(1+2)..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
+                {"[3..(2+6)]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
+                {"[(1+2)..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
 
-                {"[max( 1, 2, 3 )..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
-                {"[max( 1, 2, 3 )+1..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(4), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
+                {"[max( 1, 2, 3 )..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
+                {"[max( 1, 2, 3 )+1..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(4), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
 
                 // Not same types, shouldn't compile.
-                {"[1..\"cheese\"]", null},
-                {"[1..date(\"1978-09-12\")]", null},
+                {"[1..\"cheese\"]", null, FEELEvent.Severity.ERROR},
+                {"[1..date(\"1978-09-12\")]", null, FEELEvent.Severity.ERROR},
 
-                {"[([1, 2, 3, 4][4])..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(4), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
+                {"[([1, 2, 3, 4][4])..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(4), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
 
                 {"{ x: 3, numberrange: [1+x..8]}", new HashMap<String, Object>() {{
                     put("x", BigDecimal.valueOf(3));
@@ -91,7 +92,7 @@ public class FEELRangesTest extends BaseFEELTest {
                                     BigDecimal.valueOf(4),
                                     BigDecimal.valueOf(8),
                                     Range.RangeBoundary.CLOSED));
-                        }}},
+                        }}, null},
                 {"{ start: 1, end: 2, numberrange: [start..end] }",
                         new HashMap<String, Object>() {{
                             put("start", BigDecimal.ONE);
@@ -102,7 +103,7 @@ public class FEELRangesTest extends BaseFEELTest {
                                             BigDecimal.ONE,
                                             BigDecimal.valueOf(2),
                                             Range.RangeBoundary.CLOSED));
-                        }}},
+                        }}, null},
                 {"{ start: 1, end: max( 1, 2, 3 ), numberrange: [start..end] }",
                         new HashMap<String, Object>() {{
                             put("start", BigDecimal.ONE);
@@ -113,7 +114,7 @@ public class FEELRangesTest extends BaseFEELTest {
                                             BigDecimal.ONE,
                                             BigDecimal.valueOf(3),
                                             Range.RangeBoundary.CLOSED));
-                        }}},
+                        }}, null},
                 {"{ start: max( 1, 2, 3 ) + 1, end: 8, numberrange: [start..end] }",
                         new HashMap<String, Object>() {{
                             put("start", BigDecimal.valueOf(4));
@@ -124,7 +125,7 @@ public class FEELRangesTest extends BaseFEELTest {
                                             BigDecimal.valueOf(4),
                                             BigDecimal.valueOf(8),
                                             Range.RangeBoundary.CLOSED));
-                        }}},
+                        }}, null},
                 {"{ start: \"a\", end: \"z\", charrange: [start..end] }",
                         new HashMap<String, Object>() {{
                             put("start", "a");
@@ -135,14 +136,14 @@ public class FEELRangesTest extends BaseFEELTest {
                                             "a",
                                             "z",
                                             Range.RangeBoundary.CLOSED));
-                        }}},
+                        }}, null},
                 // Example from spec. chapter "10.3.2.7 Ranges"
                 {"{ startdate: date(\"1978-09-12\"), enddate: date(\"1978-10-13\"), rangedates: [startdate..enddate] }",
                         new HashMap<String, Object>() {{
                             put("startdate", LocalDate.of(1978, 9, 12));
                             put("enddate", LocalDate.of(1978, 10, 13));
                             put("rangedates", new RangeImpl(Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED));
-                        }}}
+                        }}, null}
         };
         return Arrays.asList(cases);
     }

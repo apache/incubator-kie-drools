@@ -251,7 +251,7 @@ unaryExpression
 unaryExpressionNotPlusMinus
 	:   not_key '(' simpleUnaryTests ')'  #negatedUnaryTests
 	|	not_key unaryExpression           #logicalNegation
-	|   primary ('.' {helper.recoverScope();} qualifiedName {helper.dismissScope();} )?   #uenpmPrimary
+	|   primary ('.' {helper.recoverScope();helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();helper.dismissScope();} )?   #uenpmPrimary
 	;
 
 primary
@@ -288,12 +288,12 @@ simpleUnaryTests
 
 // #7
 simpleUnaryTest
-    : op='<' endpoint    #positiveUnaryTestIneq
-    | op='>' endpoint    #positiveUnaryTestIneq
-    | op='<=' endpoint   #positiveUnaryTestIneq
-    | op='>=' endpoint   #positiveUnaryTestIneq
-    | op='=' endpoint    #positiveUnaryTestIneq
-    | op='!=' endpoint   #positiveUnaryTestIneq
+    : op='<'  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op='>'  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op='<=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op='>=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op='='  {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
+    | op='!=' {helper.enableDynamicResolution();}  endpoint {helper.disableDynamicResolution();}   #positiveUnaryTestIneq
     | interval           #positiveUnaryTestInterval
     | null_key           #positiveUnaryTestNull
     | '-'                #positiveUnaryTestDash
