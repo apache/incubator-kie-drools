@@ -26,30 +26,29 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.appformer.maven.integration.ArtifactResolver;
+import org.appformer.maven.integration.DependencyDescriptor;
+import org.appformer.maven.support.DependencyFilter;
+import org.appformer.maven.support.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.eclipse.aether.artifact.Artifact;
-import org.appformer.maven.integration.ArtifactResolver;
-import org.appformer.maven.integration.DependencyDescriptor;
-import org.appformer.maven.support.ReleaseId;
-import org.appformer.maven.support.DependencyFilter;
 
+import static org.appformer.maven.integration.ArtifactResolver.getResolverFor;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.IoUtils.UTF8_CHARSET;
 import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
-import static org.appformer.maven.integration.ArtifactResolver.getResolverFor;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {
-
-    private final ArtifactResolver artifactResolver;
 
     private final Map<String, Collection<String>> classes = new HashMap<String, Collection<String>>();
 
@@ -70,30 +69,38 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     private InternalKieModule kieModule;
 
     public KieModuleMetaDataImpl(ReleaseId releaseId, DependencyFilter dependencyFilter) {
-        this.artifactResolver = getResolverFor(releaseId, false);
         this.releaseId = releaseId;
         this.dependencyFilter = dependencyFilter;
-        init();
+        init(getResolverFor(releaseId, false));
     }
 
     public KieModuleMetaDataImpl(File pomFile, DependencyFilter dependencyFilter) {
-        this.artifactResolver = getResolverFor(pomFile);
         this.dependencyFilter = dependencyFilter;
-        init();
+        init(getResolverFor(pomFile));
     }
 
     public KieModuleMetaDataImpl(InternalKieModule kieModule, DependencyFilter dependencyFilter) {
         this.kieModule = kieModule;
-        this.artifactResolver = getResolverFor( kieModule.getPomModel() );
         this.dependencyFilter = dependencyFilter;
+        indexKieModule( kieModule );
+        init(getResolverFor( kieModule.getPomModel() ));
+    }
+
+    public KieModuleMetaDataImpl( InternalKieModule kieModule, List<URI> dependencies ) {
+        this.kieModule = kieModule;
+        this.dependencyFilter = DependencyFilter.TAKE_ALL_FILTER;
+        indexKieModule( kieModule );
+        init(dependencies);
+    }
+
+    private void indexKieModule( InternalKieModule kieModule ) {
         for (String file : kieModule.getFileNames()) {
             if (!indexClass(file)) {
-                if (file.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
+                if (file.endsWith( KieModuleModelImpl.KMODULE_INFO_JAR_PATH )) {
                     indexMetaInfo(kieModule.getBytes(file));
                 }
             }
         }
-        init();
     }
 
     public Collection<String> getPackages() {
@@ -148,7 +155,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
         return classLoader;
     }
 
-    private void init() {
+    private void init(ArtifactResolver artifactResolver) {
         if (artifactResolver == null) {
             return;
         }
@@ -170,14 +177,22 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
         packages.addAll(rulesByPackage.keySet());
     }
 
+    private void init(List<URI> dependencies) {
+        for (URI uri : dependencies) {
+            addJar( new File(uri), uri );
+        }
+        packages.addAll(classes.keySet());
+        packages.addAll(rulesByPackage.keySet());
+    }
+
     private void addArtifact(Artifact artifact) {
         if (artifact != null && artifact.getExtension() != null && artifact.getExtension().equals("jar")) {
-            addJar(artifact.getFile());
+            File jarFile = artifact.getFile();
+            addJar( jarFile, jarFile.toURI() );
         }
     }
 
-    private void addJar(File jarFile) {
-        URI uri = jarFile.toURI();
+    private void addJar( File jarFile, URI uri ) {
         if (!jars.containsKey(uri)) {
             jars.put(uri, jarFile);
             scanJar(jarFile);
