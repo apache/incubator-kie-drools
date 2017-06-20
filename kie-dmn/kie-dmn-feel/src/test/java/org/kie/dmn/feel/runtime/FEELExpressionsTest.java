@@ -81,7 +81,12 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"{ x : 2, result : x in 2 }.result", Boolean.TRUE , null},
                 {"{ someList : [1, 2, 3], result : 2 in someList }.result", Boolean.TRUE , null},
                 {"{ someList : [1, 2, 3], x : 2, result : x in someList }.result", Boolean.TRUE , null},
-                {"{ someNestedList : { theList : [1, 2, 3] } , x : 2, result : x in someNestedList.theList }.result", Boolean.TRUE , null}
+                {"{ someNestedList : { theList : [1, 2, 3] } , x : 2, result : x in someNestedList.theList }.result", Boolean.TRUE , null},
+                {"47 in 2", Boolean.FALSE , null},
+                {"{ x : 47, result : x in 2 }.result", Boolean.FALSE , null},
+                {"{ someList : [1, 2, 3], result : 47 in someList }.result", Boolean.FALSE , null},
+                {"{ someList : [1, 2, 3], x : 47, result : x in someList }.result", Boolean.FALSE , null},
+                {"{ someNestedList : { theList : [1, 2, 3] } , x : 47, result : x in someNestedList.theList }.result", Boolean.FALSE , null}
 
         };
         return Arrays.asList( cases );
