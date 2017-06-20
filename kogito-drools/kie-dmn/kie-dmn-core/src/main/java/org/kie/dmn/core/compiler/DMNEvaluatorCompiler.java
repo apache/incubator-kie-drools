@@ -412,7 +412,16 @@ public class DMNEvaluatorCompiler {
             String id = oc.getId();
             String outputValuesText = Optional.ofNullable( oc.getOutputValues() ).map( UnaryTests::getText ).orElse( null );
             String defaultValue = oc.getDefaultOutputEntry() != null ? oc.getDefaultOutputEntry().getText() : null;
+            BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
             java.util.List<UnaryTest> outputValues = null;
+            if ( oc.getTypeRef() != null ) {
+                QName outputExpressionTypeRef = oc.getTypeRef();
+                typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType( resolveNamespaceForTypeRef( outputExpressionTypeRef, oc ), outputExpressionTypeRef.getLocalPart() );
+                if( typeRef == null ) {
+                    typeRef = (BaseDMNTypeImpl) DMNTypeRegistry.UNKNOWN;
+                }
+            }
+
             if ( outputValuesText != null ) {
                 outputValues = textToUnaryTestList( ctx,
                                                     outputValuesText,
@@ -422,16 +431,14 @@ public class DMNEvaluatorCompiler {
                                                     outputValuesText,
                                                     node.getIdentifierString(),
                                                     ++index );
-            } else if ( oc.getTypeRef() != null ) {
-                QName outputExpressionTypeRef = oc.getTypeRef();
-                BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(outputExpressionTypeRef, oc), outputExpressionTypeRef.getLocalPart());
+            } else if ( typeRef != DMNTypeRegistry.UNKNOWN ) {
                 outputValues = typeRef.getAllowedValuesFEEL();
             } else if ( dt.getOutput().size() == 1
                         && ( dt.getParent() instanceof Decision || dt.getParent() instanceof BusinessKnowledgeModel || dt.getParent() instanceof ContextEntry ) ) {
                 QName inferredTypeRef = recurseUpToInferTypeRef(model, oc, dt);
                 // if inferredTypeRef is null, a std err will have been reported
                 if ( inferredTypeRef != null ) {
-                    BaseDMNTypeImpl typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
+                    typeRef = (BaseDMNTypeImpl) model.getTypeRegistry().resolveType(resolveNamespaceForTypeRef(inferredTypeRef, oc), inferredTypeRef.getLocalPart());
                     outputValues = typeRef.getAllowedValuesFEEL();
                 }
             }
@@ -445,7 +452,7 @@ public class DMNEvaluatorCompiler {
                         Msg.MISSING_OUTPUT_VALUES,
                         oc );
             }
-            outputs.add( new DTOutputClause( outputName, id, outputValues, defaultValue ) );
+            outputs.add( new DTOutputClause( outputName, id, outputValues, defaultValue, typeRef.getFeelType() ) );
         }
         java.util.List<DTDecisionRule> rules = new ArrayList<>();
         index = 0;
