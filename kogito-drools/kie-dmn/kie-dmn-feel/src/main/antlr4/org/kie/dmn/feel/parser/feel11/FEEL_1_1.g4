@@ -212,7 +212,7 @@ relationalExpression
 	|	val=relationalExpression between_key start=additiveExpression and_key end=additiveExpression   #relExpressionBetween
 	|   val=relationalExpression in_key '(' expressionList ')'                                       #relExpressionValueList
 	|   val=relationalExpression in_key '(' simpleUnaryTests ')'                                     #relExpressionTestList
-	|   val=relationalExpression in_key simpleUnaryTest                                              #relExpressionTest
+    |   val=relationalExpression in_key expression                                                   #relExpressionValue        // includes simpleUnaryTest
     |   val=relationalExpression instance_key of_key type                                            #relExpressionInstanceOf
 	;
 
