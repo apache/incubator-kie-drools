@@ -155,13 +155,6 @@ public class ASTBuilderVisitor
         BaseNode list = visit( ctx.simpleUnaryTests() );
         return ASTBuilderFactory.newInNode( ctx, value, list );
     }
-
-    @Override
-    public BaseNode visitRelExpressionTest(FEEL_1_1Parser.RelExpressionTestContext ctx) {
-        BaseNode value = visit( ctx.val );
-        BaseNode test = visit( ctx.simpleUnaryTest() );
-        return ASTBuilderFactory.newInNode( ctx, value, test );
-    }
     
     @Override
     public BaseNode visitRelExpressionValue(RelExpressionValueContext ctx) {
