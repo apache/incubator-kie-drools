@@ -71,10 +71,10 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 {"[10..20) instance of range", Boolean.TRUE , null},
                 {"[10, 20, 30] instance of list", Boolean.TRUE , null},
                 {"{ foo : \"foo\" } instance of context", Boolean.TRUE , null},
-                {"null instance of unknown", Boolean.FALSE , null}, // See FEEL spec table 49.
+                {"null instance of any", Boolean.FALSE , null}, // See FEEL spec table 49.
                 {"null instance of string", Boolean.FALSE , null},  // See FEEL spec table 49.
-                {"\"foo\" instance of unknown", Boolean.TRUE , null}, 
-                {"10 instance of unknown", Boolean.TRUE , null},
+                {"\"foo\" instance of any", Boolean.TRUE , null},
+                {"10 instance of any", Boolean.TRUE , null},
                 {"duration instance of function", Boolean.TRUE , null}
         };
         return Arrays.asList( cases );
