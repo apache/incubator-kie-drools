@@ -876,6 +876,65 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             }
         }
     }
+    
+    @Test
+    public void testCaseWithCommentsPagination() {
+        Map<String, OrganizationalEntity> roleAssignments = new HashMap<>();
+        roleAssignments.put("owner", new UserImpl("john"));
+
+        Map<String, Object> data = new HashMap<>();
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, data, roleAssignments);
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_AUTO_START_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            for (int i = 0 ; i < 55 ; i++) {              
+                caseService.addCaseComment(FIRST_CASE_ID, "anna", "comment" + i);                
+            }
+            
+            int pageSize = 20;
+
+            int firstPageOffset = 0 * pageSize;
+            Collection<CommentInstance> firstPage = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext(firstPageOffset, pageSize));
+            assertNotNull(firstPage);
+            assertEquals(20, firstPage.size());
+            Iterator<CommentInstance> firstPageIter = firstPage.iterator();
+            for (int i = 0 ; firstPageIter.hasNext() ; i++) {
+                assertComment(firstPageIter.next(), "anna", "comment" + i);
+            }
+            
+            int secondPageOffset = 1 * pageSize;
+            Collection<CommentInstance> secondPage = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext(secondPageOffset, pageSize));
+            assertNotNull(secondPage);
+            assertEquals(20, secondPage.size());
+            Iterator<CommentInstance> secondPageIter = secondPage.iterator();
+            for (int i = 20 ; secondPageIter.hasNext() ; i++) {
+                assertComment(secondPageIter.next(), "anna", "comment" + i);
+            }
+            
+            int thirdPageOffset = 2 * pageSize;
+            Collection<CommentInstance> thirdPage = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext(thirdPageOffset, pageSize));
+            assertNotNull(thirdPage);
+            assertEquals(15, thirdPage.size());            
+            Iterator<CommentInstance> thirdPageIter = thirdPage.iterator();
+            for (int i = 40 ; thirdPageIter.hasNext() ; i++) {
+                assertComment(thirdPageIter.next(), "anna", "comment" + i);
+            }
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
 
     @Test
     public void testUpdateNotExistingCaseComment() {

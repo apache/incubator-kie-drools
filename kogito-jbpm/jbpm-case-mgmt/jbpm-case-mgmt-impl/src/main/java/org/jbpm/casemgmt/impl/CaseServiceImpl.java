@@ -454,10 +454,25 @@ public class CaseServiceImpl implements CaseService {
     public Collection<CommentInstance> getCaseComments(String caseId, QueryContext queryContext) throws CaseNotFoundException {
         authorizationManager.checkOperationAuthorization(caseId, ProtectedOperation.MODIFY_COMMENT);
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
-        
+
         CaseFileInstance caseFile = internalGetCaseFileInstance(caseId, pi.getDeploymentId());
+
+        List<CommentInstance> caseComments = new ArrayList<>(((CaseFileInstanceImpl) caseFile).getComments());
         
-        return ((CaseFileInstanceImpl)caseFile).getComments();
+        int caseCommentsSize = caseComments.size();
+
+        int offset = queryContext.getOffset();
+        int pageSize = queryContext.getCount();
+
+        int pageIndex = (caseCommentsSize + pageSize - 1) / pageSize;
+
+        if (caseCommentsSize < pageSize) {
+            return caseComments;
+        } else if (pageIndex == (offset/pageSize) + 1) {
+            return caseComments.subList(offset, caseCommentsSize);
+        } else {
+            return caseComments.subList(offset, offset + pageSize);
+        }
     }
 
     @Override
