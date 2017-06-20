@@ -38,6 +38,7 @@ import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.def.SQLDataSetDefBuilder;
+import org.dashbuilder.dataset.exception.DataSetLookupException;
 import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.services.impl.query.persistence.PersistDataSetListener;
@@ -152,28 +153,33 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
             SQLDataSetDefBuilder<?> builder = DataSetDefFactory.newSQLDataSetDef().uuid(sqlQueryDefinition.getName()).name(sqlQueryDefinition.getName() + "::" + sqlQueryDefinition.getTarget().toString()).dataSource(sqlQueryDefinition.getSource()).dbSQL(sqlQueryDefinition.getExpression(), true);
 
             DataSetDef sqlDef = builder.buildDef();
-
-            dataSetDefRegistry.registerDataSetDef(sqlDef);
-
-            if (queryDefinition.getTarget().equals(Target.BA_TASK)) {
-                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider));
-            } else if (queryDefinition.getTarget().equals(Target.PO_TASK)) {
-                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider));
-            } else if (queryDefinition.getTarget().equals(Target.FILTERED_PROCESS)) {
-                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_EXTERNALID));
-            } else if (queryDefinition.getTarget().equals(Target.FILTERED_BA_TASK)) {
-                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider));
-                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_DEPLOYMENTID));
-            } else if (queryDefinition.getTarget().equals(Target.FILTERED_PO_TASK)) {
-                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider));
-                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_DEPLOYMENTID));
+            try {
+                dataSetDefRegistry.registerDataSetDef(sqlDef);
+    
+                if (queryDefinition.getTarget().equals(Target.BA_TASK)) {
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider));
+                } else if (queryDefinition.getTarget().equals(Target.PO_TASK)) {
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider));
+                } else if (queryDefinition.getTarget().equals(Target.FILTERED_PROCESS)) {
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_EXTERNALID));
+                } else if (queryDefinition.getTarget().equals(Target.FILTERED_BA_TASK)) {
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider));
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_DEPLOYMENTID));
+                } else if (queryDefinition.getTarget().equals(Target.FILTERED_PO_TASK)) {
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider));
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_DEPLOYMENTID));
+                }
+                DataSetMetadata metadata = dataSetManager.getDataSetMetadata(sqlDef.getUUID());
+                for (String columnId : metadata.getColumnIds()) {
+                    sqlDef.addColumn(columnId, metadata.getColumnType(columnId));
+                }
+    
+                logger.info("Registered {} query successfully", queryDefinition.getName());
+            } catch (DataSetLookupException e) {
+                unregisterQuery(queryDefinition.getName());
+                
+                throw e;
             }
-            DataSetMetadata metadata = dataSetManager.getDataSetMetadata(sqlDef.getUUID());
-            for (String columnId : metadata.getColumnIds()) {
-                sqlDef.addColumn(columnId, metadata.getColumnType(columnId));
-            }
-
-            logger.info("Registered {} query successfully", queryDefinition.getName());
         }
 
     }

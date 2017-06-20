@@ -1057,6 +1057,24 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;
     }
+    
+    @Test
+    public void testRegisterInvalidQuery() {
+
+        query = new SqlQueryDefinition("getAllProcessInstances", dataSourceJNDIname);
+        query.setExpression("this is an invalid query");
+        
+        try {
+            queryService.registerQuery(query);
+            fail("Should fail as the query is invalid");
+        } catch (Exception e) {
+            // expected
+        }
+
+        List<QueryDefinition> queries = queryService.getQueries(new QueryContext());
+        assertNotNull(queries);
+        assertEquals(0, queries.size());
+    }
 
     protected void setFieldValue(Object instance, String fieldName, Object value) {
         try {
