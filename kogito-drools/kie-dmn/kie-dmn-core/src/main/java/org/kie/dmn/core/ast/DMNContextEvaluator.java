@@ -86,17 +86,17 @@ public class DMNContextEvaluator
                         if ( ! (ed.getContextEntry().getExpression() instanceof FunctionDefinition) ) {
                             // checking directly the result type...
                             if ( ed.getType() != null && !ed.getType().isAssignableValue(value) ) {
-                            MsgUtil.reportMessage( logger,
-                                    DMNMessage.Severity.ERROR,
-                                    contextDef,
-                                    result,
-                                    null,
-                                    null,
-                                    Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
-                                    ed.getName(),
-                                    ed.getType(),
-                                    value);
-                            return new EvaluatorResultImpl( results, ResultType.FAILURE );
+                                MsgUtil.reportMessage( logger,
+                                        DMNMessage.Severity.ERROR,
+                                        contextDef,
+                                        result,
+                                        null,
+                                        null,
+                                        Msg.ERROR_EVAL_NODE_RESULT_WRONG_TYPE,
+                                        ed.getName(),
+                                        ed.getType(),
+                                        value);
+                                return new EvaluatorResultImpl( results, ResultType.FAILURE );
                             }
                         } else {
                             // TODO ...will need calculation/inference of function return type.
