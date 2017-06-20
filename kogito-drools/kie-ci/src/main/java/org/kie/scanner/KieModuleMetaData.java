@@ -16,14 +16,16 @@
 package org.kie.scanner;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import org.appformer.maven.support.DependencyFilter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.rule.TypeMetaInfo;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
-import org.appformer.maven.support.DependencyFilter;
 
 public interface KieModuleMetaData {
 
@@ -56,6 +58,10 @@ public interface KieModuleMetaData {
 
         public static KieModuleMetaData newKieModuleMetaData( KieModule kieModule, DependencyFilter dependencyFilter ) {
             return new KieModuleMetaDataImpl( (InternalKieModule) kieModule, dependencyFilter );
+        }
+
+        public static KieModuleMetaData newKieModuleMetaData( KieModule kieModule, List<URI> dependencies ) {
+            return new KieModuleMetaDataImpl( (InternalKieModule) kieModule, dependencies );
         }
 
         public static KieModuleMetaData newKieModuleMetaData( ReleaseId releaseId, DependencyFilter dependencyFilter ) {
