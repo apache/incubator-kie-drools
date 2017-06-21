@@ -30,6 +30,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
@@ -245,6 +246,36 @@ public class I18nTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertTrue(list.contains("名称は山田花子です"));
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testMultibytePositonalQueryParam() {
+        // DROOLS-1619
+        String drl = "package org.drools.compiler.i18ntest;\n" +
+                "import org.drools.compiler.Person;\n" +
+                "\n" +
+                "query testquery(int $a, Person $t)\n" +
+                "    $t := Person(age > $a)\n" +
+                "end\n" +
+                "\n" +
+                "rule \"hoge\"\n" +
+                "    when\n" +
+                "        testquery(30, $あああ;)\n" +
+                "    then\n" +
+                "        System.out.println($あああ.getName());\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL ).build().newKieSession();
+
+        Person p1 = new Person("John", 25);
+        Person p2 = new Person("Paul", 35);
+        ksession.insert(p1);
+        ksession.insert(p2);
+        int fired = ksession.fireAllRules();
+
+        assertEquals(1, fired);
 
         ksession.dispose();
     }
