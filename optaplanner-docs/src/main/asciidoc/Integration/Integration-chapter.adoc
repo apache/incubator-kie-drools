@@ -410,6 +410,38 @@ That component works in Karaf too.
 Because of JBoss Modules' `ClassLoader` magic, provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
 so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
 
+
+[[loggingOnWildFlyAndJBossEAP]]
+==== Logging on WildFly and JBoss EAP
+
+To get decent <<logging,logging of the solver(s)>>, create a file `src/main/resources/jboss-log4j.xml`
+(so it ends up in the `war` as `WEB-INF/classes/jboss-log4j.xml`) with this content:
+
+[source,xml,options="nowrap"]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+
+  <appender name="consoleAppender" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{HH:mm:ss.SSS} %-5p [%t] %m%n"/>
+    </layout>
+  </appender>
+
+  <logger name="org.optaplanner">
+    <level value="debug"/>
+  </logger>
+
+  <root>
+    <level value="warn" />
+    <appender-ref ref="consoleAppender"/>
+  </root>
+
+</log4j:configuration>
+
+----
+
+
 [[skinnyWarOnWildFlyAndJBossEAP]]
 ==== Skinny war on WildFly and JBoss EAP
 
