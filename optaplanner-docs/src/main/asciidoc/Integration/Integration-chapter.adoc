@@ -407,8 +407,16 @@ That component works in Karaf too.
 [[integrationWithJBossModules]]
 === JBoss Modules, WildFly and JBoss EAP
 
-To deploy an Planner web application on WildFly, simply include the optaplanner dependency jars in the `war` file's `WEB-INF/lib` directory (just like any other dependency) as shown in the ``optaplanner-webexamples-*.war``.
-However, in this approach the war file can easily grow to several MB in size, which is fine for a one-time deployment, but too heavyweight for frequent redeployments (especially over a slow network connection).
+Because of JBoss Modules' `ClassLoader` magic, provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
+so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
+
+[[skinnyWarOnWildFlyAndJBossEAP]]
+==== Skinny war on WildFly and JBoss EAP
+
+To deploy an Planner web application on WildFly, simply include the optaplanner dependency jars in the `war` file's `WEB-INF/lib` directory
+(just like any other dependency) as shown in the ``optaplanner-webexamples-*.war``.
+However, in this approach the war file can easily grow to several MB in size, which is fine for a one-time deployment,
+but too heavyweight for frequent redeployments (especially over a slow network connection).
 
 The remedy is to use deliver the optaplanner jars in a JBoss module to WildFly and create a skinny war.
 Let's create an module called __org.optaplanner__:
@@ -417,7 +425,6 @@ Let's create an module called __org.optaplanner__:
 .. Copy `optaplanner-core-${version}.jar` and all its direct and transitive dependency jars into that new directory. Use "mvn dependency:tree" on each optaplanner artifact to discover all dependencies.
 .. Create the file `module.xml` in that new directory. Give it this content:
 +
-
 [source,xml,options="nowrap"]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
@@ -440,7 +447,6 @@ Let's create an module called __org.optaplanner__:
 .. Remove `optaplanner-core-${version}.jar` and all its direct and transitive dependency jars from the `WEB-INF/lib` directory in the `war` file.
 .. Create the file `jboss-deployment-structure.xml` in the `WEB-INF/lib` directory. Give it this content:
 +
-
 [source,xml,options="nowrap"]
 ----
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -453,8 +459,13 @@ Let's create an module called __org.optaplanner__:
 </jboss-deployment-structure>
 ----
 
-Because of JBoss Modules' `ClassLoader` magic, you'll likely need to provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
-so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
+
+[[integrationWithSpringBoot]]
+=== Spring Boot
+
+Normally Planner just works on Spring Boot, simply add the `optaplanner-core` dependency.
+If it has trouble finding classpath resources (such as the solver config, score DRL's and domain classes),
+provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>.
 
 
 [[integrationWithOSGi]]
@@ -463,7 +474,7 @@ so it can find the classpath resources (such as the solver config, score DRL's a
 The `optaplanner-core` jar includes OSGi metadata in its `MANIFEST.MF` file to function properly in an OSGi environment too.
 Furthermore, the maven artifact `kie-karaf-features` contains a `features.xml` file that supports the OSGi-feature ``optaplanner-engine``.
 
-Because of the OSGi's `ClassLoader` magic, you'll likely need to provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
+Because of the OSGi's `ClassLoader` magic, provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
 so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
 
 [NOTE]
