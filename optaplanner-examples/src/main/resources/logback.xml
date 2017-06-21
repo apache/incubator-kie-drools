@@ -4,8 +4,8 @@
   <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <!-- %L lowers performance -->
-      <!--<pattern>%d [%t] %-5p %L%n  %m%n</pattern>-->
-      <pattern>%d [%t] %-5p %m%n</pattern>
+      <!--<pattern>%d{HH:mm:ss.SSS} [%t] %-5p %L%n  %m%n</pattern>-->
+      <pattern>%d{HH:mm:ss.SSS} [%t] %-5p %m%n</pattern>
     </encoder>
   </appender>
   <!--<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
@@ -19,7 +19,7 @@
       <!--<maxFileSize>5MB</maxFileSize>-->
     <!--</triggeringPolicy>-->
     <!--<encoder>-->
-      <!--<pattern>%d [%t] %-5p %m%n</pattern>-->
+      <!--<pattern>%d{HH:mm:ss.SSS} [%t] %-5p %m%n</pattern>-->
     <!--</encoder>-->
   <!--</appender>-->
 
