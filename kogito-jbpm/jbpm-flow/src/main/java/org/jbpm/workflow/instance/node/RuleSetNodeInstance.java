@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.DataType;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;

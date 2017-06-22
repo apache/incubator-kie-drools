@@ -15,9 +15,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -38,6 +35,9 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ProcessStateTest extends AbstractBaseTest {
     
@@ -575,7 +575,7 @@ public class ProcessStateTest extends AbstractBaseTest {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"s\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        <value>a</value>\n" +
             "      </variable>\n" +
             "    </variables>\n" +
@@ -644,7 +644,7 @@ public class ProcessStateTest extends AbstractBaseTest {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"s\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        <value>a</value>\n" +
             "      </variable>\n" +
             "    </variables>\n" +

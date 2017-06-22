@@ -17,7 +17,7 @@ package org.jbpm.bpmn2.core;
 
 import java.io.Serializable;
 
-import org.drools.core.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.DataType;
 
 public class DataStore implements Serializable {
 

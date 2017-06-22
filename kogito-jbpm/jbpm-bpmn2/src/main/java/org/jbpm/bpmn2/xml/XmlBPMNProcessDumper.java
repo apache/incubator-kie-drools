@@ -27,8 +27,8 @@ import java.util.Set;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
-import org.drools.core.process.core.Work;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.xml.Handler;
 import org.drools.core.xml.SemanticModule;
 import org.drools.core.xml.SemanticModules;

@@ -10,10 +10,10 @@
     </imports>
     <variables>
       <variable name="persistVar" >
-        <type name="org.drools.core.process.core.datatype.impl.type.ObjectDataType" />
+        <type name="org.jbpm.process.core.datatype.impl.type.ObjectDataType" />
       </variable>
       <variable name="logger" >
-        <type name="org.drools.core.process.core.datatype.impl.type.ObjectDataType" />
+        <type name="org.jbpm.process.core.datatype.impl.type.ObjectDataType" />
       </variable>
     </variables>
   </header>

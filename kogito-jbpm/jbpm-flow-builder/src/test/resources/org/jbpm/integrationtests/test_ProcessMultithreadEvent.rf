@@ -10,7 +10,7 @@
 	</globals>
     <variables>
       <variable name="var" >
-        <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
       </variable>
     </variables>
   </header>

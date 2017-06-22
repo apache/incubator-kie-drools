@@ -15,8 +15,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.*;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -28,6 +26,8 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
+
+import static org.junit.Assert.*;
 
 public class ProcessHumanTaskTest extends AbstractBaseTest {
    
@@ -48,18 +48,18 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>John Doe</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "    </humanTask>\n" +
@@ -107,18 +107,18 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "    <humanTask id=\"2\" name=\"HumanTask\" swimlane=\"actor1\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>John Doe</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "      <mapping type=\"out\" from=\"ActorId\" to=\"ActorId\" />" +
@@ -126,17 +126,17 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "    <humanTask id=\"3\" name=\"HumanTask\" swimlane=\"actor1\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something else</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "      <mapping type=\"out\" from=\"ActorId\" to=\"ActorId\" />" +
@@ -192,18 +192,18 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>John Doe</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "    </humanTask>\n" +
@@ -248,18 +248,18 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>John Doe</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "      <onExit>\n" +

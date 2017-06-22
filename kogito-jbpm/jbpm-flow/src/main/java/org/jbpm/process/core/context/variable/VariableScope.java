@@ -19,7 +19,7 @@ package org.jbpm.process.core.context.variable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.AbstractContext;
 

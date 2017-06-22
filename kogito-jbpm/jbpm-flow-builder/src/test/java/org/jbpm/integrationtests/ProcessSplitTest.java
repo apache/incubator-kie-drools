@@ -15,8 +15,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -44,6 +42,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertEquals;
+
 public class ProcessSplitTest extends AbstractBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(ProcessSplitTest.class);
@@ -66,7 +66,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -151,7 +151,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -240,7 +240,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"person\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.test.Person\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.test.Person\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -305,7 +305,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -370,7 +370,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"person\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.test.Person\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.test.Person\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -435,7 +435,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -500,7 +500,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -565,7 +565,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -630,7 +630,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +

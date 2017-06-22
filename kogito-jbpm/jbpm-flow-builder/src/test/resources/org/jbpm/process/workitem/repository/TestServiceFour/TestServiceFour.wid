@@ -8,9 +8,9 @@
          "parameters":[  
             "java.util.HashMap",
             {  
-               "a":["org.drools.core.process.core.datatype.impl.type.ListDataType", {}],
-               "b":["org.drools.core.process.core.datatype.impl.type.StringDataType", {}],
-               "c":["org.drools.core.process.core.datatype.impl.type.StringDataType", {}]
+               "a":["org.jbpm.process.core.datatype.impl.type.ListDataType", {}],
+               "b":["org.jbpm.process.core.datatype.impl.type.StringDataType", {}],
+               "c":["org.jbpm.process.core.datatype.impl.type.StringDataType", {}]
             }
          ],
          "version":"1.0",
@@ -28,15 +28,15 @@
             "parameters":[
                "java.util.HashMap",
                {
-                  "a":["org.drools.core.process.core.datatype.impl.type.ListDataType", {}],
-                  "b":["org.drools.core.process.core.datatype.impl.type.StringDataType", {}]
+                  "a":["org.jbpm.process.core.datatype.impl.type.ListDataType", {}],
+                  "b":["org.jbpm.process.core.datatype.impl.type.StringDataType", {}]
                }
             ],
             "results":[
                "java.util.HashMap",
                {
-                  "c":["org.drools.core.process.core.datatype.impl.type.ListDataType", {}],
-                  "d":["org.drools.core.process.core.datatype.impl.type.StringDataType", {}]
+                  "c":["org.jbpm.process.core.datatype.impl.type.ListDataType", {}],
+                  "d":["org.jbpm.process.core.datatype.impl.type.StringDataType", {}]
                }
             ],
             "version":"2.0",

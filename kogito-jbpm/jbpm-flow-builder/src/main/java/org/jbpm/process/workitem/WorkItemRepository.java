@@ -18,9 +18,9 @@ package org.jbpm.process.workitem;
 import java.net.URL;
 import java.util.*;
 
-import org.drools.core.process.core.ParameterDefinition;
-import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.impl.ParameterDefinitionImpl;
+import org.jbpm.process.core.ParameterDefinition;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.slf4j.Logger;

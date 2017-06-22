@@ -17,7 +17,7 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.HashSet;
 
-import org.drools.core.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.DataType;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;

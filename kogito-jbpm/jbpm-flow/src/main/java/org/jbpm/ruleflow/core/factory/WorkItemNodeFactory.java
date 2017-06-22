@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.core.process.core.ParameterDefinition;
-import org.drools.core.process.core.Work;
-import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.impl.ParameterDefinitionImpl;
-import org.drools.core.process.core.impl.WorkImpl;
+import org.jbpm.process.core.ParameterDefinition;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.impl.ParameterDefinitionImpl;
+import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.DroolsAction;

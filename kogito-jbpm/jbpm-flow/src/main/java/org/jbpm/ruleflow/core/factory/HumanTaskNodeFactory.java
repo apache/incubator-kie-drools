@@ -19,8 +19,8 @@ package org.jbpm.ruleflow.core.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.process.core.Work;
-import org.drools.core.process.core.impl.WorkImpl;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.DroolsAction;

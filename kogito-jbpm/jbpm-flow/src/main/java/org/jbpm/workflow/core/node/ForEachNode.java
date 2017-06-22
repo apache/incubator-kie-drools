@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.api.definition.process.Node;
-import org.drools.core.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.context.variable.Variable;

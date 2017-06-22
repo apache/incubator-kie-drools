@@ -15,25 +15,6 @@
 
 package org.jbpm.integrationtests;
 
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.core.ClockType;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.kie.api.time.SessionPseudoClock;
-import org.jbpm.integrationtests.test.Message;
-import org.jbpm.process.instance.InternalProcessRuntime;
-import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
-import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.Test;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -42,6 +23,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.core.ClockType;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.jbpm.integrationtests.test.Message;
+import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.time.SessionPseudoClock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -153,10 +153,10 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"x\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.IntegerDataType\" />\n" +
             "      </variable>\n" +
             "      <variable name=\"y\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.IntegerDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +
@@ -334,7 +334,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"x\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.IntegerDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.IntegerDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +

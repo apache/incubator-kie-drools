@@ -15,8 +15,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -33,6 +31,8 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
 
 public class ProcessMilestoneTest extends AbstractBaseTest {
     
@@ -96,7 +96,7 @@ public class ProcessMilestoneTest extends AbstractBaseTest {
             "    </imports>\n" +
             "    <variables>\n" +
             "      <variable name=\"name\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +

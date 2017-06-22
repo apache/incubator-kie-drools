@@ -16,21 +16,17 @@
 
 package org.jbpm.process;
 
-import static org.jbpm.process.test.NodeCreator.connect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.CompensationHandler;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.event.NonAcceptingEventTypeFilter;
@@ -57,6 +53,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.LoggerFactory;
+
+import static org.jbpm.process.test.NodeCreator.connect;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class CompensationTest extends AbstractBaseTest {
 

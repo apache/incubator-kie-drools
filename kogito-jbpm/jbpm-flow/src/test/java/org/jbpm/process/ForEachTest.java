@@ -16,16 +16,14 @@
 
 package org.jbpm.process;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.process.core.datatype.impl.type.ListDataType;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.datatype.impl.type.ListDataType;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.test.Person;
 import org.jbpm.process.test.TestProcessEventListener;
@@ -43,6 +41,8 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
 
 public class ForEachTest extends AbstractBaseTest {
     

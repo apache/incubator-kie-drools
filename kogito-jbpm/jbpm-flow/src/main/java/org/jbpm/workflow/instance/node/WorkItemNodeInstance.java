@@ -26,8 +26,8 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
-import org.drools.core.process.core.Work;
-import org.drools.core.process.core.datatype.DataType;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.datatype.DataType;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;

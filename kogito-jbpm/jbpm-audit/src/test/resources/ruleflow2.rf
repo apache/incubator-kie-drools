@@ -13,34 +13,34 @@
     <workItem id="3" name="Task" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
           <value>Task</value>
         </parameter>
         <parameter name="Comment" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </workItem>
     <workItem id="4" name="Task" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
           <value>Task</value>
         </parameter>
         <parameter name="Comment" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </workItem>

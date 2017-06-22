@@ -26,7 +26,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;

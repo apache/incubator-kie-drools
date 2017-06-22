@@ -17,8 +17,8 @@ package org.jbpm.process.test;
 
 import java.lang.reflect.Constructor;
 
-import org.drools.core.process.core.Work;
-import org.drools.core.process.core.impl.WorkImpl;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;

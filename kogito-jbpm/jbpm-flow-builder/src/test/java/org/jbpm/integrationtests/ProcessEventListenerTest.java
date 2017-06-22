@@ -16,8 +16,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -39,6 +37,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
 
 public class ProcessEventListenerTest extends AbstractBaseTest {
     
@@ -124,7 +124,7 @@ public class ProcessEventListenerTest extends AbstractBaseTest {
             "  <header>\n" +
             "    <variables>\n" +
             "      <variable name=\"MyVar\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        <value>SomeText</value>\n" +
             "      </variable>\n" +
             "    </variables>\n" +

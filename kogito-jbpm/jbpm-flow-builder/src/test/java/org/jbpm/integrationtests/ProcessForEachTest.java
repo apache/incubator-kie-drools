@@ -15,8 +15,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -31,6 +29,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+
+import static org.junit.Assert.assertEquals;
 
 public class ProcessForEachTest extends AbstractBaseTest {
   
@@ -48,7 +48,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -107,7 +107,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "  <header>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -118,7 +118,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "        <workItem id=\"1\" name=\"Log\" >\n" +
             "          <work name=\"Log\" >\n" +
             "            <parameter name=\"Message\" >\n" +
-            "              <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "              <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "            </parameter>\n" +
             "          </work>\n" +
             "          <mapping type=\"in\" from=\"item\" to=\"Message\" />" +
@@ -182,7 +182,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -240,7 +240,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -295,7 +295,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -383,7 +383,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -471,7 +471,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +

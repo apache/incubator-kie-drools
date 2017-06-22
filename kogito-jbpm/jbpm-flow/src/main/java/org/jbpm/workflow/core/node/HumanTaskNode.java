@@ -19,11 +19,11 @@ package org.jbpm.workflow.core.node;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.core.process.core.ParameterDefinition;
-import org.drools.core.process.core.Work;
-import org.drools.core.process.core.datatype.impl.type.StringDataType;
-import org.drools.core.process.core.impl.ParameterDefinitionImpl;
-import org.drools.core.process.core.impl.WorkImpl;
+import org.jbpm.process.core.ParameterDefinition;
+import org.jbpm.process.core.Work;
+import org.jbpm.process.core.datatype.impl.type.StringDataType;
+import org.jbpm.process.core.impl.ParameterDefinitionImpl;
+import org.jbpm.process.core.impl.WorkImpl;
 
 public class HumanTaskNode extends WorkItemNode {
 

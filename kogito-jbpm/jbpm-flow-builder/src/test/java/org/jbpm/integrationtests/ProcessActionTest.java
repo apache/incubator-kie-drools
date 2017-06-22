@@ -15,8 +15,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.*;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -39,6 +37,8 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+
+import static org.junit.Assert.*;
 
 public class ProcessActionTest  extends AbstractBaseTest {
     
@@ -63,18 +63,18 @@ public class ProcessActionTest  extends AbstractBaseTest {
             "    <workItem id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>John Doe</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "      <onEntry>\n" +
@@ -131,7 +131,7 @@ public class ProcessActionTest  extends AbstractBaseTest {
 			"    </globals>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"variable\" >\n" +
-    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -195,7 +195,7 @@ public class ProcessActionTest  extends AbstractBaseTest {
 			"    </globals>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"variable\" >\n" +
-    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>SomeText</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -263,7 +263,7 @@ public class ProcessActionTest  extends AbstractBaseTest {
 			"    </globals>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"person\" >\n" +
-    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.TestVariable\" />\n" +
+    		"        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.TestVariable\" />\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
             "  </header>\n" +
@@ -318,7 +318,7 @@ public class ProcessActionTest  extends AbstractBaseTest {
 			"    </globals>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"person\" >\n" +
-    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.TestVariable\" />\n" +
+    		"        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.TestVariable\" />\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
             "  </header>\n" +

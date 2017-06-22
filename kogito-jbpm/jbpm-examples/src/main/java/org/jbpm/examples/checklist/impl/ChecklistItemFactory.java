@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.process.core.Work;
+import org.jbpm.process.core.Work;
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistItem.Status;
 import org.jbpm.workflow.core.impl.NodeImpl;

@@ -15,8 +15,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.*;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -45,6 +43,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.*;
 
 public class ProcessDynamicNodeTest extends AbstractBaseTest {
     
@@ -287,7 +287,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                 "  <header>\n" +
         		"    <variables>\n" +
         		"      <variable name=\"x\" >\n" +
-        		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+        		"        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
         		"        <value>SomeText</value>\n" +
         		"      </variable>\n" +
         		"    </variables>\n" +

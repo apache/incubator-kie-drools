@@ -19,7 +19,7 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.test.TestProcessEventListener;
 import org.jbpm.ruleflow.core.RuleFlowProcess;

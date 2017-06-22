@@ -20,9 +20,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.process.core.TypeObject;
-import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.datatype.impl.type.UndefinedDataType;
+import org.jbpm.process.core.TypeObject;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.impl.type.UndefinedDataType;
 import org.jbpm.process.core.ValueObject;
 
 /**

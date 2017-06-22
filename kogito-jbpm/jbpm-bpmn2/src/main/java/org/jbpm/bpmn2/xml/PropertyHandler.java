@@ -18,19 +18,11 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
-import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
-import org.drools.core.process.core.datatype.impl.type.FloatDataType;
-import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Association;
-import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.compiler.xml.ProcessBuildData;

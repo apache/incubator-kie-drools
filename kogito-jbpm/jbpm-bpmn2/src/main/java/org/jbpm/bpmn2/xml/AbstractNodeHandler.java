@@ -27,12 +27,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
-import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
-import org.drools.core.process.core.datatype.impl.type.FloatDataType;
-import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.core.process.core.datatype.impl.type.StringDataType;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
+import org.jbpm.process.core.datatype.impl.type.FloatDataType;
+import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;

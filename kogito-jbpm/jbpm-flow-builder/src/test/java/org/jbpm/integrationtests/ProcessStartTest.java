@@ -15,9 +15,6 @@
 
 package org.jbpm.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -32,6 +29,9 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class ProcessStartTest extends AbstractBaseTest {
     
@@ -55,10 +55,10 @@ public class ProcessStartTest extends AbstractBaseTest {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"SomeVar\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "      <variable name=\"SomeOtherVar\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +
@@ -125,10 +125,10 @@ public class ProcessStartTest extends AbstractBaseTest {
 			"    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"SomeVar\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "      <variable name=\"SomeOtherVar\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
 			"  </header>\n" +

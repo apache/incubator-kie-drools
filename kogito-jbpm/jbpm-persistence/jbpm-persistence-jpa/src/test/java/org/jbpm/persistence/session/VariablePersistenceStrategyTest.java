@@ -15,16 +15,12 @@
 
 package org.jbpm.persistence.session;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -38,16 +34,12 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import junit.framework.Assert;
-
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
-import org.drools.core.process.core.Work;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.core.process.core.impl.WorkImpl;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.jbpm.persistence.session.objects.MyEntity;
 import org.jbpm.persistence.session.objects.MyEntityMethods;
@@ -58,7 +50,10 @@ import org.jbpm.persistence.session.objects.MyVariableExtendingSerializable;
 import org.jbpm.persistence.session.objects.MyVariableSerializable;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.persistence.util.PersistenceUtil;
+import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -93,6 +88,9 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class VariablePersistenceStrategyTest extends AbstractBaseTest {

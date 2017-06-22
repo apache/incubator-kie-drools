@@ -15,10 +15,6 @@
 
 package org.jbpm.persistence.session;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -29,7 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -37,18 +32,18 @@ import org.drools.core.WorkItemHandlerNotFoundException;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.process.core.ParameterDefinition;
-import org.drools.core.process.core.Work;
-import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.core.process.core.datatype.impl.type.StringDataType;
-import org.drools.core.process.core.impl.ParameterDefinitionImpl;
-import org.drools.core.process.core.impl.WorkImpl;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.jbpm.persistence.session.objects.Person;
+import org.jbpm.process.core.ParameterDefinition;
+import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.impl.type.StringDataType;
+import org.jbpm.process.core.impl.ParameterDefinitionImpl;
+import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -78,6 +73,10 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 @RunWith(Parameterized.class)
 public class WorkItemPersistenceTest extends AbstractBaseTest {
@@ -240,18 +239,18 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
             "    <humanTask id=\"2\" name=\"HumanTask\" >\n" +
             "      <work name=\"Human Task\" >\n" +
             "        <parameter name=\"ActorId\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>John Doe</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"TaskName\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>Do something</value>\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Priority\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "        <parameter name=\"Comment\" >\n" +
-            "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
             "    </humanTask>\n" +

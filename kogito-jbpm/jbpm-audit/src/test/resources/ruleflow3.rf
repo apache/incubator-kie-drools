@@ -10,10 +10,10 @@
     </imports>
     <variables>
       <variable name="list" >
-        <type name="org.drools.core.process.core.datatype.impl.type.ObjectDataType" className="java.util.List" />
+        <type name="org.jbpm.process.core.datatype.impl.type.ObjectDataType" className="java.util.List" />
       </variable>
       <variable name="s" >
-        <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         <value>InitialValue</value>
       </variable>
     </variables>
@@ -27,22 +27,22 @@
     <humanTask id="1" name="User Task" x="63" y="61" width="100" height="48" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Comment" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Content" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.drools.core.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
       <mapping type="out" from="Result" to="s" />
