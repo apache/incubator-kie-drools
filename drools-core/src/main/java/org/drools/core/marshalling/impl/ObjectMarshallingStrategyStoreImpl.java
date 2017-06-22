@@ -16,15 +16,39 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.util.StringUtils;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.NamedObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStrategyStore {
-    private ObjectMarshallingStrategy[] strategiesList;
+	private static final Logger logger = LoggerFactory.getLogger(ObjectMarshallingStrategyStoreImpl.class);
+
+	private ObjectMarshallingStrategy[] strategiesList;
     
     public ObjectMarshallingStrategyStoreImpl(ObjectMarshallingStrategy[] strategiesList) {
         this.strategiesList = strategiesList;
+        Set<String> names = new HashSet<String>();
+        for( ObjectMarshallingStrategy strategy : strategiesList ){
+        	String name;
+        	if( strategy instanceof NamedObjectMarshallingStrategy ){
+        		name = ((NamedObjectMarshallingStrategy)strategy).getName();
+        	}else{
+        		name = strategy.getClass().getName();
+        	}
+        	if( names.contains( name ) ){
+        		logger.warn( "Multiple ObjectMarshallingStrategies with the same name:" + name + " strange behaviour could occurr");
+        	}else{
+        		names.add( name );
+        	}
+        }
+        names.clear();
     }
    
     // Old marshalling algorithm methods
@@ -60,7 +84,11 @@ public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStra
         }
         ObjectMarshallingStrategy objectMarshallingStrategy = null; 
         for( int i = 0; i < this.strategiesList.length; ++i ) { 
-           if( strategiesList[i].getClass().getName().equals(strategyClassName) ) {
+        
+        	if( strategiesList[i] instanceof NamedObjectMarshallingStrategy 
+         		   && ((NamedObjectMarshallingStrategy)strategiesList[i]).getName().equals(strategyClassName )){
+         	   return strategiesList[i];
+            }else if( strategiesList[i].getClass().getName().equals(strategyClassName) ) {
                return strategiesList[i];
            }
         }

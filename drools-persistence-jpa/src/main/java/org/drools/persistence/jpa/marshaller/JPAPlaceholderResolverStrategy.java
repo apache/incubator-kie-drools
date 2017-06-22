@@ -35,28 +35,34 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProcessMarshallerWriteContext;
 import org.drools.persistence.TransactionAware;
 import org.drools.persistence.TransactionManager;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.NamedObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy, TransactionAware, Cacheable {
+public class JPAPlaceholderResolverStrategy implements NamedObjectMarshallingStrategy, TransactionAware, Cacheable {
     private static Logger log = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
     private EntityManagerFactory emf;
     private ClassLoader classLoader;
 
     private boolean closeEmf = false;
-
+    private String name = JPAPlaceholderResolverStrategy.class.getName();
     private static final ThreadLocal<EntityManager> persister = new ThreadLocal<EntityManager>();
     
     public JPAPlaceholderResolverStrategy(Environment env) {
-        this.emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+        this( (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY) );
     }
 
     public JPAPlaceholderResolverStrategy(EntityManagerFactory emf) {
         this.emf = emf;
+        this.name += this.emf.toString();
+    }
+    
+    public JPAPlaceholderResolverStrategy(String name, EntityManagerFactory emf) {
+        this( emf );
+        this.name = name;
     }
 
     public JPAPlaceholderResolverStrategy(String persistenceUnit, ClassLoader cl) {
@@ -73,6 +79,11 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
             Thread.currentThread().setContextClassLoader(tccl);
         }
         this.classLoader = cl;
+        this.name += persistenceUnit;
+    }
+    
+    public String getName( ){
+    	return this.name;
     }
     
     public boolean accept(Object object) {

@@ -16,10 +16,18 @@
 
 package org.drools.core.marshalling.impl;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.ByteString.Output;
-import com.google.protobuf.ExtensionRegistry;
-import com.google.protobuf.Message;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map.Entry;
+
 import org.drools.core.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
@@ -36,19 +44,13 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.Drools;
 import org.drools.core.util.KeyStoreHelper;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.NamedObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map.Entry;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.ByteString.Output;
+import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.Message;
 
 public class PersisterHelper {
     public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException,
@@ -239,9 +241,13 @@ public class PersisterHelper {
     private static void writeStrategiesIndex(MarshallerWriteContext context,
                                              ProtobufMessages.Header.Builder _header) throws IOException {
         for( Entry<ObjectMarshallingStrategy,Integer> entry : context.usedStrategies.entrySet() ) {
+        	String name = entry.getKey().getClass().getName() ;
+        	if( entry.getKey() instanceof NamedObjectMarshallingStrategy ){
+        		name = ((NamedObjectMarshallingStrategy)entry.getKey()).getName();
+        	}
             Builder _strat = ProtobufMessages.Header.StrategyIndex.newBuilder()
                                      .setId( entry.getValue().intValue() )
-                                     .setName( entry.getKey().getClass().getName() );
+                                     .setName( name );
             Context ctx = context.strategyContext.get( entry.getKey() );
             if( ctx != null ) {
                 Output os = ByteString.newOutput();
