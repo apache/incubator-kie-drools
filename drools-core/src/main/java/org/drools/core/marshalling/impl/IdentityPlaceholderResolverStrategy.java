@@ -16,7 +16,7 @@
 
 package org.drools.core.marshalling.impl;
 
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.NamedObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
 import java.io.IOException;
@@ -28,24 +28,35 @@ import java.util.Map;
 
 public class IdentityPlaceholderResolverStrategy
     implements
-    ObjectMarshallingStrategy {
+    NamedObjectMarshallingStrategy {
 
     private Map<Integer, Object> ids;
     private Map<Object, Integer> objects;
 
+    private String name = IdentityPlaceholderResolverStrategy.class.getName();
     private ObjectMarshallingStrategyAcceptor acceptor;
     
     public IdentityPlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor) {
         this.acceptor = acceptor;
         this.ids = new HashMap<Integer, Object>();
         this.objects = new IdentityHashMap<Object, Integer>();
+        this.name += this.acceptor.toString();
     }
 
     public IdentityPlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor, Map<Integer, Object> ids) {
         this(acceptor);
         setIds(ids);
     }
+    
+    public IdentityPlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor, Map<Integer, Object> ids, String name) {
+        this(acceptor);
+        setIds(ids);
+        this.name = name;
+    }
 
+    public String getName(){
+    	return this.name;
+    }
     public Object read(ObjectInputStream os) throws IOException,
                                                        ClassNotFoundException {
         int id = os.readInt();
