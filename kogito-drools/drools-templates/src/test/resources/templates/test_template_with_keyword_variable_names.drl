@@ -1,0 +1,24 @@
+template header
+templateCode
+packageName
+importId
+ruleId
+
+package This_is_a_ruleset;
+import org.drools.template.jdbc.Box;
+
+template "templateBox"
+name
+rule "BoxRule_@{row.rowNumber}"
+    when
+        Box(
+            templateCode == "@{templateCode}",
+            packageName == "@{packageName}",
+            importId == @{importId},
+            ruleId == @{ruleId}
+        )
+    then
+
+    end
+end template
+

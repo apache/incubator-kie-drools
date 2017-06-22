@@ -131,6 +131,14 @@ public class DefaultTemplateContainerTest {
     }
 
     @Test
+    public void testParseTemplateWithKeywordVariableNames() {
+        // https://issues.jboss.org/browse/DROOLS-1623
+        InputStream is = DefaultTemplateContainerTest.class
+                .getResourceAsStream( "/templates/test_template_with_keyword_variable_names.drl" );
+        new DefaultTemplateContainer( is );
+    }
+
+    @Test
     public void testParseTemplateConditions() {
         InputStream is = DefaultTemplateContainerTest.class.getResourceAsStream( "/templates/test_template_conditions.drl" );
         DefaultTemplateContainer t = new DefaultTemplateContainer( is );
