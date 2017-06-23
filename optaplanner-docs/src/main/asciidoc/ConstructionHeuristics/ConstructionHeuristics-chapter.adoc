@@ -264,7 +264,9 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Q
 [[allocateEntityFromQueueAlgorithm]]
 === Algorithm Description
 
-Allocate Entity From Queue is a versatile, generic form of <<firstFit,First Fit>>, <<firstFitDecreasing,First Fit Decreasing>>, <<weakestFit,Weakest Fit>> and <<weakestFitDecreasing,Weakest Fit Decreasing>>.
+Allocate Entity From Queue is a versatile, generic form of <<firstFit,First Fit>>, <<firstFitDecreasing,First Fit Decreasing>>,
+<<weakestFit,Weakest Fit>>, <<weakestFitDecreasing,Weakest Fit Decreasing>>,
+<<strongestFit,Strongest Fit>> and <<strongestFitDecreasing,Strongest Fit Decreasing>>.
 It works like this:
 
 . Put all entities in a queue.
@@ -310,7 +312,7 @@ The `valueSorterManner` options are:
 * ``NONE``: Try the planning values in original order.
 
 Advanced detailed configuration.
-For example, a Weakest Fit Decreasing configuration for a single entity class with a single variable:
+For example, a <<weakestFitDecreasing,Weakest Fit Decreasing>> configuration for a single entity class with a single variable:
 
 [source,xml,options="nowrap"]
 ----
@@ -345,8 +347,10 @@ Other `Selector` customization (such as <<filteredSelection,filtering>> and <<li
 
 There are two ways to deal with multiple variables, depending on how their ``ChangeMove``s are combined:
 
-* Cartesian product of the ``ChangeMove``s (default): All variables of the selected entity are assigned together. Has far better results (especially for timetabling use cases).
-* Sequential ``ChangeMove``s: One variable is assigned at a time. Scales much better, especially for three or more variables.
+* Cartesian product of the ``ChangeMove``s (default): All variables of the selected entity are assigned together.
+Has better results, especially for timetabling use cases.
+* Sequential ``ChangeMove``s: One variable is assigned at a time.
+Scales much better, especially for three or more variables.
 
 For example, presume a course scheduling example with 200 rooms and 40 periods.
 
