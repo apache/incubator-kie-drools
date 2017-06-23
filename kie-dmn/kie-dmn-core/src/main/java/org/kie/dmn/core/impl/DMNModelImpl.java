@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
@@ -53,6 +55,7 @@ public class DMNModelImpl
     private DMNMessageManager messages = new DefaultDMNMessagesManager();
 
     private DMNTypeRegistry types = new DMNTypeRegistry();
+    private Resource resource;
 
     public DMNModelImpl() {
     }
@@ -262,6 +265,15 @@ public class DMNModelImpl
     @Override
     public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source, FEELEvent feelEvent) {
         return messages.addMessage( severity, message, messageType, source, feelEvent );
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    @Override
+    public Resource getResource() {
+        return resource;
     }
 
 }

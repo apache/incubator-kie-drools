@@ -16,7 +16,7 @@
   -->
 
 <definitions id="_0001-input-data-string" name="_0001-input-data-string"
-             namespace="https://github.com/kiegroup/drools/kie-dmn"
+             namespace="https://github.com/kiegroup/drools"
              xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
              xmlns:feel="http://www.omg.org/spec/FEEL/20140401">
   <decision name="Greeting Message" id="d_GreetingMessage">
@@ -25,7 +25,7 @@
       <requiredInput href="#i_FullName"/>
     </informationRequirement>
     <literalExpression>
-      <text>"Hello " + Full Name</text>
+      <text>"Salve " + Full Name</text>
     </literalExpression>
   </decision>
   <inputData name="Full Name" id="i_FullName">

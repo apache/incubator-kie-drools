@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.impl;
 
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNPackage;
@@ -64,5 +65,10 @@ public class DMNPackageImpl implements DMNPackage {
     @Override
     public Map<String, DMNModel> getAllModels() {
         return Collections.unmodifiableMap( models );
+    }
+
+    @Override
+    public boolean removeFromResource(Resource resource) {
+        return models.entrySet().removeIf( kv -> resource.equals( kv.getValue().getResource() ) );
     }
 }

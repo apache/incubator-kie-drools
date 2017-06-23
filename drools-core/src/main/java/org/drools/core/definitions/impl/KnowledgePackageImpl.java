@@ -691,7 +691,21 @@ public class KnowledgePackageImpl
         List<TypeDeclaration> typesToBeRemoved = removeTypesGeneratedFromResource( resource );
         List<Function> functionsToBeRemoved = removeFunctionsGeneratedFromResource(resource);
         List<Process> processesToBeRemoved = removeProcessesGeneratedFromResource(resource);
-        return !rulesToBeRemoved.isEmpty() || !typesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty() || !processesToBeRemoved.isEmpty();
+        boolean resourceTypePackageSomethingRemoved = removeFromResourceTypePackageGeneratedFromResource( resource );
+        return !rulesToBeRemoved.isEmpty()
+                || !typesToBeRemoved.isEmpty()
+                || !functionsToBeRemoved.isEmpty()
+                || !processesToBeRemoved.isEmpty()
+                || resourceTypePackageSomethingRemoved;
+    }
+    
+    @Override
+    public boolean removeFromResourceTypePackageGeneratedFromResource(Resource resource) {
+        boolean somethingWasRemoved = false;
+        for ( ResourceTypePackage rtp : resourceTypePackages.values() ) {
+            somethingWasRemoved = rtp.removeFromResource( resource ) || somethingWasRemoved;
+        }
+        return somethingWasRemoved;
     }
 
     public List<TypeDeclaration> removeTypesGeneratedFromResource( Resource resource ) {

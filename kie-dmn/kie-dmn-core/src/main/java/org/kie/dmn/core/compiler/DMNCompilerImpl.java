@@ -72,7 +72,9 @@ public class DMNCompilerImpl
     @Override
     public DMNModel compile(Resource resource) {
         try {
-            return compile( resource.getReader() );
+            DMNModel model = compile( resource.getReader() );
+            ((DMNModelImpl)model).setResource( resource );
+            return model;
         } catch ( IOException e ) {
             logger.error( "Error retrieving reader for resource: " + resource.getSourcePath(), e );
         }

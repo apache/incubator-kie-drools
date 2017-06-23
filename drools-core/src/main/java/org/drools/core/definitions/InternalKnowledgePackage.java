@@ -87,6 +87,7 @@ public interface InternalKnowledgePackage extends KiePackage, Externalizable {
     List<RuleImpl> removeRulesGeneratedFromResource(Resource resource);
     List<Function> removeFunctionsGeneratedFromResource(Resource resource);
     List<Process> removeProcessesGeneratedFromResource(Resource resource);
+    boolean removeFromResourceTypePackageGeneratedFromResource(Resource resource);
 
     DialectRuntimeRegistry getDialectRuntimeRegistry();
     void setDialectRuntimeRegistry(DialectRuntimeRegistry dialectRuntimeRegistry);
