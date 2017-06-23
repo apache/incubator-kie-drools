@@ -113,4 +113,6 @@ public interface InternalKnowledgePackage extends KiePackage, Externalizable {
 
     boolean hasTraitRegistry();
     TraitRegistry getTraitRegistry();
+    
+    void addCloningResource(String key, Object resource);
 }

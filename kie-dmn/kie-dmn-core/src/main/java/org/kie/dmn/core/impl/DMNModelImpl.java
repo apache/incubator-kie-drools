@@ -16,6 +16,10 @@
 
 package org.kie.dmn.core.impl;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +28,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
 import org.kie.api.io.Resource;
+import org.kie.dmn.api.core.DMNCompiler;
+import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
@@ -34,16 +42,20 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNMessageManager;
+import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Definitions;
 
 public class DMNModelImpl
-        implements DMNModel, DMNMessageManager {
+        implements DMNModel, DMNMessageManager, Externalizable {
 
     private Definitions definitions;
     private Map<String, InputDataNode>              inputs       = new HashMap<>();
@@ -274,6 +286,49 @@ public class DMNModelImpl
     @Override
     public Resource getResource() {
         return resource;
+    }
+    
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        if ( !(out instanceof DroolsObjectOutputStream) ) {
+            throw new UnsupportedOperationException();
+            // TODO assume some defaults
+        }
+        
+        DroolsObjectOutputStream os = (DroolsObjectOutputStream) out;
+        DMNCompilerImpl compiler = (DMNCompilerImpl) os.getCustomExtensions().get(DMNAssemblerService.DMN_COMPILER_CACHE_KEY);
+        List<DMNExtensionRegister> dmnRegisteredExtensions = compiler.getRegisteredExtensions();
+        
+        String output = DMNMarshallerFactory.newMarshallerWithExtensions(dmnRegisteredExtensions).marshal(this.definitions);
+        
+        out.writeObject(output);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        String xml = (String) in.readObject();
+        
+        if ( !(in instanceof DroolsObjectInputStream) ) {
+            throw new UnsupportedOperationException();
+            // TODO assume some defaults
+        }
+        
+        DroolsObjectInputStream is = (DroolsObjectInputStream) in;
+        DMNCompilerImpl compiler = (DMNCompilerImpl) is.getCustomExtensions().get(DMNAssemblerService.DMN_COMPILER_CACHE_KEY);
+        List<DMNExtensionRegister> dmnRegisteredExtensions = compiler.getRegisteredExtensions();
+        
+        Definitions definitions = DMNMarshallerFactory.newMarshallerWithExtensions(dmnRegisteredExtensions).unmarshal(xml);
+        
+        this.definitions = definitions;
+        
+        DMNModelImpl compiledModel = (DMNModelImpl) compiler.compile(definitions);
+        this.inputs    = compiledModel.inputs    ;
+        this.decisions = compiledModel.decisions ;
+        this.bkms      = compiledModel.bkms      ;
+        this.itemDefs  = compiledModel.itemDefs  ;
+        this.messages  = compiledModel.messages  ;
+        this.types     = compiledModel.types     ;
+        this.resource  = compiledModel.resource  ;
     }
 
 }

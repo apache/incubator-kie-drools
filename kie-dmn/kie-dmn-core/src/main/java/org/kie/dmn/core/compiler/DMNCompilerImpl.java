@@ -47,6 +47,7 @@ import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -447,4 +448,11 @@ public class DMNCompilerImpl
         return this.dmnCompilerConfig;
     }
 
+    public List<DMNExtensionRegister> getRegisteredExtensions() {
+        if ( this.dmnCompilerConfig == null ) {
+            return Collections.emptyList();
+        } else {
+            return this.dmnCompilerConfig.getRegisteredExtensions();
+        }
+    }
 }
