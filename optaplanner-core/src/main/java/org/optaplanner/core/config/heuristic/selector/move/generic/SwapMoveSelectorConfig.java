@@ -45,8 +45,11 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
     @XStreamAlias("secondaryEntitySelector")
     private EntitySelectorConfig secondaryEntitySelectorConfig = null;
 
-    // TODO jaxb use @XmlElementWrapper and wrap in variableNameIncludes
+    // TODO Wrap in <variableNameIncludes> https://issues.jboss.org/browse/PLANNER-838
     @XStreamImplicit(itemFieldName = "variableNameInclude")
+//    @XStreamAlias("variableNameIncludes")
+//    @XStreamConverter(value = NamedCollectionConverter.class,
+//            strings = {"variableNameInclude"}, types = {String.class}, useImplicitType = false)
     private List<String> variableNameIncludeList = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {

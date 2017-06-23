@@ -19,7 +19,9 @@ package org.optaplanner.core.config.heuristic.selector.move.generic;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.converters.extended.NamedCollectionConverter;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -41,8 +43,11 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapM
     @XStreamAlias("secondaryPillarSelector")
     private PillarSelectorConfig secondaryPillarSelectorConfig = null;
 
-    // TODO jaxb use @XmlElementWrapper and wrap in variableNameIncludes
+    // TODO Wrap in <variableNameIncludes> https://issues.jboss.org/browse/PLANNER-838
     @XStreamImplicit(itemFieldName = "variableNameInclude")
+//    @XStreamAlias("variableNameIncludes")
+//    @XStreamConverter(value = NamedCollectionConverter.class,
+//            strings = {"variableNameInclude"}, types = {String.class}, useImplicitType = false)
     private List<String> variableNameIncludeList = null;
 
     public PillarSelectorConfig getPillarSelectorConfig() {
