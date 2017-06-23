@@ -91,14 +91,10 @@
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector>
-            <valueSelector>
-              <variableName>startPeriod</variableName>
-            </valueSelector>
+            <valueSelector variableName="startPeriod"/>
           </changeMoveSelector>
           <changeMoveSelector>
-            <valueSelector>
-              <variableName>machine</variableName>
-            </valueSelector>
+            <valueSelector variableName="machine"/>
           </changeMoveSelector>
           <swapMoveSelector/>
         </unionMoveSelector>

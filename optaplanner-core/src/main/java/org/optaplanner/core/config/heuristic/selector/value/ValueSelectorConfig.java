@@ -71,6 +71,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
     protected String mimicSelectorRef = null;
 
     protected Class<?> downcastEntityClass = null;
+    @XStreamAsAttribute // Works with a nested element input too, which is a BC req in 7.x, but undesired in 8.0
     protected String variableName = null;
 
     protected SelectionCacheType cacheType = null;

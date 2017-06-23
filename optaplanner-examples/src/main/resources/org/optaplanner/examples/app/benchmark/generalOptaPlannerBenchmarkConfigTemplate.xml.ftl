@@ -138,9 +138,8 @@
           <cartesianProductMoveSelector>
             <changeMoveSelector>
               <entitySelector mimicSelectorRef="placerEntitySelector"/>
-              <valueSelector>
+              <valueSelector variableName="period">
                 <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                <variableName>period</variableName>
                 <cacheType>PHASE</cacheType>
                 <!--<selectionOrder>SORTED</selectionOrder>-->
                 <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
@@ -148,8 +147,7 @@
             </changeMoveSelector>
             <changeMoveSelector>
               <entitySelector mimicSelectorRef="placerEntitySelector"/>
-              <valueSelector>
-                <variableName>room</variableName>
+              <valueSelector variableName="room">
                 <cacheType>PHASE</cacheType>
                 <selectionOrder>SORTED</selectionOrder>
                 <sorterManner>INCREASING_STRENGTH</sorterManner>
@@ -165,15 +163,12 @@
               <entitySelector id="cartesianProductEntitySelector">
                 <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
               </entitySelector>
-              <valueSelector>
-                <variableName>room</variableName>
-              </valueSelector>
+              <valueSelector variableName="room"/>
             </changeMoveSelector>
             <changeMoveSelector>
               <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-              <valueSelector>
+              <valueSelector variableName="period">
                 <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                <variableName>period</variableName>
               </valueSelector>
             </changeMoveSelector>
           </cartesianProductMoveSelector>

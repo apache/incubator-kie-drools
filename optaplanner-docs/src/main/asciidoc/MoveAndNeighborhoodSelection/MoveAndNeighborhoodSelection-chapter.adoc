@@ -132,8 +132,7 @@ Advanced configuration:
         <entityClass>...Lecture</entityClass>
         ...
       </entitySelector>
-      <valueSelector>
-        <variableName>room</variableName>
+      <valueSelector variableName="room">
         ...
         <nearbySelection>...</nearbySelection>
       </valueSelector>
@@ -226,8 +225,7 @@ Advanced configuration:
         <minimumSubPillarSize>1</minimumSubPillarSize>
         <maximumSubPillarSize>1000</maximumSubPillarSize>
       </pillarSelector>
-      <valueSelector>
-        <variableName>room</variableName>
+      <valueSelector variableName="room">
         ...
       </valueSelector>
     </pillarSwapMoveSelector>
@@ -316,8 +314,7 @@ Advanced configuration:
         <entityClass>...Customer</entityClass>
         ...
       </entitySelector>
-      <valueSelector>
-        <variableName>previousStandstill</variableName>
+      <valueSelector variableName="previousStandstill">
         ...
         <nearbySelection>...</nearbySelection>
       </valueSelector>
@@ -356,15 +353,13 @@ Advanced configuration:
       ... <!-- Normal selector properties -->
       <entityClass>...Customer</entityClass>
       <subChainSelector>
-        <valueSelector>
-          <variableName>previousStandstill</variableName>
+        <valueSelector variableName="previousStandstill">
           ...
         </valueSelector>
         <minimumSubChainSize>2</minimumSubChainSize>
         <maximumSubChainSize>40</maximumSubChainSize>
       </subChainSelector>
-      <valueSelector>
-        <variableName>previousStandstill</variableName>
+      <valueSelector variableName="previousStandstill">
         ...
       </valueSelector>
       <selectReversingMoveToo>true</selectReversingMoveToo>
@@ -403,16 +398,14 @@ Advanced configuration:
       ... <!-- Normal selector properties -->
       <entityClass>...Customer</entityClass>
       <subChainSelector>
-        <valueSelector>
-          <variableName>previousStandstill</variableName>
+        <valueSelector variableName="previousStandstill">
           ...
         </valueSelector>
         <minimumSubChainSize>2</minimumSubChainSize>
         <maximumSubChainSize>40</maximumSubChainSize>
       </subChainSelector>
       <secondarySubChainSelector>
-        <valueSelector>
-          <variableName>previousStandstill</variableName>
+        <valueSelector variableName="previousStandstill">
           ...
         </valueSelector>
         <minimumSubChainSize>2</minimumSubChainSize>
@@ -587,9 +580,8 @@ Advanced configuration:
 
 [source,xml,options="nowrap"]
 ----
-      <valueSelector>
+      <valueSelector variableName="room">
         ... <!-- Normal selector properties -->
-        <variableName>room</variableName>
       </valueSelector>
 ----
 
@@ -599,9 +591,8 @@ In exotic Construction Heuristic configurations, the `entityClass` from the `Ent
 
 [source,xml,options="nowrap"]
 ----
-      <valueSelector>
+      <valueSelector variableName="period">
         <downcastEntityClass>...LeadingExam</downcastEntityClass>
-        <variableName>period</variableName>
       </valueSelector>
 ----
 
@@ -1145,15 +1136,11 @@ A replaying selector must reference a recorder's id with a ``mimicSelectorRef``:
       <cartesianProductMoveSelector>
         <changeMoveSelector>
           <entitySelector id="entitySelector"/>
-          <valueSelector>
-            <variableName>period</variableName>
-          </valueSelector>
+          <valueSelector variableName="period"/>
         </changeMoveSelector>
         <changeMoveSelector>
           <entitySelector mimicSelectorRef="entitySelector"/>
-          <valueSelector>
-            <variableName>room</variableName>
-          </valueSelector>
+          <valueSelector variableName="room"/>
         </changeMoveSelector>
       </cartesianProductMoveSelector>
 ----

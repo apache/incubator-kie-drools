@@ -18,14 +18,10 @@
   <localSearch>
     <unionMoveSelector>
       <changeMoveSelector>
-        <valueSelector>
-          <variableName>executionMode</variableName>
-        </valueSelector>
+        <valueSelector variableName="executionMode"/>
       </changeMoveSelector>
       <changeMoveSelector>
-        <valueSelector>
-          <variableName>delay</variableName>
-        </valueSelector>
+        <valueSelector variableName="delay"/>
       </changeMoveSelector>
     </unionMoveSelector>
     <acceptor>

@@ -36,6 +36,14 @@
           "methodName": "addProblemFactChanges",
           "elementKind": "method",
           "justification": "PLANNER-778 Solver.addAllProblemFactChanges(List)"
+        },
+        {
+        "code": "java.annotation.added",
+        "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.variableName",
+        "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.variableName",
+        "annotationType": "com.thoughtworks.xstream.annotations.XStreamAsAttribute",
+        "elementKind": "annotation",
+        "justification": "Less verbose power configuration. See upgrade recipe. Backwards compatible."
         }
       ]
     }

@@ -366,15 +366,11 @@ This First Fit configuration for a single entity class with two variables, using
       <cartesianProductMoveSelector>
         <changeMoveSelector>
           <entitySelector mimicSelectorRef="placerEntitySelector"/>
-          <valueSelector>
-            <variableName>room</variableName>
-          </valueSelector>
+          <valueSelector variableName="room"/>
         </changeMoveSelector>
         <changeMoveSelector>
           <entitySelector mimicSelectorRef="placerEntitySelector"/>
-          <valueSelector>
-            <variableName>period</variableName>
-          </valueSelector>
+          <valueSelector variableName="period"/>
         </changeMoveSelector>
       </cartesianProductMoveSelector>
     </queuedEntityPlacer>
@@ -398,15 +394,11 @@ This First Fit configuration for a single entity class with two variables, using
       </entitySelector>
       <changeMoveSelector>
         <entitySelector mimicSelectorRef="placerEntitySelector"/>
-        <valueSelector>
-          <variableName>period</variableName>
-        </valueSelector>
+        <valueSelector variableName="period"/>
       </changeMoveSelector>
       <changeMoveSelector>
         <entitySelector mimicSelectorRef="placerEntitySelector"/>
-        <valueSelector>
-          <variableName>room</variableName>
-        </valueSelector>
+        <valueSelector variableName="room"/>
       </changeMoveSelector>
     </queuedEntityPlacer>
     ...
