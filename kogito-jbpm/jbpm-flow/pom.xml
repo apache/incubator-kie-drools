@@ -74,7 +74,8 @@
             	org.jbpm.process.*,
             	org.jbpm.ruleflow.*,
             	org.jbpm.workflow.*,
-            	org.jbpm.osgi.flow.core.*
+            	org.jbpm.osgi.flow.core.*,
+              org.jbpm.util.*
             </Export-Package>
             <Bundle-Activator>org.jbpm.osgi.flow.core.Activator</Bundle-Activator>
           </instructions>
@@ -153,6 +154,11 @@
           <artifactId>jta</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

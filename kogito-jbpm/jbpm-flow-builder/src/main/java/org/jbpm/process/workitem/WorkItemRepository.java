@@ -22,12 +22,12 @@ import org.jbpm.process.core.ParameterDefinition;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.util.ConfFileUtils;
-import org.drools.core.util.MVELSafeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jbpm.util.WidMVELEvaluator;
 
 public class WorkItemRepository {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(WorkItemRepository.class);
 
 	public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path) {
@@ -147,7 +147,7 @@ public class WorkItemRepository {
 			return new ArrayList();
 		}
 		try {
-			List<Map<String, Object>> result = (List<Map<String, Object>>) MVELSafeHelper.getEvaluator().eval(content, new HashMap());
+			List<Map<String, Object>> result = (List<Map<String, Object>>) WidMVELEvaluator.eval(content);
 			for (Map<String, Object> wid: result) {
 				wid.put("path", parentPath + "/" + file);
 				wid.put("file", file + ".wid");
