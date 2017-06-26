@@ -18,8 +18,24 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
+import org.drools.core.RuleBaseConfiguration;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -43,20 +59,6 @@ import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This is a test case for multi-thred issues
@@ -855,5 +857,65 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testJittingShortComparison() {
+        // DROOLS-1633
+        String drl =
+                "import " + BeanA.class.getCanonicalName() + "\n;" +
+                "global java.util.List list;" +
+                "rule R when\n" +
+                "  $a1: BeanA($sv1 : shortValue)\n" +
+                "  $b2: BeanA(shortValue != $sv1)\n" +
+                "then\n" +
+                "  list.add(\"FIRED\");\n" +
+                "end";
+
+        List<String> list = Collections.synchronizedList(new ArrayList());
+        RuleBaseConfiguration rbc = (RuleBaseConfiguration)KieServices.Factory.get().newKieBaseConfiguration();
+        rbc.setJittingThreshold(0);
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build(rbc);
+
+        int threadNr = 1000;
+        Thread[] threads = new Thread[threadNr];
+        for (int i = 0; i < threadNr; i++) {
+            threads[i] = new Thread( new SessionRunner( kbase, list ) );
+        }
+
+        for (int i = 0; i < threadNr; i++) {
+            threads[i].start();
+        }
+
+        for (int i = 0; i < threadNr; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException( e );
+            }
+        }
+
+        assertEquals( 0, list.size() );
+    }
+
+    public static class SessionRunner implements Runnable {
+
+        private final KieSession ksession;
+
+        public SessionRunner( KieBase kbase, List<String> list ) {
+            ksession = kbase.newKieSession();
+            ksession.setGlobal( "list", list );
+            ksession.insert( new BeanA() );
+        }
+
+        public void run() {
+            ksession.fireAllRules();
+        }
+    }
+
+    public static class BeanA {
+        public Short getShortValue() {
+            return 769;
+        }
     }
 }
