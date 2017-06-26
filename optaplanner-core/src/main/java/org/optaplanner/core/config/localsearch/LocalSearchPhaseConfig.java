@@ -229,8 +229,8 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
         } else {
             // TODO moveSelectorConfigList is only a List because of XStream limitations.
             throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
-                    + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class
-                    + " or " + CartesianProductMoveSelectorConfig.class
+                    + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
+                    + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
                     + " element to nest multiple MoveSelectors.");
         }
         return moveSelector;

@@ -54,6 +54,12 @@ public abstract class AbstractConfig<C extends AbstractConfig> {
         }
     }
 
+    public C copyConfig() {
+        C copy = newInstance();
+        copy.inherit(this);
+        return copy;
+    }
+
     // ************************************************************************
     // Helper methods
     // ************************************************************************

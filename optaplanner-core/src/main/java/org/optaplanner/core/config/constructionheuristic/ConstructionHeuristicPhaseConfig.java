@@ -28,6 +28,9 @@ import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlac
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
+import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -55,6 +58,10 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     // TODO This is a List due to XStream limitations. With JAXB it could be just a EntityPlacerConfig instead.
     @XStreamImplicit
     protected List<EntityPlacerConfig> entityPlacerConfigList = null;
+
+    /** Simpler alternative for {@link #entityPlacerConfigList} */
+    @XStreamImplicit()
+    protected List<MoveSelectorConfig> moveSelectorConfigList = null;
 
     @XStreamAlias("forager")
     protected ConstructionHeuristicForagerConfig foragerConfig = null;
@@ -95,6 +102,14 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         this.entityPlacerConfigList = entityPlacerConfig == null ? null : Collections.singletonList(entityPlacerConfig);
     }
 
+    public List<MoveSelectorConfig> getMoveSelectorConfigList() {
+        return moveSelectorConfigList;
+    }
+
+    public void setMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
+        this.moveSelectorConfigList = moveSelectorConfigList;
+    }
+
     public ConstructionHeuristicForagerConfig getForagerConfig() {
         return foragerConfig;
     }
@@ -126,12 +141,17 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
                 : constructionHeuristicType_.getDefaultValueSorterManner());
         EntityPlacerConfig entityPlacerConfig;
         if (ConfigUtils.isEmptyCollection(entityPlacerConfigList)) {
-            entityPlacerConfig = newEntityPlacerConfig(constructionHeuristicType_);
+            entityPlacerConfig = buildUnfoldedEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_);
         } else if (entityPlacerConfigList.size() == 1) {
             entityPlacerConfig = entityPlacerConfigList.get(0);
             if (constructionHeuristicType != null) {
                 throw new IllegalArgumentException("The constructionHeuristicType (" + constructionHeuristicType
                         + ") must not be configured if the entityPlacerConfig (" + entityPlacerConfig
+                        + ") is explicitly configured.");
+            }
+            if (moveSelectorConfigList != null) {
+                throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
+                        + ") can not be configured if the entityPlacerConfig (" + entityPlacerConfig
                         + ") is explicitly configured.");
             }
         } else {
@@ -170,7 +190,8 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         return decider;
     }
 
-    private EntityPlacerConfig newEntityPlacerConfig(ConstructionHeuristicType constructionHeuristicType) {
+    private EntityPlacerConfig buildUnfoldedEntityPlacerConfig(
+            HeuristicConfigPolicy phaseConfigPolicy, ConstructionHeuristicType constructionHeuristicType) {
         switch (constructionHeuristicType) {
             case FIRST_FIT:
             case FIRST_FIT_DECREASING:
@@ -179,11 +200,34 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
             case STRONGEST_FIT:
             case STRONGEST_FIT_DECREASING:
             case ALLOCATE_ENTITY_FROM_QUEUE:
+                if (!ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
+                    return QueuedEntityPlacerConfig.unfoldNew(phaseConfigPolicy, moveSelectorConfigList);
+                }
                 return new QueuedEntityPlacerConfig();
             case ALLOCATE_TO_VALUE_FROM_QUEUE:
+                if (!ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
+                    if (moveSelectorConfigList.size() != 1) {
+                        throw new IllegalArgumentException("For the constructionHeuristicType ("
+                                + constructionHeuristicType + ", the moveSelectorConfigList (" + moveSelectorConfigList
+                                + ") must be a singleton. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
+                                + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
+                                + " element to nest multiple MoveSelectors.");
+                    }
+                    return QueuedValuePlacerConfig.unfoldNew(phaseConfigPolicy, moveSelectorConfigList.get(0));
+                }
                 return new QueuedValuePlacerConfig();
             case CHEAPEST_INSERTION:
             case ALLOCATE_FROM_POOL:
+                if (!ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
+                    if (moveSelectorConfigList.size() != 1) {
+                        throw new IllegalArgumentException("For the constructionHeuristicType ("
+                                + constructionHeuristicType + ", the moveSelectorConfigList (" + moveSelectorConfigList
+                                + ") must be a singleton. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
+                                + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
+                                + " element to nest multiple MoveSelectors.");
+                    }
+                    return PooledEntityPlacerConfig.unfoldNew(phaseConfigPolicy, moveSelectorConfigList.get(0));
+                }
                 return new PooledEntityPlacerConfig();
             default:
                 throw new IllegalStateException("The constructionHeuristicType (" + constructionHeuristicType + ") is not implemented.");
@@ -201,6 +245,8 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
                 inheritedConfig.getValueSorterManner());
         setEntityPlacerConfig(ConfigUtils.inheritOverwritableProperty(
                 getEntityPlacerConfig(), inheritedConfig.getEntityPlacerConfig()));
+        moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
+                moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
         foragerConfig = ConfigUtils.inheritConfig(foragerConfig, inheritedConfig.getForagerConfig());
     }
 

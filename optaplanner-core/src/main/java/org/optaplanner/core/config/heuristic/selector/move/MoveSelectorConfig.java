@@ -390,6 +390,14 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
         return moveSelector;
     }
 
+    /**
+     * Make a list of
+     * @param leafMoveSelectorConfigList not null
+     */
+    public void extractLeafMoveSelectorConfigsIntoList(List<MoveSelectorConfig> leafMoveSelectorConfigList) {
+        leafMoveSelectorConfigList.add(this);
+    }
+
     @Override
     public void inherit(C inheritedConfig) {
         super.inherit(inheritedConfig);

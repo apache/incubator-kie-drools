@@ -55,6 +55,12 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingE
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
 
+    public static EntitySelectorConfig newMimicSelectorConfig(String mimicSelectorRef) {
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+        entitySelectorConfig.setMimicSelectorRef(mimicSelectorRef);
+        return entitySelectorConfig;
+    }
+
     @XStreamAsAttribute
     protected String id = null;
     @XStreamAsAttribute

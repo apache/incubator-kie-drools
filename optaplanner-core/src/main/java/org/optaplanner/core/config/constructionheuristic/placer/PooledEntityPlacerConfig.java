@@ -42,9 +42,46 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 @XStreamAlias("pooledEntityPlacer")
 public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPlacerConfig> {
 
+    public static PooledEntityPlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy, MoveSelectorConfig templateMoveSelectorConfig) {
+        PooledEntityPlacerConfig config = new PooledEntityPlacerConfig();
+        List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>();
+        MoveSelectorConfig moveSelectorConfig = (MoveSelectorConfig) templateMoveSelectorConfig.copyConfig();
+        moveSelectorConfig.extractLeafMoveSelectorConfigsIntoList(leafMoveSelectorConfigList);
+        config.setMoveSelectorConfig(moveSelectorConfig);
+
+        EntitySelectorConfig entitySelectorConfig = null;
+        for (MoveSelectorConfig leafMoveSelectorConfig : leafMoveSelectorConfigList) {
+            if (!(leafMoveSelectorConfig instanceof ChangeMoveSelectorConfig)) {
+                throw new IllegalStateException("The <constructionHeuristic> contains a moveSelector ("
+                        + leafMoveSelectorConfig + ") that isn't a <changeMoveSelector>, a <unionMoveSelector>"
+                        + " or a <cartesianProductMoveSelector>.\n"
+                        + "Maybe you're using a moveSelector in <constructionHeuristic>"
+                        + " that's only supported for <localSearch>.");
+            }
+            ChangeMoveSelectorConfig changeMoveSelectorConfig = (ChangeMoveSelectorConfig) leafMoveSelectorConfig;
+            if (changeMoveSelectorConfig.getEntitySelectorConfig() != null) {
+                throw new IllegalStateException("The <constructionHeuristic> contains a changeMoveSelector ("
+                        + changeMoveSelectorConfig + ") that contains an entitySelector ("
+                        + changeMoveSelectorConfig.getEntitySelectorConfig()
+                        + ") without explicitly configuring the <pooledEntityPlacer>.");
+            }
+            if (entitySelectorConfig == null) {
+                EntityDescriptor entityDescriptor = config.deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), null);
+                entitySelectorConfig = config.buildEntitySelectorConfig(configPolicy, entityDescriptor);
+                changeMoveSelectorConfig.setEntitySelectorConfig(entitySelectorConfig);
+            }
+            changeMoveSelectorConfig.setEntitySelectorConfig(
+                    EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfig.getId()));
+        }
+        return config;
+    }
+
     // TODO This is a List due to XStream limitations. With JAXB it could be just a MoveSelectorConfig instead.
     @XStreamImplicit()
     private List<MoveSelectorConfig> moveSelectorConfigList = null;
+
+    public PooledEntityPlacerConfig() {
+    }
 
     public MoveSelectorConfig getMoveSelectorConfig() {
         return moveSelectorConfigList == null ? null : moveSelectorConfigList.get(0);
@@ -68,8 +105,8 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
         } else {
             // TODO moveSelectorConfigList is only a List because of XStream limitations.
             throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
-                    + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class
-                    + " or " + CartesianProductMoveSelectorConfig.class
+                    + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
+                    + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
                     + " element to nest multiple MoveSelectors.");
         }
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
@@ -92,11 +129,8 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
         ((ChangeMoveSelectorConfig) subMoveSelectorConfigList.get(0)).setEntitySelectorConfig(entitySelectorConfig);
         MoveSelectorConfig moveSelectorConfig;
         if (subMoveSelectorConfigList.size() > 1) {
-            if (true) { // TODO
-                moveSelectorConfig = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
-            } else {
-                moveSelectorConfig = new UnionMoveSelectorConfig(subMoveSelectorConfigList);
-            }
+            // Default to cartesian product (not a union) of planning variables.
+            moveSelectorConfig = new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList);
         } else {
             moveSelectorConfig = subMoveSelectorConfigList.get(0);
         }
@@ -120,9 +154,8 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
     private ChangeMoveSelectorConfig buildChangeMoveSelectorConfig(HeuristicConfigPolicy configPolicy,
             String entitySelectorConfigId, GenuineVariableDescriptor variableDescriptor) {
         ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
-        EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
-        changeEntitySelectorConfig.setMimicSelectorRef(entitySelectorConfigId);
-        changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
+        changeMoveSelectorConfig.setEntitySelectorConfig(
+                EntitySelectorConfig.newMimicSelectorConfig(entitySelectorConfigId));
         ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
         changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
         if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {

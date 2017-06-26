@@ -43,12 +43,20 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 @XStreamAlias("queuedValuePlacer")
 public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlacerConfig> {
 
+    public static QueuedValuePlacerConfig unfoldNew(HeuristicConfigPolicy configPolicy, MoveSelectorConfig templateMoveSelectorConfig) {
+        throw new UnsupportedOperationException("The <constructionHeuristic> contains a moveSelector ("
+                + templateMoveSelectorConfig + ") and the <queuedValuePlacer> does not support unfolding those yet.");
+    }
+
     protected Class<?> entityClass = null;
     @XStreamAlias("valueSelector")
     protected ValueSelectorConfig valueSelectorConfig = null;
     // TODO This is a List due to XStream limitations. With JAXB it could be just a MoveSelectorConfig instead.
     @XStreamImplicit()
     private List<MoveSelectorConfig> moveSelectorConfigList = null;
+
+    public QueuedValuePlacerConfig() {
+    }
 
     public Class<?> getEntityClass() {
         return entityClass;
@@ -97,8 +105,8 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
         } else {
             // TODO moveSelectorConfigList is only a List because of XStream limitations.
             throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
-                    + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class
-                    + " or " + CartesianProductMoveSelectorConfig.class
+                    + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
+                    + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
                     + " element to nest multiple MoveSelectors.");
         }
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(

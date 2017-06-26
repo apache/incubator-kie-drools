@@ -239,9 +239,8 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
                     variableDescriptors.size());
             for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
                 ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
-                EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
-                changeEntitySelectorConfig.setMimicSelectorRef(mimicSelectorId);
-                changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
+                changeMoveSelectorConfig.setEntitySelectorConfig(
+                        EntitySelectorConfig.newMimicSelectorConfig(mimicSelectorId));
                 ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
                 changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
                 if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {

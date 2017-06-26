@@ -39,7 +39,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
-import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -119,9 +118,10 @@ public class ConfigUtils {
     public static <C extends AbstractConfig<C>> C inheritConfig(C original, C inherited) {
         if (inherited != null) {
             if (original == null) {
-                original = inherited.newInstance();
+                original = inherited.copyConfig();
+            } else {
+                original.inherit(inherited);
             }
-            original.inherit(inherited);
         }
         return original;
     }
@@ -132,8 +132,7 @@ public class ConfigUtils {
                     + (originalList == null ? 0 : originalList.size()));
             // The inheritedList should be before the originalList
             for (C inherited : inheritedList) {
-                C copy = inherited.newInstance();
-                copy.inherit(inherited);
+                C copy = inherited.copyConfig();
                 mergedList.add(copy);
             }
             if (originalList != null) {
