@@ -326,7 +326,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                                 
                 results.put("Result", resultObject);
             } catch (Throwable e) {
-                throw new RuntimeException("Unable to transform respose to object", e);
+                throw new RuntimeException("Unable to transform response to object", e);
             }
         } else {
         
