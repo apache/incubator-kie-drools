@@ -16,7 +16,9 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNResult;
@@ -52,7 +54,8 @@ public class DMNUpdateTest {
                 v101,
                 ks.getResources().newClassPathResource("0001-input-data-string-itIT.dmn", this.getClass()));
         
-        kieContainer.updateToVersion(v101);
+        Results updateResults = kieContainer.updateToVersion(v101);
+        assertThat( updateResults.hasMessages(Level.ERROR), is( false ) );
         
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         Assert.assertNotNull(runtime);
@@ -90,7 +93,8 @@ public class DMNUpdateTest {
                 v101,
                 newClassPathResource);
         
-        kieContainer.updateToVersion(v101);
+        Results updateResults = kieContainer.updateToVersion(v101);
+        assertThat( updateResults.hasMessages(Level.ERROR), is( false ) );
         
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         Assert.assertNotNull(runtime);
@@ -101,6 +105,75 @@ public class DMNUpdateTest {
         
         DMNResult evaluateAll2 = runtime.evaluateAll(runtime.getModels().get(0), dmnContext2);
         assertThat( evaluateAll2.getDecisionResultByName("Greeting Message").getResult(), is( "Salve John Doe" ) );
+    }
+    
+    @Test
+    public void testReplaceDisposeCreateReplace() {
+        final KieServices ks = KieServices.Factory.get();
+        
+        ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
+        KieContainer kieContainer = KieHelper.getKieContainer(
+                v100,
+                ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass()));
+
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+        
+        DMNContext dmnContext = runtime.newContext();
+        dmnContext.set("Full Name", "John Doe");
+        
+        DMNResult evaluateAll = runtime.evaluateAll(runtime.getModels().get(0), dmnContext);
+        assertThat( evaluateAll.getDecisionResultByName("Greeting Message").getResult(), is( "Hello John Doe" ) );
+        
+        ReleaseId v101 = ks.newReleaseId("org.kie", "dmn-test", "1.0.1");
+        Resource newClassPathResource = ks.getResources().newClassPathResource("0001-input-data-string-itIT.dmn", this.getClass());
+        newClassPathResource.setTargetPath("0001-input-data-string.dmn");
+        KieHelper.createAndDeployJar(ks,
+                v101,
+                newClassPathResource);
+        
+        Results updateResults = kieContainer.updateToVersion(v101);
+        assertThat( updateResults.hasMessages(Level.ERROR), is( false ) );
+        
+        runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+            
+        DMNContext dmnContext2 = runtime.newContext();
+        dmnContext2.set("Full Name", "John Doe");
+        
+        DMNResult evaluateAll2 = runtime.evaluateAll(runtime.getModels().get(0), dmnContext2);
+        assertThat( evaluateAll2.getDecisionResultByName("Greeting Message").getResult(), is( "Salve John Doe" ) );
+        
+        
+        kieContainer.dispose();
+        
+        
+        kieContainer = ks.newKieContainer(v100);
+        runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+        
+        DMNContext dmnContext3 = runtime.newContext();
+        dmnContext3.set("Full Name", "John Doe");
+        
+        DMNResult evaluateAll3 = runtime.evaluateAll(runtime.getModels().get(0), dmnContext3);
+        assertThat( evaluateAll3.getDecisionResultByName("Greeting Message").getResult(), is( "Hello John Doe" ) );
+        
+        
+        updateResults = kieContainer.updateToVersion(v101);
+        assertThat( updateResults.hasMessages(Level.ERROR), is( false ) );
+
+        runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+            
+        DMNContext dmnContext4 = runtime.newContext();
+        dmnContext4.set("Full Name", "John Doe");
+        
+        DMNResult evaluateAll4 = runtime.evaluateAll(runtime.getModels().get(0), dmnContext4);
+        assertThat( evaluateAll4.getDecisionResultByName("Greeting Message").getResult(), is( "Salve John Doe" ) );
     }
     
     @Test
@@ -121,6 +194,44 @@ public class DMNUpdateTest {
         kieContainer.dispose();
         
         kieContainer = ks.newKieContainer(v100);
+        
+        runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+    }
+    
+    @Test
+    public void testFromClonedKiePackageThenUpgrade() {
+        final KieServices ks = KieServices.Factory.get();
+        
+        ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test", "1.0.0");
+        KieHelper.createAndDeployJar(ks,
+                v100,
+                ks.getResources().newClassPathResource("0001-input-data-string.dmn", this.getClass()));
+
+        KieContainer kieContainer = ks.newKieContainer(v100);
+        
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+        
+        kieContainer.dispose();
+        
+        kieContainer = ks.newKieContainer(v100);
+        
+        runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+        
+        ReleaseId v101 = ks.newReleaseId("org.kie", "dmn-test", "1.0.1");
+        Resource newClassPathResource = ks.getResources().newClassPathResource("0001-input-data-string-itIT.dmn", this.getClass());
+        newClassPathResource.setTargetPath("0001-input-data-string.dmn");
+        KieHelper.createAndDeployJar(ks,
+                v101,
+                newClassPathResource);
+        
+        Results updateResults = kieContainer.updateToVersion(v101);
+        assertThat( updateResults.hasMessages(Level.ERROR), is( false ) );
         
         runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         Assert.assertNotNull(runtime);
