@@ -16,6 +16,19 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -47,19 +60,6 @@ import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
 import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.generateTemplates;
@@ -235,7 +235,7 @@ public class JavaAccumulateBuilder
         AccumulateFunction function = context.getConfiguration().getAccumulateFunction( functionName );
         if( function == null ) {
             // might have been imported in the package
-            function = context.getKnowledgeBuilder().getPackage().getAccumulateFunctions().get( functionName );
+            function = context.getPkg().getAccumulateFunctions().get( functionName );
         }
         if ( function == null ) {
             context.addError( new DescrBuildError( accumDescr,

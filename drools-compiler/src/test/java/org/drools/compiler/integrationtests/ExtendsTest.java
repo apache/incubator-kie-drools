@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.lang.DrlDumper;
@@ -43,11 +44,8 @@ import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
 /**
@@ -174,7 +172,12 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
      public void testExtendsAcrossFiles() throws Exception {
-        KieSession ksession = genSession(new String[] {"test_Ext1.drl","test_Ext2.drl","test_Ext3.drl","test_Ext4.drl"} ,0);
+        KieSession ksession = new KieHelper()
+                .addResource( ResourceFactory.newClassPathResource( "test_Ext1.drl", getClass() ), ResourceType.DRL )
+                .addResource( ResourceFactory.newClassPathResource( "test_Ext2.drl", getClass() ), ResourceType.DRL )
+                .addResource( ResourceFactory.newClassPathResource( "test_Ext3.drl", getClass() ), ResourceType.DRL )
+                .addResource( ResourceFactory.newClassPathResource( "test_Ext4.drl", getClass() ), ResourceType.DRL )
+                .build().newKieSession();
 
         FactType person = ksession.getKieBase().getFactType("org.drools.compiler.ext.test","Person");
             assertNotNull(person);

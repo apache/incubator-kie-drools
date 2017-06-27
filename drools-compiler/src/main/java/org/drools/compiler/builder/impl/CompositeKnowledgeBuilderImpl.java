@@ -15,6 +15,12 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
@@ -32,12 +38,6 @@ import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 
@@ -128,13 +128,13 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     
     private void normalizeTypeAnnotations( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
-            kBuilder.normalizeTypeDeclarationAnnotations( packageDescr );
+            kBuilder.normalizeTypeDeclarationAnnotations( packageDescr, kBuilder.getOrCreatePackageRegistry( packageDescr ).getTypeResolver() );
         }
     }
       
     private void normalizeRuleAnnotations( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
-            kBuilder.normalizeRuleAnnotations( packageDescr );
+            kBuilder.normalizeRuleAnnotations( packageDescr, kBuilder.getOrCreatePackageRegistry( packageDescr ).getTypeResolver() );
         }
     }
 
@@ -290,12 +290,10 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
     private void initPackageRegistries(Collection<CompositePackageDescr> packages) {
         for ( CompositePackageDescr packageDescr : packages ) {
-            if ( kBuilder.getPackageRegistry( packageDescr.getName() ) == null ) {
-                if ( StringUtils.isEmpty(packageDescr.getName()) ) {
-                    packageDescr.setName( kBuilder.getBuilderConfiguration().getDefaultPackageName() );
-                }
-                kBuilder.createPackageRegistry( packageDescr );
+            if ( StringUtils.isEmpty(packageDescr.getName()) ) {
+                packageDescr.setName( kBuilder.getBuilderConfiguration().getDefaultPackageName() );
             }
+            kBuilder.getOrCreatePackageRegistry( packageDescr );
         }
     }
 

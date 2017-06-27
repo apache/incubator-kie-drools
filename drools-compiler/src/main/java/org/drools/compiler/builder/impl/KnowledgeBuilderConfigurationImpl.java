@@ -116,8 +116,6 @@ public class KnowledgeBuilderConfigurationImpl
 
     private File                              dumpDirectory;
 
-    private boolean                           allowMultipleNamespaces = true;
-
     private boolean                           processStringEscapes    = true;
 
     private boolean                           classLoaderCache        = true;
@@ -139,19 +137,7 @@ public class KnowledgeBuilderConfigurationImpl
 
     private static final Logger log = LoggerFactory.getLogger(KnowledgeBuilderConfigurationImpl.class);
 
-    public boolean isAllowMultipleNamespaces() {
-        return allowMultipleNamespaces;
-    }
-
-    /**
-     * By default multiple namespaces are allowed. If you set this to "false" it will
-     * make it all happen in the "default" namespace (the first namespace you define).
-     */
-    public void setAllowMultipleNamespaces(boolean allowMultipleNamespaces) {
-        this.allowMultipleNamespaces = allowMultipleNamespaces;
-    }
-
-    /**
+     /**
      * Constructor that sets the parent class loader for the package being built/compiled
      * @param classLoaders
      */

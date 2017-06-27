@@ -16,17 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.Wireable;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.KeyStoreHelper;
-import org.drools.core.util.StringUtils;
-import org.kie.internal.concurrent.ExecutorProviderFactory;
-import org.kie.internal.utils.FastClassLoader;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -58,6 +47,17 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.Wireable;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.KeyStoreHelper;
+import org.drools.core.util.StringUtils;
+import org.kie.internal.concurrent.ExecutorProviderFactory;
+import org.kie.internal.utils.FastClassLoader;
+
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
@@ -70,11 +70,11 @@ public class JavaDialectRuntimeData
 
     private static final ProtectionDomain  PROTECTION_DOMAIN;
 
-    private Map<String, Object>            invokerLookups;
+    private final Map<String, Object>      invokerLookups = new ConcurrentHashMap<>();
 
-    private Map<String, byte[]>            classLookups;
+    private final Map<String, byte[]>      classLookups = new ConcurrentHashMap<>();
 
-    private Map<String, byte[]>            store;
+    private Map<String, byte[]>            store = new HashMap<String, byte[]>();
 
     private transient ClassLoader          classLoader;
 
@@ -94,9 +94,6 @@ public class JavaDialectRuntimeData
     }
 
     public JavaDialectRuntimeData() {
-        this.invokerLookups = new HashMap<String, Object>();
-		this.classLookups = new HashMap<String,byte[]>();
-		this.store = new HashMap<String, byte[]>();        
         this.dirty = false;
     }
 
@@ -116,8 +113,7 @@ public class JavaDialectRuntimeData
         ObjectOutput out = new ObjectOutputStream( bos );
 
         out.writeInt( this.store.size() );
-        for (Entry<String, byte[]> stringEntry : this.store.entrySet()) {
-            Entry entry = (Entry) stringEntry;
+        for (Entry<String, byte[]> entry : this.store.entrySet()) {
             out.writeObject(entry.getKey());
             out.writeObject(entry.getValue());
         }
@@ -132,8 +128,7 @@ public class JavaDialectRuntimeData
         }
 
         stream.writeInt( this.invokerLookups.size() );
-        for (Entry<String, Object> stringObjectEntry : this.invokerLookups.entrySet()) {
-            Entry entry = (Entry) stringObjectEntry;
+        for (Entry<String, Object> entry : this.invokerLookups.entrySet()) {
             stream.writeObject(entry.getKey());
             stream.writeObject(entry.getValue());
         }
@@ -255,7 +250,7 @@ public class JavaDialectRuntimeData
                 // wire all remaining resources
                 int wireListSize = this.wireList.size();
                 if (wireListSize < 100) {
-                    wireAll(classLoader, getInvokers(), this.wireList);
+                    wireAll(classLoader, invokerLookups, this.wireList);
                 } else {
                     wireInParallel(wireListSize);
                 }
@@ -274,7 +269,7 @@ public class JavaDialectRuntimeData
         int size = wireListSize / parallelThread;
         for (int i = 1; i <= parallelThread; i++) {
             List<String> subList = wireList.subList((i-1) * size, i == parallelThread ? wireListSize : i * size);
-            ecs.submit(new WiringExecutor(classLoader, getInvokers(), subList));
+            ecs.submit(new WiringExecutor(classLoader, invokerLookups, subList));
         }
         for (int i = 1; i <= parallelThread; i++) {
             ecs.take().get();
@@ -332,33 +327,18 @@ public class JavaDialectRuntimeData
 
         // First update the binary files
         // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.
-        for (String resourceName : newJavaData.list()) {
-            if ( ! excludeClasses || ! newJavaData.getClassDefinitions().containsKey( resourceName ) ) {
+        for (String resourceName : newJavaData.getStore().keySet()) {
+            if ( ! excludeClasses || ! newJavaData.classLookups.containsKey( resourceName ) ) {
                 write( resourceName,
                        newJavaData.read( resourceName ) );
             }
-            //            // no need to wire, as we already know this is done in a merge
-            //            if ( getStore().put( resourceName,
-            //                                 newJavaData.read( resourceName ) ) != null ) {
-            //                // we are updating an existing class so reload();
-            //                this.dirty = true;
-            //            }
-            //            if ( this.dirty == false ) {
-            //                // only build up the wireList if we aren't going to reload
-            //                this.wireList.add( resourceName );
-            //            }
         }
 
-        //        if ( this.dirty ) {
-        //            // no need to keep wireList if we are going to reload;
-        //            this.wireList.clear();
-        //        }
-
         // Add invokers
-        putAllInvokers( newJavaData.getInvokers() );
+        putAllInvokers( newJavaData.invokerLookups );
 
         if ( ! excludeClasses ) {
-            putAllClassDefinitions( newJavaData.getClassDefinitions() );
+            putAllClassDefinitions( newJavaData.classLookups );
         }
 
     }
@@ -372,9 +352,6 @@ public class JavaDialectRuntimeData
     }
 
     public Map<String, byte[]> getStore() {
-        if (store == null) {
-            store = new HashMap<String, byte[]>();
-        }
         return store;
     }
 
@@ -444,15 +421,10 @@ public class JavaDialectRuntimeData
     }
 
     public byte[] read( final String resourceName ) {
-        byte[] bytes = null;
-
-        if (!getStore().isEmpty()) {
-            bytes = getStore().get( resourceName );
-        }
-        return bytes;
+        return getStore().get( resourceName );
     }
 
-    public void write( String resourceName, byte[] clazzData ) {
+    public synchronized void write( String resourceName, byte[] clazzData ) {
         if (getStore().put( resourceName,
                             clazzData ) != null) {
             this.dirty = true;
@@ -474,7 +446,7 @@ public class JavaDialectRuntimeData
     }
 
     public void wire( final String className ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        wire(className, getInvokers().get(className));
+        wire(className, invokerLookups.get(className));
     }
 
     private static void wire( ClassLoader classLoader, Map<String, Object> invokerLookups, String className ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -498,7 +470,7 @@ public class JavaDialectRuntimeData
     }
 
     public boolean remove( final String resourceName ) {
-        getInvokers().remove( resourceName );
+        invokerLookups.remove( resourceName );
         if (getStore().remove( convertClassToResourcePath( resourceName ) ) != null) {
             this.wireList.remove( resourceName );
             // we need to make sure the class is removed from the classLoader
@@ -507,16 +479,6 @@ public class JavaDialectRuntimeData
             return true;
         }
         return false;
-    }
-
-    public String[] list() {
-        String[] names = new String[getStore().size()];
-        int i = 0;
-
-        for (String string : getStore().keySet()) {
-            names[i++] = string;
-        }
-        return names;
     }
 
     /**
@@ -528,7 +490,7 @@ public class JavaDialectRuntimeData
 
         // Wire up invokers
         try {
-            for (final Object object : getInvokers().entrySet()) {
+            for (final Object object : invokerLookups.entrySet()) {
                 Entry entry = (Entry) object;
                 wire( (String) entry.getKey(),
                       entry.getValue() );
@@ -548,7 +510,7 @@ public class JavaDialectRuntimeData
 
     public void clear() {
         getStore().clear();
-        getInvokers().clear();
+        invokerLookups.clear();
         reload();
     }
 
@@ -558,59 +520,34 @@ public class JavaDialectRuntimeData
 
     public void putInvoker( final String className,
             final Object invoker ) {
-        getInvokers().put(className,
-                          invoker);
+        invokerLookups.put(className, invoker);
     }
 
     public void putAllInvokers( final Map<String, Object> invokers ) {
-        getInvokers().putAll( invokers );
-
-    }
-
-    public Map<String, Object> getInvokers() {
-        if (this.invokerLookups == null) {
-            this.invokerLookups = new HashMap<String, Object>();
-        }
-        return this.invokerLookups;
+        invokerLookups.putAll( invokers );
     }
 
     public void removeInvoker( final String className ) {
-        getInvokers().remove(className);
+        invokerLookups.remove(className);
     }
-
-
 
     public void putClassDefinition( final String className,
                                     final byte[] classDef ) {
-        getClassDefinitions().put( className,
-                                   classDef );
+        classLookups.put( className, classDef );
     }
 
     public void putAllClassDefinitions( final Map classDefinitions ) {
-        getClassDefinitions().putAll(classDefinitions);
-    }
-
-    public Map<String, byte[]> getClassDefinitions() {
-        if (this.classLookups == null) {
-            this.classLookups = new HashMap<String, byte[]>();
-        }
-        return this.classLookups;
+        classLookups.putAll(classDefinitions);
     }
 
     public byte[] getClassDefinition( String className ) {
-        if (this.classLookups == null) {
-            this.classLookups = new HashMap<String, byte[]>();
-        }
-        byte[] classDef = this.classLookups.get( className );
-        if (classDef == null && rootClassLoader instanceof ProjectClassLoader) {
-            classDef = ((ProjectClassLoader)rootClassLoader).getBytecode(className);
-            classLookups.put( className, classDef );
-        }
-        return classDef;
+        return this.classLookups.computeIfAbsent( className, name -> rootClassLoader instanceof ProjectClassLoader ?
+                                                                     ((ProjectClassLoader)rootClassLoader).getBytecode(name) :
+                                                                     null);
     }
 
     public void removeClassDefinition( final String className ) {
-        getClassDefinitions().remove( className );
+        classLookups.remove( className );
     }
 
     private ClassLoader makeClassLoader() {

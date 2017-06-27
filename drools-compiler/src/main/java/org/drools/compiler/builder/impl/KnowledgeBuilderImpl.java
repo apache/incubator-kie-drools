@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
@@ -163,9 +164,11 @@ import static org.drools.core.util.StringUtils.ucFirst;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
+    private static final int PARALLEL_RULES_BUILD_THRESHOLD = 10;
+
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBuilderImpl.class);
 
-    private final Map<String, PackageRegistry> pkgRegistryMap;
+    private final Map<String, PackageRegistry> pkgRegistryMap = new ConcurrentHashMap<>();
 
     private List<KnowledgeBuilderResult>                   results;
 
@@ -205,8 +208,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     private final Map<String, List<PackageDescr>>             packages           = new HashMap<String, List<PackageDescr>>();
 
     private final Stack<List<Resource>> buildResources     = new Stack<List<Resource>>();
-
-    private int                                               currentRulePackage = 0;
 
     private AssetFilter                                       assetFilter        = null;
 
@@ -261,7 +262,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
-        this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
         this.results = new ArrayList<KnowledgeBuilderResult>();
 
         PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, this.configuration, pkg);
@@ -296,7 +296,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         //this.defaultNamespace = pkg.getName();
         this.defaultDialect = this.configuration.getDefaultDialect();
 
-        this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
         this.results = new ArrayList<KnowledgeBuilderResult>();
 
         this.kBase = kBase;
@@ -455,7 +454,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         } catch (IOException ex) {
             // nothing serious, just failure when writing the generated DRL to file, just log the exception and continue
             logger.warn("Can't write the DRL generated from decision table to file " + dumpFile.getAbsolutePath() + "!\n" +
-                    Arrays.toString(ex.getStackTrace()));
+                        Arrays.toString(ex.getStackTrace()));
         }
     }
 
@@ -482,7 +481,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public void addPackageFromGuidedScoreCard(Resource resource) throws DroolsParserException,
-                                                                                          IOException {
+                                                                        IOException {
         this.resource = resource;
         addPackage( guidedScoreCardToPackageDescr(resource) );
         this.resource = null;
@@ -972,12 +971,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
      * there are any generated classes to compile of course.
      */
     public void addPackage(final PackageDescr packageDescr) {
-        PackageRegistry pkgRegistry = initPackageRegistry(packageDescr);
+        PackageRegistry pkgRegistry = getOrCreatePackageRegistry(packageDescr);
         if (pkgRegistry == null) {
             return;
         }
-
-        currentRulePackage = pkgRegistryMap.size() - 1;
 
         // merge into existing package
         mergePackage(pkgRegistry, packageDescr);
@@ -1026,40 +1023,78 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         this.results.add(result);
     }
 
-    PackageRegistry createPackageRegistry(PackageDescr packageDescr) {
-        PackageRegistry pkgRegistry = initPackageRegistry( packageDescr );
-        if (pkgRegistry == null) {
-            return null;
-        }
-        for (ImportDescr importDescr : packageDescr.getImports()) {
-            pkgRegistry.registerImport( importDescr.getTarget() );
-        }
-        return pkgRegistry;
-    }
-
-    private PackageRegistry initPackageRegistry(PackageDescr packageDescr) {
+    public PackageRegistry getOrCreatePackageRegistry(PackageDescr packageDescr) {
         if (packageDescr == null) {
             return null;
         }
-
-        //Derive namespace
         if (isEmpty(packageDescr.getNamespace())) {
             packageDescr.setNamespace(this.configuration.getDefaultPackageName());
         }
+        return pkgRegistryMap.computeIfAbsent( packageDescr.getName(), name -> createPackageRegistry(packageDescr) );
+    }
 
-        if (!checkNamespace(packageDescr.getNamespace())) {
-            return null;
-        }
-
+    private PackageRegistry createPackageRegistry(PackageDescr packageDescr) {
         initPackage(packageDescr);
 
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
-        if (pkgRegistry == null) {
-            // initialise the package and namespace if it hasn't been used before
-            pkgRegistry = newPackage(packageDescr);
+        InternalKnowledgePackage pkg;
+        if (this.kBase == null || (pkg = this.kBase.getPackage(packageDescr.getName())) == null) {
+            // there is no rulebase or it does not define this package so define it
+            pkg = new KnowledgePackageImpl(packageDescr.getName());
+            pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(this.rootClassLoader));
+
+            // if there is a rulebase then add the package.
+            if (this.kBase != null) {
+                try {
+                    pkg = (InternalKnowledgePackage) this.kBase.addPackage(pkg).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException( e );
+                }
+            } else {
+                // the RuleBase will also initialise the
+                pkg.getDialectRuntimeRegistry().onAdd(this.rootClassLoader);
+            }
+        }
+
+        PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, configuration, pkg);
+
+        // add default import for this namespace
+        pkgRegistry.addImport( new ImportDescr( packageDescr.getNamespace() + ".*" ) );
+
+        for (ImportDescr importDescr : packageDescr.getImports()) {
+            pkgRegistry.registerImport( importDescr.getTarget() );
         }
 
         return pkgRegistry;
+    }
+
+    private void initPackage(PackageDescr packageDescr) {
+        //Gather all imports for all PackageDescrs for the current package and replicate into
+        //all PackageDescrs for the current package, thus maintaining a complete list of
+        //ImportDescrs for all PackageDescrs for the current package.
+        List<PackageDescr> packageDescrsForPackage = packages.computeIfAbsent( packageDescr.getName(), k -> new ArrayList<PackageDescr>() );
+        packageDescrsForPackage.add(packageDescr);
+        Set<ImportDescr> imports = new HashSet<ImportDescr>();
+        for (PackageDescr pd : packageDescrsForPackage) {
+            imports.addAll(pd.getImports());
+        }
+        for (PackageDescr pd : packageDescrsForPackage) {
+            pd.getImports().clear();
+            pd.addAllImports(imports);
+        }
+
+        //Copy package level attributes for inclusion on individual rules
+        if (!packageDescr.getAttributes().isEmpty()) {
+            Map<String, AttributeDescr> pkgAttributes = packageAttributes.get(packageDescr.getNamespace());
+            if (pkgAttributes == null) {
+                pkgAttributes = new HashMap<String, AttributeDescr>();
+                this.packageAttributes.put(packageDescr.getNamespace(),
+                                           pkgAttributes);
+            }
+            for (AttributeDescr attr : packageDescr.getAttributes()) {
+                pkgAttributes.put(attr.getName(),
+                                  attr);
+            }
+        }
     }
 
     private void compileRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
@@ -1075,14 +1110,14 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 // make sure functions are compiled using java dialect
                 functionDescr.setDialect("java");
 
-                preCompileAddFunction(functionDescr);
+                preCompileAddFunction(functionDescr, pkgRegistry);
             }
 
             // iterate and compile
             for (FunctionDescr functionDescr : functions) {
                 if (filterAccepts(ResourceChange.Type.FUNCTION, functionDescr.getNamespace(), functionDescr.getName()) ) {
                     // inherit the dialect from the package
-                    addFunction(functionDescr);
+                    addFunction(functionDescr, pkgRegistry);
                 }
             }
 
@@ -1092,13 +1127,13 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
             for (FunctionDescr functionDescr : functions) {
                 if (filterAccepts(ResourceChange.Type.FUNCTION, functionDescr.getNamespace(), functionDescr.getName()) ) {
-                    postCompileAddFunction(functionDescr);
+                    postCompileAddFunction(functionDescr, pkgRegistry);
                 }
             }
         }
 
         // ensure that rules are ordered by dependency, so that dependent rules are built later
-        sortRulesByDependency(packageDescr);
+        boolean requiresSorting = sortRulesByDependency(packageDescr, pkgRegistry);
 
         // iterate and prepare RuleDescr
         for (RuleDescr ruleDescr : packageDescr.getRules()) {
@@ -1121,11 +1156,60 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         Map<String, RuleBuildContext> ruleCxts = preProcessRules(packageDescr, pkgRegistry);
 
         // iterate and compile
-        for (RuleDescr ruleDescr : packageDescr.getRules()) {
-            if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
-                addRule(ruleCxts.get(ruleDescr.getName()));
+        boolean parallelRulesBuild = this.kBase == null && !requiresSorting && packageDescr.getRules().size() > PARALLEL_RULES_BUILD_THRESHOLD;
+
+        if (parallelRulesBuild) {
+            this.results.addAll(
+                    packageDescr.getRules().stream().parallel()
+                                .filter( ruleDescr -> filterAccepts( ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName() ) )
+                                .reduce( Collections.synchronizedList( new ArrayList<KnowledgeBuilderResult>() ),
+                                         (list, ruleDescr) -> {
+                                             List<? extends KnowledgeBuilderResult> results = addRule( ruleCxts.get( ruleDescr.getName() ) );
+                                             if (!results.isEmpty()) {
+                                                 list.addAll( results );
+                                             }
+                                             return list;
+                                         },
+                                         (l1, l2) -> {
+                                            if (l2.isEmpty()) {
+                                                return l1;
+                                            } else if (l1.isEmpty()) {
+                                                return l2;
+                                            }
+                                            l1.addAll( l2 );
+                                            return l1;
+                                         })
+                               );
+        } else {
+            for (RuleDescr ruleDescr : packageDescr.getRules()) {
+                if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
+                    this.results.addAll( addRule(ruleCxts.get(ruleDescr.getName())) );
+                }
             }
         }
+    }
+
+    private List<? extends KnowledgeBuilderResult> addRule(RuleBuildContext context) {
+        RuleBuilder.build(context);
+
+        context.getRule().setResource(context.getRuleDescr().getResource());
+
+        context.getDialect().addRule(context);
+
+        if (context.needsStreamMode()) {
+            context.getPkg().setNeedStreamMode();
+        }
+
+        if (context.getErrors().isEmpty()) {
+            return context.getWarnings();
+        } else if (context.getWarnings().isEmpty()) {
+            return context.getErrors();
+        }
+
+        List<KnowledgeBuilderResult> result = new ArrayList<>();
+        result.addAll(context.getErrors());
+        result.addAll(context.getWarnings());
+        return result;
     }
 
     boolean filterAccepts( ResourceChange.Type type, String namespace, String name ) {
@@ -1173,7 +1257,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
                     for (RuleDescr ruleDescr : packageDescr.getRules()) {
                         if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
-                            RuleImpl rule = (RuleImpl)pkg.getRule(ruleDescr.getName());
+                            RuleImpl rule = pkg.getRule( ruleDescr.getName() );
                             if (rule != null) {
                                 rulesToBeRemoved.add(rule);
                             }
@@ -1188,17 +1272,15 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
 
         // Pre Process each rule, needed for Query signuture registration
-        return buildRuleBuilderContext(packageDescr.getRules());
+        return buildRuleBuilderContext(packageDescr.getRules(), pkgRegistry);
     }
 
-    private Map<String, RuleBuildContext> buildRuleBuilderContext(List<RuleDescr> rules) {
+    private Map<String, RuleBuildContext> buildRuleBuilderContext(List<RuleDescr> rules, PackageRegistry pkgRegistry) {
         Map<String, RuleBuildContext> map = new HashMap<String, RuleBuildContext>();
         for (RuleDescr ruleDescr : rules) {
             if (ruleDescr.getResource() == null) {
                 ruleDescr.setResource(resource);
             }
-
-            PackageRegistry pkgRegistry = this.pkgRegistryMap.get(ruleDescr.getNamespace());
 
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
             DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
@@ -1219,11 +1301,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return map;
     }
 
-    private void sortRulesByDependency(PackageDescr packageDescr) {
+    private boolean sortRulesByDependency(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         // Using a topological sorting algorithm
         // see http://en.wikipedia.org/wiki/Topological_sorting
 
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
         List<RuleDescr> roots = new LinkedList<RuleDescr>();
@@ -1242,12 +1323,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                     // The parent of this rule has been already compiled
                     compiledRules.add(ruleDescr.getParentName());
                 }
-                List<RuleDescr> childz = children.get(ruleDescr.getParentName());
-                if (childz == null) {
-                    childz = new ArrayList<RuleDescr>();
-                    children.put(ruleDescr.getParentName(), childz);
-                }
-                childz.add(ruleDescr);
+                children.computeIfAbsent( ruleDescr.getParentName(), k -> new ArrayList<>() ).add(ruleDescr);
             }
         }
 
@@ -1255,8 +1331,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             if (!queries.isEmpty()) { // Build all queries first
                 packageDescr.getRules().removeAll(queries);
                 packageDescr.getRules().addAll(0, queries);
+                return true;
             }
-            return;
+            return false;
         }
 
         for (String compiledRule : compiledRules) {
@@ -1280,6 +1357,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         for (RuleDescr descr : sorted.values() ) {
             packageDescr.getRules().add( descr );
         }
+        return true;
     }
 
     private void reportHierarchyErrors(Map<String, List<RuleDescr>> parents,
@@ -1318,41 +1396,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                                        "Unable to resolve parent rule, please check that both rules are in the same package"));
     }
 
-    private void initPackage(PackageDescr packageDescr) {
-        //Gather all imports for all PackageDescrs for the current package and replicate into
-        //all PackageDescrs for the current package, thus maintaining a complete list of
-        //ImportDescrs for all PackageDescrs for the current package.
-        List<PackageDescr> packageDescrsForPackage = packages.get(packageDescr.getName());
-        if (packageDescrsForPackage == null) {
-            packageDescrsForPackage = new ArrayList<PackageDescr>();
-            packages.put(packageDescr.getName(),
-                         packageDescrsForPackage);
-        }
-        packageDescrsForPackage.add(packageDescr);
-        Set<ImportDescr> imports = new HashSet<ImportDescr>();
-        for (PackageDescr pd : packageDescrsForPackage) {
-            imports.addAll(pd.getImports());
-        }
-        for (PackageDescr pd : packageDescrsForPackage) {
-            pd.getImports().clear();
-            pd.addAllImports(imports);
-        }
-
-        //Copy package level attributes for inclusion on individual rules
-        if (!packageDescr.getAttributes().isEmpty()) {
-            Map<String, AttributeDescr> pkgAttributes = packageAttributes.get(packageDescr.getNamespace());
-            if (pkgAttributes == null) {
-                pkgAttributes = new HashMap<String, AttributeDescr>();
-                this.packageAttributes.put(packageDescr.getNamespace(),
-                                           pkgAttributes);
-            }
-            for (AttributeDescr attr : packageDescr.getAttributes()) {
-                pkgAttributes.put(attr.getName(),
-                                  attr);
-            }
-        }
-    }
-
     private String getPackageDialect(PackageDescr packageDescr) {
         String dialectName = this.defaultDialect;
         // see if this packageDescr overrides the current default dialect
@@ -1366,15 +1409,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     //  test
-
-    /**
-     * This checks to see if it should all be in the one namespace.
-     */
-    private boolean checkNamespace(String newName) {
-        return configuration == null ||
-               !((!pkgRegistryMap.isEmpty()) && (!pkgRegistryMap.containsKey(newName))) ||
-               configuration.isAllowMultipleNamespaces();
-    }
 
     public void updateResults() {
         // some of the rules and functions may have been redefined
@@ -1413,7 +1447,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         if (pkg == null) {
             PackageDescr packageDescr = new PackageDescr(newPkg.getName());
-            pkgRegistry = newPackage(packageDescr);
+            pkgRegistry = getOrCreatePackageRegistry(packageDescr);
             mergePackage(this.pkgRegistryMap.get(packageDescr.getNamespace()), packageDescr);
             pkg = pkgRegistry.getPackage();
         }
@@ -1518,17 +1552,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     }
 
-    //
-    //    private void validatePackageName(final PackageDescr packageDescr) {
-    //        if ( (this.pkg == null || this.pkg.getName() == null || this.pkg.getName().equals( "" )) && (packageDescr.getName() == null || "".equals( packageDescr.getName() )) ) {
-    //            throw new MissingPackageNameException( "Missing package name for rule package." );
-    //        }
-    //        if ( this.pkg != null && packageDescr.getName() != null && !"".equals( packageDescr.getName() ) && !this.pkg.getName().equals( packageDescr.getName() ) ) {
-    //            throw new PackageMergeException( "Can't merge packages with different names. This package: " + this.pkg.getName() + " - New package: " + packageDescr.getName() );
-    //        }
-    //        return;
-    //    }
-
     private void validateUniqueRuleNames(final PackageDescr packageDescr) {
         final Set<String> names = new HashSet<String>();
         PackageRegistry packageRegistry = this.pkgRegistryMap.get(packageDescr.getNamespace());
@@ -1583,62 +1606,28 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    public PackageRegistry newPackage(final PackageDescr packageDescr) {
-        InternalKnowledgePackage pkg;
-        if (this.kBase == null || (pkg = this.kBase.getPackage(packageDescr.getName())) == null) {
-            // there is no rulebase or it does not define this package so define it
-            pkg = new KnowledgePackageImpl(packageDescr.getName());
-            pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(this.rootClassLoader));
-
-            // if there is a rulebase then add the package.
-            if (this.kBase != null) {
-                try {
-                    pkg = (InternalKnowledgePackage) this.kBase.addPackage(pkg).get();
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException( e );
-                }
-            } else {
-                // the RuleBase will also initialise the
-                pkg.getDialectRuntimeRegistry().onAdd(this.rootClassLoader);
-            }
-        }
-
-        PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, configuration, pkg);
-
-        // add default import for this namespace
-        pkgRegistry.addImport( new ImportDescr( packageDescr.getNamespace() + ".*" ) );
-
-        this.pkgRegistryMap.put( packageDescr.getName(), pkgRegistry );
-
-        return pkgRegistry;
-    }
-
     void mergePackage(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         for (final ImportDescr importDescr : packageDescr.getImports()) {
             pkgRegistry.addImport(importDescr);
         }
 
-        normalizeTypeDeclarationAnnotations( packageDescr );
+        normalizeTypeDeclarationAnnotations( packageDescr, pkgRegistry.getTypeResolver() );
         processAccumulateFunctions(pkgRegistry, packageDescr);
         processEntryPointDeclarations( pkgRegistry, packageDescr );
 
         Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs = new HashMap<String,AbstractClassTypeDeclarationDescr>();
         List<TypeDefinition> unresolvedTypes = new ArrayList<TypeDefinition>();
         List<AbstractClassTypeDeclarationDescr> unsortedDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>();
-        for ( TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations() ) {
-            unsortedDescrs.add( typeDeclarationDescr );
-        }
-        for ( EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations() ) {
-            unsortedDescrs.add( enumDeclarationDescr );
-        }
+        unsortedDescrs.addAll( packageDescr.getTypeDeclarations() );
+        unsortedDescrs.addAll( packageDescr.getEnumDeclarations() );
 
-        typeBuilder.processTypeDeclarations( Collections.singletonList( packageDescr ), unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
+        typeBuilder.processTypeDeclarations( packageDescr, pkgRegistry, unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
         for ( AbstractClassTypeDeclarationDescr descr : unprocesseableDescrs.values() ) {
             this.addBuilderResult( new TypeDeclarationError( descr, "Unable to process type " + descr.getTypeName() ) );
         }
 
         processOtherDeclarations( pkgRegistry, packageDescr );
-        normalizeRuleAnnotations( packageDescr );
+        normalizeRuleAnnotations( packageDescr, pkgRegistry.getTypeResolver() );
     }
 
     void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
@@ -1646,15 +1635,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         processWindowDeclarations(pkgRegistry, packageDescr);
         processFunctions(pkgRegistry, packageDescr);
         processGlobals(pkgRegistry, packageDescr);
-
-        // need to reinsert this to ensure that the package is the first/last one in the ordered map
-        // this feature is exploited by the knowledgeAgent
-        InternalKnowledgePackage current = getPackage();
-        this.pkgRegistryMap.remove(packageDescr.getName());
-        this.pkgRegistryMap.put(packageDescr.getName(), pkgRegistry);
-        if (current.getName().equals(packageDescr.getName())) {
-            currentRulePackage = pkgRegistryMap.size() - 1;
-        }
     }
 
     private void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
@@ -1802,23 +1782,20 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    private void addFunction(final FunctionDescr functionDescr) {
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get(functionDescr.getNamespace());
+    private void addFunction(final FunctionDescr functionDescr, PackageRegistry pkgRegistry) {
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect(functionDescr.getDialect());
         dialect.addFunction(functionDescr,
                             pkgRegistry.getTypeResolver(),
                             this.resource);
     }
 
-    private void preCompileAddFunction(final FunctionDescr functionDescr) {
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get(functionDescr.getNamespace());
+    private void preCompileAddFunction(final FunctionDescr functionDescr, PackageRegistry pkgRegistry) {
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect(functionDescr.getDialect());
         dialect.preCompileAddFunction(functionDescr,
                                       pkgRegistry.getTypeResolver());
     }
 
-    private void postCompileAddFunction(final FunctionDescr functionDescr) {
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get(functionDescr.getNamespace());
+    private void postCompileAddFunction(final FunctionDescr functionDescr, PackageRegistry pkgRegistry) {
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect(functionDescr.getDialect());
         dialect.postCompileAddFunction(functionDescr, pkgRegistry.getTypeResolver());
 
@@ -1832,46 +1809,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 throw new RuntimeException( e );
             }
         }
-    }
-
-    private void addRule(RuleBuildContext context) {
-        final RuleDescr ruleDescr = context.getRuleDescr();
-
-        RuleBuilder.build(context);
-
-        this.results.addAll(context.getErrors());
-        this.results.addAll(context.getWarnings());
-
-        context.getRule().setResource(ruleDescr.getResource());
-
-        context.getDialect().addRule(context);
-
-        if (context.needsStreamMode()) {
-            context.getPkg().setNeedStreamMode();
-        }
-    }
-
-    /**
-     * @return The compiled package. The package may contain errors, which you
-     *         can report on by calling getErrors or printErrors. If you try to
-     *         add an invalid package (or rule) to a RuleBase, you will get a
-     *         runtime exception.
-     *
-     *         Compiled packages are serializable.
-     */
-    public InternalKnowledgePackage getPackage() {
-        PackageRegistry pkgRegistry = null;
-        if (!this.pkgRegistryMap.isEmpty()) {
-            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[currentRulePackage];
-        }
-        InternalKnowledgePackage pkg = null;
-        if (pkgRegistry != null) {
-            pkg = pkgRegistry.getPackage();
-        }
-        if (hasErrors() && pkg != null) {
-            pkg.setError(getErrors().toString());
-        }
-        return pkg;
     }
 
     public InternalKnowledgePackage[] getPackages() {
@@ -1904,6 +1841,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public PackageRegistry getPackageRegistry(String name) {
         return this.pkgRegistryMap.get(name);
+    }
+
+    public InternalKnowledgePackage getPackage(String name) {
+        return this.pkgRegistryMap.get(name).getPackage();
     }
 
     public Map<String, PackageRegistry> getPackageRegistry() {
@@ -2085,12 +2026,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             return;
         }
         for (AttributeDescr attrDescr : pkgAttributes.values()) {
-            String name = attrDescr.getName();
-            AttributeDescr ruleAttrDescr = ruleDescr.getAttributes().get(name);
-            if (ruleAttrDescr == null) {
-                ruleDescr.getAttributes().put(name,
-                                              attrDescr);
-            }
+            ruleDescr.getAttributes().putIfAbsent( attrDescr.getName(), attrDescr );
         }
     }
 
@@ -2250,8 +2186,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public void add(Resource resource,
-                            ResourceType type,
-                            ResourceConfiguration configuration) {
+                    ResourceType type,
+                    ResourceConfiguration configuration) {
         registerBuildResource(resource, type);
         addKnowledgeResource(resource, type, configuration);
     }
@@ -2291,8 +2227,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return typeBuilder.getTypeDeclaration(cls);
     }
 
-    public void normalizeTypeDeclarationAnnotations(PackageDescr packageDescr) {
-        TypeResolver typeResolver = pkgRegistryMap.get(packageDescr.getName()).getTypeResolver();
+    public void normalizeTypeDeclarationAnnotations(PackageDescr packageDescr, TypeResolver typeResolver) {
         boolean isStrict = configuration.getLanguageLevel().useJavaAnnotations();
         for (TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations()) {
             normalizeAnnotations(typeDeclarationDescr, typeResolver, isStrict);
@@ -2309,8 +2244,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    public void normalizeRuleAnnotations(PackageDescr packageDescr) {
-        TypeResolver typeResolver = pkgRegistryMap.get(packageDescr.getName()).getTypeResolver();
+    public void normalizeRuleAnnotations(PackageDescr packageDescr, TypeResolver typeResolver) {
         boolean isStrict = configuration.getLanguageLevel().useJavaAnnotations();
         for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
             normalizeAnnotations( ruleDescr, typeResolver, isStrict );
@@ -2356,22 +2290,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         Class<?> annotationClass = null;
         try {
             annotationClass = typeResolver.resolveType(annotationDescr.getName(), TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             String className = normalizeAnnotationNonStrictName(annotationDescr.getName());
             try {
                 annotationClass = typeResolver.resolveType(className, TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
-            } catch (ClassNotFoundException e1) {
-                // non-strict annotation, ignore error
-            } catch (NoClassDefFoundError e1) {
-                // non-strict annotation, ignore error
-            }
-        } catch (NoClassDefFoundError e) {
-            String className = normalizeAnnotationNonStrictName(annotationDescr.getName());
-            try {
-                annotationClass = typeResolver.resolveType(className, TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
-            } catch (ClassNotFoundException e1) {
-                // non-strict annotation, ignore error
-            } catch (NoClassDefFoundError e1) {
+            } catch (ClassNotFoundException | NoClassDefFoundError e1) {
                 // non-strict annotation, ignore error
             }
         }
@@ -2416,11 +2339,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 } catch ( NoSuchMethodException e ) {
                     addBuilderResult( new AnnotationDeclarationError( annotationDescr,
                                                                       "Unknown annotation property " + key ) );
-                } catch ( ClassNotFoundException e ) {
-                    addBuilderResult( new AnnotationDeclarationError( annotationDescr,
-                                                                      "Unknown class " + annotationDescr.getValue( key ) +                                                                      " used in property " + key +
-                                                                      " of annotation " + annotationDescr.getName() ) );
-                } catch ( NoClassDefFoundError e ) {
+                } catch ( ClassNotFoundException | NoClassDefFoundError e ) {
                     addBuilderResult( new AnnotationDeclarationError( annotationDescr,
                                                                       "Unknown class " + annotationDescr.getValue( key ) +                                                                      " used in property " + key +
                                                                       " of annotation " + annotationDescr.getName() ) );
@@ -2444,10 +2363,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         try {
             Class<?> annotationClass = typeResolver.resolveType(annotationDescr.getName(), TypeResolver.ONLY_ANNOTATION_CLASS_FILTER);
             annotationDescr.setFullyQualifiedName(annotationClass.getCanonicalName());
-        } catch (ClassNotFoundException e) {
-            addBuilderResult(new AnnotationDeclarationError(annotationDescr,
-                                                            "Unknown annotation: " + annotationDescr.getName()));
-        } catch (NoClassDefFoundError e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             addBuilderResult(new AnnotationDeclarationError(annotationDescr,
                                                             "Unknown annotation: " + annotationDescr.getName()));
         }

@@ -15,6 +15,13 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
@@ -34,13 +41,6 @@ import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class TypeDeclarationBuilder {
 
@@ -101,23 +101,40 @@ public class TypeDeclarationBuilder {
                                          List<TypeDefinition> unresolvedTypes,
                                          Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
 
-        // init package to ensure type resolvers are available
-        for ( PackageDescr packageDescr : packageDescrs ) {
-            if ( kbuilder.getPackageRegistry( packageDescr.getName() ) == null ) {
-                kbuilder.createPackageRegistry( packageDescr );
-            }
-        }
-
-        setResourcesInDescriptors( packageDescrs );
+        packageDescrs.forEach( kbuilder::getOrCreatePackageRegistry );
+        packageDescrs.forEach( this::setResourcesInDescriptors );
 
         // ensure all names are fully qualified before continuing
         typeDeclarationNameResolver.resolveTypes( packageDescrs, unresolvedTypes );
 
         // create "implicit" packages
-        for ( PackageDescr packageDescr : packageDescrs ) {
-            normalizeForeignPackages( packageDescr );
-        }
+        packageDescrs.forEach( this::normalizeForeignPackages );
 
+        processUnresolvedTypes( null, null, unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
+    }
+
+    public void processTypeDeclarations( PackageDescr packageDescr,
+                                         PackageRegistry pkgRegistry,
+                                         Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs,
+                                         List<TypeDefinition> unresolvedTypes,
+                                         Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
+
+        setResourcesInDescriptors( packageDescr );
+
+        // ensure all names are fully qualified before continuing
+        typeDeclarationNameResolver.resolveTypes( packageDescr, unresolvedTypes, pkgRegistry.getTypeResolver() );
+
+        // create "implicit" packages
+        normalizeForeignPackages( packageDescr );
+
+        processUnresolvedTypes( packageDescr, pkgRegistry, unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
+    }
+
+    private void processUnresolvedTypes( PackageDescr packageDescr,
+                                         PackageRegistry pkgRegistry,
+                                         Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs,
+                                         List<TypeDefinition> unresolvedTypes,
+                                         Map<String, AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
         // merge "duplicate" definitions and declarations
         unsortedDescrs = compactDefinitionsAndDeclarations( unsortedDescrs, unprocesseableDescrs );
 
@@ -125,16 +142,16 @@ public class TypeDeclarationBuilder {
         ClassHierarchyManager classHierarchyManager = new ClassHierarchyManager( unsortedDescrs, kbuilder );
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : classHierarchyManager.getSortedDescriptors() ) {
-            PackageRegistry pkgRegistry = kbuilder.getPackageRegistry( typeDescr.getNamespace() );
-            createBean( typeDescr, pkgRegistry, classHierarchyManager, unresolvedTypes, unprocesseableDescrs );
+            PackageRegistry pkgReg = getPackageRegistry( pkgRegistry, packageDescr, typeDescr );
+            createBean( typeDescr, pkgReg, classHierarchyManager, unresolvedTypes, unprocesseableDescrs );
         }
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : classHierarchyManager.getSortedDescriptors() ) {
             if ( ! unprocesseableDescrs.containsKey( typeDescr.getType().getFullName() ) ) {
-                PackageRegistry pkgRegistry = kbuilder.getPackageRegistry( typeDescr.getNamespace() );
-                InternalKnowledgePackage pkg = pkgRegistry.getPackage();
+                PackageRegistry pkgReg = getPackageRegistry( pkgRegistry, packageDescr, typeDescr );
+                InternalKnowledgePackage pkg = pkgReg.getPackage();
                 TypeDeclaration type = pkg.getTypeDeclaration( typeDescr.getType().getName() );
-                typeDeclarationConfigurator.wireFieldAccessors( pkgRegistry, typeDescr, type );
+                typeDeclarationConfigurator.wireFieldAccessors( pkgReg, typeDescr, type );
 
                 if (kbuilder.getKnowledgeBase() != null) {
                     // in case of incremental compilatoin (re)register the new type declaration on the existing kbase
@@ -142,7 +159,10 @@ public class TypeDeclarationBuilder {
                 }
             }
         }
+    }
 
+    private PackageRegistry getPackageRegistry( PackageRegistry pkgRegistry, PackageDescr packageDescr, AbstractClassTypeDeclarationDescr typeDescr ) {
+        return pkgRegistry != null && typeDescr.getNamespace().equals( packageDescr.getName() ) ? pkgRegistry : kbuilder.getPackageRegistry( typeDescr.getNamespace() );
     }
 
     private Collection<AbstractClassTypeDeclarationDescr> compactDefinitionsAndDeclarations( Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs, Map<String, AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
@@ -200,12 +220,10 @@ public class TypeDeclarationBuilder {
         return ! prev.getFields().isEmpty();
     }
 
-    protected void setResourcesInDescriptors( Collection<? extends PackageDescr> packageDescrs ) {
-        for ( PackageDescr packageDescr : packageDescrs ) {
-            for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
-                if ( typeDescr.getResource() == null ) {
-                    typeDescr.setResource( kbuilder.getCurrentResource() );
-                }
+    private void setResourcesInDescriptors( PackageDescr packageDescr ) {
+        for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
+            if ( typeDescr.getResource() == null ) {
+                typeDescr.setResource( kbuilder.getCurrentResource() );
             }
         }
     }
@@ -317,9 +335,8 @@ public class TypeDeclarationBuilder {
                     for (ImportDescr imp : packageDescr.getImports()) {
                         altDescr.addImport(imp);
                     }
-                    if (!kbuilder.getPackageRegistry().containsKey(altDescr.getNamespace())) {
-                        kbuilder.createPackageRegistry( altDescr );
-                    }
+
+                    kbuilder.getOrCreatePackageRegistry( altDescr );
                 }
             }
         }

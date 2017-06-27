@@ -16,6 +16,11 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -51,11 +56,6 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A builder for the java dialect accumulate version
@@ -189,7 +189,7 @@ public class MVELAccumulateBuilder
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( func.getFunction() );
             if( function == null ) {
                 // might have been imported in the package
-                function = context.getKnowledgeBuilder().getPackage().getAccumulateFunctions().get(func.getFunction());
+                function = context.getPkg().getAccumulateFunctions().get(func.getFunction());
             }
             if ( function == null ) {
                 context.addError( new DescrBuildError( accumDescr,

@@ -91,7 +91,7 @@ public class RuleExecutionSetProviderImpl
             //          pre build the package
             final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
             builder.addPackage( packageDescr );
-            InternalKnowledgePackage pkg = builder.getPackage();
+            InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
 
             final LocalRuleExecutionSetProviderImpl localRuleExecutionSetProvider = new LocalRuleExecutionSetProviderImpl();
             return localRuleExecutionSetProvider.createRuleExecutionSet( pkg,

@@ -16,6 +16,12 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.List;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -38,12 +44,6 @@ import org.drools.core.util.DateUtils;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Calendar;
-import java.util.List;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -55,7 +55,7 @@ public class RuleBuilderTest {
 
         final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
         kBuilder.addPackage(new PackageDescr("org.drools"));
-        InternalKnowledgePackage pkg = kBuilder.getPackage();
+        InternalKnowledgePackage pkg = kBuilder.getPackage("org.drools");
 
         final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
 
@@ -76,7 +76,7 @@ public class RuleBuilderTest {
         assertTrue(kBuilder.getErrors().toString(),
                    kBuilder.getErrors().isEmpty());
 
-        final RuleImpl rule = kBuilder.getPackage().getRule( "test nested CEs" );
+        final RuleImpl rule = kBuilder.getPackage("org.drools.compiler").getRule( "test nested CEs" );
 
         assertEquals( "There should be 2 rule level declarations",
                       2,
