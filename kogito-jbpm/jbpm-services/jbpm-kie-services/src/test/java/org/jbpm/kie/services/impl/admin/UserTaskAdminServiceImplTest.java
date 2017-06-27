@@ -417,6 +417,54 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
         Assertions.assertThat(tasks).hasSize(1);
     }
+
+    @Test(timeout=10000)
+    public void testReassignNotStartedInvalidTimeExpression() throws Exception {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        Assertions.assertThat(processInstanceId).isNotNull();
+
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
+        Assertions.assertThat(tasks).hasSize(1);
+        TaskSummary task = tasks.get(0);
+
+        Assertions.assertThatThrownBy(() -> {
+            userTaskAdminService.reassignWhenNotStarted(task.getId(),
+                                                        "2ssssssss",
+                                                        factory.newUser("john"));
+        })
+                .hasMessage("Error parsing time string: [ 2ssssssss ]");
+
+        Assertions.assertThatThrownBy(() -> {
+            userTaskAdminService.reassignWhenNotStarted(task.getId(),
+                                                        null,
+                                                        factory.newUser("john"));
+        })
+                .hasMessage("Invalid time expression");
+
+        Assertions.assertThatThrownBy(() -> {
+            userTaskAdminService.reassignWhenNotStarted(task.getId(),
+                                                          "",
+                                                          factory.newUser("john"));
+        })
+                .hasMessage("Invalid time expression");
+    }
+
+    @Test(timeout=10000)
+    public void testReassignNotStartedInvalidOrgEntities() throws Exception {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        Assertions.assertThat(processInstanceId).isNotNull();
+
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
+        Assertions.assertThat(tasks).hasSize(1);
+        TaskSummary task = tasks.get(0);
+
+        Assertions.assertThatThrownBy(() -> {
+            userTaskAdminService.reassignWhenNotStarted(task.getId(),
+                                                        "2s",
+                                                        null);
+        })
+                .hasMessage("Invalid org entity");
+    }
     
     @Test(timeout=10000)
     public void testReassignNotCompleted() throws Exception {
@@ -453,6 +501,66 @@ public class UserTaskAdminServiceImplTest extends AbstractKieServicesBaseTest {
         reassignments = userTaskAdminService.getTaskReassignments(task.getId(), false);
         Assertions.assertThat(reassignments).isNotNull();
         Assertions.assertThat(reassignments).hasSize(1);
+    }
+
+    @Test(timeout=10000)
+    public void testReassignNotCompletedInvalidTimeExpression() throws Exception {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        Assertions.assertThat(processInstanceId).isNotNull();
+
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
+        Assertions.assertThat(tasks).hasSize(1);
+        TaskSummary task = tasks.get(0);
+
+        userTaskService.start(task.getId(), "salaboy");
+
+        Collection<TaskReassignment> reassignments = userTaskAdminService.getTaskReassignments(task.getId(), false);
+        Assertions.assertThat(reassignments).isNotNull();
+        Assertions.assertThat(reassignments).hasSize(0);
+
+        Assertions.assertThatThrownBy(() -> {
+            userTaskAdminService.reassignWhenNotCompleted(task.getId(),
+                                                        "2ssssssss",
+                                                        factory.newUser("john"));
+        })
+                .hasMessage("Error parsing time string: [ 2ssssssss ]");
+
+        Assertions.assertThatThrownBy(() -> {
+            userTaskAdminService.reassignWhenNotCompleted(task.getId(),
+                                                        null,
+                                                        factory.newUser("john"));
+        })
+                .hasMessage("Invalid time expression");
+
+        Assertions.assertThatThrownBy(() -> {
+            userTaskAdminService.reassignWhenNotCompleted(task.getId(),
+                                                          "",
+                                                          factory.newUser("john"));
+        })
+                .hasMessage("Invalid time expression");
+    }
+
+    @Test(timeout=10000)
+    public void testReassignNotCompletedInvalidOrgEntities() throws Exception {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        Assertions.assertThat(processInstanceId).isNotNull();
+
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
+        Assertions.assertThat(tasks).hasSize(1);
+        TaskSummary task = tasks.get(0);
+
+        userTaskService.start(task.getId(), "salaboy");
+
+        Collection<TaskReassignment> reassignments = userTaskAdminService.getTaskReassignments(task.getId(), false);
+        Assertions.assertThat(reassignments).isNotNull();
+        Assertions.assertThat(reassignments).hasSize(0);
+
+        Assertions.assertThatThrownBy(() -> {
+            userTaskAdminService.reassignWhenNotCompleted(task.getId(),
+                                                        "2s",
+                                                        null);
+        })
+                .hasMessage("Invalid org entity");
     }
     
     @Test(timeout=10000)

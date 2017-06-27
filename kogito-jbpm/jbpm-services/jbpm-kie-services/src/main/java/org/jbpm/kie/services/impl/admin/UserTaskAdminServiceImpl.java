@@ -396,6 +396,15 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
         if (task == null) {
             throw new TaskNotFoundException("Task with id " + taskId + " not found");
         }
+
+        if(timeExpression == null || timeExpression.isEmpty()) {
+            throw new IllegalArgumentException("Invalid time expression");
+        }
+
+        if(orgEntities == null || orgEntities.length <= 0) {
+            throw new IllegalArgumentException("Invalid org entity");
+        }
+
         List<Escalation> escalations = new ArrayList<Escalation>();
         Deadline taskDeadline = TaskModelProvider.getFactory().newDeadline();                
         taskDeadline.setEscalations(escalations);        
