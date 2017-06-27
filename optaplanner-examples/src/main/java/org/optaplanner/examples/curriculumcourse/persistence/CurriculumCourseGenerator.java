@@ -52,6 +52,7 @@ public class CurriculumCourseGenerator extends LoggingMain {
         CurriculumCourseGenerator generator = new CurriculumCourseGenerator();
         generator.writeCourseSchedule(200, 8);
         generator.writeCourseSchedule(400, 16);
+        generator.writeCourseSchedule(800, 32);
     }
 
     private final int[] roomCapacityOptions = {
