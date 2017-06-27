@@ -33,6 +33,7 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.DeclarationScopeResolver;
+import org.drools.core.util.StringUtils;
 import org.kie.api.runtime.rule.RuleUnit;
 
 /**
@@ -183,7 +184,9 @@ public class RuleBuildContext extends PackageBuildContext {
             if (lastSep >= 0) {
                 drlPath = drlPath.substring( lastSep+1 );
             }
-            ruleUnitClassName = rule.getPackage() + "." + drlPath.substring( 0, drlPath.lastIndexOf( '.' ) ).replace( '/', '.' );
+            ruleUnitClassName = rule.getPackage()
+                    + "."
+                    + StringUtils.ucFirst(drlPath.substring( 0, drlPath.lastIndexOf( '.' ) )).replace( '/', '.' );
             nameInferredFromResource = true;
         }
 
