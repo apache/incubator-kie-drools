@@ -362,7 +362,7 @@ Requires the model to support <<planningValueStrength,planning value strength co
 * ``DECREASING_STRENGTH_IF_AVAILABLE``: If the model supports <<planningValueStrength,planning value strength comparison>>, behave like ``DECREASING_STRENGTH``, else like ``NONE``.
 * ``NONE``: Try the planning values in original order.
 
-Advanced configuration with <<weakestFitDecreasing,Weakest Fit Decreasing>> for a single entity class with two variables:
+Advanced configuration with <<weakestFitDecreasing,Weakest Fit Decreasing>> for a single entity class with one variable:
 
 [source,xml,options="nowrap"]
 ----
