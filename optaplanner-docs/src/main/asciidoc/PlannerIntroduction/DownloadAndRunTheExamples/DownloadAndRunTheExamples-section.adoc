@@ -13,7 +13,6 @@ To try it now:
 + 
 Linux or Mac:
 +
-
 [source,sh,options="nowrap"]
 ----
 $ cd examples
@@ -22,7 +21,6 @@ $ ./runExamples.sh
 +
 Windows:
 +
-
 [source,sh,options="nowrap"]
 ----
 $ cd examples
@@ -172,14 +170,12 @@ Build and run the examples from source.
 
 . Clone `optaplanner` from GitHub (or alternatively, download https://github.com/kiegroup/optaplanner/zipball/master[the zipball]):
 +
-
 [source,sh,options="nowrap"]
 ----
 $ git clone git@github.com:kiegroup/optaplanner.git optaplanner
 ...
 ----
 +
-
 [NOTE]
 ====
 If you don't have a GitHub account or your local Git installation isn't configured with it, use this command instead, to avoid an authentication issue:
@@ -193,7 +189,6 @@ $ git clone https://github.com/kiegroup/optaplanner.git optaplanner
 
 . Build it with http://maven.apache.org/[Maven]:
 +
-
 [source,sh,options="nowrap"]
 ----
 $ cd optaplanner
@@ -201,7 +196,6 @@ $ mvn clean install -DskipTests
 ...
 ----
 +
-
 [NOTE]
 ====
 The first time, Maven might take a long time, because it needs to download jars.
@@ -209,7 +203,6 @@ The first time, Maven might take a long time, because it needs to download jars.
 
 . Run the examples:
 +
-
 [source,sh,options="nowrap"]
 ----
 $ cd optaplanner-examples

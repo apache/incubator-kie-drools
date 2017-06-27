@@ -878,14 +878,12 @@ The following ``parallelBenchmarkCount``s are supported:
 * ``AUTO``: Let Planner decide how many benchmarks to run in parallel. This formula is based on experience. It's recommended to prefer this over the other parallel enabling options.
 * Static number: The number of benchmarks to run in parallel.
 +
-
 [source,xml,options="nowrap"]
 ----
 <parallelBenchmarkCount>2</parallelBenchmarkCount>
 ----
 * JavaScript formula: Formula for the number of benchmarks to run in parallel. It can use the variable ``availableProcessorCount``. For example:
 +
-
 [source,xml,options="nowrap"]
 ----
 <parallelBenchmarkCount>(availableProcessorCount / 2) + 1</parallelBenchmarkCount>

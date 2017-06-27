@@ -122,7 +122,6 @@ The `nodeExplorationType` options are:
 
 * `DEPTH_FIRST` (default): Explore deeper nodes first (and then a better score and then a better optimistic bound). Deeper nodes (especially leaf nodes) often improve the pessimistic bound. A better pessimistic bound allows pruning more nodes to reduce the search space.
 +
-
 [source,xml,options="nowrap"]
 ----
   <exhaustiveSearch>
@@ -132,7 +131,6 @@ The `nodeExplorationType` options are:
 ----
 * `BREADTH_FIRST` (not recommended): Explore nodes layer by layer (and then a better score and then a better optimistic bound). Scales terribly in memory (and usually in performance too).
 +
-
 [source,xml,options="nowrap"]
 ----
   <exhaustiveSearch>
@@ -142,7 +140,6 @@ The `nodeExplorationType` options are:
 ----
 * ``SCORE_FIRST``: Explore nodes with a better score first (and then a better optimistic bound and then deeper nodes first). Might scale as terribly as `BREADTH_FIRST` in some cases.
 +
-
 [source,xml,options="nowrap"]
 ----
   <exhaustiveSearch>
@@ -152,7 +149,6 @@ The `nodeExplorationType` options are:
 ----
 * ``OPTIMISTIC_BOUND_FIRST``: Explore nodes with a better optimistic bound first (and then a better score and then deeper nodes first). Might scale as terribly as `BREADTH_FIRST` in some cases.
 +
-
 [source,xml,options="nowrap"]
 ----
   <exhaustiveSearch>

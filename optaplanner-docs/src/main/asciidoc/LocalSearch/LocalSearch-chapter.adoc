@@ -168,7 +168,6 @@ To evaluate only a random subset of all the moves, use:
 
 * An `acceptedCountLimit` integer, which specifies how many accepted moves should be evaluated during each step. By default, all accepted moves are evaluated at every step.
 +
-
 [source,xml,options="nowrap"]
 ----
   <forager>
@@ -194,7 +193,6 @@ There are three pick early types for Local Search:
 
 * ``NEVER``: A move is never picked early: all accepted moves are evaluated that the selection allows. This is the default.
 +
-
 [source,xml,options="nowrap"]
 ----
     <forager>
@@ -203,7 +201,6 @@ There are three pick early types for Local Search:
 ----
 * ``FIRST_BEST_SCORE_IMPROVING``: Pick the first accepted move that improves the best score. If none improve the best score, it behaves exactly like the pickEarlyType NEVER.
 +
-
 [source,xml,options="nowrap"]
 ----
     <forager>
@@ -212,7 +209,6 @@ There are three pick early types for Local Search:
 ----
 * ``FIRST_LAST_STEP_SCORE_IMPROVING``: Pick the first accepted move that improves the last step score. If none improve the last step score, it behaves exactly like the pickEarlyType NEVER.
 +
-
 [source,xml,options="nowrap"]
 ----
     <forager>
@@ -344,7 +340,6 @@ Planner implements several tabu types:
 
 * _Planning entity tabu_ (recommended) makes the planning entities of recent steps tabu. For example, for N queens it makes the recently moved queens tabu. It's recommended to start with this tabu type.
 +
-
 [source,xml,options="nowrap"]
 ----
     <acceptor>
@@ -354,7 +349,6 @@ Planner implements several tabu types:
 +
 To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of entities, for example 2%:
 +
-
 [source,xml,options="nowrap"]
 ----
     <acceptor>
@@ -363,7 +357,6 @@ To avoid hard coding the tabu size, configure a tabu ratio, relative to the numb
 ----
 * _Planning value tabu_ makes the planning values of recent steps tabu. For example, for N queens it makes the recently moved to rows tabu.
 +
-
 [source,xml,options="nowrap"]
 ----
     <acceptor>
@@ -373,7 +366,6 @@ To avoid hard coding the tabu size, configure a tabu ratio, relative to the numb
 +
 To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of values, for example 2%:
 +
-
 [source,xml,options="nowrap"]
 ----
     <acceptor>
@@ -382,7 +374,6 @@ To avoid hard coding the tabu size, configure a tabu ratio, relative to the numb
 ----
 * _Move tabu_ makes recent steps tabu. It does not accept a move equal to one of those steps.
 +
-
 [source,xml,options="nowrap"]
 ----
     <acceptor>
@@ -391,7 +382,6 @@ To avoid hard coding the tabu size, configure a tabu ratio, relative to the numb
 ----
 * __Undo move tabu __makes the undo move of recent steps tabu.
 +
-
 [source,xml,options="nowrap"]
 ----
     <acceptor>
@@ -400,7 +390,6 @@ To avoid hard coding the tabu size, configure a tabu ratio, relative to the numb
 ----
 * _Solution tabu_ makes recently visited solutions tabu. It does not accept a move that leads to one of those solutions. It requires that the `Solution` implements `equals()` and `hashCode()` properly. If you can spare the memory, don't be cheap on the tabu size.
 +
-
 [source,xml,options="nowrap"]
 ----
     <acceptor>

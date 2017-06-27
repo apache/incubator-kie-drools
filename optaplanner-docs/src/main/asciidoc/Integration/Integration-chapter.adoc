@@ -526,7 +526,6 @@ The Drools rule engine does not work on Android yet, so Drools score calculation
 
 . Add a dependency to the `build.gradle` file in your Android project to exclude `org.drools` and `xmlpull` dependencies:
 +
-
 [source,gradle]
 ----
 dependencies {

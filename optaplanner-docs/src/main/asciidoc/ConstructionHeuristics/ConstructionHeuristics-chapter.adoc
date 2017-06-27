@@ -470,7 +470,6 @@ There are several pick early types for Construction Heuristics:
 
 * ``NEVER``: Evaluate all the selected moves to initialize the variable(s). This is the default if the <<initializingScoreTrend,InitializingScoreTrend>> is not ``ONLY_DOWN``.
 +
-
 [source,xml,options="nowrap"]
 ----
   <constructionHeuristic>
@@ -482,7 +481,6 @@ There are several pick early types for Construction Heuristics:
 ----
 * ``FIRST_NON_DETERIORATING_SCORE``: Initialize the variable(s) with the first move that doesn't deteriorate the score, ignore the remaining selected moves. This is the default if the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``.
 +
-
 [source,xml,options="nowrap"]
 ----
   <constructionHeuristic>
@@ -493,7 +491,6 @@ There are several pick early types for Construction Heuristics:
   </constructionHeuristic>
 ----
 +
-
 [NOTE]
 ====
 If there are only negative constraints, but the <<initializingScoreTrend,InitializingScoreTrend>> is strictly not ``ONLY_DOWN``,
@@ -502,7 +499,6 @@ Use the <<benchmarker,Benchmarker>> to decide if the score quality loss is worth
 ====
 * ``FIRST_FEASIBLE_SCORE``: Initialize the variable(s) with the first move that has a feasible score.
 +
-
 [source,xml,options="nowrap"]
 ----
   <constructionHeuristic>
@@ -516,7 +512,6 @@ Use the <<benchmarker,Benchmarker>> to decide if the score quality loss is worth
 If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, use `FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD` instead, because that's faster without any disadvantages.
 * ``FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD``: Initialize the variable(s) with the first move that doesn't deteriorate the feasibility of the score any further.
 +
-
 [source,xml,options="nowrap"]
 ----
   <constructionHeuristic>

@@ -43,9 +43,7 @@ The code example does the following:
 . Build the `Solver` based on a solver configuration (in this case <<solverConfigurationByXML,an XML file>>, `cloudBalancingSolverConfig.xml`, from the classpath).
 + 
 Building the `Solver` is the most complicated part of this procedure. For more detail, see <<cloudBalancingSolverConfiguration, Solver Configuration>>.
-
 +
-
 [source,java,options="nowrap"]
 ----
         SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
@@ -57,7 +55,6 @@ Building the `Solver` is the most complicated part of this procedure. For more d
 +
 `CloudBalancingGenerator` generates a random problem: you will replace this with a class that loads a real problem, for example from a database.
 +
-
 [source,java,options="nowrap"]
 ----
         CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
@@ -65,7 +62,6 @@ Building the `Solver` is the most complicated part of this procedure. For more d
 
 . Solve the problem.
 +
-
 [source,java,options="nowrap"]
 ----
         CloudBalance solvedCloudBalance = solver.solve(unsolvedCloudBalance);
@@ -73,7 +69,6 @@ Building the `Solver` is the most complicated part of this procedure. For more d
 
 . Display the result.
 +
-
 [source,java,options="nowrap"]
 ----
         System.out.println("\nSolved cloudBalance with 400 computers and 1200 processes:\n"

@@ -778,7 +778,6 @@ There can be certain moves that you don't want to select, because:
 * The move is pointless and would only waste CPU time. For example, swapping two lectures of the same course will result in the same score and the same schedule because all lectures of one course are interchangeable (same teacher, same students, same topic).
 * Doing the move would break <<buildInHardConstraint,a built-in hard constraint>>, so the solution would be infeasible but the score function doesn't check built-in hard constraints (for performance gain). For example, don't change a gym lecture to a room which is not a gym room.
 +
-
 [NOTE]
 ====
 Any built-in hard constraint must probably be filtered on every move type of every solver phase.
@@ -929,7 +928,6 @@ Some `Selector` types implement a `SorterManner` out of the box:
 * `EntitySelector` supports:
 ** ``DECREASING_DIFFICULTY``: Sorts the planning entities according to decreasing <<planningEntityDifficulty,planning entity difficulty>>. Requires that planning entity difficulty is annotated on the domain model.
 +
-
 [source,xml,options="nowrap"]
 ----
     <entitySelector>
@@ -941,7 +939,6 @@ Some `Selector` types implement a `SorterManner` out of the box:
 * `ValueSelector` supports:
 ** ``INCREASING_STRENGTH``: Sorts the planning values according to increasing <<planningValueStrength,planning value strength>>. Requires that planning value strength is annotated on the domain model.
 +
-
 [source,xml,options="nowrap"]
 ----
     <valueSelector>
@@ -1238,7 +1235,6 @@ The following ``NearbySelectionDistributionType``s are supported:
 
 * ``BLOCK_DISTRIBUTION``: Only the n nearest are selected, with an equal probability. For example, select the 20 nearest:
 +
-
 [source,xml,options="nowrap"]
 ----
   <nearbySelection>
@@ -1247,7 +1243,6 @@ The following ``NearbySelectionDistributionType``s are supported:
 ----
 * ``LINEAR_DISTRIBUTION``: Nearest elements are selected with a higher probability. The probability decreases linearly.
 +
-
 [source,xml,options="nowrap"]
 ----
   <nearbySelection>
@@ -1256,7 +1251,6 @@ The following ``NearbySelectionDistributionType``s are supported:
 ----
 * `PARABOLIC_DISTRIBUTION` (recommended): Nearest elements are selected with a higher probability.
 +
-
 [source,xml,options="nowrap"]
 ----
   <nearbySelection>
@@ -1265,7 +1259,6 @@ The following ``NearbySelectionDistributionType``s are supported:
 ----
 * ``BETA_DISTRIBUTION``: Selection according to a beta distribution. Slows down the solver significantly.
 +
-
 [source,xml,options="nowrap"]
 ----
   <nearbySelection>
