@@ -58,7 +58,9 @@ public class CustomStaxWriter extends StaxWriter {
                 //   at com.ctc.wstx.sw.BufferingXmlWriter.writeRaw(BufferingXmlWriter.java:314)
                 //   at com.ctc.wstx.sw.BaseStreamWriter.writeCharacters(BaseStreamWriter.java:436)
                 //   at org.kie.dmn.backend.marshalling.CustomStaxWriter.endNode(CustomStaxWriter.java:55)
-                // do not insert trailing newline before EOF.
+                // where CustomStaxWriter.java:55 was inserting of trailing newline before EOF, but Woodstox seems to close early it internal write buffer
+                // before having the opportunity to append the trailing line.
+                // Therefore, in case of WoodStx, do not insert trailing newline before EOF.
             } else {
                 // closed last element before EOF
                 try {

@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.kie.api.io.Resource;
-import org.kie.dmn.api.core.DMNCompiler;
-import org.kie.dmn.api.core.DMNCompilerConfiguration;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
@@ -56,8 +54,15 @@ import org.kie.dmn.model.v1_1.Definitions;
 
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager, Externalizable {
-
+    
+    private static enum SerializationFormat {
+        // To ensure backward compatibility, append only:
+        DMN_XML
+    }
+    private SerializationFormat serializedAs = SerializationFormat.DMN_XML;
+    private Resource resource;
     private Definitions definitions;
+    
     private Map<String, InputDataNode>              inputs       = new HashMap<>();
     private Map<String, DecisionNode>               decisions    = new HashMap<>();
     private Map<String, BusinessKnowledgeModelNode> bkms         = new HashMap<>();
@@ -67,7 +72,6 @@ public class DMNModelImpl
     private DMNMessageManager messages = new DefaultDMNMessagesManager();
 
     private DMNTypeRegistry types = new DMNTypeRegistry();
-    private Resource resource;
 
     public DMNModelImpl() {
     }
@@ -290,6 +294,9 @@ public class DMNModelImpl
     
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(serializedAs);
+        out.writeObject(resource);
+
         if ( !(out instanceof DroolsObjectOutputStream) ) {
             throw new UnsupportedOperationException();
             // TODO assume some defaults
@@ -300,12 +307,14 @@ public class DMNModelImpl
         List<DMNExtensionRegister> dmnRegisteredExtensions = compiler.getRegisteredExtensions();
         
         String output = DMNMarshallerFactory.newMarshallerWithExtensions(dmnRegisteredExtensions).marshal(this.definitions);
-        
+
         out.writeObject(output);
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.serializedAs = (SerializationFormat) in.readObject();
+        this.resource = (Resource) in.readObject();
         String xml = (String) in.readObject();
         
         if ( !(in instanceof DroolsObjectInputStream) ) {
@@ -328,7 +337,6 @@ public class DMNModelImpl
         this.itemDefs  = compiledModel.itemDefs  ;
         this.messages  = compiledModel.messages  ;
         this.types     = compiledModel.types     ;
-        this.resource  = compiledModel.resource  ;
     }
 
 }
