@@ -38,7 +38,7 @@ Suffixing this construction heuristic with metaheuristics can remedy that.
 [[firstFitConfiguration]]
 === Configuration
 
-Configure this solver phase:
+Simple configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -47,12 +47,20 @@ Configure this solver phase:
   </constructionHeuristic>
 ----
 
-[NOTE]
-====
-If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
-====
+Advanced configuration:
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
+[source,xml,options="nowrap"]
+----
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+    <...MoveSelector/>
+    <...MoveSelector/>
+    ...
+  </constructionHeuristic>
+----
+
+For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
+For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[firstFitDecreasing]]
@@ -79,7 +87,7 @@ That's usually the case, but not always.
 [[firstFitDecreasingConfiguration]]
 === Configuration
 
-Configure this solver phase:
+Simple configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -88,12 +96,20 @@ Configure this solver phase:
   </constructionHeuristic>
 ----
 
-[NOTE]
-====
-If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
-====
+Advanced configuration:
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
+[source,xml,options="nowrap"]
+----
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    <...MoveSelector/>
+    <...MoveSelector/>
+    ...
+  </constructionHeuristic>
+----
+
+For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
+For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[weakestFit]]
@@ -118,7 +134,7 @@ That's often not the case.
 [[weakestFitConfiguration]]
 === Configuration
 
-Configure this solver phase:
+Simple configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -127,12 +143,20 @@ Configure this solver phase:
   </constructionHeuristic>
 ----
 
-[NOTE]
-====
-If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
-====
+Advanced configuration:
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
+[source,xml,options="nowrap"]
+----
+  <constructionHeuristic>
+    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
+    <...MoveSelector/>
+    <...MoveSelector/>
+    ...
+  </constructionHeuristic>
+----
+
+For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
+For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[weakestFitDecreasing]]
@@ -159,7 +183,7 @@ However, it is usually better than Weakest Fit.
 [[weakestFitDecreasingConfiguration]]
 === Configuration
 
-Configure this solver phase:
+Simple configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -168,12 +192,20 @@ Configure this solver phase:
   </constructionHeuristic>
 ----
 
-[NOTE]
-====
-If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
-====
+Advanced configuration:
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
+[source,xml,options="nowrap"]
+----
+  <constructionHeuristic>
+    <constructionHeuristicType>WEAKEST_FIT_DECREASING</constructionHeuristicType>
+    <...MoveSelector/>
+    <...MoveSelector/>
+    ...
+  </constructionHeuristic>
+----
+
+For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
+For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[strongestFit]]
@@ -198,7 +230,7 @@ That's often not the case.
 [[strongestFitConfiguration]]
 === Configuration
 
-Configure this solver phase:
+Simple configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -207,12 +239,20 @@ Configure this solver phase:
   </constructionHeuristic>
 ----
 
-[NOTE]
-====
-If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
-====
+Advanced configuration:
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
+[source,xml,options="nowrap"]
+----
+  <constructionHeuristic>
+    <constructionHeuristicType>STRONGEST_FIT</constructionHeuristicType>
+    <...MoveSelector/>
+    <...MoveSelector/>
+    ...
+  </constructionHeuristic>
+----
+
+For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
+For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[strongestFitDecreasing]]
@@ -239,7 +279,7 @@ However, it is usually better than Strongest Fit.
 [[strongestFitDecreasingConfiguration]]
 === Configuration
 
-Configure this solver phase:
+Simple configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -248,12 +288,20 @@ Configure this solver phase:
   </constructionHeuristic>
 ----
 
-[NOTE]
-====
-If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
-====
+Advanced configuration:
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
+[source,xml,options="nowrap"]
+----
+  <constructionHeuristic>
+    <constructionHeuristicType>STRONGEST_FIT_DECREASING</constructionHeuristicType>
+    <...MoveSelector/>
+    <...MoveSelector/>
+    ...
+  </constructionHeuristic>
+----
+
+For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
+For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[allocateEntityFromQueue]]
@@ -314,8 +362,7 @@ Requires the model to support <<planningValueStrength,planning value strength co
 * ``DECREASING_STRENGTH_IF_AVAILABLE``: If the model supports <<planningValueStrength,planning value strength comparison>>, behave like ``DECREASING_STRENGTH``, else like ``NONE``.
 * ``NONE``: Try the planning values in original order.
 
-Advanced detailed configuration.
-For example, a <<weakestFitDecreasing,Weakest Fit Decreasing>> configuration for a single entity class with a single variable:
+Advanced configuration with <<weakestFitDecreasing,Weakest Fit Decreasing>> for a single entity class with two variables:
 
 [source,xml,options="nowrap"]
 ----
@@ -338,105 +385,22 @@ For example, a <<weakestFitDecreasing,Weakest Fit Decreasing>> configuration for
   </constructionHeuristic>
 ----
 
-Per step, the `QueuedEntityPlacer` selects one uninitialized entity from the `EntitySelector` and applies the winning `Move` (out of all the moves for that entity generated by the ``MoveSelector``).
-The <<mimicSelection,mimic selection>> ensures that the winning `Move` changes (only) the selected entity.
+Per step, the `QueuedEntityPlacer` selects one uninitialized entity from the `EntitySelector`
+and applies the winning `Move` (out of all the moves for that entity generated by the ``MoveSelector``).
+The <<mimicSelection,mimic selection>> ensures that the winning `Move` changes only the selected entity.
 
 To customize the entity or value sorting, see <<sortedSelection,sorted selection>>.
-Other `Selector` customizations (such as <<filteredSelection,filtering>> and <<limitedSelection,limiting>>) are supported too.
+For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
 
-
-[[allocateEntityFromQueueMultipleVariables]]
-=== Multiple Variables
-
-There are two ways to deal with multiple variables, depending on how their ``ChangeMove``s are combined:
-
-* Cartesian product of the ``ChangeMove``s (default): All variables of the selected entity are assigned together.
-Has better results, especially for timetabling use cases.
-* Sequential ``ChangeMove``s: One variable is assigned at a time.
-Scales much better, especially for three or more variables.
-
-For example, presume a course scheduling example with 200 rooms and 40 periods.
-
-This First Fit configuration for a single entity class with two variables, using a <<cartesianProductMoveSelector,cartesian product>> of their ``ChangeMove``s, will select 8000 moves per entity:
-
-[source,xml,options="nowrap"]
-----
-  <constructionHeuristic>
-    <queuedEntityPlacer>
-      <entitySelector id="placerEntitySelector">
-        <cacheType>PHASE</cacheType>
-      </entitySelector>
-      <cartesianProductMoveSelector>
-        <changeMoveSelector>
-          <entitySelector mimicSelectorRef="placerEntitySelector"/>
-          <valueSelector variableName="room"/>
-        </changeMoveSelector>
-        <changeMoveSelector>
-          <entitySelector mimicSelectorRef="placerEntitySelector"/>
-          <valueSelector variableName="period"/>
-        </changeMoveSelector>
-      </cartesianProductMoveSelector>
-    </queuedEntityPlacer>
-    ...
-  </constructionHeuristic>
-----
-
-[WARNING]
-====
-With three variables of 1000 values each, a cartesian product selects 1000000000 values per entity, which will take far too long.
-====
-
-This First Fit configuration for a single entity class with two variables,
-using sequential ``ChangeMove``s, will select 240 moves per entity:
-
-[source,xml,options="nowrap"]
-----
-  <constructionHeuristic>
-    <queuedEntityPlacer>
-      <entitySelector id="placerEntitySelector">
-        <cacheType>PHASE</cacheType>
-      </entitySelector>
-      <changeMoveSelector>
-        <entitySelector mimicSelectorRef="placerEntitySelector"/>
-        <valueSelector variableName="period"/>
-      </changeMoveSelector>
-      <changeMoveSelector>
-        <entitySelector mimicSelectorRef="placerEntitySelector"/>
-        <valueSelector variableName="room"/>
-      </changeMoveSelector>
-    </queuedEntityPlacer>
-    ...
-  </constructionHeuristic>
-----
-
-[IMPORTANT]
-====
-Especially for sequential ``ChangeMove``s, the order of the variables is important.
-In the example above, it's better to select the period first (instead of the other way around), because there are more hard constraints that do not involve the room (for example: no teacher should teach two lectures at the same time). Let the <<benchmarker,Benchmarker>> guide you.
-====
-
-With three or more variables, it's possible to combine the cartesian product and sequential techniques:
-
-[source,xml,options="nowrap"]
-----
-  <constructionHeuristic>
-    <queuedEntityPlacer>
-      ...
-      <cartesianProductMoveSelector>
-        <changeMoveSelector>...</changeMoveSelector>
-        <changeMoveSelector>...</changeMoveSelector>
-      </cartesianProductMoveSelector>
-      <changeMoveSelector>...</changeMoveSelector>
-    </queuedEntityPlacer>
-    ...
-  </constructionHeuristic>
-----
+If there are multiple planning variables, there's one `ChangeMoveSelector` per planning variable,
+which are either in a cartesian product or in sequential steps,
+similar to <<scalingMultiplePlanningVariablesInConstructionHeuristics,the less verbose configuration>>.
 
 
 [[allocateEntityFromQueueMultipleEntityClasses]]
 === Multiple Entity Classes
 
-The easiest way to deal with multiple entity classes is to run a separate construction heuristic for each entity class:
+The easiest way to deal with multiple entity classes is to run a separate Construction Heuristic for each entity class:
 
 [source,xml,options="nowrap"]
 ----
@@ -566,8 +530,7 @@ Verbose simple configuration:
   </constructionHeuristic>
 ----
 
-Advanced detailed configuration.
-For example, a configuration for a single entity class with a single variable:
+Advanced configuration for a single entity class with a single variable:
 
 [source,xml,options="nowrap"]
 ----
@@ -589,6 +552,8 @@ For example, a configuration for a single entity class with a single variable:
     </queuedValuePlacer>
   </constructionHeuristic>
 ----
+
+For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
 
 
 [[cheapestInsertion]]
@@ -615,7 +580,7 @@ Cheapest Insertion scales considerably worse than First Fit, etc.
 [[cheapestInsertionConfiguration]]
 === Configuration
 
-Simplest configuration of Cheapest Insertion:
+Simple configuration:
 
 [source,xml,options="nowrap"]
 ----
@@ -624,12 +589,20 @@ Simplest configuration of Cheapest Insertion:
   </constructionHeuristic>
 ----
 
-[NOTE]
-====
-If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
-====
+Advanced configuration:
 
-For advanced configuration, see <<allocateFromPool,Allocate from pool>>.
+[source,xml,options="nowrap"]
+----
+  <constructionHeuristic>
+    <constructionHeuristicType>CHEAPEST_INSERTION</constructionHeuristicType>
+    <...MoveSelector/>
+    <...MoveSelector/>
+    ...
+  </constructionHeuristic>
+----
+
+For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
+For a very advanced configuration, see <<allocateFromPool,Allocate from pool>>.
 
 
 [[regretInsertion]]
@@ -691,8 +664,7 @@ Verbose simple configuration:
 
 The `entitySorterManner` and `valueSorterManner` options are described in <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
-Advanced detailed configuration.
-For example, a Cheapest Insertion configuration for a single entity class with a single variable:
+Advanced configuration with <<cheapestInsertion,Cheapest Insertion>> for a single entity class with a single variable:
 
 [source,xml,options="nowrap"]
 ----
@@ -718,3 +690,121 @@ Per step, the `PooledEntityPlacer` applies the winning `Move` (out of all the mo
 
 To customize the entity or value sorting, see <<sortedSelection,sorted selection>>.
 Other `Selector` customization (such as <<filteredSelection,filtering>> and <<limitedSelection,limiting>>) is supported too.
+
+For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
+
+
+[[scalingConstructionHeuristics]]
+== Scaling Construction Heuristics
+
+If the Construction Heuristic takes a long time to solve and create an initial solution,
+there is too little time left for <<localSearch,Local Search>> to reach a near optimal solution.
+
+Ideally, a Construction Heuristic should take less than 20 seconds from scratch
+and less than 50 milliseconds in <<realTimePlanning, real-time planning>>,
+so there plenty of time left for <<localSearch,Local Search>>.
+If the <<benchmarker,Benchmarker>> proves that this is not the case, there's a number of improvements that can be done:
+
+
+[[initializingScoreTrendShortcuts]]
+=== InitializingScoreTrend shortcuts
+
+If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, a Construction Heuristic algorithm (such as First Fit) is faster:
+for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves in that step.
+
+It can take that shortcut without reducing solution quality,
+because a down trend guarantees that initializing any additional planning variable can only make the score the same or worse.
+So if a move has the same score as before the planning variable was initialized, then no other move can have a better score.
+
+
+[[scalingMultiplePlanningVariablesInConstructionHeuristics]]
+=== Scaling Multiple Planning Variables in Construction Heuristics
+
+There are two ways to deal with multiple planning variables,
+depending on how their ``ChangeMove``s are combined:
+
+* *Cartesian product* (default): All variables of the selected entity are assigned together.
+This usually results in a better solution quality, but it scales poorly because it tries every combination of variables. For example:
++
+[source,xml,options="nowrap"]
+----
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    <cartesianProductMoveSelector>
+      <changeMoveSelector>
+        <valueSelector variableName="period"/>
+      </changeMoveSelector>
+      <changeMoveSelector>
+        <valueSelector variableName="room"/>
+      </changeMoveSelector>
+    </cartesianProductMoveSelector>
+  </constructionHeuristic>
+----
+* *Sequential*: One variable is assigned at a time.
+Scales better, at the cost of solution quality. The order of the planning variables matters. For example:
++
+[source,xml,options="nowrap"]
+----
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    <changeMoveSelector>
+      <valueSelector variableName="period"/>
+    </changeMoveSelector>
+    <changeMoveSelector>
+      <valueSelector variableName="room"/>
+    </changeMoveSelector>
+  </constructionHeuristic>
+----
+
+The second way scales better, so it can be worth to switch to it.
+For example, in a course scheduling example with 200 rooms and 40 periods,
+a cartesian product selects 8000 moves per entity (1 step per entity).
+On the other hand, a sequential approach only selects 240 moves per entity (2 steps per entity),
+ending the Construction Heuristic 3 times faster.
+Especially for three or more planning variables, the scaling difference is huge.
+For example, with three variables of 1000 values each,
+a cartesian product selects 1000000000 moves per entity (1 step per entity).
+A sequential approach only selects 240 moves per entity (3 steps per entity),
+ending the Construction Heuristic 300 000 times faster.
+
+[IMPORTANT]
+====
+The order of the variables is important, especially in the sequential technique.
+In the sequential example above, it's better to select the `period` first and the `room` second (instead of the other way around),
+because there are more hard constraints that do not involve the room, such as _no teacher should teach two lectures at the same time_.
+
+Let the <<benchmarker,Benchmarker>> guide you.
+====
+
+With three or more variables, it's possible to combine the cartesian product and sequential techniques:
+
+[source,xml,options="nowrap"]
+----
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    <cartesianProductMoveSelector>
+      <changeMoveSelector>
+        <valueSelector variableName="period"/>
+      </changeMoveSelector>
+      <changeMoveSelector>
+        <valueSelector variableName="room"/>
+      </changeMoveSelector>
+    </cartesianProductMoveSelector>
+    <changeMoveSelector>
+      <valueSelector variableName="teacher"/>
+    </changeMoveSelector>
+  </constructionHeuristic>
+----
+
+
+[[otherScalingTechniquesInConstructionHeuristics]]
+=== Other Scaling Techniques in Construction Heuristics
+
+<<partitionedSearch,Partitioned Search>> reduces the number of moves per step.
+On top of that, it runs the Construction Heuristic on the partitions in parallel.
+It is supported to only partitioned the Construction Heuristic phase.
+
+Other `Selector` customizations can also reduce the number of moves generated by step:
+
+* <<filteredSelection,Filtered selection>>
+* <<limitedSelection,Limited selection>>
