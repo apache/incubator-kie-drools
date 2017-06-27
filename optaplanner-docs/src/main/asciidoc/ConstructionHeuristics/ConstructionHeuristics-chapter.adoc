@@ -62,13 +62,12 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Q
 [[firstFitDecreasingAlgorithm]]
 === Algorithm Description
 
-Like First Fit, but assigns the more difficult planning entities first, because they are less likely to fit in the leftovers.
+Like <<firstFit,First Fit>>, but assigns the more difficult planning entities first, because they are less likely to fit in the leftovers.
 So it sorts the planning entities on decreasing difficulty.
-
-Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
 
 image::ConstructionHeuristics/firstFitDecreasingNQueens04.png[align="center"]
 
+Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
 
 [NOTE]
 ====
@@ -299,15 +298,19 @@ Verbose simple configuration:
 
 The `entitySorterManner` options are:
 
-* ``DECREASING_DIFFICULTY``: Initialize the more difficult planning entities first. This usually increases pruning (and therefore improves scalability). Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
+* ``DECREASING_DIFFICULTY``: Initialize the more difficult planning entities first.
+This usually increases pruning (and therefore improves scalability).
+Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
 * `DECREASING_DIFFICULTY_IF_AVAILABLE` (default): If the model supports <<planningEntityDifficulty,planning entity difficulty comparison>>, behave like ``DECREASING_DIFFICULTY``, else like ``NONE``.
 * ``NONE``: Initialize the planning entities in original order.
 
 The `valueSorterManner` options are:
 
-* ``INCREASING_STRENGTH``: Evaluate the planning values in increasing strength. Requires the model to support <<planningValueStrength,planning value strength comparison>>.
+* ``INCREASING_STRENGTH``: Evaluate the planning values in increasing strength.
+Requires the model to support <<planningValueStrength,planning value strength comparison>>.
 * `INCREASING_STRENGTH_IF_AVAILABLE` (default): If the model supports <<planningValueStrength,planning value strength comparison>>, behave like ``INCREASING_STRENGTH``, else like ``NONE``.
-* ``DECREASING_STRENGTH``: Evaluate the planning values in decreasing strength. Requires the model to support <<planningValueStrength,planning value strength comparison>>.
+* ``DECREASING_STRENGTH``: Evaluate the planning values in decreasing strength.
+Requires the model to support <<planningValueStrength,planning value strength comparison>>.
 * ``DECREASING_STRENGTH_IF_AVAILABLE``: If the model supports <<planningValueStrength,planning value strength comparison>>, behave like ``DECREASING_STRENGTH``, else like ``NONE``.
 * ``NONE``: Try the planning values in original order.
 
@@ -339,7 +342,7 @@ Per step, the `QueuedEntityPlacer` selects one uninitialized entity from the `En
 The <<mimicSelection,mimic selection>> ensures that the winning `Move` changes (only) the selected entity.
 
 To customize the entity or value sorting, see <<sortedSelection,sorted selection>>.
-Other `Selector` customization (such as <<filteredSelection,filtering>> and <<limitedSelection,limiting>>) is supported too.
+Other `Selector` customizations (such as <<filteredSelection,filtering>> and <<limitedSelection,limiting>>) are supported too.
 
 
 [[allocateEntityFromQueueMultipleVariables]]
@@ -383,7 +386,8 @@ This First Fit configuration for a single entity class with two variables, using
 With three variables of 1000 values each, a cartesian product selects 1000000000 values per entity, which will take far too long.
 ====
 
-This First Fit configuration for a single entity class with two variables, using sequential ``ChangeMove``s, will select 240 moves per entity:
+This First Fit configuration for a single entity class with two variables,
+using sequential ``ChangeMove``s, will select 240 moves per entity:
 
 [source,xml,options="nowrap"]
 ----
@@ -468,7 +472,8 @@ The easiest way to deal with multiple entity classes is to run a separate constr
 
 There are several pick early types for Construction Heuristics:
 
-* ``NEVER``: Evaluate all the selected moves to initialize the variable(s). This is the default if the <<initializingScoreTrend,InitializingScoreTrend>> is not ``ONLY_DOWN``.
+* ``NEVER``: Evaluate all the selected moves to initialize the variable(s).
+This is the default if the <<initializingScoreTrend,InitializingScoreTrend>> is not ``ONLY_DOWN``.
 +
 [source,xml,options="nowrap"]
 ----
@@ -479,7 +484,8 @@ There are several pick early types for Construction Heuristics:
     </forager>
   </constructionHeuristic>
 ----
-* ``FIRST_NON_DETERIORATING_SCORE``: Initialize the variable(s) with the first move that doesn't deteriorate the score, ignore the remaining selected moves. This is the default if the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``.
+* ``FIRST_NON_DETERIORATING_SCORE``: Initialize the variable(s) with the first move that doesn't deteriorate the score, ignore the remaining selected moves.
+This is the default if the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``.
 +
 [source,xml,options="nowrap"]
 ----
