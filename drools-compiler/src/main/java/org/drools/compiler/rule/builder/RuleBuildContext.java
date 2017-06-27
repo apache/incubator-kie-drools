@@ -17,7 +17,6 @@
 package org.drools.compiler.rule.builder;
 
 import java.util.Optional;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
@@ -33,7 +32,7 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.DeclarationScopeResolver;
-import org.drools.core.util.StringUtils;
+import org.drools.core.util.ClassUtils;
 import org.kie.api.runtime.rule.RuleUnit;
 
 /**
@@ -184,26 +183,24 @@ public class RuleBuildContext extends PackageBuildContext {
             if (lastSep >= 0) {
                 drlPath = drlPath.substring( lastSep+1 );
             }
-            ruleUnitClassName = rule.getPackage()
-                    + "."
-                    + StringUtils.ucFirst(drlPath.substring( 0, drlPath.lastIndexOf( '.' ) )).replace( '/', '.' );
+            ruleUnitClassName = rule.getPackage() + "." + drlPath.substring( 0, drlPath.lastIndexOf( '.' ) ).replace( '/', '.' );
             nameInferredFromResource = true;
         }
 
         if (ruleUnitClassName != null) {
             TypeResolver typeResolver = getPkg().getTypeResolver();
             boolean unitFound = false;
-            try {
-                unitFound = RuleUnit.class.isAssignableFrom( Class.forName(ruleUnitClassName, true, typeResolver.getClassLoader()) );
-                if (unitFound && nameInferredFromResource) {
+            Class<?> ruleUnitClass = ClassUtils.safeLoadClass(typeResolver.getClassLoader(), ruleUnitClassName);
+            if (ruleUnitClass != null) {
+                unitFound = RuleUnit.class.isAssignableFrom( ruleUnitClass );
+                if ( unitFound && nameInferredFromResource ) {
                     rule.setRuleUnitClassName( ruleUnitClassName );
                 }
-            } catch (ClassNotFoundException e) {
-                // ignore
             }
+
             if (!unitFound && !nameInferredFromResource) {
                 addError( new RuleBuildError( rule, getParentDescr(), null,
-                                              ruleUnitClassName + " is not a valid RuleUnit class name" ) );
+                        ruleUnitClassName + " is not a valid RuleUnit class name" ) );
             }
         }
     }
