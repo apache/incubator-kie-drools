@@ -85,7 +85,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     private static final Logger logger = LoggerFactory.getLogger(MvelConstraint.class);
 
     protected final transient AtomicInteger invocationCounter = new AtomicInteger(1);
-    protected transient boolean jitted = false;
+    protected transient volatile boolean jitted = false;
 
     private Set<String> packageNames;
     protected String expression;
@@ -248,13 +248,18 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         if (!jitted) {
             int jittingThreshold = TEST_JITTING ? 0 : workingMemory.getKnowledgeBase().getConfiguration().getJittingThreshold();
             if (conditionEvaluator == null) {
-                createMvelConditionEvaluator(workingMemory);
-                if (jittingThreshold == 0 && !isDynamic) { // Only for test purposes
-                    forceJitEvaluator(handle, workingMemory, tuple);
+                if (jittingThreshold == 0 && !isDynamic) { // Only for test purposes or when jitting is enforced at first evaluation
+                    synchronized (this) {
+                        if (conditionEvaluator == null) {
+                            conditionEvaluator = forceJitEvaluator( handle, workingMemory, tuple );
+                        }
+                    }
+                } else {
+                    conditionEvaluator = createMvelConditionEvaluator( workingMemory );
                 }
             }
 
-            if (!TEST_JITTING && !isDynamic && invocationCounter.getAndIncrement() == jittingThreshold) {
+            if (jittingThreshold != 0 && !isDynamic && invocationCounter.getAndIncrement() == jittingThreshold) {
                 jitEvaluator(handle, workingMemory, tuple);
             }
         }
@@ -265,37 +270,30 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
     }
 
-    protected void createMvelConditionEvaluator(InternalWorkingMemory workingMemory) {
+    protected ConditionEvaluator createMvelConditionEvaluator(InternalWorkingMemory workingMemory) {
         if (compilationUnit != null) {
             MVELDialectRuntimeData data = getMVELDialectRuntimeData(workingMemory);
             ExecutableStatement statement = (ExecutableStatement)compilationUnit.getCompiledExpression(data, evaluationContext);
             ParserConfiguration configuration = statement instanceof CompiledExpression ?
                     ((CompiledExpression)statement).getParserConfiguration() :
                     data.getParserConfiguration();
-            conditionEvaluator = new MvelConditionEvaluator(compilationUnit, configuration, statement, declarations, operators, getAccessedClass());
+            return new MvelConditionEvaluator(compilationUnit, configuration, statement, declarations, operators, getAccessedClass());
         } else {
-            conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression, declarations, operators, getAccessedClass());
+            return new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression, declarations, operators, getAccessedClass());
         }
     }
 
-    protected boolean forceJitEvaluator(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
-        boolean mvelValue;
+    protected ConditionEvaluator forceJitEvaluator(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
+        ConditionEvaluator mvelEvaluator = createMvelConditionEvaluator(workingMemory);
         try {
-            mvelValue = conditionEvaluator.evaluate(handle, workingMemory, tuple);
-        } catch (ClassCastException cce) {
-            mvelValue = false;
-        }
-        jitEvaluator(handle, workingMemory, tuple);
-        return mvelValue;
+            mvelEvaluator.evaluate(handle, workingMemory, tuple);
+        } catch (ClassCastException cce) { }
+        return executeJitting(handle, workingMemory, tuple, mvelEvaluator);
     }
 
     protected void jitEvaluator(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
         jitted = true;
-        if (TEST_JITTING) {
-            executeJitting(handle, workingMemory, tuple);
-        } else {
-            ExecutorHolder.executor.execute(new ConditionJitter(this, handle, workingMemory, tuple));
-        }
+        ExecutorHolder.executor.execute(new ConditionJitter(this, handle, workingMemory, tuple));
     }
 
     private static class ConditionJitter implements Runnable {
@@ -312,7 +310,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         public void run() {
-            mvelConstraint.executeJitting(rightHandle, workingMemory, tuple);
+            mvelConstraint.conditionEvaluator = mvelConstraint.executeJitting(rightHandle, workingMemory, tuple, mvelConstraint.conditionEvaluator);
             mvelConstraint = null;
             rightHandle = null;
             workingMemory = null;
@@ -324,17 +322,17 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         private static final Executor executor = ExecutorProviderFactory.getExecutorProvider().getExecutor();
     }
 
-    private void executeJitting(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
+    private ConditionEvaluator executeJitting(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple, ConditionEvaluator mvelEvaluator) {
         InternalKnowledgeBase kBase = workingMemory.getKnowledgeBase();
         if ( !isJmxAvailable() && MemoryUtil.permGenStats.isUsageThresholdExceeded(kBase.getConfiguration().getPermGenThreshold()) ) {
-            return;
+            return mvelEvaluator;
         }
 
         try {
             if (analyzedCondition == null) {
-                analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(handle, workingMemory, tuple);
+                analyzedCondition = ((MvelConditionEvaluator) mvelEvaluator).getAnalyzedCondition(handle, workingMemory, tuple);
             }
-            conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, operators, kBase.getRootClassLoader(), tuple);
+            return ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, operators, kBase.getRootClassLoader(), tuple);
         } catch (Throwable t) {
             if (TEST_JITTING) {
                 if (analyzedCondition == null) {
@@ -347,6 +345,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                              " This is NOT an error and NOT prevent the correct execution since the constraint will be evaluated in intrepreted mode" );
             }
         }
+        return mvelEvaluator;
     }
 
     public ContextEntry createContextEntry() {
