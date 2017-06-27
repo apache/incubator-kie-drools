@@ -391,7 +391,7 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
     }
 
     /**
-     * Make a list of
+     * Make a list of leaf MoveSelectorConfigs.
      * @param leafMoveSelectorConfigList not null
      */
     public void extractLeafMoveSelectorConfigsIntoList(List<MoveSelectorConfig> leafMoveSelectorConfigList) {

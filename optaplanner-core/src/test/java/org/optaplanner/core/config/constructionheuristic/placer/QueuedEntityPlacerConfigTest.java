@@ -16,31 +16,26 @@
 
 package org.optaplanner.core.config.constructionheuristic.placer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
-import org.optaplanner.core.impl.constructionheuristic.placer.entity.AbstractEntityPlacerTest;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class QueuedEntityPlacerConfigTest {
 
     @Test
     public void unfoldNewSequential() {
-        SolutionDescriptor<TestdataMultiVarSolution>  solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
+        SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
 
         ChangeMoveSelectorConfig primaryMoveSelectorConfig = new ChangeMoveSelectorConfig();
         primaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("primaryValue"));
