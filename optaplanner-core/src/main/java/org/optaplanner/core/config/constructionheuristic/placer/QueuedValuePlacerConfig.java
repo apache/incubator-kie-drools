@@ -87,7 +87,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
     // ************************************************************************
 
     @Override
-    public QueuedValuePlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
+    public QueuedValuePlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
         EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), entityClass);
         boolean reinitializeVariableFilterEnabled = configPolicy.isReinitializeVariableFilterEnabled();
         configPolicy.setReinitializeVariableFilterEnabled(false);

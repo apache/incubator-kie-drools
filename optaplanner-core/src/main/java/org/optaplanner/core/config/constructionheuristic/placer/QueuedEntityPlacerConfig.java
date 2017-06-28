@@ -103,7 +103,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
     // ************************************************************************
 
     @Override
-    public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
+    public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(configPolicy);
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
                 SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);

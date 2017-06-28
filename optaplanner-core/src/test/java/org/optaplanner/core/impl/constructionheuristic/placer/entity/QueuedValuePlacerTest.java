@@ -43,7 +43,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
-public class QueuedValuePlacerTest {
+public class QueuedValuePlacerTest extends AbstractEntityPlacerTest {
 
     @Test
     public void oneMoveSelector() {
@@ -113,18 +113,6 @@ public class QueuedValuePlacerTest {
 
         verifyPhaseLifecycle(entitySelector, 1, 2, 4);
         verifyPhaseLifecycle(valueSelector, 1, 2, 4);
-    }
-
-    private void assertPlacement(Placement placement, String valueCode, String... entityCodes) {
-        Iterator<Move> iterator = placement.iterator();
-        assertNotNull(iterator);
-        for (String entityCode : entityCodes) {
-            assertTrue(iterator.hasNext());
-            ChangeMove<?> move = (ChangeMove) iterator.next();
-            assertCode(entityCode, move.getEntity());
-            assertCode(valueCode, move.getToPlanningValue());
-        }
-        assertFalse(iterator.hasNext());
     }
 
 }

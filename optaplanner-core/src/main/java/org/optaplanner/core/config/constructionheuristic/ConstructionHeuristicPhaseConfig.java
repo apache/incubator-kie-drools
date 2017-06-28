@@ -160,8 +160,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
                     + ") must be a singleton or empty. Use multiple " + ConstructionHeuristicPhaseConfig.class
                     + " elements to initialize multiple entity classes.");
         }
-        EntityPlacer entityPlacer = entityPlacerConfig.buildEntityPlacer(
-                phaseConfigPolicy, phase.getTermination());
+        EntityPlacer entityPlacer = entityPlacerConfig.buildEntityPlacer(phaseConfigPolicy);
         phase.setEntityPlacer(entityPlacer);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {

@@ -96,7 +96,7 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
     // ************************************************************************
 
     @Override
-    public PooledEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
+    public PooledEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy) {
         MoveSelectorConfig moveSelectorConfig;
         if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
             moveSelectorConfig = buildMoveSelectorConfig(configPolicy);
