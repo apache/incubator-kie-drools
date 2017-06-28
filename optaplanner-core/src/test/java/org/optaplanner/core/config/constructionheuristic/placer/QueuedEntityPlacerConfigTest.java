@@ -52,7 +52,7 @@ public class QueuedEntityPlacerConfigTest {
                 Arrays.asList(primaryMoveSelectorConfig, secondaryMoveSelectorConfig));
 
         QueuedEntityPlacer entityPlacer = placerConfig.buildEntityPlacer(configPolicy);
-        // TODO assert placements. See also AbstractEntityPlacerTest.assertPlacement() and
+        // TODO assert placements. See also AbstractEntityPlacerTest.assertEntityPlacement()
     }
 
     public HeuristicConfigPolicy buildHeuristicConfigPolicy(SolutionDescriptor solutionDescriptor) {

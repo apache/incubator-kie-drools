@@ -74,21 +74,21 @@ public class QueuedValuePlacerTest extends AbstractEntityPlacerTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
-        assertPlacement(placementIterator.next(), "1", "a", "b", "c");
+        assertValuePlacement(placementIterator.next(), "1", "a", "b", "c");
         placer.stepEnded(stepScopeA1);
 
         assertTrue(placementIterator.hasNext());
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
-        assertPlacement(placementIterator.next(), "2", "a", "b", "c");
+        assertValuePlacement(placementIterator.next(), "2", "a", "b", "c");
         placer.stepEnded(stepScopeA2);
 
         assertTrue(placementIterator.hasNext());
         AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
-        assertPlacement(placementIterator.next(), "1", "a", "b", "c");
+        assertValuePlacement(placementIterator.next(), "1", "a", "b", "c");
         placer.stepEnded(stepScopeA3);
 
         // Requires adding ReinitializeVariableValueSelector complexity to work
@@ -104,7 +104,7 @@ public class QueuedValuePlacerTest extends AbstractEntityPlacerTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         placer.stepStarted(stepScopeB1);
-        assertPlacement(placementIterator.next(), "1", "a", "b", "c");
+        assertValuePlacement(placementIterator.next(), "1", "a", "b", "c");
         placer.stepEnded(stepScopeB1);
 
         placer.phaseEnded(phaseScopeB);

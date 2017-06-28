@@ -24,14 +24,12 @@ import java.util.List;
 import org.junit.Test;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProductMoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -77,21 +75,21 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
-        assertPlacement(placementIterator.next(), "a", "1", "2");
+        assertEntityPlacement(placementIterator.next(), "a", "1", "2");
         placer.stepEnded(stepScopeA1);
 
         assertTrue(placementIterator.hasNext());
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
-        assertPlacement(placementIterator.next(), "b", "1", "2");
+        assertEntityPlacement(placementIterator.next(), "b", "1", "2");
         placer.stepEnded(stepScopeA2);
 
         assertTrue(placementIterator.hasNext());
         AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
-        assertPlacement(placementIterator.next(), "c", "1", "2");
+        assertEntityPlacement(placementIterator.next(), "c", "1", "2");
         placer.stepEnded(stepScopeA3);
 
         assertFalse(placementIterator.hasNext());
@@ -106,7 +104,7 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         placer.stepStarted(stepScopeB1);
-        assertPlacement(placementIterator.next(), "a", "1", "2");
+        assertEntityPlacement(placementIterator.next(), "a", "1", "2");
         placer.stepEnded(stepScopeB1);
 
         placer.phaseEnded(phaseScopeB);
@@ -153,28 +151,28 @@ public class QueuedEntityPlacerTest extends AbstractEntityPlacerTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
-        assertPlacement(placementIterator.next(), "a", "1", "2", "3");
+        assertEntityPlacement(placementIterator.next(), "a", "1", "2", "3");
         placer.stepEnded(stepScopeA1);
 
         assertTrue(placementIterator.hasNext());
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
-        assertPlacement(placementIterator.next(), "a", "8", "9");
+        assertEntityPlacement(placementIterator.next(), "a", "8", "9");
         placer.stepEnded(stepScopeA2);
 
         assertTrue(placementIterator.hasNext());
         AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
-        assertPlacement(placementIterator.next(), "b", "1", "2", "3");
+        assertEntityPlacement(placementIterator.next(), "b", "1", "2", "3");
         placer.stepEnded(stepScopeA3);
 
         assertTrue(placementIterator.hasNext());
         AbstractStepScope stepScopeA4 = mock(AbstractStepScope.class);
         when(stepScopeA4.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA4);
-        assertPlacement(placementIterator.next(), "b", "8", "9");
+        assertEntityPlacement(placementIterator.next(), "b", "8", "9");
         placer.stepEnded(stepScopeA4);
 
         assertFalse(placementIterator.hasNext());

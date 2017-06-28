@@ -27,10 +27,22 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 public class AbstractEntityPlacerTest {
 
-    public static void assertPlacement(Placement placement, String entityCode, String... valueCodes) {
+    public static void assertEntityPlacement(Placement placement, String entityCode, String... valueCodes) {
         Iterator<Move> iterator = placement.iterator();
         assertNotNull(iterator);
         for (String valueCode : valueCodes) {
+            assertTrue(iterator.hasNext());
+            ChangeMove<?> move = (ChangeMove) iterator.next();
+            assertCode(entityCode, move.getEntity());
+            assertCode(valueCode, move.getToPlanningValue());
+        }
+        assertFalse(iterator.hasNext());
+    }
+
+    public static void assertValuePlacement(Placement placement, String valueCode, String... entityCodes) {
+        Iterator<Move> iterator = placement.iterator();
+        assertNotNull(iterator);
+        for (String entityCode : entityCodes) {
             assertTrue(iterator.hasNext());
             ChangeMove<?> move = (ChangeMove) iterator.next();
             assertCode(entityCode, move.getEntity());
