@@ -41,7 +41,7 @@ public class ExecutorRunnable implements Runnable {
     		
     		this.availableJobsExecutor.executeJob();
     	} catch (Exception e) {
-    		logger.warn("Error while executing jobs due to {}", e.getMessage());
+    		logger.warn("Error while executing jobs due to {}", e.getMessage(), e);
     	}
     }
     
