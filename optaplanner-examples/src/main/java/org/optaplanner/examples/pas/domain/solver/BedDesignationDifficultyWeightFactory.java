@@ -26,7 +26,7 @@ public class BedDesignationDifficultyWeightFactory
         implements SelectionSorterWeightFactory<PatientAdmissionSchedule, BedDesignation> {
 
     @Override
-    public Comparable createSorterWeight(PatientAdmissionSchedule schedule, BedDesignation bedDesignation) {
+    public BedDesignationDifficultyWeight createSorterWeight(PatientAdmissionSchedule schedule, BedDesignation bedDesignation) {
         int hardDisallowedCount = 0;
         int softDisallowedCount = 0;
         for (Room room : schedule.getRoomList()) {

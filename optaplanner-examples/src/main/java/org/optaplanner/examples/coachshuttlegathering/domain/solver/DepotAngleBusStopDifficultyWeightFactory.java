@@ -29,7 +29,7 @@ public class DepotAngleBusStopDifficultyWeightFactory
         implements SelectionSorterWeightFactory<CoachShuttleGatheringSolution, BusOrStop> {
 
     @Override
-    public Comparable createSorterWeight(CoachShuttleGatheringSolution solution, BusOrStop busOrStop) {
+    public DepotAngleBusStopDifficultyWeight createSorterWeight(CoachShuttleGatheringSolution solution, BusOrStop busOrStop) {
         BusHub hub = solution.getHub();
         return new DepotAngleBusStopDifficultyWeight(busOrStop,
                 busOrStop.getLocation().getAngle(hub.getLocation()),

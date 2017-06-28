@@ -999,7 +999,7 @@ public interface SelectionSorterWeightFactory<Solution_, T> {
 ----
 public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactory<NQueens, Queen> {
 
-    public Comparable createSorterWeight(NQueens nQueens, Queen queen) {
+    public QueenDifficultyWeight createSorterWeight(NQueens nQueens, Queen queen) {
         int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
         return new QueenDifficultyWeight(queen, distanceFromMiddle);
     }

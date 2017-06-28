@@ -24,7 +24,7 @@ import org.optaplanner.examples.nqueens.domain.Row;
 public class RowStrengthWeightFactory implements SelectionSorterWeightFactory<NQueens, Row> {
 
     @Override
-    public Comparable createSorterWeight(NQueens nQueens, Row row) {
+    public RowStrengthWeight createSorterWeight(NQueens nQueens, Row row) {
         int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), row.getIndex());
         return new RowStrengthWeight(row, distanceFromMiddle);
     }

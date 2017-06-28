@@ -29,7 +29,7 @@ public class DomicileAngleVisitDifficultyWeightFactory
         implements SelectionSorterWeightFactory<TspSolution, Visit> {
 
     @Override
-    public Comparable createSorterWeight(TspSolution vehicleRoutingSolution, Visit visit) {
+    public DomicileAngleVisitDifficultyWeight createSorterWeight(TspSolution vehicleRoutingSolution, Visit visit) {
         Domicile domicile = vehicleRoutingSolution.getDomicile();
         return new DomicileAngleVisitDifficultyWeight(visit,
                 visit.getLocation().getAngle(domicile.getLocation()),

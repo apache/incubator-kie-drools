@@ -25,7 +25,7 @@ import org.optaplanner.examples.tsp.domain.TspSolution;
 public class DomicileDistanceStandstillStrengthWeightFactory implements SelectionSorterWeightFactory<TspSolution, Standstill> {
 
     @Override
-    public Comparable createSorterWeight(TspSolution tspSolution, Standstill standstill) {
+    public DomicileDistanceStandstillStrengthWeight createSorterWeight(TspSolution tspSolution, Standstill standstill) {
         Domicile domicile = tspSolution.getDomicile();
         long domicileRoundTripDistance = domicile.getDistanceTo(standstill) + standstill.getDistanceTo(domicile);
         return new DomicileDistanceStandstillStrengthWeight(standstill, domicileRoundTripDistance);
