@@ -143,7 +143,7 @@ public class SolutionDescriptorTest {
                 "entitySet");
     }
 
-    @Test @Ignore("Resolve PLANNER-573 to fix this")
+    @Test
     public void arrayProperties() {
         SolutionDescriptor<TestdataArrayBasedSolution> solutionDescriptor
                 = TestdataArrayBasedSolution.buildSolutionDescriptor();

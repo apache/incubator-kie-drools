@@ -36,9 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -381,6 +379,13 @@ public class SolutionDescriptor<Solution_> {
                     } else {
                         annotationClass = ProblemFactCollectionProperty.class;
                     }
+                } else if (type.isArray()) {
+                    Class<?> elementType = type.getComponentType();
+                    if (entityClassList.stream().anyMatch(entityClass -> entityClass.isAssignableFrom(elementType))) {
+                        annotationClass = PlanningEntityCollectionProperty.class;
+                    } else {
+                        annotationClass = ProblemFactCollectionProperty.class;
+                    }
                 } else if (Map.class.isAssignableFrom(type)) {
                     throw new IllegalStateException("The autoDiscoverMemberType (" + autoDiscoverMemberType
                             + ") does not yet support the member (" + member
@@ -404,11 +409,12 @@ public class SolutionDescriptor<Solution_> {
         if (annotationClass == ProblemFactProperty.class) {
             problemFactMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
         } else if (annotationClass == ProblemFactCollectionProperty.class) {
-            if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
+            Class<?> type = memberAccessor.getType();
+            if (!(Collection.class.isAssignableFrom(type) || type.isArray())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
                         + ") has a " + ProblemFactCollectionProperty.class.getSimpleName()
                         + " annotated member (" + member + ") that does not return a "
-                        + Collection.class.getSimpleName() + ".");
+                        + Collection.class.getSimpleName() + " or an array.");
             }
             problemFactCollectionMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
         } else {
@@ -424,11 +430,12 @@ public class SolutionDescriptor<Solution_> {
         if (annotationClass == PlanningEntityProperty.class) {
             entityMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
         } else if (annotationClass == PlanningEntityCollectionProperty.class) {
-            if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
+            Class<?> type = memberAccessor.getType();
+            if (!(Collection.class.isAssignableFrom(type) || type.isArray())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
                         + ") has a " + PlanningEntityCollectionProperty.class.getSimpleName()
                         + " annotated member (" + member + ") that does not return a "
-                        + Collection.class.getSimpleName() + ".");
+                        + Collection.class.getSimpleName() + " or an array.");
             }
             entityCollectionMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
         } else {
@@ -873,9 +880,9 @@ public class SolutionDescriptor<Solution_> {
             }
         }));
         entityCollectionMemberAccessorMap.forEach(
-                (key, memberAccessor) -> facts.addAll(extractMemberCollection(memberAccessor, solution, false)));
+                (key, memberAccessor) -> facts.addAll(extractMemberCollectionOrArray(memberAccessor, solution, false)));
         problemFactCollectionMemberAccessorMap.forEach(
-                (key, memberAccessor) -> facts.addAll(extractMemberCollection(memberAccessor, solution, true)));
+                (key, memberAccessor) -> facts.addAll(extractMemberCollectionOrArray(memberAccessor, solution, true)));
         return facts;
     }
 
@@ -892,7 +899,7 @@ public class SolutionDescriptor<Solution_> {
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution, false);
+            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
             entityCount += entityCollection.size();
         }
         return entityCount;
@@ -907,7 +914,7 @@ public class SolutionDescriptor<Solution_> {
             }
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution, false);
+            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
             entityList.addAll(entityCollection);
         }
         return entityList;
@@ -925,7 +932,7 @@ public class SolutionDescriptor<Solution_> {
         }
         for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
             // TODO if (entityCollectionPropertyAccessor.getPropertyType().getElementType().isAssignableFrom(entityClass)) {
-            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution, false);
+            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution, false);
             for (Object entity : entityCollection) {
                 if (entityClass.isInstance(entity)) {
                     entityList.add(entity);
@@ -1010,14 +1017,14 @@ public class SolutionDescriptor<Solution_> {
     public Iterator<Object> extractAllEntitiesIterator(Solution_ solution) {
         List<Iterator<Object>> iteratorList = new ArrayList<>(
                 entityMemberAccessorMap.size() + entityCollectionMemberAccessorMap.size());
-        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
-            Object entity = extractMemberObject(entityMemberAccessor, solution);
+        for (MemberAccessor memberAccessor : entityMemberAccessorMap.values()) {
+            Object entity = extractMemberObject(memberAccessor, solution);
             if (entity != null) {
                 iteratorList.add(Collections.singletonList(entity).iterator());
             }
         }
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution, false);
+        for (MemberAccessor memberAccessor : entityCollectionMemberAccessorMap.values()) {
+            Collection<Object> entityCollection = extractMemberCollectionOrArray(memberAccessor, solution, false);
             iteratorList.add(entityCollection.iterator());
         }
         return Iterators.concat(iteratorList.iterator());
@@ -1027,16 +1034,22 @@ public class SolutionDescriptor<Solution_> {
         return memberAccessor.executeGetter(solution);
     }
 
-    private Collection<Object> extractMemberCollection(MemberAccessor collectionMemberAccessor, Solution_ solution,
+    private Collection<Object> extractMemberCollectionOrArray(MemberAccessor memberAccessor, Solution_ solution,
             boolean isFact) {
-        Collection<Object> collection = (Collection<Object>) collectionMemberAccessor.executeGetter(solution);
+        Collection<Object> collection;
+        if (memberAccessor.getType().isArray()) {
+            Object arrayObject = memberAccessor.executeGetter(solution);
+            collection = ReflectionHelper.transformArrayToList(arrayObject);
+        } else {
+            collection = (Collection<Object>) memberAccessor.executeGetter(solution);
+        }
         if (collection == null) {
             throw new IllegalArgumentException("The solutionClass (" + solutionClass
                     + ")'s " + (isFact ? "factCollectionProperty" : "entityCollectionProperty") + " ("
-                    + collectionMemberAccessor + ") should never return null.\n"
-                    + (collectionMemberAccessor instanceof FieldMemberAccessor ? ""
+                    + memberAccessor + ") should never return null.\n"
+                    + (memberAccessor instanceof FieldMemberAccessor ? ""
                     : "Maybe the getter/method always returns null instead of the actual data.\n")
-                    + "Maybe the value is null instead of an empty collection.");
+                    + "Maybe the value is null instead of an empty collection/array.");
         }
         return collection;
     }

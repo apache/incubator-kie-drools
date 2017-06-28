@@ -28,6 +28,7 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
@@ -169,7 +170,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
             List<Object> list = transformCollectionToList((Collection<Object>) valueRangeObject);
             valueRange = new ListValueRange<>(list);
         } else if (arrayWrapping) {
-            List<Object> list = transformArrayToList(valueRangeObject);
+            List<Object> list = ReflectionHelper.transformArrayToList(valueRangeObject);
             valueRange = new ListValueRange<>(list);
         } else {
             valueRange = (ValueRange<Object>) valueRangeObject;
@@ -191,15 +192,6 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
         // - If the List is a LinkedList, ValueRange.createRandomIterator(Random)
         //   and ValueRange.get(int) are not efficient.
         return (collection instanceof List ? (List<T>) collection : new ArrayList<>(collection));
-    }
-
-    private List<Object> transformArrayToList(Object valueRangeObject) {
-        int arrayLength = Array.getLength(valueRangeObject);
-        List<Object> list = new ArrayList<>(arrayLength);
-        for (int i = 0; i < arrayLength; i++) {
-            list.add(Array.get(valueRangeObject, i));
-        }
-        return list;
     }
 
 }

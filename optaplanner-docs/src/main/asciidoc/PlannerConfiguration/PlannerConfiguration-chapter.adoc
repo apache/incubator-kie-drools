@@ -610,9 +610,10 @@ A @ValueRangeProvider annotation needs to be on a member in a class with a @Plan
 It is ignored on parent classes or subclasses without those annotations.
 ====
 
-The return type of that method can be two types:
+The return type of that method can be three types:
 
 * ``Collection``: The value range is defined by a `Collection` (usually a ``List``) of its possible values.
+* Array: The value range is defined by an array of its possible values.
 * ``ValueRange``: The value range is defined by its bounds. This is less common.
 
 
@@ -1305,6 +1306,7 @@ public class NQueens {
 
 There can be multiple `@PlanningEntityCollectionProperty` annotated members.
 Those can even return a `Collection` with the same entity class type.
+Instead of `Collection`, it can also return an array.
 
 [NOTE]
 ====
@@ -1411,6 +1413,7 @@ The problem facts methods are not called often: at most only once per solver pha
 
 There can be multiple `@ProblemFactCollectionProperty` annotated members.
 Those can even return a `Collection` with the same class type, but they shouldn't return the same instance twice.
+Instead of `Collection`, it can also return an array.
 
 [NOTE]
 ====
@@ -1492,10 +1495,10 @@ The `AutoDiscoverMemberType` can be:
 
 The automatic annotation is based on the field type (or getter return type):
 
-* `@ProblemFactProperty`: when it isn't a `Collection`, a `@PlanningEntity` class or a `Score`
-* `@ProblemFactCollectionProperty`: when it's a `Collection` of a type that isn't a `@PlanningEntity` class
+* `@ProblemFactProperty`: when it isn't a `Collection`, an array, a `@PlanningEntity` class or a `Score`
+* `@ProblemFactCollectionProperty`: when it's a `Collection` (or array) of a type that isn't a `@PlanningEntity` class
 * `@PlanningEntityProperty`: when it is a configured `@PlanningEntity` class or subclass
-* `@PlanningEntityCollectionProperty`: when it's a `Collection` of a type that is a configured `@PlanningEntity` class or subclass
+* `@PlanningEntityCollectionProperty`: when it's a `Collection` (or array) of a type that is a configured `@PlanningEntity` class or subclass
 * `@PlanningScore`: when it is a `Score` or subclass
 
 These automatic annotation can still be overwritten per field (or getter).

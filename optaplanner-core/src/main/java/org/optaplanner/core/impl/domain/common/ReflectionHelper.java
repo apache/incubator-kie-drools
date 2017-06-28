@@ -18,12 +18,14 @@
 package org.optaplanner.core.impl.domain.common;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -273,6 +275,18 @@ public final class ReflectionHelper {
             return upperBounds.length != 0 && isList(upperBounds[0]);
         }
         return false;
+    }
+
+    public static List<Object> transformArrayToList(Object arrayObject) {
+        if (arrayObject == null) {
+            return null;
+        }
+        int arrayLength = Array.getLength(arrayObject);
+        List<Object> list = new ArrayList<>(arrayLength);
+        for (int i = 0; i < arrayLength; i++) {
+            list.add(Array.get(arrayObject, i));
+        }
+        return list;
     }
 
     private ReflectionHelper() {
