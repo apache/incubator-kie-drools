@@ -33,7 +33,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
+import org.jbpm.executor.AsynchronousJobEvent;
+import org.jbpm.executor.AsynchronousJobListener;
 import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.process.core.async.AsyncSignalEventCommand;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
@@ -63,11 +66,15 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(AsyncContinuationSupportTest.class);
+    
     private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;
     private RuntimeManager manager;
@@ -812,6 +819,7 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
         assertNotNull(logs);
         assertEquals(8, logs.size());
 
+        waitForAllJobsToComplete();
         List<RequestInfo> completed = executorService.getCompletedRequests(new QueryContext());
         // there should 3 completed commands (for script, for task and end node)
         assertEquals(3, completed.size());
@@ -870,6 +878,7 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
         assertNotNull(logs);
         assertEquals(8, logs.size());
 
+        waitForAllJobsToComplete();
         List<RequestInfo> completed = executorService.getCompletedRequests(new QueryContext());
         // there should 3 completed commands (for script, for task and end node)
         assertEquals(3, completed.size());
@@ -928,6 +937,7 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
         assertNotNull(logs);
         assertEquals(6, logs.size());
 
+        waitForAllJobsToComplete();
         List<RequestInfo> completed = executorService.getCompletedRequests(new QueryContext());
         // there should be 2 completed commands (for service task and end node)
         assertEquals(2, completed.size());
@@ -979,6 +989,7 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
         assertNotNull(logs);
         assertEquals(18, logs.size());
 
+        waitForAllJobsToComplete();
         List<RequestInfo> completed = executorService.getCompletedRequests(new QueryContext());
         // there should be 7 completed commands (subprocess node itself, 3 inner script tasks, subprocess end node, outer script task, process end node)
         assertEquals(7, completed.size());
@@ -1028,8 +1039,8 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
         // Send async signal to the process instance
         System.out.println("<<<< Sending signal >>>>>");
         runtime.getKieSession().signalEvent("MySignal", null);
-
-        countDownListener.waitTillCompleted();
+        
+        countDownListener.waitTillCompleted();        
 
         processInstance = runtime.getKieSession().getProcessInstance(processInstanceId);
         assertNull(processInstance);
@@ -1038,13 +1049,33 @@ public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
         assertNotNull(logs);
         assertEquals(8, logs.size());
 
+        waitForAllJobsToComplete();
         List<RequestInfo> completed = executorService.getCompletedRequests(new QueryContext());
+        List<RequestInfo> all = executorService.getAllRequests(new QueryContext());
+        logger.info("all jobs from db {}", all);
         // there should be 3 completed commands (for intermediate catch event, script task and end node)
         assertEquals(3, completed.size());
 
         Set<String> commands = completed.stream().map(RequestInfo::getCommandName).collect(Collectors.toSet());
         assertEquals(1, commands.size());
         assertEquals(AsyncSignalEventCommand.class.getName(), commands.iterator().next());
+    }
+    
+    private boolean waitForAllJobsToComplete() throws Exception {
+        int attempts = 10;
+        do {
+            List<RequestInfo> running = executorService.getRunningRequests(new QueryContext());
+            attempts--;
+            
+            if (running.isEmpty()) {
+                return true;
+            }
+            
+            Thread.sleep(500);
+            
+        } while (attempts > 0);
+        
+        return false;
     }
 
     private ExecutorService buildExecutorService() {
