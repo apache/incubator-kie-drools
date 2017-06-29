@@ -72,7 +72,7 @@ public class DMNPackageImpl implements DMNPackage, Externalizable {
     }
 
     @Override
-    public boolean removeFromResource(Resource resource) {
+    public boolean removeResource(Resource resource) {
         return models.entrySet().removeIf( kv -> resource.equals( kv.getValue().getResource() ) );
     }
     

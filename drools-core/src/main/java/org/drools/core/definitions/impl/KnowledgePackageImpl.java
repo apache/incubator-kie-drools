@@ -708,7 +708,7 @@ public class KnowledgePackageImpl
     public boolean removeFromResourceTypePackageGeneratedFromResource(Resource resource) {
         boolean somethingWasRemoved = false;
         for ( ResourceTypePackage rtp : resourceTypePackages.values() ) {
-            somethingWasRemoved = rtp.removeFromResource( resource ) || somethingWasRemoved;
+            somethingWasRemoved = rtp.removeResource( resource ) || somethingWasRemoved;
         }
         return somethingWasRemoved;
     }
