@@ -52,7 +52,7 @@ create table CaseFileDataLog (
 
 create table ExecutionErrorInfo (
     id int8 not null,
-    ERROR_ACK boolean,
+    ERROR_ACK int2,
     ERROR_ACK_AT timestamp,
     ERROR_ACK_BY varchar(255),
     ACTIVITY_ID int8,
@@ -62,6 +62,7 @@ create table ExecutionErrorInfo (
     ERROR_DATE timestamp,
     ERROR_ID varchar(255),
     ERROR_MSG varchar(255),
+    INIT_ACTIVITY_ID int8,
     JOB_ID int8,
     PROCESS_ID varchar(255),
     PROCESS_INST_ID int8,

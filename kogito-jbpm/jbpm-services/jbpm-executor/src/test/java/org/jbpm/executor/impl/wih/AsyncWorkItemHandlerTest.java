@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,12 +36,18 @@ import javax.persistence.Persistence;
 
 import org.drools.core.command.runtime.process.SetProcessInstanceVariablesCommand;
 import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.executor.RequeueAware;
+import org.jbpm.executor.commands.error.JobAutoAckErrorCommand;
+import org.jbpm.executor.commands.error.ProcessAutoAckErrorCommand;
+import org.jbpm.executor.commands.error.TaskAutoAckErrorCommand;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.objects.IncrementService;
 import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.process.core.async.AsyncExecutionMarker;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
+import org.jbpm.services.task.events.DefaultTaskEventListener;
+import org.jbpm.services.task.exception.TaskExecutionException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
 import org.jbpm.test.util.CountDownProcessEventListener;
@@ -48,6 +56,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.RequestInfo;
 import org.kie.api.executor.STATUS;
@@ -61,7 +70,11 @@ import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.query.QueryContext;
+import org.kie.api.task.TaskEvent;
+import org.kie.api.task.TaskLifeCycleEventListener;
+import org.kie.api.task.TaskService;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.error.ExecutionError;
 import org.kie.internal.runtime.error.ExecutionErrorManager;
@@ -69,6 +82,7 @@ import org.kie.internal.runtime.error.ExecutionErrorStorage;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.task.api.EventService;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -771,6 +785,338 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         List<ExecutionError> errors = errorStorage.list(0, 10);
         assertEquals(0, errors.size());
         
+    }
+    
+    @Test(timeout=20000)
+    public void testRunProcessWithAsyncHandlerRecordExecutionErrorAutoAck() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        ((ExecutorServiceImpl) executorService).setRetries(0);
+        
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new AsyncWorkItemHandler(executorService, "org.jbpm.executor.ThrowExceptionCommand"));
+                        return handlers;
+                    }
+              
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        countDownListener.waitTillCompleted();
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        
+        List<RequestInfo> errorJobs = executorService.getInErrorRequests(new QueryContext());
+        assertEquals(1, errorJobs.size());
+        
+        RequestInfo errorJob = errorJobs.get(0);
+        assertEquals(errorJob.getProcessInstanceId().longValue(), processInstance.getId());
+        
+        ExecutionErrorManager errorManager = ((AbstractRuntimeManager) manager).getExecutionErrorManager();
+        assertNotNull("ErrorManager is null", errorManager);
+        ExecutionErrorStorage errorStorage = errorManager.getStorage();
+        assertNotNull("ErrorStorage is null", errorStorage);
+        
+        List<ExecutionError> errors = errorStorage.list(0, 10);
+        assertEquals(1, errors.size());
+        
+        ExecutionError error = errors.get(0);
+        assertNotNull(error);
+        assertEquals("Job", error.getType());
+        assertEquals(errorJob.getId(), error.getJobId());
+        assertEquals("ScriptTask", error.getProcessId());
+        assertEquals("", error.getActivityName());
+        assertEquals(manager.getIdentifier(), error.getDeploymentId());
+        assertNotNull(error.getError());
+        assertNotNull(error.getErrorMessage());
+        assertNotNull(error.getActivityId());
+        assertNotNull(error.getProcessInstanceId());
+        
+        assertNull(error.getAcknowledgedAt());
+        assertNull(error.getAcknowledgedBy());
+        assertFalse(error.isAcknowledged());
+        
+        // first run should not ack the job as it's in error state
+        CommandContext ctx = new CommandContext();
+        ctx.setData("SingleRun", "true");
+        ctx.setData("EmfName", "org.jbpm.persistence.complete");
+        executorService.scheduleRequest(JobAutoAckErrorCommand.class.getName(), ctx);
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        errors = errorStorage.list(0, 10);
+        assertEquals(1, errors.size());
+        
+        error = errors.get(0);
+        assertNotNull(error);        
+        assertFalse(error.isAcknowledged());
+        
+        ((RequeueAware)executorService).requeueById(errorJob.getId());
+        executorService.cancelRequest(errorJob.getId());        
+        // since job was canceled auto ack should work
+        executorService.scheduleRequest(JobAutoAckErrorCommand.class.getName(), ctx);
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        errors = errorStorage.list(0, 10);
+        assertEquals(1, errors.size());
+        
+        error = errors.get(0);
+        assertNotNull(error);        
+        assertTrue(error.isAcknowledged());
+        
+    }
+    
+    @Test(timeout=20000)
+    public void testRunProcessWithAsyncHandlerRecordExecutionErrorProcessAutoAck() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        ((ExecutorServiceImpl) executorService).setRetries(0);
+        
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTaskWithRollback.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        ProcessInstance processInstance = ksession.startProcess("UserTaskWithRollback");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        
+        manager.disposeRuntimeEngine(runtime);
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        
+        TaskService taskService = runtime.getTaskService();
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(1, tasks.size());
+        
+        long taskId = tasks.get(0).getId();
+        
+        taskService.start(taskId, "john");
+        
+        Map<String, Object> results = new HashMap<>();
+        results.put("output1", "rollback");
+        
+        try {
+            taskService.complete(taskId, "john", results);
+            fail("Complete task should fail due to broken script");
+        } catch (Throwable e) {
+            // expected
+        }
+        
+        manager.disposeRuntimeEngine(runtime);
+        
+        
+        ExecutionErrorManager errorManager = ((AbstractRuntimeManager) manager).getExecutionErrorManager();
+        assertNotNull("ErrorManager is null", errorManager);
+        ExecutionErrorStorage errorStorage = errorManager.getStorage();
+        assertNotNull("ErrorStorage is null", errorStorage);
+        
+        List<ExecutionError> errors = errorStorage.list(0, 10);
+        assertEquals(1, errors.size());
+        
+        ExecutionError error = errors.get(0);
+        assertNotNull(error);
+        assertEquals("Process", error.getType());        
+        assertEquals("UserTaskWithRollback", error.getProcessId());
+        assertEquals("Script Task 1", error.getActivityName());
+        assertEquals(manager.getIdentifier(), error.getDeploymentId());
+        assertNotNull(error.getError());
+        assertNotNull(error.getErrorMessage());
+        assertNotNull(error.getActivityId());
+        assertNotNull(error.getProcessInstanceId());
+        
+        assertNull(error.getAcknowledgedAt());
+        assertNull(error.getAcknowledgedBy());
+        assertFalse(error.isAcknowledged());
+        
+        // first run should not ack the job as it's in error state
+        CommandContext ctx = new CommandContext();
+        ctx.setData("SingleRun", "true");
+        ctx.setData("EmfName", "org.jbpm.persistence.complete");
+        executorService.scheduleRequest(ProcessAutoAckErrorCommand.class.getName(), ctx);
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        errors = errorStorage.list(0, 10);
+        assertEquals(1, errors.size());
+        
+        error = errors.get(0);
+        assertNotNull(error);        
+        assertFalse(error.isAcknowledged());
+        
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(1, tasks.size());
+        
+        taskId = tasks.get(0).getId();
+        
+        results = new HashMap<>();
+        results.put("output1", "ok");
+        
+        taskService.complete(taskId, "john", results);
+        manager.disposeRuntimeEngine(runtime);
+        // since task was completed auto ack should work
+        executorService.scheduleRequest(ProcessAutoAckErrorCommand.class.getName(), ctx);
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        errors = errorStorage.list(0, 10);
+        assertEquals(1, errors.size());
+        
+        error = errors.get(0);
+        assertNotNull(error);        
+        assertTrue(error.isAcknowledged());
+        
+    }
+    
+    @Test(timeout=20000)
+    public void testRunProcessWithAsyncHandlerRecordExecutionErrorTaskAutoAck() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        ((ExecutorServiceImpl) executorService).setRetries(0);
+        
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTaskWithRollback.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        ProcessInstance processInstance = ksession.startProcess("UserTaskWithRollback");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        
+        manager.disposeRuntimeEngine(runtime);
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        
+        TaskService taskService = runtime.getTaskService();
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(1, tasks.size());
+        
+        long taskId = tasks.get(0).getId();
+                
+        TaskLifeCycleEventListener listener = new DefaultTaskEventListener(){
+
+            @Override
+            public void afterTaskStartedEvent(TaskEvent event) {
+                throw new TaskExecutionException("On purpose");
+            }                
+        };
+        try {
+            ((EventService<TaskLifeCycleEventListener>)taskService).registerTaskEventListener(listener);            
+            
+            taskService.start(taskId, "john");
+            fail("Start task should fail due to broken script");
+        } catch (Throwable e) {
+            // expected
+        }
+        manager.disposeRuntimeEngine(runtime);
+        
+        ExecutionErrorManager errorManager = ((AbstractRuntimeManager) manager).getExecutionErrorManager();
+        assertNotNull("ErrorManager is null", errorManager);
+        ExecutionErrorStorage errorStorage = errorManager.getStorage();
+        assertNotNull("ErrorStorage is null", errorStorage);
+        
+        List<ExecutionError> errors = errorStorage.list(0, 10);
+        assertEquals(1, errors.size());
+        
+        ExecutionError error = errors.get(0);
+        assertNotNull(error);
+        assertEquals("Task", error.getType());        
+        assertEquals("UserTaskWithRollback", error.getProcessId());
+        assertEquals("Hello", error.getActivityName());
+        assertEquals(manager.getIdentifier(), error.getDeploymentId());
+        assertNotNull(error.getError());
+        assertNotNull(error.getErrorMessage());
+        assertNotNull(error.getActivityId());
+        assertNotNull(error.getProcessInstanceId());
+        
+        assertNull(error.getAcknowledgedAt());
+        assertNull(error.getAcknowledgedBy());
+        assertFalse(error.isAcknowledged());
+        
+        // first run should not ack the job as it's in error state
+        CommandContext ctx = new CommandContext();
+        ctx.setData("SingleRun", "true");
+        ctx.setData("EmfName", "org.jbpm.persistence.complete");
+        executorService.scheduleRequest(TaskAutoAckErrorCommand.class.getName(), ctx);
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        errors = errorStorage.list(0, 10);
+        assertEquals(1, errors.size());
+        
+        error = errors.get(0);
+        assertNotNull(error);        
+        assertFalse(error.isAcknowledged());
+                
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(1, tasks.size());
+        
+        taskId = tasks.get(0).getId();
+        
+        ((EventService<TaskLifeCycleEventListener>)taskService).removeTaskEventListener(listener);
+        
+        taskService.start(taskId, "john");
+        
+        Map<String, Object> results = new HashMap<>();
+        results.put("output1", "ok");
+        
+        taskService.complete(taskId, "john", results);
+        manager.disposeRuntimeEngine(runtime);        
+        
+        // since task was completed auto ack should work
+        executorService.scheduleRequest(TaskAutoAckErrorCommand.class.getName(), ctx);
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        errors = errorStorage.list(0, 10);
+        assertEquals(1, errors.size());
+        
+        error = errors.get(0);
+        assertNotNull(error);        
+        assertTrue(error.isAcknowledged());
         
     }
     

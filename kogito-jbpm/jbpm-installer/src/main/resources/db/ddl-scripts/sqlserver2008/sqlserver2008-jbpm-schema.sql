@@ -164,7 +164,7 @@
     
     create table ExecutionErrorInfo (
         id bigint identity not null,
-        ERROR_ACK bit,
+        ERROR_ACK smallint,
         ERROR_ACK_AT datetime2,
         ERROR_ACK_BY varchar(255),
         ACTIVITY_ID bigint,
@@ -174,6 +174,7 @@
         ERROR_DATE datetime2,
         ERROR_ID varchar(255),
         ERROR_MSG varchar(255),
+        INIT_ACTIVITY_ID bigint,
         JOB_ID bigint,
         PROCESS_ID varchar(255),
         PROCESS_INST_ID bigint,

@@ -45,7 +45,7 @@ public class ExecutionErrorInfo extends ExecutionError implements Serializable {
         
     }
     
-    public ExecutionErrorInfo(String errorId, String type, String deploymentId, Long processInstanceId, String processId, Long activityId, String activityName, Long jobId, String errorMessage, String error, Date errorDate) {
+    public ExecutionErrorInfo(String errorId, String type, String deploymentId, Long processInstanceId, String processId, Long activityId, String activityName, Long jobId, String errorMessage, String error, Date errorDate, Long initActivityId) {
         super();
         this.errorId = errorId;
         this.type = type;
@@ -58,7 +58,8 @@ public class ExecutionErrorInfo extends ExecutionError implements Serializable {
         this.errorMessage = errorMessage;
         this.error = error;
         this.errorDate = errorDate;
-        this.acknowledged = false;
+        this.acknowledged = new Short("0");
+        this.initActivityId = initActivityId;
     }
 
     @Id
@@ -116,8 +117,8 @@ public class ExecutionErrorInfo extends ExecutionError implements Serializable {
 
     @Column(name="ERROR_ACK")
     @Override
-    public boolean isAcknowledged() {
-        return super.isAcknowledged();
+    protected Short getAcknowledged() {
+        return super.getAcknowledged();
     }
 
     @Column(name="ERROR_ACK_BY")
@@ -162,9 +163,15 @@ public class ExecutionErrorInfo extends ExecutionError implements Serializable {
         return super.getJobId();
     }
 
+    @Column(name="INIT_ACTIVITY_ID")
+    @Override
+    public Long getInitActivityId() {
+        return super.getInitActivityId();
+    }
+
     @Override
     public String toString() {
-        return "ExecutionErrorInfo [errorId=" + errorId + ", type=" + type + ", deploymentId=" + deploymentId + ", processInstanceId=" + processInstanceId + 
+        return "ExecutionErrorInfo [errorId=" + errorId + ", type=" + type + ", deploymentId=" + deploymentId + ", processInstanceId=" + processInstanceId + ", initActivityId=" + initActivityId + 
                 ", processId=" + processId + ", activityId=" + activityId + ", activityName=" + activityName + ", errorMessage=" + errorMessage + 
                 ", acknowledged=" + acknowledged + "]";
     } 

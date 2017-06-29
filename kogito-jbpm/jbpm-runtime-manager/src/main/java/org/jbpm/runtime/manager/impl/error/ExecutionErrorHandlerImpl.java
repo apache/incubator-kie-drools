@@ -16,7 +16,6 @@
 
 package org.jbpm.runtime.manager.impl.error;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.kie.api.runtime.process.NodeInstance;
@@ -32,13 +31,12 @@ import org.slf4j.LoggerFactory;
 
 public class ExecutionErrorHandlerImpl implements ExecutionErrorHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExecutionErrorHandlerImpl.class);
-    
-    private List<NodeInstance> nodeInstances = new ArrayList<>();
-    private List<Task> tasks = new ArrayList<>();
+    private static final Logger logger = LoggerFactory.getLogger(ExecutionErrorHandlerImpl.class);   
     
     private List<ExecutionErrorFilter> filters;
     private ExecutionErrorStorage storage;
+    
+    private NodeInstance firstExecutedNode;
     
     private NodeInstance lastExecutedNode;
     
@@ -52,7 +50,9 @@ public class ExecutionErrorHandlerImpl implements ExecutionErrorHandler {
 
     @Override
     public void processing(NodeInstance nodeInstance) {
-        this.nodeInstances.add(nodeInstance);
+        if (this.firstExecutedNode == null) {
+            this.firstExecutedNode = nodeInstance;
+        }        
         logger.debug("Node instance {} is being executed", nodeInstance);
         
         this.lastExecutedNode = nodeInstance;
@@ -60,27 +60,30 @@ public class ExecutionErrorHandlerImpl implements ExecutionErrorHandler {
 
     @Override
     public void processing(Task task) {
-        this.tasks.add(task);
-        logger.debug("Tasj instance {} is being executed", task);
+        
+        logger.debug("Task instance {} is being executed", task);
         
         this.lastExecutedTask = task;
     }
 
     @Override
     public void processed(NodeInstance nodeInstance) {
-        this.nodeInstances.remove(nodeInstance);
+        if (this.firstExecutedNode == null) {
+            this.firstExecutedNode = nodeInstance;
+        }
+        
         logger.debug("Node instance {} successfully executed", nodeInstance);
     }
 
     @Override
     public void processed(Task task) {
-        this.tasks.remove(task);
+
         logger.debug("Task instance {} successfully executed", task);
     }
 
     @Override
     public void handle(Throwable cause) {
-        ExecutionErrorContext errorContext = new ExecutionErrorContext(cause, lastExecutedNode, lastExecutedTask);
+        ExecutionErrorContext errorContext = new ExecutionErrorContext(cause, lastExecutedNode, lastExecutedTask, firstExecutedNode);
         for (ExecutionErrorFilter filter : filters) {
             
             if (filter.accept(errorContext)) {

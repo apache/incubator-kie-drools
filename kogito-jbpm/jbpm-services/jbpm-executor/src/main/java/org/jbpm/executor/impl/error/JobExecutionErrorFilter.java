@@ -28,6 +28,7 @@ import org.kie.internal.runtime.error.ExecutionErrorContext;
 
 public class JobExecutionErrorFilter extends AbstractExecutionErrorFilter {
 
+    public static final String TYPE = "Job";
 
     @Override
     public boolean accept(ExecutionErrorContext errorContext) {
@@ -46,7 +47,8 @@ public class JobExecutionErrorFilter extends AbstractExecutionErrorFilter {
         NodeInstance nodeInstance = errorContext.getLastExecutedNode();
    
         return ExecutionError.builder()
-            .type("Job")
+            .type(TYPE)
+            .initActivityId(getInitActivityId(errorContext))
             .deploymentId(((ProcessInstanceImpl)nodeInstance.getProcessInstance()).getDeploymentId())
             .processInstanceId(nodeInstance.getProcessInstance().getId())
             .processId(nodeInstance.getProcessInstance().getProcessId())

@@ -174,6 +174,7 @@
         ERROR_DATE timestamp,
         ERROR_ID varchar(255),
         ERROR_MSG varchar(255),
+        INIT_ACTIVITY_ID bigint,
         JOB_ID bigint,
         PROCESS_ID varchar(255),
         PROCESS_INST_ID bigint,

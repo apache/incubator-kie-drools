@@ -32,10 +32,12 @@ import org.slf4j.LoggerFactory;
 
 
 public class DBExecutionErrorFilter extends AbstractExecutionErrorFilter {
-
-    private static final Logger logger = LoggerFactory.getLogger(DBExecutionErrorFilter.class);
-    private Class<?> hibernateException;
     
+    private static final Logger logger = LoggerFactory.getLogger(DBExecutionErrorFilter.class);
+    
+    public static final String TYPE = "DB";
+    
+    private Class<?> hibernateException;
     
     public DBExecutionErrorFilter() {
         try {
@@ -55,7 +57,7 @@ public class DBExecutionErrorFilter extends AbstractExecutionErrorFilter {
     
     @Override
     public ExecutionError filter(ExecutionErrorContext errorContext) {
-        Builder errorBuilder = ExecutionError.builder().type("DB");
+        Builder errorBuilder = ExecutionError.builder().type(TYPE).initActivityId(getInitActivityId(errorContext));
                 
         String stacktrace = getStackTrace(errorContext.getCause());
         

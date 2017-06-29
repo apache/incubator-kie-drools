@@ -250,11 +250,11 @@ public class ProcessInstanceAdminServiceImpl implements ProcessInstanceAdminServ
         }
     }
     
-    protected List<Boolean> getAckMode(boolean includeAcknowledged) {
-        List<Boolean> ackMode = new ArrayList<>();
-        ackMode.add(false);
+    protected List<Short> getAckMode(boolean includeAcknowledged) {
+        List<Short> ackMode = new ArrayList<>();
+        ackMode.add(new Short("0"));
         if (includeAcknowledged) {
-            ackMode.add(true);
+            ackMode.add(new Short("1"));
         }
         
         return ackMode;

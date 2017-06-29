@@ -56,6 +56,7 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskEvent;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.TaskService;
@@ -165,7 +166,12 @@ public class ExecutionErrorHandlingRuntimeManagerTest extends AbstractBaseTest {
         KieSession ksession1 = runtime1.getKieSession();
         assertNotNull(ksession1);                 
         
-        ksession1.startProcess("UserTaskWithRollback");
+        ProcessInstance pi = ksession1.startProcess("UserTaskWithRollback");
+        
+        manager.disposeRuntimeEngine(runtime1);
+        
+        runtime1 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi.getId()));
+        ksession1 = runtime1.getKieSession();
         
         TaskService taskService = runtime1.getTaskService();
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");

@@ -24,7 +24,8 @@ import org.kie.internal.runtime.error.ExecutionErrorContext;
 
 
 public class ProcessExecutionErrorFilter extends AbstractExecutionErrorFilter {
-
+    
+    public static final String TYPE = "Process";
 
     @Override
     public boolean accept(ExecutionErrorContext errorContext) {
@@ -41,7 +42,8 @@ public class ProcessExecutionErrorFilter extends AbstractExecutionErrorFilter {
         String stacktrace = getStackTrace(errorContext.getCause());
         
         return ExecutionError.builder()
-            .type("Process")
+            .type(TYPE)
+            .initActivityId(getInitActivityId(errorContext))
             .deploymentId(exception.getDeploymentId())
             .processInstanceId(exception.getProcessInstanceId())
             .processId(exception.getProcessId())

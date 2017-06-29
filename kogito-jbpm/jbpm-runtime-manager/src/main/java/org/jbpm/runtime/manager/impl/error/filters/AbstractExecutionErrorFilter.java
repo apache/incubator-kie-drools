@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.runtime.manager.audit.NodeInstanceLog;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.internal.runtime.error.ExecutionErrorContext;
 import org.kie.internal.runtime.error.ExecutionErrorFilter;
 
 
@@ -45,6 +46,14 @@ public abstract class AbstractExecutionErrorFilter implements ExecutionErrorFilt
             
             return "";
         }
+    }
+    
+    protected Long getInitActivityId(ExecutionErrorContext context) {
+        if (context.getFirstExecutedNode() == null) {
+            return null;
+        }
+        
+        return context.getFirstExecutedNode().getId();
     }
 
 }

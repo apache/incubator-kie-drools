@@ -70,7 +70,8 @@ public class DefaultExecutionErrorStorage implements ExecutionErrorStorage {
                     error.getJobId(),
                     error.getErrorMessage(),
                     error.getError(),
-                    error.getErrorDate()
+                    error.getErrorDate(),
+                    error.getInitActivityId()
                     );
             
             em.persist(errorEntity);

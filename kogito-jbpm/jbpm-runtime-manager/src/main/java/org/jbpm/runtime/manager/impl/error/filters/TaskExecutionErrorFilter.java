@@ -28,6 +28,7 @@ import org.kie.internal.task.exception.TaskException;
 
 public class TaskExecutionErrorFilter extends AbstractExecutionErrorFilter {
 
+    public static final String TYPE = "Task";
 
     @Override
     public boolean accept(ExecutionErrorContext errorContext) {
@@ -44,7 +45,7 @@ public class TaskExecutionErrorFilter extends AbstractExecutionErrorFilter {
         if (isCausedBy(errorContext.getCause(), PermissionDeniedException.class)) {
             return null;
         }
-        Builder taskErrorBuilder = ExecutionError.builder().type("Task");
+        Builder taskErrorBuilder = ExecutionError.builder().type(TYPE).initActivityId(getInitActivityId(errorContext));
                 
         TaskException exception = extract(errorContext.getCause(), TaskException.class);
         String stacktrace = getStackTrace(exception);
