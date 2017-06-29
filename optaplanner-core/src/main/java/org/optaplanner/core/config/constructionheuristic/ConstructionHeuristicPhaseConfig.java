@@ -207,7 +207,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
                 if (!ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
                     if (moveSelectorConfigList.size() != 1) {
                         throw new IllegalArgumentException("For the constructionHeuristicType ("
-                                + constructionHeuristicType + ") the moveSelectorConfigList (" + moveSelectorConfigList
+                                + constructionHeuristicType + "), the moveSelectorConfigList (" + moveSelectorConfigList
                                 + ") must be a singleton. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
                                 + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
                                 + " element to nest multiple MoveSelectors.");
@@ -220,7 +220,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
                 if (!ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
                     if (moveSelectorConfigList.size() != 1) {
                         throw new IllegalArgumentException("For the constructionHeuristicType ("
-                                + constructionHeuristicType + ") the moveSelectorConfigList (" + moveSelectorConfigList
+                                + constructionHeuristicType + "), the moveSelectorConfigList (" + moveSelectorConfigList
                                 + ") must be a singleton. Use a single " + UnionMoveSelectorConfig.class.getSimpleName()
                                 + " or " + CartesianProductMoveSelectorConfig.class.getSimpleName()
                                 + " element to nest multiple MoveSelectors.");

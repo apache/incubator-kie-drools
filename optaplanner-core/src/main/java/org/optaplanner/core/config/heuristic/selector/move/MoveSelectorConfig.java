@@ -391,7 +391,8 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
     }
 
     /**
-     * Make a list of leaf MoveSelectorConfigs.
+     * Gather a list of all descendant {@link MoveSelectorConfig}s
+     * except for {@link UnionMoveSelectorConfig} and {@link CartesianProductMoveSelectorConfig}.
      * @param leafMoveSelectorConfigList not null
      */
     public void extractLeafMoveSelectorConfigsIntoList(List<MoveSelectorConfig> leafMoveSelectorConfigList) {
