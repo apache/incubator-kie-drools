@@ -37,25 +37,26 @@ public class ExecutionError implements Serializable {
     protected String errorMessage;
     protected String error;
     
-    protected boolean acknowledged;
+    protected Short acknowledged = 0;
     protected String acknowledgedBy;
     protected Date acknowledgedAt;
     
-    protected Date errorDate;    
+    protected Date errorDate;  
     
-    
+    protected Long initActivityId;
+
     public ExecutionError() {
         errorId = UUID.randomUUID().toString();
     }
     
     public ExecutionError(String errorId, String type, String deploymentId, Long processInstanceId, String processId, Long activityId, String activityName, Long jobId, String errorMessage, 
-            boolean acknowledged, String acknowledgedBy, Date acknowledgedAt, 
+            short acknowledged, String acknowledgedBy, Date acknowledgedAt, 
             Date errorDate) {
         this(errorId, type, deploymentId, processInstanceId, processId, activityId, activityName, jobId, errorMessage, null, acknowledged, acknowledgedBy, acknowledgedAt, errorDate);
     }
     
     public ExecutionError(String errorId, String type, String deploymentId, Long processInstanceId, String processId, Long activityId, String activityName, Long jobId, String errorMessage, String error, 
-            boolean acknowledged, String acknowledgedBy, Date acknowledgedAt, 
+            short acknowledged, String acknowledgedBy, Date acknowledgedAt, 
             Date errorDate) {
         this.errorId = errorId;
         this.type = type;
@@ -128,15 +129,26 @@ public class ExecutionError implements Serializable {
     public void setError(String error) {
         this.error = error;
     }
-    
-    public boolean isAcknowledged() {
+       
+    protected Short getAcknowledged() {
         return acknowledged;
     }
     
-    public void setAcknowledged(boolean acknowledged) {
+    protected void setAcknowledged(Short acknowledged) {
         this.acknowledged = acknowledged;
     }
     
+    public boolean isAcknowledged() {
+        if (acknowledged == null) {
+            return false;
+        }
+        return (acknowledged == 1) ? Boolean.TRUE : Boolean.FALSE;
+    }
+    
+    public void setAcknowledged(boolean acknowledged) {
+        setAcknowledged(acknowledged ? new Short("1") : new Short("0")); 
+    }
+
     public String getAcknowledgedBy() {
         return acknowledgedBy;
     }
@@ -187,6 +199,15 @@ public class ExecutionError implements Serializable {
     
     public void setJobId(Long jobId) {
         this.jobId = jobId;
+    }
+    
+    public Long getInitActivityId() {
+        return initActivityId;
+    }
+
+    
+    public void setInitActivityId(Long initActivityId) {
+        this.initActivityId = initActivityId;
     }
 
     @Override
@@ -241,7 +262,7 @@ public class ExecutionError implements Serializable {
         }
         
         public Builder acknowledged(boolean acknowledged) {
-            error.setAcknowledged(acknowledged);
+            error.setAcknowledged(acknowledged ? new Short("1") : new Short("0"));
             return this;
         }
         
@@ -269,5 +290,11 @@ public class ExecutionError implements Serializable {
             error.setJobId(jobId);
             return this;
         }
+        
+        public Builder initActivityId(Long initActivityId) {
+            error.setInitActivityId(initActivityId);
+            return this;
+        }
+           
     }
 }

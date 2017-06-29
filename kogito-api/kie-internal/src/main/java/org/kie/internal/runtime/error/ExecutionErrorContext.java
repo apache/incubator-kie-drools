@@ -23,15 +23,18 @@ public class ExecutionErrorContext {
 
     private Throwable cause;
     
+    private NodeInstance firstExecutedNode;
+    
     private NodeInstance lastExecutedNode;
     
     private Task lastExecutedTask;
     
-    public ExecutionErrorContext(Throwable cause, NodeInstance lastExecutedNode, Task lastExecutedTask) {
+    public ExecutionErrorContext(Throwable cause, NodeInstance lastExecutedNode, Task lastExecutedTask, NodeInstance firstExecutedNode) {
         super();
         this.cause = cause;
         this.lastExecutedNode = lastExecutedNode;
         this.lastExecutedTask = lastExecutedTask;
+        this.firstExecutedNode = firstExecutedNode;
     }
 
     public Throwable getCause() {
@@ -44,12 +47,16 @@ public class ExecutionErrorContext {
     
     public Task getLastExecutedTask() {
         return lastExecutedTask;
+    }    
+    
+    public NodeInstance getFirstExecutedNode() {
+        return firstExecutedNode;
     }
 
     @Override
     public String toString() {
-        return "ExecutionErrorContext [cause=" + cause + ", lastExecutedNode=" + lastExecutedNode 
-                + ", lastExecutedTask=" + lastExecutedTask + "]";
+        return "ExecutionErrorContext [cause=" + cause + ", firstExecutedNode=" + firstExecutedNode +
+                ", lastExecutedNode=" + lastExecutedNode + ", lastExecutedTask=" + lastExecutedTask + "]";
     }
     
 }
