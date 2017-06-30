@@ -502,7 +502,7 @@ public abstract class AbstractKieModule
     }
 
     private void validatePomModel(PomModel pomModel) {
-        org.appformer.maven.support.ReleaseId pomReleaseId = pomModel.getReleaseId();
+        org.appformer.maven.support.AFReleaseId pomReleaseId = pomModel.getReleaseId();
         if (StringUtils.isEmpty(pomReleaseId.getGroupId()) || StringUtils.isEmpty(pomReleaseId.getArtifactId()) || StringUtils.isEmpty(pomReleaseId.getVersion())) {
             throw new RuntimeException("Maven pom.properties exists but ReleaseId content is malformed");
         }

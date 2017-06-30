@@ -25,7 +25,7 @@ import org.kie.api.builder.ReleaseId;
 
 import static java.util.stream.Collectors.toList;
 
-public class ReleaseIdImpl extends org.appformer.maven.support.ReleaseIdImpl implements ReleaseId {
+public class ReleaseIdImpl extends org.appformer.maven.support.AFReleaseIdImpl implements ReleaseId {
 
     public ReleaseIdImpl() {
     }
@@ -42,11 +42,11 @@ public class ReleaseIdImpl extends org.appformer.maven.support.ReleaseIdImpl imp
         super(groupId, artifactId, version, type);
     }
 
-    public static ReleaseIdImpl adapt(org.appformer.maven.support.ReleaseId r ) {
-        return new ReleaseIdImpl(r.getGroupId(), r.getArtifactId(), r.getVersion(), ( (org.appformer.maven.support.ReleaseIdImpl) r ).getType() );
+    public static ReleaseIdImpl adapt(org.appformer.maven.support.AFReleaseId r ) {
+        return new ReleaseIdImpl(r.getGroupId(), r.getArtifactId(), r.getVersion(), ( (org.appformer.maven.support.AFReleaseIdImpl) r ).getType() );
     }
 
-    public static Collection<ReleaseId> adaptAll( Collection<org.appformer.maven.support.ReleaseId> rs ) {
+    public static Collection<ReleaseId> adaptAll( Collection<org.appformer.maven.support.AFReleaseId> rs ) {
         return rs.stream().map(ReleaseIdImpl::adapt).collect(toList());
     }
 
