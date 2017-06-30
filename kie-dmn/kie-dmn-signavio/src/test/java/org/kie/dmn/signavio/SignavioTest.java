@@ -1,0 +1,62 @@
+package org.kie.dmn.signavio;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Results;
+import org.kie.api.builder.Message.Level;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.runtime.KieContainer;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class SignavioTest {
+    public static final Logger LOG = LoggerFactory.getLogger(SignavioTest.class);
+    
+    @Test
+    public void test() {
+        final KieServices ks = KieServices.Factory.get();
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        
+        KieModuleModel kmm = ks.newKieModuleModel();
+        kmm.setConfigurationProperty("org.kie.dmn.marshaller.extension.MultiInstanceDecisionLogic", "org.kie.dmn.signavio.MultiInstanceDecisionLogicRegister");
+        kfs.writeKModuleXML(kmm.toXML());
+        kfs.write(ks.getResources().newClassPathResource("Prova multiple.dmn", this.getClass()));
+        
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        Results results = kieBuilder.getResults();
+        LOG.info("buildAll() completed.");
+        results.getMessages(Level.WARNING).forEach( e -> LOG.warn("{}", e));
+        assertTrue( results.getMessages(Level.WARNING).size() == 0 );
+
+        final KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        
+        List<DMNModel> models = runtime.getModels();
+        
+        DMNContext context = runtime.newContext();
+        context.set("persons", Arrays.asList(new String[]{"p1", "p2"}));
+        
+        DMNModel model0 = models.get(0);
+        System.out.println("EVALUATE ALL:");
+        DMNResult evaluateAll = runtime.evaluateAll(model0, context);
+        System.out.println(evaluateAll);
+        
+        assertThat( (List<?>) evaluateAll.getContext().get( "Greeting for each Person in Persons" ), contains( "Hello p1", "Hello p2" ) );
+    }
+}

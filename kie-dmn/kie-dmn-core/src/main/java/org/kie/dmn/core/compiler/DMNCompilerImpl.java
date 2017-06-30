@@ -245,8 +245,28 @@ public class DMNCompilerImpl
                 }
                 DMNExpressionEvaluator evaluator = evaluatorCompiler.compileExpression( ctx, model, di, d.getName(), d.getDecision().getExpression() );
                 di.setEvaluator( evaluator );
+                
+                walkExtensions( model, di );
             } finally {
                 ctx.exitFrame();
+            }
+        }
+    }
+
+    public static interface DMNCompilerExtension {
+
+        void extendCompilation(DMNModelImpl model, DecisionNodeImpl di);
+
+    }
+    private void walkExtensions(DMNModelImpl model, DecisionNodeImpl di) {
+        Decision d = di.getDecision();
+        if ( d.getExtensionElements() == null ) {
+            return;
+        }
+        for ( Object genericExtension : d.getExtensionElements().getAny() ) {
+            if ( genericExtension instanceof DMNCompilerExtension ) {
+                DMNCompilerExtension compilerExtension = (DMNCompilerExtension) genericExtension;
+                compilerExtension.extendCompilation(model, di);
             }
         }
     }
