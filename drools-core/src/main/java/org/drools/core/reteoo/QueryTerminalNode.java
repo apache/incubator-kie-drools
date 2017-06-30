@@ -22,7 +22,6 @@ import java.io.ObjectOutput;
 import java.util.Map;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
@@ -272,16 +271,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
 
     @Override
     public Declaration[][] getTimerDeclarations() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
         throw new UnsupportedOperationException();
     }
 
