@@ -321,18 +321,4 @@ public class TimerNode extends LeftTupleSource
             deleteLeftTuples.clear();
         }
     }
-
-    @Override
-    public void assertLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void retractLeftTuple(final LeftTuple leftTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
 }

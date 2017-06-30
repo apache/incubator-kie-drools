@@ -47,20 +47,6 @@ public class MockLeftTupleSink extends LeftTupleSource
         super(id, null);
     }
 
-    public void assertLeftTuple(final LeftTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        this.asserted.add( new Object[]{tuple, context, workingMemory} );
-
-    }
-
-    public void retractLeftTuple(final LeftTuple tuple,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-        this.retracted.add( new Object[]{tuple, context, workingMemory} );
-
-    }
-
     public List getAsserted() {
         return this.asserted;
     }

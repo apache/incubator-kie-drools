@@ -28,7 +28,6 @@ import org.drools.core.base.mvel.MVELEnabledExpression;
 import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
@@ -394,13 +393,5 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void setFireDirect(boolean fireDirect) {
         this.fireDirect = fireDirect;
-    }
-
-    public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("Rete Only");
-    }
-
-    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("Rete Only");
     }
 }
