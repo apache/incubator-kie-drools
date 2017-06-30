@@ -16,15 +16,20 @@
 
 package org.kie.dmn.core.impl;
 
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNPackage;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DMNPackageImpl implements DMNPackage {
+public class DMNPackageImpl implements DMNPackage, Externalizable {
 
     private String namespace;
 
@@ -65,4 +70,22 @@ public class DMNPackageImpl implements DMNPackage {
     public Map<String, DMNModel> getAllModels() {
         return Collections.unmodifiableMap( models );
     }
+
+    @Override
+    public boolean removeResource(Resource resource) {
+        return models.entrySet().removeIf( kv -> resource.equals( kv.getValue().getResource() ) );
+    }
+    
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( this.namespace );
+        out.writeObject( this.models );
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.namespace = (String) in.readObject();
+        this.models = (Map<String, DMNModel>) in.readObject();
+    }
+
 }

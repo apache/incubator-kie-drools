@@ -1792,7 +1792,14 @@ public class KnowledgeBaseImpl
             }
 
             List<TypeDeclaration> removedTypes = pkg.removeTypesGeneratedFromResource(resource);
-            modified |= !rulesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty() || !processesToBeRemoved.isEmpty() || !removedTypes.isEmpty();
+            
+            boolean resourceTypePackageSomethingRemoved = pkg.removeFromResourceTypePackageGeneratedFromResource( resource );
+            
+            modified |= !rulesToBeRemoved.isEmpty()
+                        || !functionsToBeRemoved.isEmpty()
+                        || !processesToBeRemoved.isEmpty()
+                        || !removedTypes.isEmpty()
+                        || resourceTypePackageSomethingRemoved;
         }
         return modified;
     }

@@ -68,6 +68,7 @@ public class DMNAssemblerService implements KieAssemblerService {
                 pkgReg = kbuilderImpl.newPackage( new PackageDescr( namespace ) );
             }
             InternalKnowledgePackage kpkgs = pkgReg.getPackage();
+            kpkgs.addCloningResource( DMN_COMPILER_CACHE_KEY, dmnCompiler );
 
             Map<ResourceType, ResourceTypePackage> rpkg = kpkgs.getResourceTypePackages();
 

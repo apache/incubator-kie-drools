@@ -17,6 +17,8 @@
 package org.kie.dmn.api.core;
 
 import java.util.Set;
+
+import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
@@ -58,5 +60,10 @@ public interface DMNModel extends DMNMessageContainer {
     ItemDefNode getItemDefinitionByName(String name);
 
     Set<ItemDefNode> getItemDefinitions();
+
+    /**
+     * If the model was created from a {@link Resource}, provide the original resource; null otherwise.
+     */
+    Resource getResource();
 
 }

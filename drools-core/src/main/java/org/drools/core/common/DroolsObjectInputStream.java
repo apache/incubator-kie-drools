@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,8 @@ public class DroolsObjectInputStream extends ObjectInputStream
     private ClassFieldAccessorStore         store;
 
     private Map<AccessorKey, List<Consumer<InternalReadAccessor>>> extractorBinders = new HashMap<>();
+    
+    private Map<String, Object> customExtensions = new HashMap<>();
 
     public DroolsObjectInputStream(InputStream inputStream) throws IOException {
         this( inputStream,
@@ -156,4 +159,12 @@ public class DroolsObjectInputStream extends ObjectInputStream
         this.classLoader = classLoader;
     }
 
+
+    public Map<String, Object> getCustomExtensions() {
+        return customExtensions;
+    }
+
+    public void addCustomExtensions(String key, Object extension) {
+        this.customExtensions.put(key, extension);
+    }
 }

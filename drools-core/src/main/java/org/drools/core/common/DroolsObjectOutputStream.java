@@ -19,9 +19,23 @@ package org.drools.core.common;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DroolsObjectOutputStream extends ObjectOutputStream {
+    
+    private Map<String, Object> customExtensions = new HashMap<>();
+    
     public DroolsObjectOutputStream(OutputStream out) throws IOException {
         super(out);
     }
+
+    public Map<String, Object> getCustomExtensions() {
+        return customExtensions;
+    }
+
+    public void addCustomExtensions(String key, Object extension) {
+        this.customExtensions.put(key, extension);
+    }
+    
 }

@@ -25,7 +25,7 @@
       <requiredInput href="#i_FullName"/>
     </informationRequirement>
     <literalExpression>
-      <text>"Hello " + Full Name</text>
+      <text>"Salve " + Full Name</text>
     </literalExpression>
   </decision>
   <inputData name="Full Name" id="i_FullName">
