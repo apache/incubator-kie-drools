@@ -337,7 +337,7 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
         for (String error : errorId) {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("errorId", error);               
-            params.put("ack", false);
+            params.put("ack", new Short("0"));
             List<ExecutionError> execErrors = commandService.execute(new QueryNameCommand<List<ExecutionError>>("getErrorById",params));
             
             if (execErrors.isEmpty()) {

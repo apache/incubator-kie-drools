@@ -399,6 +399,20 @@ public class ProcessInstanceAdminServiceImplTest extends AbstractKieServicesBase
         List<ExecutionError> errors = processAdminService.getErrors(true, new QueryContext());
         assertNotNull(errors);
         assertEquals(1, errors.size());
+        
+        ExecutionError error = errors.get(0);
+        assertNotNull(error);
+        assertFalse(error.isAcknowledged());
+        
+        processAdminService.acknowledgeError(error.getErrorId());
+        
+        errors = processAdminService.getErrors(true, new QueryContext());
+        assertNotNull(errors);
+        assertEquals(1, errors.size());
+        
+        error = errors.get(0);
+        assertNotNull(error);
+        assertTrue(error.isAcknowledged());
     }
 
     /*

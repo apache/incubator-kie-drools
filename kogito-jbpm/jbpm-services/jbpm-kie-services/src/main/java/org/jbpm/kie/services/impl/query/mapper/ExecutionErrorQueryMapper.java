@@ -78,7 +78,7 @@ public class ExecutionErrorQueryMapper extends AbstractQueryMapper<ExecutionErro
                 getColumnStringValue(dataSetResult, COLUMN_ERROR_ACTIVITY_NAME, index),
                 getColumnLongValue(dataSetResult, COLUMN_ERROR_JOB_ID, index),
                 getColumnStringValue(dataSetResult, COLUMN_ERROR_MSG, index),
-                new Short(getColumnStringValue(dataSetResult, COLUMN_ERROR_ACK, index)), 
+                Integer.valueOf(getColumnIntValue(dataSetResult, COLUMN_ERROR_ACK, index)).shortValue(), 
                 getColumnStringValue(dataSetResult, COLUMN_ERROR_ACK_BY, index),
                 getColumnDateValue(dataSetResult, COLUMN_ERROR_ACK_AT, index), 
                 getColumnDateValue(dataSetResult, COLUMN_ERROR_DATE, index)
