@@ -43,7 +43,7 @@ public class DMNInputRuntimeTest {
     @Test
     public void testInputStringEvaluateAll() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
+        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
         final DMNContext context = DMNFactory.newContext();
@@ -62,7 +62,7 @@ public class DMNInputRuntimeTest {
     @Test
     public void testInputStringEvaluateDecisionByName() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
+        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
         final DMNContext context = DMNFactory.newContext();
@@ -93,7 +93,7 @@ public class DMNInputRuntimeTest {
     @Test
     public void testInputStringEvaluateDecisionById() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
+        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
         final DMNContext context = DMNFactory.newContext();
@@ -184,7 +184,7 @@ public class DMNInputRuntimeTest {
     @Test
     public void testGetRequiredInputsByName() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
+        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
         Set<InputDataNode> inputs = dmnModel.getRequiredInputsForDecisionName( "Greeting Message" );
@@ -199,7 +199,7 @@ public class DMNInputRuntimeTest {
     @Test
     public void testGetRequiredInputsById() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
+        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
         Set<InputDataNode> inputs = dmnModel.getRequiredInputsForDecisionId( "d_GreetingMessage" );
@@ -214,7 +214,7 @@ public class DMNInputRuntimeTest {
     @Test
     public void testNonexistantInputNodeName() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string.dmn", this.getClass() );
-        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0001-input-data-string" );
+        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools/kie-dmn", "_0001-input-data-string" );
         assertThat( dmnModel, notNullValue() );
 
         final DMNContext context = DMNFactory.newContext();

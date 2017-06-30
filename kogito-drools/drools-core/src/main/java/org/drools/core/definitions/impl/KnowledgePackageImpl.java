@@ -104,6 +104,8 @@ public class KnowledgePackageImpl
     private TraitRegistry traitRegistry;
 
     private Map<ResourceType, ResourceTypePackage> resourceTypePackages;
+    
+    private Map<String, Object> cloningResources;
 
     /**
      * This is to indicate the the package has no errors during the
@@ -151,6 +153,7 @@ public class KnowledgePackageImpl
         this.entryPointsIds = Collections.emptySet();
         this.windowDeclarations = Collections.emptyMap();
         this.resourceTypePackages = Collections.emptyMap();
+        this.cloningResources = new HashMap<>();
     }
 
     public Map<ResourceType, ResourceTypePackage> getResourceTypePackages() {
@@ -262,6 +265,7 @@ public class KnowledgePackageImpl
         out.writeObject( this.entryPointsIds );
         out.writeObject( this.windowDeclarations );
         out.writeObject( this.traitRegistry );
+        out.writeObject( this.resourceTypePackages );
         // writing the whole stream as a byte array
         if (!isDroolsStream) {
             bytes.flush();
@@ -310,6 +314,7 @@ public class KnowledgePackageImpl
         this.entryPointsIds = (Set<String>) in.readObject();
         this.windowDeclarations = (Map<String, WindowDeclaration>) in.readObject();
         this.traitRegistry = (TraitRegistry) in.readObject();
+        this.resourceTypePackages = (Map<ResourceType, ResourceTypePackage>) in.readObject();
 
         in.setStore( null );
 
@@ -691,7 +696,21 @@ public class KnowledgePackageImpl
         List<TypeDeclaration> typesToBeRemoved = removeTypesGeneratedFromResource( resource );
         List<Function> functionsToBeRemoved = removeFunctionsGeneratedFromResource(resource);
         List<Process> processesToBeRemoved = removeProcessesGeneratedFromResource(resource);
-        return !rulesToBeRemoved.isEmpty() || !typesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty() || !processesToBeRemoved.isEmpty();
+        boolean resourceTypePackageSomethingRemoved = removeFromResourceTypePackageGeneratedFromResource( resource );
+        return !rulesToBeRemoved.isEmpty()
+                || !typesToBeRemoved.isEmpty()
+                || !functionsToBeRemoved.isEmpty()
+                || !processesToBeRemoved.isEmpty()
+                || resourceTypePackageSomethingRemoved;
+    }
+    
+    @Override
+    public boolean removeFromResourceTypePackageGeneratedFromResource(Resource resource) {
+        boolean somethingWasRemoved = false;
+        for ( ResourceTypePackage rtp : resourceTypePackages.values() ) {
+            somethingWasRemoved = rtp.removeResource( resource ) || somethingWasRemoved;
+        }
+        return somethingWasRemoved;
     }
 
     public List<TypeDeclaration> removeTypesGeneratedFromResource( Resource resource ) {
@@ -800,6 +819,11 @@ public class KnowledgePackageImpl
             }
         }
 
-        return ClassUtils.deepClone(this, classLoader);
+        return ClassUtils.deepClone(this, classLoader, cloningResources);
+    }
+
+    @Override
+    public void addCloningResource(String key, Object resource) {
+        this.cloningResources.put(key, resource);
     }
 }
