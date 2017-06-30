@@ -16,12 +16,11 @@
 
 package org.drools.core.reteoo;
 
+import java.util.Arrays;
+
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.index.TupleList;
-
-import java.util.Arrays;
 
 /**
  * A parent class for all specific LeftTuple specializations
@@ -637,11 +636,6 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     @Override
     public LeftTupleSource getTupleSource() {
         return sink != null ? getTupleSink().getLeftTupleSource() : null;
-    }
-
-    @Override
-    public void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory ) {
-        getTupleSink().retractLeftTuple( this, context, workingMemory );
     }
 
     public short getStagedTypeForQueries() {

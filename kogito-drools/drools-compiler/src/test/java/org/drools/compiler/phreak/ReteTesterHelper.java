@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.test.dsl;
+package org.drools.compiler.phreak;
+
+import java.util.HashSet;
+import java.util.List;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
@@ -35,9 +38,6 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-
-import java.util.HashSet;
-import java.util.List;
 
 public class ReteTesterHelper {
 
@@ -66,7 +66,7 @@ public class ReteTesterHelper {
     public EvaluatorRegistry getRegistry() {
         return registry;
     }
-    
+
     public ClassTypeResolver getTypeResolver() {
         return typeResolver;
     }
@@ -119,5 +119,4 @@ public class ReteTesterHelper {
             typeResolver.addImport( importEntry );
         }
     }
-
 }

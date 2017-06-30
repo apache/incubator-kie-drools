@@ -16,8 +16,9 @@
 
 package org.drools.core.spi;
 
+import java.io.Serializable;
+
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -25,8 +26,6 @@ import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.Declaration;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.TupleList;
-
-import java.io.Serializable;
 
 /**
  * Partial matches are propagated through the Rete network as <code>Tuple</code>s. Each <code>Tuple</code>
@@ -156,8 +155,6 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     ObjectTypeNode.Id getInputOtnId();
 
     <N extends NetworkNode> N getTupleSource();
-
-    void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory );
 
     boolean isExpired();
     void setExpired( boolean expired );

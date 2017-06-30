@@ -454,9 +454,6 @@ public class PropagationQueuingNode extends ObjectSource
                              final InternalWorkingMemory workingMemory ) {
             this.handle.forEachRightTuple( rt -> rt.retractTuple( context, workingMemory ) );
             this.handle.clearRightTuples();
-
-            this.handle.forEachLeftTuple( lt -> lt.retractTuple(  context, workingMemory ) );
-            this.handle.clearLeftTuples();
         }
     }
 

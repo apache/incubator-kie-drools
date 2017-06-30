@@ -690,16 +690,6 @@ public class CompositeObjectSinkAdapterTest {
                    null );
         }
 
-        public void assertLeftTuple(final LeftTuple tuple,
-                                    final PropagationContext context,
-                                    final InternalWorkingMemory workingMemory) {
-        }
-
-        public void retractLeftTuple(final LeftTuple tuple,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
-        }
-
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext pctx,
                                  final InternalWorkingMemory workingMemory) {

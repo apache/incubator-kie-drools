@@ -16,11 +16,12 @@
 
 package org.drools.core.reteoo;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
 
@@ -170,5 +171,10 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
     public void clearStaged() {
         super.clearStaged();
         stagedOnRight = false;
+    }
+
+    @Override
+    public void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory ) {
+        throw new UnsupportedOperationException();
     }
 }
