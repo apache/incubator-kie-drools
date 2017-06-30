@@ -31,6 +31,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
+import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
@@ -270,7 +271,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                     leftTuple.getMemory().remove( leftTuple );
                 }
             }
-            PhreakRuleTerminalNode.doLeftDelete(workingMemory.getAgenda(), ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor(), leftTuple);
+            RuleExecutor ruleExecutor = ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor();
+            PhreakRuleTerminalNode.doLeftDelete(ruleExecutor.getPathMemory().getActualAgenda( workingMemory ), ruleExecutor, leftTuple);
         }
     }
 

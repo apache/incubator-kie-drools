@@ -122,6 +122,17 @@ public class AlphaNode extends ObjectSource
         this.source.addObjectSink(this);
     }
 
+    @Override
+    public void setPartitionId(BuildContext context, RuleBasePartitionId partitionId) {
+        if (this.partitionId != null && this.partitionId != partitionId) {
+            if (source instanceof AlphaNode) {
+                source.setPartitionId( context, partitionId );
+            }
+            source.sink.changeSinkPartition( (ObjectSink)this, this.partitionId, partitionId, source.alphaNodeHashingThreshold );
+        }
+        this.partitionId = partitionId;
+    }
+
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {

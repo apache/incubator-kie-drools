@@ -111,8 +111,10 @@ public class NodesPartitioningTest {
         if ( InitialFact.class.isAssignableFrom( ( (ClassObjectType) otn.getObjectType() ).getClassType() ) ) {
             return;
         }
-        CompositePartitionAwareObjectSinkAdapter sinkPropagator = (CompositePartitionAwareObjectSinkAdapter) otn.getObjectSinkPropagator();
-        ObjectSinkPropagator[] propagators = sinkPropagator.getPartitionedPropagators();
+        ObjectSinkPropagator sinkPropagator = otn.getObjectSinkPropagator();
+        ObjectSinkPropagator[] propagators = sinkPropagator instanceof CompositePartitionAwareObjectSinkAdapter ?
+                                             ((CompositePartitionAwareObjectSinkAdapter) sinkPropagator).getPartitionedPropagators() :
+                                             new ObjectSinkPropagator[] { sinkPropagator };
         for (int i = 0; i < propagators.length; i++) {
             for (ObjectSink sink : propagators[i].getSinks()) {
                 assertEquals( sink + " on " + sink.getPartitionId() + " is expcted to be on propagator " + i,
@@ -164,5 +166,64 @@ public class NodesPartitioningTest {
                 "    String( this == \"" + i + "\" )\n" +
                 "    not Integer( this == " + i + " )" +
                 "then end\n";
+    }
+
+    public static class Account {
+        private final int number;
+        private final int uuid;
+        private final Customer owner;
+
+        public Account( int number, int uuid, Customer owner ) {
+            this.number = number;
+            this.uuid = uuid;
+            this.owner = owner;
+        }
+
+        public int getNumber() {
+            return number;
+        }
+
+        public int getUuid() {
+            return uuid;
+        }
+
+        public Customer getOwner() {
+            return owner;
+        }
+    }
+
+    public static class Customer {
+        private final int uuid;
+
+        public Customer( int uuid ) {
+            this.uuid = uuid;
+        }
+
+        public int getUuid() {
+            return uuid;
+        }
+    }
+
+    @Test
+    public void testChangePartitionOfAlphaSourceOfAlpha() {
+        // DROOLS-1487
+        String drl =
+                "import " + Account.class.getCanonicalName() + ";\n" +
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "rule \"customerDoesNotHaveSpecifiedAccount_2\"\n" +
+                "when\n" +
+                "    $account : Account (number == 1, uuid == \"customerDoesNotHaveSpecifiedAccount\")\n" +
+                "    Customer (uuid == \"customerDoesNotHaveSpecifiedAccount\")\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule \"customerDoesNotHaveSpecifiedAccount_1\"\n" +
+                "when\n" +
+                "    $account : Account (number == 2, uuid == \"customerDoesNotHaveSpecifiedAccount\")\n" +
+                "    Customer (uuid == \"customerDoesNotHaveSpecifiedAccount\")\n" +
+                "then\n" +
+                "end";
+
+        checkDrl( drl );
     }
 }
