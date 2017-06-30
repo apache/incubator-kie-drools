@@ -77,7 +77,7 @@ public class RuleExecutor {
                                        int fireCount,
                                        int fireLimit ) {
         reEvaluateNetwork( wm );
-        return fire(wm, wm.getAgenda(), filter, fireCount, fireLimit);
+        return fire(wm, pmem.getActualAgenda( wm ), filter, fireCount, fireLimit);
     }
 
     public int evaluateNetworkAndFire( InternalAgenda agenda,
@@ -195,15 +195,15 @@ public class RuleExecutor {
             }
             ruleAgendaItem.remove();
             if ( ruleAgendaItem.getRule().isQuery() ) {
-                wm.getAgenda().removeQueryAgendaItem( ruleAgendaItem );
+                pmem.getActualAgenda( wm ).removeQueryAgendaItem( ruleAgendaItem );
             } else if ( ruleAgendaItem.getRule().isEager() ) {
-                wm.getAgenda().removeEagerRuleAgendaItem(ruleAgendaItem);
+                pmem.getActualAgenda( wm ).removeEagerRuleAgendaItem(ruleAgendaItem);
             }
         }
     }
 
     public void reEvaluateNetwork(InternalWorkingMemory wm) {
-        reEvaluateNetwork(wm.getAgenda());
+        reEvaluateNetwork(pmem.getActualAgenda( wm ));
     }
 
     public void reEvaluateNetwork(InternalAgenda agenda) {
