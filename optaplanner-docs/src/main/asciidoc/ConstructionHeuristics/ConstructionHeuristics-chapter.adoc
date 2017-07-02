@@ -767,6 +767,8 @@ a cartesian product selects 1000000000 moves per entity (1 step per entity).
 A sequential approach only selects 240 moves per entity (3 steps per entity),
 ending the Construction Heuristic 300 000 times faster.
 
+image::ConstructionHeuristics/multiVariableConstructionHeuristics.png[align="center"]
+
 [IMPORTANT]
 ====
 The order of the variables is important, especially in the sequential technique.
