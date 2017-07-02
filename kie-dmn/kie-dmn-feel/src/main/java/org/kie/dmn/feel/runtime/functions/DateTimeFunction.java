@@ -16,66 +16,39 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
+/**
+ * This implementation is a signavio profile implementation.
+ * For the standard implementation, see DateAndTimeFunction
+ */
 public class DateTimeFunction
         extends BaseFEELFunction {
 
     public DateTimeFunction() {
-        super( "date and time" );
+        super( "dateTime" );
     }
 
-    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "from" ) String val) {
-        if ( val == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
-        }
-        
-        try {
-            if( val.contains( "T" ) ) {
-                return FEELFnResult.ofResult( DateTimeFormatter.ISO_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from ) );
-            } else {
-                TemporalAccessor value = DateTimeFormatter.ISO_DATE.parse( val, LocalDate::from );
-                return FEELFnResult.ofResult( LocalDateTime.of( (LocalDate)value, LocalTime.of( 0, 0 ) ) );
-            }
-        } catch ( Exception e ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
-        }
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName("from") String val) {
+        return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( val );
     }
 
-    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "date" ) Temporal date, @ParameterName( "time" ) Temporal time) {
-        if ( date == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "cannot be null"));
-        }
-        if ( !(date instanceof LocalDate) ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "must be an instance of LocalDate"));
-        }
-        if ( time == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "cannot be null"));
-        }
-        if ( !(time instanceof LocalTime || time instanceof OffsetTime) ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "must be an instance of LocalTime or OffsetTime"));
-        }
-
-        try {
-            if ( time instanceof LocalTime ) {
-                return FEELFnResult.ofResult(LocalDateTime.of((LocalDate) date, (LocalTime) time));
-            } else {
-                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), ZoneOffset.from(time)));
-            }
-        } catch ( DateTimeException e ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
-        }
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName("date") Temporal date, @ParameterName("time") Temporal time) {
+        return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( date, time );
     }
+
+    public FEELFnResult<TemporalAccessor> invoke(
+            @ParameterName("year") Number year, @ParameterName("month") Number month, @ParameterName("day") Number day,
+            @ParameterName("hour") Number hour, @ParameterName("minute") Number minute, @ParameterName("second") Number second) {
+        return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( year, month, day, hour, minute, second );
+    }
+
+    public FEELFnResult<TemporalAccessor> invoke(
+            @ParameterName("year") Number year, @ParameterName("month") Number month, @ParameterName("day") Number day,
+            @ParameterName("hour") Number hour, @ParameterName("minute") Number minute, @ParameterName("second") Number second,
+            @ParameterName("hour offset") Number hourOffset) {
+        return BuiltInFunctions.getFunction( DateAndTimeFunction.class ).invoke( year, month, day, hour, minute, second, hourOffset );
+    }
+
 }
