@@ -86,7 +86,7 @@ public enum BuiltInType implements SimpleType {
         return BuiltInFunctions.getFunction( StringFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
     }
     
-    static <T> Function<FEELEvent, T> justNull() {
+    public static <T> Function<FEELEvent, T> justNull() {
         // TODO we should add the EventListener here somehow?
         return t -> null;
     }

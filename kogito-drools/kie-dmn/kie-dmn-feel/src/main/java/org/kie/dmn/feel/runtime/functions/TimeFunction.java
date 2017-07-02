@@ -26,9 +26,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.time.temporal.TemporalQueries;
+import java.util.function.Function;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
@@ -47,7 +49,14 @@ public class TimeFunction
         try {
             return FEELFnResult.ofResult( DateTimeFormatter.ISO_TIME.parseBest( val, OffsetTime::from, LocalTime::from ) );
         } catch (DateTimeException e) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "time-parsing exception", e));
+            // try to parse it as a date time and extract the date component
+            // NOTE: this is an extension to the standard
+            Object r = BuiltInFunctions.getFunction( DateTimeFunction.class ).invoke( val ).cata( BuiltInType.justNull(), Function.identity() );
+            if( r != null && r instanceof TemporalAccessor ) {
+                return invoke( (TemporalAccessor) r );
+            } else {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "time-parsing exception", e));
+            }
         }
     }
 

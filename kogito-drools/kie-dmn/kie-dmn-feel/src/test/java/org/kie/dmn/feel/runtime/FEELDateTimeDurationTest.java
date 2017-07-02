@@ -98,8 +98,15 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).years", BigDecimal.valueOf(1) , null},
                 { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") ).months", BigDecimal.valueOf(8) , null},
                 { "date and time(\"2017-05-14\")", LocalDateTime.of( 2017, 5, 14, 0, 0, 0, 0 ) , null},
-                { "date(\"2017-05-12\")-date(\"2017-04-25\")", Duration.ofDays( 17 ) , null}
+                { "date(\"2017-05-12\")-date(\"2017-04-25\")", Duration.ofDays( 17 ) , null},
 
+                // the following is an extension to the standard: DROOLS-1549
+                { "date(\"2016-12-20T14:30:22\")", DateTimeFormatter.ISO_DATE.parse( "2016-12-20", LocalDate::from ) , null },
+                { "date(\"2016-12-20T14:30:22-05:00\")", DateTimeFormatter.ISO_DATE.parse( "2016-12-20", LocalDate::from ) , null },
+                { "date(\"2016-12-20T14:30:22z\")", DateTimeFormatter.ISO_DATE.parse( "2016-12-20", LocalDate::from ) , null },
+                { "time(\"2016-12-20T14:30:22\")", DateTimeFormatter.ISO_TIME.parse( "14:30:22", LocalTime::from ) , null },
+                { "time(\"2016-12-20T14:30:22-05:00\")", DateTimeFormatter.ISO_TIME.parse( "14:30:22-05:00", OffsetTime::from ) , null },
+                { "time(\"2016-12-20T14:30:22z\")", DateTimeFormatter.ISO_TIME.parse( "14:30:22z", OffsetTime::from ) , null }
         };
         return Arrays.asList( cases );
     }
