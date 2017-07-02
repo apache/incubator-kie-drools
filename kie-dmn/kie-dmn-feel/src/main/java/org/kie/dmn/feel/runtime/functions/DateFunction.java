@@ -20,9 +20,11 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.function.Function;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
@@ -41,7 +43,14 @@ public class DateFunction
         try {
             return FEELFnResult.ofResult( LocalDate.from( DateTimeFormatter.ISO_DATE.parse( val ) ) );
         } catch (DateTimeException e) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
+            // try to parse it as a date time and extract the date component
+            // NOTE: this is an extension to the standard
+            Object r = BuiltInFunctions.getFunction( DateTimeFunction.class ).invoke( val ).cata( BuiltInType.justNull(), Function.identity() );
+            if( r != null && r instanceof TemporalAccessor ) {
+                return invoke( (TemporalAccessor) r );
+            } else {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
+            }
         }
     }
 
@@ -69,7 +78,7 @@ public class DateFunction
         }
         
         try {
-            return FEELFnResult.ofResult( LocalDate.from( LocalDate.from( date ) ) );
+            return FEELFnResult.ofResult( LocalDate.from( date ) );
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
         }
