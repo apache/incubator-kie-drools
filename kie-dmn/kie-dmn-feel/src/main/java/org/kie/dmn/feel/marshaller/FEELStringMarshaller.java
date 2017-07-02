@@ -1,6 +1,5 @@
 package org.kie.dmn.feel.marshaller;
 
-import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.functions.*;
 
@@ -19,6 +18,16 @@ public class FEELStringMarshaller implements FEELMarshaller<String> {
 
     private FEELStringMarshaller() {}
 
+    /**
+     * Marshalls the give FEEL value into a String. The result is similar to
+     * calling the string() function in a FEEL expression, with the difference
+     * that a null value is returned as the "null" string instead of the null
+     * value itself.
+     *
+     * @param value the FEEL value to be marshalled
+     *
+     * @return the string representation of the value
+     */
     @Override
     public String marshall(Object value) {
         if( value == null ) {
@@ -27,6 +36,23 @@ public class FEELStringMarshaller implements FEELMarshaller<String> {
         return BuiltInFunctions.getFunction( StringFunction.class ).invoke( value ).cata( justNull(), Function.identity());
     }
 
+    /**
+     * Unmarshalls the given string into a FEEL value.
+     *
+     * IMPORTANT: please note that it is only possible to unmarshall simple
+     * values, like strings and numbers. Complex values like lists and contexts
+     * don't have enough metadata marshalled in the string to enable them to be
+     * unmarshalled.
+     *
+     * @param feelType the expected type of the value to be unmarshalled
+     * @param value the marshalled value to unmarshall
+     *
+     * @return the value resulting from the unmarshalling of the string
+     *
+     * @throws UnsupportedOperationException in case the type is a complex type,
+     *         i.e. RANGE, FUNCTION, CONTEXT, LIST or UNARY_TEST, the implementation
+     *         raises the exception.
+     */
     @Override
     public Object unmarshall(Type feelType, String value) {
         if ( "null".equals( value ) ) {
