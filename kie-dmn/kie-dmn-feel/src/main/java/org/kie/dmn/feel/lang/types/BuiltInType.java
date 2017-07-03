@@ -21,6 +21,7 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.marshaller.FEELStringMarshaller;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -64,26 +65,11 @@ public enum BuiltInType implements SimpleType {
     }
 
     public Object fromString(String value) {
-        switch ( this ) {
-            case NUMBER: return BuiltInFunctions.getFunction( NumberFunction.class).invoke( value, null, null ).cata(BuiltInType.justNull(), Function.identity());
-            case STRING: return value;
-            case DATE: return BuiltInFunctions.getFunction( DateFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
-            case TIME: return BuiltInFunctions.getFunction( TimeFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
-            case DATE_TIME: return BuiltInFunctions.getFunction( DateTimeFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
-            case DURATION: return BuiltInFunctions.getFunction( DurationFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
-            case BOOLEAN: return Boolean.parseBoolean( value );
-            case RANGE:
-            case FUNCTION:
-            case LIST:
-            case CONTEXT:
-            case UNARY_TEST:
-                return FEEL.newInstance().evaluate( value );
-        }
-        return null;
+        return FEELStringMarshaller.INSTANCE.unmarshall( this, value );
     }
 
     public String toString(Object value) {
-        return BuiltInFunctions.getFunction( StringFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
+        return FEELStringMarshaller.INSTANCE.marshall( value );
     }
     
     public static <T> Function<FEELEvent, T> justNull() {
