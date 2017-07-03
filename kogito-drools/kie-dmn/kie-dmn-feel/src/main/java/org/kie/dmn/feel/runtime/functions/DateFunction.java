@@ -45,12 +45,10 @@ public class DateFunction
         } catch (DateTimeException e) {
             // try to parse it as a date time and extract the date component
             // NOTE: this is an extension to the standard
-            Object r = BuiltInFunctions.getFunction( DateTimeFunction.class ).invoke( val ).cata( BuiltInType.justNull(), Function.identity() );
-            if( r != null && r instanceof TemporalAccessor ) {
-                return invoke( (TemporalAccessor) r );
-            } else {
-                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
-            }
+            return BuiltInFunctions.getFunction( DateTimeFunction.class ).invoke( val )
+                .cata( overrideLeft -> FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e)),
+                       r -> invoke( r )
+                       );   
         }
     }
 
