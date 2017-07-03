@@ -56,10 +56,10 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
-import org.appformer.maven.support.ReleaseId;
+import org.appformer.maven.support.AFReleaseId;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
-import org.appformer.maven.support.ReleaseIdImpl;
+import org.appformer.maven.support.AFReleaseIdImpl;
 
 import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
@@ -81,7 +81,7 @@ public class KieBuilderImpl
     private MemoryKieModule kModule;
 
     private byte[] pomXml;
-    private ReleaseId releaseId;
+    private AFReleaseId releaseId;
 
     private byte[] kModuleModelXml;
     private KieModuleModel kModuleModel;
@@ -146,7 +146,7 @@ public class KieBuilderImpl
 
             // add all the pom dependencies to this builder ... not sure this is a good idea (?)
             KieRepositoryImpl repository = (KieRepositoryImpl) ks.getRepository();
-            for ( ReleaseId dep : pomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
+            for ( AFReleaseId dep : pomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
                 KieModule depModule = repository.getKieModule( adapt( dep ), pomModel );
                 if ( depModule != null ) {
                     addKieDependency( depModule );
@@ -197,7 +197,7 @@ public class KieBuilderImpl
             }
 
             KieModuleKieProject kProject = new KieModuleKieProject( kModule, classLoader );
-            for ( ReleaseId unresolvedDep : kModule.getUnresolvedDependencies() ) {
+            for ( AFReleaseId unresolvedDep : kModule.getUnresolvedDependencies() ) {
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
 
@@ -220,9 +220,9 @@ public class KieBuilderImpl
         new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
     }
 
-    public static String getCompilationCachePath( ReleaseId releaseId,
+    public static String getCompilationCachePath( AFReleaseId releaseId,
                                                   String kbaseName ) {
-        return ( (ReleaseIdImpl) releaseId ).getCompilationCachePathPrefix() + kbaseName.replace( '.', '/' ) + "/kbase.cache";
+        return ( (AFReleaseIdImpl) releaseId ).getCompilationCachePathPrefix() + kbaseName.replace( '.', '/' ) + "/kbase.cache";
     }
 
     public static void buildKieModule( InternalKieModule kModule,
@@ -479,7 +479,7 @@ public class KieBuilderImpl
     }
 
     public static void validatePomModel( PomModel pomModel ) {
-        ReleaseId pomReleaseId = pomModel.getReleaseId();
+        AFReleaseId pomReleaseId = pomModel.getReleaseId();
         if ( StringUtils.isEmpty( pomReleaseId.getGroupId() ) || StringUtils.isEmpty( pomReleaseId.getArtifactId() ) || StringUtils.isEmpty( pomReleaseId.getVersion() ) ) {
             throw new RuntimeException( "Maven pom.properties exists but ReleaseId content is malformed" );
         }
@@ -498,7 +498,7 @@ public class KieBuilderImpl
         addMetaInfBuilder();
 
         if ( pomXml != null ) {
-            ReleaseIdImpl g = (ReleaseIdImpl) releaseId;
+            AFReleaseIdImpl g = (AFReleaseIdImpl) releaseId;
             trgMfs.write( g.getPomXmlPath(),
                           pomXml,
                           true );
@@ -515,7 +515,7 @@ public class KieBuilderImpl
         }
     }
 
-    public static String generatePomXml( ReleaseId releaseId ) {
+    public static String generatePomXml( AFReleaseId releaseId ) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" );
         sBuilder.append( "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\"> \n" );
@@ -541,7 +541,7 @@ public class KieBuilderImpl
         return sBuilder.toString();
     }
 
-    public static String generatePomProperties( ReleaseId releaseId ) {
+    public static String generatePomProperties( AFReleaseId releaseId ) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append( "groupId=" );
         sBuilder.append( releaseId.getGroupId() );

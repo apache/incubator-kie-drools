@@ -325,7 +325,7 @@ public class ClasspathKieProject extends AbstractKieProject {
 
                 KieBuilderImpl.validatePomModel( pomModel ); // throws an exception if invalid
 
-                org.appformer.maven.support.ReleaseId gav = pomModel.getReleaseId();
+                org.appformer.maven.support.AFReleaseId gav = pomModel.getReleaseId();
 
                 String str =  KieBuilderImpl.generatePomProperties( gav );
                 log.info( "Recursed up folders, found and used pom.xml " + file );

@@ -34,8 +34,8 @@ import java.util.zip.ZipFile;
 
 import org.appformer.maven.integration.ArtifactResolver;
 import org.appformer.maven.integration.DependencyDescriptor;
+import org.appformer.maven.support.AFReleaseId;
 import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.common.ProjectClassLoader;
@@ -64,11 +64,11 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private ProjectClassLoader classLoader;
 
-    private ReleaseId releaseId;
+    private AFReleaseId releaseId;
 
     private InternalKieModule kieModule;
 
-    public KieModuleMetaDataImpl(ReleaseId releaseId, DependencyFilter dependencyFilter) {
+    public KieModuleMetaDataImpl(AFReleaseId releaseId, DependencyFilter dependencyFilter) {
         this.releaseId = releaseId;
         this.dependencyFilter = dependencyFilter;
         init(getResolverFor(releaseId, false));
@@ -164,7 +164,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
             addArtifact(artifactResolver.resolveArtifact(releaseId));
         }
         if ( kieModule != null ) {
-            for ( ReleaseId releaseId : kieModule.getPomModel().getDependencies(dependencyFilter) ) {
+            for ( AFReleaseId releaseId : kieModule.getPomModel().getDependencies(dependencyFilter) ) {
                 addArtifact( artifactResolver.resolveArtifact( releaseId ) );
             }
         } else {

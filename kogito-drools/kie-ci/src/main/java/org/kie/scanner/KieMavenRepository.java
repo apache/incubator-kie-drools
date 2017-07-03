@@ -21,7 +21,7 @@ import java.io.File;
 import org.apache.maven.project.MavenProject;
 import org.appformer.maven.integration.Aether;
 import org.appformer.maven.integration.MavenRepository;
-import org.appformer.maven.support.ReleaseId;
+import org.appformer.maven.support.AFReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class KieMavenRepository extends MavenRepository {
      * @param kieModule The kieModule containing the kjar to be deployed
      * @param pomfile The pom file to be deployed together with the kjar
      */
-    public void deployArtifact( ReleaseId releaseId,
+    public void deployArtifact( AFReleaseId releaseId,
                                 InternalKieModule kieModule,
                                 File pomfile ) {
         RemoteRepository repository = getRemoteRepositoryFromDistributionManagement( pomfile );
@@ -78,7 +78,7 @@ public class KieMavenRepository extends MavenRepository {
      * @param pomfile The pom file to be deployed together with the kjar
      */
     public void deployArtifact( RemoteRepository repository,
-                                ReleaseId releaseId,
+                                AFReleaseId releaseId,
                                 InternalKieModule kieModule,
                                 File pomfile ) {
         File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );
@@ -93,7 +93,7 @@ public class KieMavenRepository extends MavenRepository {
      * @param kieModule The kieModule containing the kjar to be installed
      * @param pomfile The pom file to be installed together with the kjar
      */
-    public void installArtifact( ReleaseId releaseId,
+    public void installArtifact( AFReleaseId releaseId,
                                  InternalKieModule kieModule,
                                  File pomfile ) {
         File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );

@@ -219,7 +219,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
     }
 
-    private static ZipKieModule createZipKieModule( org.appformer.maven.support.ReleaseId releaseId, File jar ) {
+    private static ZipKieModule createZipKieModule( org.appformer.maven.support.AFReleaseId releaseId, File jar ) {
         KieModuleModel kieModuleModel = getKieModuleModelFromJar(jar);
         return kieModuleModel != null ? new ZipKieModule(adapt( releaseId ), kieModuleModel, jar) : null;
     }
@@ -349,7 +349,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     private boolean updateKieModule(DependencyDescriptor oldDependency, Artifact artifact) {
-        org.appformer.maven.support.ReleaseId newReleaseId = new DependencyDescriptor( artifact).getReleaseId();
+        org.appformer.maven.support.AFReleaseId newReleaseId = new DependencyDescriptor( artifact).getReleaseId();
         ZipKieModule kieModule = createZipKieModule(newReleaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, artifactResolver, artifactResolver.getArtifactDependecies(newReleaseId.toString()));
