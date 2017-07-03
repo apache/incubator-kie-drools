@@ -595,6 +595,9 @@ public class KieContainerImpl
     private KieBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
         InternalKnowledgeBase kBase = kModule.createKieBase(kBaseModel, kieProject, messages, conf);
+        if ( kBase == null ) {
+            return null;
+        }
         kBase.setResolvedReleaseId(containerReleaseId);
         kBase.setContainerId(containerId);
         kBase.initMBeans();
