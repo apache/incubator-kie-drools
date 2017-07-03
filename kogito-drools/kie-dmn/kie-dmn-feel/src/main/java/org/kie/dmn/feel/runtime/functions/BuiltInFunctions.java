@@ -68,7 +68,8 @@ public class BuiltInFunctions {
 
             // additional functions not part of the spec version 1.1
             new NowFunction(),
-            new TodayFunction()
+            new TodayFunction(),
+            new CodeFunction()
     };
 
     public static FEELFunction[] getFunctions() {

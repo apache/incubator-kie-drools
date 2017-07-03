@@ -16,17 +16,14 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.Range;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-import java.time.Duration;
-import java.time.Period;
+import java.time.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class StringFunction
+public class CodeFunction
         extends BaseFEELFunction {
 
     private final long SECONDS_IN_A_MINUTE = 60;
@@ -34,13 +31,13 @@ public class StringFunction
     private final long SECONDS_IN_A_DAY = 24 * SECONDS_IN_AN_HOUR;
     private final long NANOSECONDS_PER_SECOND = 1000000000;
 
-    public StringFunction() {
-        super( "string" );
+    public CodeFunction() {
+        super( "code" );
     }
 
-    public FEELFnResult<String> invoke(@ParameterName("from") Object val) {
+    public FEELFnResult<String> invoke(@ParameterName("value") Object val) {
         if ( val == null ) {
-            return FEELFnResult.ofResult( null );
+            return FEELFnResult.ofResult( "null" );
         } else {
             StringBuilder sb = new StringBuilder(  );
             formatValue( sb, val );
@@ -48,16 +45,24 @@ public class StringFunction
         }
     }
 
-    public FEELFnResult<String> invoke(@ParameterName( "mask" ) String mask, @ParameterName("p") Object[] params) {
-        if ( mask == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "mask", "cannot be null"));
-        } else {
-            return FEELFnResult.ofResult( String.format( mask, params ) );
-        }
-    }
-
     private void formatValue(StringBuilder sb, Object val) {
-        if( val instanceof Duration ) {
+        if( val instanceof String ) {
+            sb.append( "\"" );
+            sb.append( val.toString() );
+            sb.append( "\"" );
+        } else if( val instanceof LocalDate ) {
+            sb.append( "date( \"" );
+            sb.append( val.toString() );
+            sb.append( "\" )" );
+        } else if( val instanceof LocalTime || val instanceof OffsetTime ) {
+            sb.append( "time( \"" );
+            sb.append( val.toString() );
+            sb.append( "\" )" );
+        } else if( val instanceof LocalDateTime || val instanceof OffsetDateTime || val instanceof ZonedDateTime ) {
+            sb.append( "date and time( \"" );
+            sb.append( val.toString() );
+            sb.append( "\" )" );
+        } else if( val instanceof Duration ) {
             formatDuration( sb, (Duration) val );
         } else if( val instanceof Period ) {
             formatPeriod( sb, (Period) val );
@@ -79,7 +84,8 @@ public class StringFunction
             if( count > 0 ) {
                 sb.append( ", " );
             }
-            formatValue( sb, val.getKey() );
+            // keys should always be strings, so do not call recursivelly to avoid the "
+            sb.append( val.getKey() );
             sb.append( " : " );
             formatValue( sb, val.getValue() );
             count++;
@@ -117,9 +123,10 @@ public class StringFunction
     private void formatPeriod(StringBuilder sb, Period val) {
         long totalMonths = val.toTotalMonths();
         if( totalMonths == 0 ) {
-            sb.append( "P0M" );
+            sb.append( "duration( \"P0M\" )" );
             return;
         }
+        sb.append( "duration( \"" );
         if( totalMonths < 0 ) {
             sb.append( "-P" );
         } else {
@@ -133,17 +140,19 @@ public class StringFunction
         if ( months != 0) {
             sb.append(months).append('M');
         }
+        sb.append( "\" )" );
     }
 
     private void formatDuration(StringBuilder sb, Duration val) {
         if( val.getSeconds() == 0 && val.getNano() == 0 ) {
-            sb.append( "PT0S" );
+            sb.append( "duration( \"PT0S\" )" );
             return;
         }
         long days = val.getSeconds() / SECONDS_IN_A_DAY;
         long hours = ( val.getSeconds() % SECONDS_IN_A_DAY ) / SECONDS_IN_AN_HOUR;
         long minutes = ( val.getSeconds() % SECONDS_IN_AN_HOUR ) / SECONDS_IN_A_MINUTE;
         long seconds = val.getSeconds() % SECONDS_IN_A_MINUTE;
+        sb.append( "duration( \"" );
         if( val.isNegative() ) {
             sb.append( "-" );
         }
@@ -188,6 +197,7 @@ public class StringFunction
                 sb.append('S');
             }
         }
+        sb.append( "\" )" );
     }
 
 }

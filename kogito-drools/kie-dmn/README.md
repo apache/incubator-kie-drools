@@ -93,6 +93,7 @@ according to the FEEL grammar, these are not valid function names, as `and` and 
   function on page 114, it is not implementable as defined. 
   * `string( mask, p... )` : returns a string formatted as per the mask. See Java String.format() for 
   details on the mask syntax.
+  * `code( value )` : returns a string that is the FEEL code that when executed reconstructs the given value
   
 6. __Support for additional date and time arithmetics__: 
 
