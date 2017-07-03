@@ -103,6 +103,7 @@ import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.Constraint;
+import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
@@ -221,14 +222,9 @@ public class PatternBuilder
 
         XpathPart firstXpathChunk = xpathAnalysis.getPart( 0 );
         String identifier = firstXpathChunk.getField();
-        Declaration declr = context.getDeclarationResolver().getDeclaration( identifier );
+        DeclarationScopeResolver resolver = context.getDeclarationResolver();
 
-        if (declr != null) {
-            patternDescr.setXpathStartDeclaration( declr );
-            patternDescr.setObjectType( declr.getExtractor().getExtractToClassName() );
-            expr = patternDescr.getIdentifier() + ( patternDescr.isUnification() ? " := " : " : " ) + expr.substring( identifier.length() + 1 );
-            descr.setExpression( expr );
-        } else {
+        if (resolver.hasDataSource( identifier )) {
             patternDescr.setObjectType( findObjectType( context, firstXpathChunk, identifier ) );
             FromDescr fromDescr = new FromDescr();
             fromDescr.setDataSource( new MVELExprDescr( identifier ) );
@@ -241,6 +237,12 @@ public class PatternBuilder
                 patternDescr.addConstraint( new ExprConstraintDescr( patternDescr.getIdentifier() + " : " + expr.substring( xpathAnalysis.getPart( 1 ).getStart() ) ) );
                 patternDescr.setIdentifier( "$void$" );
             }
+        } else {
+            Declaration declr = resolver.getDeclaration( identifier );
+            patternDescr.setXpathStartDeclaration( declr );
+            patternDescr.setObjectType( declr.getExtractor().getExtractToClassName() );
+            expr = patternDescr.getIdentifier() + ( patternDescr.isUnification() ? " := " : " : " ) + expr.substring( identifier.length() + 1 );
+            descr.setExpression( expr );
         }
     }
 

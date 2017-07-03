@@ -30,7 +30,6 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.ruleunit.RuleUnitDescr;
-import org.kie.api.runtime.rule.DataSource;
 
 import static org.drools.core.ruleunit.RuleUnitUtil.RULE_UNIT_DECLARATION;
 
@@ -127,7 +126,7 @@ public class DeclarationScopeResolver {
 
         // it may be a global or a rule unit variable
         Class<?> cls = resolveVarType( identifier );
-        if ( cls != null && !DataSource.class.isAssignableFrom(cls) ) { // avoid to bind a datasource as a global
+        if ( cls != null ) {
             ClassObjectType classObjectType = new ClassObjectType( cls );
 
             Declaration declaration;
@@ -164,6 +163,10 @@ public class DeclarationScopeResolver {
             String firstPart = dotPos > 0 ? value.substring( 0, dotPos ) : value;
             return unit.hasVar( firstPart ) ? RULE_UNIT_DECLARATION + "." + value : value;
         }).orElse( value );
+    }
+
+    public boolean hasDataSource( String name ) {
+        return ruleUnitDescr.map( descr -> descr.hasDataSource( name )).orElse( false );
     }
 
     private static InternalReadAccessor getReadAcessor( String identifier,

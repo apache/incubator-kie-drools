@@ -1144,4 +1144,127 @@ public class RuleUnitTest {
 
         assertEquals( 1, executor.run( AdultUnit.class ) );
     }
+
+    @Test
+    public void testWithOOPathOnList() throws Exception {
+        // DROOLS-1646
+        String drl1 =
+                "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName( AdultUnitWithList.class ) + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule Adult when\n" +
+                "    $p : /persons[age >= adultAge]\n" +
+                "then\n" +
+                "    System.out.println($p.getName() + \" is adult\");\n" +
+                "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        List<Person> persons = asList( new Person( "Mario", 42 ),
+                                       new Person( "Marilena", 44 ),
+                                       new Person( "Sofia", 4 ) );
+
+        RuleUnit adultUnit = new AdultUnitWithList(persons);
+        assertEquals(2, executor.run( adultUnit ) );
+    }
+
+    public static class AdultUnitWithList implements RuleUnit {
+        private int adultAge = 18;
+        private List<Person> persons;
+
+        public AdultUnitWithList( ) { }
+
+        public AdultUnitWithList( List<Person> persons ) {
+            this.persons = persons;
+        }
+
+        public List<Person> getPersons() {
+            return persons;
+        }
+
+        public int getAdultAge() {
+            return adultAge;
+        }
+    }
+
+    @Test
+    public void testWithOOPathOnArray() throws Exception {
+        // DROOLS-1646
+        String drl1 =
+                "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName( AdultUnitWithArray.class ) + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule Adult when\n" +
+                "    $p : /persons[age >= adultAge]\n" +
+                "then\n" +
+                "    System.out.println($p.getName() + \" is adult\");\n" +
+                "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        RuleUnit adultUnit = new AdultUnitWithArray( new Person( "Mario", 42 ),
+                                                     new Person( "Marilena", 44 ),
+                                                     new Person( "Sofia", 4 ) );
+        assertEquals(2, executor.run( adultUnit ) );
+    }
+
+    public static class AdultUnitWithArray implements RuleUnit {
+        private int adultAge = 18;
+        private Person[] persons;
+
+        public AdultUnitWithArray( ) { }
+
+        public AdultUnitWithArray( Person... persons ) {
+            this.persons = persons;
+        }
+
+        public Person[] getPersons() {
+            return persons;
+        }
+
+        public int getAdultAge() {
+            return adultAge;
+        }
+    }
+
+    @Test
+    public void testWithOOPathOnSingleItem() throws Exception {
+        // DROOLS-1646
+        String drl1 =
+                "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName( AdultUnitWithSingleItem.class ) + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule Adult when\n" +
+                "    $p : /person[age >= adultAge]\n" +
+                "then\n" +
+                "    System.out.println($p.getName() + \" is adult\");\n" +
+                "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        RuleUnit adultUnit = new AdultUnitWithSingleItem(new Person( "Mario", 42 ));
+        assertEquals(1, executor.run( adultUnit ) );
+    }
+
+    public static class AdultUnitWithSingleItem implements RuleUnit {
+        private int adultAge = 18;
+        private Person person;
+
+        public AdultUnitWithSingleItem( ) { }
+
+        public AdultUnitWithSingleItem( Person person ) {
+            this.person = person;
+        }
+
+        public Person getPerson() {
+            return person;
+        }
+
+        public int getAdultAge() {
+            return adultAge;
+        }
+    }
 }
