@@ -20,13 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DMNNode;
-import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
@@ -34,16 +32,18 @@ import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
-import org.kie.dmn.core.compiler.DMNCompilerImpl.DMNCompilerExtension;
+import org.kie.dmn.core.compiler.DMNCompilerContext;
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
+import org.kie.dmn.core.compiler.DecisionCompiler;
 import org.kie.dmn.core.impl.DMNContextImpl;
-import org.kie.dmn.core.impl.DMNDecisionResultImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.model.v1_1.DMNElement.ExtensionElements;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("MultiInstanceDecisionLogic")
-public class MultiInstanceDecisionLogic implements DMNCompilerExtension {
+public class MultiInstanceDecisionLogic {
 
     @XStreamAlias("iterationExpression")
     private String iterationExpression;
@@ -79,28 +79,49 @@ public class MultiInstanceDecisionLogic implements DMNCompilerExtension {
         builder.append("MultiInstanceDecisionLogic [iterationExpression=").append(iterationExpression).append(", iteratorShapeId=").append(iteratorShapeId).append(", aggregationFunction=").append(aggregationFunction).append(", topLevelDecisionId=").append(topLevelDecisionId).append("]");
         return builder.toString();
     }
-
-    @Override
-    public void extendCompilation(DMNModelImpl model, DecisionNodeImpl di) {
-        // set the evaluator accordingly to Signavio logic.
-        di.setEvaluator(new MultiInstanceDecisionNodeEvaluator(this, model, di));
-        
-        // rearreange error messages to avoid the problem of the missing expression but what was logged on LOG is too later
-        List<DMNMessage> messages = model.getMessages();
-        messages.removeIf( m -> m.getSourceId().equals(di.getSource().getId()) && m.getMessageType().equals(DMNMessageType.MISSING_EXPRESSION) );
-        
-        // Remove the top level decision and its dependencies, from the DMN Model (Decision|BKM|InputData) indexes
-        // Remember that as the dependencies will be removed from indexes, are no longer available at evalutation from the DMNExpressionEvaluator
-        // hence the MultiInstanceDecisionNodeEvaluator will need to cache anything which is accessed by the DMN Model (Decision|BKM|InputData) indexes 
-        DecisionNodeImpl topLevelDecision = (DecisionNodeImpl) model.getDecisionById(topLevelDecisionId);
-        recurseNodeToRemoveItAndDepsFromModelIndex(topLevelDecision, model);
-    }
     
-    private void recurseNodeToRemoveItAndDepsFromModelIndex(DMNNode topLevelDecision, DMNModelImpl model) {
-        model.removeDMNNodeFromIndexes(topLevelDecision);
+    public static class MultiInstanceDecisionNodeCompiler extends DecisionCompiler {
+
+        private Optional<MultiInstanceDecisionLogic> getMIDL(DMNNode node) {
+            if ( node instanceof DecisionNodeImpl ) {
+                DecisionNodeImpl nodeImpl = (DecisionNodeImpl) node;
+                ExtensionElements extElementsList = nodeImpl.getSource().getExtensionElements();
+                if ( extElementsList != null && extElementsList.getAny() != null ) {
+                    return extElementsList.getAny().stream()
+                        .filter(MultiInstanceDecisionLogic.class::isInstance)
+                        .map(MultiInstanceDecisionLogic.class::cast)
+                        .findFirst();
+                }
+            }
+            return Optional.empty();
+        }
         
-        for ( DMNNode dep : ((DMNBaseNode)topLevelDecision).getDependencies().values() ) {
-            recurseNodeToRemoveItAndDepsFromModelIndex( dep, model);
+        @Override
+        public boolean accept(DMNNode node) {
+            return getMIDL(node).isPresent();
+        }
+
+        @Override
+        public void compileEvaluator(DMNNode node, DMNCompilerImpl compiler, DMNCompilerContext ctx, DMNModelImpl model) {
+            DecisionNodeImpl di = (DecisionNodeImpl) node;
+            MultiInstanceDecisionLogic midl = getMIDL(node).get();
+            
+            // set the evaluator accordingly to Signavio logic.
+            di.setEvaluator(new MultiInstanceDecisionNodeEvaluator(midl, model, di));
+            
+            // Remove the top level decision and its dependencies, from the DMN Model (Decision|BKM|InputData) indexes
+            // Remember that as the dependencies will be removed from indexes, are no longer available at evalutation from the DMNExpressionEvaluator
+            // hence the MultiInstanceDecisionNodeEvaluator will need to cache anything which is accessed by the DMN Model (Decision|BKM|InputData) indexes 
+            DecisionNodeImpl topLevelDecision = (DecisionNodeImpl) model.getDecisionById(midl.topLevelDecisionId);
+            recurseNodeToRemoveItAndDepsFromModelIndex(topLevelDecision, model);
+        }
+
+        public static void recurseNodeToRemoveItAndDepsFromModelIndex(DMNNode topLevelDecision, DMNModelImpl model) {
+            model.removeDMNNodeFromIndexes(topLevelDecision);
+            
+            for ( DMNNode dep : ((DMNBaseNode)topLevelDecision).getDependencies().values() ) {
+                recurseNodeToRemoveItAndDepsFromModelIndex( dep, model);
+            }
         }
     }
 
