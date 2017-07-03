@@ -121,6 +121,7 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
     public QueryDescrBuilder newQuery() {
         QueryDescrBuilder query = new QueryDescrBuilderImpl( this );
         descr.addRule( initDescr(query) );
+        query.getDescr().setUnit( descr.getUnit() );
         return query;
     }
 
