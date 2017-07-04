@@ -22,10 +22,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.appformer.maven.support.AFReleaseId;
+import org.appformer.maven.support.AFReleaseIdImpl;
+import org.appformer.maven.support.DependencyFilter;
+import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
@@ -46,6 +51,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message.Level;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
@@ -56,10 +62,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
-import org.appformer.maven.support.AFReleaseId;
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
-import org.appformer.maven.support.AFReleaseIdImpl;
 
 import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
@@ -169,11 +171,19 @@ public class KieBuilderImpl
 
     @Override
     public KieBuilder buildAll() {
-        return buildAll( o -> true );
+        return buildAll( KieModuleKieProject::new, o -> true );
     }
 
     @Override
     public KieBuilder buildAll( Predicate<String> classFilter ) {
+        return buildAll( KieModuleKieProject::new, classFilter );
+    }
+
+    public KieBuilder buildAll(BiFunction<InternalKieModule, ClassLoader, KieProject> kprojectSupplier) {
+        return buildAll( kprojectSupplier, o -> true );
+    }
+
+    public KieBuilder buildAll( BiFunction<InternalKieModule, ClassLoader, KieProject> kprojectSupplier, Predicate<String> classFilter ) {
         PomModel pomModel = init();
 
         // kModuleModel will be null if a provided pom.xml or kmodule.xml is invalid
@@ -196,8 +206,8 @@ public class KieBuilderImpl
                 kModule.setPomModel( pomModel );
             }
 
-            KieModuleKieProject kProject = new KieModuleKieProject( kModule, classLoader );
-            for ( AFReleaseId unresolvedDep : kModule.getUnresolvedDependencies() ) {
+            KieProject kProject = kprojectSupplier.apply( kModule, classLoader );
+            for ( ReleaseId unresolvedDep : kModule.getUnresolvedDependencies() ) {
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
 
@@ -232,7 +242,7 @@ public class KieBuilderImpl
 
     private static void buildKieProject( InternalKieModule kModule,
                                          ResultsImpl messages,
-                                         KieModuleKieProject kProject,
+                                         KieProject kProject,
                                          MemoryFileSystem trgMfs ) {
         kProject.init();
         kProject.verify( messages );
@@ -240,6 +250,7 @@ public class KieBuilderImpl
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
             if ( trgMfs != null ) {
                 new KieMetaInfoBuilder( kModule ).writeKieModuleMetaInfo( trgMfs );
+                kProject.writeProjectOutput( trgMfs );
             }
             KieRepository kieRepository = KieServices.Factory.get().getRepository();
             kieRepository.addKieModule( kModule );

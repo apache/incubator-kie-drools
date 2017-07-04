@@ -71,11 +71,12 @@ public class BuildUtils {
      * Returns a builder for the given target from the builders map
      */
     public ReteooComponentBuilder getBuilderFor(final RuleConditionElement target) {
-        return this.componentBuilders.get( target.getClass() );
+        return getBuilderFor( target.getClass() );
     }
 
-    public ReteooComponentBuilder getBuilderFor(final Class  cls) {
-        return this.componentBuilders.get( cls );
+    public ReteooComponentBuilder getBuilderFor(final Class cls) {
+        ReteooComponentBuilder builder = this.componentBuilders.get( cls );
+        return builder != null || cls.getSuperclass() == null ? builder : getBuilderFor(cls.getSuperclass());
     }
 
     /**

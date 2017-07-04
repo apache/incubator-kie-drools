@@ -985,26 +985,34 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         compileAllRules(packageDescr, pkgRegistry);
     }
 
-    void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        pkgRegistry.setDialect( getPackageDialect( packageDescr ) );
+    protected void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+        compileKnowledgePackages( packageDescr, pkgRegistry );
+        wireAllRules();
+        compileRete( packageDescr );
+    }
 
+    protected void compileKnowledgePackages( PackageDescr packageDescr, PackageRegistry pkgRegistry ) {
+        pkgRegistry.setDialect( getPackageDialect( packageDescr ) );
         validateUniqueRuleNames( packageDescr );
         compileRules(packageDescr, pkgRegistry);
+    }
 
+    protected void wireAllRules() {
         compileAll();
         try {
             reloadAll();
         } catch (Exception e) {
-            addBuilderResult(new DialectError(null, "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage()));
+            addBuilderResult(new DialectError( null, "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage()) );
         }
         updateResults();
+    }
 
-        // iterate and compile
+    protected void compileRete( PackageDescr packageDescr ) {
         if (!hasErrors() && this.kBase != null) {
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
                 if( filterAccepts( ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName() ) ) {
-                    pkgRegistry = this.pkgRegistryMap.get(ruleDescr.getNamespace());
-                    this.kBase.addRule(pkgRegistry.getPackage(), pkgRegistry.getPackage().getRule(ruleDescr.getName()));
+                    InternalKnowledgePackage pkg = pkgRegistryMap.get( ruleDescr.getNamespace() ).getPackage();
+                    this.kBase.addRule(pkg, pkg.getRule(ruleDescr.getName()));
                 }
             }
         }
@@ -1823,8 +1831,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     private void addRule(RuleBuildContext context) {
         final RuleDescr ruleDescr = context.getRuleDescr();
 
-        InternalKnowledgePackage pkg = context.getPkg();
-
         RuleBuilder.build(context);
 
         this.results.addAll(context.getErrors());
@@ -1835,7 +1841,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         context.getDialect().addRule(context);
 
         if (context.needsStreamMode()) {
-            pkg.setNeedStreamMode();
+            context.getPkg().setNeedStreamMode();
         }
     }
 

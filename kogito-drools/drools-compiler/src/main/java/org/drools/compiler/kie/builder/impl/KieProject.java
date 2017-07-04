@@ -15,13 +15,16 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieSessionModel;
-
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Set;
+
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.internal.builder.KnowledgeBuilder;
 
 public interface KieProject {
     
@@ -48,8 +51,8 @@ public interface KieProject {
     ClassLoader getClonedClassLoader();
 
     ResultsImpl verify();
-
     ResultsImpl verify( String... kModelNames );
+    void verify(ResultsImpl messages);
 
     long getCreationTimestamp();
 
@@ -57,4 +60,8 @@ public interface KieProject {
     Set<String> getTransitiveIncludes(KieBaseModel kBaseModel);
 
     InputStream getPomAsStream();
+
+    KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages );
+
+    default void writeProjectOutput(MemoryFileSystem trgMfs ) { }
 }

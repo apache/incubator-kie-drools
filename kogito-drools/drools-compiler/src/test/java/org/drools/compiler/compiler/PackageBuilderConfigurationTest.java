@@ -110,7 +110,7 @@ public class PackageBuilderConfigurationTest {
                             "JANINO" );
         cfg = new KnowledgeBuilderConfigurationImpl();
         javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
-        assertEquals( JavaDialectConfiguration.JANINO,
+        assertEquals( JavaDialectConfiguration.CompilerType.JANINO,
                       javaConf.getCompiler() );
 
         KnowledgeBuilderConfigurationImpl cfg2 = new KnowledgeBuilderConfigurationImpl();
@@ -122,15 +122,15 @@ public class PackageBuilderConfigurationTest {
                             "ECLIPSE" );
         cfg = new KnowledgeBuilderConfigurationImpl();
         javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
-        assertEquals( JavaDialectConfiguration.ECLIPSE,
+        assertEquals( JavaDialectConfiguration.CompilerType.ECLIPSE,
                       javaConf.getCompiler() );
 
-        javaConf2.setCompiler( JavaDialectConfiguration.ECLIPSE );
-        assertEquals( JavaDialectConfiguration.ECLIPSE,
+        javaConf2.setCompiler( JavaDialectConfiguration.CompilerType.ECLIPSE );
+        assertEquals( JavaDialectConfiguration.CompilerType.ECLIPSE,
                       javaConf2.getCompiler() );
 
-        javaConf2.setCompiler( JavaDialectConfiguration.JANINO );
-        assertEquals( JavaDialectConfiguration.JANINO,
+        javaConf2.setCompiler( JavaDialectConfiguration.CompilerType.JANINO );
+        assertEquals( JavaDialectConfiguration.CompilerType.JANINO,
                       javaConf2.getCompiler() );
 
         final KnowledgeBuilderConfigurationImpl cfg3 = new KnowledgeBuilderConfigurationImpl();
@@ -160,26 +160,26 @@ public class PackageBuilderConfigurationTest {
     public void testProgramaticProperties2() {
         JavaDialectConfiguration javaConf = new JavaDialectConfiguration();
         javaConf.init( new KnowledgeBuilderConfigurationImpl() );
-        javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
+        javaConf.setCompiler( JavaDialectConfiguration.CompilerType.ECLIPSE );
         KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
         cfg.setDialectConfiguration( "java",
                                      javaConf );
         JavaDialectConfiguration javaConf2 = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
         assertSame( javaConf,
                     javaConf2 );
-        assertEquals( JavaDialectConfiguration.ECLIPSE,
+        assertEquals( JavaDialectConfiguration.CompilerType.ECLIPSE,
                       javaConf2.getCompiler() );
 
         javaConf = new JavaDialectConfiguration();
         javaConf.init( new KnowledgeBuilderConfigurationImpl() );
-        javaConf.setCompiler( JavaDialectConfiguration.JANINO );
+        javaConf.setCompiler( JavaDialectConfiguration.CompilerType.JANINO );
         cfg = new KnowledgeBuilderConfigurationImpl();
         cfg.setDialectConfiguration( "java",
                                      javaConf );
         javaConf2 = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
         assertSame( javaConf,
                     javaConf2 );
-        assertEquals( JavaDialectConfiguration.JANINO,
+        assertEquals( JavaDialectConfiguration.CompilerType.JANINO,
                       javaConf2.getCompiler() );
     }
 
