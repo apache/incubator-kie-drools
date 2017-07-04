@@ -15,6 +15,8 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import java.util.Arrays;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectConfiguration;
@@ -24,12 +26,7 @@ import org.drools.core.rule.builder.dialect.asm.ClassLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-
-import static org.mvel2.asm.Opcodes.V1_5;
-import static org.mvel2.asm.Opcodes.V1_6;
-import static org.mvel2.asm.Opcodes.V1_7;
-import static org.mvel2.asm.Opcodes.V1_8;
+import static org.mvel2.asm.Opcodes.*;
 
 /**
  * 
@@ -60,9 +57,9 @@ public class JavaDialectConfiguration
     
     public static final String          JAVA_COMPILER_PROPERTY = "drools.dialect.java.compiler";
 
-    public static final int             ECLIPSE         = 0;
-    public static final int             JANINO          = 1;
-    public static final int             NATIVE          = 2;
+    public enum CompilerType {
+        ECLIPSE, JANINO, NATIVE
+    }
 
     public static final String[]        LANGUAGE_LEVELS = new String[]{"1.5", "1.6", "1.7", "1.8"};
 
@@ -70,7 +67,7 @@ public class JavaDialectConfiguration
 
     private KnowledgeBuilderConfigurationImpl conf;
 
-    private int                         compiler;
+    private CompilerType                compiler;
 
     public JavaDialectConfiguration() {
     }
@@ -111,15 +108,15 @@ public class JavaDialectConfiguration
      * Set the compiler to be used when building the rules semantic code blocks.
      * This overrides the default, and even what was set as a system property. 
      */
-    public void setCompiler(final int compiler) {
+    public void setCompiler(final CompilerType compiler) {
         // check that the jar for the specified compiler are present
-        if ( compiler == ECLIPSE ) {
+        if ( compiler == CompilerType.ECLIPSE ) {
             try {
                 Class.forName( "org.eclipse.jdt.internal.compiler.Compiler", true, this.conf.getClassLoader() );
             } catch ( ClassNotFoundException e ) {
                 throw new RuntimeException( "The Eclipse JDT Core jar is not in the classpath" );
             }
-        } else if ( compiler == JANINO ){
+        } else if ( compiler == CompilerType.JANINO ){
             try {
                 Class.forName( "org.codehaus.janino.Parser", true, this.conf.getClassLoader() );
             } catch ( ClassNotFoundException e ) {
@@ -129,20 +126,20 @@ public class JavaDialectConfiguration
         
         switch ( compiler ) {
             case ECLIPSE :
-                this.compiler = ECLIPSE;
+                this.compiler = CompilerType.ECLIPSE;
                 break;
             case JANINO :
-                this.compiler = JANINO;
+                this.compiler = CompilerType.JANINO;
                 break;
             case NATIVE :
-                this.compiler = NATIVE;
+                this.compiler = CompilerType.NATIVE;
                 break;
             default :
                 throw new RuntimeException( "value '" + compiler + "' is not a valid compiler" );
         }
     }
 
-    public int getCompiler() {
+    public CompilerType getCompiler() {
         return this.compiler;
     }
 
@@ -151,23 +148,23 @@ public class JavaDialectConfiguration
      * This should only be done once when the class is loaded. After that point, you will have
      * to programmatically override it.
      */
-    private int getDefaultCompiler() {
+    private CompilerType getDefaultCompiler() {
         try {
             final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY,
                                                                               "ECLIPSE" );
             if ( prop.equals( "NATIVE" ) ) {
-                return NATIVE;
+                return CompilerType.NATIVE;
             } else if ( prop.equals( "ECLIPSE" ) ) {
-                return ECLIPSE;
+                return CompilerType.ECLIPSE;
             } else if ( prop.equals( "JANINO" ) ) {
-                return JANINO;
+                return CompilerType.JANINO;
             } else {
                 logger.error( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );
-                return ECLIPSE;
+                return CompilerType.ECLIPSE;
             }
         } catch ( final SecurityException e ) {
             logger.error( "Drools config: unable to read the drools.compiler property. Using default.", e);
-            return ECLIPSE;
+            return CompilerType.ECLIPSE;
         }
     }
 
