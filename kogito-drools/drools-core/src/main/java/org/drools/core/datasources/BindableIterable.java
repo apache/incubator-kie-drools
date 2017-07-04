@@ -16,7 +16,7 @@
 
 package org.drools.core.datasources;
 
-import org.kie.api.runtime.rule.EntryPoint;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.kie.api.runtime.rule.RuleUnit;
 
 public class BindableIterable implements BindableDataProvider {
@@ -28,7 +28,7 @@ public class BindableIterable implements BindableDataProvider {
     }
 
     @Override
-    public void bind( RuleUnit unit, EntryPoint ep ) {
+    public void bind( RuleUnit unit, WorkingMemoryEntryPoint ep ) {
         iterable.forEach( ep::insert );
     }
 }

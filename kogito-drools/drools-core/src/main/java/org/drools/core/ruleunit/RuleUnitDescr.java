@@ -85,10 +85,10 @@ public class RuleUnitDescr {
     }
 
     private void bindDataSource( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit, String name, String accessor ) {
-        BindableDataProvider dataSource = findDataSource( ruleUnit, accessor );
-        if (dataSource != null) {
-            WorkingMemoryEntryPoint entryPoint = wm.getEntryPoint( getEntryPointName( name ) );
-            if (entryPoint != null) {
+        WorkingMemoryEntryPoint entryPoint = wm.getEntryPoint( getEntryPointName( name ) );
+        if (entryPoint != null) {
+            BindableDataProvider dataSource = findDataSource( ruleUnit, accessor );
+            if (dataSource != null) {
                 dataSource.bind( ruleUnit, entryPoint );
             }
         }

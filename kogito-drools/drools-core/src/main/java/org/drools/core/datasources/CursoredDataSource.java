@@ -143,7 +143,8 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
     }
 
     @Override
-    public void bind(RuleUnit unit, EntryPoint ep) {
+    public void bind(RuleUnit unit, WorkingMemoryEntryPoint ep) {
+        setWorkingMemory( ep.getInternalWorkingMemory() );
         PropagationList propagationList = propagationsMap.get( unit.getUnitIdentity() );
         if (propagationList != null) {
             flush( ep, propagationList.takeAll() );

@@ -16,11 +16,11 @@
 
 package org.drools.core.datasources;
 
-import org.kie.api.runtime.rule.EntryPoint;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.kie.api.runtime.rule.RuleUnit;
 
 public interface BindableDataProvider {
-    void bind( RuleUnit unit, EntryPoint ep );
+    void bind( RuleUnit unit, WorkingMemoryEntryPoint ep );
 
     default void unbind( RuleUnit unit ) { }
 }

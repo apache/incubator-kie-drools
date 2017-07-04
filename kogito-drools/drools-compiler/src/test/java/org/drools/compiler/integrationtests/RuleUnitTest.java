@@ -1267,4 +1267,73 @@ public class RuleUnitTest {
             return adultAge;
         }
     }
+
+    @Test(timeout = 10000L)
+    public void testReactiveOnUnitCreatingDataSource() throws Exception {
+        // DROOLS-1647
+        String drl1 =
+                "package org.drools.compiler.integrationtests\n" +
+                "unit " + getCanonicalSimpleName( AdultUnitCreatingDataSource.class ) + "\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule Adult when\n" +
+                "    Person(age >= 18, $name : name) from persons\n" +
+                "then\n" +
+                "    System.out.println($name + \" is adult\");" +
+                "    list.add($name);\n" +
+                "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        DebugList<String> list = new DebugList<>();
+        executor.bindVariable( "list", list );
+
+        AdultUnitCreatingDataSource adultUnit = new AdultUnitCreatingDataSource(list);
+        adultUnit.insertPerson( new Person( "Mario", 42 ) );
+
+        Semaphore ready = new Semaphore( 0, true);
+        list.onItemAdded = ( l -> ready.release() );
+
+        new Thread( () -> executor.runUntilHalt( adultUnit ) ).start();
+
+        ready.acquire();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "Mario", list.get(0) );
+        list.clear();
+
+        list.onItemAdded = ( l -> ready.release() );
+
+        adultUnit.insertPerson( new Person( "Sofia", 4 ) );
+        adultUnit.insertPerson( new Person( "Marilena", 44 ) );
+
+        ready.acquire();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "Marilena", list.get(0) );
+
+        executor.halt();
+    }
+
+    public static class AdultUnitCreatingDataSource implements RuleUnit {
+        private final DataSource<Person> persons;
+        private final List<String> list;
+
+        public AdultUnitCreatingDataSource( List<String> list ) {
+            this.persons = DataSource.create();
+            this.list = list;
+        }
+
+        public DataSource<Person> getPersons() {
+            return persons;
+        }
+
+        public List<String> getList() {
+            return list;
+        }
+
+        public void insertPerson(Person person) {
+            persons.insert( person );
+        }
+    }
 }
