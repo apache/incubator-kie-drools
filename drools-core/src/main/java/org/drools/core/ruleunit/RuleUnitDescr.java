@@ -25,10 +25,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.datasources.InternalDataSource;
+import org.drools.core.datasources.BindableArray;
+import org.drools.core.datasources.BindableDataProvider;
+import org.drools.core.datasources.BindableIterable;
+import org.drools.core.datasources.BindableObject;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
-import org.kie.api.runtime.rule.DataSource;
 import org.kie.api.runtime.rule.RuleUnit;
 
 import static org.drools.core.util.ClassUtils.getter2property;
@@ -71,28 +73,36 @@ public class RuleUnitDescr {
     }
 
     public boolean hasVar( String name ) {
-        return varAccessors.get( name ) != null;
+        return varAccessors.containsKey( name );
+    }
+
+    public boolean hasDataSource( String name ) {
+        return datasources.containsKey( name );
     }
 
     public void bindDataSources( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit ) {
         datasources.forEach( (name, accessor) -> bindDataSource( wm, ruleUnit, name, accessor ) );
     }
 
-    public void unbindDataSources( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit ) {
-        datasources.forEach( (name, accessor) -> findDataSource( ruleUnit, accessor ).ifPresent( ds -> ds.unbind( ruleUnit ) ) );
-        // TODO review
-//        datasources.values().forEach( accessor -> findDataSource( ruleUnit, accessor ).filter(AbstractReactiveDataSource.class::isInstance)
-//                                                                                      .map( AbstractReactiveDataSource.class::cast )
-//                                                                                      .ifPresent( AbstractReactiveDataSource::unbind ) );
+    private void bindDataSource( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit, String name, String accessor ) {
+        BindableDataProvider dataSource = findDataSource( ruleUnit, accessor );
+        if (dataSource != null) {
+            WorkingMemoryEntryPoint entryPoint = wm.getEntryPoint( getEntryPointName( name ) );
+            if (entryPoint != null) {
+                dataSource.bind( ruleUnit, entryPoint );
+            }
+        }
     }
 
-    private void bindDataSource( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit, String name, String accessor ) {
-        Optional<InternalDataSource> datasource = findDataSource( ruleUnit, accessor );
-        Optional<WorkingMemoryEntryPoint> entrypoint = datasource.flatMap( ds -> propagateInserts( wm, ruleUnit, name, ds ) );
-        // TODO review
-//        datasource.filter(AbstractReactiveDataSource.class::isInstance)
-//                  .map( AbstractReactiveDataSource.class::cast )
-//                  .ifPresent( ds -> ds.bind( entrypoint.orElse( null ), ruleUnit ) );
+    public void unbindDataSources( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit ) {
+        datasources.values().forEach( accessor -> unbindDataSource( ruleUnit, accessor ) );
+    }
+
+    private void unbindDataSource( RuleUnit ruleUnit, String accessor ) {
+        BindableDataProvider dataSource = findDataSource( ruleUnit, accessor );
+        if (dataSource != null) {
+            dataSource.unbind( ruleUnit );
+        }
     }
 
     public Object getValue(RuleUnit ruleUnit, String identifier) {
@@ -107,19 +117,25 @@ public class RuleUnitDescr {
         return null;
     }
 
-    private Optional<InternalDataSource> findDataSource( RuleUnit ruleUnit, String accessor ) {
+    private BindableDataProvider findDataSource( RuleUnit ruleUnit, String accessor ) {
         try {
             Object value = ruleUnit.getClass().getMethod( accessor ).invoke( ruleUnit );
-            return value instanceof InternalDataSource ? Optional.of( (InternalDataSource) value ) : Optional.empty();
+            if (value == null) {
+                return null;
+            }
+            if (value instanceof BindableDataProvider) {
+                return ( (BindableDataProvider) value );
+            }
+            if (value instanceof Iterable) {
+                return new BindableIterable( (Iterable) value );
+            }
+            if (value.getClass().isArray()) {
+                return new BindableArray( (Object[]) value );
+            }
+            return new BindableObject( value );
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
-    }
-
-    private Optional<WorkingMemoryEntryPoint> propagateInserts( StatefulKnowledgeSessionImpl wm, RuleUnit ruleUnit, String dataSourceName, InternalDataSource dataSource ) {
-        Optional<WorkingMemoryEntryPoint> entryPoint = Optional.ofNullable( wm.getEntryPoint( getEntryPointName( dataSourceName ) ) );
-        entryPoint.ifPresent( ep -> dataSource.bind( ruleUnit, ep ) );
-        return entryPoint;
     }
 
     private void indexUnitVars() {
@@ -127,15 +143,21 @@ public class RuleUnitDescr {
             if ( m.getDeclaringClass() != RuleUnit.class && m.getParameterCount() == 0 ) {
                 String id = getter2property(m.getName());
                 if (id != null && !id.equals( "class" )) {
-                    if (DataSource.class.isAssignableFrom( m.getReturnType() )) {
-                        datasources.put( id, m.getName() );
+                    datasources.put( id, m.getName() );
+                    varAccessors.put( id, m );
+
+                    Class<?> returnClass = m.getReturnType();
+                    if (returnClass.isArray()) {
+                        datasourceTypes.put( id, returnClass.getComponentType() );
+                    } else if (Iterable.class.isAssignableFrom( returnClass )) {
                         Type returnType = m.getGenericReturnType();
                         Class<?> sourceType = returnType instanceof ParameterizedType ?
                                               (Class<?>) ( (ParameterizedType) returnType ).getActualTypeArguments()[0] :
                                               Object.class;
                         datasourceTypes.put( id, sourceType );
+                    } else {
+                        datasourceTypes.put( id, returnClass );
                     }
-                    varAccessors.put( id, m );
                 }
             }
         }
