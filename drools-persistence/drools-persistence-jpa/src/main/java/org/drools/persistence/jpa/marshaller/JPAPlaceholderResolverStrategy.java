@@ -36,19 +36,21 @@ import org.drools.core.marshalling.impl.ProcessMarshallerWriteContext;
 import org.drools.persistence.api.TransactionAware;
 import org.drools.persistence.api.TransactionManager;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.drools.core.marshalling.NamedObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.Cacheable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy, TransactionAware, Cacheable {
+public class JPAPlaceholderResolverStrategy implements NamedObjectMarshallingStrategy, TransactionAware, Cacheable {
     private static Logger log = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
     private EntityManagerFactory emf;
     private ClassLoader classLoader;
 
     private boolean closeEmf = false;
-
+    private String name = JPAPlaceholderResolverStrategy.class.getName();
+    
     private static final ThreadLocal<EntityManager> persister = new ThreadLocal<EntityManager>();
     
     public JPAPlaceholderResolverStrategy(Environment env) {
@@ -73,6 +75,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
             Thread.currentThread().setContextClassLoader(tccl);
         }
         this.classLoader = cl;
+        this.name += ":" + persistenceUnit;
     }
     
     public boolean accept(Object object) {
