@@ -155,7 +155,7 @@ public class ReteooBuilder
         return this.rules;
     }
 
-    public synchronized void removeRules(List<RuleImpl> rulesToBeRemoved) {
+    public synchronized void removeRules(Collection<RuleImpl> rulesToBeRemoved) {
         // reset working memories for potential propagation
         InternalWorkingMemory[] workingMemories = this.kBase.getWorkingMemories();
 

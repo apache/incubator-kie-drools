@@ -1700,10 +1700,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
             final PropagationContext context = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
                                                                                     this.ruleOrigin, this.tuple != null ? this.tuple.getTupleSink() : null, this.factHandle);
-            workingMemory.getKnowledgeBase().assertObject(this.factHandle,
-                                                          this.factHandle.getObject(),
-                                                          context,
-                                                          workingMemory);
+            workingMemory.getKnowledgeBase().getRete().assertObject(this.factHandle,
+                                                                    context,
+                                                                    workingMemory);
         }
     }
 
