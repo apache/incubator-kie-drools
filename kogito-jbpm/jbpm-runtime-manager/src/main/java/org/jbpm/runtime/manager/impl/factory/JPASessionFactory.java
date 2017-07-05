@@ -71,5 +71,10 @@ public class JPASessionFactory implements SessionFactory {
         runner.addInterceptor(new TransactionLockInterceptor(ksession.getEnvironment()));
         runner.addInterceptor(new ExecutionErrorHandlerInterceptor(ksession.getEnvironment()));
     }
+
+    @Override
+    public void onDispose(Long sessionId) {
+        // no op
+    }
     
 }

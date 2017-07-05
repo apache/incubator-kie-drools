@@ -16,7 +16,14 @@
 
 package org.jbpm.runtime.manager.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
@@ -57,13 +64,6 @@ import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A RuntimeManager implementation that is backed by the "Per Case" strategy. This means that every 
@@ -243,7 +243,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         }
         try {
             if (canDispose(runtime)) {
-                removeLocalRuntime(runtime);
+                removeLocalRuntime(runtime);                
                 ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
                 releaseAndCleanLock(((RuntimeEngineImpl)runtime).getKieSessionId(), runtime);
                 if (runtime instanceof Disposable) {
@@ -436,6 +436,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
                     return null;
                 }
             });
+            factory.onDispose(initialKsession.getIdentifier());
             initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
     
             if (!"false".equalsIgnoreCase(System.getProperty("org.jbpm.rm.init.timer"))) {
@@ -482,6 +483,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
                 kieSession = factory.findKieSessionById(ksessionId);
             }
         }
+        factory.onDispose(kieSession.getIdentifier());
         List<ExecutableCommand<?>> cmds = new ArrayList<>();
         RemoveMappingCommand removeMapping = new RemoveMappingCommand(mapper, caseContext, getIdentifier());
         cmds.add(removeMapping);

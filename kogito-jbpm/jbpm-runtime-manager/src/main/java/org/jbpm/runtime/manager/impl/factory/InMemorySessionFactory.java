@@ -17,10 +17,16 @@ package org.jbpm.runtime.manager.impl.factory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.jbpm.process.instance.ProcessInstanceManager;
+import org.jbpm.process.instance.ProcessRuntimeImpl;
+import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 
@@ -33,9 +39,10 @@ import org.kie.internal.runtime.manager.SessionNotFoundException;
  */
 public class InMemorySessionFactory implements SessionFactory {
 
+    private AtomicLong processCounter = new AtomicLong(0);
+    
     private RuntimeEnvironment environment;
     private KieBase kbase;
-    // TODO all sessions stored here should be proxied so it can be removed on dispose/destroy
     private Map<Long, KieSession> sessions = new ConcurrentHashMap<Long, KieSession>();
     
     public InMemorySessionFactory(RuntimeEnvironment environment) {
@@ -47,6 +54,11 @@ public class InMemorySessionFactory implements SessionFactory {
     public KieSession newKieSession() {
         KieSession ksession = kbase.newKieSession(environment.getConfiguration(), environment.getEnvironment());
         this.sessions.put(ksession.getIdentifier(), ksession);
+        
+        ProcessInstanceManager piManager = ((ProcessRuntimeImpl)((StatefulKnowledgeSessionImpl)ksession).getProcessRuntime()).getProcessInstanceManager();
+        if (piManager instanceof DefaultProcessInstanceManager) {
+            ((DefaultProcessInstanceManager) piManager).setProcessCounter(processCounter);
+        }
         return ksession;
     }
 
@@ -62,6 +74,15 @@ public class InMemorySessionFactory implements SessionFactory {
     @Override
     public void close() {
         sessions.clear();
+    }
+
+    @Override
+    public void onDispose(Long sessionId) {
+        sessions.remove(sessionId);
+    }
+    
+    protected Map<Long, KieSession> getSessions() {
+        return sessions;
     }
 
 }

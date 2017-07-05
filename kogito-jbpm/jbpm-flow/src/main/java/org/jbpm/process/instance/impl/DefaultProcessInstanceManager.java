@@ -86,4 +86,8 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
         return processInstancesByCorrelationKey.get(correlationKey);
     }
+    
+    public void setProcessCounter(AtomicLong processCounter) {
+        this.processCounter = processCounter;
+    }
 }

@@ -136,6 +136,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
         	    local.get().remove(identifier);
         	    ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
                 try {
+                    factory.onDispose(((RuntimeEngineImpl)runtime).getKieSessionId());
                     if (canDestroy(runtime)) {
                         runtime.getKieSession().destroy();
                     } else {

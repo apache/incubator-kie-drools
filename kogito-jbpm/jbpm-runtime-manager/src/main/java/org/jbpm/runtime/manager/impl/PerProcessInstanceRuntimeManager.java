@@ -222,7 +222,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	}
     	try {
         	if (canDispose(runtime)) {
-            	removeLocalRuntime(runtime);
+            	removeLocalRuntime(runtime);            	
             	((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
             	if (runtime instanceof Disposable) {
                 	// special handling for in memory to not allow to dispose if there is any context in the mapper
@@ -291,7 +291,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             mapper.removeMapping(new EnvironmentAwareProcessInstanceContext(
             		event.getKieRuntime().getEnvironment(),
             		event.getProcessInstance().getId()), managerId);
-            
+            factory.onDispose(runtime.getKieSession().getIdentifier());
             registerDisposeCallback(runtime, 
                         new DestroySessionTransactionSynchronization(runtime.getKieSession()));            
         }
@@ -408,6 +408,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
                     return null;
                 }
             });
+            factory.onDispose(initialKsession.getIdentifier());
             initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
 
             if (!"false".equalsIgnoreCase(System.getProperty("org.jbpm.rm.init.timer"))) {

@@ -495,10 +495,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         assertNotNull(ksession);       
         long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 1);
-        
-        // FIXME quick hack to overcome problems with same pi ids when not using persistence
-        ksession.startProcess("ScriptTask");
-        
+    
         // ksession for process instance #2
         // since there is no process instance yet we need to get new session
         RuntimeEngine runtime2 = manager.getRuntimeEngine(EmptyContext.get());

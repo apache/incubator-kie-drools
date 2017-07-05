@@ -59,6 +59,7 @@ import org.kie.internal.runtime.manager.InternalRegisterableItemsFactory;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.SecurityManager;
+import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.EventService;
@@ -530,4 +531,5 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         return executionErrorManager;
     }
 
+    public abstract SessionFactory getFactory();
 }
