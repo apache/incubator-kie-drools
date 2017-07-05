@@ -78,6 +78,10 @@ public class JPAPlaceholderResolverStrategy implements NamedObjectMarshallingStr
         this.name += ":" + persistenceUnit;
     }
     
+    public String getName(){
+    	return this.name;
+    }
+    
     public boolean accept(Object object) {
         return isEntity(object);
     }
