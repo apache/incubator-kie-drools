@@ -16,6 +16,7 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
+import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Expression;
 import org.kie.dmn.model.v1_1.FunctionDefinition;
@@ -46,7 +47,8 @@ public class FunctionDefinitionConverter extends ExpressionConverter {
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
         super.assignAttributes(reader, parent);
-        String kind = reader.getAttribute( FunctionDefinition.KIND_QNAME.getLocalPart() );
+        CustomStaxReader customStaxReader = (CustomStaxReader) reader.underlyingReader();
+        String kind = customStaxReader.getAttribute( FunctionDefinition.KIND_QNAME.getNamespaceURI(), FunctionDefinition.KIND_QNAME.getLocalPart() );
         ((FunctionDefinition) parent).getOtherAttributes().put( FunctionDefinition.KIND_QNAME, kind );
     }
 
