@@ -356,9 +356,6 @@ public class KieBuilderImpl
             return true;
         } else {
             String pkgNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : "";
-            if ( pkgNameForFile.startsWith( RESOURCES_ROOT ) ) {
-                pkgNameForFile = pkgNameForFile.substring( RESOURCES_ROOT.length() );
-            }
             pkgNameForFile = pkgNameForFile.replace( '/', '.' );
             for ( String pkgName : kieBase.getPackages() ) {
                 boolean isNegative = pkgName.startsWith( "!" );
@@ -369,13 +366,13 @@ public class KieBuilderImpl
                     return !isNegative;
                 }
                 if ( pkgName.endsWith( ".*" ) ) {
-                    String relativePkgNameForFile = pkgNameForFile.startsWith( RESOURCES_ROOT_DOT_SEPARATOR ) ?
-                            pkgNameForFile.substring( RESOURCES_ROOT_DOT_SEPARATOR.length() ) :
-                            pkgNameForFile;
                     String pkgNameNoWildcard = pkgName.substring( 0, pkgName.length() - 2 );
-                    if ( relativePkgNameForFile.equals( pkgNameNoWildcard ) || relativePkgNameForFile.startsWith( pkgNameNoWildcard + "." ) ) {
+                    if ( pkgNameForFile.endsWith( pkgNameNoWildcard ) || pkgNameForFile.contains( pkgNameNoWildcard + "." ) ) {
                         return !isNegative;
                     }
+                    String relativePkgNameForFile = pkgNameForFile.startsWith( RESOURCES_ROOT_DOT_SEPARATOR ) ?
+                                                    pkgNameForFile.substring( RESOURCES_ROOT_DOT_SEPARATOR.length() ) :
+                                                    pkgNameForFile;
                     if ( relativePkgNameForFile.startsWith( kieBase.getName() + "." ) ) {
                         relativePkgNameForFile = relativePkgNameForFile.substring( kieBase.getName().length() + 1 );
                         if ( relativePkgNameForFile.equals( pkgNameNoWildcard ) || relativePkgNameForFile.startsWith( pkgNameNoWildcard + "." ) ) {
