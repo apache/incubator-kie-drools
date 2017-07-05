@@ -41,4 +41,10 @@ public interface SessionFactory {
      * Closes the factory and releases all resources
      */
     void close();
+    
+    /**
+     * Invoked when runtime engine is about to be disposed
+     * @param sessionId ksession id that is disposed.
+     */
+    void onDispose(Long sessionId);
 }
