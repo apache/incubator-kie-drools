@@ -19,7 +19,17 @@ package org.drools.core.marshalling;
 
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 
+/**
+ * In order to allow multiple marshalling strategies of the same class, this interface must be used
+ * to avoid class name collision.
+ */
 public interface NamedObjectMarshallingStrategy extends ObjectMarshallingStrategy {
 
+	/**
+	 * Ensure that the name returned by this method has something related to the exact objects it handles.
+	 * Use this name to avoid collisions of the same class implementing marshalling strategy but handling different objects 
+	 * or targets (Different persistence units, Different Document Content storages, etc ).
+	 * @return The unique name in the project environment for the marshalling strategy represented
+	 */
 	public String getName();
 }
