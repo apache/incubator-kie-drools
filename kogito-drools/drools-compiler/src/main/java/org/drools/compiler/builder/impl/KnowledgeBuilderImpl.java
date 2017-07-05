@@ -1009,11 +1009,15 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     protected void compileRete( PackageDescr packageDescr ) {
         if (!hasErrors() && this.kBase != null) {
+            Collection<RuleImpl> rulesToBeAdded = new ArrayList<>();
             for (RuleDescr ruleDescr : packageDescr.getRules()) {
                 if( filterAccepts( ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName() ) ) {
                     InternalKnowledgePackage pkg = pkgRegistryMap.get( ruleDescr.getNamespace() ).getPackage();
-                    this.kBase.addRule(pkg, pkg.getRule(ruleDescr.getName()));
+                    rulesToBeAdded.add(pkg.getRule(ruleDescr.getName()));
                 }
+            }
+            if (!rulesToBeAdded.isEmpty()) {
+                this.kBase.addRules( rulesToBeAdded );
             }
         }
     }
@@ -1158,14 +1162,15 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
             if (needsRemoval) {
                 kBase.enqueueModification( () -> {
+                    Collection<RuleImpl> rulesToBeRemoved = new HashSet<>();
+
                     for( org.kie.api.definition.rule.Rule rule : pkg.getRules() ) {
                         if (filterAcceptsRemoval( ResourceChange.Type.RULE, rule.getPackageName(), rule.getName() ) ) {
-                            this.kBase.removeRule(pkg, pkg.getRule(rule.getName()));
+                            rulesToBeRemoved.add(pkg.getRule(rule.getName()));
                             pkg.removeRule(((RuleImpl)rule));
                         }
                     }
 
-                    List<RuleImpl> rulesToBeRemoved = new ArrayList<RuleImpl>();
                     for (RuleDescr ruleDescr : packageDescr.getRules()) {
                         if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
                             RuleImpl rule = (RuleImpl)pkg.getRule(ruleDescr.getName());
@@ -1174,8 +1179,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                             }
                         }
                     }
+
                     if (!rulesToBeRemoved.isEmpty()) {
-                        kBase.removeRules( pkg, rulesToBeRemoved );
+                        kBase.removeRules( rulesToBeRemoved );
                     }
                 } );
             }

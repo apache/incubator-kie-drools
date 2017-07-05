@@ -16,6 +16,8 @@
 
 package org.drools.core.event;
 
+import java.util.Iterator;
+
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.knowlegebase.impl.AfterFunctionRemovedEventImpl;
@@ -57,8 +59,6 @@ import org.kie.api.event.kiebase.BeforeProcessRemovedEvent;
 import org.kie.api.event.kiebase.BeforeRuleAddedEvent;
 import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
 import org.kie.api.event.kiebase.KieBaseEventListener;
-
-import java.util.Iterator;
 
 public class KieBaseEventSupport extends AbstractEventSupport<KieBaseEventListener> {
     private transient InternalKnowledgeBase kBase;
@@ -171,7 +171,7 @@ public class KieBaseEventSupport extends AbstractEventSupport<KieBaseEventListen
         }
     }
 
-    public void fireBeforeRuleAdded(final InternalKnowledgePackage newPkg, final RuleImpl rule) {
+    public void fireBeforeRuleAdded(RuleImpl rule) {
         final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -183,7 +183,7 @@ public class KieBaseEventSupport extends AbstractEventSupport<KieBaseEventListen
         }
     }
 
-    public void fireAfterRuleAdded(final InternalKnowledgePackage newPkg, final RuleImpl rule) {
+    public void fireAfterRuleAdded(final RuleImpl rule) {
         final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -195,7 +195,7 @@ public class KieBaseEventSupport extends AbstractEventSupport<KieBaseEventListen
         }
     }
 
-    public void fireBeforeRuleRemoved(final InternalKnowledgePackage pkg, final RuleImpl rule) {
+    public void fireBeforeRuleRemoved(final RuleImpl rule) {
         final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -207,7 +207,7 @@ public class KieBaseEventSupport extends AbstractEventSupport<KieBaseEventListen
         }
     }
 
-    public void fireAfterRuleRemoved(final InternalKnowledgePackage pkg, final RuleImpl rule) {
+    public void fireAfterRuleRemoved(final RuleImpl rule) {
         final Iterator<KieBaseEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
