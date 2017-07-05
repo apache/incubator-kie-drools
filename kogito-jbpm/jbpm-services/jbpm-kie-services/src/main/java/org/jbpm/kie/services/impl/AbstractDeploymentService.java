@@ -146,7 +146,12 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
                         break;
                     default:
                         throw new IllegalArgumentException("Invalid strategy " + unit.getStrategy());
-                }   
+                }  
+                
+                if (!deployedUnit.isActive()) {
+                    ((InternalRuntimeManager)manager).deactivate();
+                }                
+                
                 ((InternalRuntimeManager)manager).setKieContainer(kieContainer);
                 deployedUnit.setRuntimeManager(manager);
                 DeploymentDescriptor descriptor = ((InternalRuntimeManager)manager).getDeploymentDescriptor();
@@ -281,6 +286,7 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
     					deployed.getDeploymentUnit().getIdentifier(), e.getMessage());
     		}
     	}
+    	deploymentsMap.clear();
     }
 	
 }

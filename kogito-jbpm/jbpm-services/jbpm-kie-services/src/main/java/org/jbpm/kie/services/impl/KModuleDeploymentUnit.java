@@ -46,6 +46,8 @@ public class KModuleDeploymentUnit implements DeploymentUnit, AttributesAware, S
     private boolean deployed = false;
     private boolean strategyUnset = true;
     
+    private boolean active = true;
+    
     private transient KieContainer kieContainer;
     
     private Map<String, String> attributes = new HashMap<String, String>();
@@ -199,5 +201,13 @@ public class KModuleDeploymentUnit implements DeploymentUnit, AttributesAware, S
 	public void setKieContainer(KieContainer kieContainer) {
 		this.kieContainer = kieContainer;
 	}
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
 }

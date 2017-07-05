@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jbpm.kie.services.api.AttributesAware;
+import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.MergeObjectCommand;
@@ -75,6 +76,10 @@ public class DeploymentStore {
         	if (sync == null || sync.equalsIgnoreCase("true")) {
 	        	DeploymentUnit unit = (DeploymentUnit) xstream.fromXML(entry.getDeploymentUnit());
 	        	
+	        	if (entry.getState() == STATE_DEACTIVATED) {
+	        	    ((KModuleDeploymentUnit)unit).setActive(false);
+	        	}
+	        	
 	        	activeDeployments.add(unit);
         	}
         }
@@ -96,7 +101,8 @@ public class DeploymentStore {
         	// add to the deployable list only sync flag is set to true or does not exists (default)
         	if (sync == null || sync.equalsIgnoreCase("true")) {
 	        	DeploymentUnit unit = (DeploymentUnit) xstream.fromXML(entry.getDeploymentUnit());
-	        	
+	        	((KModuleDeploymentUnit)unit).setActive(false);
+                
 	        	activeDeployments.add(unit);
         	}
         }
@@ -125,7 +131,8 @@ public class DeploymentStore {
 	        	} else if (entry.getState() == STATE_ACTIVATED) {
 	        		activated.add(unit);
 	        	} else if (entry.getState() == STATE_DEACTIVATED) {
-	        		deactivated.add(unit);
+	        	    ((KModuleDeploymentUnit)unit).setActive(false);
+	        	    deactivated.add(unit);	        		
 	        	} else {
 	        		logger.warn("Unknown state of deployment store entry {} for {} will be ignored", entry.getId(), entry);
 	        	}

@@ -149,7 +149,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
 			return;
 		}
 		DeploymentUnit unit = event.getDeployedUnit().getDeploymentUnit();
-		if (!entries.containsKey(unit.getIdentifier())) {
+		if (!entries.containsKey(unit.getIdentifier()) && event.getDeployedUnit().isActive()) {
 
 			try {
 				deploymentStore.enableDeploymentUnit(unit);
@@ -216,4 +216,7 @@ public class DeploymentSynchronizer implements DeploymentEventListener {
         return false;
     }
 
+    public void clear() {
+        this.entries.clear();
+    }
 }
