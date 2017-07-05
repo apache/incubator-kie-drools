@@ -74,6 +74,9 @@ public class KieBuilderImpl
     static final String JAVA_TEST_ROOT = "src/test/java/";
 
     private static final String RESOURCES_ROOT_DOT_SEPARATOR = RESOURCES_ROOT.replace( '/', '.' );
+    private static final String SPRING_BOOT_ROOT = "BOOT-INF.classes.";
+
+    private static final String[] SUPPORTED_RESOURCES_ROOTS = new String[] { RESOURCES_ROOT_DOT_SEPARATOR, SPRING_BOOT_ROOT };
 
     private ResultsImpl results;
     private final ResourceReader srcMfs;
@@ -369,9 +372,7 @@ public class KieBuilderImpl
                     return !isNegative;
                 }
                 if ( pkgName.endsWith( ".*" ) ) {
-                    String relativePkgNameForFile = pkgNameForFile.startsWith( RESOURCES_ROOT_DOT_SEPARATOR ) ?
-                            pkgNameForFile.substring( RESOURCES_ROOT_DOT_SEPARATOR.length() ) :
-                            pkgNameForFile;
+                    String relativePkgNameForFile = getRelativePackageName( pkgNameForFile );
                     String pkgNameNoWildcard = pkgName.substring( 0, pkgName.length() - 2 );
                     if ( relativePkgNameForFile.equals( pkgNameNoWildcard ) || relativePkgNameForFile.startsWith( pkgNameNoWildcard + "." ) ) {
                         return !isNegative;
@@ -386,6 +387,15 @@ public class KieBuilderImpl
             }
             return false;
         }
+    }
+
+    private static String getRelativePackageName( String pkgNameForFile ) {
+        for ( String root : SUPPORTED_RESOURCES_ROOTS ) {
+            if ( pkgNameForFile.startsWith( root ) ) {
+                return pkgNameForFile.substring( root.length() );
+            }
+        }
+        return pkgNameForFile;
     }
 
     @Override
