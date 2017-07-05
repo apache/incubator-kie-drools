@@ -45,11 +45,9 @@ import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.RuleBasePartitionId;
@@ -87,7 +85,6 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.EventProcessingOption;
@@ -105,7 +102,6 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.io.ResourceTypePackage;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.ServiceRegistryImpl;
@@ -278,8 +274,7 @@ public class KnowledgeBaseImpl
     }
 
     public void removeKiePackage(String packageName) {
-        lock();
-        try {
+        enqueueModification( () -> {
             final InternalKnowledgePackage pkg = this.pkgs.get( packageName );
             if (pkg == null) {
                 throw new IllegalArgumentException( "Package name '" + packageName +
@@ -287,9 +282,7 @@ public class KnowledgeBaseImpl
             }
             this.eventSupport.fireBeforePackageRemoved( pkg );
 
-            for (Rule rule : pkg.getRules()) {
-                internalRemoveRule( pkg, (RuleImpl)rule );
-            }
+            internalRemoveRules( ( (Collection<RuleImpl>) (Object) pkg.getRules() ) );
 
             // getting the list of referenced globals
             final Set<String> referencedGlobals = new HashSet<String>();
@@ -317,9 +310,7 @@ public class KnowledgeBaseImpl
             pkg.clear();
 
             this.eventSupport.fireAfterPackageRemoved( pkg );
-        } finally {
-            unlock();
-        }
+        });
     }
 
     public Rule getRule(String packageName,
@@ -937,7 +928,7 @@ public class KnowledgeBaseImpl
             for ( Rule r : newPkg.getRules() ) {
                 RuleImpl rule = (RuleImpl)r;
                 checkMultithreadedEvaluation( rule );
-                internalAddRule( newPkg, rule );
+                internalAddRule( rule );
             }
 
             // add the flows to the RuleBase
@@ -1304,7 +1295,7 @@ public class KnowledgeBaseImpl
             }
         }
         if (!rulesToBeRemoved.isEmpty()) {
-            removeRules( pkg, rulesToBeRemoved );
+            removeRules( rulesToBeRemoved );
         }
 
         for (Rule newRule : newPkg.getRules()) {
@@ -1396,41 +1387,6 @@ public class KnowledgeBaseImpl
 
     public ReteooBuilder getReteooBuilder() {
         return this.reteooBuilder;
-    }
-
-    /**
-     * Assert a fact object.
-     *
-     * @param handle
-     *            The handle.
-     * @param object
-     *            The fact.
-     * @param workingMemory
-     *            The working-memory.
-     */
-    public void assertObject(final FactHandle handle,
-                             final Object object,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-        getRete().assertObject( (DefaultFactHandle) handle,
-                                context,
-                                workingMemory );
-    }
-
-    /**
-     * Retract a fact object.
-     *
-     * @param handle
-     *            The handle.
-     * @param workingMemory
-     *            The working-memory.
-     */
-    public void retractObject(final FactHandle handle,
-                              final PropagationContext context,
-                              final StatefulKnowledgeSessionImpl workingMemory) {
-        getRete().retractObject((InternalFactHandle) handle,
-                                context,
-                                workingMemory);
     }
 
     public int getNodeCount() {
@@ -1546,20 +1502,18 @@ public class KnowledgeBaseImpl
         return this.classTypeDeclaration.values();
     }
 
-    public void addRule( final InternalKnowledgePackage pkg,
-                         final RuleImpl rule ) throws InvalidPatternException {
-        lock();
-        try {
-            internalAddRule( pkg, rule );
-        } finally {
-            unlock();
-        }
+    public void addRules( Collection<RuleImpl> rules ) throws InvalidPatternException {
+        enqueueModification( () -> {
+            for (RuleImpl rule : rules) {
+                internalAddRule( rule );
+            }
+        });
     }
 
-    private void internalAddRule( InternalKnowledgePackage pkg, RuleImpl rule ) {
-        this.eventSupport.fireBeforeRuleAdded( pkg, rule );
+    private void internalAddRule( RuleImpl rule ) {
+        this.eventSupport.fireBeforeRuleAdded( rule );
         this.reteooBuilder.addRule(rule);
-        this.eventSupport.fireAfterRuleAdded(pkg, rule);
+        this.eventSupport.fireAfterRuleAdded( rule );
     }
 
     public void removeQuery( final String packageName,
@@ -1585,40 +1539,27 @@ public class KnowledgeBaseImpl
                                                     "'." );
             }
 
-            internalRemoveRule(pkg, rule);
+            this.eventSupport.fireBeforeRuleRemoved(rule);
+            this.reteooBuilder.removeRules(Collections.singletonList(rule));
+            this.eventSupport.fireAfterRuleRemoved(rule);
 
             pkg.removeRule( rule );
             addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
         } );
     }
 
-    /**
-     * Notify listeners and sub-classes about imminent removal of a rule from a package.
-     */
-    public void removeRule( final InternalKnowledgePackage pkg,
-                            final RuleImpl rule ) {
-        enqueueModification( () -> internalRemoveRule( pkg, rule ) );
+    public void removeRules( Collection<RuleImpl> rules ) {
+        enqueueModification( () -> internalRemoveRules( rules ) );
     }
 
-    public void removeRules( final InternalKnowledgePackage pkg,
-                             final List<RuleImpl> rules ) {
-        enqueueModification( () -> internalRemoveRules( pkg, rules ) );
-    }
-
-    private void internalRemoveRules(InternalKnowledgePackage pkg, List<RuleImpl> rules) {
+    private void internalRemoveRules(Collection<RuleImpl> rules) {
         for (RuleImpl rule : rules) {
-            this.eventSupport.fireBeforeRuleRemoved( pkg, rule );
+            this.eventSupport.fireBeforeRuleRemoved( rule );
         }
         this.reteooBuilder.removeRules(rules);
         for (RuleImpl rule : rules) {
-            this.eventSupport.fireAfterRuleRemoved( pkg, rule );
+            this.eventSupport.fireAfterRuleRemoved( rule );
         }
-    }
-
-    private void internalRemoveRule(InternalKnowledgePackage pkg, RuleImpl rule) {
-        this.eventSupport.fireBeforeRuleRemoved(pkg, rule);
-        this.reteooBuilder.removeRules(Collections.singletonList(rule));
-        this.eventSupport.fireAfterRuleRemoved(pkg, rule);
     }
 
     public void removeFunction( final String packageName,

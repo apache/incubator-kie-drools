@@ -17,7 +17,6 @@ package org.drools.core.impl;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -40,7 +39,6 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.ruleunit.RuleUnitRegistry;
 import org.drools.core.spi.FactHandleFactory;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
@@ -48,7 +46,6 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalKnowledgeBase extends KieBase {
 
@@ -91,15 +88,6 @@ public interface InternalKnowledgeBase extends KieBase {
 
     ClassLoader getRootClassLoader();
 
-    void assertObject(FactHandle handle,
-                      Object object,
-                      PropagationContext context,
-                      InternalWorkingMemory workingMemory);
-
-    void retractObject(FactHandle handle,
-                       PropagationContext context,
-                       StatefulKnowledgeSessionImpl workingMemory);
-
     void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulSession);
 
     StatefulKnowledgeSessionImpl getCachedSession(SessionConfiguration config, Environment environment);
@@ -124,9 +112,8 @@ public interface InternalKnowledgeBase extends KieBase {
     SegmentMemory createSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource tupleSource);
     SegmentMemory.Prototype getSegmentPrototype(SegmentMemory segment);
 
-    void addRule( InternalKnowledgePackage pkg, RuleImpl rule ) throws InvalidPatternException;
-    void removeRule( InternalKnowledgePackage pkg, RuleImpl rule ) throws InvalidPatternException;
-    void removeRules( InternalKnowledgePackage pkg, List<RuleImpl> rules ) throws InvalidPatternException;
+    void addRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
+    void removeRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
 
     void addProcess( Process process );
     void removeProcess( final String id );
