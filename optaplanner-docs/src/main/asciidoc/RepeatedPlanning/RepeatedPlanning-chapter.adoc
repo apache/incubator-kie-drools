@@ -160,7 +160,7 @@ If the plan affects humans (such as employees, drivers, ...), very disruptive ch
 In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes.
 This is usually implemented by taxing all planning entities that change.
 
-image::RepeatedPlanning/nonvolatileReplanning.png[align="center"]
+image::RepeatedPlanning/nonDisruptiveReplanning.png[align="center"]
 
 For example, in the Machine Reassignment example, the entity has both the planning variable `machine` and its original value ``originalMachine``:
 
