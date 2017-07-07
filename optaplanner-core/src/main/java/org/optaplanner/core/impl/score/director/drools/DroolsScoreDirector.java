@@ -139,7 +139,7 @@ public class DroolsScoreDirector<Solution_>
     public Map<Object, Indictment> getIndictmentMap() {
         if (workingSolution == null) {
             throw new IllegalStateException(
-                    "The method setWorkingSolution() must be called before the method getConstraintMatchTotals().");
+                    "The method setWorkingSolution() must be called before the method getIndictmentMap().");
         }
         kieSession.fireAllRules();
         return workingScoreHolder.getIndictmentMap();
