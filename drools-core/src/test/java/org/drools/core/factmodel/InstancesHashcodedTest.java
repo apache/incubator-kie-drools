@@ -26,7 +26,7 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
 
 import org.junit.Test;
-import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.api.utils.ClassLoaderUtil;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 

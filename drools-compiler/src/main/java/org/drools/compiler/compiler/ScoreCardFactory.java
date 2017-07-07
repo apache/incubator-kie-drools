@@ -15,8 +15,8 @@
 
 package org.drools.compiler.compiler;
 
+import org.kie.api.utils.ServiceRegistryImpl;
 import org.kie.internal.builder.ScoreCardConfiguration;
-import org.kie.internal.utils.ServiceRegistryImpl;
 
 import java.io.InputStream;
 

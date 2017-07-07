@@ -21,7 +21,7 @@ import java.util.Vector;
 import org.drools.core.common.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.api.utils.ClassLoaderUtil;
 
 import static org.junit.Assert.*;
 

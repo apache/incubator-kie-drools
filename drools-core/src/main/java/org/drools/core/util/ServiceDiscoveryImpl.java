@@ -16,6 +16,9 @@
 
 package org.drools.core.util;
 
+import org.kie.api.utils.ServiceDiscovery;
+import org.kie.api.utils.ServiceRegistry;
+import org.kie.api.utils.ServiceRegistryImpl;
 import org.kie.internal.assembler.KieAssemblerService;
 import org.kie.internal.assembler.KieAssemblers;
 import org.kie.internal.runtime.KieRuntimeService;
@@ -23,9 +26,6 @@ import org.kie.internal.runtime.KieRuntimes;
 import org.kie.internal.runtime.beliefs.KieBeliefService;
 import org.kie.internal.runtime.beliefs.KieBeliefs;
 import org.kie.internal.utils.KieService;
-import org.kie.internal.utils.ServiceDiscovery;
-import org.kie.internal.utils.ServiceRegistry;
-import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.internal.weaver.KieWeaverService;
 import org.kie.internal.weaver.KieWeavers;
 import org.mvel2.MVEL;

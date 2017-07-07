@@ -49,7 +49,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.event.kiescanner.KieScannerEventListener;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.utils.ServiceRegistryImpl;
 import org.appformer.maven.support.PomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
