@@ -3472,9 +3472,9 @@ public class RuleModelDRLPersistenceImpl
                 case OR:
                 case AND:
                     if (ch == '=' || ch == '!' || ch == '<' || ch == '>') {
-                        status = SplitterState.EXPR;
                         sb.append(status == SplitterState.AND ? "&& " : "|| ");
                         sb.append(ch);
+                        status = SplitterState.EXPR;
                     } else if (Character.isJavaIdentifierStart(ch)) {
                         String currentExpr = sb.toString().trim();
                         if (currentExpr.length() > 0) {
@@ -3560,13 +3560,13 @@ public class RuleModelDRLPersistenceImpl
                                            opPos).trim();
             } else {
                 operator = findOperator(expr);
-                if (operator != null) {
-                    int opPos = expr.indexOf(operator);
-                    fieldName = expr.substring(0,
-                                               opPos).trim();
-                    value = expr.substring(opPos + operator.length(),
-                                           expr.length()).trim();
-                }
+            }
+            if (operator != null) {
+                int opPos = expr.indexOf(operator);
+                fieldName = expr.substring(0,
+                                           opPos).trim();
+                value = expr.substring(opPos + operator.length(),
+                                       expr.length()).trim();
             }
 
             boolean isExpression = fieldName.contains(".") || fieldName.endsWith("()");
@@ -3960,14 +3960,16 @@ public class RuleModelDRLPersistenceImpl
             String type = null;
             boolean isAnd = false;
             String[] splittedValue = new String[0];
-            if (value != null) {
+            if (!(value == null || value.isEmpty())) {
                 isAnd = value.contains("&&");
                 splittedValue = isAnd ? value.split("\\&\\&") : value.split("\\|\\|");
-                type = setValueOnConstraint(m,
-                                            operator,
-                                            factPattern,
-                                            con,
-                                            splittedValue[0].trim());
+                if (!splittedValue[0].trim().isEmpty()) {
+                    type = setValueOnConstraint(m,
+                                                operator,
+                                                factPattern,
+                                                con,
+                                                splittedValue[0].trim());
+                }
             }
 
             if (splittedValue.length > 1) {
@@ -4053,6 +4055,7 @@ public class RuleModelDRLPersistenceImpl
             } else if (con instanceof ConnectiveConstraint) {
                 ((ConnectiveConstraint) con).setFieldType(type);
             }
+
             return type;
         }
     }
