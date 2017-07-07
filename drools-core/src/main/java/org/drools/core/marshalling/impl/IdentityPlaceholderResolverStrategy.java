@@ -16,9 +16,6 @@
 
 package org.drools.core.marshalling.impl;
 
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,13 +23,17 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import org.drools.core.marshalling.NamedObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
+
 public class IdentityPlaceholderResolverStrategy
     implements
-    ObjectMarshallingStrategy {
+    NamedObjectMarshallingStrategy {
 
     private Map<Integer, Object> ids;
     private Map<Object, Integer> objects;
 
+    private String name = IdentityPlaceholderResolverStrategy.class.getName();
     private ObjectMarshallingStrategyAcceptor acceptor;
     
     public IdentityPlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor) {
@@ -44,6 +45,10 @@ public class IdentityPlaceholderResolverStrategy
     public IdentityPlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor, Map<Integer, Object> ids) {
         this(acceptor);
         setIds(ids);
+    }
+    
+    public String getName(){
+    	return this.name;
     }
 
     public Object read(ObjectInputStream os) throws IOException,
@@ -113,8 +118,11 @@ public class IdentityPlaceholderResolverStrategy
     public void setIds(Map<Integer, Object> ids) {
         this.ids = ids;
         objects.clear();
+        StringBuilder nameIds = new StringBuilder();
         for (Map.Entry<Integer, Object> idEntry : ids.entrySet()) {
             objects.put(idEntry.getValue(), idEntry.getKey());
+            nameIds.append( idEntry.getKey() ).append( "," );
         }
+        this.name = IdentityPlaceholderResolverStrategy.class.getName() + nameIds.toString();
     }
 }

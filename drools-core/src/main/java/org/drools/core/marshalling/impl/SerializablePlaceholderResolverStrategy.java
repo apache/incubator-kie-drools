@@ -22,19 +22,24 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.drools.core.marshalling.NamedObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
 public class SerializablePlaceholderResolverStrategy
     implements
-    ObjectMarshallingStrategy {
+    NamedObjectMarshallingStrategy {
 
     private int index;
-    
+    private String name = SerializablePlaceholderResolverStrategy.class.getName();
     private ObjectMarshallingStrategyAcceptor acceptor;
     
     public SerializablePlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor) {
         this.acceptor = acceptor;
+    }
+    
+    public String getName(){
+    	return this.name;
     }
     
     public int getIndex() {
