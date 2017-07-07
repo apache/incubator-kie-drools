@@ -1284,6 +1284,24 @@ public class DMNRuntimeTest {
         assertThat( (Map<String,Object>) result.get( "Decision Logic 1" ), hasEntry( "years and months", duration ) );
         assertThat( (Map<String,Object>) result.get( "Decision Logic 1" ), hasEntry( "Date Time", dateTime ) );
     }
+    
+    @Test
+    public void testArtificialAttributes() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-input-data-string-artificial-attributes.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/drools", "0001-input-data-string" );
+        assertThat( dmnModel, notNullValue() );
 
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Full Name", "John Doe" );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        assertThat( dmnResult.getDecisionResults().size(), is( 1 ) );
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getResult(), is( "Hello John Doe" ) );
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
+    }
 }
 

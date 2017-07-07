@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
                       xmlns="http://www.trisotech.com/dmn/definitions/_ba9fc4b1-5ced-4d00-9b61-290de4bf3213" id="_c2cd0a08-95bb-4955-aada-f1997b0bc145" namespace="http://www.trisotech.com/dmn/definitions/_ba9fc4b1-5ced-4d00-9b61-290de4bf3213"
                       exporter="DMN Modeler" exporterVersion="5.0.34.201611081547" name="Solution 3" triso:logoChoice="Default">
   <semantic:extensionElements>
