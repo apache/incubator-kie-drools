@@ -73,6 +73,7 @@ import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
 import org.jbpm.services.api.query.QueryService;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
@@ -216,6 +217,7 @@ public abstract class AbstractCaseServicesBaseTest {
         }
 
         close();
+        ServiceRegistry.get().clear();
     }
 
     protected void close() {

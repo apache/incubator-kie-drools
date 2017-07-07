@@ -71,6 +71,7 @@ public class ModifyRoleAssignmentCommand extends CaseCommand<Void> {
         }
         
         ksession.update(factHandle, caseFile);
+        triggerRules(ksession);
         return null;
     }
 

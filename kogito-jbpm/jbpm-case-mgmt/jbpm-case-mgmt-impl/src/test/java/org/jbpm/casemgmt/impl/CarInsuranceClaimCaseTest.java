@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseStageInstance;
@@ -48,6 +49,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.conf.ObjectModel;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -300,6 +302,56 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
             }
         }
     }
+    
+    @Test
+    public void testCarInsuranceClaimCaseWithExtraTaskFromRules() {
+        // let's assign users to roles so they can be participants in the case
+        String caseId = startAndAssertCaseInstance(deploymentUnit.getIdentifier(), "john", "mary");
+        try {
+            // let's verify case is created
+            assertCaseInstance(deploymentUnit.getIdentifier(), CAR_INS_CASE_ID);
+            // let's look at what stages are active
+            assertBuildClaimReportStage();
+            // since the first task assigned to insured is with auto start it should be already active            
+            // the same task can be claimed by insuranceRepresentative in case claim is reported over phone
+            long taskId = assertBuildClaimReportAvailableForBothRoles();
+            // let's provide claim report with initial data            
+            // claim report should be stored in case file data
+            provideAndAssertClaimReport(taskId);
+            // now we have another task for insured to provide property damage report
+            taskId = assertPropertyDamageReportAvailableForBothRoles();
+            // let's provide the property damage report
+            provideAndAssertPropertyDamageReport(taskId);
+            // let's complete the stage by explicitly stating that claimReport is done          
+            caseService.addDataToCaseFile(CAR_INS_CASE_ID, "claimReportDone", true);            
+            // we should be in another stage - Claim assessment
+            assertClaimAssesmentStage();                      
+            // ask for more details from insured
+            caseService.addDataToCaseFile(CAR_INS_CASE_ID, "decision", "AskForDetails");
+            assertAndProvideAdditionalDetails();            
+            // let's trigger claim offer calculation
+            caseService.triggerAdHocFragment(CAR_INS_CASE_ID, "Calculate claim", null);
+            // now we have another task for insured as claim was calculated            
+            // let's accept the calculated claim 
+            assertAndAcceptClaimOffer();
+            // there should be no process instances for the case
+            Collection<ProcessInstanceDesc> caseProcesInstances = caseRuntimeDataService.getProcessInstancesForCase(CAR_INS_CASE_ID, Arrays.asList(ProcessInstance.STATE_ACTIVE), new QueryContext());
+            assertEquals(0, caseProcesInstances.size());
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    
+    /*
+     * Helper methods
+     */
 
     protected void assertComment(CommentInstance comment, String author, String content) {
         assertNotNull(comment);
@@ -522,6 +574,27 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         Map<String, Object> params = new HashMap<>();
         params.put("claimReport_", claimReport);
         userTaskService.completeAutoProgress(taskId, "krisv", params);
+    }
+    
+    protected void assertAndProvideAdditionalDetails() {
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        assertTask(tasks.get(0), "john", "Please provide additional details", Status.Reserved);
+        long taskId = tasks.get(0).getId();
+        Map<String, Object> inputs = userTaskService.getTaskInputContentByTaskId(taskId);
+        assertNotNull(inputs);
+        assertEquals("How did it happen?", inputs.get("reason"));
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("caseFile_answer", "It just happened in a split second, don't remember anything else");
+        userTaskService.completeAutoProgress(taskId, "john", params);
+        CaseFileInstance caseFile = caseService.getCaseFileInstance(CAR_INS_CASE_ID);
+        assertNotNull(caseFile);
+        String answer = (String) caseFile.getData("answer");
+        assertNotNull(answer);
+        
+        assertEquals("It just happened in a split second, don't remember anything else", answer);
     }
 
     @Override

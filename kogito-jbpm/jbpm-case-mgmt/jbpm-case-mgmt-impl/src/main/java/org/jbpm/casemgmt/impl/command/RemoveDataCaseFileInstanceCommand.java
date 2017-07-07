@@ -63,9 +63,10 @@ public class RemoveDataCaseFileInstanceCommand extends CaseCommand<Void> {
         
         variableNames.forEach(p -> caseFile.remove(p));
         
-        caseEventSupport.fireAfterCaseDataRemoved(caseFile.getCaseId(), caseFile.getDefinitionId(), remove);
-        
         ksession.update(factHandle, caseFile);
+        triggerRules(ksession);
+        
+        caseEventSupport.fireAfterCaseDataRemoved(caseFile.getCaseId(), caseFile.getDefinitionId(), remove);
         return null;
     }
 

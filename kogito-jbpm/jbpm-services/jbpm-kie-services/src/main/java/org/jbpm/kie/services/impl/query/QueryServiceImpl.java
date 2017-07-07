@@ -58,6 +58,7 @@ import org.jbpm.services.api.query.QueryService;
 import org.jbpm.services.api.query.model.QueryDefinition;
 import org.jbpm.services.api.query.model.QueryDefinition.Target;
 import org.jbpm.services.api.query.model.QueryParam;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
@@ -80,6 +81,11 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
     private TransactionalCommandService commandService;
 
     private DeploymentRolesManager deploymentRolesManager = new DeploymentRolesManager();
+    
+    
+    public QueryServiceImpl() {
+        ServiceRegistry.get().register(QueryService.class.getSimpleName(), this);
+    }
 
     public void setDeploymentRolesManager(DeploymentRolesManager deploymentRolesManager) {
         this.deploymentRolesManager = deploymentRolesManager;

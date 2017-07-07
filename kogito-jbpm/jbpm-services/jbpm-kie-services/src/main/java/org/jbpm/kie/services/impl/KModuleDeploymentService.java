@@ -52,9 +52,11 @@ import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorMerger;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.DefinitionService;
+import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.model.DeployedAsset;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -106,6 +108,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
         } catch (XPathExpressionException e) {
             logger.error("Unable to parse '{}' XPath expression due to {}", PROCESS_ID_XPATH, e.getMessage());
         }
+        ServiceRegistry.get().register(DeploymentService.class.getSimpleName(), this);
     }
 
     public void onInit() {

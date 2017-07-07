@@ -28,6 +28,7 @@ import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.TaskNotFoundException;
 import org.jbpm.services.api.UserTaskService;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.services.task.commands.AddAttachmentCommand;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.exception.PermissionDeniedException;
@@ -69,6 +70,10 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
     
     private InternalTaskService nonProcessScopedTaskService;
 
+    
+    public UserTaskServiceImpl() {
+        ServiceRegistry.get().register(UserTaskService.class.getSimpleName(), this);
+    }
         
 	public void setDeploymentService(DeploymentService deploymentService) {
 		this.deploymentService = deploymentService;

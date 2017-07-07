@@ -16,8 +16,8 @@
 package org.jbpm.kie.services.impl;
 
 import static java.util.Objects.requireNonNull;
-import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
 import static org.jbpm.kie.services.impl.CommonUtils.getCallbackUserRoles;
+import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -49,6 +49,7 @@ import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
 import org.jbpm.services.api.model.VariableDesc;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.services.task.audit.service.TaskAuditService;
 import org.jbpm.services.task.impl.TaskSummaryQueryBuilderImpl;
 import org.jbpm.shared.services.impl.QueryManager;
@@ -57,9 +58,9 @@ import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.query.QueryFilter;
@@ -100,6 +101,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     	QueryManager.get().addNamedQueries("META-INF/Servicesorm.xml");
         QueryManager.get().addNamedQueries("META-INF/TaskAuditorm.xml");
         QueryManager.get().addNamedQueries("META-INF/Taskorm.xml");
+        
+        ServiceRegistry.get().register(RuntimeDataService.class.getSimpleName(), this);
     }
 
     public void setCommandService(TransactionalCommandService commandService) {

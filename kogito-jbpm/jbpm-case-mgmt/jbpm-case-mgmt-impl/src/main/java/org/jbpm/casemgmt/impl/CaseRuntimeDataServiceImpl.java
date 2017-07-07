@@ -18,8 +18,8 @@ package org.jbpm.casemgmt.impl;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.jbpm.kie.services.impl.CommonUtils.getAuthenticatedUserRoles;
 import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
-import static org.jbpm.kie.services.impl.CommonUtils.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,6 +67,7 @@ import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.DeployedAsset;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
@@ -80,13 +81,13 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.api.runtime.query.QueryContext;
 
 
 public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, DeploymentEventListener {
@@ -117,6 +118,8 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     
     public CaseRuntimeDataServiceImpl() {
         QueryManager.get().addNamedQueries("META-INF/CaseMgmtorm.xml");
+        
+        ServiceRegistry.get().register(CaseRuntimeDataService.class.getSimpleName(), this);
     }
    
     

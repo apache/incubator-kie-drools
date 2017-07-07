@@ -40,6 +40,7 @@ import org.jbpm.services.api.admin.TaskNotification;
 import org.jbpm.services.api.admin.TaskReassignment;
 import org.jbpm.services.api.admin.UserTaskAdminService;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
@@ -75,6 +76,11 @@ public class UserTaskAdminServiceImpl implements UserTaskAdminService {
     private IdentityProvider identityProvider;
     
     private TransactionalCommandService commandService;
+    
+    
+    public UserTaskAdminServiceImpl() {
+        ServiceRegistry.get().register(UserTaskAdminService.class.getSimpleName(), this);
+    }
     
     public void setUserTaskService(UserTaskService userTaskService) {
         this.userTaskService = userTaskService;

@@ -16,6 +16,13 @@
 
 package org.jbpm.kie.services.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.command.runtime.process.SetProcessInstanceVariablesCommand;
@@ -31,6 +38,7 @@ import org.jbpm.services.api.WorkItemNotFoundException;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
@@ -54,19 +62,17 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class ProcessServiceImpl implements ProcessService, VariablesAware {
 
 	private static final Logger logger = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
 	protected DeploymentService deploymentService;
 	protected RuntimeDataService dataService;
+	
+	
+    public ProcessServiceImpl() {
+        ServiceRegistry.get().register(ProcessService.class.getSimpleName(), this);
+    }
 
 	public void setDeploymentService(DeploymentService deploymentService) {
 		this.deploymentService = deploymentService;

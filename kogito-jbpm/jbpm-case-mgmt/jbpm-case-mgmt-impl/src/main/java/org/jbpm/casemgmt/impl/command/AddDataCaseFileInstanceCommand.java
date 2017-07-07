@@ -16,17 +16,18 @@
 
 package org.jbpm.casemgmt.impl.command;
 
+
+import java.util.Collection;
+import java.util.Map;
+
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.identity.IdentityProvider;
-import org.kie.api.runtime.Context;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * Updates case file with new data
@@ -56,10 +57,11 @@ public class AddDataCaseFileInstanceCommand extends CaseCommand<Void> {
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
         caseEventSupport.fireBeforeCaseDataAdded(caseFile.getCaseId(), caseFile.getDefinitionId(), parameters);
         caseFile.addAll(parameters);
-        caseEventSupport.fireAfterCaseDataAdded(caseFile.getCaseId(), caseFile.getDefinitionId(), parameters);
+        
         
         ksession.update(factHandle, caseFile);
+        triggerRules(ksession);
+        caseEventSupport.fireAfterCaseDataAdded(caseFile.getCaseId(), caseFile.getDefinitionId(), parameters);
         return null;
     }
-
 }

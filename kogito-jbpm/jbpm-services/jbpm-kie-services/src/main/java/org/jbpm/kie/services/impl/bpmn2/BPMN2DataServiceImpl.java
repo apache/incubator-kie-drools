@@ -34,6 +34,7 @@ import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.ProcessDefinitionNotFoundException;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskDefinition;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.ResourceType;
@@ -52,6 +53,8 @@ public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventL
     		new ConcurrentHashMap<String, Map<String, ProcessDescriptor>>();
 
     public BPMN2DataServiceImpl() {
+        
+        ServiceRegistry.get().register(DefinitionService.class.getSimpleName(), this);
     }
 
     private void validateNonEmptyDeploymentIdAndProcessId(String deploymentId, String processId) {

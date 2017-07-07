@@ -7,6 +7,7 @@
   <bpmn2:itemDefinition id="_policeReportItem" structureRef="org.jbpm.document.Document"/>
   <bpmn2:itemDefinition id="_requiresCallbackItem" structureRef="Boolean"/>
   <bpmn2:itemDefinition id="_claimAcceptedItem" structureRef="Boolean"/>
+  <bpmn2:itemDefinition id="_answerItem" structureRef="String"/>
   <bpmn2:itemDefinition id="_C88DB70F-951D-4F4F-BE06-651EBFC184AB_InMessageType"/>
   <bpmn2:message id="_C88DB70F-951D-4F4F-BE06-651EBFC184AB_InMessage" itemRef="_C88DB70F-951D-4F4F-BE06-651EBFC184AB_InMessageType"/>
   <bpmn2:interface id="_C88DB70F-951D-4F4F-BE06-651EBFC184AB_ServiceInterface" name="org.jbpm.casemgmt.demo.insurance.CalculateClaimService" implementationRef="org.jbpm.casemgmt.demo.insurance.CalculateClaimService">
@@ -32,6 +33,7 @@
     <bpmn2:property id="caseFile_policeReport" itemSubjectRef="_policeReportItem"/>
     <bpmn2:property id="requiresCallback" itemSubjectRef="_requiresCallbackItem"/>
     <bpmn2:property id="claimAccepted" itemSubjectRef="_claimAcceptedItem"/>
+    <bpmn2:property id="caseFile_answer" itemSubjectRef="_answerItem"/>    
     <bpmn2:startEvent id="processStartEvent" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">

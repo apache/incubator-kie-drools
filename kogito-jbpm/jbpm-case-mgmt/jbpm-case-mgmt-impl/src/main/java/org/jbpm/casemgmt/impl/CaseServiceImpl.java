@@ -67,6 +67,7 @@ import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.kie.api.KieServices;
@@ -107,6 +108,11 @@ public class CaseServiceImpl implements CaseService {
     private IdentityProvider identityProvider;
     
     private CaseEventSupport emptyCaseEventSupport = new CaseEventSupport(null, Collections.emptyList());
+    
+    
+    public CaseServiceImpl() {
+        ServiceRegistry.get().register(CaseService.class.getSimpleName(), this);
+    }
     
     public void setProcessService(ProcessService processService) {
         this.processService = processService;
@@ -386,8 +392,7 @@ public class CaseServiceImpl implements CaseService {
         
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(name, value);
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(identityProvider, parameters));
-        
+        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDataCaseFileInstanceCommand(identityProvider, parameters));        
     }
 
     @Override

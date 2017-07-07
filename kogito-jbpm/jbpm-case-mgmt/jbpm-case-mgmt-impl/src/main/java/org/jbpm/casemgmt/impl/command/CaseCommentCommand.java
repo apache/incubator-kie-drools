@@ -109,6 +109,7 @@ public class CaseCommentCommand extends CaseCommand<Void> {
             caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), toRemove);
         }
         ksession.update(factHandle, caseFile);
+        triggerRules(ksession);
         return null;
     }
 

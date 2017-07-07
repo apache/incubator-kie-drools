@@ -41,6 +41,7 @@ import org.jbpm.services.api.admin.ProcessNode;
 import org.jbpm.services.api.admin.TimerInstance;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
@@ -57,6 +58,11 @@ public class ProcessInstanceAdminServiceImpl implements ProcessInstanceAdminServ
     private RuntimeDataService runtimeDataService;
     private IdentityProvider identityProvider;
     private TransactionalCommandService commandService;
+    
+    
+    public ProcessInstanceAdminServiceImpl() {
+        ServiceRegistry.get().register(ProcessInstanceAdminService.class.getSimpleName(), this);
+    }
     
     public void setProcessService(ProcessService processService) {
         this.processService = processService;

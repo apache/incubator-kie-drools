@@ -27,6 +27,7 @@ import org.jbpm.runtime.manager.impl.migration.MigrationSpec;
 import org.jbpm.services.api.admin.MigrationEntry;
 import org.jbpm.services.api.admin.MigrationReport;
 import org.jbpm.services.api.admin.ProcessInstanceMigrationService;
+import org.jbpm.services.api.service.ServiceRegistry;
 
 /**
  * Default implementation of <code>org.jbpm.services.api.admin.ProcessInstanceMigrationService</code>
@@ -35,6 +36,11 @@ import org.jbpm.services.api.admin.ProcessInstanceMigrationService;
  */
 public class ProcessInstanceMigrationServiceImpl implements ProcessInstanceMigrationService {
 
+    
+    public ProcessInstanceMigrationServiceImpl() {
+        ServiceRegistry.get().register(ProcessInstanceMigrationService.class.getSimpleName(), this);
+    }
+    
     @Override
     public MigrationReport migrate(String sourceDeploymentId, Long processInstanceId, String targetDeploymentId, String targetProcessId) {
         MigrationSpec migrationSpec = new MigrationSpec(sourceDeploymentId, processInstanceId, targetDeploymentId, targetProcessId);        

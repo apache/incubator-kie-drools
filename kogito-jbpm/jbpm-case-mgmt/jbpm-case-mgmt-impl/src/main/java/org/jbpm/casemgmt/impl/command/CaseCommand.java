@@ -18,6 +18,7 @@ package org.jbpm.casemgmt.impl.command;
 
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.common.InternalAgenda;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.kie.api.runtime.EnvironmentName;
@@ -61,5 +62,13 @@ public abstract class CaseCommand<T> implements ExecutableCommand<T> {
     
     public IdentityProvider getIdentityProvider() {
         return this.identityProvider;
+    }
+    
+    protected void triggerRules(KieSession ksession) {
+        InternalAgenda agenda = ((InternalAgenda) ksession.getAgenda());
+        if (agenda.focusStackSize() > 0) {
+            agenda.setFocus("MAIN");
+        }
+        ksession.fireAllRules();
     }
 }
