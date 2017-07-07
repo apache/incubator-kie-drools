@@ -71,9 +71,8 @@ public enum SelectionOrder {
                         + ") cannot be null.");
             }
             return inheritedSelectionOrder;
-        } else {
-            return selectionOrder;
         }
+        return selectionOrder;
     }
 
     public static SelectionOrder fromRandomSelectionBoolean(boolean randomSelection) {

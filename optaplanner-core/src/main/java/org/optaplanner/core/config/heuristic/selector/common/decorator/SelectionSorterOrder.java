@@ -34,9 +34,8 @@ public enum SelectionSorterOrder {
     public static SelectionSorterOrder resolve(SelectionSorterOrder sorterOrder) {
         if (sorterOrder == null) {
             return ASCENDING;
-        } else {
-            return sorterOrder;
         }
+        return sorterOrder;
     }
 
 }

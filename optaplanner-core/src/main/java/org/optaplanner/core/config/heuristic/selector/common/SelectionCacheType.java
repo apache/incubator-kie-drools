@@ -40,13 +40,12 @@ public enum SelectionCacheType {
     public static SelectionCacheType resolve(SelectionCacheType cacheType, SelectionCacheType minimumCacheType) {
         if (cacheType == null) {
             return JUST_IN_TIME;
-        } else {
-            if (cacheType != JUST_IN_TIME && cacheType.compareTo(minimumCacheType) < 0) {
-                throw new IllegalArgumentException("The cacheType (" + cacheType
-                        + ") is wasteful because an ancestor has a higher cacheType (" + minimumCacheType + ").");
-            }
-            return cacheType;
         }
+        if (cacheType != JUST_IN_TIME && cacheType.compareTo(minimumCacheType) < 0) {
+            throw new IllegalArgumentException("The cacheType (" + cacheType
+                    + ") is wasteful because an ancestor has a higher cacheType (" + minimumCacheType + ").");
+        }
+        return cacheType;
     }
 
     public boolean isCached() {
