@@ -112,4 +112,4 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
 [[employeeRosteringDomainModel]]
 == Domain Model
 
-image::UseCasesAndExamples/DifficultExamples/employeeShiftRosteringClassDiagram.png[align="center"]
+image::UseCasesAndExamples/DifficultExamples/nurseRosteringClassDiagram.png[align="center"]

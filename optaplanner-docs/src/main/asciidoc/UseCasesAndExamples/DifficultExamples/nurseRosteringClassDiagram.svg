@@ -13,9 +13,9 @@
    height="600"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="employeeShiftRosteringClassDiagram.svg"
-   inkscape:export-filename="employeeShiftRosteringClassDiagram.png"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="nurseRosteringClassDiagram.svg"
+   inkscape:export-filename="nurseRosteringClassDiagram.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -246,10 +246,10 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="0.82833333"
-     inkscape:cx="443.46076"
+     inkscape:cx="445.87525"
      inkscape:cy="300"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer1"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -287,7 +287,7 @@
             <dc:title>www.optaplanner.org</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title></dc:title>
+        <dc:title />
         <dc:rights>
           <cc:Agent>
             <dc:title>www.optaplanner.org</dc:title>
@@ -575,7 +575,7 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot4302"
-       style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:36px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
        transform="translate(-20,262.36198)"><flowRegion
          id="flowRegion4304"><rect
            id="rect4306"
@@ -584,7 +584,7 @@
            x="50"
            y="220.0002"
            style="font-size:36px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara4621">Employee shift rostering class diagram</flowPara></flowRoot>    <g
+         id="flowPara4621">Nurse rostering class diagram</flowPara></flowRoot>    <g
        id="g3709"
        transform="translate(0,19.999997)" />
     <flowRoot
@@ -1109,7 +1109,7 @@
            height="103.82294"
            x="-49.496983"
            y="84.507042" /></flowRegion><flowPara
-         id="flowPara4146"></flowPara></flowRoot>    <g
+         id="flowPara4146" /></flowRoot>    <g
        id="g4279"
        style="opacity:0.7">
       <g
