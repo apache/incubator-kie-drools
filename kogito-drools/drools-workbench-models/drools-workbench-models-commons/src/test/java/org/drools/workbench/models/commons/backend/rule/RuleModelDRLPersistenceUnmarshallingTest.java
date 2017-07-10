@@ -6458,6 +6458,187 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
     }
 
     @Test
+    //https://issues.jboss.org/browse/RHBRMS-2854
+    public void testSingleFieldConstraintConnectives3() {
+        String drl = "package org.test;\n" +
+                "rule \"rule1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "    Applicant(age != 1 && < 10 && > 5)\n" +
+                "then\n" +
+                "end";
+
+        addModelField("org.test.Applicant",
+                      "this",
+                      "org.test.Applicant",
+                      DataType.TYPE_THIS);
+        addModelField("org.test.Applicant",
+                      "age",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
+
+        when(dmo.getPackageName()).thenReturn("org.test");
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+
+        assertNotNull(m);
+        assertEquals("rule1",
+                     m.name);
+
+        assertEquals(1,
+                     m.lhs.length);
+        IPattern p = m.lhs[0];
+        assertTrue(p instanceof FactPattern);
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals("Applicant",
+                     fp.getFactType());
+
+        assertEquals(1,
+                     fp.getConstraintList().getConstraints().length);
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint(0);
+        assertEquals("Applicant",
+                     sfp.getFactType());
+        assertEquals("age",
+                     sfp.getFieldName());
+        assertEquals("!=",
+                     sfp.getOperator());
+        assertEquals("1",
+                     sfp.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     sfp.getConstraintValueType());
+
+        assertEquals(2,
+                     sfp.getConnectives().length);
+        ConnectiveConstraint cc1 = sfp.getConnectives()[0];
+        assertEquals("Applicant",
+                     cc1.getFactType());
+        assertEquals("age",
+                     cc1.getFieldName());
+        assertEquals("&& <",
+                     cc1.getOperator());
+        assertEquals("10",
+                     cc1.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     cc1.getConstraintValueType());
+
+        ConnectiveConstraint cc2 = sfp.getConnectives()[1];
+        assertEquals("Applicant",
+                     cc2.getFactType());
+        assertEquals("age",
+                     cc2.getFieldName());
+        assertEquals("&& >",
+                     cc2.getOperator());
+        assertEquals("5",
+                     cc2.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     cc2.getConstraintValueType());
+
+        assertEqualsIgnoreWhitespace(drl,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(m));
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/RHBRMS-2854
+    public void testSingleFieldConstraintConnectives4() {
+        String drl = "package org.test;\n" +
+                "rule \"rule1\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "    Applicant(age != null && != 1 && < 10 && > 5)\n" +
+                "then\n" +
+                "end";
+
+        addModelField("org.test.Applicant",
+                      "this",
+                      "org.test.Applicant",
+                      DataType.TYPE_THIS);
+        addModelField("org.test.Applicant",
+                      "age",
+                      Integer.class.getName(),
+                      DataType.TYPE_NUMERIC_INTEGER);
+
+        when(dmo.getPackageName()).thenReturn("org.test");
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                          Collections.emptyList(),
+                                                                          dmo);
+
+        assertNotNull(m);
+        assertEquals("rule1",
+                     m.name);
+
+        assertEquals(1,
+                     m.lhs.length);
+        IPattern p = m.lhs[0];
+        assertTrue(p instanceof FactPattern);
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals("Applicant",
+                     fp.getFactType());
+
+        assertEquals(1,
+                     fp.getConstraintList().getConstraints().length);
+        assertTrue(fp.getConstraint(0) instanceof SingleFieldConstraint);
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint(0);
+        assertEquals("Applicant",
+                     sfp.getFactType());
+        assertEquals("age",
+                     sfp.getFieldName());
+        assertEquals("!= null",
+                     sfp.getOperator());
+        assertNull(sfp.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_UNDEFINED,
+                     sfp.getConstraintValueType());
+
+        assertEquals(3,
+                     sfp.getConnectives().length);
+        ConnectiveConstraint cc1 = sfp.getConnectives()[0];
+        assertEquals("Applicant",
+                     cc1.getFactType());
+        assertEquals("age",
+                     cc1.getFieldName());
+        assertEquals("&& !=",
+                     cc1.getOperator());
+        assertEquals("1",
+                     cc1.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     cc1.getConstraintValueType());
+
+        ConnectiveConstraint cc2 = sfp.getConnectives()[1];
+        assertEquals("Applicant",
+                     cc2.getFactType());
+        assertEquals("age",
+                     cc2.getFieldName());
+        assertEquals("&& <",
+                     cc2.getOperator());
+        assertEquals("10",
+                     cc2.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     cc2.getConstraintValueType());
+
+        ConnectiveConstraint cc3 = sfp.getConnectives()[2];
+        assertEquals("Applicant",
+                     cc3.getFactType());
+        assertEquals("age",
+                     cc3.getFieldName());
+        assertEquals("&& >",
+                     cc3.getOperator());
+        assertEquals("5",
+                     cc3.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL,
+                     cc3.getConstraintValueType());
+
+        assertEqualsIgnoreWhitespace(drl,
+                                     RuleModelDRLPersistenceImpl.getInstance().marshal(m));
+    }
+
+    @Test
     //https://issues.jboss.org/browse/GUVNOR-2143
     public void testNewKeywordVariableNamePrefix1() {
         String oldValue = System.getProperty("drools.dateformat");
