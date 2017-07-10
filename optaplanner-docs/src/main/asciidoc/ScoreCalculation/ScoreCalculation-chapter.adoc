@@ -1076,12 +1076,18 @@ Comparing the best score with the original would be wrong, because it is compari
 [[incrementalScoreCalculation]]
 === Incremental Score Calculation (with Deltas)
 
-When a `Solution` changes, incremental score calculation (AKA delta based score calculation), will calculate the delta with the previous state to find the new ``Score``, instead of recalculating the entire score on every solution evaluation.
+When a `Solution` changes, incremental score calculation (AKA delta based score calculation),
+calculates the delta with the previous state to find the new ``Score``,
+instead of recalculating the entire score on every solution evaluation.
 
-For example, if a single queen A moves from row `1` to ``2``, it will not bother to check if queen B and C can attack each other, since neither of them changed.
+For example, when a single queen A moves from row `1` to ``2``,
+it will not bother to check if queen B and C can attack each other, since neither of them changed:
 
-.Incremental Score Calculation for the Four Queens Puzzle
 image::ScoreCalculation/incrementalScoreCalculationNQueens04.png[align="center"]
+
+Similarly in employee rostering:
+
+image::ScoreCalculation/incrementalScoreCalculationEmployeeRostering.png[align="center"]
 
 This is a huge performance and scalability gain.
 *Drools score calculation gives you this huge scalability gain without forcing you to write a complicated incremental score calculation algorithm.*
