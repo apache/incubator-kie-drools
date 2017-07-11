@@ -22,6 +22,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 
 public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
 
@@ -36,6 +37,7 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
     private InternalFactHandle factHandleForEvaluation = new DefaultFactHandle(idGenerator.decrementAndGet(), this);
 
     private boolean stagedOnRight;
+    private short stagedTypeOnRight;
 
     public SubnetworkTuple() {
         // constructor needed for serialisation
@@ -67,18 +69,6 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
                            final RightTuple rightTuple,
                            final Sink sink) {
         super(leftTuple, rightTuple, sink);
-    }
-
-    public SubnetworkTuple(final LeftTuple leftTuple,
-                           final RightTuple rightTuple,
-                           final Sink sink,
-                           final boolean leftTupleMemoryEnabled) {
-        this(leftTuple,
-             rightTuple,
-             null,
-             null,
-             sink,
-             leftTupleMemoryEnabled);
     }
 
     public SubnetworkTuple(final LeftTuple leftTuple,
@@ -163,8 +153,14 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
         return stagedOnRight;
     }
 
-    public void setStagedOnRight( boolean stagedOnRight ) {
-        this.stagedOnRight = stagedOnRight;
+    public void setStagedOnRight() {
+        this.stagedOnRight = true;
+    }
+
+    public void prepareStagingOnRight() {
+        super.clearStaged();
+        setStagedOnRight();
+        stagedTypeOnRight = Tuple.NONE;
     }
 
     @Override
@@ -176,5 +172,14 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
     @Override
     public void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory ) {
         throw new UnsupportedOperationException();
+    }
+
+    public void moveStagingFromRightToLeft() {
+        stagedTypeOnRight = getStagedType();
+        clearStaged();
+    }
+
+    public short getStagedTypeOnRight() {
+        return stagedTypeOnRight;
     }
 }
