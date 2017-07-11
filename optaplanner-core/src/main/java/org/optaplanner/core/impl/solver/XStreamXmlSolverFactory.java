@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.Objects;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.ConversionException;
@@ -111,8 +112,12 @@ public class XStreamXmlSolverFactory<Solution_> extends AbstractSolverFactory<So
             }
             return configure(in);
         } catch (ConversionException e) {
+            String lineNumber = e.get("line number");
             throw new IllegalArgumentException("Unmarshalling of solverConfigResource (" + solverConfigResource
-                    + ") fails.", e);
+                    + ") fails on line number (" + lineNumber + ")."
+                    + (Objects.equals(e.get("required-type"), "java.lang.Class")
+                    ? "\n  Maybe the classname on line number (" + lineNumber + ") is surrounded by whitespace, which is invalid."
+                    : ""), e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Reading the solverConfigResource (" + solverConfigResource + ") failed.", e);
         }
