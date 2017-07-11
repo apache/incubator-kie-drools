@@ -72,7 +72,6 @@ public class PatientVariablePersistenceStrategyTest extends JbpmTestCase {
         emfDomain = Persistence.createEntityManagerFactory("org.jbpm.persistence.patient.example");
         addEnvironmentEntry(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, 
         		new ObjectMarshallingStrategy[] {
-                new ProcessInstanceResolverStrategy(),
                 new JPAPlaceholderResolverStrategy(emfDomain),
                 new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT) });
         

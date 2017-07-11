@@ -556,14 +556,14 @@ public class VariablePersistenceStrategyTest extends AbstractBaseTest {
     public void testEntityWithSuperClassAnnotationField() throws Exception {
     	MySubEntity subEntity = new MySubEntity();
     	subEntity.setId(3L);
-    	assertEquals(3L, JPAPlaceholderResolverStrategy.getClassIdValue(subEntity));
+    	assertEquals(3L, (long) emf.getPersistenceUnitUtil().getIdentifier(subEntity));
     }
     
     @Test
     public void testEntityWithSuperClassAnnotationMethod() throws Exception {
     	MySubEntityMethods subEntity = new MySubEntityMethods();
     	subEntity.setId(3L);
-    	assertEquals(3L, JPAPlaceholderResolverStrategy.getClassIdValue(subEntity));
+    	assertEquals(3L, (long) emf.getPersistenceUnitUtil().getIdentifier(subEntity));
     }
     
     @Test
