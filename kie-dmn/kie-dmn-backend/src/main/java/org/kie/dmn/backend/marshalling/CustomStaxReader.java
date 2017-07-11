@@ -5,8 +5,11 @@ import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.thoughtworks.xstream.io.StreamException;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxReader;
 
@@ -24,6 +27,7 @@ public class CustomStaxReader extends StaxReader {
         // and make an explicit moveDown() call as part of THIS constructor.
         super(qnameMap, in);
         this.in = in;
+        moveDown(); //needed because this class overrides pullNextEvent, moveDown.
     }
     
     public Map<String, String> getNsContext() {
@@ -68,5 +72,34 @@ public class CustomStaxReader extends StaxReader {
     public String getAttribute(String namespaceURI, String name) {
         return this.in.getAttributeValue( namespaceURI, this.encodeAttribute(name) );
     }
-
+    
+    @Override
+    public void moveDown() {
+        if ( in == null ) {
+            return; // hack for this extension: defer the moveDown until this constructor is fully completed.
+        }
+        super.moveDown();
+    }
+    @Override
+    protected int pullNextEvent() {
+        try {
+            switch(in.next()) {
+                case XMLStreamConstants.START_DOCUMENT:
+                case XMLStreamConstants.START_ELEMENT:
+                    return START_NODE;
+                case XMLStreamConstants.END_DOCUMENT:
+                case XMLStreamConstants.END_ELEMENT:
+                    return END_NODE;
+                case XMLStreamConstants.CHARACTERS:
+                case XMLStreamConstants.CDATA:          // <<-- the StAX api when on IBM JDK reports event as CDATA explicitly.
+                    return TEXT;
+                case XMLStreamConstants.COMMENT:
+                    return COMMENT;
+                default:
+                    return OTHER;
+            }
+        } catch (XMLStreamException e) {
+            throw new StreamException(e);
+        }
+    }
 }
