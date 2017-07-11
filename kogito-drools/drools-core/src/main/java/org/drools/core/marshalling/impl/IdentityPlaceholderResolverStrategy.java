@@ -16,15 +16,16 @@
 
 package org.drools.core.marshalling.impl;
 
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
+
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;
+import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
 public class IdentityPlaceholderResolverStrategy
     implements
@@ -33,6 +34,7 @@ public class IdentityPlaceholderResolverStrategy
     private Map<Integer, Object> ids;
     private Map<Object, Integer> objects;
 
+    private String name = IdentityPlaceholderResolverStrategy.class.getName();
     private ObjectMarshallingStrategyAcceptor acceptor;
     
     public IdentityPlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor) {
@@ -41,9 +43,24 @@ public class IdentityPlaceholderResolverStrategy
         this.objects = new IdentityHashMap<Object, Integer>();
     }
 
+    public IdentityPlaceholderResolverStrategy(String name, ObjectMarshallingStrategyAcceptor acceptor) {
+    	this( acceptor );
+    	this.name = name;
+    }
+    
     public IdentityPlaceholderResolverStrategy(ObjectMarshallingStrategyAcceptor acceptor, Map<Integer, Object> ids) {
         this(acceptor);
         setIds(ids);
+    }
+    
+    public IdentityPlaceholderResolverStrategy(String name, ObjectMarshallingStrategyAcceptor acceptor, Map<Integer, Object> ids){
+    	this( acceptor, ids );
+    	this.name = name;
+    }
+    
+    @Override
+    public String getName(){
+    	return this.name;
     }
 
     public Object read(ObjectInputStream os) throws IOException,

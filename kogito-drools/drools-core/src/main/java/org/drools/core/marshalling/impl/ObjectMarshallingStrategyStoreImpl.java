@@ -16,15 +16,33 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.drools.core.util.StringUtils;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStrategyStore {
-    private ObjectMarshallingStrategy[] strategiesList;
+
+	private ObjectMarshallingStrategy[] strategiesList;
     
     public ObjectMarshallingStrategyStoreImpl(ObjectMarshallingStrategy[] strategiesList) {
         this.strategiesList = strategiesList;
+        Set<String> names = new HashSet<String>();
+        //Validate received set
+        for( ObjectMarshallingStrategy strategy : strategiesList ){
+        	String name = strategy.getName();
+        	
+        	if( names.contains( name ) ){
+        		throw new RuntimeException( "Multiple ObjectMarshallingStrategies with the same name found in environment:" + name );
+        	}else{
+        		names.add( name );
+        	}
+        }
+        names.clear();
     }
    
     // Old marshalling algorithm methods
@@ -51,20 +69,20 @@ public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStra
     /* (non-Javadoc)
      * @see org.kie.api.marshalling.impl.ObjectMarshallingStrategyStore#getStrategyObject(java.lang.String)
      */
-    public ObjectMarshallingStrategy getStrategyObject(String strategyClassName) {
-        if( StringUtils.isEmpty(strategyClassName) ) { 
+    public ObjectMarshallingStrategy getStrategyObject(String strategyName) {
+        if( StringUtils.isEmpty(strategyName) ) { 
             return null;
         }
-        if (strategyClassName.startsWith("org.drools.marshalling.impl")) {
-            strategyClassName = strategyClassName.replaceFirst("org.drools.marshalling.impl", "org.drools.core.marshalling.impl");
+        if (strategyName.startsWith("org.drools.marshalling.impl")) {
+            strategyName = strategyName.replaceFirst("org.drools.marshalling.impl", "org.drools.core.marshalling.impl");
         }
-        ObjectMarshallingStrategy objectMarshallingStrategy = null; 
+        
         for( int i = 0; i < this.strategiesList.length; ++i ) { 
-           if( strategiesList[i].getClass().getName().equals(strategyClassName) ) {
-               return strategiesList[i];
-           }
+        	 if( strategiesList[i].getName().equals(strategyName) ) {
+            		return strategiesList[i];
+            }
         }
-        return objectMarshallingStrategy;
+        throw new RuntimeException( "Unable to find PlaceholderResolverStrategy for name : " + strategyName );
     }
     
     /* (non-Javadoc)

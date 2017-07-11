@@ -25,13 +25,17 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
 import javax.persistence.Persistence;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 
 import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProcessMarshallerWriteContext;
 import org.drools.persistence.api.TransactionAware;
 import org.drools.persistence.api.TransactionManager;
@@ -45,28 +49,31 @@ import org.slf4j.LoggerFactory;
 public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy, TransactionAware, Cacheable {
     private static Logger log = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
     private EntityManagerFactory emf;
+    private Set<String> managedClasses;
     private ClassLoader classLoader;
 
     private boolean closeEmf = false;
-
+    private String name = JPAPlaceholderResolverStrategy.class.getName();
+    
     private static final ThreadLocal<EntityManager> persister = new ThreadLocal<EntityManager>();
     
     public JPAPlaceholderResolverStrategy(Environment env) {
-        this.emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+        this( (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY) );
     }
 
     public JPAPlaceholderResolverStrategy(EntityManagerFactory emf) {
         this.emf = emf;
+        initializeManagedClasses( );
     }
 
     public JPAPlaceholderResolverStrategy(String persistenceUnit, ClassLoader cl) {
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-
         try {
             // override tccl so persistence unit can be found from within given class loader - e.g. kjar
             Thread.currentThread().setContextClassLoader(cl);
 
             this.emf = Persistence.createEntityManagerFactory(persistenceUnit);
+            initializeManagedClasses();
             this.closeEmf = true;
 
         } finally {
@@ -75,6 +82,27 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         this.classLoader = cl;
     }
     
+    public JPAPlaceholderResolverStrategy(String name, String persistenceUnit, ClassLoader cl) {
+    	this( persistenceUnit, cl );
+    	this.name = name;
+    }
+    
+    public String getName(){
+    	return this.name;
+    }
+    
+    private void initializeManagedClasses(){
+    	managedClasses = new HashSet<String>();
+    	if( emf != null ){
+	    	Metamodel metamodel = emf.getMetamodel();
+	     	if( metamodel != null ){
+	     		Set<EntityType<?>> entities = metamodel.getEntities();
+	     		for( EntityType<?> entity : entities ){
+	     			managedClasses.add( entity.getJavaType().getCanonicalName() );
+	     		}
+	     	}  
+    	}
+    }
     public boolean accept(Object object) {
         return isEntity(object);
     }
@@ -155,76 +183,18 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         return null;
     }
     
-    public static Serializable getClassIdValue(Object o)  {
-        Class<? extends Object> varClass = o.getClass();
-        Serializable idValue = null;
-        try{
-            do {
-                Field[] fields = varClass.getDeclaredFields();
-                for (int i = 0; i < fields.length && idValue == null; i++) {
-                    Field field = fields[i];
-                    Id id = field.getAnnotation(Id.class);
-                    if (id != null) {
-                        try {
-                            idValue = callIdMethod(o, "get"
-                                    + Character.toUpperCase(field.getName().charAt(0))
-                                    + field.getName().substring(1));
-                        } catch (NoSuchMethodException e) {
-                            idValue = (Serializable) field.get(o);
-                        }
-                    }
-                }
-            } while ((varClass = varClass.getSuperclass()) != null && idValue == null);
-            if (idValue == null) {
-                varClass = o.getClass();
-                do {
-                    Method[] methods = varClass.getMethods();
-                    for (int i = 0; i < methods.length && idValue == null; i++) {
-                        Method method = methods[i];
-                        Id id = method.getAnnotation(Id.class);
-                        if (id != null) {
-                            idValue = (Serializable) method.invoke(o);
-                        }
-                    }
-                } while ((varClass = varClass.getSuperclass()) != null && idValue == null);
-            }
-        }
-        catch(Exception ex){
-            log.error(ex.getMessage());
-        }
-        return idValue;
-    }
-
-    private static Serializable callIdMethod(Object target, String methodName) throws IllegalArgumentException,
-            SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        return (Serializable) target.getClass().getMethod(methodName, (Class[]) null).invoke(target, new Object[]{});
+    public Serializable getClassIdValue(Object o)  {
+        return  (Serializable) emf.getPersistenceUnitUtil().getIdentifier( o );
     }
     
-    private static boolean isEntity(Object o){
+    /**
+     * Changed implementation, using EntityManager Metamodel in spite of Reflection. 
+     * @param o
+     * @return
+     */
+    private boolean isEntity(Object o){
         Class<? extends Object> varClass = o.getClass();
-        do {
-                Field[] fields = varClass.getDeclaredFields();
-                for (int i = 0; i < fields.length; i++) {
-                    Field field = fields[i];
-                    Id id = field.getAnnotation(Id.class);
-                    if (id != null) {
-                       return true;
-                    }
-                }
-        } while ((varClass = varClass.getSuperclass()) != null);
-        varClass = o.getClass();
-        do {
-                    Method[] methods = varClass.getMethods();
-                    for (int i = 0; i < methods.length; i++) {
-                        Method method = methods[i];
-                        Id id = method.getAnnotation(Id.class);
-                        if (id != null) {
-                            return true;
-                        }
-                    }
-        } while ((varClass = varClass.getSuperclass()) != null );
-        
-        return false;
+        return managedClasses.contains( varClass.getCanonicalName() );
     }
 
     @Override
