@@ -50,9 +50,9 @@ public class SignavioTest {
         final KieFileSystem kfs = ks.newKieFileSystem();
         
         KieModuleModel kmm = ks.newKieModuleModel();
-        kmm.setConfigurationProperty("org.kie.dmn.profile.signavio", "org.kie.dmn.signavio.KieDMNSignavioProfile");
+        kmm.setConfigurationProperty("org.kie.dmn.profiles.signavio", "org.kie.dmn.signavio.KieDMNSignavioProfile");
         kfs.writeKModuleXML(kmm.toXML());
-        kfs.write(ks.getResources().newClassPathResource("Prova multiple.dmn", this.getClass()));
+        kfs.write(ks.getResources().newClassPathResource("Test_Signavio_multiple.dmn", this.getClass()));
         
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
         Results results = kieBuilder.getResults();

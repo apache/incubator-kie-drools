@@ -48,7 +48,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ListIterator;
 
 
 public class DMNCompilerImpl
@@ -81,9 +81,10 @@ public class DMNCompilerImpl
         drgCompilers.push(compiler);
     }
     public void addDRGElementCompilers(List<DRGElementCompiler> compilers) {
-        List<DRGElementCompiler> pushingOrder = compilers.stream().collect(Collectors.toList());
-        Collections.reverse(pushingOrder);
-        pushingOrder.forEach( this::addDRGElementCompiler );
+        ListIterator<DRGElementCompiler> listIterator = compilers.listIterator( compilers.size() );
+        while ( listIterator.hasPrevious() ) {
+            addDRGElementCompiler( listIterator.previous() );
+        }
     }
 
     @Override

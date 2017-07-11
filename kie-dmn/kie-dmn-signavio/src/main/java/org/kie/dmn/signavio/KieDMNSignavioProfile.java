@@ -16,6 +16,7 @@
 
 package org.kie.dmn.signavio;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,13 +27,13 @@ import org.kie.dmn.core.compiler.DRGElementCompiler;
 
 public class KieDMNSignavioProfile implements DMNProfile {
     
-    protected final static List<DMNExtensionRegister> EXT_REGISTERS = Stream.of(
+    protected final static List<DMNExtensionRegister> EXT_REGISTERS = Arrays.asList(
             new MultiInstanceDecisionLogicRegister()
-    ).collect(Collectors.toList());
+    );
     
-    protected final static List<DRGElementCompiler> COMPILATION_EXT = Stream.of(
+    protected final static List<DRGElementCompiler> COMPILATION_EXT = Arrays.asList(
             new MultiInstanceDecisionLogic.MultiInstanceDecisionNodeCompiler()
-    ).collect(Collectors.toList());
+    );
 
     @Override
     public List<DMNExtensionRegister> getExtensionRegisters() {

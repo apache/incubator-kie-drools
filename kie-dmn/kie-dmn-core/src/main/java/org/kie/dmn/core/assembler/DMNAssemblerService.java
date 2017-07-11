@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
 public class DMNAssemblerService implements KieAssemblerService {
 
     private static final Logger logger = LoggerFactory.getLogger( DMNAssemblerService.class );
-    public static final String DMN_PROFILE_PREFIX = "org.kie.dmn.profile.";
+    public static final String DMN_PROFILE_PREFIX = "org.kie.dmn.profiles.";
     public static final String DMN_EXTENSION_REGISTER_PREFIX = "org.kie.dmn.marshaller.extension.";
     public static final String DMN_COMPILER_CACHE_KEY = "DMN_COMPILER_CACHE_KEY";
 
