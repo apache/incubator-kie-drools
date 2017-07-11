@@ -19,8 +19,8 @@ import java.util.BitSet;
 
 public interface LatticeElement<T> {
 
-    public T getValue();
+    T getValue();
 
-    public BitSet getBitMask();
+    BitSet getBitMask();
 
 }

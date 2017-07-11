@@ -265,8 +265,6 @@ public class TraitHelper implements Externalizable {
 
         checkStaticTypeCode( inner );
 
-        BitSet boundary = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
-
         Collection<Thing> mostSpecificTraits = getTraitBoundary( inner, needsProxy, hasTrait, trait );
 
         T thing = asTrait( core, inner, trait, needsProxy, hasTrait, needsUpdate, builder, logical, activation );
@@ -513,13 +511,10 @@ public class TraitHelper implements Externalizable {
     }
 
     public FactHandle lookupFactHandle(Object object) {
-        FactHandle handle = null;
-
-        if ( handle != null ) {
-            return handle;
+        FactHandle handle = getFactHandleFromWM( object );
+        if ( handle == null && object instanceof CoreWrapper ) {
+        	handle = getFactHandleFromWM( ((CoreWrapper) object).getCore() );
         }
-
-        handle = getFactHandleFromWM( object );
         return handle;
     }
 

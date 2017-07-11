@@ -21,13 +21,13 @@ import java.util.BitSet;
 
 public interface TraitType {
 
-    public BitSet _getTypeCode();
+    BitSet _getTypeCode();
 
-    public boolean _isVirtual();
+    boolean _isVirtual();
 
-    public static final String traitNameField = "__$$trait_Name";
+    String traitNameField = "__$$trait_Name";
 
-    public String _getTraitName();
+    String _getTraitName();
 
-    public boolean _hasTypeCode( BitSet typeCode );
+    boolean _hasTypeCode( BitSet typeCode );
 }

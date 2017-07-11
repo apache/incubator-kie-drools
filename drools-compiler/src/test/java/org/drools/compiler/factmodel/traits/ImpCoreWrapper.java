@@ -17,14 +17,12 @@
 package org.drools.compiler.factmodel.traits;
 
 import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,51 +51,8 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
         return __$$dynamic_traits_map$$;
     }
 
-    public void addTrait(String type, Thing<Imp> proxy) throws LogicalTypeInconsistencyException {
-        _getTraitMap().put( type, proxy );
-    }
-
-    public BitSet getCurrentTypeCode() {
-        return ((TraitTypeMap) __$$dynamic_traits_map$$).getCurrentTypeCode();
-    }
-
-
-
-
     public void _setTraitMap(Map map) {
         this.__$$dynamic_traits_map$$ = map;
-    }
-
-    public Thing<Imp> getTrait(String type) {
-        return _getTraitMap().get( type );
-    }
-
-    public boolean hasTrait(String type) {
-        return _getTraitMap().containsKey( type );
-    }
-
-    public boolean hasTraits() {
-        return __$$dynamic_traits_map$$ != null && ! __$$dynamic_traits_map$$.isEmpty();
-    }
-
-    public Collection<Thing<Imp>> removeTrait(String type) {
-        return ((TraitTypeMap)_getTraitMap()).removeCascade( type );
-    }
-
-    public Collection<Thing<Imp>> removeTrait( BitSet typeCode ) {
-        return ((TraitTypeMap)_getTraitMap()).removeCascade( typeCode );
-    }
-
-    public Collection<String> getTraits() {
-        return _getTraitMap().keySet();
-    }
-
-    public Collection<Thing> getMostSpecificTraits() {
-        return ((TraitTypeMap) _getTraitMap()).getMostSpecificTraits();
-    }
-
-    public void _setBottomTypeCode(BitSet code) {
-        ((TraitTypeMap) __$$dynamic_traits_map$$).setBottomCode( code );
     }
 
     public TraitFieldTMS _getFieldTMS() {
