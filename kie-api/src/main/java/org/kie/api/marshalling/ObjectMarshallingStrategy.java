@@ -22,6 +22,14 @@ import java.io.ObjectOutputStream;
 
 public interface ObjectMarshallingStrategy {
 
+    /**
+     * Override this method if you want multiple marshalling strategies of the same implementation in environment
+     * @return the unique name in runtime environment of the ObjectMarshallingStrategy
+     */
+    default public String getName( ) {
+        return getClass().getName();
+    }
+    
     public boolean accept(Object object);
 
     public void write(ObjectOutputStream os,
