@@ -26,7 +26,6 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManager;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 

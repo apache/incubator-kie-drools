@@ -311,6 +311,7 @@
               org.jbpm.process.audit.event,
               org.jbpm.process.core.timer,
               org.jbpm.process.core.timer.impl,
+              org.jbpm.process.instance,
               org.jbpm.process.instance.event,
               org.jbpm.process.instance.event.listeners,
               org.jbpm.process.instance.impl,
