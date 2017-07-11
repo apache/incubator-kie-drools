@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import java.util.List;
+
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalAgenda;
@@ -64,8 +66,6 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class RuleNetworkEvaluator {
 
@@ -644,76 +644,86 @@ public class RuleNetworkEvaluator {
         }
 
         length--; // subtract one, as first is not in the array;
-        for (LeftTuple leftTuple = srcTuples.getInsertFirst(); leftTuple != null; ) {
-            LeftTuple next = leftTuple.getStagedNext();
+        for (SubnetworkTuple subnetworkTuple = (SubnetworkTuple) srcTuples.getInsertFirst(); subnetworkTuple != null; ) {
+            SubnetworkTuple next = (SubnetworkTuple) subnetworkTuple.getStagedNext();
 
             if ( bm.getStagedRightTuples().isEmpty() ) {
                 bm.setNodeDirtyWithoutNotify();
             }
-            leftTuple.clearStaged();
-            rightTuples.addInsert( (RightTuple) leftTuple );
-            ( (SubnetworkTuple) leftTuple ).setStagedOnRight( true );
+
+            subnetworkTuple.prepareStagingOnRight();
+            rightTuples.addInsert( subnetworkTuple );
 
             if (bns != null) {
                 for (int i = 0; i < length; i++) {
                     if ( bms[i].getStagedRightTuples().isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    leftTuple = riaNode.createPeer( leftTuple );
-                    bms[i].getStagedRightTuples().addInsert((RightTuple)leftTuple);
+                    subnetworkTuple = riaNode.createPeer( subnetworkTuple );
+                    bms[i].getStagedRightTuples().addInsert(subnetworkTuple);
                 }
             }
 
-            leftTuple = next;
+            subnetworkTuple = next;
         }
 
-        for (LeftTuple leftTuple = srcTuples.getDeleteFirst(); leftTuple != null; ) {
-            LeftTuple next = leftTuple.getStagedNext();
+        for (SubnetworkTuple subnetworkTuple = (SubnetworkTuple) srcTuples.getDeleteFirst(); subnetworkTuple != null; ) {
+            SubnetworkTuple next = (SubnetworkTuple) subnetworkTuple.getStagedNext();
 
             if ( rightTuples.isEmpty() ) {
                 bm.setNodeDirtyWithoutNotify();
             }
-            leftTuple.clearStaged();
-            rightTuples.addDelete((RightTuple)leftTuple);
-            ( (SubnetworkTuple) leftTuple ).setStagedOnRight( true );
+
+            switch ( subnetworkTuple.getStagedTypeOnRight() ) {
+                // handle clash with already staged entries
+                case Tuple.INSERT:
+                    rightTuples.removeInsert( subnetworkTuple );
+                    break;
+                case Tuple.UPDATE:
+                    rightTuples.removeUpdate( subnetworkTuple );
+                    break;
+            }
+
+            subnetworkTuple.prepareStagingOnRight();
+            rightTuples.addDelete(subnetworkTuple);
 
             if (bns != null) {
                 for (int i = 0; i < length; i++) {
-                    leftTuple = leftTuple.getPeer();
+                    subnetworkTuple = (SubnetworkTuple) subnetworkTuple.getPeer();
                     if ( bms[i].getStagedRightTuples().isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    bms[i].getStagedRightTuples().addDelete((RightTuple)leftTuple);
-                    ( (SubnetworkTuple) leftTuple ).setStagedOnRight( true );
+                    bms[i].getStagedRightTuples().addDelete(subnetworkTuple);
+                    subnetworkTuple.setStagedOnRight();
                 }
             }
 
-            leftTuple = next;
+            subnetworkTuple = next;
         }
 
-        for (LeftTuple leftTuple = srcTuples.getUpdateFirst(); leftTuple != null; ) {
-            LeftTuple next = leftTuple.getStagedNext();
+        for (SubnetworkTuple subnetworkTuple = (SubnetworkTuple) srcTuples.getUpdateFirst(); subnetworkTuple != null; ) {
+            SubnetworkTuple next = (SubnetworkTuple) subnetworkTuple.getStagedNext();
 
             if ( rightTuples.isEmpty() ) {
                 bm.setNodeDirtyWithoutNotify();
             }
-            leftTuple.clearStaged();
-            rightTuples.addUpdate((RightTuple)leftTuple);
-            ( (SubnetworkTuple) leftTuple ).setStagedOnRight( true );
+
+            subnetworkTuple.prepareStagingOnRight();
+            rightTuples.addUpdate(subnetworkTuple);
 
             if (bns != null) {
                 for (int i = 0; i < length; i++) {
-                    leftTuple = leftTuple.getPeer();
+                    subnetworkTuple = (SubnetworkTuple) subnetworkTuple.getPeer();
 
                     if ( bms[i].getStagedRightTuples().isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    bms[i].getStagedRightTuples().addUpdate((RightTuple)leftTuple);
-                    ( (SubnetworkTuple) leftTuple ).setStagedOnRight( true );
+                    bms[i].getStagedRightTuples().addUpdate(subnetworkTuple);
+                    subnetworkTuple.setStagedOnRight();
                 }
             }
 
-            leftTuple = next;
+            subnetworkTuple = next;
         }
 
         srcTuples.resetAll();
@@ -755,19 +765,21 @@ public class RuleNetworkEvaluator {
     }
 
     public static void deleteChildLeftTuple( LeftTuple childLeftTuple, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples ) {
-        if (!childLeftTuple.isStagedOnRight()) {
+        if (childLeftTuple.isStagedOnRight()) {
+            ( (SubnetworkTuple) childLeftTuple ).moveStagingFromRightToLeft();
+        } else {
             switch ( childLeftTuple.getStagedType() ) {
                 // handle clash with already staged entries
-                case LeftTuple.INSERT:
+                case Tuple.INSERT:
                     stagedLeftTuples.removeInsert( childLeftTuple );
                     trgLeftTuples.addNormalizedDelete( childLeftTuple );
                     return;
-                case LeftTuple.UPDATE:
+                case Tuple.UPDATE:
                     stagedLeftTuples.removeUpdate( childLeftTuple );
                     break;
             }
-            trgLeftTuples.addDelete(childLeftTuple);
         }
+        trgLeftTuples.addDelete( childLeftTuple );
     }
 
     public static void doUpdatesReorderLeftMemory(BetaMemory bm,
