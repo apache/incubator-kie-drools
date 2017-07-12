@@ -1250,10 +1250,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
                     for( org.kie.api.definition.rule.Rule rule : pkg.getRules() ) {
                         if (filterAcceptsRemoval( ResourceChange.Type.RULE, rule.getPackageName(), rule.getName() ) ) {
-                            rulesToBeRemoved.add(pkg.getRule(rule.getName()));
-                            pkg.removeRule(((RuleImpl)rule));
+                            rulesToBeRemoved.add(((RuleImpl)rule));
                         }
                     }
+
+                    rulesToBeRemoved.forEach( pkg::removeRule );
 
                     for (RuleDescr ruleDescr : packageDescr.getRules()) {
                         if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
