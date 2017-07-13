@@ -15,11 +15,16 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -87,6 +92,7 @@ import org.kie.api.event.rule.AgendaGroupPoppedEvent;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -101,7 +107,6 @@ import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
@@ -6740,4 +6745,146 @@ public class CepEspTest extends CommonTestMethodBase {
     @Role(Role.Type.EVENT)
     @Expires("1s")
     public class EventWithoutRule { }
+
+    public static class EventA implements Serializable {
+        private String time;
+        private int value;
+        private Date timestamp;
+
+        public EventA(String time, int value) {
+            this.time = time;
+            this.value = value;
+            this.timestamp = parseDate(time);
+        }
+
+        public Date getTimestamp() {
+            return timestamp;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return "EventA at " + time;
+        }
+
+        private static final DateFormat dateFormatter = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+        private static Date parseDate(String input) {
+            Date d = null;
+            try {
+                d = dateFormatter.parse(input);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return d;
+        }
+    }
+
+    @Test
+    public void testDeleteOfDeserializedJob() throws Exception {
+        // DROOLS-1660
+        String drl =
+                "import " + EventA.class.getCanonicalName() + "\n" +
+                "import java.util.Date\n" +
+                "global java.util.List list\n" +
+                "declare EventA\n" +
+                "	@role(event)\n" +
+                "	@timestamp(timestamp)\n" +
+                "end\n" +
+                "rule test\n" +
+                " when\n" +
+                "  	$event : EventA(value == 1)\n" +
+                "   not(EventA(value == 1, this after [1ms,4m] $event))\n" +
+                " then\n" +
+                "   list.add(\"Fired \"+ $event);\n" +
+                "end\n";
+
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(EventProcessingOption.STREAM);
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption(ClockTypeOption.get("pseudo"));
+
+        KieSession ksession = kieBase.newKieSession(sessionConfig, null);
+
+        List<String> list = new ArrayList<>();
+
+        List<EventA> events = new ArrayList<>();
+        events.add(new EventA("2010-01-01 02:00:00", 0));
+        events.add(new EventA("2010-01-01 03:00:00", 1));
+        events.add(new EventA("2010-01-01 03:01:00", 0));
+        events.add(new EventA("2010-01-01 03:02:00", 1));
+        events.add(new EventA("2010-01-01 03:03:00", 0));
+        events.add(new EventA("2010-01-01 03:04:00", 0));
+        events.add(new EventA("2010-01-01 03:05:00", 0));
+        events.add(new EventA("2010-01-01 03:06:00", 0));
+        events.add(new EventA("2010-01-01 03:07:00", 0));
+
+        // set clock reference
+        SessionPseudoClock clock = ksession.getSessionClock();
+        clock.advanceTime(events.get(0).getTimestamp().getTime(), TimeUnit.MILLISECONDS);
+
+        byte[] serializedSession = null;
+
+        try {
+            Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(kieBase);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            marshaller.marshall(baos, ksession);
+
+            serializedSession = baos.toByteArray();
+        } catch (IOException e2) {
+            e2.printStackTrace();
+        }
+
+        for (EventA current : events) {
+
+            KieSession ksession2 = null;
+
+            Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller( kieBase );
+
+            try {
+                ByteArrayInputStream bais = new ByteArrayInputStream(serializedSession);
+                ksession2 = marshaller.unmarshall(bais, sessionConfig, null);
+                ksession2.setGlobal( "list", list );
+                clock = ksession2.getSessionClock();
+                bais.close();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            long currTime = clock.getCurrentTime();
+            long nextTime = current.getTimestamp().getTime();
+
+            while (currTime <= (nextTime - 1000)) {
+                clock.advanceTime(1000, TimeUnit.MILLISECONDS);
+                ksession2.fireAllRules();
+                currTime += 1000;
+            }
+
+            long diff = nextTime - currTime;
+            if (diff > 0) {
+                clock.advanceTime(diff, TimeUnit.MILLISECONDS);
+            }
+
+            ksession2.insert(current);
+            ksession2.fireAllRules();
+
+            // serialize knowledge session
+            try {
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                marshaller.marshall(baos, ksession2);
+                serializedSession = baos.toByteArray();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+            ksession2.dispose();
+        }
+
+        assertEquals( 1, list.size() );
+        assertEquals( "Fired EventA at 2010-01-01 03:02:00", list.get(0) );
+    }
 }
