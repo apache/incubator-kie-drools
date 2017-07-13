@@ -31,9 +31,6 @@ import org.drools.games.wumpus.view.GameUI
 import javax.swing.JOptionPane
 
 import java.util.ArrayList
-import org.kie.internal.logger.KnowledgeRuntimeLogger
-import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory
-import org.kie.internal.runtime.StatefulKnowledgeSession
 
 global org.drools.games.wumpus.WumpusWorldConfiguration wumpusWorldConfiguration;
 
