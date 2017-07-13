@@ -133,6 +133,7 @@ public interface InternalKnowledgeBase extends KieBase {
 	void setResolvedReleaseId(ReleaseId currentReleaseId);
 	String getContainerId();
 	void setContainerId(String containerId);
+    void setKieContainer( InternalKieContainer kieContainer );
 	void initMBeans();
 
     RuleUnitRegistry getRuleUnitRegistry();
