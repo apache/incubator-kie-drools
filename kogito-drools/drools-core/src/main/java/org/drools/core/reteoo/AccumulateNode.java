@@ -41,6 +41,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
@@ -116,6 +117,13 @@ public class AccumulateNode extends BetaNode {
             }
         }
         setLeftInferredMask( leftMask );
+    }
+
+    @Override
+    protected ObjectType getObjectTypeForPropertyReactivity( LeftInputAdapterNode leftInput, Pattern pattern ) {
+        return pattern != null && isRightInputIsRiaNode() ?
+               pattern.getObjectType() :
+               leftInput.getParentObjectSource().getObjectTypeNode().getObjectType();
     }
 
     public void readExternal( ObjectInput in ) throws IOException,

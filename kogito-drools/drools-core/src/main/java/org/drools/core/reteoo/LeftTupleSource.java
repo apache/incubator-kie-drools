@@ -239,9 +239,7 @@ public abstract class LeftTupleSource extends BaseNode
 
         Pattern pattern = context.getLastBuiltPatterns()[1]; // left input pattern
 
-        ObjectType objectType = pattern == null || this.getType() == NodeTypeEnums.AccumulateNode ?
-            ((LeftInputAdapterNode)leftInput).getParentObjectSource().getObjectTypeNode().getObjectType() :
-            pattern.getObjectType();
+        ObjectType objectType = getObjectTypeForPropertyReactivity( (LeftInputAdapterNode) leftInput, pattern );
 
         if ( !(objectType instanceof ClassObjectType) ) {
             // Only ClassObjectType can use property specific
@@ -261,6 +259,12 @@ public abstract class LeftTupleSource extends BaseNode
             // if property specific is not on, then accept all modification propagations
             leftDeclaredMask = AllSetBitMask.get();
         }
+    }
+
+    protected ObjectType getObjectTypeForPropertyReactivity( LeftInputAdapterNode leftInput, Pattern pattern ) {
+        return pattern != null ?
+               pattern.getObjectType() :
+               leftInput.getParentObjectSource().getObjectTypeNode().getObjectType();
     }
 
     protected void setLeftListenedProperties(Collection<String> leftListenedProperties) { }

@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -36,7 +37,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
 public class PropertyReactivityTest extends CommonTestMethodBase {
@@ -1739,5 +1740,30 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         // checks that the session removed itself from the bean listeners list
         assertEquals(0, state.getPropertyChangeListeners().length);
+    }
+
+    @Test
+    public void testAccumulateWithPR() {
+
+        String drl = "declare A end\n" +
+                     " " +
+                     "declare B\n" +
+                     " value : String\n" +
+                     "end\n" +
+                     " " +
+                     "rule Foo when\n" +
+                     "    $s : A()\n" +
+                     "    accumulate( String()\n" +
+                     "                and\n" +
+                     "                B( $val : value ),\n" +
+                     "                $set : collectSet( $val )\n" +
+                     "              )\n" +
+                     "then end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        kbuilder.newKieBase().newKieSession();
+
+        assertTrue( kbuilder.getErrors().isEmpty() );
     }
 }
