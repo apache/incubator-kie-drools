@@ -283,26 +283,47 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
         Long processInstanceId = startProcessInstance(PROCESS_ID);
 
         UserTransaction ut = InitialContext.doLookup(USER_TRANSACTION_NAME);
-        ut.begin();
 
         List<TaskSummary> taskSummaries = null;
+        ut.begin();
         try {
             processService.signalProcessInstance(processInstanceId, "start", "usertask");
+        } catch (Exception e) {
+            ut.rollback();
+            throw e;
+        }
+        ut.rollback();
 
+        taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
+        Assertions.assertThat(taskSummaries).isNotNull().hasSize(0);
+        Assertions.assertThat(hasNodeLeft(processInstanceId, "User Task")).isFalse();
+
+        ut.begin();
+        try {
+            processService.signalProcessInstance(processInstanceId, "start", "usertask");
+        } catch (Exception e) {
+            ut.rollback();
+            throw e;
+        }
+        ut.commit();
+
+        ut.begin();
+        try {
             taskSummaries = startAndCompleteHumanTask(processInstanceId);
         } catch (Exception e) {
             ut.rollback();
             throw e;
         }
         ut.rollback();
-        Assertions.assertThat(runtimeDataService.getTaskById(taskSummaries.get(0).getId())).isNull();
 
-        ut = InitialContext.doLookup(USER_TRANSACTION_NAME);
+        Assertions.assertThat(runtimeDataService.getTaskById(taskSummaries.get(0).getId())).isNotNull();
+        taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
+        Assertions.assertThat(taskSummaries).isNotNull().hasSize(1);
+        Assertions.assertThat(taskSummaries.get(0).getStatus()).isEqualTo(org.kie.api.task.model.Status.Reserved);
+        Assertions.assertThat(hasNodeLeft(processInstanceId, "User Task")).isFalse();
+
         ut.begin();
-
         try {
-            processService.signalProcessInstance(processInstanceId, "start", "usertask");
-
             taskSummaries = startAndCompleteHumanTask(processInstanceId);
         } catch (Exception e) {
             ut.rollback();
@@ -392,9 +413,11 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
     private List<TaskSummary> startAndCompleteHumanTask(Long processInstanceId) {
         List<TaskSummary> taskSummaries = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
         Assertions.assertThat(taskSummaries).isNotNull().hasSize(1);
-        userTaskService.start(taskSummaries.get(0).getId(), "john");
-        userTaskService.complete(taskSummaries.get(0).getId(), "john", new HashMap<String, Object>());
+        long taskId = taskSummaries.get(0).getId();
+        userTaskService.start(taskId, "john");
+        userTaskService.complete(taskId, "john", new HashMap<String, Object>());
         Assertions.assertThat(hasNodeLeft(processInstanceId, "User Task")).isTrue();
+        Assertions.assertThat(hasTaskCompleted(taskId));
 
         return taskSummaries;
     }
