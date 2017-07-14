@@ -186,16 +186,33 @@ public class BRLRuleModel extends RuleModel {
 
     @Override
     public List<String> getAllLHSVariables() {
-        final Set<String> variables = new HashSet<String>();
+        return getLHSVariables(true,
+                               true);
+    }
+
+    @Override
+    public List<String> getLHSPatternVariables() {
+        return getLHSVariables(true,
+                               false);
+    }
+
+    @Override
+    public List<String> getLHSVariables(final boolean includePatterns,
+                                        final boolean includeFields) {
+        final Set<String> variables = new HashSet<>();
         for (CompositeColumn<? extends BaseColumn> col : dtable.getConditions()) {
             if (col instanceof Pattern52) {
                 final Pattern52 p = (Pattern52) col;
                 if (p.isBound()) {
-                    variables.add(p.getBoundName());
+                    if (includePatterns) {
+                        variables.add(p.getBoundName());
+                    }
                 }
                 for (ConditionCol52 cc : p.getChildColumns()) {
                     if (cc.isBound()) {
-                        variables.add(cc.getBinding());
+                        if (includeFields) {
+                            variables.add(cc.getBinding());
+                        }
                     }
                 }
             } else if (col instanceof BRLConditionColumn) {
@@ -203,11 +220,13 @@ public class BRLRuleModel extends RuleModel {
                 final RuleModel rm = new RuleModel();
                 final BRLConditionColumn brl = (BRLConditionColumn) col;
                 rm.lhs = brl.getDefinition().toArray(new IPattern[brl.getDefinition().size()]);
-                variables.addAll(rm.getAllLHSVariables());
+                variables.addAll(rm.getLHSVariables(includePatterns,
+                                                    includeFields));
             }
         }
-        variables.addAll(super.getAllLHSVariables());
-        return new ArrayList<String>(variables);
+        variables.addAll(super.getLHSVariables(includePatterns,
+                                               includeFields));
+        return new ArrayList<>(variables);
     }
 
     @Override
