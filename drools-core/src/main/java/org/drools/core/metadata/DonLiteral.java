@@ -15,15 +15,13 @@
 
 package org.drools.core.metadata;
 
+import java.net.URI;
+
 import org.drools.core.factmodel.traits.AbstractTraitFactory;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.StandaloneTraitFactory;
-
-import java.net.URI;
 
 public abstract class DonLiteral<K, T extends Metadatable> extends AbstractWMTask<T> implements Don<K,T> {
     protected K core;

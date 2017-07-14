@@ -91,7 +91,7 @@ public class CrossProductTest {
             }
         } );
 
-        this.pkg = new KnowledgePackageImpl( "org.drools" );
+        this.pkg = new KnowledgePackageImpl("org.drools");
         this.pkg.addRule( rule );
     }
 
