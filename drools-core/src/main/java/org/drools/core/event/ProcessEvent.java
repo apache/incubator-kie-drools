@@ -16,7 +16,7 @@
 
 package org.drools.core.event;
 
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.api.internal.runtime.KnowledgeRuntime;
 import org.kie.api.runtime.process.ProcessInstance;
 
 import java.util.EventObject;

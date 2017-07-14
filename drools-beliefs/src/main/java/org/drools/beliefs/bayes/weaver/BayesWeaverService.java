@@ -20,8 +20,8 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.io.ResourceTypePackage;
-import org.kie.internal.weaver.KieWeaverService;
+import org.kie.api.internal.io.ResourceTypePackage;
+import org.kie.api.internal.weaver.KieWeaverService;
 
 import java.util.Map;
 

@@ -18,7 +18,7 @@ package org.drools.beliefs;
 import org.drools.beliefs.bayes.BayesBeliefSystem;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.kie.internal.runtime.beliefs.KieBeliefService;
+import org.kie.api.internal.runtime.beliefs.KieBeliefService;
 
 public class BayesBeliefService implements KieBeliefService {
     private int index;

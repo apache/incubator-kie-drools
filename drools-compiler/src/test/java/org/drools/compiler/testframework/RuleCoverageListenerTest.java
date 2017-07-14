@@ -32,9 +32,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListNode;
 import org.junit.Test;
-import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.HashSet;
 import java.util.List;

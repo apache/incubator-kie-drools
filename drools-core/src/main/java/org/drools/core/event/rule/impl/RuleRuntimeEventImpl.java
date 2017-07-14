@@ -19,7 +19,7 @@ package org.drools.core.event.rule.impl;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.RuleRuntimeEvent;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.api.internal.runtime.KnowledgeRuntime;
 
 import java.io.Externalizable;
 import java.io.IOException;

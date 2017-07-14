@@ -21,7 +21,7 @@ import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.api.internal.runtime.KnowledgeRuntime;
 
 import java.util.Arrays;
 import java.util.Comparator;

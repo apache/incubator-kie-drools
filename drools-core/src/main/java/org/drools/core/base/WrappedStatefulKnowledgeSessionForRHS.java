@@ -74,8 +74,8 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.beliefs.Mode;
+import org.kie.api.internal.runtime.KnowledgeRuntime;
+import org.kie.api.internal.runtime.beliefs.Mode;
 
 /**
  * Wrapper of StatefulKnowledgeSessionImpl so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.

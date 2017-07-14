@@ -15,40 +15,14 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.internal.utils.ServiceRegistryImpl;
-
-import java.io.IOException;
-import java.io.InputStream;
+import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.ServiceRegistryImpl;
 
 public class GuidedDecisionTableFactory {
-
-    private static final String PROVIDER_CLASS = "org.drools.workbench.models.guided.dtable.backend.GuidedDecisionTableProviderImpl";
-
-    private static GuidedDecisionTableProvider provider;
-
-    public static synchronized void setGuidedDecisionTableProvider(GuidedDecisionTableProvider provider) {
-        GuidedDecisionTableFactory.provider = provider;
-    }
+    private static GuidedDecisionTableProvider provider = ServiceRegistry.getInstance().get(GuidedDecisionTableProvider.class);
 
     public static synchronized GuidedDecisionTableProvider getGuidedDecisionTableProvider() {
-        if (provider == null) {
-            loadProvider();
-        }
         return provider;
-    }
-
-    private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault(GuidedDecisionTableProvider.class, PROVIDER_CLASS);
-        setGuidedDecisionTableProvider(ServiceRegistryImpl.getInstance().get(GuidedDecisionTableProvider.class));
-    }
-
-    public static synchronized void loadProvider(ClassLoader cl) {
-        if (provider == null) {
-            try {
-                provider = (GuidedDecisionTableProvider) Class.forName(PROVIDER_CLASS, true, cl).newInstance();
-            } catch (Exception e) {
-            }
-        }
     }
 
 }

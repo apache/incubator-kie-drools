@@ -37,6 +37,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.command.KieCommands;
 import org.kie.api.concurrent.KieExecutors;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.KieResources;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.marshalling.KieMarshallers;
@@ -44,7 +45,6 @@ import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.utils.ServiceRegistryImpl;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -219,7 +219,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieScanner newKieScanner(KieContainer kieContainer) {
-        KieScannerFactoryService scannerFactoryService = ServiceRegistryImpl.getInstance().get( KieScannerFactoryService.class );
+        KieScannerFactoryService scannerFactoryService = ServiceRegistry.getInstance().get(KieScannerFactoryService.class);
         InternalKieScanner scanner = (InternalKieScanner)scannerFactoryService.newKieScanner();
         scanner.setKieContainer(kieContainer);
         return scanner;
@@ -251,7 +251,7 @@ public class KieServicesImpl implements InternalKieServices {
     }
     
     public KieStoreServices getStoreServices() {
-        return ServiceRegistryImpl.getInstance().get( KieStoreServices.class );
+        return ServiceRegistry.getInstance().get( KieStoreServices.class );
     }
 
     public ReleaseId newReleaseId(String groupId, String artifactId, String version) {

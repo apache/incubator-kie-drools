@@ -17,7 +17,7 @@ package org.drools.core.common;
 
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.time.TimerService;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.api.internal.runtime.KnowledgeRuntime;
 
 public interface InternalKnowledgeRuntime extends KnowledgeRuntime {
 

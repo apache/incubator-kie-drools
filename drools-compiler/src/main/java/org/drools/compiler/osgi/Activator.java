@@ -28,16 +28,16 @@ import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScannerFactoryService;
-import org.kie.internal.assembler.KieAssemblerService;
-import org.kie.internal.assembler.KieAssemblers;
+import org.kie.api.internal.assembler.KieAssemblerService;
+import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.internal.builder.KnowledgeBuilderFactoryService;
-import org.kie.internal.runtime.KieRuntimeService;
-import org.kie.internal.runtime.KieRuntimes;
+import org.kie.api.internal.runtime.KieRuntimeService;
+import org.kie.api.internal.runtime.KieRuntimes;
 import org.kie.internal.utils.ClassLoaderResolver;
-import org.kie.internal.utils.ServiceRegistry;
-import org.kie.internal.utils.ServiceRegistryImpl;
-import org.kie.internal.weaver.KieWeaverService;
-import org.kie.internal.weaver.KieWeavers;
+import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.ServiceRegistryImpl;
+import org.kie.api.internal.weaver.KieWeaverService;
+import org.kie.api.internal.weaver.KieWeavers;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -166,7 +166,7 @@ public class Activator
         public Object addingService(ServiceReference ref) {
             T service = (T) this.bc.getService( ref );
             logger.info( "registering : " + service + " : " + service.getClass().getInterfaces()[0] );
-            register.accept( ServiceRegistryImpl.getInstance(), service );
+            register.accept( ServiceRegistry.getInstance(), service );
             return service;
         }
 
@@ -206,9 +206,9 @@ public class Activator
                      "true" );
             activator.kbuilderReg.setProperties( dic );
 
-            ServiceRegistryImpl.getInstance().registerLocator( serviceClass != null ? serviceClass : service.getClass().getInterfaces()[0],
-                                                               new BundleContextInstantiator( this.bc,
-                                                                                              ref ) );
+//            ServiceRegistry.getInstance().registerLocator( serviceClass != null ? serviceClass : service.getClass().getInterfaces()[0],
+//                                                               new BundleContextInstantiator( this.bc,
+//                                                                                              ref ) );
             return service;
         }
 
@@ -219,9 +219,9 @@ public class Activator
 
         public void removedService(ServiceReference ref,
                                    Object arg1) {
-            Service service = (Service) bc.getService( ref );
-            ServiceRegistryImpl.getInstance().unregisterLocator( service.getClass().getInterfaces()[0] );
-            logger.info( "unregistering compiler : " + service + " : " + service.getClass().getInterfaces()[0] );
+//            Service service = (Service) bc.getService( ref );
+//            ServiceRegistry.getInstance().unregisterLocator( service.getClass().getInterfaces()[0] );
+//            logger.info( "unregistering compiler : " + service + " : " + service.getClass().getInterfaces()[0] );
         }
     }
 
