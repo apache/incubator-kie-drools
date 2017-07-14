@@ -16,10 +16,9 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.time.Job;
-
 import java.io.Serializable;
-import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.drools.core.time.Job;
 
 /**
  * A default implementation for the JobHandle interface
@@ -28,7 +27,7 @@ public class DefaultJobHandle extends AbstractJobHandle implements Serializable 
 
     private static final long serialVersionUID = 510l;
 
-    private AtomicBoolean     cancel           = new AtomicBoolean( false );
+    private volatile boolean cancel = false;
 
     private long              id;
 
@@ -43,11 +42,11 @@ public class DefaultJobHandle extends AbstractJobHandle implements Serializable 
     }
 
     public void setCancel(boolean cancel) {
-        this.cancel.set( cancel );
+        this.cancel = cancel;
     }
 
     public boolean isCancel() {
-        return cancel.get();
+        return cancel;
     }
 
     protected Job getJob() {
