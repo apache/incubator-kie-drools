@@ -17,7 +17,10 @@ package org.jbpm.services.ejb.timer;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Resource;
 import javax.ejb.ConcurrencyManagement;
@@ -46,6 +49,8 @@ public class EJBTimerScheduler {
 	private static final Logger logger = LoggerFactory.getLogger(EJBTimerScheduler.class);
 
 	private static final Integer OVERDUE_WAIT_TIME = Integer.parseInt(System.getProperty("org.jbpm.overdue.timer.wait", "20000"));
+	
+	private ConcurrentMap<String, TimerJobInstance> localCache = new ConcurrentHashMap<String, TimerJobInstance>();
 	
 	@Resource
 	private javax.ejb.TimerService timerService;
@@ -79,6 +84,7 @@ public class EJBTimerScheduler {
 			((Callable<Void>) timerJobInstance).call();
 		} catch (Exception e) {
 			logger.warn("Execution of time failed due to {}", e.getMessage(), e);
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -89,6 +95,7 @@ public class EJBTimerScheduler {
 		if (expirationTime != null) {
 			timerService.createSingleActionTimer(expirationTime, config);
 			logger.debug("Timer scheduled {} on {} scheduler service", timerJobInstance);
+			localCache.putIfAbsent(((EjbGlobalJobHandle) timerJobInstance.getJobHandle()).getUuid(), timerJobInstance);
 		} else {
 			logger.info("Timer that was to be scheduled has already expired");
 		}
@@ -106,6 +113,7 @@ public class EJBTimerScheduler {
     				EjbGlobalJobHandle handle = (EjbGlobalJobHandle) job.getTimerJobInstance().getJobHandle();
     				if (handle.getUuid().equals(ejbHandle.getUuid())) {
     					logger.debug("Job handle {} does match timer and is going to be canceled", jobHandle);
+    					localCache.remove(handle.getUuid());
     					try {
     					    timer.cancel();
     					} catch (Throwable e) {
@@ -124,6 +132,13 @@ public class EJBTimerScheduler {
 	}
 	
 	public TimerJobInstance getTimerByName(String jobName) {
+	    
+	    if (localCache.containsKey(jobName)) {
+	        logger.debug("Found job {} in cache returning", jobName);
+	        return localCache.get(jobName);
+	    }
+	    TimerJobInstance found = null;
+	    
 		for (Timer timer : timerService.getTimers()) {
 		    try {
     			Serializable info = timer.getInfo();
@@ -131,9 +146,10 @@ public class EJBTimerScheduler {
     				EjbTimerJob job = (EjbTimerJob) info;
     				
     				EjbGlobalJobHandle handle = (EjbGlobalJobHandle) job.getTimerJobInstance().getJobHandle();
+    				localCache.putIfAbsent(jobName, handle.getTimerJobInstance());
     				if (handle.getUuid().equals(jobName)) {
     					logger.debug("Job  {} does match timer and is going to be returned", jobName);
-    					return handle.getTimerJobInstance();
+    					found = handle.getTimerJobInstance();
     				}
     			}
 		    } catch (NoSuchObjectLocalException e) {
@@ -141,7 +157,7 @@ public class EJBTimerScheduler {
             }
 		}	
 		
-		return null;
+		return found;
 	}
 	
 }

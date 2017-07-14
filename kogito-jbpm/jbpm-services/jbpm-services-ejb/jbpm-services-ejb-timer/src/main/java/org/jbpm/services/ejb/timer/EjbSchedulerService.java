@@ -53,11 +53,15 @@ public class EjbSchedulerService implements GlobalSchedulerService {
 		String jobName = getJobName(ctx, id);
 		EjbGlobalJobHandle jobHandle = new EjbGlobalJobHandle(id, jobName, ((GlobalTimerService) globalTimerService).getTimerServiceId());
 		
-		TimerJobInstance jobInstance = scheduler.getTimerByName(jobName);
-		if (jobInstance != null) {
-			return jobInstance.getJobHandle();
+		TimerJobInstance jobInstance = null;
+		// check if given timer job is marked as new timer meaning it was never scheduled before, 
+		// if so skip the check by timer name as it has no way to exist
+		if (!isNewTimer(ctx)) {
+    		jobInstance = scheduler.getTimerByName(jobName);
+    		if (jobInstance != null) {
+    			return jobInstance.getJobHandle();
+    		}
 		}
-		
 		jobInstance = globalTimerService.getTimerJobFactoryManager().createTimerJobInstance(
 														job, 
 														ctx, 
@@ -144,5 +148,15 @@ public class EjbSchedulerService implements GlobalSchedulerService {
         }
         return jobname;
 	}
+	
+   private boolean isNewTimer(JobContext ctx) {
+
+        boolean isNewTimer = true;
+        if (ctx instanceof ProcessJobContext) {
+            ProcessJobContext processCtx = (ProcessJobContext) ctx;
+            isNewTimer = processCtx.isNewTimer();
+        }
+        return isNewTimer;
+    }
 
 }
