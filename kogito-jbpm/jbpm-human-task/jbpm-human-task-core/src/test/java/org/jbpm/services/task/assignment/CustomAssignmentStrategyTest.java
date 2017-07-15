@@ -15,11 +15,11 @@
  */
 package org.jbpm.services.task.assignment;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.assignment.strategy.CustomStrategy;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

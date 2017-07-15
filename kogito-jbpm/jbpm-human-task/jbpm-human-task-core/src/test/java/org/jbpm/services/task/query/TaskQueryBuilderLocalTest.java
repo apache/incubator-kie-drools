@@ -25,8 +25,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -35,19 +33,17 @@ import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.HumanTaskServicesBaseTest;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.model.TaskImpl;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.query.QueryParameterIdentifiers;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 import org.kie.internal.task.query.TaskSummaryQueryBuilder.OrderBy;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 @SuppressWarnings("deprecation")
 public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {

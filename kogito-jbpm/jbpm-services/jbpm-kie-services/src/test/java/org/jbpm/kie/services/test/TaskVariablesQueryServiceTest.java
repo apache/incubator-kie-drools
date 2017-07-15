@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.query.SqlQueryDefinition;
 import org.jbpm.kie.services.impl.query.mapper.UserTaskInstanceWithCustomVarsQueryMapper;
@@ -39,6 +38,7 @@ import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.UserTaskInstanceWithVarsDesc;
 import org.jbpm.services.api.query.model.QueryDefinition.Target;
+import org.jbpm.test.util.PoolingDataSource;
 import org.jbpm.services.api.query.model.QueryParam;
 import org.junit.After;
 import org.junit.Before;
@@ -135,8 +135,6 @@ public class TaskVariablesQueryServiceTest extends AbstractKieServicesBaseTest {
 
 
         ds.setClassName("org.postgresql.xa.PGXADataSource");
-        ds.setMaxPoolSize(30);
-        ds.setAllowLocalTransactions(true);
         ds.getDriverProperties().put("user", "bpms");
         ds.getDriverProperties().put("password", "bpms");
         ds.getDriverProperties().put("serverName", "localhost");

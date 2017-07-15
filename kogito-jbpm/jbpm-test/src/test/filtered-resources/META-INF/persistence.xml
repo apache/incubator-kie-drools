@@ -67,7 +67,7 @@
             
             <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
             <property name="hibernate.id.new_generator_mappings" value="false" />            
-            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
         </properties>        
     </persistence-unit>
 
@@ -92,7 +92,7 @@
             
             <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
             <property name="hibernate.id.new_generator_mappings" value="false" />            
-            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
         </properties>        
     </persistence-unit>
      
@@ -142,7 +142,7 @@
 
             <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
             <property name="hibernate.id.new_generator_mappings" value="false" />  
-            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />          
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />          
         </properties>
     </persistence-unit>
     
@@ -167,7 +167,7 @@
             <property name="hibernate.connection.username" value="sa" />
             <property name="hibernate.connection.password" value="sasa" />
             
-            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" /> 
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" /> 
         </properties>        
     </persistence-unit>
     

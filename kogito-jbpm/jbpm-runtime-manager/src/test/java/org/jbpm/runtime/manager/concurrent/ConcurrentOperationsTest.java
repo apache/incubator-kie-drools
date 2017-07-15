@@ -15,14 +15,13 @@
 
 package org.jbpm.runtime.manager.concurrent;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.test.util.CountDownProcessEventListener;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

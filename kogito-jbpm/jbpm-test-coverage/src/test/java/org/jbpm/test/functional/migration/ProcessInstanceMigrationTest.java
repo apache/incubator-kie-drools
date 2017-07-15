@@ -16,8 +16,6 @@
 package org.jbpm.test.functional.migration;
 
 
-import bitronix.tm.BitronixTransactionManager;
-import bitronix.tm.TransactionManagerServices;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
@@ -56,7 +54,7 @@ public class ProcessInstanceMigrationTest extends JbpmTestCase {
     private RuntimeEngine engine;
     private KieSession ksession;
     private TaskService taskService;
-    private BitronixTransactionManager transactionManager;
+    private javax.transaction.TransactionManager transactionManager;
 
     @Before
     public void init() throws Exception {
@@ -68,7 +66,7 @@ public class ProcessInstanceMigrationTest extends JbpmTestCase {
         ksession = engine.getKieSession();
         taskService = engine.getTaskService();
 
-        transactionManager = TransactionManagerServices.getTransactionManager();
+        transactionManager = com.arjuna.ats.jta.TransactionManager.transactionManager();
         transactionManager.setTransactionTimeout(3600); // longer timeout
                                                         // for a debugger
     }

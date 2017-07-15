@@ -50,8 +50,6 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.TransactionManagerServices;
-
 public class SerializedTimerRollbackTest extends JbpmTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(SerializedTimerRollbackTest.class);
@@ -87,7 +85,7 @@ public class SerializedTimerRollbackTest extends JbpmTestCase {
             TaskService taskService = runtimeEngine.getTaskService();
             logger.debug("Created knowledge session");
             
-            TransactionManager tm = TransactionManagerServices.getTransactionManager();
+            TransactionManager tm = com.arjuna.ats.jta.TransactionManager.transactionManager();
 
             List<Long> committedProcessInstanceIds = new ArrayList<Long>();
             for (int i = 0; i < 10; i++) {

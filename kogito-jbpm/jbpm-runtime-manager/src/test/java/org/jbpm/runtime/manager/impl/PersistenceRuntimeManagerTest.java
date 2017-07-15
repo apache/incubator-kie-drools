@@ -31,6 +31,7 @@ import org.drools.persistence.info.SessionInfo;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,8 +47,6 @@ import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class PersistenceRuntimeManagerTest extends AbstractBaseTest {
     private PoolingDataSource pds;

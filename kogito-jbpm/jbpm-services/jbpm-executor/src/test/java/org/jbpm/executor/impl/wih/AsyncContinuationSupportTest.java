@@ -33,10 +33,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
-import org.jbpm.executor.AsynchronousJobEvent;
-import org.jbpm.executor.AsynchronousJobListener;
 import org.jbpm.executor.ExecutorServiceFactory;
-import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.process.core.async.AsyncSignalEventCommand;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
@@ -44,6 +41,7 @@ import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
 import org.jbpm.test.util.CountDownProcessEventListener;
 import org.jbpm.test.util.ExecutorTestUtil;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,8 +66,6 @@ import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
 

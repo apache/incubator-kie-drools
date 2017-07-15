@@ -44,9 +44,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.BitronixTransactionManager;
-import bitronix.tm.TransactionManagerServices;
-
 /**
  * This class tests the following classes: 
  * <ul>
@@ -70,8 +67,8 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
 
     @After
     public void tearDown() throws Exception {
-        BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
-        assertTrue("There is still a transaction running!", txm.getCurrentTransaction() == null );
+        javax.transaction.TransactionManager txm = com.arjuna.ats.jta.TransactionManager.transactionManager();
+        assertTrue("There is still a transaction running!", txm.getTransaction() == null );
         
         cleanUp(context);
         logService.dispose();

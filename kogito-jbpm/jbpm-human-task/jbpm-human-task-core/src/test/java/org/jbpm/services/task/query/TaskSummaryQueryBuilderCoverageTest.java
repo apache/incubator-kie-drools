@@ -9,6 +9,7 @@ import javax.persistence.Persistence;
 import org.jbpm.query.QueryBuilderCoverageTestUtil.ModuleSpecificInputFiller;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.HumanTaskServicesBaseTest;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,8 +21,6 @@ import org.kie.internal.task.api.model.TaskEvent.TaskEventType;
 import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class TaskSummaryQueryBuilderCoverageTest extends HumanTaskServicesBaseTest {
 

@@ -25,13 +25,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.kie.internal.task.api.InternalTaskService;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 import org.jbpm.services.task.HumanTaskServicesBaseTest;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.services.task.utils.TaskFluent;
+import org.jbpm.test.util.PoolingDataSource;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;

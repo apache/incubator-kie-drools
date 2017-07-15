@@ -29,7 +29,6 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import javax.persistence.EntityManagerFactory;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.dashbuilder.DataSetCore;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
@@ -77,6 +76,7 @@ import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.api.KieServices;
@@ -396,8 +396,6 @@ public abstract class AbstractCaseServicesBaseTest {
 
         //NON XA CONFIGS
         ds.setClassName("org.h2.jdbcx.JdbcDataSource");
-        ds.setMaxPoolSize(3);
-        ds.setAllowLocalTransactions(true);
         ds.getDriverProperties().put("user", "sa");
         ds.getDriverProperties().put("password", "sasa");
         ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");

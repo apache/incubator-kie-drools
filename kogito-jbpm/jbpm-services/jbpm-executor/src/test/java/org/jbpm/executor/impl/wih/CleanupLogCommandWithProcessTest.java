@@ -38,6 +38,7 @@ import org.jbpm.services.task.audit.service.TaskJPAAuditService;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
 import org.jbpm.test.util.ExecutorTestUtil;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,8 +57,6 @@ import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class CleanupLogCommandWithProcessTest extends AbstractExecutorBaseTest {
 

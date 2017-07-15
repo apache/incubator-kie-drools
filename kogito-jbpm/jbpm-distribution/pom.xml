@@ -270,8 +270,8 @@
       <artifactId>h2</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.btm</groupId>
-      <artifactId>btm</artifactId>
+      <groupId>org.jboss.narayana.jta</groupId>
+      <artifactId>narayana-jta</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.enterprise</groupId>

@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,8 +39,6 @@ import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class FireRulesWithListeneronRMTest extends AbstractBaseTest {
     private PoolingDataSource pds;

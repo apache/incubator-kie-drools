@@ -15,8 +15,6 @@
 
 package org.jbpm.runtime.manager.impl;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.runtime.ChainableRunner;
 import org.drools.persistence.PersistableRunner;
@@ -28,6 +26,7 @@ import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.test.util.CountDownProcessEventListener;
+import org.jbpm.test.util.PoolingDataSource;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.junit.After;
 import org.junit.Before;

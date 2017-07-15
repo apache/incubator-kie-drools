@@ -293,7 +293,19 @@ public class ExecutorImpl implements Executor {
         	}
         }
         if (scheduler != null) {
-            scheduler.shutdownNow();
+            scheduler.shutdown();
+            boolean terminated;
+            try {
+                terminated = scheduler.awaitTermination(60, TimeUnit.SECONDS);
+                
+                if (!terminated) {
+                    logger.warn("Timeout occured while waiting on all jobs to be terminated");
+
+                    scheduler.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                
+            }            
         }
     }
 

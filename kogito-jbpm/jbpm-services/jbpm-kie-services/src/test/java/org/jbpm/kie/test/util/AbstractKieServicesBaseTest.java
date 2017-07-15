@@ -54,6 +54,7 @@ import org.jbpm.services.api.service.ServiceRegistry;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.kie.api.KieServices;
@@ -74,8 +75,6 @@ import org.kie.internal.runtime.conf.DeploymentDescriptorBuilder;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public abstract class AbstractKieServicesBaseTest {
 
@@ -280,8 +279,6 @@ public abstract class AbstractKieServicesBaseTest {
 
         //NON XA CONFIGS
         ds.setClassName("org.h2.jdbcx.JdbcDataSource");
-        ds.setMaxPoolSize(3);
-        ds.setAllowLocalTransactions(true);
         ds.getDriverProperties().put("user", "sa");
         ds.getDriverProperties().put("password", "sasa");
         ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");

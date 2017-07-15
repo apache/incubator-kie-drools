@@ -22,11 +22,10 @@ import javax.persistence.Persistence;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.internal.task.api.InternalTaskService;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 
 public class LocalTaskAuditTest extends TaskAuditBaseTest {

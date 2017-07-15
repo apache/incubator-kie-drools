@@ -18,8 +18,6 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.persistence.jta.JtaTransactionManager;
@@ -31,6 +29,7 @@ import org.jbpm.persistence.scripts.util.SQLCommandUtil;
 import org.jbpm.persistence.scripts.util.SQLScriptUtil;
 import org.jbpm.persistence.scripts.util.TestsUtil;
 import org.jbpm.persistence.util.PersistenceUtil;
+import org.jbpm.test.util.PoolingDataSource;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;

@@ -29,9 +29,6 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 
-import bitronix.tm.BitronixTransactionManager;
-import bitronix.tm.TransactionManagerServices;
-
 /**
  * Class to reproduce bug with multiple threads using persistence and each
  * configures its own entity manager.
@@ -50,8 +47,8 @@ public class OneProcessPerThreadPersistenceTest extends OneProcessPerThreadTest 
 
     @After
     public void tearDown() throws Exception {
-        BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
-        assertTrue("There is still a transaction running!", txm.getCurrentTransaction() == null );
+        javax.transaction.TransactionManager txm = com.arjuna.ats.jta.TransactionManager.transactionManager();
+        assertTrue("There is still a transaction running!", txm.getTransaction() == null );
         
         cleanUp(context);
     }

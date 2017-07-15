@@ -35,6 +35,7 @@ import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.jbpm.runtime.manager.impl.error.DefaultExecutionErrorStorage;
 import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
+import org.jbpm.runtime.manager.impl.tx.NoOpTransactionManager;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.kie.api.event.process.ProcessEventListener;
@@ -332,39 +333,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
             return getTransactionManager(env);
         } catch (Exception e) {
             // return no op transaction manager as none were found so let the ksession manage the tx instead
-            return new TransactionManager() {                       
-                @Override
-                public void rollback(boolean transactionOwner) {                
-                }
-                
-                @Override
-                public void registerTransactionSynchronization(TransactionSynchronization ts) {                
-                }
-                
-                @Override
-                public void putResource(Object key, Object resource) {                
-                }
-                
-                @Override
-                public int getStatus() {
-                    return STATUS_NO_TRANSACTION;
-                }
-                
-                @Override
-                public Object getResource(Object key) {
-                    return null;
-                }
-                
-                @Override
-                public void commit(boolean transactionOwner) {
-                    
-                }
-                
-                @Override
-                public boolean begin() {
-                    return false;
-                }
-            };
+            return new NoOpTransactionManager();
         }    
     }
     

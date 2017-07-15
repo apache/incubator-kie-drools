@@ -9,7 +9,7 @@
     </encoder>
   </appender>
 
-  <logger name="bitronix.tm" level="error"/>
+  <logger name="com.arjuna" level="error"/>
   <logger name="org.hibernate" level="warn"/>
   <logger name="org.hibernate.tool.hbm2ddl" level="error"/>
   <logger name="org.hibernate.ejb.internal" level="error"/>

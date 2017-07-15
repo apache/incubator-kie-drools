@@ -24,11 +24,6 @@
     </surefire.arg.line>
     <wsdl.token>?wsdl</wsdl.token>
 
-    <!-- Bitronix configuration files for Tomcat 8 -->
-    <bitronix.config.properties>${project.build.testOutputDirectory}/bitronix/btm-config.properties
-    </bitronix.config.properties>
-    <bitronix.resources.properties>${project.build.testOutputDirectory}/bitronix/btm-resources.properties
-    </bitronix.resources.properties>
 
     <!-- WebLogic and WebSphere containers need to be already installed -->
     <weblogic.home>valid-path-has-to-be-specified-here-or-via-cmd-line</weblogic.home><!-- Example: /home/Servers/wls12130 -->
@@ -639,7 +634,9 @@
         <container.id>tomcat8x</container.id>
         <container.port>8080</container.port>
         <org.jbpm.persistence.ds>java:comp/env/jdbc/jbpm</org.jbpm.persistence.ds>
-        <container.tm>org.hibernate.service.jta.platform.internal.BitronixJtaPlatform</container.tm>
+        <container.tm>org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform</container.tm>
+        <org.jbpm.datasource.driver.class>org.h2.jdbcx.JdbcDataSource</org.jbpm.datasource.driver.class>
+        <org.jbpm.datasource.driver.factory>org.h2.jdbcx.JdbcDataSourceFactory</org.jbpm.datasource.driver.factory>
       </properties>
       <build>
         <pluginManagement>
@@ -657,18 +654,13 @@
                   </artifactInstaller>
                   <systemProperties>
                     <tomcat.home>${project.build.directory}/cargo/configurations/tomcat8x</tomcat.home>
-                    <bitronix.tm.configuration>${bitronix.config.properties}</bitronix.tm.configuration>
                     <jbpm.tsr.jndi.lookup>java:comp/env/TransactionSynchronizationRegistry</jbpm.tsr.jndi.lookup>
                     <org.jboss.logging.provider>jdk</org.jboss.logging.provider>
                   </systemProperties>
                   <dependencies>
                     <dependency>
-                      <groupId>org.codehaus.btm</groupId>
-                      <artifactId>btm</artifactId>
-                    </dependency>
-                    <dependency>
-                      <groupId>org.codehaus.btm</groupId>
-                      <artifactId>btm-tomcat55-lifecycle</artifactId>
+                      <groupId>org.jboss.narayana.tomcat</groupId>
+                      <artifactId>tomcat-jta</artifactId>
                     </dependency>
                     <dependency>
                       <groupId>com.h2database</groupId>
@@ -702,11 +694,6 @@
                     <cargo.start.jvmargs>-Dcom.sun.management.jmxremote.port=8089
                       -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false
                     </cargo.start.jvmargs>
-                    <!-- Datasource -->
-                    <cargo.datasource.datasource.productizedArquillian>
-                      cargo.datasource.jndi=jdbc/jbpm|
-                      cargo.datasource.properties=factory=bitronix.tm.resource.ResourceObjectFactory;uniqueName=jdbc/jbpm
-                    </cargo.datasource.datasource.productizedArquillian>
                   </properties>
                   <users>
                     <!-- needed by Arquillian for EWS -->
@@ -745,13 +732,8 @@
       <dependencies>
         <!-- Deps needed by Tomcat 8 -->
         <dependency>
-          <groupId>org.codehaus.btm</groupId>
-          <artifactId>btm</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.codehaus.btm</groupId>
-          <artifactId>btm-tomcat55-lifecycle</artifactId>
+          <groupId>org.jboss.narayana.tomcat</groupId>
+          <artifactId>tomcat-jta</artifactId>
           <scope>test</scope>
         </dependency>
         <dependency>

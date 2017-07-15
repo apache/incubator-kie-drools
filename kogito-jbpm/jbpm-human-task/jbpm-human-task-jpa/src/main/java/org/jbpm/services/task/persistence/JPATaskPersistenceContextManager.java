@@ -48,4 +48,14 @@ public class JPATaskPersistenceContextManager extends
 		getCommandScopedEntityManager();
 	}
 
+    @Override
+    public void endCommandScopedEntityManager() {        
+        EntityManager cmdScopedEntityManager = (EntityManager) env.get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
+        if(cmdScopedEntityManager != null && cmdScopedEntityManager.isOpen()) {
+            cmdScopedEntityManager.clear();
+        }
+        super.endCommandScopedEntityManager();
+    }
+    
+
 }

@@ -44,6 +44,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
 import org.hornetq.jms.server.embedded.EmbeddedJMS;
+import org.jboss.narayana.jta.jms.ConnectionFactoryProxy;
+import org.jboss.narayana.jta.jms.TransactionHelperImpl;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.AuditLoggerFactory;
@@ -64,8 +66,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.jms.PoolingConnectionFactory;
 
 public class AsyncAuditLogProducerTest extends AbstractBaseTest {
 
@@ -188,8 +188,6 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         
         Map<String, Object> jmsProps = new HashMap<String, Object>();
         jmsProps.put("jbpm.audit.jms.transacted", false);
-        // do not use bitronix managed connection factory as it enlists it regardless of if queue session
-        // is transacted or not thus always participates in transaction
         jmsProps.put("jbpm.audit.jms.connection.factory", jmsServer.lookup("ConnectionFactory"));
         jmsProps.put("jbpm.audit.jms.queue", queue);
         AbstractAuditLogger logger = AuditLoggerFactory.newInstance(Type.JMS, session, jmsProps);
@@ -453,23 +451,17 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         jmsServer.start();
         logger.debug("Started Embedded JMS Server");
 
-        BitronixHornetQXAConnectionFactory.connectionFactory = (XAConnectionFactory) jmsServer.lookup("ConnectionFactory");
+        XAConnectionFactory connectionFactory = (XAConnectionFactory) jmsServer.lookup("ConnectionFactory");
 
-        PoolingConnectionFactory myConnectionFactory = new PoolingConnectionFactory ();                   
-        myConnectionFactory.setClassName("org.jbpm.process.audit.jms.BitronixHornetQXAConnectionFactory");              
-        myConnectionFactory.setUniqueName("hornet");                                                    
-        myConnectionFactory.setMaxPoolSize(5); 
-        myConnectionFactory.setAllowLocalTransactions(true);
-
-        myConnectionFactory.init(); 
-        
-        factory = myConnectionFactory;
+        new InitialContext().rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+        new InitialContext().rebind("java:comp/TransactionManager", com.arjuna.ats.jta.TransactionManager.transactionManager());
+        new InitialContext().rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+        factory = new ConnectionFactoryProxy(connectionFactory, new TransactionHelperImpl(com.arjuna.ats.jta.TransactionManager.transactionManager()));
         
         queue = (Queue) jmsServer.lookup("/queue/exampleQueue");
     }
     
     private void stopHornetQServer() throws Exception {
-        ((PoolingConnectionFactory) factory).close();
         jmsServer.stop();
         jmsServer = null;
     }

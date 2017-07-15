@@ -24,7 +24,7 @@
       <property name="hibernate.id.new_generator_mappings" value="false" />            
 
       <!-- needed for JTA testing  -->
-      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
        
     </properties>
   </persistence-unit>
@@ -90,7 +90,7 @@
       <property name="hibernate.id.new_generator_mappings" value="false" />            
       
       <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
-      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
     </properties>
   </persistence-unit>
   
@@ -157,7 +157,7 @@
       <property name="hibernate.id.new_generator_mappings" value="false" />            
       
       <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
-      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
     </properties>
   </persistence-unit>
   

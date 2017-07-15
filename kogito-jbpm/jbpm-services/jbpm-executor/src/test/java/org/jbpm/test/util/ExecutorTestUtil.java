@@ -23,11 +23,10 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.jbpm.persistence.util.PersistenceUtil;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class ExecutorTestUtil {
     
@@ -108,7 +107,7 @@ public class ExecutorTestUtil {
         String[] defaultPropArr = { 
                 "", "", "", "jdbc:h2:mem:jbpm-db;MVCC=true",
                 "sa", "", 
-                "org.h2.Driver", "bitronix.tm.resource.jdbc.lrc.LrcXADataSource", 
+                "org.h2.Driver", "org.h2.jdbcx.JdbcDataSource", 
                 "5", "true" };
         Assert.assertTrue("Unequal number of keys for default properties", keyArr.length == defaultPropArr.length);
         for (int i = 0; i < keyArr.length; ++i) {

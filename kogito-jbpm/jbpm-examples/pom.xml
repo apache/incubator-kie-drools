@@ -63,8 +63,8 @@
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
-      <groupId>org.codehaus.btm</groupId>
-      <artifactId>btm</artifactId>
+      <groupId>org.jboss.narayana.jta</groupId>
+      <artifactId>narayana-jta</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -94,6 +94,10 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-test</artifactId>
     </dependency>
+      <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-test-util</artifactId>
+      </dependency>
     <dependency>
     	<groupId>org.subethamail</groupId>
     	<artifactId>subethasmtp-wiser</artifactId>

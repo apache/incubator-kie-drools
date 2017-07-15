@@ -71,6 +71,7 @@ import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.jbpm.test.util.PoolingDataSource;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -112,9 +113,6 @@ import org.mvel2.ParserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
  * Base test case for the jbpm-bpmn2 module.
@@ -259,8 +257,8 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
             String runningTransactionStatus = null;
 
             // Clean up possible transactions
-            Transaction tx = TransactionManagerServices.getTransactionManager()
-                    .getCurrentTransaction();
+            Transaction tx = com.arjuna.ats.jta.TransactionManager.transactionManager()
+                    .getTransaction();
             if (tx != null) {
                 int testTxState = tx.getStatus();
                 if (testTxState != Status.STATUS_NO_TRANSACTION
@@ -521,7 +519,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
         Environment env = EnvironmentFactory.newEnvironment();
         env.set(ENTITY_MANAGER_FACTORY, emf);
         env.set(TRANSACTION_MANAGER,
-                TransactionManagerServices.getTransactionManager());
+                com.arjuna.ats.jta.TransactionManager.transactionManager());
         if (sessionPersistence) {
             ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) env.get(OBJECT_MARSHALLING_STRATEGIES);        
             

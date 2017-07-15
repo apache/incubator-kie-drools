@@ -19,10 +19,10 @@ import java.util.Collections;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.assignment.impl.strategy.RoundRobinAssignmentStrategy;
 import org.jbpm.services.task.impl.factories.TaskFactory;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

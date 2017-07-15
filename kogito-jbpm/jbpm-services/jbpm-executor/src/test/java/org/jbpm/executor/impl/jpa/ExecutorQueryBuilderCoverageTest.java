@@ -8,6 +8,7 @@ import javax.persistence.Persistence;
 
 import org.jbpm.query.QueryBuilderCoverageTestUtil.ModuleSpecificInputFiller;
 import org.jbpm.test.util.ExecutorTestUtil;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,8 +18,6 @@ import org.kie.internal.runtime.manager.audit.query.ErrorInfoQueryBuilder;
 import org.kie.internal.runtime.manager.audit.query.RequestInfoQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class ExecutorQueryBuilderCoverageTest {
    

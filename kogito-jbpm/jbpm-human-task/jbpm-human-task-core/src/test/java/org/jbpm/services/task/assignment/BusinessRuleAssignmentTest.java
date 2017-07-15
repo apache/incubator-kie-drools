@@ -24,6 +24,7 @@ import javax.persistence.Persistence;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.assignment.impl.strategy.BusinessRuleAssignmentStrategy;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,8 +43,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
 

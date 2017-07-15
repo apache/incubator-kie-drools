@@ -29,6 +29,7 @@ import javax.persistence.Persistence;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.test.util.ExecutorTestUtil;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,8 +37,6 @@ import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.RequestInfo;
 import org.kie.api.runtime.query.QueryContext;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
 public class ReconfiguredExecutorTest {

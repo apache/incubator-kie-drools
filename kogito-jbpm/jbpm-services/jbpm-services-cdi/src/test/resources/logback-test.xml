@@ -11,7 +11,7 @@
 
   <logger name="org.jbpm" level="info"/>
   <logger name="org.jbpm.kie.services.impl.store" level="debug"/>
-  <logger name="bitronix.tm" level="error"/>
+  <logger name="com.arjuna" level="error"/>
   <logger name="org.hibernate" level="warn"/>
   
   <logger name="org.dashbuilder.dataprovider.sql.SQLDataSetProvider" level="info"/>

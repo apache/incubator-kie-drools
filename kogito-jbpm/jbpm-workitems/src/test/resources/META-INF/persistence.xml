@@ -21,7 +21,7 @@
 				to cause problems -->
 			<property name="hibernate.id.new_generator_mappings" value="false" />
 			<property name="hibernate.transaction.jta.platform"
-				value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+				value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
 		</properties>
 	</persistence-unit>
 
@@ -51,7 +51,7 @@
 				to cause problems -->
 			<property name="hibernate.id.new_generator_mappings" value="false" />
 			<property name="hibernate.transaction.jta.platform"
-				value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+				value="org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform" />
 		</properties>
 	</persistence-unit>
 

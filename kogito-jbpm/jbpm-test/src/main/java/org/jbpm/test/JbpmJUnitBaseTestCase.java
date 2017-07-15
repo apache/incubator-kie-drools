@@ -19,7 +19,6 @@ package org.jbpm.test;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,6 +45,7 @@ import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.SimpleRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.test.util.PoolingDataSource;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Assert;
@@ -78,12 +78,6 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.internal.BitronixSystemException;
-import bitronix.tm.resource.ResourceRegistrar;
-import bitronix.tm.resource.common.XAResourceProducer;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
  * Base test case class that shall be used for jBPM related tests. It provides four sections:
@@ -506,9 +500,6 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     
             return manager;
         } catch (Exception e) {
-            if (e instanceof BitronixSystemException || e instanceof ClosedChannelException) {
-                TransactionManagerServices.getTransactionManager().shutdown();
-            }
             throw new RuntimeException(e);
         }
     }
@@ -864,9 +855,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     protected PoolingDataSource setupPoolingDataSource() {
         PoolingDataSource pds = new PoolingDataSource();
         pds.setUniqueName("jdbc/jbpm-ds");
-        pds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-        pds.setMaxPoolSize(5);
-        pds.setAllowLocalTransactions(true);
+        pds.setClassName("org.h2.jdbcx.JdbcDataSource");
         pds.getDriverProperties().put("user", "sa");
         pds.getDriverProperties().put("password", "");
         pds.getDriverProperties().put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");
@@ -875,19 +864,15 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             pds.init();
         } catch (Exception e) {
             logger.warn("DBPOOL_MGR:Looks like there is an issue with creating db pool because of " + e.getMessage() + " cleaing up...");
-            Set<String> resources = ResourceRegistrar.getResourcesUniqueNames();
-            for (String resource : resources) {
-                XAResourceProducer producer = ResourceRegistrar.get(resource);
-                producer.close();
-                ResourceRegistrar.unregister(producer);
-                logger.debug("DBPOOL_MGR:Removed resource " + resource);
+            try {
+                pds.close();
+            } catch (Exception ex) {
+                // ignore
             }
             logger.debug("DBPOOL_MGR: attempting to create db pool again...");
             pds = new PoolingDataSource();
             pds.setUniqueName("jdbc/jbpm-ds");
-            pds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-            pds.setMaxPoolSize(5);
-            pds.setAllowLocalTransactions(true);
+            pds.setClassName("org.h2.jdbcx.JdbcDataSource");
             pds.getDriverProperties().put("user", "sa");
             pds.getDriverProperties().put("password", "");
             pds.getDriverProperties().put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");

@@ -29,11 +29,10 @@ import java.util.List;
 import java.util.Properties;
 
 import org.jbpm.persistence.util.PersistenceUtil;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class DBUserGroupCallbackImplTest {
 
@@ -49,8 +48,6 @@ public class DBUserGroupCallbackImplTest {
         pds = new PoolingDataSource();
         pds.setUniqueName("jdbc/jbpm-ds");
         pds.setClassName(dsProps.getProperty("className"));
-        pds.setMaxPoolSize(Integer.parseInt(dsProps.getProperty("maxPoolSize")));
-        pds.setAllowLocalTransactions(Boolean.parseBoolean(dsProps.getProperty("allowLocalTransactions")));
         for (String propertyName : new String[]{"user", "password"}) {
             pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
         }

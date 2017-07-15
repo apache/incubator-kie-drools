@@ -35,6 +35,8 @@ import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
 import org.hornetq.jms.server.embedded.EmbeddedJMS;
+import org.jboss.narayana.jta.jms.ConnectionFactoryProxy;
+import org.jboss.narayana.jta.jms.TransactionHelperImpl;
 import org.jbpm.executor.AsynchronousJobEvent;
 import org.jbpm.executor.AsynchronousJobListener;
 import org.jbpm.executor.ExecutorServiceFactory;
@@ -43,6 +45,7 @@ import org.jbpm.executor.impl.ExecutorImpl;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.test.util.ExecutorTestUtil;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,9 +55,6 @@ import org.kie.api.executor.RequestInfo;
 import org.kie.api.runtime.query.QueryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-import bitronix.tm.resource.jms.PoolingConnectionFactory;
 
 public class JmsAvaiableJobExecutorTest  {
 
@@ -221,24 +221,19 @@ public class JmsAvaiableJobExecutorTest  {
         jmsServer.start();
         logger.debug("Started Embedded JMS Server");
 
-        BitronixHornetQXAConnectionFactory.connectionFactory = (XAConnectionFactory) jmsServer.lookup("ConnectionFactory");
+        XAConnectionFactory connectionFactory = (XAConnectionFactory) jmsServer.lookup("ConnectionFactory");
 
-        PoolingConnectionFactory myConnectionFactory = new PoolingConnectionFactory ();                   
-        myConnectionFactory.setClassName("org.jbpm.executor.impl.jms.BitronixHornetQXAConnectionFactory");              
-        myConnectionFactory.setUniqueName("ConnectionFactory");                                                    
-        myConnectionFactory.setMaxPoolSize(5); 
-        myConnectionFactory.setAllowLocalTransactions(true);
+        new InitialContext().rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+        new InitialContext().rebind("java:comp/TransactionManager", com.arjuna.ats.jta.TransactionManager.transactionManager());
+        new InitialContext().rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
 
-        myConnectionFactory.init(); 
-        
-        factory = myConnectionFactory;
+        factory =  new ConnectionFactoryProxy(connectionFactory, new TransactionHelperImpl(com.arjuna.ats.jta.TransactionManager.transactionManager()));
         
         queue = (Queue) jmsServer.lookup("/queue/exampleQueue");
         
     }
     
     private void stopHornetQServer() throws Exception {
-        ((PoolingConnectionFactory) factory).close();
         jmsServer.stop();
         jmsServer = null;
     }

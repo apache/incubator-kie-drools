@@ -46,6 +46,7 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
+import org.jbpm.test.util.PoolingDataSource;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -74,9 +75,6 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
  * This test case is deprecated. JbpmJUnitBaseTestCase shall be used instead.
@@ -121,9 +119,7 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
     public static PoolingDataSource setupPoolingDataSource() {
         PoolingDataSource pds = new PoolingDataSource();
         pds.setUniqueName("jdbc/jbpm-ds");
-        pds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-        pds.setMaxPoolSize(5);
-        pds.setAllowLocalTransactions(true);
+        pds.setClassName("org.h2.jdbcx.JdbcDataSource");
         pds.getDriverProperties().put("user", "sa");
         pds.getDriverProperties().put("password", "");
         pds.getDriverProperties().put("url", "jdbc:h2:tcp://localhost/~/jbpm-db;MVCC=true");
@@ -167,7 +163,7 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
             DeleteDbFiles.execute("~", "jbpm-db", true);
 
             // Clean up possible transactions
-            Transaction tx = TransactionManagerServices.getTransactionManager().getCurrentTransaction();
+            Transaction tx = com.arjuna.ats.jta.TransactionManager.transactionManager().getTransaction();
             if (tx != null) {
                 int testTxState = tx.getStatus();
                 if (testTxState != Status.STATUS_NO_TRANSACTION

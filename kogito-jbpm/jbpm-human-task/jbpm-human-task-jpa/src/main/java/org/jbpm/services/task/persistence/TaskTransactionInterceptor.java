@@ -15,6 +15,9 @@
 
 package org.jbpm.services.task.persistence;
 
+import java.lang.reflect.Constructor;
+import java.util.Collection;
+
 import org.drools.core.command.impl.AbstractInterceptor;
 import org.drools.core.runtime.ChainableRunner;
 import org.drools.persistence.api.OrderedTransactionSynchronization;
@@ -38,9 +41,6 @@ import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.exception.TaskException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Constructor;
-import java.util.Collection;
 
 public class TaskTransactionInterceptor extends AbstractInterceptor {
 
@@ -290,13 +290,11 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
 		}
 
 		public void afterCompletion(int status) {
-
 			this.service.tpm.endCommandScopedEntityManager();
 
 		}
 
 		public void beforeCompletion() {
-			// not used
 		}
 
 	}

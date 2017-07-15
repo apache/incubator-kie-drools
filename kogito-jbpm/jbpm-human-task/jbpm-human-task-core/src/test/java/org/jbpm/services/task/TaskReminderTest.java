@@ -18,14 +18,13 @@ package org.jbpm.services.task;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class TaskReminderTest extends TaskReminderBaseTest {
 

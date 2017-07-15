@@ -37,6 +37,7 @@ import org.jbpm.services.task.rule.RuleContextProvider;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.jbpm.services.task.rule.impl.RuleContextProviderImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -52,8 +53,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.model.ContentData;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
 public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest {

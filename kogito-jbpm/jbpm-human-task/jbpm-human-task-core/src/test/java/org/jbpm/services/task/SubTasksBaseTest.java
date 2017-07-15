@@ -34,8 +34,6 @@ import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 
-import bitronix.tm.TransactionManagerServices;
-
 /**
  *
  */
@@ -173,7 +171,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
 
         String tableName = TaskImpl.class.getAnnotation(Table.class).name();
                 
-        TransactionManagerServices.getTransactionManager().begin();
+        com.arjuna.ats.jta.TransactionManager.transactionManager().begin();
         try { 
             EntityManager em = getEmf().createEntityManager();
             Query query = em.createNativeQuery(
@@ -184,9 +182,9 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
             query = em.createNativeQuery("alter sequence " + seqName + " increment by 1000");
             query.executeUpdate();
             
-            TransactionManagerServices.getTransactionManager().commit();
+            com.arjuna.ats.jta.TransactionManager.transactionManager().commit();
         } catch( Throwable t ) { 
-        	TransactionManagerServices.getTransactionManager().rollback();
+        	com.arjuna.ats.jta.TransactionManager.transactionManager().rollback();
             // underlying database is NOT h2, skip test
             Assume.assumeFalse(true);
         }

@@ -28,6 +28,7 @@ import org.jbpm.services.task.assignment.impl.strategy.LoadBalanceAssignmentStra
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
 import org.jbpm.services.task.utils.TaskFluent;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,8 +36,6 @@ import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class TotalCompletionTimeAssignmentStrategyTest extends AbstractAssignmentTest {
     private PoolingDataSource pds;

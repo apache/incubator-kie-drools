@@ -20,11 +20,10 @@ import org.jboss.arquillian.core.api.annotation.Observes;
 import org.jboss.arquillian.core.spi.LoadableExtension;
 import org.jboss.arquillian.test.spi.event.suite.AfterSuite;
 import org.jboss.arquillian.test.spi.event.suite.BeforeSuite;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.jbpm.test.util.PoolingDataSource;
 
 /**
- * Custom extension for arquillian to setup bitronix data source for all the tests that can be closed properly
+ * Custom extension for arquillian to setup data source for all the tests that can be closed properly
  */
 public class ArquillianTestWrapperExtension implements LoadableExtension {
     @Override
@@ -42,8 +41,6 @@ public class ArquillianTestWrapperExtension implements LoadableExtension {
             
             //NON XA CONFIGS
             ds.setClassName("org.h2.jdbcx.JdbcDataSource");
-            ds.setMaxPoolSize(3);
-            ds.setAllowLocalTransactions(true);
             ds.getDriverProperties().put("user", "sa");
             ds.getDriverProperties().put("password", "sasa");
             ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");

@@ -31,6 +31,7 @@ import javax.sql.DataSource;
 import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.test.AbstractBaseTest;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -40,10 +41,6 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.ResourceRegistrar;
-import bitronix.tm.resource.common.XAResourceProducer;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public abstract class TimerBaseTest extends AbstractBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(TimerBaseTest.class);
@@ -68,13 +65,11 @@ public abstract class TimerBaseTest extends AbstractBaseTest {
         	pds.init();
         } catch (Exception e) {
         	logger.warn("DBPOOL_MGR:Looks like there is an issue with creating db pool because of " + e.getMessage() + " cleaing up...");
-        	Set<String> resources = ResourceRegistrar.getResourcesUniqueNames();
-        	for (String resource : resources) {
-        		XAResourceProducer producer = ResourceRegistrar.get(resource);
-        		producer.close();
-        		ResourceRegistrar.unregister(producer);
-        		logger.info("DBPOOL_MGR:Removed resource " + resource);
-        	}
+            try {
+                pds.close();
+            } catch (Exception ex) {
+                // ignore
+            }
         	logger.info("DBPOOL_MGR: attempting to create db pool again...");
         	pds = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds", false);
         	pds.init();        	
@@ -140,7 +135,7 @@ public abstract class TimerBaseTest extends AbstractBaseTest {
         String[] defaultPropArr = { 
                 "", "", "", "jdbc:h2:mem:jbpm-db;MVCC=true",
                 "sa", "", 
-                "org.h2.Driver", "bitronix.tm.resource.jdbc.lrc.LrcXADataSource", 
+                "org.h2.Driver", "org.h2.jdbcx.JdbcDataSource", 
                 "5", "true" };
         Assert.assertTrue("Unequal number of keys for default properties", keyArr.length == defaultPropArr.length);
         for (int i = 0; i < keyArr.length; ++i) {

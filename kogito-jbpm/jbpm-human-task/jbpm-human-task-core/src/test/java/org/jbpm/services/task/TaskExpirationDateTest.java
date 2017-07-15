@@ -15,7 +15,6 @@
  */
 package org.jbpm.services.task;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +22,7 @@ import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.jbpm.services.task.impl.factories.TaskFactory;
+import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
