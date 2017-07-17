@@ -17,6 +17,7 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
@@ -243,6 +244,40 @@ public class BRLRuleModelTest extends BaseBRLTest {
                           "$f3");
     }
 
+    @Test
+    public void checkGetAllLHSVariables() {
+        whenThereIsADecisionTableWithPatternsAndBRLCondition();
+
+        assertThereAreBindings(() -> rm.getAllLHSVariables(),
+                               "$p1",
+                               "$p2",
+                               "$p3",
+                               "$p4",
+                               "$f1",
+                               "$f2");
+    }
+
+    @Test
+    public void checkGetLHSPatternVariables() {
+        whenThereIsADecisionTableWithPatternsAndBRLCondition();
+
+        assertThereAreBindings(() -> rm.getLHSPatternVariables(),
+                               "$p1",
+                               "$p2",
+                               "$p3",
+                               "$p4");
+    }
+
+    @Test
+    public void checkGetLHSFieldVariables() {
+        whenThereIsADecisionTableWithPatternsAndBRLCondition();
+
+        assertThereAreBindings(() -> rm.getLHSVariables(false,
+                                                        true),
+                               "$f1",
+                               "$f2");
+    }
+
     private ConditionCol52 whenPatternHasAField(final Pattern52 p,
                                                 final String fieldName,
                                                 final String fieldType,
@@ -253,6 +288,25 @@ public class BRLRuleModelTest extends BaseBRLTest {
         c.setBinding(fieldBinding);
         p.getChildColumns().add(c);
         return c;
+    }
+
+    private void whenThereIsADecisionTableWithPatternsAndBRLCondition() {
+        final Pattern52 p1 = whenThereIsAPattern("Pattern",
+                                                 "$p1");
+        whenPatternHasAField(p1,
+                             "field1",
+                             "fieldType",
+                             "$f1");
+        final BRLConditionColumn brlConditionColumn = whenThereIsABRLFactPattern("Fact",
+                                                                                 "$p2");
+        whenBRLFactPatternHasAField(brlConditionColumn,
+                                    "field1",
+                                    "fieldType",
+                                    "$f2");
+        whenThereIsABRLFromCompositeFactPattern("Fact",
+                                                "$p3");
+        whenThereIsABRLFromCompositeFactPattern("Fact",
+                                                "$p4");
     }
 
     private void assertThereAreNoBindings() {
@@ -309,5 +363,13 @@ public class BRLRuleModelTest extends BaseBRLTest {
                      actualBindings.size());
 
         Arrays.asList(expectedBindings).stream().forEach(actualBindings::contains);
+    }
+
+    protected void assertThereAreBindings(final Supplier<List<String>> actualBindingSupplier,
+                                          final String... expectedBindings) {
+        final List<String> actualBindings = actualBindingSupplier.get();
+        assertEquals(actualBindings.size(),
+                     expectedBindings.length);
+        assertTrue(actualBindings.containsAll(Arrays.asList(expectedBindings)));
     }
 }
