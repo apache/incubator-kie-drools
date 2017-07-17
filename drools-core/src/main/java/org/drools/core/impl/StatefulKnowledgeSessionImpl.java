@@ -143,6 +143,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
+import org.kie.api.utils.ServiceRegistryImpl;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.marshalling.MarshallerFactory;
@@ -152,7 +153,6 @@ import org.kie.internal.runtime.KieRuntimeService;
 import org.kie.internal.runtime.KieRuntimes;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.beliefs.Mode;
-import org.kie.internal.utils.ServiceRegistryImpl;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;

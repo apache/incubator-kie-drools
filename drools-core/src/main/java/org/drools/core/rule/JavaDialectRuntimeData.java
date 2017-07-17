@@ -24,8 +24,8 @@ import org.drools.core.spi.Wireable;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
+import org.kie.api.utils.FastClassLoader;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
-import org.kie.internal.utils.FastClassLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

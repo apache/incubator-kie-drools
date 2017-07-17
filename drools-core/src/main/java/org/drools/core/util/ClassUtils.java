@@ -45,7 +45,7 @@ import java.util.TreeSet;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.kie.api.definition.type.Modifies;
-import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.api.utils.ClassLoaderUtil;
 
 import static org.drools.core.util.StringUtils.ucFirst;
 

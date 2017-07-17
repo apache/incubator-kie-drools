@@ -16,7 +16,7 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.utils.ServiceRegistryImpl;
 
 public class GuidedRuleTemplateFactory {
     private static final String PROVIDER_CLASS = "org.drools.workbench.models.guided.template.backend.GuidedRuleTemplateProviderImpl";

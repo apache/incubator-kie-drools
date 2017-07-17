@@ -19,9 +19,9 @@ import org.drools.core.common.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.utils.ServiceRegistryImpl;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
-import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

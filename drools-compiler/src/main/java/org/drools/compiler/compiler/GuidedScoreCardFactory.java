@@ -15,10 +15,10 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.internal.utils.ServiceRegistryImpl;
-
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.kie.api.utils.ServiceRegistryImpl;
 
 public class GuidedScoreCardFactory {
 

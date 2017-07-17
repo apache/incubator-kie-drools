@@ -16,7 +16,7 @@
 package org.drools.core.runtime.process;
 
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.utils.ServiceRegistryImpl;
 
 
 public class ProcessRuntimeFactory {
