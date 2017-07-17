@@ -15,6 +15,14 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -35,14 +43,6 @@ import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public final class JavaRuleBuilderHelper {
 
@@ -262,11 +262,11 @@ public final class JavaRuleBuilderHelper {
         TemplateRegistry registry = getInvokerTemplateRegistry(context.getKnowledgeBuilder().getRootClassLoader());
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
 
-        context.getInvokers().put( invokerClassName,
-                                   (String) TemplateRuntime.execute( registry.getNamedTemplate( invokerTemplate ),
-                                                                     null,
-                                                                     new MapVariableResolverFactory( vars ),
-                                                                     registry ) );
+        context.addInvoker( invokerClassName,
+                            (String) TemplateRuntime.execute( registry.getNamedTemplate( invokerTemplate ),
+                                                              null,
+                                                              new MapVariableResolverFactory( vars ),
+                                                              registry ) );
 
         context.addInvokerLookup( invokerClassName, invokerLookup );
         context.addDescrLookups( invokerClassName, descrLookup );

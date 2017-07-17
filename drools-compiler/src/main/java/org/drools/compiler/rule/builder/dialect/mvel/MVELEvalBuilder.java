@@ -16,6 +16,9 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -35,9 +38,6 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.internal.security.KiePolicyHelper;
-
-import java.util.Arrays;
-import java.util.Map;
 
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
@@ -68,7 +68,7 @@ public class MVELEvalBuilder
         final EvalDescr evalDescr = (EvalDescr) descr;
 
         try {
-            MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
+            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
             Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
             

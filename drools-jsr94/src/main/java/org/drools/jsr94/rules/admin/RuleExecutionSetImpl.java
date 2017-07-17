@@ -17,6 +17,13 @@
 package org.drools.jsr94.rules.admin;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.rules.ObjectFilter;
+import javax.rules.admin.RuleExecutionSet;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -26,13 +33,6 @@ import org.drools.jsr94.rules.Constants;
 import org.drools.jsr94.rules.Jsr94FactHandleFactory;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-
-import javax.rules.ObjectFilter;
-import javax.rules.admin.RuleExecutionSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The Drools implementation of the <code>RuleExecutionSet</code> interface
@@ -108,8 +108,6 @@ public class RuleExecutionSetImpl
         config.getComponentFactory().setHandleFactoryProvider(new Jsr94FactHandleFactory());
         kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(config);
         kBase.addPackage( pkg );
-
-        this.kBase = kBase;
     }
 
     /**

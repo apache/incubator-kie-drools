@@ -16,9 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -26,6 +23,10 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 
 public class DialectRuntimeRegistry
     implements
@@ -34,7 +35,7 @@ public class DialectRuntimeRegistry
 
     private static final long serialVersionUID = 510l;
 
-    private Map<String, LineMappings>            lineMappings;
+    private Map<String, LineMappings> lineMappings = new ConcurrentHashMap<>();
 
     public DialectRuntimeRegistry() {
         this.dialects = new HashMap<String, DialectRuntimeData>();
@@ -124,7 +125,7 @@ public class DialectRuntimeRegistry
             }
         }
 
-        getLineMappings().putAll( newDatas.getLineMappings() );
+        lineMappings.putAll( newDatas.lineMappings );
     }
 
     public void onBeforeExecute() {
@@ -151,13 +152,10 @@ public class DialectRuntimeRegistry
     }
 
     public LineMappings getLineMappings(final String className) {
-        return getLineMappings().get( className );
+        return lineMappings.get( className );
     }
 
     public Map<String, LineMappings> getLineMappings() {
-        if ( this.lineMappings == null ) {
-            this.lineMappings = new HashMap<String, LineMappings>();
-        }
         return this.lineMappings;
     }
 

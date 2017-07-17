@@ -62,7 +62,7 @@ public class RuleExecutionSetProviderTest extends RuleEngineTestBase {
         try {
             final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
             builder.addPackageFromDrl( new InputStreamReader( RuleEngineTestBase.class.getResourceAsStream( this.bindUri ) ) );
-            InternalKnowledgePackage pkg = builder.getPackage();
+            InternalKnowledgePackage pkg = builder.getPackage(builder.getPackageNames().iterator().next());
 
             this.pkg = pkg;
         } catch ( final IOException e ) {

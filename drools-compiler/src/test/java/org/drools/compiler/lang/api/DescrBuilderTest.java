@@ -16,9 +16,18 @@
 
 package org.drools.compiler.lang.api;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -40,10 +49,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mockito.ArgumentCaptor;
-
-import java.util.*;
 
 import static org.drools.compiler.compiler.xml.rules.DumperTestHelper.assertEqualsIgnoreWhitespace;
 import static org.hamcrest.CoreMatchers.is;
@@ -549,7 +555,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
 
         String drl = new DrlDumper().dump( pkg );
         System.out.println( drl );
-        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl)KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         System.err.println( knowledgeBuilder.getErrors() );
         assertFalse(  knowledgeBuilder.getErrors().toString(), knowledgeBuilder.hasErrors() );
@@ -559,7 +565,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         kbase.addPackages( knowledgeBuilder.getKnowledgePackages() );
         KieSession knowledgeSession = kbase.newKieSession();
 
-        KiePackage rebuiltPkg = knowledgeBuilder.getKnowledgePackages().iterator().next();
+        KiePackage rebuiltPkg = knowledgeBuilder.getPackage( "org.test" );
         org.kie.api.definition.rule.Rule rule = rebuiltPkg.getRules().iterator().next();
         RuleImpl r = ((RuleImpl) rule);
 

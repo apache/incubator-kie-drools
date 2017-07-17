@@ -16,14 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.base.mvel.MVELCompileable;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.spi.Wireable;
-import org.mvel2.ParserConfiguration;
-import org.mvel2.integration.VariableResolver;
-import org.mvel2.integration.impl.MapVariableResolverFactory;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -39,6 +31,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import org.drools.core.base.mvel.MVELCompileable;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.spi.Wireable;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.integration.VariableResolver;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
 
 public class MVELDialectRuntimeData
     implements
@@ -65,7 +65,7 @@ public class MVELDialectRuntimeData
 
     public MVELDialectRuntimeData() {
         this.functionFactory = new MapFunctionResolverFactory();
-        this.invokerLookups = new IdentityHashMap<Wireable, List<MVELCompileable>>();
+        this.invokerLookups = Collections.synchronizedMap( new IdentityHashMap<>() );
         this.mvelReaders = new HashSet<MVELCompileable> ();
         this.imports = new HashMap<String, Object>();
         this.packageImports = new HashSet<String>();
@@ -297,9 +297,8 @@ public class MVELDialectRuntimeData
                         // @TODO MVEL doesn't yet support importing of fields
                         if ( str.startsWith( "m:" ) ) {
                             Class cls = packageClassLoader.loadClass( str.substring( 2 ) );
-                            String methodName =  key;
                             for ( Method method : cls.getDeclaredMethods() ) {
-                                if ( method.getName().equals( methodName ) ) {
+                                if ( method.getName().equals( key ) ) {
                                     entry.setValue( method );
                                     break;
                                 }
@@ -355,14 +354,8 @@ public class MVELDialectRuntimeData
         this.mvelReaders.add(compilable);
     }
 
-    public void addCompileable(Wireable wireable,
-                               MVELCompileable compilable) {
-        List<MVELCompileable> compilables = invokerLookups.get(wireable);
-        if (compilables == null) {
-            compilables = new ArrayList<MVELCompileable>();
-            invokerLookups.put(wireable, compilables);
-        }
-        compilables.add( compilable );
+    public void addCompileable(Wireable wireable, MVELCompileable compilable) {
+        invokerLookups.computeIfAbsent( wireable, k -> new ArrayList<MVELCompileable>() ).add( compilable );
     }
 
     public ClassLoader getRootClassLoader() {

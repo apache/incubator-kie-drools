@@ -539,7 +539,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                 .write( "src/main/resources/r1.drl", drl1 );
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 2, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+        assertFalse( kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
     }
 
     @Test

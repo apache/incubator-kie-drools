@@ -19,17 +19,17 @@ package org.drools.compiler.commons.jci.readers;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A memory based reader to compile from memory
  */
 public class MemoryResourceReader implements ResourceReader {
     
-    private Map<String, byte[]> resources;
+    private Map<String, byte[]> resources = new ConcurrentHashMap<>();
 
     private Set<String> modifiedResourcesSinceLastMark;
 
@@ -42,10 +42,6 @@ public class MemoryResourceReader implements ResourceReader {
     }
     
     public void add( final String pResourceName, final byte[] pContent ) {
-        if (resources == null) {
-            resources = new HashMap();
-        }
-        
         resources.put(pResourceName, pContent);
         if (modifiedResourcesSinceLastMark != null) {
             modifiedResourcesSinceLastMark.add(pResourceName);
