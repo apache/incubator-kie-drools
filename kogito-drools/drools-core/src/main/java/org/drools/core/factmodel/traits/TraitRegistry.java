@@ -16,16 +16,6 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.factmodel.MapCore;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.HierNode;
-import org.drools.core.util.HierarchyEncoder;
-import org.drools.core.util.HierarchyEncoderImpl;
-import org.kie.api.definition.type.FactField;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -39,6 +29,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.FieldDefinition;
+import org.drools.core.factmodel.MapCore;
+import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.HierNode;
+import org.drools.core.util.HierarchyEncoder;
+import org.drools.core.util.HierarchyEncoderImpl;
+import org.kie.api.definition.type.FactField;
 
 public class TraitRegistry implements Externalizable {
 
@@ -118,20 +118,23 @@ public class TraitRegistry implements Externalizable {
 
         if ( hierarchy == null || hierarchy.size() <= 1 ) {
             hierarchy = other.hierarchy;
-        } else {
-            if ( other.traits != null ) {
-                for ( String traitName : other.getHierarchy().getSortedMembers() ) {
-                    ClassDefinition trait = other.traits.get( traitName );
-                    List<String> parentTraits = new ArrayList<String>( );
-                    for ( String candidateIntf : trait.getInterfaces() ) {
-                        if ( getHierarchy().getCode( candidateIntf ) != null ) {
-                            parentTraits.add( candidateIntf );
-                        }
-                    }
-                    getHierarchy().encode( trait.getName(), parentTraits );
+        } else if ( other.traits != null ) {
+            hierarchy = mergeHierarchy( other, this );
+        }
+    }
+
+    private static HierarchyEncoder<String> mergeHierarchy( TraitRegistry first, TraitRegistry second ) {
+        for ( String traitName : second.getHierarchy().getSortedMembers() ) {
+            ClassDefinition trait = second.traits.get( traitName );
+            List<String> parentTraits = new ArrayList<String>( );
+            for ( String candidateIntf : trait.getInterfaces() ) {
+                if ( first.getHierarchy().getCode( candidateIntf ) != null ) {
+                    parentTraits.add( candidateIntf );
                 }
             }
+            first.getHierarchy().encode( traitName, parentTraits );
         }
+        return first.getHierarchy();
     }
 
     public Map<String, ClassDefinition> getTraits() {
@@ -205,14 +208,7 @@ public class TraitRegistry implements Externalizable {
             masks = new HashMap<String, BitSet>();
         }
         String key = trait + traitable;
-        BitSet mask = masks.get( key );
-
-        if ( mask == null ) {
-            mask = bind( trait, traitable );
-            masks.put( key, mask );
-        }
-
-        return mask;
+        return masks.computeIfAbsent( key, k -> bind( trait, traitable ) );
     }
 
     private BitSet bind( String trait, String traitable ) throws UnsupportedOperationException {

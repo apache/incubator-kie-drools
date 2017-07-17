@@ -24,9 +24,9 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.base.AccessorKey.AccessorType;
 import org.drools.core.base.extractors.MVELDateClassFieldReader;
@@ -47,7 +47,7 @@ public class ClassFieldAccessorStore
 
     private static final long serialVersionUID = 510l;
 
-    private Map<AccessorKey, BaseLookupEntry> lookup;
+    private Map<AccessorKey, BaseLookupEntry> lookup = new ConcurrentHashMap<>();
 
     private ClassFieldAccessorCache           cache;
 
@@ -55,10 +55,6 @@ public class ClassFieldAccessorStore
      * This field is just there to assist in testing
      */
     private boolean                           eagerWire = true;
-
-    public ClassFieldAccessorStore() {
-        lookup = new HashMap<AccessorKey, BaseLookupEntry>();
-    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( lookup );
@@ -140,16 +136,10 @@ public class ClassFieldAccessorStore
                                                     final String expr,
                                                     final boolean typesafe, 
                                                     Class returnType) {
-        AccessorKey key = new AccessorKey( pkgName + className,
-                                           expr,
-                                           AccessorKey.AccessorType.FieldAccessor );
-        FieldLookupEntry entry = (FieldLookupEntry) this.lookup.get( key );
-        if ( entry == null ) {
-            InternalReadAccessor reader  = getReadAcessor( className, expr, typesafe, returnType );
-            entry = new FieldLookupEntry( reader );
-            this.lookup.put( key,
-                             entry );
-        }
+        AccessorKey key = new AccessorKey( pkgName + className, expr, AccessorKey.AccessorType.FieldAccessor );
+
+        FieldLookupEntry entry = (FieldLookupEntry) this.lookup.computeIfAbsent( key, k ->
+            new FieldLookupEntry( getReadAcessor( className, expr, typesafe, returnType ) ) );
 
         return entry.getClassFieldReader();
     }
@@ -181,15 +171,11 @@ public class ClassFieldAccessorStore
         AccessorKey key = new AccessorKey( className,
                                            fieldName,
                                            AccessorKey.AccessorType.FieldAccessor );
-        FieldLookupEntry entry = (FieldLookupEntry) this.lookup.get( key );
-        if ( entry == null ) {
-            entry = new FieldLookupEntry( new ClassFieldReader( className,
-                                                                fieldName ),
-                                          new ClassFieldWriter( className,
-                                                                fieldName ) );
-            this.lookup.put( key,
-                             entry );
-        }
+        FieldLookupEntry entry = (FieldLookupEntry) this.lookup.computeIfAbsent( key, k ->
+                new FieldLookupEntry( new ClassFieldReader( className,
+                                                            fieldName ),
+                                      new ClassFieldWriter( className,
+                                                            fieldName ) ) );
 
         ClassFieldAccessor accessor = new ClassFieldAccessor( (ClassFieldReader) entry.getClassFieldReader(),
                                                               entry.getClassFieldWriter() );
@@ -216,12 +202,8 @@ public class ClassFieldAccessorStore
                                            isEvent ? "$$DROOLS__isEvent__" : null,
                                            AccessorKey.AccessorType.ClassObjectType );
 
-        ClassObjectTypeLookupEntry entry = (ClassObjectTypeLookupEntry) this.lookup.get( key );
-        if ( entry == null ) {
-            entry = new ClassObjectTypeLookupEntry( cache.getClassObjectType( objectType, false ) );
-            this.lookup.put( key,
-                             entry );
-        }
+        ClassObjectTypeLookupEntry entry = (ClassObjectTypeLookupEntry) this.lookup.computeIfAbsent( key, k ->
+                new ClassObjectTypeLookupEntry( cache.getClassObjectType( objectType, false ) ) );
 
         if ( target != null ) {
             target.setClassObjectType( entry.getClassObjectType() );
@@ -248,11 +230,7 @@ public class ClassFieldAccessorStore
         for ( Entry<AccessorKey, BaseLookupEntry> entry : other.lookup.entrySet() ) {
             switch ( entry.getValue().getAccessorType() ) {
                 case FieldAccessor : {
-                    FieldLookupEntry lookupEntry = (FieldLookupEntry) this.lookup.get( entry.getKey() );
-                    if ( lookupEntry == null ) {
-                        lookupEntry = (FieldLookupEntry) entry.getValue();
-                        this.lookup.put( entry.getKey(), lookupEntry );
-                    }
+                    FieldLookupEntry lookupEntry = (FieldLookupEntry) this.lookup.computeIfAbsent( entry.getKey(), e -> entry.getValue() );
                     // wire up ClassFieldReaders
                     if (lookupEntry.getClassFieldReader() != null ) {
                         InternalReadAccessor reader = ((FieldLookupEntry)entry.getValue()).getClassFieldReader();
@@ -272,15 +250,12 @@ public class ClassFieldAccessorStore
                 }
 
                 case ClassObjectType : {
-                    ClassObjectTypeLookupEntry lookupEntry = (ClassObjectTypeLookupEntry) this.lookup.get( entry.getKey() );
-                    if ( lookupEntry == null ) {
-                        // Create new entry with correct ClassObjectType and targets
+                    ClassObjectTypeLookupEntry lookupEntry = (ClassObjectTypeLookupEntry) this.lookup.computeIfAbsent( entry.getKey(), e -> {
                         ClassObjectType oldObjectType = ((ClassObjectTypeLookupEntry) entry.getValue()).getClassObjectType();
                         ClassObjectType newObjectType = cache.getClassObjectType( oldObjectType, true );
-                        this.lookup.put( entry.getKey(), new ClassObjectTypeLookupEntry( newObjectType ) );
-                        // also rewire the class of the old ClassObjectType in case it is still in use
                         oldObjectType.setClassType( newObjectType.getClassType() );
-                    }
+                        return new ClassObjectTypeLookupEntry( newObjectType );
+                    });
                 }
             }
         }

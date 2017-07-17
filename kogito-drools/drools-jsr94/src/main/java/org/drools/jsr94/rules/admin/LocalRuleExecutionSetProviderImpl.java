@@ -168,7 +168,10 @@ public class LocalRuleExecutionSetProviderImpl
                 }
             }
 
-            InternalKnowledgePackage pkg = builder.getPackage();
+            InternalKnowledgePackage pkg = builder.getPackageNames().stream()
+                                                  .map( builder::getPackage )
+                                                  .filter( p -> !p.getRules().isEmpty() )
+                                                  .findFirst().get();
             return createRuleExecutionSet( pkg,
                                            properties );
         } catch ( final IOException e ) {

@@ -15,21 +15,17 @@
 
 package org.drools.compiler.compiler;
 
+import java.util.HashSet;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.ImportDeclaration;
-import org.drools.core.spi.Consequence;
 import org.kie.api.io.Resource;
-
-import java.util.HashSet;
-import java.util.Map;
 
 public class PackageRegistry {
 
@@ -65,31 +61,6 @@ public class PackageRegistry {
         }
 
         pkg.setTypeResolver(typeResolver);
-    }
-
-    private PackageRegistry(InternalKnowledgePackage pkg, DialectRuntimeRegistry runtimeRegistry, DialectCompiletimeRegistry compiletimeRegistry, TypeResolver typeResolver) {
-        this.pkg = pkg;
-        this.dialectRuntimeRegistry = runtimeRegistry;
-        this.dialectCompiletimeRegistry = compiletimeRegistry;
-        this.typeResolver = typeResolver;
-    }
-
-    PackageRegistry clonePackage(ClassLoader classLoader) {
-        InternalKnowledgePackage clonedPkg = ClassUtils.deepClone(pkg, classLoader);
-        clonedPkg.setDialectRuntimeRegistry(pkg.getDialectRuntimeRegistry());
-        for (org.kie.api.definition.rule.Rule rule : pkg.getRules()) {
-            RuleImpl clonedRule = clonedPkg.getRule(rule.getName());
-            clonedRule.setConsequence(((RuleImpl)rule).getConsequence());
-            if (((RuleImpl)rule).hasNamedConsequences()) {
-                for (Map.Entry<String, Consequence> namedConsequence : ((RuleImpl)rule).getNamedConsequences().entrySet()) {
-                    clonedRule.addNamedConsequence(namedConsequence.getKey(), namedConsequence.getValue());
-                }
-            }
-        }
-
-        PackageRegistry clone = new PackageRegistry(clonedPkg, dialectRuntimeRegistry, dialectCompiletimeRegistry, typeResolver);
-        clone.setDialect(dialect);
-        return clone;
     }
 
     public String getDialect() {

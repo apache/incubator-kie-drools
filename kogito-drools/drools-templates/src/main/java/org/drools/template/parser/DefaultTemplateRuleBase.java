@@ -16,17 +16,22 @@
 
 package org.drools.template.parser;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.template.model.*;
-import org.kie.api.runtime.KieSession;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.template.model.Condition;
+import org.drools.template.model.Consequence;
+import org.drools.template.model.DRLOutput;
+import org.drools.template.model.Global;
+import org.drools.template.model.Import;
+import org.drools.template.model.Rule;
+import org.kie.api.runtime.KieSession;
 
 /**
  * Create a rule base for the set of rule templates in the
@@ -129,7 +134,7 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
         try (Reader source = new StringReader(drl)) {
             KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
             builder.addPackageFromDrl(source);
-            InternalKnowledgePackage pkg = builder.getPackage();
+            InternalKnowledgePackage pkg = builder.getPackage(DefaultTemplateRuleBase.class.getPackage().getName());
 
             // add the package to a rulebase (deploy the rule package).
             InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();

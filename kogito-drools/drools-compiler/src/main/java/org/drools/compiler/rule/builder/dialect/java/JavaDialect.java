@@ -15,6 +15,18 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.errors.ErrorHandler;
 import org.drools.compiler.builder.impl.errors.FunctionErrorHandler;
@@ -94,16 +106,6 @@ import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class JavaDialect
     implements
     Dialect {
@@ -170,12 +172,12 @@ public class JavaDialect
 
         this.configuration = (JavaDialectConfiguration) pkgConf.getDialectConfiguration( "java" );
 
-        this.errorHandlers = new HashMap<String, ErrorHandler>();
+        this.errorHandlers = new ConcurrentHashMap<String, ErrorHandler>();
         this.results = new ArrayList<KnowledgeBuilderResult>();
 
         this.src = new MemoryResourceReader();
 
-        this.generatedClassList = new ArrayList<String>();
+        this.generatedClassList = Collections.synchronizedList( new ArrayList<String>() );
 
         JavaDialectRuntimeData data = (JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( ID );
 

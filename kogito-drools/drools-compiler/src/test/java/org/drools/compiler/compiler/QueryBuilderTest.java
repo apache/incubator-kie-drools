@@ -15,15 +15,11 @@
 
 package org.drools.compiler.compiler;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Arrays;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
@@ -32,12 +28,15 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 
-import java.util.Arrays;
+import static org.junit.Assert.assertEquals;
 
 public class QueryBuilderTest extends DroolsTestCase {
 
@@ -97,7 +96,7 @@ public class QueryBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(Arrays.asList( new KiePackage[] { builder.getPackage() } ));
+        kbase.addPackages(Arrays.asList( new KiePackage[] { builder.getPackage(packageDescr.getName()) } ));
         final KieSession session = kbase.newKieSession();
 
         session.insert( new Person( "bobba",
@@ -154,7 +153,7 @@ public class QueryBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(Arrays.asList( new KiePackage[] { builder.getPackage() } ) );
+        kbase.addPackages(Arrays.asList( new KiePackage[] { builder.getPackage(packageDescr.getName()) } ) );
 
         final KieSession session = kbase.newKieSession();
 

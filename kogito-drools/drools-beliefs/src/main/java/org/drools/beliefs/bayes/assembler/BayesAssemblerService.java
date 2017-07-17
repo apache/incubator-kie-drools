@@ -15,6 +15,8 @@
 
 package org.drools.beliefs.bayes.assembler;
 
+import java.util.Map;
+
 import org.drools.beliefs.bayes.BayesNetwork;
 import org.drools.beliefs.bayes.JunctionTreeBuilder;
 import org.drools.beliefs.bayes.model.Bif;
@@ -29,8 +31,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.assembler.KieAssemblerService;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.io.ResourceTypePackage;
-
-import java.util.Map;
 
 public class BayesAssemblerService implements KieAssemblerService {
 
@@ -68,15 +68,9 @@ public class BayesAssemblerService implements KieAssemblerService {
         }
 
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
-        PackageRegistry pkgReg = kbuilderImpl.getPackageRegistry( network.getPackageName() );
-        if ( pkgReg == null ) {
-            pkgReg = kbuilderImpl.newPackage( new PackageDescr( network.getPackageName() ) );
-        }
+        PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry( new PackageDescr( network.getPackageName() ) );
 
         InternalKnowledgePackage kpkgs = pkgReg.getPackage();
-
-
-
 
         Map<ResourceType, ResourceTypePackage> rpkg = kpkgs.getResourceTypePackages();
         BayesPackage bpkg = (BayesPackage) rpkg.get(ResourceType.BAYES);

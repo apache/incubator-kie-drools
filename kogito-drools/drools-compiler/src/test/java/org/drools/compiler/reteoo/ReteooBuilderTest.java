@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import com.thoughtworks.xstream.XStream;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -32,9 +33,7 @@ import org.drools.core.reteoo.ObjectSource;
 import org.junit.Test;
 import org.kie.api.KieBase;
 
-import static org.junit.Assert.*;
-
-import com.thoughtworks.xstream.XStream;
+import static org.junit.Assert.assertEquals;
 
 public class ReteooBuilderTest {
 
@@ -73,7 +72,7 @@ public class ReteooBuilderTest {
     private void checkRuleBase(final String name) throws Exception {
         final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_" + name + ".drl" ) ) );
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage("org.drools.compiler.test");
 
         final InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
         kBase.addPackage( pkg );

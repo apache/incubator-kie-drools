@@ -17,9 +17,10 @@
 package org.drools.compiler.rule.builder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -48,20 +49,20 @@ public class PackageBuildContext {
     private BaseDescr                   parentDescr;
 
     // errors found when building the current context
-    private List<DroolsError>           errors;
-    private List<DroolsWarning>         warnings;
+    private final List<DroolsError> errors = Collections.synchronizedList(new ArrayList<>());
+    private final List<DroolsWarning> warnings = Collections.synchronizedList(new ArrayList<>());
 
     // list of generated methods
-    private List<String>                methods;
+    private final List<String> methods = Collections.synchronizedList(new ArrayList<>());
 
     // map<String invokerClassName, String invokerCode> of generated invokers
-    private Map<String, String>         invokers;
+    private final Map<String, String> invokers = new ConcurrentHashMap<>();
 
     // map<String invokerClassName, ConditionalElement ce> of generated invoker lookups
-    private Map<String, Object>         invokerLookups;
+    private final Map<String, Object> invokerLookups = new ConcurrentHashMap<>();
 
     // map<String invokerClassName, BaseDescr descr> of descriptor lookups
-    private Map<String, BaseDescr>      descrLookups;
+    private final Map<String, BaseDescr> descrLookups = new ConcurrentHashMap<>();
 
     // a simple counter for generated names
     private int                         counter;
@@ -86,22 +87,10 @@ public class PackageBuildContext {
                      final Dialect defaultDialect,
                      final Dialectable component) {
         this.kBuilder = kBuilder;
-        
         this.pkg = pkg;
-
         this.parentDescr = parentDescr;
-
-        this.methods = new ArrayList();
-        this.invokers = new HashMap<String, String>();
-        this.invokerLookups = new HashMap<String, Object>();
-        this.descrLookups = new HashMap<String, BaseDescr>();
-        this.errors = new ArrayList<DroolsError>();
-        this.warnings = new ArrayList<DroolsWarning>();
-
         this.dialectRegistry = dialectRegistry;
-
         this.dialect = (component != null && component.getDialect() != null) ? this.dialectRegistry.getDialect( component.getDialect() ) : defaultDialect;
-
         this.typesafe = ((MVELDialect) dialectRegistry.getDialect( "mvel" )).isStrictMode();
 
         if ( dialect == null && (component != null && component.getDialect() != null) ) {
@@ -197,8 +186,8 @@ public class PackageBuildContext {
         return this.invokers;
     }
 
-    public void setInvokers(final Map<String, String> invokers) {
-        this.invokers = invokers;
+    public void addInvoker(String invokerClassName, String invoker) {
+        this.invokers.put(invokerClassName, invoker);
     }
 
     /**

@@ -20,6 +20,7 @@ import java.io.StringReader;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.integrationtests.LargeRuleBase;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -27,10 +28,9 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.compiler.integrationtests.LargeRuleBase;
 import org.kie.api.definition.rule.Rule;
+
+import static org.junit.Assert.fail;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 20, 2008 Time: 2:36:47 PM To change this template use File |
@@ -85,7 +85,7 @@ public class ReteooBuilderPerformanceTest {
             fail( pkgBuilder.getErrors().toString() );
         }
 
-        return pkgBuilder.getPackage();
+        return pkgBuilder.getPackage("org.kie.test");
     }
 
     private static String generateRules(int ruleCount) {

@@ -46,7 +46,7 @@ public class MVELAccumulateBuilderTest {
         KnowledgeBuilderImpl pkgBuilder = new KnowledgeBuilderImpl();
         pkgBuilder.addPackage( new PackageDescr( "pkg1" ) );
 
-        InternalKnowledgePackage pkg = pkgBuilder.getPackage();
+        InternalKnowledgePackage pkg = pkgBuilder.getPackage("pkg1");
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
 
         final KnowledgeBuilderConfigurationImpl conf = pkgBuilder.getBuilderConfiguration();

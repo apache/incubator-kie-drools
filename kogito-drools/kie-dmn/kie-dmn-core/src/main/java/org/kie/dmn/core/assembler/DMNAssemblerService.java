@@ -63,10 +63,7 @@ public class DMNAssemblerService implements KieAssemblerService {
         if( model != null ) {
             String namespace = model.getNamespace();
 
-            PackageRegistry pkgReg = kbuilderImpl.getPackageRegistry( namespace );
-            if ( pkgReg == null ) {
-                pkgReg = kbuilderImpl.newPackage( new PackageDescr( namespace ) );
-            }
+            PackageRegistry pkgReg = kbuilderImpl.getOrCreatePackageRegistry( new PackageDescr( namespace ) );
             InternalKnowledgePackage kpkgs = pkgReg.getPackage();
             kpkgs.addCloningResource( DMN_COMPILER_CACHE_KEY, dmnCompiler );
 

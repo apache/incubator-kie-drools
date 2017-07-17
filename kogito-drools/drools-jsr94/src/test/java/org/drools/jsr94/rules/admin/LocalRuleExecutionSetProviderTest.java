@@ -68,7 +68,7 @@ public class LocalRuleExecutionSetProviderTest extends RuleEngineTestBase {
         try {
             final KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
             builder.addPackageFromDrl( new InputStreamReader( RuleEngineTestBase.class.getResourceAsStream( this.bindUri ) ) );
-            InternalKnowledgePackage pkg = builder.getPackage();
+            InternalKnowledgePackage pkg = builder.getPackage(builder.getPackageNames().iterator().next());
             final RuleExecutionSet ruleExecutionSet = this.ruleSetProvider.createRuleExecutionSet( pkg,
                                                                                                    null );
             assertEquals( "rule set name",

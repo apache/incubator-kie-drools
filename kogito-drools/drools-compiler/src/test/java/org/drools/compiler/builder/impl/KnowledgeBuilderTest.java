@@ -175,7 +175,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
         RuleImpl rule = pkg.getRule( "rule-1" );
 
         assertLength( 0,
@@ -209,11 +209,11 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         // Make sure the compiled classes are also removed
         assertEquals( 0,
-                      ((JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "java" )).list().length );
+                      ((JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "java" )).getStore().size() );
 
         builder.addPackage( packageDescr );
 
-        pkg = builder.getPackage();
+        pkg = builder.getPackage(packageDescr.getName());
 
         rule = pkg.getRule( "rule-1" );
 
@@ -249,7 +249,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                       back.getName() );
 
         builder.addPackage( packageDescr );
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
         final RuleImpl rule = pkg.getRule( "rule-1" );
 
         assertLength( 0,
@@ -395,7 +395,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         if ( builder1.hasErrors() ) {
             fail( builder1.getErrors().toString() );
         }
-        final Pattern pattern1 = (Pattern) ((RuleImpl)builder1.getPackage().getRules().iterator().next()).getLhs().getChildren().get( 0 );
+        final Pattern pattern1 = (Pattern) ((RuleImpl)builder1.getPackage("package1").getRules().iterator().next()).getLhs().getChildren().get( 0 );
         final Constraint returnValue1 = pattern1.getConstraints().get( 0 );
 
         final KnowledgeBuilderImpl builder2 = new KnowledgeBuilderImpl();
@@ -403,7 +403,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         createReturnValueRule( packageDescr2,
                                " x + y " );
         builder2.addPackage( packageDescr2 );
-        final Pattern pattern2 = (Pattern) ((RuleImpl)builder2.getPackage().getRules().iterator().next()).getLhs().getChildren().get( 0 );
+        final Pattern pattern2 = (Pattern) ((RuleImpl)builder2.getPackage("package2").getRules().iterator().next()).getLhs().getChildren().get( 0 );
         final Constraint returnValue2 = pattern2.getConstraints().get( 0 );
 
         final KnowledgeBuilderImpl builder3 = new KnowledgeBuilderImpl();
@@ -411,7 +411,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         createReturnValueRule( packageDescr3,
                                " x - y " );
         builder3.addPackage( packageDescr3 );
-        final Pattern pattern3 = (Pattern) ((RuleImpl)builder3.getPackage().getRules().iterator().next()).getLhs().getChildren().get( 0 );
+        final Pattern pattern3 = (Pattern) ((RuleImpl)builder3.getPackage("package3").getRules().iterator().next()).getLhs().getChildren().get( 0 );
         final Constraint returnValue3 = pattern3.getConstraints().get( 0 );
 
         assertEquals( returnValue1,
@@ -467,7 +467,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         if ( builder1.hasErrors() ) {
            fail( builder1.getErrors().toString() );
         }
-        final Pattern pattern1 = (Pattern) ((RuleImpl)builder1.getPackage().getRules().iterator().next()).getLhs().getChildren().get( 0 );
+        final Pattern pattern1 = (Pattern) ((RuleImpl)builder1.getPackage("package1").getRules().iterator().next()).getLhs().getChildren().get( 0 );
         final PredicateConstraint predicate1 = (PredicateConstraint) pattern1.getConstraints().get( 0 );
 
         final KnowledgeBuilderImpl builder2 = new KnowledgeBuilderImpl();
@@ -479,7 +479,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
             fail( builder2.getErrors().toString() );
          }
         
-        final Pattern pattern2 = (Pattern) ((RuleImpl)builder2.getPackage().getRules().iterator().next()).getLhs().getChildren().get( 0 );
+        final Pattern pattern2 = (Pattern) ((RuleImpl)builder2.getPackage("package2").getRules().iterator().next()).getLhs().getChildren().get( 0 );
         final PredicateConstraint predicate2 = (PredicateConstraint) pattern2.getConstraints().get( 0 );
 
         final KnowledgeBuilderImpl builder3 = new KnowledgeBuilderImpl();
@@ -490,7 +490,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         createPredicateRule( packageDescr3,
                              "eval(x!=y)" );
         builder3.addPackage( packageDescr3 );
-        final Pattern pattern3 = (Pattern) ((RuleImpl)builder3.getPackage().getRules().iterator().next()).getLhs().getChildren().get( 0 );
+        final Pattern pattern3 = (Pattern) ((RuleImpl)builder3.getPackage("package3").getRules().iterator().next()).getLhs().getChildren().get( 0 );
         final PredicateConstraint predicate3 = (PredicateConstraint) pattern3.getConstraints().get( 0 );
 
         assertEquals( predicate1,
@@ -534,7 +534,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
 
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
         final RuleImpl rule = pkg.getRule( "rule-1" );
         final EvalCondition eval = (EvalCondition) rule.getLhs().getChildren().get( 1 );
         final CompiledInvoker invoker = (CompiledInvoker) eval.getEvalExpression();
@@ -548,21 +548,21 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         createEvalRule( packageDescr1,
                         "1==1" );
         builder1.addPackage( packageDescr1 );
-        final EvalCondition eval1 = (EvalCondition) ((RuleImpl)builder1.getPackage().getRules().iterator().next()).getLhs().getChildren().get( 0 );
+        final EvalCondition eval1 = (EvalCondition) ((RuleImpl)builder1.getPackage("package1").getRules().iterator().next()).getLhs().getChildren().get( 0 );
 
         final KnowledgeBuilderImpl builder2 = new KnowledgeBuilderImpl();
         final PackageDescr packageDescr2 = new PackageDescr( "package2" );
         createEvalRule( packageDescr2,
                         "1==1" );
         builder2.addPackage( packageDescr2 );
-        final EvalCondition eval2 = (EvalCondition) ((RuleImpl)builder2.getPackage().getRules().iterator().next()).getLhs().getChildren().get( 0 );
+        final EvalCondition eval2 = (EvalCondition) ((RuleImpl)builder2.getPackage("package2").getRules().iterator().next()).getLhs().getChildren().get( 0 );
 
         final KnowledgeBuilderImpl builder3 = new KnowledgeBuilderImpl();
         final PackageDescr packageDescr3 = new PackageDescr( "package3" );
         createEvalRule( packageDescr3,
                         "1==3" );
         builder3.addPackage( packageDescr3 );
-        final EvalCondition eval3 = (EvalCondition) ((RuleImpl)builder3.getPackage().getRules().iterator().next()).getLhs().getChildren().get( 0 );
+        final EvalCondition eval3 = (EvalCondition) ((RuleImpl)builder3.getPackage("package3").getRules().iterator().next()).getLhs().getChildren().get( 0 );
 
         assertEquals( eval1,
                       eval2 );
@@ -731,7 +731,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
         final RuleImpl rule = pkg.getRule( "rule-1" );
 
         assertLength( 0,
@@ -1040,7 +1040,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
         }
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage(pkgDescr.getName());
         assertEquals( 1,
                       pkg.getTypeDeclarations().size() );
 
@@ -1070,7 +1070,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
         builder.addPackage( pkgDescr );
 
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage(pkgDescr.getName());
         assertEquals( 1,
                       pkg.getTypeDeclarations().size() );
 
@@ -1083,7 +1083,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                       type.getTypeClass().getName() );
         assertFalse( builder.hasErrors() );
 
-        InternalKnowledgePackage bp = builder.getPackage();
+        InternalKnowledgePackage bp = builder.getPackage(pkgDescr.getName());
 
         Class newBean = bp.getPackageClassLoader().loadClass( "org.drools.compiler.test.NewBean" );
         assertNotNull( newBean );
@@ -1105,7 +1105,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         builder.addPackage(pkgDescr);
         assertFalse(builder.hasErrors());
 
-        InternalKnowledgePackage bp = builder.getPackage();
+        InternalKnowledgePackage bp = builder.getPackage(pkgDescr.getName());
 
         final FactType factType = bp.getFactType("org.drools.compiler.test.TypeWithFieldMeta");
         assertNotNull( factType );
@@ -1247,7 +1247,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage(packageDescr.getName());
         final RuleImpl rule = pkg.getRule( "rule-1" );
 
         assertEquals( "rule-1",
@@ -1267,38 +1267,6 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         bldr.addPackageFromDrl( new StringReader( "package testBuilderPackageConfig \n function void doSomething() {\n System.err.println(List.class.toString()); }" ) );
 
         assertFalse( bldr.hasErrors() );
-    }
-
-    @Test
-    public void testSinglePackage() throws Exception {
-        KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
-        cfg.setAllowMultipleNamespaces( false );
-        KnowledgeBuilderImpl bldr = new KnowledgeBuilderImpl( cfg );
-        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.compiler.Cheese" ) );
-        assertFalse( bldr.hasErrors() );
-        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.compiler.Person" ) );
-        assertFalse( bldr.hasErrors() );
-        // following package will not be added because configuration is set for single namespace builders
-        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.compiler.Person" ) );
-        assertFalse( bldr.hasErrors() );
-
-        assertEquals( 1,
-                      bldr.getPackages().length );
-
-        cfg = new KnowledgeBuilderConfigurationImpl();
-        assertEquals( true,
-                      cfg.isAllowMultipleNamespaces() );
-        bldr = new KnowledgeBuilderImpl( cfg );
-        bldr.addPackageFromDrl( new StringReader( "package whee\n import org.drools.compiler.Cheese" ) );
-        assertFalse( bldr.hasErrors() );
-        // following import will be added to the default package name
-        bldr.addPackageFromDrl( new StringReader( "import org.drools.compiler.Person" ) );
-        assertFalse( bldr.hasErrors() );
-        bldr.addPackageFromDrl( new StringReader( "package whee2\n import org.drools.compiler.Person" ) );
-        assertFalse( bldr.hasErrors() );
-
-        assertEquals( 3,
-                      bldr.getPackages().length );
     }
 
     @Test
@@ -1361,7 +1329,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
 
         builder.addPackageFromDrl( new StringReader( drl ) );
 
-        List<FactField> fieldsBean1 = builder.getPackage().getFactType( "foo.Bean1" ).getFields();
+        List<FactField> fieldsBean1 = builder.getPackage("foo").getFactType( "foo.Bean1" ).getFields();
         assertEquals( 2,
                       fieldsBean1.size() );
         assertEquals( "age",
@@ -1373,7 +1341,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
         assertEquals( String.class,
                       fieldsBean1.get( 1 ).getType() );
 
-        List<FactField> fieldsBean2 = builder.getPackage().getFactType( "foo.Bean2" ).getFields();
+        List<FactField> fieldsBean2 = builder.getPackage("foo").getFactType( "foo.Bean2" ).getFields();
         assertEquals( 3,
                       fieldsBean2.size() );
         assertEquals( "age",

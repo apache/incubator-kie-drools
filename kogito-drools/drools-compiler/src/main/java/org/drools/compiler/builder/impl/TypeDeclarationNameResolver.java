@@ -15,6 +15,9 @@
 
 package org.drools.compiler.builder.impl;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
@@ -26,9 +29,6 @@ import org.drools.compiler.lang.descr.TypeFieldDescr;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.ClassUtils;
-
-import java.util.Collection;
-import java.util.List;
 
 public class TypeDeclarationNameResolver {
 
@@ -42,46 +42,58 @@ public class TypeDeclarationNameResolver {
 
     public void resolveTypes( Collection<? extends PackageDescr> packageDescrs,
                               List<TypeDefinition> unresolvedTypes ) {
-        ensureQualifiedNames( packageDescrs, unresolvedTypes );
-    }
-
-    protected void ensureQualifiedNames( Collection<? extends PackageDescr> packageDescrs,
-                                         List<TypeDefinition> unresolvedTypes ) {
         for ( PackageDescr packageDescr : packageDescrs ) {
             TypeResolver typeResolver = kbuilder.getPackageRegistry( packageDescr.getName() ).getTypeResolver();
-            for ( AbstractClassTypeDeclarationDescr descr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
-                ensureQualifiedDeclarationName( descr,
-                                                packageDescr,
-                                                typeResolver,
-                                                unresolvedTypes );
-            }
+            ensureQualifiedDeclarationName( unresolvedTypes, packageDescr, typeResolver );
         }
 
         for ( PackageDescr packageDescr : packageDescrs ) {
-            for ( TypeDeclarationDescr declarationDescr : packageDescr.getTypeDeclarations() ) {
-                qualifyNames( declarationDescr, packageDescr, unresolvedTypes );
-                discoverHierarchyForRedeclarations( declarationDescr, packageDescr );
-            }
-            for ( EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations() ) {
-                qualifyNames( enumDeclarationDescr, packageDescr, unresolvedTypes );
-            }
+            TypeResolver typeResolver = kbuilder.getPackageRegistry( packageDescr.getName() ).getTypeResolver();
+            qualifyNames( unresolvedTypes, packageDescr, typeResolver );
+        }
+    }
+
+    public void resolveTypes( PackageDescr packageDescr,
+                              List<TypeDefinition> unresolvedTypes,
+                              TypeResolver typeResolver ) {
+        ensureQualifiedDeclarationName( unresolvedTypes, packageDescr, typeResolver );
+        qualifyNames( unresolvedTypes, packageDescr, typeResolver );
+    }
+
+    private void ensureQualifiedDeclarationName( List<TypeDefinition> unresolvedTypes, PackageDescr packageDescr, TypeResolver typeResolver ) {
+        for ( AbstractClassTypeDeclarationDescr descr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
+            ensureQualifiedDeclarationName( descr,
+                                            packageDescr,
+                                            typeResolver,
+                                            unresolvedTypes );
+        }
+    }
+
+    private void qualifyNames( List<TypeDefinition> unresolvedTypes, PackageDescr packageDescr, TypeResolver typeResolver ) {
+        for ( TypeDeclarationDescr declarationDescr : packageDescr.getTypeDeclarations() ) {
+            qualifyNames( declarationDescr, packageDescr, unresolvedTypes, typeResolver );
+            discoverHierarchyForRedeclarations( declarationDescr, packageDescr, typeResolver );
+        }
+        for ( EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations() ) {
+            qualifyNames( enumDeclarationDescr, packageDescr, unresolvedTypes, typeResolver );
         }
     }
 
     private void qualifyNames( AbstractClassTypeDeclarationDescr declarationDescr,
                                PackageDescr packageDescr,
-                               List<TypeDefinition> unresolvedTypes ) {
+                               List<TypeDefinition> unresolvedTypes,
+                               TypeResolver typeResolver) {
         ensureQualifiedSuperType( declarationDescr,
                                   packageDescr,
-                                  kbuilder.getPackageRegistry( packageDescr.getName() ).getTypeResolver(),
+                                  typeResolver,
                                   unresolvedTypes );
         ensureQualifiedFieldType( declarationDescr,
                                   packageDescr,
-                                  kbuilder.getPackageRegistry( packageDescr.getName() ).getTypeResolver(),
+                                  typeResolver,
                                   unresolvedTypes );
     }
 
-    private void discoverHierarchyForRedeclarations( TypeDeclarationDescr typeDescr, PackageDescr packageDescr ) {
+    private void discoverHierarchyForRedeclarations( TypeDeclarationDescr typeDescr, PackageDescr packageDescr, TypeResolver typeResolver ) {
         PackageRegistry pkReg = kbuilder.getPackageRegistry( packageDescr.getName() );
         Class typeClass = TypeDeclarationUtils.getExistingDeclarationClass( typeDescr, pkReg );
         if ( typeClass != null ) {
@@ -96,7 +108,7 @@ public class TypeDeclarationNameResolver {
         } else {
             // avoid to cache in the type resolver that this class doesn't exist
             // since we may still look for it in the wrong package
-            pkReg.getTypeResolver().registerClass( typeDescr.getFullTypeName(), null );
+            typeResolver.registerClass( typeDescr.getFullTypeName(), null );
         }
     }
 

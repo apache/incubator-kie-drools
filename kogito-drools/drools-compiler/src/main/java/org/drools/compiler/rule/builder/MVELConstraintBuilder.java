@@ -353,7 +353,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             }
         }
 
-        MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
+        MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
         MVELCompilationUnit unit = null;
 

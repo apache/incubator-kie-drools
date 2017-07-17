@@ -15,16 +15,19 @@
 
 package org.drools.decisiontable.integrationtests;
 
+import java.io.InputStream;
+import java.util.List;
+
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import java.io.InputStream;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class IncrementalCompilationTest {
 
@@ -51,7 +54,8 @@ public class IncrementalCompilationTest {
                        KieServices.Factory.get().getResources().newInputStreamResource( in2 ) );
 
             //Check errors on a full build
-            assertEquals( 2, ks.newKieBuilder( kfs ).buildAll().getResults().getMessages().size() );
+            List<Message> messages = ks.newKieBuilder( kfs ).buildAll().getResults().getMessages();
+            assertFalse( messages.isEmpty() );
 
         } finally {
             if ( in1 != null ) {
@@ -96,7 +100,8 @@ public class IncrementalCompilationTest {
             assertEquals( 0, addResults.getRemovedMessages().size() );
 
             //Check errors on a full build
-            assertEquals( 2, ks.newKieBuilder( kfs ).buildAll().getResults().getMessages().size() );
+            List<Message> messages = ks.newKieBuilder( kfs ).buildAll().getResults().getMessages();
+            assertFalse( messages.isEmpty() );
 
         } finally {
             if ( in1 != null ) {

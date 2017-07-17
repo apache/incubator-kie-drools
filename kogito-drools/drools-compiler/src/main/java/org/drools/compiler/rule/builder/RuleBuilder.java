@@ -200,18 +200,34 @@ public class RuleBuilder {
 
         for ( final AttributeDescr attributeDescr : ruleDescr.getAttributes().values() ) {
             final String name = attributeDescr.getName();
-            if ( name.equals( "no-loop" ) ) {
-                rule.setNoLoop( getBooleanValue( attributeDescr,
-                                                 true ) );
-                enforceEager = true;
-            } else if ( name.equals( "auto-focus" ) ) {
-                rule.setAutoFocus( getBooleanValue( attributeDescr,
-                                                    true ) );
-            } else if ( name.equals( "agenda-group" ) ) {
-                if ( StringUtils.isEmpty(rule.getRuleFlowGroup())) {
-                    rule.setAgendaGroup( attributeDescr.getValue() ); // don't override if RFG has already set this
-                } else {
-                    if ( rule.getRuleFlowGroup().equals( attributeDescr.getValue() ) ) {
+            switch ( name ) {
+                case "no-loop":
+                    rule.setNoLoop( getBooleanValue( attributeDescr, true ) );
+                    enforceEager = true;
+                    break;
+                case "auto-focus":
+                    rule.setAutoFocus( getBooleanValue( attributeDescr, true ) );
+                    break;
+                case "agenda-group":
+                    if ( StringUtils.isEmpty( rule.getRuleFlowGroup() ) ) {
+                        rule.setAgendaGroup( attributeDescr.getValue() ); // don't override if RFG has already set this
+                    } else {
+                        if ( rule.getRuleFlowGroup().equals( attributeDescr.getValue() ) ) {
+                            DroolsWarning warn = new RuleBuildWarning( rule, context.getParentDescr(), null,
+                                                                       "Both an agenda-group ( " + attributeDescr.getValue() +
+                                                                       " ) and a ruleflow-group ( " + rule.getRuleFlowGroup() +
+                                                                       " ) are defined for rule " + rule.getName() + ". Since version 6.x the " +
+                                                                       "two concepts have been unified, the ruleflow-group name will override the agenda-group. " );
+                            context.addWarning( warn );
+                        }
+                    }
+                    break;
+                case "activation-group":
+                    rule.setActivationGroup( attributeDescr.getValue() );
+                    break;
+                case "ruleflow-group":
+                    rule.setRuleFlowGroup( attributeDescr.getValue() );
+                    if ( !rule.getAgendaGroup().equals( AgendaGroup.MAIN ) && !rule.getAgendaGroup().equals( attributeDescr.getValue() ) ) {
                         DroolsWarning warn = new RuleBuildWarning( rule, context.getParentDescr(), null,
                                                                    "Both an agenda-group ( " + attributeDescr.getValue() +
                                                                    " ) and a ruleflow-group ( " + rule.getRuleFlowGroup() +
@@ -219,51 +235,46 @@ public class RuleBuilder {
                                                                    "two concepts have been unified, the ruleflow-group name will override the agenda-group. " );
                         context.addWarning( warn );
                     }
-                }
-            } else if ( name.equals( "activation-group" ) ) {
-                rule.setActivationGroup( attributeDescr.getValue() );
-            } else if ( name.equals( "ruleflow-group" ) ) {
-                rule.setRuleFlowGroup( attributeDescr.getValue() );
-                if ( ! rule.getAgendaGroup().equals( AgendaGroup.MAIN ) && ! rule.getAgendaGroup().equals( attributeDescr.getValue() ) ) {
-                    DroolsWarning warn = new RuleBuildWarning( rule, context.getParentDescr(), null,
-                                                               "Both an agenda-group ( " + attributeDescr.getValue() +
-                                                               " ) and a ruleflow-group ( " + rule.getRuleFlowGroup() +
-                                                               " ) are defined for rule " + rule.getName() + ". Since version 6.x the " +
-                                                               "two concepts have been unified, the ruleflow-group name will override the agenda-group. " );
-                    context.addWarning( warn );
-                }
-                rule.setAgendaGroup( attributeDescr.getValue() ); // assign AG to the same name as RFG, as they are aliased to AGs anyway
-            } else if ( name.equals( "lock-on-active" ) ) {
-                boolean lockOnActive = getBooleanValue( attributeDescr, true );
-                rule.setLockOnActive( lockOnActive );
-                enforceEager |= lockOnActive;
-            } else if ( name.equals( DroolsSoftKeywords.DURATION ) || name.equals( DroolsSoftKeywords.TIMER ) ) {
-                String duration = attributeDescr.getValue();
-                buildTimer( rule, duration, context);
-            }  else if ( name.equals( "calendars" ) ) {
-                buildCalendars( rule, attributeDescr.getValue(), context );
-            } else if ( name.equals( "date-effective" ) ) {
-                try {
-                    Date date = DateUtils.parseDate( attributeDescr.getValue() );
-                    final Calendar cal = Calendar.getInstance();
-                    cal.setTime( date );
-                    rule.setDateEffective( cal );
-                } catch (Exception e) {
-                    DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                                                          "Wrong date-effective value: " + e.getMessage() );
-                    context.addError( err  );
-                }
-            } else if ( name.equals( "date-expires" ) ) {
-                try {
-                    Date date = DateUtils.parseDate( attributeDescr.getValue() );
-                    final Calendar cal = Calendar.getInstance();
-                    cal.setTime( date );
-                    rule.setDateExpires( cal );
-                } catch (Exception e) {
-                    DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                                                          "Wrong date-expires value: " + e.getMessage() );
-                    context.addError( err  );
-                }
+                    rule.setAgendaGroup( attributeDescr.getValue() ); // assign AG to the same name as RFG, as they are aliased to AGs anyway
+
+                    break;
+                case "lock-on-active":
+                    boolean lockOnActive = getBooleanValue( attributeDescr, true );
+                    rule.setLockOnActive( lockOnActive );
+                    enforceEager |= lockOnActive;
+                    break;
+                case DroolsSoftKeywords.DURATION:
+                case DroolsSoftKeywords.TIMER:
+                    String duration = attributeDescr.getValue();
+                    buildTimer( rule, duration, context );
+                    break;
+                case "calendars":
+                    buildCalendars( rule, attributeDescr.getValue(), context );
+                    break;
+                case "date-effective":
+                    try {
+                        Date date = DateUtils.parseDate( attributeDescr.getValue() );
+                        final Calendar cal = Calendar.getInstance();
+                        cal.setTime( date );
+                        rule.setDateEffective( cal );
+                    } catch (Exception e) {
+                        DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                              "Wrong date-effective value: " + e.getMessage() );
+                        context.addError( err );
+                    }
+                    break;
+                case "date-expires":
+                    try {
+                        Date date = DateUtils.parseDate( attributeDescr.getValue() );
+                        final Calendar cal = Calendar.getInstance();
+                        cal.setTime( date );
+                        rule.setDateExpires( cal );
+                    } catch (Exception e) {
+                        DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                              "Wrong date-expires value: " + e.getMessage() );
+                        context.addError( err );
+                    }
+                    break;
             }
         }
 

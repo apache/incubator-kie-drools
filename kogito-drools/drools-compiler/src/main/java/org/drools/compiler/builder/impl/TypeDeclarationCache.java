@@ -106,13 +106,8 @@ public class TypeDeclarationCache {
     private void registerTypeDeclaration( String packageName,
                                           TypeDeclaration typeDeclaration ) {
         if (typeDeclaration.getNature() == TypeDeclaration.Nature.DECLARATION || packageName.equals( typeDeclaration.getTypeClass().getPackage().getName() )) {
-            PackageRegistry packageRegistry = kbuilder.getPackageRegistry(packageName);
-            if (packageRegistry != null) {
-                packageRegistry.getPackage().addTypeDeclaration(typeDeclaration);
-            } else {
-                kbuilder.newPackage(new PackageDescr(packageName, ""));
-                kbuilder.getPackageRegistry(packageName).getPackage().addTypeDeclaration(typeDeclaration);
-            }
+            PackageRegistry packageRegistry = kbuilder.getOrCreatePackageRegistry(new PackageDescr(packageName, ""));
+            packageRegistry.getPackage().addTypeDeclaration(typeDeclaration);
         }
     }
 
@@ -264,10 +259,7 @@ public class TypeDeclarationCache {
         TypeDeclaration typeDeclaration = TypeDeclaration.createTypeDeclarationForBean(cls, annotated, kbuilder.getBuilderConfiguration().getPropertySpecificOption());
 
         String namespace = ClassUtils.getPackage( cls );
-        PackageRegistry pkgRegistry = kbuilder.getPackageRegistry( namespace );
-        if (pkgRegistry == null) {
-            pkgRegistry = kbuilder.createPackageRegistry( new PackageDescr(namespace) );
-        }
+        PackageRegistry pkgRegistry = kbuilder.getOrCreatePackageRegistry( new PackageDescr(namespace) );
 
         processMvelBasedAccessors( kbuilder, pkgRegistry, annotated, typeDeclaration );
         return typeDeclaration;

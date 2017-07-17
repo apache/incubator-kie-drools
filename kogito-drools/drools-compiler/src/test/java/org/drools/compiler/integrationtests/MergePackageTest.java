@@ -19,6 +19,7 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -26,7 +27,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Test;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class MergePackageTest extends CommonTestMethodBase {
 
@@ -35,10 +35,12 @@ public class MergePackageTest extends CommonTestMethodBase {
         // using different builders
         try {
             final Collection<KiePackage> kpkgs1 = loadKnowledgePackages("test_RuleNameClashes1.drl");
-            assertEquals(1, kpkgs1.iterator().next().getRules().size());
+            KiePackage kpkg1 = kpkgs1.stream().filter( pkg -> pkg.getName().equals( "org.drools.package1" ) ).findFirst().get();
+            assertEquals(1, kpkg1.getRules().size());
 
             final Collection<KiePackage> kpkgs2 = loadKnowledgePackages("test_RuleNameClashes2.drl");
-            assertEquals(1, kpkgs2.iterator().next().getRules().size());
+            KiePackage kpkg2 = kpkgs2.stream().filter( pkg -> pkg.getName().equals( "org.drools.package2" ) ).findFirst().get();
+            assertEquals(1, kpkg2.getRules().size());
 
             InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBase();
             kbase.addPackages(kpkgs1);

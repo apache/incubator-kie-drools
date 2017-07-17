@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -74,9 +75,9 @@ public class KnowledgePackageImpl
     private String name;
 
     /** Set of all rule-names in this <code>Package</code>. */
-    private Map<String, RuleImpl> rules;
+    private Map<String, RuleImpl> rules = new LinkedHashMap<>();
 
-    private Map<String, ImportDeclaration> imports;
+    private Map<String, ImportDeclaration> imports = new HashMap<>();
 
     private Map<String, Function> functions;
 
@@ -93,7 +94,7 @@ public class KnowledgePackageImpl
     // private JavaDialectData packageCompilationData;
     private DialectRuntimeRegistry dialectRuntimeRegistry;
 
-    private LinkedHashMap<String, TypeDeclaration> typeDeclarations;
+    private Map<String, TypeDeclaration> typeDeclarations = new ConcurrentHashMap<>();
 
     private Set<String> entryPointsIds = Collections.emptySet();
 
@@ -105,7 +106,7 @@ public class KnowledgePackageImpl
 
     private Map<ResourceType, ResourceTypePackage> resourceTypePackages;
     
-    private Map<String, Object> cloningResources;
+    private Map<String, Object> cloningResources = new HashMap<>();
 
     /**
      * This is to indicate the the package has no errors during the
@@ -139,11 +140,8 @@ public class KnowledgePackageImpl
      */
     public KnowledgePackageImpl(final String name) {
         this.name = name;
-        this.imports = new HashMap<String, ImportDeclaration>();
         this.accumulateFunctions = Collections.emptyMap();
-        this.typeDeclarations = new LinkedHashMap<String, TypeDeclaration>();
         this.staticImports = Collections.emptySet();
-        this.rules = new LinkedHashMap<String, RuleImpl>();
         this.ruleFlows = Collections.emptyMap();
         this.globals = Collections.emptyMap();
         this.factTemplates = Collections.emptyMap();
@@ -153,7 +151,6 @@ public class KnowledgePackageImpl
         this.entryPointsIds = Collections.emptySet();
         this.windowDeclarations = Collections.emptyMap();
         this.resourceTypePackages = Collections.emptyMap();
-        this.cloningResources = new HashMap<>();
     }
 
     public Map<ResourceType, ResourceTypePackage> getResourceTypePackages() {
@@ -164,15 +161,11 @@ public class KnowledgePackageImpl
     }
 
     public Collection<Rule> getRules() {
-        List<Rule> list = new ArrayList<Rule>(rules.size());
-        for (RuleImpl rule : rules.values()) {
-            list.add(rule);
-        }
-        return Collections.unmodifiableCollection(list);
+        return Collections.unmodifiableCollection(rules.values());
     }
 
     public Function getFunction(String name) {
-        return functions.containsKey(name) ? functions.get(name) : null;
+        return functions.getOrDefault( name, null );
     }
 
     public Collection<Process> getProcesses() {
@@ -300,7 +293,7 @@ public class KnowledgePackageImpl
         in.setStore( this.classFieldAccessorStore );
 
         this.dialectRuntimeRegistry = (DialectRuntimeRegistry) in.readObject();
-        this.typeDeclarations = (LinkedHashMap) in.readObject();
+        this.typeDeclarations = (Map) in.readObject();
         this.imports = (Map<String, ImportDeclaration>) in.readObject();
         this.staticImports = (Set) in.readObject();
         this.functions = (Map<String, Function>) in.readObject();
@@ -352,10 +345,6 @@ public class KnowledgePackageImpl
     public void addImport( final ImportDeclaration importDecl ) {
         this.imports.put(importDecl.getTarget(),
                          importDecl);
-    }
-
-    public void removeImport( final String importEntry ) {
-        this.imports.remove( importEntry );
     }
 
     public Map<String, ImportDeclaration> getImports() {
@@ -469,7 +458,7 @@ public class KnowledgePackageImpl
 
     public void addFactTemplate( final FactTemplate factTemplate ) {
         if (this.factTemplates == Collections.EMPTY_MAP) {
-            this.factTemplates = new HashMap( 1 );
+            this.factTemplates = new HashMap<>( 1 );
         }
         this.factTemplates.put( factTemplate.getName(),
                                 factTemplate );
@@ -674,10 +663,6 @@ public class KnowledgePackageImpl
 
     public Map<String, WindowDeclaration> getWindowDeclarations() {
         return windowDeclarations;
-    }
-
-    public void setWindowDeclarations( Map<String, WindowDeclaration> windowDeclarations ) {
-        this.windowDeclarations = windowDeclarations;
     }
 
     public boolean hasTraitRegistry() {

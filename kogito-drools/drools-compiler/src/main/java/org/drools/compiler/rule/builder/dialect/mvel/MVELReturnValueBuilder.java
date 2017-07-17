@@ -43,7 +43,7 @@ public class MVELReturnValueBuilder
                       final AnalysisResult analysis) {
         boolean typesafe = context.isTypesafe();
         try {
-            MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
+            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
             
             context.setTypesafe( ((MVELAnalysisResult)analysis).isTypesafe() );
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) returnValueRestrictionDescr.getContent(), 

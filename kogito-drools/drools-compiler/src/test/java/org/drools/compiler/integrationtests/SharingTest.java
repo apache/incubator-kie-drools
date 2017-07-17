@@ -1,5 +1,6 @@
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.Agenda;
 import org.kie.internal.utils.KieHelper;
 
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
@@ -294,5 +296,89 @@ public class SharingTest extends CommonTestMethodBase {
         kieSession.insert(factWithList);
 
         assertEquals(2, kieSession.fireAllRules() );
+    }
+
+    @Test
+    public void testSubnetworkSharing() {
+        // DROOLS-
+        String drl1 =
+                "import " + A.class.getCanonicalName() + "\n" +
+                "import " + B.class.getCanonicalName() + "\n" +
+                "global java.util.List list" +
+                "\n" +
+                "rule R1 agenda-group \"G2\" when\n" +
+                "    Number( intValue < 1 ) from accumulate (\n" +
+                "        A( $id : id )\n" +
+                "        and $b : B( parentId == $id )\n" +
+                "    ;count($b))\n" +
+                "then\n" +
+                "    list.add(\"R1\");\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 agenda-group \"G1\" when\n" +
+                "    Number( intValue < 1 ) from accumulate (\n" +
+                "        A( $id : id )\n" +
+                "        and $b : B( parentId == $id )\n" +
+                "\n" +
+//                "        and eval(true)\n" +
+                "\n" +
+                "    ;count($b))\n" +
+                "then\n" +
+                "    list.add(\"R2\");\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 agenda-group \"G1\" no-loop when\n" +
+                "    $a : A( $id : id )\n" +
+                "then\n" +
+                "    modify($a) { setId($id + 1) };\n" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper()
+                .addContent(drl1, ResourceType.DRL)
+                .build().newKieSession();
+
+        List<String> list = new ArrayList<>();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert( new A(1) );
+        kieSession.insert( new B(1) );
+
+        final Agenda agenda = kieSession.getAgenda();
+        agenda.getAgendaGroup("G2").setFocus();
+        agenda.getAgendaGroup("G1").setFocus();
+
+        kieSession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "R1" ) );
+        assertTrue( list.contains( "R2" ) );
+    }
+
+    public static class A {
+        private int id;
+
+        public A( int id ) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId( int id ) {
+            this.id = id;
+        }
+    }
+
+    public static class B {
+        private final int parentId;
+
+        public B( int parentId ) {
+            this.parentId = parentId;
+        }
+
+        public int getParentId() {
+            return parentId;
+        }
     }
 }
