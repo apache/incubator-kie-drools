@@ -69,7 +69,7 @@ public class ProcessMilestoneTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         ProcessInstance processInstance = ( ProcessInstance ) workingMemory.startProcess("org.drools.milestone");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -121,7 +121,7 @@ public class ProcessMilestoneTest extends AbstractBaseTest {
         	logger.error(error.toString());
         }
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         Person john = new Person("John Doe", 20);
         Person jane = new Person("Jane Doe", 20);

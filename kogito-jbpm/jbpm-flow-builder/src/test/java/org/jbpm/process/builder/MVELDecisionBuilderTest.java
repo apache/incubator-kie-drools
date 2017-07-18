@@ -74,13 +74,13 @@ public class MVELDecisionBuilderTest extends AbstractBaseTest {
                        actionNode );
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( Arrays.asList(pkgBuilder.getPackage()) );
+        kbase.addPackages( Arrays.asList(pkgBuilder.getPackages()) );
         final KieSession wm = kbase.newKieSession();
 
         List<String> list = new ArrayList<String>();
         wm.setGlobal( "list", list );        
         
-        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkgBuilder.getPackage().getDialectRuntimeRegistry().getDialectData( "mvel");
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkgBuilder.getPackage("pkg1").getDialectRuntimeRegistry().getDialectData( "mvel");
         
         ProcessContext processContext = new ProcessContext( ((InternalWorkingMemory) wm).getKnowledgeRuntime() );
         ((MVELAction) actionNode.getAction().getMetaData("Action")).compile( data );

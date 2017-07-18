@@ -48,7 +48,7 @@ public class JavaScriptActionBuilderTest extends AbstractBaseTest {
         process.setName("Process1");
         process.setPackageName("pkg1");
 
-        ProcessBuildContext context = new ProcessBuildContext(pkgBuilder, pkgBuilder.getPackage(), null, processDescr, dialectRegistry, null);
+        ProcessBuildContext context = new ProcessBuildContext(pkgBuilder, pkgBuilder.getPackage("pkg1"), null, processDescr, dialectRegistry, null);
         context.init( pkgBuilder, pkg, null, dialectRegistry, null, null);
 
         pkgBuilder.addPackageFromDrl(new StringReader("package pkg1;\nglobal String testField;\n"));
@@ -69,7 +69,7 @@ public class JavaScriptActionBuilderTest extends AbstractBaseTest {
 
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(Arrays.asList(pkgBuilder.getPackage()));
+        kbase.addPackages(Arrays.asList(pkgBuilder.getPackages()));
         final KieSession wm = kbase.newKieSession();
 
         wm.setGlobal("testField", "vagon");

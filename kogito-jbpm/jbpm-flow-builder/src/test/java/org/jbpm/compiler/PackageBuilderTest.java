@@ -44,7 +44,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
         builder.addPackage( new PackageDescr( "com.sample" ) );
 
         builder.addRuleFlow( new InputStreamReader( in ) );
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage("com.sample");
         assertNotNull( pkg );
 
         Map<String, Process> flows = pkg.getRuleFlows();
@@ -82,7 +82,7 @@ public class PackageBuilderTest extends AbstractBaseTest {
         builder.addPackage( new PackageDescr( "com.sample" ) );
 
         builder.addRuleFlow( new InputStreamReader( in ) );
-        InternalKnowledgePackage pkg = builder.getPackage();
+        InternalKnowledgePackage pkg = builder.getPackage("com.sample");
         assertNotNull( pkg );
 
         Map<String, Process> flows = pkg.getRuleFlows();

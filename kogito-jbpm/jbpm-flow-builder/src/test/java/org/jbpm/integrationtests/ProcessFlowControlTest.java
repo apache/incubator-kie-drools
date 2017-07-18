@@ -57,7 +57,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         assertEquals( 0,
                       builder.getErrors().getErrors().length );
 
-        KieSession session = createKieSession(true, builder.getPackage());
+        KieSession session = createKieSession(true, builder.getPackages());
         List<Integer> inList = new ArrayList<Integer>();
         List<Integer> outList = new ArrayList<Integer>();
         session.setGlobal( "inList",
@@ -135,7 +135,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
 
-        KieSession workingMemory = createKieSession(true, builder.getPackage());
+        KieSession workingMemory = createKieSession(true, builder.getPackages());
         
         final List<String> list = new ArrayList<String>();
         workingMemory.setGlobal( "list",
@@ -167,7 +167,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow40.rfm" ) ) );
         
-        KieSession workingMemory = createKieSession(true, builder.getPackage());
+        KieSession workingMemory = createKieSession(true, builder.getPackages());
         
         final List<String> list = new ArrayList<String>();
         workingMemory.setGlobal( "list",
@@ -199,7 +199,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ruleflowClear.drl" ) ) );
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ruleflowClear.rfm" ) ) );
         
-        KieSession workingMemory = createKieSession(true, builder.getPackage());
+        KieSession workingMemory = createKieSession(true, builder.getPackages());
         
         final List<String> list = new ArrayList<String>();
         workingMemory.setGlobal( "list",
@@ -251,7 +251,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
 
-        final KieSession workingMemory = createKieSession(true, builder.getPackage());
+        final KieSession workingMemory = createKieSession(true, builder.getPackages());
         final List<String> list = new ArrayList<String>();
         workingMemory.setGlobal( "list",
                                  list );
@@ -279,21 +279,21 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         // adding ruleflow before adding package
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
-        builder.getPackage();
+        builder.getPackages();
     }
 
     @Test
     public void testLoadingRuleFlowInPackage2() throws Exception {
         // only adding ruleflow
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
-        builder.getPackage();
+        builder.getPackages();
     }
 
     @Test
     public void testLoadingRuleFlowInPackage3() throws Exception {
         // only adding ruleflow without any generated rules
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );
-        builder.getPackage();
+        builder.getPackages();
     }
 
     @Test
@@ -339,7 +339,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     public void testRuleFlowActionDialects() throws Exception {
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ActionDialects.rfm" ) ) );
 
-        final KieSession session = createKieSession(true, builder.getPackage());
+        final KieSession session = createKieSession(true, builder.getPackages());
         
         List<String> list = new ArrayList<String>();
         session.setGlobal( "list",

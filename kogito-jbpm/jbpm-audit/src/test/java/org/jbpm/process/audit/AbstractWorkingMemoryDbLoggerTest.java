@@ -86,7 +86,7 @@ public abstract class AbstractWorkingMemoryDbLoggerTest extends AbstractBaseTest
         builder.addProcessFromXml(source);
         // create the knowledge base 
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(Arrays.asList(builder.getPackage()));
+        kbase.addPackages(Arrays.asList(builder.getPackages()));
         return kbase;
     }
 

@@ -48,7 +48,7 @@ public class ProcessMultiThreadTest extends AbstractBaseTest {
             	fail("Could not parse process");
             }
 
-            KieSession session = createKieSession(true, builder.getPackage());
+            KieSession session = createKieSession(true, builder.getPackages());
             
             session = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession(session);
             List<String> list = new ArrayList<String>();

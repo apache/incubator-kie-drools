@@ -69,7 +69,7 @@ public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
         builder.addRuleFlow(source);
         builder.addPackageFromDrl(source2);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         workingMemory.getEnvironment().set("org.jbpm.rule.task.waitstate", "true");
         
         Person person = new Person();

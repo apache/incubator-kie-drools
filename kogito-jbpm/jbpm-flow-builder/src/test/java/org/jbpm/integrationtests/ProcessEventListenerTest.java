@@ -48,7 +48,7 @@ public class ProcessEventListenerTest extends AbstractBaseTest {
 	public void testInternalNodeSignalEvent() {
         Reader source = new StringReader(process);
         builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
 
         final List<ProcessEvent> processEventList = new ArrayList<ProcessEvent>();
 

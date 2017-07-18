@@ -60,9 +60,8 @@ public class ProcessInstanceExecutor {
             ProcessInstanceExecutor.class.getResourceAsStream("/ruleflow2.rf"));
         builder.addProcessFromXml(source);
        // create the knowledge base 
-        InternalKnowledgePackage pkg = builder.getPackage();
         InternalKnowledgeBase ruleBase = KnowledgeBaseFactory.newKnowledgeBase();
-        ruleBase.addPackages(Arrays.asList(pkg));
+        ruleBase.addPackages(Arrays.asList(builder.getPackages()));
         return ruleBase;
     }
     

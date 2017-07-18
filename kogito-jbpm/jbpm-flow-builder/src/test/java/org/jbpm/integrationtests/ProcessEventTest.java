@@ -71,7 +71,7 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -117,7 +117,7 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         
@@ -167,7 +167,7 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
                 
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -221,7 +221,7 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -288,7 +288,7 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        KieSession ksession = createKieSession(builder.getPackage());
+        KieSession ksession = createKieSession(builder.getPackages());
         
         ProcessInstance processInstance =
             ksession.startProcess("org.drools.core.event");
@@ -347,7 +347,7 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -410,7 +410,7 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
@@ -473,7 +473,7 @@ public class ProcessEventTest extends AbstractBaseTest {
             "\n" +
             "</process>");
         builder.addRuleFlow(source);
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         ProcessInstance processInstance = session.startProcess("org.drools.core.event");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
 

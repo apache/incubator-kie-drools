@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -85,9 +86,7 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
         assertEquals( 0, javaDialect.getResults().size() );
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        List<KiePackage> packages = new ArrayList<KiePackage>();
-        packages.add( pkgBuilder.getPackage() );
-        kbase.addPackages( packages );
+        kbase.addPackages( Arrays.asList(pkgBuilder.getPackages()) );
         final KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal( "value", true );

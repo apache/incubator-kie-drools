@@ -99,7 +99,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 		
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
@@ -192,7 +192,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
@@ -298,7 +298,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
@@ -360,7 +360,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 
-        final KieSession session = createKieSession(builder.getPackage());
+        final KieSession session = createKieSession(builder.getPackages());
 
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
@@ -426,7 +426,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
@@ -526,7 +526,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
@@ -590,7 +590,6 @@ public class ProcessTimerTest extends AbstractBaseTest {
         
 		final KieSession session;
 		{ 
-		    InternalKnowledgePackage pkg = builder.getPackage();
 		    InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 		    kbase.addPackages(Arrays.asList(builder.getPackages()));
 		    
@@ -661,7 +660,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);

@@ -103,12 +103,11 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
             "  </connections>\n" +
             "</process>");
         builder.addRuleFlow(source);
-        InternalKnowledgePackage pkg = builder.getPackage();
         for (DroolsError error: builder.getErrors().getErrors()) {
             logger.error(error.toString());
         }
         
-        KieSession ksession = createKieSession(pkg);
+        KieSession ksession = createKieSession(builder.getPackages());
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -169,12 +168,11 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
             "  </connections>\n" +
             "</process>");
         builder.addRuleFlow(source);
-        InternalKnowledgePackage pkg = builder.getPackage();
         for (DroolsError error: builder.getErrors().getErrors()) {
             logger.error(error.toString());
         }
         
-        KieSession ksession = createKieSession(pkg);
+        KieSession ksession = createKieSession(builder.getPackages());
         
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);

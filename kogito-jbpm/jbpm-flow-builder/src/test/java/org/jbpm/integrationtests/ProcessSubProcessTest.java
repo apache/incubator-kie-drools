@@ -194,7 +194,7 @@ public class ProcessSubProcessTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 		InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addPackages(Arrays.asList(builder.getPackage()));
+		kbase.addPackages(Arrays.asList(builder.getPackages()));
 		return kbase;
 	}
 	
@@ -274,7 +274,7 @@ public class ProcessSubProcessTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 		InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addPackages(Arrays.asList(builder.getPackage()));
+		kbase.addPackages(Arrays.asList(builder.getPackages()));
 		return kbase;
 	}
 	

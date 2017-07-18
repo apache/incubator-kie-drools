@@ -94,7 +94,7 @@ public class ProcessStartTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 		
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);
@@ -166,7 +166,7 @@ public class ProcessStartTest extends AbstractBaseTest {
 			fail("Could not build process");
 		}
 		
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
 		List<Message> myList = new ArrayList<Message>();
 		session.setGlobal("myList", myList);

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -75,9 +76,7 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
                        null );
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        List<KiePackage> packages = new ArrayList<KiePackage>();
-        packages.add( pkgBuilder.getPackage() );
-        kbase.addPackages( packages );
+        kbase.addPackages(Arrays.asList(pkgBuilder.getPackages()));
         final KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal( "value", true );        
@@ -88,7 +87,7 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseT
         SplitInstance splitInstance = new SplitInstance();
         splitInstance.setProcessInstance( processInstance );
         
-        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkgBuilder.getPackage().getDialectRuntimeRegistry().getDialectData( "mvel");        
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkgBuilder.getPackage("pkg1").getDialectRuntimeRegistry().getDialectData( "mvel");
         
         ( (MVELReturnValueEvaluator) node.getReturnValueEvaluator()).compile( data );
 

@@ -100,7 +100,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<Long> list = new ArrayList<Long>();
         workingMemory.setGlobal("list", list);
@@ -273,7 +273,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<Long> list = new ArrayList<Long>();
         workingMemory.setGlobal("list", list);
@@ -338,7 +338,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<Long> list = new ArrayList<Long>();
         workingMemory.setGlobal("list", list);
@@ -403,7 +403,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<Long> list = new ArrayList<Long>();
         workingMemory.setGlobal("list", list);
@@ -468,7 +468,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<Long> list = new ArrayList<Long>();
         workingMemory.setGlobal("list", list);
@@ -533,7 +533,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<Long> list = new ArrayList<Long>();
         workingMemory.setGlobal("list", list);
@@ -598,7 +598,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<Long> list = new ArrayList<Long>();
         workingMemory.setGlobal("list", list);
@@ -663,7 +663,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<Long> list = new ArrayList<Long>();
         workingMemory.setGlobal("list", list);
@@ -723,7 +723,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
 
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<Long> list = new ArrayList<Long>();
         workingMemory.setGlobal("list", list);

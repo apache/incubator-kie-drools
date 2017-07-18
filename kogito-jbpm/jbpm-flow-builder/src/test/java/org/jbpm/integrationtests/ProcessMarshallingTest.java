@@ -160,7 +160,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
 			"</process>";
         builder.addProcessFromXml( new StringReader( process ));
 
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Email", handler);
@@ -341,7 +341,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             "end";
         builder.addPackageFromDrl( new StringReader( rule ));
         
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
         TestWorkItemHandler handler1 = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Log", handler1);
@@ -449,7 +449,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             "</process>\n";
         builder.addProcessFromXml( new StringReader( process ));
 
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
         TestListWorkItemHandler handler = new TestListWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -509,7 +509,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             "</process>\n";
         builder.addProcessFromXml( new StringReader( process ));
 
-        final KieSession session = createKieSession(builder.getPackage());
+        final KieSession session = createKieSession(builder.getPackages());
         
         session.startProcess("com.sample.ruleflow", null);
         assertEquals(1, session.getProcessInstances().size());
@@ -555,7 +555,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             "</process>\n";
         builder.addProcessFromXml( new StringReader( process ));
 
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
         session.startProcess("com.sample.ruleflow", null);
         
@@ -649,7 +649,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
             "</process>";
         builder.addProcessFromXml( new StringReader( process ));
 
-        KieSession session = createKieSession(builder.getPackage());
+        KieSession session = createKieSession(builder.getPackages());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Report", handler);

@@ -21,6 +21,7 @@ import org.kie.api.runtime.KieSession;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
@@ -63,9 +64,7 @@ public class JavaScriptReturnValueConstraintEvaluatorBuilderTest {
                 null);
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        List<KiePackage> packages = new ArrayList<KiePackage>();
-        packages.add( pkgBuilder.getPackage() );
-        kbase.addPackages(packages);
+        kbase.addPackages(Arrays.asList(pkgBuilder.getPackages()));
         final KieSession ksession = kbase.newKieSession();
 
 

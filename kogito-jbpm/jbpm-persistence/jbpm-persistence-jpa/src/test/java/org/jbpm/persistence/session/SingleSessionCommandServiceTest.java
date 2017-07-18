@@ -602,7 +602,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
 
         processBuilder.buildProcess( process,
                                      null );
-        return packageBuilder.getPackage();
+        return packageBuilder.getPackage("org.drools.test");
     }
 
     @Test
@@ -705,9 +705,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
-        List<KiePackage> list = new ArrayList<KiePackage>();
-        list.add( packageBuilder.getPackage() );
-        return list;
+        return Arrays.asList(packageBuilder.getPackages());
     }
 
     @Test
@@ -797,9 +795,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
-        List<KiePackage> list = new ArrayList<KiePackage>();
-        list.add( packageBuilder.getPackage() );
-        return list;
+        return Arrays.asList(packageBuilder.getPackages());
     }
 
 }

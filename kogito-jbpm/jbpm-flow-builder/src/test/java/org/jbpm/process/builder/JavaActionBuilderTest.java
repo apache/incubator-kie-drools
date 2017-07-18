@@ -65,7 +65,7 @@ public class JavaActionBuilderTest extends AbstractBaseTest {
         process.setName( "Process1" );
         process.setPackageName( "pkg1" );
 
-        ProcessBuildContext context = new ProcessBuildContext(pkgBuilder, pkgBuilder.getPackage(), null, processDescr, dialectRegistry, javaDialect);
+        ProcessBuildContext context = new ProcessBuildContext(pkgBuilder, pkgBuilder.getPackage("pkg1"), null, processDescr, dialectRegistry, javaDialect);
         
         context.init( pkgBuilder, pkg, null, dialectRegistry, javaDialect, null);
         
@@ -82,7 +82,7 @@ public class JavaActionBuilderTest extends AbstractBaseTest {
         assertEquals( 0, javaDialect.getResults().size() );
 
         final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( Arrays.asList(pkgBuilder.getPackage()) );
+        kbase.addPackages( Arrays.asList(pkgBuilder.getPackages()) );
         final KieSession wm = kbase.newKieSession();
 
         List<String> list = new ArrayList<String>();

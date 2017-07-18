@@ -74,7 +74,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -153,7 +153,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -218,7 +218,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -277,7 +277,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         TestWorkItemHandler handler = new TestWorkItemHandler();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Human Task", handler);

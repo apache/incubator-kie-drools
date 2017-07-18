@@ -80,7 +80,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
@@ -144,7 +144,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         final List<String> myList = new ArrayList<String>();
         workingMemory.getWorkItemManager().registerWorkItemHandler("Log", new WorkItemHandler() {
@@ -214,7 +214,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
@@ -272,7 +272,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
@@ -353,7 +353,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
 		
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<String> collection = new ArrayList<String>();
         collection.add("one");
@@ -441,7 +441,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
 			"</process>");
 		builder.addRuleFlow(source);
         
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<String> collection = new ArrayList<String>();
         collection.add("one");
@@ -515,7 +515,7 @@ public class ProcessForEachTest extends AbstractBaseTest {
             "</process>");
         builder.addRuleFlow(source);
         
-        KieSession workingMemory = createKieSession(builder.getPackage());
+        KieSession workingMemory = createKieSession(builder.getPackages());
         
         List<String> myList = new ArrayList<String>();
         workingMemory.setGlobal("myList", myList);
