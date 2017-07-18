@@ -15,23 +15,29 @@
 
 package org.jbpm.test.util;
 
-import com.arjuna.ats.jdbc.TransactionalDriver;
-import com.arjuna.ats.jta.TransactionManager;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-import javax.sql.XADataSource;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
-import java.util.logging.Logger;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import javax.sql.XADataSource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.arjuna.ats.jdbc.TransactionalDriver;
+import com.arjuna.ats.jta.TransactionManager;
 
 
 public class PoolingDataSource implements DataSource {
+    
+    private static final Logger logger = LoggerFactory.getLogger(PoolingDataSource.class); 
+    
     private final TransactionalDriver transactionalDriver = new TransactionalDriver();
     private Properties driverProperties = new Properties();
     private String uniqueName;
@@ -41,18 +47,15 @@ public class PoolingDataSource implements DataSource {
 
     public PoolingDataSource() {
 
-        try {
-            new InitialContext().rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
-            new InitialContext().rebind("java:comp/TransactionManager", TransactionManager.transactionManager());
-            new InitialContext().rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public Properties getDriverProperties() {
 
         return driverProperties;
+    }
+    
+    public void setDriverProperties(Properties driverProperties) {
+        this.driverProperties = driverProperties;
     }
 
     public void init()  {
@@ -60,13 +63,21 @@ public class PoolingDataSource implements DataSource {
             xads = (XADataSource)Class.forName(className).newInstance();
             String url = driverProperties.getProperty("url", driverProperties.getProperty("URL"));
             xads.getClass().getMethod("setURL", new Class[] {String.class}).invoke(xads, new Object[] {url});
-
-            new InitialContext().rebind(uniqueName, this);
-
+            
+            try {
+                InitialContext initContext = new InitialContext();
+                initContext.rebind(uniqueName, this);
+                
+                initContext.rebind("java:comp/UserTransaction", com.arjuna.ats.jta.UserTransaction.userTransaction());
+                initContext.rebind("java:comp/TransactionManager", TransactionManager.transactionManager());
+                initContext.rebind("java:comp/TransactionSynchronizationRegistry", new com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionSynchronizationRegistryImple());
+            } catch (NamingException e) {
+                logger.warn("No InitialContext available, resource won't be accessible via lookup");
+            }
             // Keep the connection open - this is important because otherwise H2 will delete the tables
             // DB_CLOSE_DELAY can't be used or the tests interfere with each other
             connection =  getConnection(driverProperties.getProperty("user"), driverProperties.getProperty("password"));
-        } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException | ClassNotFoundException | NamingException e) {
+        } catch (SQLException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -145,7 +156,7 @@ public class PoolingDataSource implements DataSource {
     }
 
     @Override
-    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+    public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
         return null;
     }
 }

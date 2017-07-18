@@ -141,16 +141,6 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.jboss.narayana.jta</groupId>
-        <artifactId>narayana-jta</artifactId>
-        <version>5.6.3.Final</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.narayana.jta</groupId>
-        <artifactId>tomcat-jta</artifactId>
-        <version>5.6.3.Final</version>
-      </dependency>
-      <dependency>
         <groupId>simple-jndi</groupId>
         <artifactId>simple-jndi</artifactId>
         <version>0.11.4.1</version>
