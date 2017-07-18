@@ -208,7 +208,7 @@ public class MemoryLeakTest {
 
         ksession.dispose();
 
-        checkReachability( ksession, Person.class::isInstance, false );
+        checkReachability( kContainer, Person.class::isInstance, false );
         checkReachability( kBase, ksession::equals, false );
         checkReachability( kContainer, ksession::equals, false );
     }

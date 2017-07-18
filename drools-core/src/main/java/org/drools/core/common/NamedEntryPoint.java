@@ -760,8 +760,6 @@ public class NamedEntryPoint
                 }
             }
         }
-
-        this.objectStore.clear();
     }
 
     public void enQueueWorkingMemoryAction(WorkingMemoryAction action) {
