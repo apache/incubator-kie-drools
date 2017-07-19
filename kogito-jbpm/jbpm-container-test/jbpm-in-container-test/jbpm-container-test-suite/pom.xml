@@ -659,16 +659,8 @@
                   </systemProperties>
                   <dependencies>
                     <dependency>
-                      <groupId>org.jboss.narayana.tomcat</groupId>
-                      <artifactId>tomcat-jta</artifactId>
-                    </dependency>
-                    <dependency>
                       <groupId>com.h2database</groupId>
                       <artifactId>h2</artifactId>
-                    </dependency>
-                    <dependency>
-                      <groupId>org.jboss.spec.javax.transaction</groupId>
-                      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
                     </dependency>
                     <dependency>
                       <groupId>org.hibernate.javax.persistence</groupId>
@@ -731,16 +723,6 @@
       </dependencyManagement>
       <dependencies>
         <!-- Deps needed by Tomcat 8 -->
-        <dependency>
-          <groupId>org.jboss.narayana.tomcat</groupId>
-          <artifactId>tomcat-jta</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.spec.javax.transaction</groupId>
-          <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-          <scope>test</scope>
-        </dependency>
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-jdk14</artifactId>

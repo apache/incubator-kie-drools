@@ -81,6 +81,8 @@ public class LocalTransactions {
         // WEB-INF resources
         war.addAsWebResource(getClass().getResource("/logback.xml"), ArchivePaths.create("logback.xml"));
 
+        war.addAsWebResource(getClass().getResource("/jbossts-properties.xml"), ArchivePaths.create("WEB-INF/classes/jbossts-properties.xml"));
+
         // CDI beans.xml
         war.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("classes/META-INF/beans.xml"));
 
