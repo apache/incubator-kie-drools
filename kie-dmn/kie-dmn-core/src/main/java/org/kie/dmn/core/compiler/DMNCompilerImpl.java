@@ -23,17 +23,15 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.*;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
-import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
-import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.ast.*;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.core.util.Msg;
@@ -46,9 +44,11 @@ import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 
 public class DMNCompilerImpl
@@ -58,6 +58,13 @@ public class DMNCompilerImpl
     private final DMNEvaluatorCompiler evaluatorCompiler;
     private final DMNFEELHelper feel;
     private DMNCompilerConfiguration dmnCompilerConfig;
+    private Deque<DRGElementCompiler> drgCompilers = new LinkedList<>();
+    {
+        drgCompilers.add( new InputDataCompiler() );
+        drgCompilers.add( new BusinessKnowledgeModelCompiler() );
+        drgCompilers.add( new DecisionCompiler() );
+        drgCompilers.add( new KnowledgeSourceCompiler() ); // keep last as it's a void compiler
+    }
 
     public DMNCompilerImpl() {
         this.feel = new DMNFEELHelper();
@@ -68,6 +75,16 @@ public class DMNCompilerImpl
         this.feel = new DMNFEELHelper();
         this.evaluatorCompiler = new DMNEvaluatorCompiler( this, feel );
         this.dmnCompilerConfig = dmnCompilerConfig;
+    }
+    
+    public void addDRGElementCompiler(DRGElementCompiler compiler) {
+        drgCompilers.push(compiler);
+    }
+    public void addDRGElementCompilers(List<DRGElementCompiler> compilers) {
+        ListIterator<DRGElementCompiler> listIterator = compilers.listIterator( compilers.size() );
+        while ( listIterator.hasPrevious() ) {
+            addDRGElementCompiler( listIterator.previous() );
+        }
     }
 
     @Override
@@ -144,55 +161,15 @@ public class DMNCompilerImpl
 
     private void processDrgElements(DMNCompilerContext ctx, DMNFEELHelper feel, DMNModelImpl model, Definitions dmndefs) {
         for ( DRGElement e : dmndefs.getDrgElement() ) {
-            if ( e instanceof InputData ) {
-                InputData input = (InputData) e;
-                InputDataNodeImpl idn = new InputDataNodeImpl( input );
-                if ( input.getVariable() != null ) {
-                    DMNCompilerHelper.checkVariableName( model, input, input.getName() );
-                    DMNType type = resolveTypeRef( model, idn, e, input.getVariable(), input.getVariable().getTypeRef() );
-                    idn.setType( type );
-                } else {
-                    idn.setType( DMNTypeRegistry.UNKNOWN );
-                    reportMissingVariable( model, e, input, Msg.MISSING_VARIABLE_FOR_INPUT );
-                }
-                model.addInput( idn );
-            } else if ( e instanceof Decision ) {
-                Decision decision = (Decision) e;
-                DecisionNodeImpl dn = new DecisionNodeImpl( decision );
-                DMNType type = null;
-                if ( decision.getVariable() == null ) {
-                    reportMissingVariable( model, e, decision, Msg.MISSING_VARIABLE_FOR_DECISION );
+            boolean foundIt = false;
+            for( DRGElementCompiler dc : drgCompilers ) {
+                if ( dc.accept( e ) ) {
+                    foundIt = true;
+                    dc.compileNode(e, this, model);
                     continue;
                 }
-                DMNCompilerHelper.checkVariableName( model, decision, decision.getName() );
-                if ( decision.getVariable() != null && decision.getVariable().getTypeRef() != null ) {
-                    type = resolveTypeRef( model, dn, decision, decision.getVariable(), decision.getVariable().getTypeRef() );
-                } else {
-                    type = resolveTypeRef( model, dn, decision, decision, null );
-                }
-                dn.setResultType( type );
-                model.addDecision( dn );
-            } else if ( e instanceof BusinessKnowledgeModel ) {
-                BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) e;
-                BusinessKnowledgeModelNodeImpl bkmn = new BusinessKnowledgeModelNodeImpl( bkm );
-                DMNType type = null;
-                if ( bkm.getVariable() == null ) {
-                    reportMissingVariable( model, e, bkm, Msg.MISSING_VARIABLE_FOR_BKM );
-                    continue;
-                }
-                DMNCompilerHelper.checkVariableName( model, bkm, bkm.getName() );
-                if ( bkm.getVariable() != null && bkm.getVariable().getTypeRef() != null ) {
-                    type = resolveTypeRef( model, bkmn, bkm, bkm.getVariable(), bkm.getVariable().getTypeRef() );
-                } else {
-                    // for now the call bellow will return type UNKNOWN
-                    type = resolveTypeRef( model, bkmn, bkm, bkm, null );
-                }
-                bkmn.setResultType( type );
-                model.addBusinessKnowledgeModel( bkmn );
-            } else if ( e instanceof KnowledgeSource ) {
-                // don't do anything as KnowledgeSource is a documentation element
-                // without runtime semantics
-            } else {
+            }  
+            if ( !foundIt ) {
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,
                                        e,
@@ -207,62 +184,24 @@ public class DMNCompilerImpl
 
         for ( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
             BusinessKnowledgeModelNodeImpl bkmi = (BusinessKnowledgeModelNodeImpl) bkm;
-            linkRequirements( model, bkmi );
-
-            ctx.enterFrame();
-            try {
-                for( DMNNode dep : bkmi.getDependencies().values() ) {
-                    if( dep instanceof BusinessKnowledgeModelNode ) {
-                        // might need to create a DMNType for "functions" and replace the type here by that
-                        ctx.setVariable( dep.getName(), ((BusinessKnowledgeModelNode)dep).getResultType() );
-                    }
+            for( DRGElementCompiler dc : drgCompilers ) {
+                if ( bkmi.getEvaluator() == null && dc.accept( bkm ) ) {
+                    dc.compileEvaluator(bkm, this, ctx, model);
                 }
-                // to allow recursive call from inside a BKM node, a variable for self must be available for the compiler context:
-                ctx.setVariable(bkm.getName(), bkm.getResultType());
-                FunctionDefinition funcDef = bkm.getBusinessKnowledModel().getEncapsulatedLogic();
-                DMNExpressionEvaluator exprEvaluator = evaluatorCompiler.compileExpression( ctx, model, bkmi, bkm.getName(), funcDef );
-                bkmi.setEvaluator( exprEvaluator );
-            } finally {
-                ctx.exitFrame();
             }
-
         }
+
         for ( DecisionNode d : model.getDecisions() ) {
             DecisionNodeImpl di = (DecisionNodeImpl) d;
-            linkRequirements( model, di );
-
-            ctx.enterFrame();
-            try {
-                for( DMNNode dep : di.getDependencies().values() ) {
-                    if( dep instanceof DecisionNode ) {
-                        ctx.setVariable( dep.getName(), ((DecisionNode) dep).getResultType() );
-                    } else if( dep instanceof InputDataNode ) {
-                        ctx.setVariable( dep.getName(), ((InputDataNode) dep).getType() );
-                    } else if( dep instanceof BusinessKnowledgeModelNode ) {
-                        // might need to create a DMNType for "functions" and replace the type here by that
-                        ctx.setVariable( dep.getName(), ((BusinessKnowledgeModelNode)dep).getResultType() );
-                    }
+            for( DRGElementCompiler dc : drgCompilers ) {
+                if ( di.getEvaluator() == null && dc.accept( d ) ) {
+                    dc.compileEvaluator(d, this, ctx, model);
                 }
-                DMNExpressionEvaluator evaluator = evaluatorCompiler.compileExpression( ctx, model, di, d.getName(), d.getDecision().getExpression() );
-                di.setEvaluator( evaluator );
-            } finally {
-                ctx.exitFrame();
             }
         }
     }
 
-    private void reportMissingVariable(DMNModelImpl model, DRGElement node, DMNModelInstrumentedBase source, Msg.Message1 message ) {
-        MsgUtil.reportMessage( logger,
-                               DMNMessage.Severity.ERROR,
-                               source,
-                               model,
-                               null,
-                               null,
-                               message,
-                               node.getIdentifierString() );
-    }
-
-    private void linkRequirements(DMNModelImpl model, DMNBaseNode node) {
+    public void linkRequirements(DMNModelImpl model, DMNBaseNode node) {
         for ( InformationRequirement ir : node.getInformationRequirement() ) {
             if ( ir.getRequiredInput() != null ) {
                 String id = getId( ir.getRequiredInput() );
@@ -455,4 +394,9 @@ public class DMNCompilerImpl
             return this.dmnCompilerConfig.getRegisteredExtensions();
         }
     }
+    
+    public DMNEvaluatorCompiler getEvaluatorCompiler() {
+        return evaluatorCompiler;
+    }
+    
 }

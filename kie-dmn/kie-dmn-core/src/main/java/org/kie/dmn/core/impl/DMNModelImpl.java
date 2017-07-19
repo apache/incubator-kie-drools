@@ -282,6 +282,17 @@ public class DMNModelImpl
     public DMNMessage addMessage(DMNMessage.Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source, FEELEvent feelEvent) {
         return messages.addMessage( severity, message, messageType, source, feelEvent );
     }
+    
+    public boolean removeDMNNodeFromIndexes( DMNNode node ) {
+        if ( node instanceof DecisionNode ) {
+            return this.decisions.entrySet().removeIf( kv -> kv.getValue().equals(node) );
+        } else if ( node instanceof BusinessKnowledgeModelNode ) {
+            return this.bkms.entrySet().removeIf( kv -> kv.getValue().equals(node) );
+        } else if ( node instanceof InputDataNode ) {
+            return this.inputs.entrySet().removeIf( kv -> kv.getValue().equals(node) );
+        }
+        return false;
+    }
 
     public void setResource(Resource resource) {
         this.resource = resource;
