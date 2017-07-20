@@ -459,7 +459,9 @@ public class DMNEvaluatorCompiler {
         for ( DecisionRule dr : dt.getRule() ) {
             DTDecisionRule rule = new DTDecisionRule( index );
             for( UnaryTests ut : dr.getInputEntry() ) {
+                final java.util.List<UnaryTest> tests;
                 if( ut == null || ut.getText() == null || ut.getText().isEmpty() ) {
+                    tests = Collections.emptyList();
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,
                                            ut,
@@ -470,15 +472,16 @@ public class DMNEvaluatorCompiler {
                                            dt.getRule().indexOf( dr ) + 1,
                                            dr.getInputEntry().indexOf( ut ) + 1,
                                            dt.getParentDRDElement().getIdentifierString() );
+                } else {
+                    tests = textToUnaryTestList( ctx,
+                            ut.getText(),
+                            model,
+                            dr,
+                            Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX,
+                            ut.getText(),
+                            node.getIdentifierString(),
+                            index+1 );
                 }
-                java.util.List<UnaryTest> tests = textToUnaryTestList( ctx,
-                                                                       ut.getText(),
-                                                                       model,
-                                                                       dr,
-                                                                       Msg.ERR_COMPILING_FEEL_EXPR_ON_DT_RULE_IDX,
-                                                                       ut.getText(),
-                                                                       node.getIdentifierString(),
-                                                                       index+1 );
                 rule.getInputEntry().add( (c, x) -> tests.stream().anyMatch( t -> {
                     Boolean result = t.apply( c, x );
                     return result != null && result == true;

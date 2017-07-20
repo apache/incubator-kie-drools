@@ -72,7 +72,11 @@ public class FEELImpl
             inputVariables.entrySet().stream().forEach( e -> ctx.addInputVariable( e.getKey(), e.getValue() ) );
         }
         CompiledExpression expr = compile( expression, ctx );
-        return evaluate( expr, inputVariables );
+        if ( inputVariables == null ) {
+            return evaluate( expr, Collections.emptyMap() );
+        } else {
+            return evaluate( expr, inputVariables );
+        }
     }
 
     public Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {

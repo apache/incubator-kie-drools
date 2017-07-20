@@ -187,11 +187,11 @@ public class InfixOpNode
         } else if ( left instanceof Duration && right instanceof LocalDateTime ) {
             return ((LocalDateTime) right).plus( (Duration) left);
         } else if ( left instanceof LocalTime && right instanceof Duration ) {
-            return ((LocalDateTime) left).plus( (Duration) left);
+            return ((LocalTime) left).plus( (Duration) right);
         } else if ( left instanceof Duration && right instanceof LocalTime ) {
-            return ((LocalDateTime) right).plus( (Duration) left);
+            return ((LocalTime) right).plus( (Duration) left);
         } else if ( left instanceof OffsetTime && right instanceof Duration ) {
-            return ((OffsetTime) left).plus( (Duration) left);
+            return ((OffsetTime) left).plus( (Duration) right);
         } else if ( left instanceof Duration && right instanceof OffsetTime ) {
             return ((OffsetTime) right).plus( (Duration) left);
         } else {
@@ -232,9 +232,9 @@ public class InfixOpNode
         } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
             return ((LocalDateTime) left).minus( (Duration) right);
         } else if ( left instanceof LocalTime && right instanceof Duration ) {
-            return ((LocalDateTime) left).minus( (Duration) left);
+            return ((LocalTime) left).minus( (Duration) right);
         } else if ( left instanceof OffsetTime && right instanceof Duration ) {
-            return ((OffsetTime) left).minus( (Duration) left);
+            return ((OffsetTime) left).minus( (Duration) right);
         } else {
             return math( left, right, ctx, (l, r) -> l.subtract( r, MathContext.DECIMAL128 )  );
         }
