@@ -59,7 +59,7 @@ public class FEELMathOperationsTest extends BaseFEELTest {
                 { "10 + 20 / -5 - 3", BigDecimal.valueOf( 3 ) , null},
                 { "10 + 20 / ( -5 - 3 )", BigDecimal.valueOf( 7.5 ) , null},
                 { "1.2*10**3", BigDecimal.valueOf( 1200.0 ) , null},
-                // TODO - this is gramatically correct because it is like +(+(+(+2))), but it looks bad
+                // TODO - this is grammatically correct because it is like +(+(+(+2))), but it looks bad
 //                {"1 ++++++ 2", null, null},
                 {"null + null", null, null}
         };
