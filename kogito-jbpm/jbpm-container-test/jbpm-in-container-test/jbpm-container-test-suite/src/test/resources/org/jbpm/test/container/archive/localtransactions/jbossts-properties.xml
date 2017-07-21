@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!--
+  JBoss, Home of Professional Open Source
+  Copyright 2009, Red Hat Middleware LLC, and individual contributors
+  as indicated by the @author tags.
+  See the copyright.txt in the distribution for a
+  full listing of individual contributors.
+  This copyrighted material is made available to anyone wishing to use,
+  modify, copy, or redistribute it subject to the terms and conditions
+  of the GNU Lesser General Public License, v. 2.1.
+  This program is distributed in the hope that it will be useful, but WITHOUT A
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+  PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+  You should have received a copy of the GNU Lesser General Public License,
+  v.2.1 along with this distribution; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  MA  02110-1301, USA.
+
+  (C) 2009,
+  @author JBoss, a division of Red Hat.
+-->
+<properties>
+  <!--
+  This is the JBossTS configuration file for running ArjunaJTA.
+  It should be called jbossts-properties.xml.
+  You need a different version for ArjunaCore or JTS usage.
+
+  ***************************
+
+  Property values may be literals or be tokens of the form ${p1[,p2][:v]}
+  in which case the token values are substituted for the values of the corresponding system
+  properties as follows:
+
+  - Any occurance of ${p} with the System.getProperty(p) value.
+  If there is no such property p defined, then the ${p} reference will remain unchanged.
+
+  - If the property reference is of the form ${p:v} and there is no such property p,
+  then the default value v will be returned.
+
+  - If the property reference is of the form ${p1,p2} or ${p1,p2:v} then
+  the primary and the secondary properties will be tried in turn, before
+  returning either the unchanged input, or the default value.
+
+  The property ${/} is replaced with System.getProperty("file.separator")
+  value and the property ${:} is replaced with System.getProperty("path.separator").
+
+  Note this substitution applies to property values only at the point they are read from
+  the config file. Tokens in system properties won't be substituted.
+  -->
+
+  <!-- (default is YES) -->
+  <entry key="CoordinatorEnvironmentBean.commitOnePhase">YES</entry>
+
+  <!-- default is under user.home - must be writeable!) -->
+  <entry key="ObjectStoreEnvironmentBean.objectStoreDir">PutObjectStoreDirHere</entry>
+
+  <!-- (default is ON) -->
+  <entry key="ObjectStoreEnvironmentBean.transactionSync">ON</entry>
+
+  <!-- (Must be unique across all Arjuna instances.) -->
+  <entry key="CoreEnvironmentBean.nodeIdentifier">1</entry>
+
+  <!-- Which Xid types to recover -->
+  <entry key="JTAEnvironmentBean.xaRecoveryNodes">1</entry>
+
+  <entry key="JTAEnvironmentBean.xaResourceOrphanFilterClassNames">
+    com.arjuna.ats.internal.jta.recovery.arjunacore.JTATransactionLogXAResourceOrphanFilter
+    com.arjuna.ats.internal.jta.recovery.arjunacore.JTANodeNameXAResourceOrphanFilter
+  </entry>
+
+  <!--
+    Base port number for determining a unique number to associate with an instance of the transaction service
+    (which is needed in order to support multiple instances on the same machine).
+    Use the value 0 to allow the system to select the first available port number.
+    If the port number is non-zero and the port is in use then the value will be incremented until either a successful binding
+    to the loopback address is created or until the the maximum number of ports (specified by the
+    CoreEnvironmentBean.socketProcessIdMaxPorts property) have been tried or until the port number
+    reaches the maximum possible port number.
+  -->
+  <entry key="CoreEnvironmentBean.socketProcessIdPort">0</entry>
+
+
+
+  <!--
+    Periodic recovery modules to use.  Invoked in the order they appear in the list.
+       Check http://www.jboss.org/community/docs/DOC-10788 for more information
+       on recovery modules and their configuration when running in various
+       deployments.
+  -->
+  <entry key="RecoveryEnvironmentBean.recoveryModuleClassNames">
+    com.arjuna.ats.internal.arjuna.recovery.AtomicActionRecoveryModule
+    com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule
+  </entry>
+
+  <!-- Expiry scanners to use (order of invocation is random). -->
+  <entry key="RecoveryEnvironmentBean.expiryScannerClassNames">
+    com.arjuna.ats.internal.arjuna.recovery.ExpiredTransactionStatusManagerScanner
+  </entry>
+
+  <!--
+      Add the following to the set of expiryScannerClassNames above to move logs that cannot be completed by failure recovery.
+          But be sure you know what you are doing and why!
+           com.arjuna.ats.internal.arjuna.recovery.AtomicActionExpiryScanner
+  -->
+
+  <!--
+    The address and port number on which the recovery manager listens
+    If running within an AS then the address the AS is bound to (jboss.bind.address) takes precedence
+  -->
+  <entry key="RecoveryEnvironmentBean.recoveryPort">4712</entry>
+
+  <entry key="RecoveryEnvironmentBean.recoveryAddress"></entry>
+
+  <!--
+    Use this to fix the port on which the TransactionStatusManager listens,
+    The default behaviour is to use any free port.
+  -->
+  <entry key="RecoveryEnvironmentBean.transactionStatusManagerPort">0</entry>
+
+  <!--
+    Use this to fix the address on which the TransactionStatusManager binds,
+    The default behaviour is to use the loopback address (ie localhost).
+    If running within an AS then the address the AS is bound to (jboss.bind.address) takes precedence
+  -->
+  <entry key="RecoveryEnvironmentBean.transactionStatusManagerAddress"></entry>
+
+  <!--
+    For cases where the recovery manager is in process with the transaction manager and nothing else uses
+    the ObjectStore, it is possible to disable the socket based recovery listener by setting this to NO.
+    Caution: use of this property can allow multiple recovery processes to run on the same ObjectStore
+    if you are not careful. That in turn can lead to incorrect transaction processing. Use with care.
+  -->
+  <entry key="RecoveryEnvironmentBean.recoveryListener">NO</entry>
+
+</properties>

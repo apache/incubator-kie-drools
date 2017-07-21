@@ -13,8 +13,9 @@
 
     <!-- Database resources -->
     <Resource name="rawDataSource" uniqueName="rawDataSource" auth="Container" type="${org.jbpm.datasource.driver.class}" username="${org.jbpm.datasource.username}"
-              user="${org.jbpm.datasource.username}" password="${org.jbpm.datasource.password}" url="${org.jbpm.datasource.connection.url}" description="Raw Data Source" loginTimeout="0"
-              factory="${org.jbpm.datasource.driver.factory}"/>
+              user="${org.jbpm.datasource.username}" password="${org.jbpm.datasource.password}" url="${org.jbpm.datasource.connection.url}" URL="${org.jbpm.datasource.connection.url}" description="Raw Data Source" loginTimeout="0"
+              factory="${org.jbpm.datasource.driver.factory}" portNumber="${org.jbpm.datasource.port}" serverName="${org.jbpm.datasource.hostname}" databaseName="${org.jbpm.datasource.dbName}" testOnBorrow="false"
+              schema="${org.jbpm.persistence.schema}" driverType="4" />
     <Resource name="jdbc/jbpm" uniqueName="jdbc/jbpm" auth="Container" type="javax.sql.DataSource"
               username="${org.jbpm.datasource.username}" password="${org.jbpm.datasource.password}" driverClassName="com.arjuna.ats.jdbc.TransactionalDriver"
               url="jdbc:arjuna:java:comp/env/rawDataSource" description="Transactional Driver Data Source"/>

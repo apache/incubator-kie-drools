@@ -634,9 +634,9 @@
         <container.id>tomcat8x</container.id>
         <container.port>8080</container.port>
         <org.jbpm.persistence.ds>java:comp/env/jdbc/jbpm</org.jbpm.persistence.ds>
-        <container.tm>org.hibernate.service.jta.platform.internal.JBossStandAloneJtaPlatform</container.tm>
+        <container.tm>JBossTS</container.tm>
         <org.jbpm.datasource.driver.class>org.h2.jdbcx.JdbcDataSource</org.jbpm.datasource.driver.class>
-        <org.jbpm.datasource.driver.factory>org.h2.jdbcx.JdbcDataSourceFactory</org.jbpm.datasource.driver.factory>
+        <org.jbpm.datasource.driver.factory>org.apache.tomcat.jdbc.naming.GenericNamingResourcesFactory</org.jbpm.datasource.driver.factory>
       </properties>
       <build>
         <pluginManagement>

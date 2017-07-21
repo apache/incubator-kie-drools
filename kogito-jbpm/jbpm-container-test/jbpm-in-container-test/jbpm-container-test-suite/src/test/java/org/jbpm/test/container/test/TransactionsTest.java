@@ -23,6 +23,8 @@ import java.util.Map;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
@@ -41,11 +43,17 @@ import org.jbpm.test.container.handlers.ListWorkItemHandler;
 import org.jbpm.test.container.listeners.TrackingAgendaEventListener;
 import org.jbpm.test.container.listeners.TrackingProcessEventListener;
 import org.jbpm.test.container.tools.KieUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.command.KieCommands;
+import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
+import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
@@ -67,6 +75,8 @@ public class TransactionsTest extends JbpmContainerTest {
 
     private static LocalTransactions lt = new LocalTransactions();
 
+    private static EntityManagerFactory emf;
+
     /*
      * Initialize the resource list.
      */
@@ -74,10 +84,6 @@ public class TransactionsTest extends JbpmContainerTest {
         RESOURCES.add(lt.getResource(LocalTransactions.BPMN_TRANSACTIONS));
         RESOURCES.add(lt.getResource(LocalTransactions.BPMN_HELLO_WORLD));
         RESOURCES.add(lt.getResource(LocalTransactions.RULES_TRANSACTIONS));
-    }
-
-    public TransactionsTest() {
-        persistence = true;
     }
 
     @Deployment(name = "LocalTransactions")
@@ -91,6 +97,19 @@ public class TransactionsTest extends JbpmContainerTest {
         System.out.println("### Deploying war '" + war + "'");
 
         return war;
+    }
+
+    @Before
+    public void createEMF() {
+        emf = Persistence.createEntityManagerFactory("containerPU");
+    }
+
+    @After
+    public void closeEMF() {
+        if (emf != null) {
+            emf.close();
+        }
+        emf = null;
     }
 
     // ---------------------------- Test Case Members
@@ -414,6 +433,59 @@ public class TransactionsTest extends JbpmContainerTest {
 
     // ---------------------------- Private Members
 
+    private Environment getEnvironment() {
+        if (emf == null) {
+            throw new IllegalStateException("Uninitialised EntityManagerFactory");
+        }
+
+        Environment env = KieServices.get().newEnvironment();
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+        return env;
+    }
+
+    private KieSession createJPASession(KieBase kbase) {
+        try {
+            return getStore().newKieSession(kbase, null, getEnvironment());
+        } catch (Exception e) {
+            System.out.println("<<<<<<<< Printing stackTrace >>>>>>>>");
+            e.printStackTrace();
+            System.out.println(e.getCause());
+            throw e;
+        }
+    }
+
+    private KieSession loadJPASession(KieBase kbase, long sessionId) {
+        return getStore().loadKieSession(sessionId, kbase, null, getEnvironment());
+    }
+
+    private KieSession reloadSession(KieSession ksession) {
+        long id = ksession.getIdentifier();
+        KieBase kbase = ksession.getKieBase();
+        ksession.dispose();
+
+        return loadJPASession(kbase, id);
+    }
+
+    protected static KieServices getServices() {
+        return KieServices.Factory.get();
+    }
+
+    protected static KieResources getResources() {
+        return getServices().getResources();
+    }
+
+    private static KieStoreServices getStore() {
+        return getServices().getStoreServices();
+    }
+
+    protected static KieCommands getCommands() {
+        return getServices().getCommands();
+    }
+
+    private static KieBase getKieBase(KieBuilder kbuilder) {
+        return getServices().newKieContainer(kbuilder.getKieModule().getReleaseId()).getKieBase();
+    }
+
     private KieBase getKnowledgeBase() {
         return getKieBase(KieUtils.newKieBuilder(RESOURCES));
     }
@@ -424,17 +496,6 @@ public class TransactionsTest extends JbpmContainerTest {
         } catch (NamingException ex) {
             throw new RuntimeException("Failed to lookup transaction", ex);
         }
-    }
-
-    @Override
-    protected Environment getEnvironment() {
-        if (emf == null) {
-            throw new IllegalStateException("Uninitialised EntityManagerFactory");
-        }
-
-        Environment env = KieServices.get().newEnvironment();
-        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-        return env;
     }
 
 }
