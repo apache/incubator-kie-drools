@@ -17,7 +17,15 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
@@ -72,6 +80,26 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P1Y6M\" ) != null", Boolean.TRUE , null},
                 { "duration( \"P1Y6M\" ) > null", null , null},
                 { "duration( \"P1Y6M\" ) < null", null , null},
+
+                // Math operations with date, time, duration
+                { "duration( \"P2Y2M\" ) + duration( \"P1Y1M\" )", Period.parse("P3Y3M"), null },
+                { "duration( \"P2DT20H14M\" ) + duration( \"P1DT1H1M\" )", Duration.parse( "P3DT21H15M" ) , null},
+                { "date and time(\"2016-07-29T05:48:23Z\") + duration( \"P1Y1M\" )", ZonedDateTime.of(2017, 8, 29, 5, 48, 23, 0, ZoneId.of("Z").normalized()) , null},
+                { "date and time(\"2016-07-29T05:48:23\") + duration( \"P1Y1M\" )", LocalDateTime.of(2017, 8, 29, 5, 48, 23, 0) , null},
+                { "date and time(\"2016-07-29T05:48:23Z\") + duration( \"P1DT1H1M\" )", ZonedDateTime.of(2016, 7, 30, 6, 49, 23, 0, ZoneId.of("Z").normalized()) , null},
+                { "date and time(\"2016-07-29T05:48:23\") + duration( \"P1DT1H1M\" )", LocalDateTime.of(2016, 7, 30, 6, 49, 23, 0) , null},
+                { "duration( \"P1Y1M\" ) + date and time(\"2016-07-29T05:48:23Z\")", ZonedDateTime.of(2017, 8, 29, 5, 48, 23, 0, ZoneId.of("Z").normalized()) , null},
+                { "duration( \"P1Y1M\" ) + date and time(\"2016-07-29T05:48:23\")", LocalDateTime.of(2017, 8, 29, 5, 48, 23, 0) , null},
+                { "duration( \"P1DT1H1M\" ) + date and time(\"2016-07-29T05:48:23Z\")", ZonedDateTime.of(2016, 7, 30, 6, 49, 23, 0, ZoneId.of("Z").normalized()) , null},
+                { "duration( \"P1DT1H1M\" ) + date and time(\"2016-07-29T05:48:23\")", LocalDateTime.of(2016, 7, 30, 6, 49, 23, 0) , null},
+//                { "time( date and time(\"2016-07-29T05:48:23\") ) + duration( \"P1T1H1M\" )", LocalTime.of( 6, 49, 23, 0 ) , null},
+                { "time(\"23:59:00\") + duration( \"P1DT1H1M\" )", LocalTime.of(23, 59, 0) , null},
+
+                // TODO support for zones - this now translates to ZonedDateTime, should be OffsetDateTime probably
+//                { "date and time(\"2016-07-29T05:48:23.765-05:00\") + duration( \"P1Y1M\" ) ", OffsetDateTime.of(2017, 8, 29, 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
+//                { "date and time(\"2016-07-29T05:48:23.765-05:00\") + duration( \"P1DT1H1M\" ) ", OffsetDateTime.of(2016, 7, 30, 6, 49, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
+//                { "duration( \"P1Y1M\" ) + date and time(\"2016-07-29T05:48:23.765-05:00\")", OffsetDateTime.of(2017, 8, 29, 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
+//                { "duration( \"P1DT1H1M\" ) + date and time(\"2016-07-29T05:48:23.765-05:00\")", OffsetDateTime.of(2016, 7, 30, 6, 49, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
 
                 { "date( 2016, 8, 2 ).year", BigDecimal.valueOf( 2016 ) , null},
                 { "date( 2016, 8, 2 ).month", BigDecimal.valueOf( 8 ) , null},
