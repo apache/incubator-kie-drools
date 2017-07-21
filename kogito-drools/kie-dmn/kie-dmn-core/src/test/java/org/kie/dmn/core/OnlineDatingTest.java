@@ -26,10 +26,10 @@ public class OnlineDatingTest {
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, ctx );
 
-        System.out.format( "Matches for %s:\n", lonelySoul.get( "Name" ) );
+        System.out.format( "Matches for %s:%n", lonelySoul.get( "Name" ) );
         int i = 0;
         for ( Map<String, Object> soulMate : (List<Map<String, Object>>) dmnResult.getContext().get( "Sorted Souls" ) ) {
-            System.out.format( "%d. %-10s - Score = %2.0f\n", ++i, ((Map<String, Object>) soulMate.get( "Profile2" )).get( "Name" ), soulMate.get( "Score" ) );
+            System.out.format( "%d. %-10s - Score = %2.0f%n", ++i, ((Map<String, Object>) soulMate.get( "Profile2" )).get( "Name" ), soulMate.get( "Score" ) );
         }
     }
 

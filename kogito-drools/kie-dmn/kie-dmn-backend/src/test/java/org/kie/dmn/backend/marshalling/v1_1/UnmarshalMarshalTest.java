@@ -36,6 +36,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller;
 import org.kie.dmn.model.v1_1.Definitions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
 import org.xmlunit.diff.ComparisonResult;
@@ -49,7 +51,9 @@ import org.xmlunit.validation.Validator;
 
 
 public class UnmarshalMarshalTest {
-    
+
+    protected static final Logger logger = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
+
     @Test 
     public void test0001() throws Exception {
         testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0001-input-data-string.dmn");
@@ -126,8 +130,11 @@ public class UnmarshalMarshalTest {
             }
         }
         assertTrue(validateInputResult.isValid());
-        
-        new File(baseOutputDir, subdir).mkdirs();
+
+        final File subdirFile = new File(baseOutputDir, subdir);
+        if (!subdirFile.mkdirs()) {
+            logger.warn("mkdirs() failed for File: " + subdirFile.getAbsolutePath() + "!");
+        }
         FileOutputStream sourceFos = new FileOutputStream( new File(baseOutputDir, subdir + "a." + xmlfile) );
         Files.copy(
                 new File(testClassesBaseDir, subdir + xmlfile).toPath(),
@@ -138,10 +145,9 @@ public class UnmarshalMarshalTest {
                 
         System.out.println( marshaller.marshal(unmarshal) );
         File outputXMLFile = new File(baseOutputDir, subdir + "b." + xmlfile);
-        FileWriter targetFos = new FileWriter( outputXMLFile );
-        marshaller.marshal(unmarshal, targetFos);        
-        targetFos.flush();
-        targetFos.close();
+        try (FileWriter targetFos = new FileWriter( outputXMLFile )) {
+            marshaller.marshal(unmarshal, targetFos);
+        }
         
         // Should also validate output XML:
         ValidationResult validateOutputResult = v.validateInstance(new StreamSource( outputXMLFile ));

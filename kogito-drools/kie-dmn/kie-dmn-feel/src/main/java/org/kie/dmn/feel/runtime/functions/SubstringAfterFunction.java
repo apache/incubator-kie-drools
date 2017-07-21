@@ -39,12 +39,9 @@ public class SubstringAfterFunction
         int index = string.indexOf( match );
         if( index >= 0 ) {
             return FEELFnResult.ofResult( string.substring( index+match.length() ) );
-        } else if( index < 0 ) {
+        } else {
             return FEELFnResult.ofResult( string );
         }
-        
-        // unreachable code.
-        return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "was an unreachable condition for this function"));
     }
 
 }
