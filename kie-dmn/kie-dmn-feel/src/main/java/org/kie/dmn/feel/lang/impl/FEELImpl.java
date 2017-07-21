@@ -73,7 +73,7 @@ public class FEELImpl
         }
         CompiledExpression expr = compile( expression, ctx );
         if ( inputVariables == null ) {
-            return evaluate( expr, Collections.emptyMap() );
+            return evaluate( expr, EMPTY_INPUT );
         } else {
             return evaluate( expr, inputVariables );
         }
