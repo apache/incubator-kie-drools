@@ -283,6 +283,33 @@ public class LDAPUserGroupCallbackImplTest extends LDAPBaseTest {
         assertGroups(ldapUserGroupCallback, true, true, false, false);
     }
 
+    @Test
+    public void testUserExistsWithCommaInDN() {
+        UserGroupCallback ldapUserGroupCallback = createLdapUserGroupCallback(Configuration.CUSTOM);
+        Assertions.assertThat(ldapUserGroupCallback).isNotNull();
+
+        boolean userExists = ldapUserGroupCallback.existsUser("john,jr");
+        Assertions.assertThat(userExists).isTrue();
+    }
+
+    @Test
+    public void testGroupExistsWithCommaInDN() {
+        UserGroupCallback ldapUserGroupCallback = createLdapUserGroupCallback(Configuration.CUSTOM);
+        Assertions.assertThat(ldapUserGroupCallback).isNotNull();
+
+        boolean groupExists = ldapUserGroupCallback.existsGroup("manager,eng");
+        Assertions.assertThat(groupExists).isTrue();
+    }   
+    
+    @Test
+    public void testGroupsForUserWithCommaInDN() {
+        UserGroupCallback ldapUserGroupCallback = createLdapUserGroupCallback(Configuration.CUSTOM);
+        Assertions.assertThat(ldapUserGroupCallback).isNotNull();
+
+        List<String> userGroups = ldapUserGroupCallback.getGroupsForUser("john,jr");
+        Assertions.assertThat(userGroups).hasSize(1).allMatch(s -> s.equals("manager,eng"));
+    }
+    
     private Properties createUserGroupCallbackProperties() {
         Properties properties = new Properties();
         properties.setProperty(Context.PROVIDER_URL, SERVER_URL);

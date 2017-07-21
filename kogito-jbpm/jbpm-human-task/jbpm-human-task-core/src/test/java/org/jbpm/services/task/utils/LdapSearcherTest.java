@@ -174,17 +174,17 @@ public class LdapSearcherTest extends LDAPBaseTest {
 
     @Test
     public void testGetSearchResultsDefaultScope() throws NamingException {
-        testGetSearchResults(null, "john", "mary");
+        testGetSearchResults(null, "john", "john\\,jr", "mary");
     }
 
     @Test
     public void testGetSearchResultsOneLevelScope() throws NamingException {
-        testGetSearchResults(SearchScope.ONELEVEL_SCOPE, "john", "mary");
+        testGetSearchResults(SearchScope.ONELEVEL_SCOPE, "john", "john\\,jr", "mary");
     }
 
     @Test
     public void testGetSearchResultsSubtreeScope() {
-        testGetSearchResults(SearchScope.SUBTREE_SCOPE, "john", "mary", "peter", "mike");
+        testGetSearchResults(SearchScope.SUBTREE_SCOPE, "john", "john\\,jr", "mary", "peter", "mike");
     }
 
     @Test
@@ -237,17 +237,17 @@ public class LdapSearcherTest extends LDAPBaseTest {
 
     @Test
     public void testGetAttributeResultsDefaultScope() {
-        testGetAttributeResults(null, "john", "mary");
+        testGetAttributeResults(null, "john", "john\\,jr", "mary");
     }
 
     @Test
     public void testGetAttributeResultsOneLevelScope() {
-        testGetAttributeResults(SearchScope.ONELEVEL_SCOPE, "john", "mary");
+        testGetAttributeResults(SearchScope.ONELEVEL_SCOPE, "john", "john\\,jr", "mary");
     }
 
     @Test
     public void testGetAttributeResultsSubtreeScope() {
-        testGetAttributeResults(SearchScope.SUBTREE_SCOPE, "john", "mary", "peter", "mike");
+        testGetAttributeResults(SearchScope.SUBTREE_SCOPE, "john", "john\\,jr", "mary", "peter", "mike");
     }
 
 }

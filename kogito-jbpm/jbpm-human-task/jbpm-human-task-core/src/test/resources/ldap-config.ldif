@@ -29,6 +29,16 @@ name: Mary Snow
 email: marysnow@jbpm.org
 language: fr-FR
 
+dn: uid=john\,jr,ou=People,dc=jbpm,dc=org
+objectclass: top
+objectclass: uidObject
+objectclass: person
+objectclass: inetOrgPerson
+uid: john\,jr
+displayName: John Doe
+mail: john.jr.doe@jbpm.org
+locale: en-US
+
 dn: ou=ENG,ou=People,dc=jbpm,dc=org
 objectclass: top
 objectclass: organizationalUnit
@@ -64,6 +74,16 @@ representative: uid=mary,ou=People,dc=jbpm,dc=org
 cn: manager
 displayName: jBPM manager
 mail: manager@jbpm.org
+locale: en-US
+
+dn: cn=manager\,eng,ou=Roles,dc=jbpm,dc=org
+objectclass: top
+objectclass: groupOfNames
+member: uid=john\,jr,ou=People,dc=jbpm,dc=org
+representative: uid=mary,ou=People,dc=jbpm,dc=org
+cn: manager\,eng
+displayName: jBPM manager
+mail: manager.eng@jbpm.org
 locale: en-US
 
 dn: cn=user,ou=Roles,dc=jbpm,dc=org
