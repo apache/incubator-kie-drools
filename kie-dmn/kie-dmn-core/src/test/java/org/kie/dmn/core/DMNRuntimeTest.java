@@ -117,7 +117,7 @@ public class DMNRuntimeTest {
         
         DMNContext context = DMNFactory.newContext();
         context.set( "IsDoubleHulled", true );
-        context.set( "Residual Cargo Size", new BigDecimal( 0.1 ) );
+        context.set( "Residual Cargo Size", BigDecimal.valueOf(0.1) );
         context.set( "Ship Size", new BigDecimal( 50 ) );
         
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );

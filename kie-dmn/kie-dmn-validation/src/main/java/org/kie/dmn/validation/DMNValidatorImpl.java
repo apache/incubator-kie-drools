@@ -52,7 +52,7 @@ import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_MODEL;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_SCHEMA;
 
 public class DMNValidatorImpl implements DMNValidator {
-    public static Logger LOG = LoggerFactory.getLogger(DMNValidatorImpl.class);
+    public static final Logger LOG = LoggerFactory.getLogger(DMNValidatorImpl.class);
     static Schema schema;
     static {
         try {
@@ -71,7 +71,7 @@ public class DMNValidatorImpl implements DMNValidator {
     /**
      * Collect at init time the runtime issues which prevented to build the `kieContainer` correctly.
      */
-    private List<DMNMessage> failedInitMsg;
+    private List<DMNMessage> failedInitMsg = new ArrayList<>();
 
     public DMNValidatorImpl() {
         final KieServices ks = KieServices.Factory.get();

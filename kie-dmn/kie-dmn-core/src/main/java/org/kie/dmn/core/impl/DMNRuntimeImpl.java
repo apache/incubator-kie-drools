@@ -179,17 +179,17 @@ public class DMNRuntimeImpl
             eventManager.fireBeforeEvaluateBKM( bkm, result );
             for( DMNNode dep : bkm.getDependencies().values() ) {
                 if ( !checkDependencyValueIsValid(dep, result ) ) {
-                    DMNMessage message = MsgUtil.reportMessage( logger,
-                                                                DMNMessage.Severity.ERROR,
-                                                                ((DMNBaseNode) dep).getSource(),
-                                                                result,
-                                                                null,
-                                                                null,
-                                                                Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
-                                                                getIdentifier( bkm ),
-                                                                getIdentifier( dep ),
-                                                                result.getContext().get( dep.getName() )
-                                                                );
+                    MsgUtil.reportMessage( logger,
+                                           DMNMessage.Severity.ERROR,
+                                           ((DMNBaseNode) dep).getSource(),
+                                           result,
+                                           null,
+                                           null,
+                                           Msg.ERROR_EVAL_NODE_DEP_WRONG_TYPE,
+                                           getIdentifier( bkm ),
+                                           getIdentifier( dep ),
+                                           result.getContext().get( dep.getName() )
+                                           );
                     return;
                 }
                 if( ! result.getContext().isDefined( dep.getName() ) ) {
