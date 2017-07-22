@@ -63,7 +63,7 @@ final class TestGenerator {
     }
 
     private void dropOldestUpdates() {
-        logger.info("Dropping oldest updates...", journal.getMoveOperations().size());
+        logger.info("Dropping oldest {} updates...", journal.getMoveOperations().size());
         TestGenHeadCuttingMutator<TestGenKieSessionOperation> m = new TestGenHeadCuttingMutator<>(journal.getMoveOperations());
         while (m.canMutate()) {
             long start = System.currentTimeMillis();
@@ -81,7 +81,7 @@ final class TestGenerator {
     }
 
     private void pruneUpdates() {
-        logger.info("Pruning updates...", journal.getMoveOperations().size());
+        logger.info("Pruning {} updates...", journal.getMoveOperations().size());
         TestGenRemoveRandomBlockMutator<TestGenKieSessionOperation> m = new TestGenRemoveRandomBlockMutator<>(journal.getMoveOperations());
         while (m.canMutate()) {
             logger.debug("    Current journal size: {}", m.getResult().size());
@@ -100,7 +100,7 @@ final class TestGenerator {
     }
 
     private void pruneInserts() {
-        logger.info("Pruning inserts...", journal.getInitialInserts().size());
+        logger.info("Pruning {} inserts...", journal.getInitialInserts().size());
         TestGenRemoveRandomBlockMutator<TestGenKieSessionInsert> m = new TestGenRemoveRandomBlockMutator<>(journal.getInitialInserts());
         while (m.canMutate()) {
             logger.debug("    Current journal size: {}", m.getResult().size());
@@ -145,7 +145,7 @@ final class TestGenerator {
     }
 
     private void pruneSetup() {
-        logger.info("Pruning fact setup code...", journal.getFacts().size());
+        logger.info("Pruning {} facts setup code...", journal.getFacts().size());
         long disabled = journal.getFacts().stream()
                 .flatMap(fact -> fact.getFields().stream()) // for all fields of all facts
                 .filter(field -> {
