@@ -204,9 +204,9 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
                         + ") that is lower than 1.");
             }
             if (resolvedActiveThreadCount > availableProcessorCount) {
-                logger.debug("The resolvedActiveThreadCount (" + resolvedActiveThreadCount
-                        + ") is higher than the availableProcessorCount (" + availableProcessorCount
-                        + "), so the JVM will round-robin the CPU instead.");
+                logger.debug("The resolvedActiveThreadCount ({}) is higher than "
+                        + "the availableProcessorCount ({}), so the JVM will "
+                        + "round-robin the CPU instead.", resolvedActiveThreadCount, availableProcessorCount);
             }
         }
         return resolvedActiveThreadCount;

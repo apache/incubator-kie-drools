@@ -195,7 +195,7 @@ class TestGenTestWriter {
         try {
             fos = new FileOutputStream(file);
         } catch (FileNotFoundException ex) {
-            logger.error("Cannot open test file: " + file.toString(), ex);
+            logger.error("Cannot open test file: {}", file, ex);
             return;
         }
         OutputStreamWriter osw;

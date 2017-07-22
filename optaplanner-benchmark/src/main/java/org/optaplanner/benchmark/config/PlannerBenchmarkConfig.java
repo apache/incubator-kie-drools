@@ -319,9 +319,9 @@ public class PlannerBenchmarkConfig {
                     + ") that is lower than 1.");
         }
         if (resolvedParallelBenchmarkCount > availableProcessorCount) {
-            logger.warn("Because the resolvedParallelBenchmarkCount (" + resolvedParallelBenchmarkCount
-                    + ") is higher than the availableProcessorCount (" + availableProcessorCount
-                    + "), it is reduced to availableProcessorCount.");
+            logger.warn("Because the resolvedParallelBenchmarkCount ({}) is higher "
+                    + "than the availableProcessorCount ({}), it is reduced to "
+                    + "availableProcessorCount.", resolvedParallelBenchmarkCount, availableProcessorCount);
             resolvedParallelBenchmarkCount = availableProcessorCount;
         }
         return resolvedParallelBenchmarkCount;

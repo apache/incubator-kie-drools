@@ -99,7 +99,7 @@ public class SwingUtils {
             lookAndFeelException = e;
         }
         if (lookAndFeelException != null) {
-            logger.warn("Could not switch to lookAndFeel (" + lookAndFeelName + "). Layout might be incorrect.",
+            logger.warn("Could not switch to lookAndFeel ({}). Layout might be incorrect.", lookAndFeelName,
                     lookAndFeelException);
         }
     }

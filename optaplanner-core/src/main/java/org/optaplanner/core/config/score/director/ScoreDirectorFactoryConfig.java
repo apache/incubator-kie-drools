@@ -506,8 +506,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 throw new IllegalStateException("There are errors in a score DRL:\n"
                         + results.toString());
             } else if (results.hasMessages(Message.Level.WARNING)) {
-                logger.warn("There are warning in a score DRL:\n"
-                        + results.toString());
+                logger.warn("There are warning in a score DRL:\n{}", results);
             }
             kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
 

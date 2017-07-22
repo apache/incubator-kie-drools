@@ -99,8 +99,7 @@ public class BenchmarkResultIO {
         try (Reader reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), "UTF-8")) {
             plannerBenchmarkResult = (PlannerBenchmarkResult) xStream.fromXML(reader);
         } catch (ConversionException e) {
-            logger.warn(
-                    "Failed reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
+            logger.warn("Failed reading plannerBenchmarkResultFile ({}).", plannerBenchmarkResultFile, e);
             // If the plannerBenchmarkResultFile's format has changed, the app should not crash entirely
             String benchmarkReportDirectoryName = plannerBenchmarkResultFile.getParentFile().getName();
             plannerBenchmarkResult = PlannerBenchmarkResult.createUnmarshallingFailedResult(
