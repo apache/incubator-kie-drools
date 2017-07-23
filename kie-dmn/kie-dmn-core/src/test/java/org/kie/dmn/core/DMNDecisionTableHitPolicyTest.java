@@ -214,22 +214,33 @@ public class DMNDecisionTableHitPolicyTest {
 
     @Test
     public void testSimpleDecisionTableHitPolicyCollect() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0004-simpletable-C.dmn", this.getClass());
-        final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-C");
-        assertThat(dmnModel, notNullValue());
-
-        final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true);
-        final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
-
-        final List<BigDecimal> decisionResults = (List<BigDecimal>) result.get("Status number");
+        List<BigDecimal> decisionResults = executeTestDecisionTableHitPolicyCollect(getSimpleTableContext( BigDecimal.valueOf( 70 ), "Medium", true));
         assertThat(decisionResults, hasSize(3));
         assertThat(decisionResults, contains(BigDecimal.valueOf(10), BigDecimal.valueOf(25), BigDecimal.valueOf(13)));
     }
 
     @Test
+    public void testSimpleDecisionTableHitPolicyCollectNoHits() {
+        List<BigDecimal> decisionResults = executeTestDecisionTableHitPolicyCollect(getSimpleTableContext( BigDecimal.valueOf( 5 ), "Medium", true));
+        assertThat(decisionResults, hasSize(0));
+    }
+
+    private List<BigDecimal> executeTestDecisionTableHitPolicyCollect(DMNContext context) {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0004-simpletable-C.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel( "https://github.com/kiegroup/kie-dmn", "0004-simpletable-C");
+        assertThat(dmnModel, notNullValue());
+
+        final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
+
+        final List<BigDecimal> decisionResults = (List<BigDecimal>) result.get( "Status number");
+        return decisionResults;
+    }
+
+    @Test
     public void testSimpleDecisionTableHitPolicyCollectSum() {
         testSimpleDecisionTableHitPolicyCollectAggregateFunction(
-                "0004-simpletable-C-sum.dmn", "0004-simpletable-C-sum", BigDecimal.valueOf(48));
+                "0004-simpletable-C-sum.dmn", "0004-simpletable-C-sum", BigDecimal.valueOf(48),
+                getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true));
     }
 
     @Test
@@ -252,28 +263,37 @@ public class DMNDecisionTableHitPolicyTest {
     @Test
     public void testSimpleDecisionTableHitPolicyCollectMin() {
         testSimpleDecisionTableHitPolicyCollectAggregateFunction(
-                "0004-simpletable-C-min.dmn", "0004-simpletable-C-min", BigDecimal.valueOf(10));
+                "0004-simpletable-C-min.dmn", "0004-simpletable-C-min", BigDecimal.valueOf(10),
+                getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true));
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyCollectMax() {
         testSimpleDecisionTableHitPolicyCollectAggregateFunction(
-                "0004-simpletable-C-max.dmn", "0004-simpletable-C-max", BigDecimal.valueOf(25));
+                "0004-simpletable-C-max.dmn", "0004-simpletable-C-max", BigDecimal.valueOf(25),
+                getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true));
     }
 
     @Test
     public void testSimpleDecisionTableHitPolicyCollectCount() {
         testSimpleDecisionTableHitPolicyCollectAggregateFunction(
-                "0004-simpletable-C-count.dmn", "0004-simpletable-C-count", BigDecimal.valueOf(3));
+                "0004-simpletable-C-count.dmn", "0004-simpletable-C-count", BigDecimal.valueOf(3),
+                getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true));
+    }
+
+    @Test
+    public void testSimpleDecisionTableHitPolicyCollectCountNoHits() {
+        testSimpleDecisionTableHitPolicyCollectAggregateFunction(
+                "0004-simpletable-C-count.dmn", "0004-simpletable-C-count", BigDecimal.valueOf(0),
+                getSimpleTableContext(BigDecimal.valueOf(5), "Medium", true));
     }
 
     private void testSimpleDecisionTableHitPolicyCollectAggregateFunction(
-            final String resourceName, final String modelName, final BigDecimal expectedResult) {
+            final String resourceName, final String modelName, final BigDecimal expectedResult, final DMNContext context) {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime(resourceName, this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", modelName);
         assertThat(dmnModel, notNullValue());
 
-        final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(70), "Medium", true);
         final DMNContext result = evaluateSimpleTableWithContext(dmnModel, runtime, context);
         assertThat(result.get("Status number"), is(expectedResult));
     }
@@ -306,4 +326,5 @@ public class DMNDecisionTableHitPolicyTest {
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Collect"), is(BigDecimal.valueOf(50)));
     }
+
 }
