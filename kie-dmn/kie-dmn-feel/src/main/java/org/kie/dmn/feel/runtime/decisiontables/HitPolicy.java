@@ -35,30 +35,32 @@ import static java.util.stream.Collectors.*;
 import static java.util.stream.IntStream.range;
 
 public enum HitPolicy {
-    UNIQUE( "U", "UNIQUE", HitPolicy::unique ),
-    FIRST( "F", "FIRST", HitPolicy::first ),
-    PRIORITY( "P", "PRIORITY", HitPolicy::priority ),
-    ANY( "A", "ANY", HitPolicy::any ),
-    COLLECT( "C", "COLLECT", HitPolicy::ruleOrder ),    // Collect – return a list of the outputs in arbitrary order 
-    COLLECT_SUM( "C+", "COLLECT SUM", HitPolicy::sumCollect ),
-    COLLECT_COUNT( "C#", "COLLECT COUNT", HitPolicy::countCollect ),
-    COLLECT_MIN( "C<", "COLLECT MIN", HitPolicy::minCollect ),
-    COLLECT_MAX( "C>", "COLLECT MAX", HitPolicy::maxCollect ),
-    RULE_ORDER( "R", "RULE ORDER", HitPolicy::ruleOrder ),
-    OUTPUT_ORDER( "O", "OUTPUT ORDER", HitPolicy::outputOrder );
+    UNIQUE( "U", "UNIQUE", HitPolicy::unique, null ),
+    FIRST( "F", "FIRST", HitPolicy::first, null ),
+    PRIORITY( "P", "PRIORITY", HitPolicy::priority, null ),
+    ANY( "A", "ANY", HitPolicy::any, null ),
+    COLLECT( "C", "COLLECT", HitPolicy::ruleOrder, Collections.EMPTY_LIST ),    // Collect – return a list of the outputs in arbitrary order
+    COLLECT_SUM( "C+", "COLLECT SUM", HitPolicy::sumCollect, null ),
+    COLLECT_COUNT( "C#", "COLLECT COUNT", HitPolicy::countCollect, BigDecimal.ZERO ),
+    COLLECT_MIN( "C<", "COLLECT MIN", HitPolicy::minCollect, null ),
+    COLLECT_MAX( "C>", "COLLECT MAX", HitPolicy::maxCollect, null ),
+    RULE_ORDER( "R", "RULE ORDER", HitPolicy::ruleOrder, null ),
+    OUTPUT_ORDER( "O", "OUTPUT ORDER", HitPolicy::outputOrder, null );
 
     private final String       shortName;
     private final String       longName;
     private final HitPolicyDTI dti;
+    private final Object       defaultValue;
 
     HitPolicy(final String shortName, final String longName) {
-        this( shortName, longName, HitPolicy::notImplemented );
+        this( shortName, longName, HitPolicy::notImplemented, null );
     }
 
-    HitPolicy(final String shortName, final String longName, final HitPolicyDTI dti) {
+    HitPolicy(final String shortName, final String longName, final HitPolicyDTI dti, Object defaultValue ) {
         this.shortName = shortName;
         this.longName = longName;
         this.dti = dti;
+        this.defaultValue = defaultValue;
     }
 
     public String getShortName() {
@@ -72,6 +74,8 @@ public enum HitPolicy {
     public HitPolicyDTI getDti() {
         return dti;
     }
+
+    public Object getDefaultValue() { return defaultValue; }
 
     public static HitPolicy fromString(String policy) {
         policy = policy.toUpperCase();
