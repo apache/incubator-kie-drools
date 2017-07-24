@@ -427,14 +427,18 @@ public class QueryElementNode extends LeftTupleSource
             TupleSets<LeftTuple> leftTuples = query.getResultLeftTupleSets();
             LeftTuple childLeftTuple = rightTuple.getFirstChild();
 
-            switch (childLeftTuple.getStagedTypeForQueries()) {
-                // handle clash with already staged entries
-                case LeftTuple.INSERT:
-                    leftTuples.removeInsert(childLeftTuple);
-                    return;
-                case LeftTuple.UPDATE:
-                    leftTuples.removeUpdate(childLeftTuple);
-                    break;
+            if (childLeftTuple.isStagedOnRight()) {
+                ( (SubnetworkTuple) childLeftTuple ).moveStagingFromRightToLeft();
+            } else {
+                switch ( childLeftTuple.getStagedTypeForQueries() ) {
+                    // handle clash with already staged entries
+                    case LeftTuple.INSERT:
+                        leftTuples.removeInsert( childLeftTuple );
+                        return;
+                    case LeftTuple.UPDATE:
+                        leftTuples.removeUpdate( childLeftTuple );
+                        break;
+                }
             }
 
             leftTuples.addDelete(childLeftTuple);

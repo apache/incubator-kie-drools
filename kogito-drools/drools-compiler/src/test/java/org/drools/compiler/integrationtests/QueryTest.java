@@ -14,6 +14,21 @@
 */
 package org.drools.compiler.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.xml.bind.JAXBContext;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -54,21 +69,6 @@ import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.internal.utils.KieHelper;
-
-import javax.xml.bind.JAXBContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class QueryTest extends CommonTestMethodBase {
 
@@ -1262,5 +1262,34 @@ public class QueryTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertFalse( results.getMessages().isEmpty() );
+    }
+
+    @Test
+    public void testQueryInSubnetwork() {
+        // DROOLS-1386
+        String str = "query myquery(Integer $i)\n" +
+                     "   $i := Integer()\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "   String()\n" +
+                     "   accumulate (myquery($i;);\n" +
+                     "      $result_count : count(1)\n" +
+                     "   )\n" +
+                     "   eval($result_count > 0)\n" +
+                     "then\n" +
+                     "end\n\n";
+
+        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build().newKieSession();
+
+        FactHandle iFH = ksession.insert( 1 );
+        FactHandle sFH = ksession.insert( "" );
+
+        ksession.fireAllRules();
+
+        ksession.update( iFH, 1 );
+        ksession.delete( sFH );
+
+        ksession.fireAllRules();
     }
 }
