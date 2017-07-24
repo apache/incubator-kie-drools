@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,6 +43,7 @@ import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -269,21 +269,9 @@ public class KieContainerImpl
             kBases.remove(kbaseToRemove);
         }
 
-        for( Iterator<Entry<String,KieSession>> it = this.kSessions.entrySet().iterator(); it.hasNext(); ) {
-            Entry<String, KieSession> ksession = it.next();
-            if( kProject.getKieSessionModel( ksession.getKey() ) == null ) {
-                // remove sessions that no longer exist
-                it.remove();
-            }
-        }
-
-        for( Iterator<Entry<String,StatelessKieSession>> it = this.statelessKSessions.entrySet().iterator(); it.hasNext(); ) {
-            Entry<String, StatelessKieSession> ksession = it.next();
-            if( kProject.getKieSessionModel( ksession.getKey() ) == null ) {
-                // remove sessions that no longer exist
-                it.remove();
-            }
-        }
+        // remove sessions that no longer exist
+        this.kSessions.entrySet().removeIf( ksession -> kProject.getKieSessionModel( ksession.getKey() ) == null );
+        this.statelessKSessions.entrySet().removeIf( ksession -> kProject.getKieSessionModel( ksession.getKey() ) == null );
 
         return results;
     }
@@ -321,7 +309,7 @@ public class KieContainerImpl
                     newKM.addResourceToCompiler(ckbuilder, newKieBaseModel, dslFile);
                 }
             }
-            rebuildAll(newReleaseId, results, newKM, modifyingUsedClass, newKieBaseModel, pkgbuilder, ckbuilder);
+            rebuildAll(newReleaseId, results, modifyingUsedClass, newKieBaseModel, pkgbuilder, ckbuilder);
         }
         
         kBase.setResolvedReleaseId(newReleaseId);
@@ -479,7 +467,6 @@ public class KieContainerImpl
 
     private void rebuildAll(ReleaseId newReleaseId,
                             ResultsImpl results,
-                            InternalKieModule newKM,
                             boolean modifyingUsedClass,
                             KieBaseModel kieBaseModel,
                             KnowledgeBuilderImpl kbuilder,
@@ -600,6 +587,7 @@ public class KieContainerImpl
         }
         kBase.setResolvedReleaseId(containerReleaseId);
         kBase.setContainerId(containerId);
+        kBase.setKieContainer(this);
         kBase.initMBeans();
         return kBase;
     }
@@ -783,6 +771,8 @@ public class KieContainerImpl
     }
 
     public void dispose() {
+        kBases.values().forEach( kb -> ( (InternalKnowledgeBase) kb ).setKieContainer( null ) );
+
         Set<DroolsManagementAgent.CBSKey> cbskeys = new HashSet<DroolsManagementAgent.CBSKey>();
         if ( isMBeanOptionEnabled() ) {
             for (Entry<String, KieSession> kv : kSessions.entrySet()) {
@@ -798,7 +788,7 @@ public class KieContainerImpl
         }
         kSessions.clear();
         statelessKSessions.clear();
-        
+
         if ( isMBeanOptionEnabled() ) {
             for (CBSKey c : cbskeys) {
                 DroolsManagementAgent.getInstance().unregisterKnowledgeSessionBean(c);
@@ -810,6 +800,13 @@ public class KieContainerImpl
         }
         
         ((InternalKieServices) KieServices.Factory.get()).clearRefToContainerId(this.containerId, this);
+    }
+
+    @Override
+    public void disposeSession(KieSession kieSession) {
+        if (!isMBeanOptionEnabled()) {
+            kSessions.values().remove( kieSession );
+        }
     }
 
     private boolean isMBeanOptionEnabled() {

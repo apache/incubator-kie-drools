@@ -1,6 +1,6 @@
 package org.drools.compiler.management;
 
-import org.drools.compiler.kie.builder.impl.InternalKieContainer;
+import org.drools.core.impl.InternalKieContainer;
 import org.kie.api.management.KieContainerMonitorMXBean;
 import org.kie.api.management.GAV;
 
