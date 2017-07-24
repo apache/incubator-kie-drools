@@ -123,6 +123,7 @@
               org.drools.compiler.kproject.models,
               org.drools.core.common,
               org.drools.core.event,
+              org.drools.core.impl,
               org.drools.core.rule,
               org.drools.core.util,
               org.kie.api,

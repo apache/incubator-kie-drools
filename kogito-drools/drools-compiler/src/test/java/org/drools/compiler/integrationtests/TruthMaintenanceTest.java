@@ -15,6 +15,12 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CheeseEqual;
 import org.drools.compiler.CommonTestMethodBase;
@@ -52,14 +58,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.mockito.Mockito.mock;
@@ -521,7 +520,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, false );
         ksession.fireAllRules();
 
-        final Collection list = ksession.getObjects();
+        Collection list = ksession.getObjects();
 
         assertEquals( "Only sensor is there",
                       1,
@@ -540,7 +539,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
 
         ksession.fireAllRules();
-        //        logger.writeToDisk();
+        list = ksession.getObjects();
 
         assertEquals( "Only sensor is there",
                       1,

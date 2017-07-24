@@ -14,10 +14,17 @@
 */
 package org.drools.compiler.integrationtests;
 
+import java.lang.management.ManagementFactory;
+import java.net.URL;
+import java.net.URLClassLoader;
+import javax.management.JMX;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.kie.builder.impl.InternalKieContainer;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.drools.core.ClockType;
+import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.junit.After;
@@ -35,8 +42,8 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.MBeansOption;
-import org.kie.api.management.KieContainerMonitorMXBean;
 import org.kie.api.management.GenericKieSessionMonitoringMXBean;
+import org.kie.api.management.KieContainerMonitorMXBean;
 import org.kie.api.management.KieSessionMonitoringMXBean;
 import org.kie.api.management.StatelessKieSessionMonitoringMXBean;
 import org.kie.api.runtime.KieContainer;
@@ -47,18 +54,6 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.management.ManagementFactory;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import javax.management.JMX;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 
 public class MBeansMonitoringTest extends CommonTestMethodBase {
     public static final Logger LOG = LoggerFactory.getLogger(MBeansMonitoringTest.class);
@@ -368,10 +363,10 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         checkStatsByRule(aggrMonitor,"ND" ,2,2,0);
         checkStatsByRule(aggrMonitor,"ND2",2,0,2);
         
-        ksession2.dispose();
+        ksession.dispose();
         checkTotalSessions(aggrMonitor, 1);
         checkTotalFactCount(aggrMonitor, 1);
-        ksession.dispose();
+        ksession2.dispose();
         checkTotalSessions(aggrMonitor, 0);
         checkTotalFactCount(aggrMonitor, 0);
         

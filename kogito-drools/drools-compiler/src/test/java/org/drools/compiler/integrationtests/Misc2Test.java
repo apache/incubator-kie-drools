@@ -88,7 +88,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteComparator;
 import org.drools.core.reteoo.ReteDumper;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
@@ -5137,53 +5136,6 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    public void testStagedTupleLeak() throws Exception {
-        // BZ-1056599
-        String str =
-                "rule R1 when\n" +
-                "    $i : Integer()\n" +
-                "then\n" +
-                "    insertLogical( $i.toString() );\n" +
-                "end\n" +
-                "\n" +
-                "rule R2 when\n" +
-                "    $i : Integer()\n" +
-                "then\n" +
-                "    delete( $i );\n" +
-                "end\n" +
-                "\n" +
-                "rule R3 when\n" +
-                "    $l : Long()\n" +
-                "    $s : String( this == $l.toString() )\n" +
-                "then\n" +
-                "end\n";
-
-        KieBase kbase = loadKnowledgeBaseFromString( str );
-        KieSession ksession = kbase.newKieSession();
-
-        for ( int i = 0; i < 10; i++ ) {
-            ksession.insert( i );
-            ksession.fireAllRules();
-        }
-
-        Rete rete = ( (KnowledgeBaseImpl) kbase ).getRete();
-        JoinNode joinNode = null;
-        for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
-            if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
-                joinNode = (JoinNode) otn.getObjectSinkPropagator().getSinks()[0];
-                break;
-            }
-        }
-
-        assertNotNull( joinNode );
-        InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
-        BetaMemory memory = (BetaMemory) wm.getNodeMemory( joinNode );
-        TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
-        assertNull( stagedRightTuples.getDeleteFirst() );
-        assertNull( stagedRightTuples.getInsertFirst() );
-    }
-
-    @Test
     public void testJittingConstraintWithArrayParams() throws Exception {
         // BZ-1057000
         String str =
@@ -5290,45 +5242,6 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-    }
-
-    @Test
-    public void testStagedLeftTupleLeak() throws Exception {
-        // BZ-1058874
-        String str =
-                "rule R1 when\n" +
-                "    String( this == \"this\" )\n" +
-                "    String( this == \"that\" )\n" +
-                "then\n" +
-                "end\n";
-
-        KieBase kbase = loadKnowledgeBaseFromString( str );
-        KieSession ksession = kbase.newKieSession();
-        ksession.fireAllRules();
-
-        for ( int i = 0; i < 10; i++ ) {
-            FactHandle fh = ksession.insert( "this" );
-            ksession.fireAllRules();
-            ksession.delete( fh );
-            ksession.fireAllRules();
-        }
-
-        Rete rete = ( (KnowledgeBaseImpl) kbase ).getRete();
-        LeftInputAdapterNode liaNode = null;
-        for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
-            if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
-                AlphaNode alphaNode = (AlphaNode) otn.getObjectSinkPropagator().getSinks()[0];
-                liaNode = (LeftInputAdapterNode) alphaNode.getObjectSinkPropagator().getSinks()[0];
-                break;
-            }
-        }
-
-        assertNotNull( liaNode );
-        InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
-        LeftInputAdapterNode.LiaNodeMemory memory = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( liaNode );
-        TupleSets<LeftTuple> stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
-        assertNull( stagedLeftTuples.getDeleteFirst() );
-        assertNull( stagedLeftTuples.getInsertFirst() );
     }
 
     public static class EvallerBean {
@@ -7958,54 +7871,6 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals( 1, list.size() );
         assertEquals( "a", list.get( 0 ) );
-    }
-
-    @Test
-    public void testBetaMemoryLeakOnFactDelete() {
-        // DROOLS-913
-        String drl =
-                "rule R1 when\n" +
-                "    $a : Integer(this == 1)\n" +
-                "    $b : String()\n" +
-                "    $c : Integer(this == 2)\n" +
-                "then \n" +
-                "end\n" +
-                "rule R2 when\n" +
-                "    $a : Integer(this == 1)\n" +
-                "    $b : String()\n" +
-                "    $c : Integer(this == 3)\n" +
-                "then \n" +
-                "end\n";
-
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
-
-        FactHandle fh1 = ksession.insert( 1 );
-        FactHandle fh2 = ksession.insert( 3 );
-        FactHandle fh3 = ksession.insert( "test" );
-        ksession.fireAllRules();
-
-        ksession.delete( fh1 );
-        ksession.delete( fh2 );
-        ksession.delete( fh3 );
-        ksession.fireAllRules();
-
-        NodeMemories nodeMemories = ( (InternalWorkingMemory) ksession ).getNodeMemories();
-        for ( int i = 0; i < nodeMemories.length(); i++ ) {
-            Memory memory = nodeMemories.peekNodeMemory( i );
-            if ( memory != null && memory.getSegmentMemory() != null ) {
-                SegmentMemory segmentMemory = memory.getSegmentMemory();
-                System.out.println( memory );
-                LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
-                if ( segmentMemory.getRootNode() instanceof JoinNode ) {
-                    BetaMemory bm = (BetaMemory) segmentMemory.getNodeMemories().getFirst();
-                    assertEquals( 0, bm.getLeftTupleMemory().size() );
-                }
-                System.out.println( deleteFirst );
-                assertNull( deleteFirst );
-            }
-        }
     }
 
     @Test

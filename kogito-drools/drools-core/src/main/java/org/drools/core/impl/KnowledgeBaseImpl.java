@@ -179,6 +179,8 @@ public class KnowledgeBaseImpl
 
     private transient AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
 
+    private transient InternalKieContainer kieContainer;
+
 	private ReleaseId resolvedReleaseId;
 	private String containerId;
 	private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
@@ -614,6 +616,9 @@ public class KnowledgeBaseImpl
                 sessionsCache.store(statefulSession);
             }
             this.statefulSessions.remove(statefulSession);
+        }
+        if (kieContainer != null) {
+            kieContainer.disposeSession( statefulSession );
         }
     }
 
@@ -1764,6 +1769,11 @@ public class KnowledgeBaseImpl
 	public void setContainerId(String containerId) {
 		this.containerId = containerId;
 	}
+
+    @Override
+    public void setKieContainer( InternalKieContainer kieContainer ) {
+        this.kieContainer = kieContainer;
+    }
 
     public RuleUnitRegistry getRuleUnitRegistry() {
         return ruleUnitRegistry;

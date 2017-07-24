@@ -1,19 +1,22 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-package org.drools.compiler.kie.builder.impl;
+package org.drools.core.impl;
+
+import java.io.InputStream;
 
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
@@ -21,8 +24,6 @@ import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-
-import java.io.InputStream;
 
 public interface InternalKieContainer extends KieContainer {
 
@@ -49,7 +50,6 @@ public interface InternalKieContainer extends KieContainer {
      * or alternatively if the RelaseId was NOT configured while creating the Kiecontainer,
      * returns the the ReleaseId of the KieModule wrapped by this KieContainer. 
      * Additionally, please notice this will always gets updated to the parameter passed as updateToVersion(ReleaseId).
-     * @see org.drools.compiler.kie.builder.impl.KieContainerImpl#KieContainerImpl(String, KieProject, org.kie.api.builder.KieRepository, ReleaseId)
      * @see org.kie.api.runtime.KieContainer#getReleaseId()
      * @see org.kie.api.runtime.KieContainer#updateToVersion(ReleaseId)
      */
@@ -83,5 +83,7 @@ public interface InternalKieContainer extends KieContainer {
 	 * @return the actual resolved ReleaseId. 
 	 */
 	ReleaseId getResolvedReleaseId();
+
+    void disposeSession(KieSession kieSession);
 
 }

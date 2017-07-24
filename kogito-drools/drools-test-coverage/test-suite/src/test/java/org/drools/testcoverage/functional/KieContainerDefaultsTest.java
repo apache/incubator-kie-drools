@@ -17,7 +17,7 @@
 package org.drools.testcoverage.functional;
 
 import org.assertj.core.api.Assertions;
-import org.drools.compiler.kie.builder.impl.InternalKieContainer;
+import org.drools.core.impl.InternalKieContainer;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Before;
 import org.junit.Test;
