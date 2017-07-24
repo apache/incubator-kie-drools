@@ -29,7 +29,7 @@ import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Resource;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kie.builder.impl.InternalKieContainer;
+import org.drools.core.impl.InternalKieContainer;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieContainer;
