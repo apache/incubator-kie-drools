@@ -105,6 +105,9 @@ public class DecisionTableImpl {
                 Object result = defaultToOutput( ctx, feel );
                 return FEELFnResult.ofResult( result );
             } else {
+                if( hitPolicy.getDefaultValue() != null ) {
+                    return FEELFnResult.ofResult( hitPolicy.getDefaultValue() );
+                }
                 return FEELFnResult.ofError( new HitPolicyViolationEvent(
                                                     Severity.WARN,
                                                     "No rule matched for decision table '" + name + "' and no default values were defined. Setting result to null.",
