@@ -991,7 +991,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     protected void compileKnowledgePackages( PackageDescr packageDescr, PackageRegistry pkgRegistry ) {
         pkgRegistry.setDialect( getPackageDialect( packageDescr ) );
         validateUniqueRuleNames( packageDescr );
-        compileRules(packageDescr, pkgRegistry);
+        compileFunctions( packageDescr, pkgRegistry );
+        compileRules( packageDescr, pkgRegistry );
     }
 
     protected void wireAllRules() {
@@ -1097,7 +1098,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    private void compileRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+    private void compileFunctions( PackageDescr packageDescr, PackageRegistry pkgRegistry ) {
         List<FunctionDescr> functions = packageDescr.getFunctions();
         if (!functions.isEmpty()) {
 
@@ -1115,7 +1116,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
             // iterate and compile
             for (FunctionDescr functionDescr : functions) {
-                if (filterAccepts(ResourceChange.Type.FUNCTION, functionDescr.getNamespace(), functionDescr.getName()) ) {
+                if (filterAccepts( ResourceChange.Type.FUNCTION, functionDescr.getNamespace(), functionDescr.getName() ) ) {
                     // inherit the dialect from the package
                     addFunction(functionDescr, pkgRegistry);
                 }
@@ -1131,61 +1132,77 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 }
             }
         }
+    }
+
+    private void compileRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+        preProcessRules(packageDescr, pkgRegistry);
 
         // ensure that rules are ordered by dependency, so that dependent rules are built later
-        boolean requiresSorting = sortRulesByDependency(packageDescr, pkgRegistry);
+        SortedRules sortedRules = sortRulesByDependency(packageDescr, pkgRegistry);
 
-        // iterate and prepare RuleDescr
-        for (RuleDescr ruleDescr : packageDescr.getRules()) {
-            if (isEmpty(ruleDescr.getNamespace())) {
-                // make sure namespace is set on components
-                ruleDescr.setNamespace(packageDescr.getNamespace());
-            }
+        if (!sortedRules.queries.isEmpty()) {
+            compileAllQueries( packageDescr, pkgRegistry, sortedRules.queries );
+        }
+        for (List<RuleDescr> rulesLevel : sortedRules.rules) {
+            compileRulesLevel( packageDescr, pkgRegistry, rulesLevel );
+        }
+    }
 
-            Map<String, AttributeDescr> pkgAttributes = packageAttributes.get(packageDescr.getNamespace());
-            inheritPackageAttributes(pkgAttributes,
-                                     ruleDescr);
-
-            if (isEmpty(ruleDescr.getDialect())) {
-                ruleDescr.addAttribute(new AttributeDescr("dialect",
-                                                          pkgRegistry.getDialect()));
+    private void compileAllQueries( PackageDescr packageDescr, PackageRegistry pkgRegistry, List<RuleDescr> rules ) {
+        Map<String, RuleBuildContext> ruleCxts = buildRuleBuilderContexts( rules, pkgRegistry );
+        for (RuleDescr ruleDescr : rules) {
+            if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
+                initRuleDescr( packageDescr, pkgRegistry, ruleDescr );
+                this.results.addAll( addRule(ruleCxts.get(ruleDescr.getName())) );
             }
         }
+    }
 
-        // Build up map of contexts  and process all rules
-        Map<String, RuleBuildContext> ruleCxts = preProcessRules(packageDescr, pkgRegistry);
-
-        // iterate and compile
-        boolean parallelRulesBuild = this.kBase == null && !requiresSorting && packageDescr.getRules().size() > PARALLEL_RULES_BUILD_THRESHOLD;
-
+    private void compileRulesLevel( PackageDescr packageDescr, PackageRegistry pkgRegistry, List<RuleDescr> rules ) {
+        boolean parallelRulesBuild = this.kBase == null && rules.size() > PARALLEL_RULES_BUILD_THRESHOLD;
         if (parallelRulesBuild) {
-            this.results.addAll(
-                    packageDescr.getRules().stream().parallel()
-                                .filter( ruleDescr -> filterAccepts( ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName() ) )
-                                .reduce( Collections.synchronizedList( new ArrayList<KnowledgeBuilderResult>() ),
-                                         (list, ruleDescr) -> {
-                                             List<? extends KnowledgeBuilderResult> results = addRule( ruleCxts.get( ruleDescr.getName() ) );
-                                             if (!results.isEmpty()) {
-                                                 list.addAll( results );
-                                             }
-                                             return list;
-                                         },
-                                         (l1, l2) -> {
-                                            if (l2.isEmpty()) {
-                                                return l1;
-                                            } else if (l1.isEmpty()) {
-                                                return l2;
-                                            }
-                                            l1.addAll( l2 );
-                                            return l1;
-                                         })
-                               );
-        } else {
-            for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
-                    this.results.addAll( addRule(ruleCxts.get(ruleDescr.getName())) );
+            Map<String, RuleBuildContext> ruleCxts = new ConcurrentHashMap<>();
+            rules.stream().parallel()
+                 .filter( ruleDescr -> filterAccepts( ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName() ) )
+                 .forEach( ruleDescr -> {
+                     initRuleDescr( packageDescr, pkgRegistry, ruleDescr );
+                     RuleBuildContext context = buildRuleBuilderContext( pkgRegistry, ruleDescr );
+                     ruleCxts.put( ruleDescr.getName(), context );
+                     List<? extends KnowledgeBuilderResult> results = addRule( context );
+                     if (!results.isEmpty()) {
+                         synchronized (this.results) {
+                             this.results.addAll( results );
+                         }
+                     }
+                 });
+            for (RuleDescr ruleDescr : rules) {
+                RuleBuildContext context = ruleCxts.get( ruleDescr.getName() );
+                if (context != null) {
+                    pkgRegistry.getPackage().addRule( context.getRule() );
                 }
             }
+        } else {
+            for (RuleDescr ruleDescr : rules) {
+                if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
+                    initRuleDescr( packageDescr, pkgRegistry, ruleDescr );
+                    RuleBuildContext context = buildRuleBuilderContext( pkgRegistry, ruleDescr );
+                    this.results.addAll( addRule(context) );
+                    pkgRegistry.getPackage().addRule( context.getRule() );
+                }
+            }
+        }
+    }
+
+    private void initRuleDescr( PackageDescr packageDescr, PackageRegistry pkgRegistry, RuleDescr ruleDescr ) {
+        if (isEmpty(ruleDescr.getNamespace())) {
+            // make sure namespace is set on components
+            ruleDescr.setNamespace(packageDescr.getNamespace());
+        }
+
+        inheritPackageAttributes(packageAttributes.get(packageDescr.getNamespace()), ruleDescr);
+
+        if (isEmpty(ruleDescr.getDialect())) {
+            ruleDescr.addAttribute(new AttributeDescr( "dialect", pkgRegistry.getDialect()) );
         }
     }
 
@@ -1220,89 +1237,87 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return assetFilter != null && AssetFilter.Action.REMOVE.equals( assetFilter.accept( type, namespace, name ) );
     }
 
-    private Map<String, RuleBuildContext> preProcessRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
-        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        if (this.kBase != null) {
-            boolean needsRemoval = false;
+    private void preProcessRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+        if (this.kBase == null) {
+            return;
+        }
 
-            // first, check if any rules no longer exist
-            for( org.kie.api.definition.rule.Rule rule : pkg.getRules() ) {
-                if (filterAcceptsRemoval( ResourceChange.Type.RULE, rule.getPackageName(), rule.getName() ) ) {
-                    needsRemoval = true;
-                    break;
+        InternalKnowledgePackage pkg = pkgRegistry.getPackage();
+        boolean needsRemoval = false;
+
+        // first, check if any rules no longer exist
+        for( org.kie.api.definition.rule.Rule rule : pkg.getRules() ) {
+            if (filterAcceptsRemoval( ResourceChange.Type.RULE, rule.getPackageName(), rule.getName() ) ) {
+                needsRemoval = true;
+                break;
+            }
+        }
+
+        if( !needsRemoval ) {
+            for (RuleDescr ruleDescr : packageDescr.getRules()) {
+                if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
+                    if (pkg.getRule(ruleDescr.getName()) != null) {
+                        needsRemoval = true;
+                        break;
+                    }
                 }
             }
+        }
 
-            if( !needsRemoval ) {
+        if (needsRemoval) {
+            kBase.enqueueModification( () -> {
+                Collection<RuleImpl> rulesToBeRemoved = new HashSet<>();
+
+                for( org.kie.api.definition.rule.Rule rule : pkg.getRules() ) {
+                    if (filterAcceptsRemoval( ResourceChange.Type.RULE, rule.getPackageName(), rule.getName() ) ) {
+                        rulesToBeRemoved.add(((RuleImpl)rule));
+                    }
+                }
+
+                rulesToBeRemoved.forEach( pkg::removeRule );
+
                 for (RuleDescr ruleDescr : packageDescr.getRules()) {
                     if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
-                        if (pkg.getRule(ruleDescr.getName()) != null) {
-                            needsRemoval = true;
-                            break;
+                        RuleImpl rule = pkg.getRule( ruleDescr.getName() );
+                        if (rule != null) {
+                            rulesToBeRemoved.add(rule);
                         }
                     }
                 }
-            }
 
-            if (needsRemoval) {
-                kBase.enqueueModification( () -> {
-                    Collection<RuleImpl> rulesToBeRemoved = new HashSet<>();
-
-                    for( org.kie.api.definition.rule.Rule rule : pkg.getRules() ) {
-                        if (filterAcceptsRemoval( ResourceChange.Type.RULE, rule.getPackageName(), rule.getName() ) ) {
-                            rulesToBeRemoved.add(((RuleImpl)rule));
-                        }
-                    }
-
-                    rulesToBeRemoved.forEach( pkg::removeRule );
-
-                    for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                        if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
-                            RuleImpl rule = pkg.getRule( ruleDescr.getName() );
-                            if (rule != null) {
-                                rulesToBeRemoved.add(rule);
-                            }
-                        }
-                    }
-
-                    if (!rulesToBeRemoved.isEmpty()) {
-                        kBase.removeRules( rulesToBeRemoved );
-                    }
-                } );
-            }
+                if (!rulesToBeRemoved.isEmpty()) {
+                    kBase.removeRules( rulesToBeRemoved );
+                }
+            } );
         }
-
-        // Pre Process each rule, needed for Query signuture registration
-        return buildRuleBuilderContext(packageDescr.getRules(), pkgRegistry);
     }
 
-    private Map<String, RuleBuildContext> buildRuleBuilderContext(List<RuleDescr> rules, PackageRegistry pkgRegistry) {
+    private Map<String, RuleBuildContext> buildRuleBuilderContexts( List<RuleDescr> rules, PackageRegistry pkgRegistry ) {
         Map<String, RuleBuildContext> map = new HashMap<String, RuleBuildContext>();
         for (RuleDescr ruleDescr : rules) {
-            if (ruleDescr.getResource() == null) {
-                ruleDescr.setResource(resource);
-            }
-
-            InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-            DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
-            RuleBuildContext context = new RuleBuildContext(this,
-                                                            ruleDescr,
-                                                            ctr,
-                                                            pkg,
-                                                            ctr.getDialect(pkgRegistry.getDialect()));
-
-            if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
-                RuleBuilder.preProcess(context);
-                pkg.addRule(context.getRule());
-            }
-
+            RuleBuildContext context = buildRuleBuilderContext( pkgRegistry, ruleDescr );
             map.put(ruleDescr.getName(), context);
+            pkgRegistry.getPackage().addRule(context.getRule());
         }
-
         return map;
     }
 
-    private boolean sortRulesByDependency(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+    private RuleBuildContext buildRuleBuilderContext( PackageRegistry pkgRegistry, RuleDescr ruleDescr ) {
+        if (ruleDescr.getResource() == null) {
+            ruleDescr.setResource(resource);
+        }
+
+        DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
+        RuleBuildContext context = new RuleBuildContext(this,
+                                                        ruleDescr,
+                                                        ctr,
+                                                        pkgRegistry.getPackage(),
+                                                        ctr.getDialect(pkgRegistry.getDialect()));
+        RuleBuilder.preProcess( context );
+        return context;
+    }
+
+    private SortedRules sortRulesByDependency(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         // Using a topological sorting algorithm
         // see http://en.wikipedia.org/wiki/Topological_sorting
 
@@ -1328,13 +1343,18 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             }
         }
 
+        SortedRules sortedRules = new SortedRules();
+        sortedRules.queries = queries;
+
         if (children.isEmpty()) { // Sorting not necessary
             if (!queries.isEmpty()) { // Build all queries first
                 packageDescr.getRules().removeAll(queries);
                 packageDescr.getRules().addAll(0, queries);
-                return true;
+                sortedRules.rules.add( packageDescr.getRules().subList( queries.size(), packageDescr.getRules().size() ));
+            } else {
+                sortedRules.rules.add( packageDescr.getRules() );
             }
-            return false;
+            return sortedRules;
         }
 
         for (String compiledRule : compiledRules) {
@@ -1342,12 +1362,25 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             roots.addAll( childz );
         }
 
-        while (!roots.isEmpty()) {
-            RuleDescr root = roots.remove(0);
-            sorted.put(root.getName(), root);
-            List<RuleDescr> childz = children.remove(root.getName());
-            if (childz != null) {
-                roots.addAll(childz);
+        int rootsNr = roots.size();
+        int couter = rootsNr;
+
+        if (!roots.isEmpty()) {
+            while ( true ) {
+                RuleDescr root = roots.remove( 0 );
+                sortedRules.addRule( root );
+                sorted.put( root.getName(), root );
+                List<RuleDescr> childz = children.remove( root.getName() );
+                if ( childz != null ) {
+                    roots.addAll( childz );
+                }
+                if ( roots.isEmpty() ) {
+                    break;
+                } else if ( --couter == 0 ) {
+                    rootsNr = roots.size();
+                    couter = rootsNr;
+                    sortedRules.newLevel();
+                }
             }
         }
 
@@ -1358,7 +1391,25 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         for (RuleDescr descr : sorted.values() ) {
             packageDescr.getRules().add( descr );
         }
-        return true;
+        return sortedRules;
+    }
+
+    private static class SortedRules {
+        List<RuleDescr> queries;
+        final List<List<RuleDescr>> rules = new ArrayList<>();
+        List<RuleDescr> current = new ArrayList<>();
+
+        SortedRules() {
+            newLevel();
+        }
+
+        void addRule(RuleDescr rule) {
+            current.add(rule);
+        }
+        void newLevel() {
+            current = new ArrayList<>();
+            rules.add(current);
+        }
     }
 
     private void reportHierarchyErrors(Map<String, List<RuleDescr>> parents,
