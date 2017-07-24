@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.drools.testcoverage</groupId>
     <artifactId>drools-test-coverage-parent</artifactId>
-    <version>7.2.0-SNAPSHOT</version>
+    <version>7.1.0.t011</version>
   </parent>
 
   <artifactId>drools-standalone-parent</artifactId>
