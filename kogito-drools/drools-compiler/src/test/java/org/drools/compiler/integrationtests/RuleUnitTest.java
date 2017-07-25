@@ -613,6 +613,52 @@ public class RuleUnitTest {
     }
 
     @Test
+    public void testWithOOPathAndNot() throws Exception {
+        String drl1 =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                        "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                        "rule Adult @Unit( AdultUnit.class ) when\n" +
+                        "    not /persons[age >= 18]\n" +
+                        "then\n" +
+                        "    System.out.println(\"No adults\");\n" +
+                        "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        DataSource<Person> persons = executor.newDataSource( "persons",
+                                                             new Person( "Mario", 4 ),
+                                                             new Person( "Marilena", 17 ),
+                                                             new Person( "Sofia", 4 ) );
+
+        RuleUnit adultUnit = new AdultUnit(persons);
+        assertEquals(1, executor.run( adultUnit ) );
+    }
+
+    @Test
+    public void testWithOOPathAndNotNoMatch() throws Exception {
+        String drl1 =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                        "import " + AdultUnit.class.getCanonicalName() + "\n" +
+                        "rule Adult @Unit( AdultUnit.class ) when\n" +
+                        "    not /persons[age >= 18]\n" +
+                        "then\n" +
+                        "    System.out.println(\"No adults\");\n" +
+                        "end";
+
+        KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL ).build();
+        RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
+
+        DataSource<Person> persons = executor.newDataSource( "persons",
+                                                             new Person( "Mario", 44 ),
+                                                             new Person( "Marilena", 170 ),
+                                                             new Person( "Sofia", 18 ) );
+
+        RuleUnit adultUnit = new AdultUnit(persons);
+        assertEquals(0, executor.run( adultUnit ) );
+    }
+
+    @Test
     public void testVarResolution() throws Exception {
         String drl1 =
                 "import " + Person.class.getCanonicalName() + "\n" +

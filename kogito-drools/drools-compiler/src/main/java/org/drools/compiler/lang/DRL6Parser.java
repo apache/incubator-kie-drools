@@ -2408,9 +2408,9 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             if (helper.validateIdentifierKey(DroolsSoftKeywords.DO)) {
                 namedConsequence(ce, null);
             }
-        } else if (input.LA(1) == DRL6Lexer.ID || input.LA(1) == DRL6Lexer.QUESTION) {
+        } else if (input.LA(1) == DRL6Lexer.ID || input.LA(1) == DRL6Lexer.QUESTION || input.LA( 1) == DRL6Lexer.DIV) {
             result = lhsPatternBind(ce,
-                    allowOr);
+                                    allowOr);
             for (BaseDescr i = consequenceInvocation(ce); i != null; i = consequenceInvocation(ce))
                 ;
         } else {
@@ -3296,13 +3296,16 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                      String label,
                      boolean isUnification ) throws RecognitionException {
 
-        if (label != null && input.LA(1) == DRL6Lexer.DIV) {
+        if (input.LA(1) == DRL6Lexer.DIV) {
             int first = input.index();
             exprParser.xpathPrimary();
             if (state.failed) return;
             int last = input.LT(-1).getTokenIndex();
             String expr = toExpression("", first, last);
-            pattern.id( label, isUnification ).constraint( expr );
+            pattern.constraint(expr);
+            if ( label != null ) {
+                pattern.id(label, isUnification);
+            }
             return;
         }
 
