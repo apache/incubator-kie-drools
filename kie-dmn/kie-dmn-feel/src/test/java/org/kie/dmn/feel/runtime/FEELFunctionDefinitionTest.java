@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
 public class FEELFunctionDefinitionTest extends BaseFEELTest {
 
@@ -28,9 +29,38 @@ public class FEELFunctionDefinitionTest extends BaseFEELTest {
         final Object[][] cases = new Object[][] {
                 // function definition and invocation
                 {"{ hello world : function() \"Hello World!\", message : hello world() }.message", "Hello World!", null },
+                {"{ functioncontext: { innercontext: {hello world : function() \"Hello World!\"}}, " +
+                        " message : functioncontext.innercontext.hello world() }.message", "Hello World!", null },
+                {"{ hello world : function() \"Hello World!\", message : helloWorld() }.message", null, FEELEvent.Severity.ERROR },
                 {"{ is minor : function( person's age ) person's age < 18, bob is minor : is minor( 16 ) }.bob is minor", Boolean.TRUE, null },
+                {"{ is minor : function( person's age ) person's age < 18, bob is minor : is minor( 16, 24 ) }.bob is minor", null, FEELEvent.Severity.ERROR },
+
+                // Tests for FunctionDefNode.convertPrimitiveNameToType
+                {"{ abs : function( v1 ) external { java : { class : \"java.lang.Math\", method signature: \"abs(double)\" } }, absolute : abs( -10.1 ) }.absolute",
+                        BigDecimal.valueOf(10.1), null },
+                {"{ abs : function( v1 ) external { java : { class : \"java.lang.Math\", method signature: \"abs(float)\" } }, absolute : abs( -10.1 ) }.absolute",
+                        BigDecimal.valueOf(10.1), null },
+                {"{ abs : function( v1 ) external { java : { class : \"java.lang.Math\", method signature: \"abs(int)\" } }, absolute : abs( -10 ) }.absolute",
+                        BigDecimal.valueOf(10), null },
+                {"{ compare shorts : function( v1, v2 ) external { java : { class : \"java.lang.Short\", method signature: \"compare(short,short)\" } }, compareResult : compare shorts( 10, 10 ) }.compareResult",
+                        BigDecimal.valueOf(0), null },
+                {"{ compare bytes : function( v1, v2 ) external { java : { class : \"java.lang.Byte\", method signature: \"compare(byte,byte)\" } }, compareResult : compare bytes( 10, 10 ) }.compareResult",
+                        BigDecimal.valueOf(0), null },
+                {"{ compare chars : function( v1, v2 ) external { java : { class : \"java.lang.Character\", method signature: \"compare(char,char)\" } }, compareResult : compare chars( \"a\", \"a\" ) }.compareResult",
+                        BigDecimal.valueOf(0), null },
+                {"{ compare booleans : function( v1, v2 ) external { java : { class : \"java.lang.Boolean\", method signature: \"compare(boolean,boolean)\" } }, compareResult : compare booleans( true, true ) }.compareResult",
+                        BigDecimal.valueOf(0), null },
+
+                // General tests for external functions
                 {"{ maximum : function( v1, v2 ) external { java : { class : \"java.lang.Math\", method signature: \"max(long,long)\" } }, the max : maximum( 10, 20 ) }.the max",
                         BigDecimal.valueOf( 20 ), null },
+                {"{ maximum : function( v1, v2 ) external { java : { class : \"java.lang.Math\", method signature: \"max(long,long,int)\" } }, the max : maximum( 10, 20 ) }.the max",
+                        null, FEELEvent.Severity.ERROR },
+                {"{ maximum : function( v1, v2 ) external { java : { class : \"java.lang.Math\", method signature: \"maxX(long,long,int)\" } }, the max : maximum( 10, 20 ) }.the max",
+                        null, FEELEvent.Severity.ERROR },
+                {"{ maximum : function( v1, v2 ) external { }, the max : maximum( 10, 20 ) }.the max", null, FEELEvent.Severity.ERROR },
+                // TODO DROOLS-1675
+//                {"{ maximum : function( v1, v2 ) external { missingDefiniton }, the max : maximum( 10, 20 ) }.the max", null, FEELEvent.Severity.ERROR },
                 // variable number of parameters
                 {"{ \n"
                  + "    string format : function( mask, value ) external {\n"

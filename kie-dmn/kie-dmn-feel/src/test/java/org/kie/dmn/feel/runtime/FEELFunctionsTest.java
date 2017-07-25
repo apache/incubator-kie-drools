@@ -33,7 +33,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "string(null)", null, null},
                 { "string(date(\"2016-08-14\"))", "2016-08-14" , null},
                 { "string(\"Happy %.0fth birthday, Mr %s!\", 38, \"Doe\")", "Happy 38th birthday, Mr Doe!", null},
-                {"number(null, \",\", \".\")", null , FEELEvent.Severity.ERROR},
+                { "number(null, \",\", \".\")", null , FEELEvent.Severity.ERROR},
                 { "number(\"1,000.05\", \",\", \".\")", new BigDecimal( "1000.05" ) , null},
                 { "number(\"1.000,05\", \".\", \",\")", new BigDecimal( "1000.05" ) , null},
                 { "number(\"1000,05\", null, \",\")", new BigDecimal( "1000.05" ) , null},
