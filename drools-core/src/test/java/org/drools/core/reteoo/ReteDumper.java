@@ -19,7 +19,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.api.internal.runtime.KnowledgeRuntime;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;

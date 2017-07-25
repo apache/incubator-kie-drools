@@ -19,12 +19,12 @@ package org.kie.dmn.core.osgi;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.kie.api.internal.assembler.KieAssemblerService;
+import org.kie.api.internal.runtime.KieRuntimeService;
+import org.kie.api.internal.weaver.KieWeaverService;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.runtime.DMNRuntimeService;
 import org.kie.dmn.core.weaver.DMNWeaverService;
-import org.kie.internal.assembler.KieAssemblerService;
-import org.kie.internal.runtime.KieRuntimeService;
-import org.kie.internal.weaver.KieWeaverService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -42,7 +42,7 @@ public class Activator implements BundleActivator {
         logger.info("registering Kie DMN services");
         this.assemblerService = bc.registerService(new String[]{DMNAssemblerService.class.getName(), KieAssemblerService.class.getName()}, (Object) new DMNAssemblerService(), (Dictionary) new Hashtable());
         this.weaverService = bc.registerService(new String[]{DMNWeaverService.class.getName(), KieWeaverService.class.getName()}, (Object) new DMNWeaverService(), (Dictionary) new Hashtable());
-        this.runtimeService = bc.registerService(new String[]{DMNRuntimeService.class.getName(), KieRuntimeService.class.getName()}, (Object) new DMNRuntimeService(), (Dictionary) new Hashtable());
+        this.runtimeService = bc.registerService( new String[]{DMNRuntimeService.class.getName(), KieRuntimeService.class.getName()}, (Object) new DMNRuntimeService(), (Dictionary) new Hashtable() );
         logger.info("Kie DMN services registered");
     }
 

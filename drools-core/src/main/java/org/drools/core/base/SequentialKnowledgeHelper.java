@@ -34,8 +34,8 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.beliefs.Mode;
+import org.kie.api.internal.runtime.KnowledgeRuntime;
+import org.kie.api.internal.runtime.beliefs.Mode;
 
 import java.util.Collection;
 import java.util.Collections;

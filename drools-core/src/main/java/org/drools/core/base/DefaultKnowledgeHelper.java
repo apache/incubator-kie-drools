@@ -68,8 +68,8 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.beliefs.Mode;
+import org.kie.api.internal.runtime.KnowledgeRuntime;
+import org.kie.api.internal.runtime.beliefs.Mode;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
