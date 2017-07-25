@@ -16,15 +16,17 @@
 
 package org.drools.compiler;
 
+import static org.junit.Assert.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
@@ -46,8 +48,6 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
-
-import static org.junit.Assert.*;
 
 public class MemoryLeakTest {
 
@@ -185,7 +185,7 @@ public class MemoryLeakTest {
         }
     }
 
-    @Test
+    @Test(timeout = 5000)
     public void testLeakAfterSessionDispose() {
         // DROOLS-1655
         String drl =
@@ -214,51 +214,69 @@ public class MemoryLeakTest {
     }
 
     private static void checkReachability( Object root, Predicate<Object> condition, boolean reachable ) {
-        Collection<Object> results = collectObjects( root, condition );
+        Collection<Object> results = checkObject(root, condition);
         assertTrue( reachable ^ results.isEmpty() );
     }
 
-    private static Collection<Object> collectObjects( Object root, Predicate<Object> condition ) {
+    private static Collection<Object> checkObject(final Object object, final Predicate<Object> condition) {
         Collection<Object> results = new ArrayList<>();
-        collectObjects( root, condition, results, Collections.newSetFromMap( new IdentityHashMap<>() ) );
+        final Set<Object> visited = Collections.newSetFromMap( new IdentityHashMap<>() );
+        List<Object> childObjects = checkObject(object, condition, results, visited);
+        while (childObjects != null && !childObjects.isEmpty()) {
+            childObjects = checkObjects(childObjects, condition, results, visited);
+        }
         return results;
     }
 
-    private static void collectObjects( Object root, Predicate<Object> condition, Collection<Object> results, Set<Object> visited ) {
-        if (root == null) {
-            return;
-        }
-        if (!visited.add(root)) {
-            return;
-        }
-        if (condition.test(root)) {
-            results.add(root);
-        } else {
-            if (root instanceof Object[]) {
-                for (Object child: (Object[]) root) {
-                    collectObjects(child, condition, results, visited);
-                }
+    private static List<Object> checkObjects(final List<Object> objects, final Predicate<Object> condition,
+            final Collection<Object> results, final Set<Object> visited) {
+        final List<Object> childObjects = new ArrayList<>();
+        objects.forEach(object -> childObjects.addAll(checkObject(object, condition, results, visited)));
+        return childObjects;
+    }
+
+    private static List<Object> checkObject(final Object object, final Predicate<Object> condition,
+            final Collection<Object> results, final Set<Object> visited) {
+        final List<Object> childObjects = new ArrayList<>();
+        if (object != null) {
+            if (!visited.add(object)) {
+                return childObjects;
             }
-            if (!root.getClass().isArray()) {// ignore primitive arrays
-                for (Class c = root.getClass(); c != Object.class; c = c.getSuperclass()) {
-                    for (Field field: c.getDeclaredFields()) {
-                        if ( Modifier.isStatic( field.getModifiers() )) {
-                            continue;
+            if (condition.test(object)) {
+                results.add(object);
+            } else {
+                if (object instanceof Object[]) {
+                    for (Object child: (Object[]) object) {
+                        if (child != null) {
+                            childObjects.addAll(getFieldsFromObject(child));
                         }
-                        if (field.getType().isPrimitive()) {
-                            continue;
-                        }
-                        field.setAccessible(true);
-                        Object child;
-                        try {
-                            child = field.get(root);
-                        } catch (IllegalAccessException e) {
-                            throw new IllegalStateException(e);
-                        }
-                        collectObjects(child, condition, results, visited);
                     }
+                } else if (!object.getClass().isArray()) {
+                    childObjects.addAll(getFieldsFromObject(object));
                 }
             }
         }
+        return childObjects;
+    }
+
+    private static List<Object> getFieldsFromObject(final Object object) {
+        final List<Object> childObjects = new ArrayList<>();
+        for (Class c = object.getClass(); c != Object.class; c = c.getSuperclass()) {
+            for (Field field: c.getDeclaredFields()) {
+                if ( Modifier.isStatic( field.getModifiers() )) {
+                    continue;
+                }
+                if (field.getType().isPrimitive()) {
+                    continue;
+                }
+                field.setAccessible(true);
+                try {
+                    childObjects.add(field.get(object));
+                } catch (IllegalAccessException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        }
+        return childObjects;
     }
 }
