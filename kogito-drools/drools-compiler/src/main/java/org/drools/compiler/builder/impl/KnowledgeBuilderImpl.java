@@ -1362,26 +1362,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             roots.addAll( childz );
         }
 
-        int rootsNr = roots.size();
-        int couter = rootsNr;
-
-        if (!roots.isEmpty()) {
-            while ( true ) {
-                RuleDescr root = roots.remove( 0 );
-                sortedRules.addRule( root );
-                sorted.put( root.getName(), root );
-                List<RuleDescr> childz = children.remove( root.getName() );
-                if ( childz != null ) {
-                    roots.addAll( childz );
-                }
-                if ( roots.isEmpty() ) {
-                    break;
-                } else if ( --couter == 0 ) {
-                    rootsNr = roots.size();
-                    couter = rootsNr;
-                    sortedRules.newLevel();
-                }
-            }
+        List<RuleDescr> rulesLevel = roots;
+        while (!rulesLevel.isEmpty()) {
+            rulesLevel = sortRulesLevel(rulesLevel, sorted, sortedRules, children);
+            sortedRules.newLevel();
         }
 
         reportHierarchyErrors(children, sorted);
@@ -1392,6 +1376,21 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             packageDescr.getRules().add( descr );
         }
         return sortedRules;
+    }
+
+    private List<RuleDescr> sortRulesLevel(final List<RuleDescr> rulesLevel,
+            final LinkedHashMap<String, RuleDescr> sorted, final SortedRules sortedRules,
+            final Map<String, List<RuleDescr>> children) {
+        final List<RuleDescr> nextLevel = new ArrayList<>();
+        rulesLevel.forEach(ruleDescr -> {
+            sortedRules.addRule(ruleDescr);
+            sorted.put(ruleDescr.getName(), ruleDescr);
+            final List<RuleDescr> childz = children.remove( ruleDescr.getName() );
+            if (childz != null) {
+                nextLevel.addAll(childz);
+            }
+        });
+        return nextLevel;
     }
 
     private static class SortedRules {
