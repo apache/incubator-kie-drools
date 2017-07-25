@@ -185,7 +185,7 @@ public class MemoryLeakTest {
         }
     }
 
-    @Test(timeout = 2000)
+    @Test(timeout = 5000)
     public void testLeakAfterSessionDispose() {
         // DROOLS-1655
         String drl =
