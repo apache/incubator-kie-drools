@@ -17,13 +17,13 @@
 package org.drools.core.event.rule.impl;
 
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
-import org.kie.api.internal.runtime.KnowledgeRuntime;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.Match;
 
 
 public class BeforeActivationFiredEventImpl extends ActivationEventImpl implements BeforeMatchFiredEvent {
 
-    public BeforeActivationFiredEventImpl(Match activation, KnowledgeRuntime kruntime) {
+    public BeforeActivationFiredEventImpl(Match activation, KieRuntime kruntime ) {
         super( activation, kruntime );
     }
 

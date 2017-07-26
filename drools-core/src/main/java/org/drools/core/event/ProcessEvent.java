@@ -16,18 +16,18 @@
 
 package org.drools.core.event;
 
-import org.kie.api.internal.runtime.KnowledgeRuntime;
-import org.kie.api.runtime.process.ProcessInstance;
-
 import java.util.EventObject;
+
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessEvent extends EventObject {
 
     private static final long serialVersionUID = 510l;
     
-    private KnowledgeRuntime kruntime;
+    private KieRuntime kruntime;
 
-    public ProcessEvent(final ProcessInstance instance, KnowledgeRuntime kruntime) {
+    public ProcessEvent(final ProcessInstance instance, KieRuntime kruntime) {
         super( instance );
         this.kruntime = kruntime;
     }
@@ -36,7 +36,7 @@ public class ProcessEvent extends EventObject {
         return (ProcessInstance) getSource();
     }
     
-    public KnowledgeRuntime getKieRuntime() {
+    public KieRuntime getKieRuntime() {
         return kruntime;
     }
 

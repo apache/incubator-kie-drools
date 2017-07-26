@@ -16,33 +16,32 @@
 
 package org.drools.compiler.osgi;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl;
 import org.drools.compiler.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.compiler.DecisionTableProvider;
+import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
+import org.kie.api.KieServices;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.internal.assembler.KieAssemblers;
-import org.kie.internal.builder.KnowledgeBuilderFactoryService;
 import org.kie.api.internal.runtime.KieRuntimeService;
 import org.kie.api.internal.runtime.KieRuntimes;
-import org.kie.internal.utils.ClassLoaderResolver;
+import org.kie.api.internal.utils.ServiceDiscoveryImpl;
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.internal.utils.ServiceRegistryImpl;
 import org.kie.api.internal.weaver.KieWeaverService;
 import org.kie.api.internal.weaver.KieWeavers;
+import org.kie.internal.builder.KnowledgeBuilderFactoryService;
+import org.kie.internal.utils.ClassLoaderResolver;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
@@ -53,8 +52,6 @@ public class Activator
     BundleActivator {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(Activator.class);
-
-    private ServiceRegistration kbuilderReg;
 
     private ServiceTracker dtableTracker;
     private ServiceTracker bpmn2Tracker;
@@ -69,9 +66,9 @@ public class Activator
 
     public void start(BundleContext bc) throws Exception {
         logger.info( "registering compiler services" );
-        this.kbuilderReg = bc.registerService( new String[]{KnowledgeBuilderFactoryService.class.getName(), Service.class.getName()},
-                                               new KnowledgeBuilderFactoryServiceImpl(),
-                                               new Hashtable() );
+
+        ServiceDiscoveryImpl.getInstance().addService( KieServices.class, new KieServicesImpl() );
+        ServiceDiscoveryImpl.getInstance().addService( KnowledgeBuilderFactoryService.class, new KnowledgeBuilderFactoryServiceImpl() );
 
         this.dtableTracker = new ServiceTracker( bc,
                                                  bc.createFilter( "(|(" + 
@@ -130,7 +127,6 @@ public class Activator
     }
 
     public void stop(BundleContext bc) throws Exception {
-        this.kbuilderReg.unregister();
         this.dtableTracker.close();
         this.bpmn2Tracker.close();
         this.processRuntimeTracker.close();
@@ -196,15 +192,15 @@ public class Activator
             Service service = (Service) this.bc.getService( ref );
             logger.info( "registering compiler : " + service + " : " + service.getClass().getInterfaces()[0] );
 
-            Dictionary dic = new Hashtable();
-            ServiceReference regServiceRef = this.activator.kbuilderReg.getReference();
-            for ( String key : regServiceRef.getPropertyKeys() ) {
-                dic.put( key,
-                         regServiceRef.getProperty( key ) );
-            }
-            dic.put( service.getClass().getInterfaces()[0].getName(),
-                     "true" );
-            activator.kbuilderReg.setProperties( dic );
+//            Dictionary dic = new Hashtable();
+//            ServiceReference regServiceRef = this.activator.kbuilderReg.getReference();
+//            for ( String key : regServiceRef.getPropertyKeys() ) {
+//                dic.put( key,
+//                         regServiceRef.getProperty( key ) );
+//            }
+//            dic.put( service.getClass().getInterfaces()[0].getName(),
+//                     "true" );
+//            activator.kbuilderReg.setProperties( dic );
 
 //            ServiceRegistry.getInstance().registerLocator( serviceClass != null ? serviceClass : service.getClass().getInterfaces()[0],
 //                                                               new BundleContextInstantiator( this.bc,

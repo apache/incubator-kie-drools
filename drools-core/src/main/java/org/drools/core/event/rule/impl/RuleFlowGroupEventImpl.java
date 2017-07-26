@@ -16,20 +16,20 @@
 
 package org.drools.core.event.rule.impl;
 
-import org.kie.api.event.rule.RuleFlowGroupEvent;
-import org.kie.api.internal.runtime.KnowledgeRuntime;
-import org.kie.api.runtime.rule.RuleFlowGroup;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.kie.api.event.rule.RuleFlowGroupEvent;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.rule.RuleFlowGroup;
+
 public class RuleFlowGroupEventImpl implements RuleFlowGroupEvent, Externalizable  {
     private RuleFlowGroup ruleFlowGroup;
-    private KnowledgeRuntime kruntime;
+    private KieRuntime kruntime;
 
-    public RuleFlowGroupEventImpl(RuleFlowGroup ruleFlowGroup, KnowledgeRuntime kruntime) {
+    public RuleFlowGroupEventImpl(RuleFlowGroup ruleFlowGroup, KieRuntime kruntime) {
         this.ruleFlowGroup = ruleFlowGroup;
         this.kruntime = kruntime;
     }
@@ -38,7 +38,7 @@ public class RuleFlowGroupEventImpl implements RuleFlowGroupEvent, Externalizabl
         return ruleFlowGroup;
     }
 
-    public KnowledgeRuntime getKieRuntime() {
+    public KieRuntime getKieRuntime() {
         return this.kruntime;
     }
 

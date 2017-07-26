@@ -17,14 +17,14 @@
 package org.drools.core.event.rule.impl;
 
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.api.internal.runtime.KnowledgeRuntime;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.RuleFlowGroup;
 
 public class RuleFlowGroupDeactivatedEventImpl extends RuleFlowGroupEventImpl  implements RuleFlowGroupDeactivatedEvent {
 
     private static final long serialVersionUID = 510l;
 
-    public RuleFlowGroupDeactivatedEventImpl(final RuleFlowGroup ruleFlowGroup, KnowledgeRuntime kruntime) {
+    public RuleFlowGroupDeactivatedEventImpl(final RuleFlowGroup ruleFlowGroup, KieRuntime kruntime ) {
         super( ruleFlowGroup, kruntime );
     }
 

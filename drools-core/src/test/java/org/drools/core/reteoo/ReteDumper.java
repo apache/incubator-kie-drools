@@ -15,15 +15,15 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.BaseNode;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.internal.runtime.KnowledgeRuntime;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.drools.core.common.BaseNode;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.KieSession;
 
 public class ReteDumper {
 
@@ -33,7 +33,7 @@ public class ReteDumper {
         dumpRete((InternalKnowledgeBase) kbase);
     }
 
-    public static void dumpRete(KnowledgeRuntime session) {
+    public static void dumpRete(KieRuntime session ) {
         dumpRete((InternalKnowledgeBase)session.getKieBase());
     }
 

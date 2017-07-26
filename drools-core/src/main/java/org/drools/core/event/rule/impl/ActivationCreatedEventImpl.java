@@ -17,12 +17,12 @@
 package org.drools.core.event.rule.impl;
 
 import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.api.internal.runtime.KnowledgeRuntime;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.Match;
 
 public class ActivationCreatedEventImpl extends ActivationEventImpl implements MatchCreatedEvent {
 
-    public ActivationCreatedEventImpl(Match activation, KnowledgeRuntime kruntime) {
+    public ActivationCreatedEventImpl(Match activation, KieRuntime kruntime ) {
         super( activation, kruntime );
     }
 

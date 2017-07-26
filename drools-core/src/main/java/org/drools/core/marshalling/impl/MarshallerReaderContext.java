@@ -16,6 +16,13 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamClass;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -32,21 +39,14 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.api.internal.runtime.KnowledgeRuntime;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamClass;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MarshallerReaderContext extends ObjectInputStream {
     public final MarshallerReaderContext                                           stream;
     public final InternalKnowledgeBase                                             kBase;
     public InternalWorkingMemory                                                   wm;
-    public KnowledgeRuntime                                                        kruntime;
+    public KieRuntime                                                              kruntime;
     public final Map<Integer, BaseNode>                                            sinks;
 
     public Map<Integer, InternalFactHandle>                                        handles;
