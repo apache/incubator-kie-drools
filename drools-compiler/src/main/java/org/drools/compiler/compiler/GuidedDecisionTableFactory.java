@@ -16,13 +16,15 @@
 package org.drools.compiler.compiler;
 
 import org.kie.api.internal.utils.ServiceRegistry;
-import org.kie.api.internal.utils.ServiceRegistryImpl;
 
 public class GuidedDecisionTableFactory {
-    private static GuidedDecisionTableProvider provider = ServiceRegistry.getInstance().get(GuidedDecisionTableProvider.class);
 
-    public static synchronized GuidedDecisionTableProvider getGuidedDecisionTableProvider() {
-        return provider;
+    private static class LazyHolder {
+        private static final GuidedDecisionTableProvider provider = ServiceRegistry.getInstance().get( GuidedDecisionTableProvider.class );
+    }
+
+    public static GuidedDecisionTableProvider getGuidedDecisionTableProvider() {
+        return LazyHolder.provider;
     }
 
 }
