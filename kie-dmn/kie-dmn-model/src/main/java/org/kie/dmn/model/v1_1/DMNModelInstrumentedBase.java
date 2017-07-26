@@ -35,7 +35,7 @@ public abstract class DMNModelInstrumentedBase {
     private DMNModelInstrumentedBase parent;
     private final java.util.List<DMNModelInstrumentedBase> children = new ArrayList<>();
     private Location location;
-    private Map<QName, String> additionalAttributes;
+    private Map<QName, String> additionalAttributes = new HashMap<>();
 
     public String getIdentifierString() {
         if( this instanceof NamedElement && ((NamedElement)this).getName() != null ) {
