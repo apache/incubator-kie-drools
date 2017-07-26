@@ -35,9 +35,11 @@ import javax.xml.transform.stream.StreamSource;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Definitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.builder.Input;
 import org.xmlunit.diff.ComparisonResult;
@@ -90,13 +92,17 @@ public class UnmarshalMarshalTest {
         testRoundTrip("", "ch11example.xml");
     }
     
-    @Ignore("Need first for XMLUnit to reconciliate the namespaces for comparison. ")
+    @Test
+    public void testHello_World_semantic_namespace() throws Exception {
+        testRoundTrip("", "Hello_World_semantic_namespace.dmn");
+    }
+    
     @Test
     public void testSemanticNamespace() throws Exception {
         testRoundTrip("", "semantic-namespace.xml");
     }
 
-    @Ignore("Need first for XMLUnit to reconciliate the namespaces for comparison. ")
+    @Ignore("The current file cannot marshal back extension elements because they don't provide converters.")
     @Test
     public void test20161014() throws Exception {
         testRoundTrip("", "test20161014.xml");
@@ -197,7 +203,7 @@ public class UnmarshalMarshalTest {
                         ((comparison, outcome) -> {
                             if (outcome == ComparisonResult.DIFFERENT && comparison.getType() == ComparisonType.ELEMENT_NUM_ATTRIBUTES) {
                                 if (comparison.getControlDetails().getTarget().getNodeName().equals( comparison.getTestDetails().getTarget().getNodeName() )
-                                        && nodeHavingDefaultableAttr.contains( comparison.getControlDetails().getTarget().getNodeName() )) {
+                                        && nodeHavingDefaultableAttr.contains( safeStripDMNPRefix( comparison.getControlDetails().getTarget() ) )) {
                                     return ComparisonResult.SIMILAR;
                                 }
                             }
@@ -231,5 +237,12 @@ public class UnmarshalMarshalTest {
             System.out.println("[ EMPTY - no diffs using customized similarity ]");
         }
         assertFalse("XML are NOT similar: " + checkSimilar.toString(), checkSimilar.hasDifferences());
+    }
+
+    private String safeStripDMNPRefix(Node target) {
+        if ( DMNModelInstrumentedBase.URI_DMN.equals( target.getNamespaceURI() ) ) {
+            return target.getLocalName();
+        } 
+        return null;
     }
 }

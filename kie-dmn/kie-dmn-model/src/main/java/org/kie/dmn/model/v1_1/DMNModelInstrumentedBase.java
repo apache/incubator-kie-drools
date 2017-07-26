@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 
 public abstract class DMNModelInstrumentedBase {
@@ -34,6 +35,7 @@ public abstract class DMNModelInstrumentedBase {
     private DMNModelInstrumentedBase parent;
     private final java.util.List<DMNModelInstrumentedBase> children = new ArrayList<>();
     private Location location;
+    private Map<QName, String> additionalAttributes;
 
     public String getIdentifierString() {
         if( this instanceof NamedElement && ((NamedElement)this).getName() != null ) {
@@ -76,6 +78,14 @@ public abstract class DMNModelInstrumentedBase {
             return parent.getNamespaceURI( prefix );
         }
         return null;
+    }
+    
+    public void setAdditionalAttributes(Map<QName, String> additionalAttributes) {
+        this.additionalAttributes = additionalAttributes;
+    }
+    
+    public Map<QName, String> getAdditionalAttributes() {
+        return additionalAttributes;
     }
 
     public DMNModelInstrumentedBase getParent() {
