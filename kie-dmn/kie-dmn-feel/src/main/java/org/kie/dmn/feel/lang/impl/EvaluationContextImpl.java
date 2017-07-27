@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.util.EvalHelper;
 
@@ -27,6 +28,7 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     private final FEELEventListenersManager eventsManager;
     private       Stack<ExecutionFrame> stack;
+    private DMNRuntime dmnRuntime;
 
     public EvaluationContextImpl(FEELEventListenersManager eventsManager) {
         this.eventsManager = eventsManager;
@@ -37,6 +39,11 @@ public class EvaluationContextImpl implements EvaluationContext {
         // for function evaluation
         ExecutionFrameImpl global = new ExecutionFrameImpl( RootExecutionFrame.INSTANCE );
         push( global );
+    }
+
+    public EvaluationContextImpl(FEELEventListenersManager eventsManager, DMNRuntime dmnRuntime) {
+        this(eventsManager);
+        this.dmnRuntime = dmnRuntime;
     }
 
     public void push(ExecutionFrame obj) {
@@ -102,4 +109,9 @@ public class EvaluationContextImpl implements EvaluationContext {
     public FEELEventListenersManager getEventsManager() {
         return eventsManager;
     }
+
+    public DMNRuntime getDMNRuntime() {
+        return dmnRuntime;
+    }
+
 }
