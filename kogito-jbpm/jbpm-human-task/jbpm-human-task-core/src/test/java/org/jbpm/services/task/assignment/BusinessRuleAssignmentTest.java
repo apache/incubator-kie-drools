@@ -15,15 +15,19 @@
 
 package org.jbpm.services.task.assignment;
 
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.assignment.impl.strategy.BusinessRuleAssignmentStrategy;
+import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.test.util.PoolingDataSource;
 import org.junit.After;
 import org.junit.Before;
@@ -39,6 +43,8 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
@@ -140,7 +146,55 @@ public class BusinessRuleAssignmentTest extends AbstractAssignmentTest {
         // yet another task
         createAndAssertTask(str, "Darth Vader", 3, "Bobba Fet", "Darth Vader", "Luke Cage"); 
     }
-    
+
+    @Test
+    public void testAssignmentAlwaysToBobbaFetWithPriorityBasedForDarthVader() throws Exception {
+	    // Use priority that would match "High priority to Darth Vader" rule aswell
+        String str = "(with (new Task()) { priority = 10, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader'), new User('Luke Cage')  ],businessAdministrators = [ new User('Administrator') ],}),";
+        str += "name =  'Bobbas tasks' })";
+
+        // Should be "Bobba Fet" since we didn't specify a query to filter applied assignments and rule for Bobba fired first
+        createAndAssertTask(str, "Bobba Fet", 3, "Bobba Fet", "Darth Vader", "Luke Cage");
+        System.setProperty("org.jbpm.task.assignment.rules.query", "loadDarthAssignments");
+        createAndAssertTask(str, "Darth Vader", 3, "Bobba Fet", "Darth Vader", "Luke Cage");
+        System.clearProperty("org.jbpm.task.assignment.rules.query");
+        createAndAssertTask(str, "Bobba Fet", 3, "Bobba Fet", "Darth Vader", "Luke Cage");
+    }
+
+    @Test
+    public void testRetrieveAssignmentsViaNonExistingQuery() throws Exception {
+        System.setProperty("org.jbpm.task.assignment.rules.query", "loadDarthAssignments-howaboutno?");
+        String str = "(with (new Task()) { priority = 10, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader'), new User('Luke Cage')  ],businessAdministrators = [ new User('Administrator') ],}),";
+        str += "name =  'Bobbas tasks' })";
+
+        try {
+            createAndAssertTask(str, "Bobba Fet", 3, "Bobba Fet", "Darth Vader", "Luke Cage");
+            Assertions.fail("Should have thrown an exception");
+        } catch (RuntimeException ex) {
+            Assertions.assertThat(ex.getMessage()).contains("loadDarthAssignments-howaboutno?");
+        }
+
+    }
+
+    @Test
+    public void testAssignmentsWhenNoRuleWasFired() throws Exception {
+        String str = "(with (new Task()) { priority = 51, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Ben Dover') ],businessAdministrators = [ new User('Administrator') ],}),";
+        str += "name =  'Not Bobbas tasks' })";
+
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        assertPotentialOwners(task, 1);
+
+        long taskId = taskService.addTask(task, Collections.emptyMap());
+
+        task = taskService.getTaskById(taskId);
+        assertPotentialOwners(task, 0);
+        User actualOwner = task.getTaskData().getActualOwner();
+        Assertions.assertThat(actualOwner).isNull();
+    }
+
     protected void buildKJar() {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);

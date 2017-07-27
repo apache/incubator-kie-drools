@@ -46,3 +46,7 @@ end
 query "loadDarthAssignments"()
     assignment : Assignment(user == "Darth Vader")
 end
+
+query "loadBobbaAssignments"()
+    assignment : Assignment(user == "Bobba Fet")
+end
