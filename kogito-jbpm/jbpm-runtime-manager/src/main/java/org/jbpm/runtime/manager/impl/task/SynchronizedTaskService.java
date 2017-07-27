@@ -63,7 +63,7 @@ public class SynchronizedTaskService
 
 	public SynchronizedTaskService(KieSession ksession, InternalTaskService taskService) {
 	    if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-	        this.ksession = (PersistableRunner) ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
+	        this.ksession = ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
 	    } else {
 	        this.ksession = ksession;
 	    }

@@ -54,6 +54,8 @@ public class TypeHandler extends BaseAbstractHandler
         String name = attrs.getValue("name");
         emptyAttributeCheck(localName, "name", name, parser);
         DataType dataType = null;
+        
+        name = name.replace("org.drools.core.process.core", "org.jbpm.process.core");
         try {
             dataType = (DataType) Class.forName(name).newInstance();
             // TODO make this pluggable so datatypes can read in other properties as well

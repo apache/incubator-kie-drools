@@ -428,5 +428,69 @@ public class ProcessActionTest  extends AbstractBaseTest {
         assertEquals("Action2", list.get(0));
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
+    
+    @Test
+    public void testActionContextJavaBackwardCheck() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        Reader source = new StringReader(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.actions\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "\n" +
+            "  <header>\n" +
+            "    <imports>\n" +
+            "      <import name=\"org.jbpm.integrationtests.test.Message\" />\n" +
+            "    </imports>\n" +
+            "    <globals>\n" +
+            "      <global identifier=\"list\" type=\"java.util.List\" />\n" +
+            "    </globals>\n" +
+            "    <variables>\n" +
+            "      <variable name=\"variable\" >\n" +
+            "        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <value>SomeText</value>\n" +
+            "      </variable>\n" +
+            "    </variables>\n" +
+            "  </header>\n" +
+            "\n" +
+            "  <nodes>\n" +
+            "    <start id=\"1\" name=\"Start\" />\n" +
+            "    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
+            "      <action type=\"expression\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
+            "String myVariable = (String) kcontext.getVariable(\"variable\");\n" +
+            "list.add(myVariable);\n" +
+            "String nodeName = kcontext.getNodeInstance().getNodeName();\n" +
+            "list.add(nodeName);\n" +
+            "insert( new Message() );\n" +
+            "</action>\n" +
+            "    </actionNode>\n" + 
+            "    <end id=\"3\" name=\"End\" />\n" +
+            "  </nodes>\n" +
+            "\n" +
+            "  <connections>\n" +
+            "    <connection from=\"1\" to=\"2\" />\n" +
+            "    <connection from=\"2\" to=\"3\" />\n" +
+            "  </connections>\n" +
+            "\n" +
+            "</process>");
+        kbuilder.add(new ReaderResource(source), ResourceType.DRF);
+        KieBase kbase = kbuilder.newKieBase();
+        KieSession ksession = kbase.newKieSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ProcessInstance processInstance =
+            ksession.startProcess("org.drools.actions");
+        assertEquals(2, list.size());
+        assertEquals("SomeText", list.get(0));
+        assertEquals("MyActionNode", list.get(1));
+        Collection<FactHandle> factHandles = ksession.getFactHandles(new ObjectFilter() {
+            public boolean accept(Object object) {
+                return object instanceof Message;
+            }
+        });
+        assertFalse(factHandles.isEmpty());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
 
 }
