@@ -13,25 +13,14 @@
  * limitations under the License.
 */
 
-package org.kie.internal.runtime;
+package org.kie.api.internal.runtime;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.kie.api.internal.utils.KieService;
+import org.kie.api.runtime.KieRuntime;
 
-public class KieRuntimesImpl implements KieRuntimes {
-    private Map<String, Object> runtimes;
+public interface KieRuntimeService<T> extends KieService {
 
-    public KieRuntimesImpl() {
-        runtimes = new HashMap<String, Object>();
-    }
+    T newKieRuntime(KieRuntime session );
 
-    @Override
-    public Map<String, Object> getRuntimes() {
-        return this.runtimes;
-    }
-
-    @Override
-    public Class getServiceInterface() {
-        return KieRuntimes.class;
-    }
+    Class getServiceInterface();
 }

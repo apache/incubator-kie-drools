@@ -36,6 +36,7 @@
             <Export-Package>
               org.kie.api.*
             </Export-Package>
+            <Bundle-Activator>org.kie.api.internal.utils.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
@@ -119,6 +120,16 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-maven-support</artifactId>

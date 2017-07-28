@@ -17,12 +17,12 @@
 package org.kie.internal.concurrent;
 
 import org.kie.api.concurrent.KieExecutors;
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.internal.utils.ServiceRegistry;
 
 public class ExecutorProviderFactory {
 
     private static class ExecutorProviderHolder {
-        private static final KieExecutors executorProvider = ServiceRegistryImpl.getInstance().get( KieExecutors.class );
+        private static final KieExecutors executorProvider = ServiceRegistry.getInstance().get(KieExecutors.class);
     }
 
     public static KieExecutors getExecutorProvider() {

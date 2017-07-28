@@ -1,8 +1,9 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2010 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -11,16 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
-package org.kie.internal.runtime.beliefs;
+package org.kie.api.internal.utils;
 
-import org.kie.internal.utils.KieService;
+import org.kie.api.Service;
 
-public interface KieBeliefService extends KieService {
-    public String getBeliefType();
+/**
+ * Internal Interface
+ *
+ */
+public interface ServiceRegistry extends Service {
+    static ServiceRegistry getInstance() {
+        return ServiceRegistryImpl.LazyHolder.INSTANCE;
+    }
 
-    public Object createBeliefSystem(Object ep,
-                                     Object tms);
-
+    <T> T get(Class<T> cls);
 }

@@ -13,13 +13,8 @@
  * limitations under the License.
 */
 
-package org.kie.internal.utils;
+package org.kie.api.internal.runtime.beliefs;
 
-import java.net.URL;
-import java.util.Enumeration;
-
-public interface ServiceDiscovery {
-
-    void discoverFactories(Enumeration<URL> confResources, ServiceRegistry serviceRegistry);
+public interface Mode {
+    public Object getBeliefSystem();
 }
-

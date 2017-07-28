@@ -21,10 +21,10 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.internal.definition.KnowledgeDescr;
-import org.kie.internal.utils.ServiceRegistryImpl;
 
 /**
  * <p>
@@ -128,19 +128,12 @@ public class ResourceFactory {
         return getFactoryService().newDescrResource( descr );
     }
 
-    private static synchronized void setFactoryService(KieResources factoryService) {
-        ResourceFactory.factoryService = factoryService;
-    }
-
     private static synchronized KieResources getFactoryService() {
-        if ( factoryService == null ) {
-            loadFactoryService();
-        }
-        return factoryService;
+        return LazyHolder.service;
     }
 
-    private static void loadFactoryService() {
-        setFactoryService( ServiceRegistryImpl.getInstance().get( KieResources.class ) );
+    private static class LazyHolder {
+        private static final KieResources service = ServiceRegistry.getInstance().get(KieResources.class);
     }
 
 }

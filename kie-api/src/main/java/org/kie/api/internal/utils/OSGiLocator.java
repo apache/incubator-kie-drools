@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.internal.utils;
+package org.kie.api.internal.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -13,26 +13,14 @@
  * limitations under the License.
 */
 
-package org.kie.internal.weaver;
+package org.kie.api.internal.runtime.beliefs;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.kie.api.internal.utils.KieService;
 
-import org.kie.api.io.ResourceType;
+public interface KieBeliefService extends KieService {
+    public String getBeliefType();
 
-public class KieWeaversImpl implements KieWeavers {
-    private Map<ResourceType, KieWeaverService> weavers;
+    public Object createBeliefSystem(Object ep,
+                                     Object tms);
 
-    public KieWeaversImpl() {
-        weavers = new HashMap<ResourceType, KieWeaverService>();
-    }
-
-    public Map<ResourceType, KieWeaverService> getWeavers() {
-        return this.weavers;
-    }
-
-    @Override
-    public Class getServiceInterface() {
-        return KieWeavers.class;
-    }
 }
