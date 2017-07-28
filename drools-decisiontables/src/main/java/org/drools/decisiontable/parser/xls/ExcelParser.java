@@ -16,6 +16,15 @@
 
 package org.drools.decisiontable.parser.xls;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -33,15 +42,6 @@ import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -94,7 +94,7 @@ public class ExcelParser
 
     public void parseFile( File file ) {
         try {
-            parseWorkbook( WorkbookFactory.create( file ) );
+            parseWorkbook( WorkbookFactory.create( file, (String)null, true ) );
         } catch ( InvalidFormatException e ) {
             throw new DecisionTableParseException( "An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
                                                    e );
