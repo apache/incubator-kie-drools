@@ -22,9 +22,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -56,6 +59,7 @@ import org.kie.dmn.model.v1_1.Context;
 import org.kie.dmn.model.v1_1.ContextEntry;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.kie.dmn.model.v1_1.DMNElementReference;
+import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Decision;
 import org.kie.dmn.model.v1_1.DecisionRule;
 import org.kie.dmn.model.v1_1.DecisionService;
@@ -95,22 +99,29 @@ public class XStreamMarshaller
 
     private static StaxDriver staxDriver;
     static {
-        QNameMap qmap = new QNameMap();
-        // TODO what-if a given file is setting the default namespace to something else than DMN ?
-        qmap.setDefaultNamespace("http://www.omg.org/spec/DMN/20151101/dmn.xsd");
-//        qmap.registerMapping(new javax.xml.namespace.QName("http://www.omg.org/spec/FEEL/20140401", "feel", "feel"), "dddecision"); // FIXME still not sure how to output non-used ns like 'feel:'
-        
         staxDriver = new StaxDriver() {
             public AbstractPullReader createStaxReader(XMLStreamReader in) {
                 return new CustomStaxReader(getQnameMap(), in);
             }
             
             public StaxWriter createStaxWriter(XMLStreamWriter out, boolean writeStartEndDocument) throws XMLStreamException {
-                return new CustomStaxWriter(getQnameMap(), out, writeStartEndDocument, isRepairingNamespace(), getNameCoder());
+                return new CustomStaxWriter(newQNameMap(), out, writeStartEndDocument, isRepairingNamespace(), getNameCoder());
+            }
+
+            public QNameMap newQNameMap() {
+                QNameMap qmap = new QNameMap();
+                configureQNameMap( qmap );
+                return qmap;
             }
         };
+        QNameMap qmap = new QNameMap();
+        configureQNameMap( qmap );
         staxDriver.setQnameMap(qmap);
         staxDriver.setRepairingNamespace(false);
+    }
+    
+    public static void configureQNameMap( QNameMap qmap ) {
+        qmap.setDefaultNamespace("http://www.omg.org/spec/DMN/20151101/dmn.xsd");
     }
 
     public XStreamMarshaller() {
@@ -143,10 +154,17 @@ public class XStreamMarshaller
 
     @Override
     public String marshal(Object o) {
-        try {
+        try ( Writer writer = new StringWriter();
+              CustomStaxWriter hsWriter = (CustomStaxWriter) staxDriver.createWriter(writer); ) {
             XStream xStream = newXStream();
-            String xml = xStream.toXML(o);
-            return xml;
+            if ( o instanceof DMNModelInstrumentedBase ) {
+                DMNModelInstrumentedBase base = (DMNModelInstrumentedBase) o;
+                String dmnPrefix = base.getNsContext().entrySet().stream().filter( kv -> DMNModelInstrumentedBase.URI_DMN.equals( kv.getValue() ) ).findFirst().map(Map.Entry::getKey).orElse("");
+                hsWriter.getQNameMap().setDefaultPrefix( dmnPrefix );
+            }
+            xStream.marshal(o, hsWriter);
+            hsWriter.flush();
+            return writer.toString();
         } catch ( Exception e ) {
             logger.error( "Error marshalling DMN model to XML.", e );
         }
