@@ -54,11 +54,13 @@ import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.internal.runtime.beliefs.Mode;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -74,14 +76,12 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.beliefs.Mode;
 
 /**
  * Wrapper of StatefulKnowledgeSessionImpl so to intercept call from RHS internal Drools execution and proxy or delegate method call as appropriate.
  */
 public final class WrappedStatefulKnowledgeSessionForRHS
-		implements KieSession, InternalWorkingMemoryActions, EventSupport, KnowledgeRuntime, Externalizable {
+		implements KieSession, InternalWorkingMemoryActions, EventSupport, KieRuntime, Externalizable {
 	private StatefulKnowledgeSessionImpl delegate;
 
 	public WrappedStatefulKnowledgeSessionForRHS(WorkingMemory workingMemory) {
