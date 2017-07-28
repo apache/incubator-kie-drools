@@ -68,8 +68,14 @@ public class KieServicesImpl implements InternalKieServices {
     
     private final ConcurrentMap<String, KieContainer> kContainers = new ConcurrentHashMap<String, KieContainer>();
 
+    private KieRepository repository;
+
     public KieRepository getRepository() {
-        return KieRepositoryImpl.INSTANCE;
+        return (repository == null) ? KieRepositoryImpl.INSTANCE : repository;
+    }
+
+    public void setRepository(KieRepository repository) {
+        this.repository = repository;
     }
 
     /**
