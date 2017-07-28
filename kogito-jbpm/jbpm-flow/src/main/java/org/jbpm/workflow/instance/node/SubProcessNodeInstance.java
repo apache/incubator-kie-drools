@@ -50,6 +50,7 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.DataTransformer;
@@ -59,9 +60,8 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
+import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,7 +184,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
         	throw new RuntimeException("Could not find process " + processId);
         } else {
-            KnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
+            KieRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
             RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
             if (manager != null) {
                 org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get();
@@ -195,7 +195,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 }
                 
                 RuntimeEngine runtime = manager.getRuntimeEngine(context);
-                kruntime = (KnowledgeRuntime) runtime.getKieSession();
+                kruntime = (KieRuntime) runtime.getKieSession();
             }
             if (getSubProcessNode().getMetaData("MICollectionInput") != null) {
                 // remove foreach input variable to avoid problems when running in variable strict mode
@@ -251,8 +251,8 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                     }
                     
                     RuntimeEngine runtime = manager.getRuntimeEngine(context);
-    
-                    KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
+
+                    KieRuntime managedkruntime = (KieRuntime) runtime.getKieSession();
             		processInstance = (ProcessInstance) managedkruntime.getProcessInstance(processInstanceId);
         	    } catch (SessionNotFoundException e) {
         	        // in case no session is found for parent process let's skip signal for process instance completion

@@ -16,31 +16,11 @@
 
 package org.jbpm.osgi.services.task;
 
-import java.util.Hashtable;
+import org.drools.core.osgi.BaseActivator;
 
-import org.jbpm.services.task.persistence.TaskModelProviderImpl;
-import org.kie.api.Service;
-import org.kie.internal.task.api.TaskModelProvider;
-import org.kie.internal.task.api.TaskModelProviderService;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
+public class Activator extends BaseActivator {
 
-public class Activator
-    implements
-    BundleActivator {
-
-	private ServiceRegistration taskModelFactoryReg;
-    
-    public void start(BundleContext bc) throws Exception {
-        this.taskModelFactoryReg = bc.registerService( new String[]{ TaskModelProviderService.class.getName(), Service.class.getName()},
-                                                                     new TaskModelProviderImpl(),
-                                                                     new Hashtable() );
+    public Activator() {
+        super( Activator.class.getClassLoader() );
     }
-
-    public void stop(BundleContext bc) throws Exception {
-        this.taskModelFactoryReg.unregister();
-        
-    }
-
 }

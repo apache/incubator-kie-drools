@@ -9,14 +9,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.identity.IdentityProvider;
-import org.kie.internal.runtime.KnowledgeRuntime;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -45,7 +46,7 @@ public class IdentityProviderAwareProcessListenerTest {
         final WorkflowProcessInstance processInstance = mock(WorkflowProcessInstance.class);
         final HashMap<String, Object> metaData = new HashMap<>();
         when(processInstance.getMetaData()).thenReturn(metaData);
-        final ProcessStartedEvent event = new ProcessStartedEventImpl(processInstance, mock(KnowledgeRuntime.class));
+        final ProcessStartedEvent event = new ProcessStartedEventImpl(processInstance, mock(KieRuntime.class ));
 
         listener.beforeProcessStarted(event);
 
@@ -58,7 +59,7 @@ public class IdentityProviderAwareProcessListenerTest {
         final WorkflowProcessInstance processInstance = mock(WorkflowProcessInstance.class);
         final HashMap<String, Object> metaData = new HashMap<>();
         when(processInstance.getMetaData()).thenReturn(metaData);
-        final ProcessStartedEvent event = new ProcessStartedEventImpl(processInstance, mock(KnowledgeRuntime.class));
+        final ProcessStartedEvent event = new ProcessStartedEventImpl(processInstance, mock(KieRuntime.class));
 
         listener.beforeProcessStarted(event);
 

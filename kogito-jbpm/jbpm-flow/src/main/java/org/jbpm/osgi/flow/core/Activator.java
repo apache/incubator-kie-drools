@@ -16,41 +16,11 @@
 
 package org.jbpm.osgi.flow.core;
 
-import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
-import org.drools.core.runtime.process.ProcessRuntimeFactory;
-import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
-import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
-import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
-import org.kie.api.Service;
-import org.kie.api.runtime.manager.RuntimeManagerFactory;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
+import org.drools.core.osgi.BaseActivator;
 
-import java.util.Hashtable;
+public class Activator extends BaseActivator {
 
-public class Activator
-    implements
-    BundleActivator {
-    private ServiceRegistration processRuntimeReg;
-    
-    private ServiceRegistration processRuntimeReg2;
-    
-    public void start(BundleContext bc) throws Exception {
-        this.processRuntimeReg = bc.registerService( new String[]{ ProcessRuntimeFactoryService.class.getName(), Service.class.getName()},
-                                                                   new ProcessRuntimeFactoryServiceImpl(),
-                                                                   new Hashtable() );
-        this.processRuntimeReg2 = bc.registerService( new String[]{ ProcessMarshallerFactoryService.class.getName(), Service.class.getName()},
-                                                                   new ProcessMarshallerFactoryServiceImpl(),
-                                                                   new Hashtable() );
-        RuntimeManagerFactory.Factory.reset();
-        ProcessRuntimeFactory.reInitializeProvider();
+    public Activator() {
+        super( Activator.class.getClassLoader() );
     }
-
-    public void stop(BundleContext bc) throws Exception {
-        this.processRuntimeReg.unregister();
-        this.processRuntimeReg2.unregister();
-        
-    }
-
 }

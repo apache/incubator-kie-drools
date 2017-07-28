@@ -15,33 +15,19 @@
 
 package org.jbpm.osgi.flow.compiler;
 
-import org.drools.compiler.compiler.ProcessBuilderFactory;
-import org.drools.compiler.compiler.ProcessBuilderFactoryService;
-import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
-import org.kie.api.Service;
+import org.drools.core.osgi.BaseActivator;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
-import java.util.Hashtable;
+public class Activator extends BaseActivator {
 
-public class Activator
-    implements
-    BundleActivator {
+    public Activator() {
+        super( Activator.class.getClassLoader() );
+    }
 
-    private ServiceRegistration processBuilderReg;
-
-    public void start(BundleContext bc) throws Exception {
-        this.processBuilderReg = bc.registerService( new String[]{ ProcessBuilderFactoryService.class.getName(), Service.class.getName()},
-                                                                   new ProcessBuilderFactoryServiceImpl(),
-                                                                   new Hashtable() );
+    @Override
+    public void start(BundleContext context) throws Exception {
         RuntimeManagerFactory.Factory.reset();
-        ProcessBuilderFactory.reInitializeProvider();        
+        super.start(context);
     }
-
-    public void stop(BundleContext bc) throws Exception {
-        this.processBuilderReg.unregister();
-    }
-
 }

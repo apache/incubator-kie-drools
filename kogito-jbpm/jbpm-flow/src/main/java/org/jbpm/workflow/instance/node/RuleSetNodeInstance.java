@@ -16,7 +16,11 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -24,13 +28,13 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.jbpm.process.core.datatype.DataType;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
@@ -44,18 +48,17 @@ import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.rule.ConsequenceException;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.slf4j.Logger;
@@ -94,7 +97,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                 throw new IllegalArgumentException("A RuleSetNode only accepts default incoming connections!");
             }
             RuleSetNode ruleSetNode = getRuleSetNode();
-            KnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+            KieRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
             Map<String, Object> inputs = evaluateParameters(ruleSetNode);
 
             if (ruleSetNode.isDMN()) {
@@ -220,7 +223,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 	
 	public void retractFacts() {
 	    Map<String, Object> objects = new HashMap<String, Object>();
-	    KnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+        KieRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
 	    
 	    for (Entry<String, FactHandle> entry : factHandles.entrySet()) {
 	        

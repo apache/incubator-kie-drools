@@ -16,8 +16,6 @@
 
 package org.jbpm.workflow.instance.impl;
 
-import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,18 +57,20 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -373,7 +373,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                         }
 
     	                RuntimeEngine runtime = manager.getRuntimeEngine(context);
-    	                KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
+						KieRuntime managedkruntime = (KieRuntime) runtime.getKieSession();
     	                managedkruntime.signalEvent("processInstanceCompleted:" + getId(), this);
                 	} catch (SessionNotFoundException e) {
                 		// in case no session is found for parent process let's skip signal for process instance completion

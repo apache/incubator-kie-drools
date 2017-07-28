@@ -16,6 +16,10 @@
 
 package org.jbpm.casemgmt.impl.command;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
@@ -27,21 +31,17 @@ import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.services.api.ProcessService;
 import org.kie.api.KieServices;
 import org.kie.api.command.KieCommands;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.identity.IdentityProvider;
-import org.kie.api.runtime.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class StartCaseCommand extends CaseCommand<Void> {
     
@@ -105,7 +105,7 @@ public class StartCaseCommand extends CaseCommand<Void> {
                                 name,
                                 null, entry.getValue(), 
                                 pi,
-                                (KnowledgeRuntime) ksession);
+                                (KieRuntime) ksession );
                         }
                     }
                     return null;

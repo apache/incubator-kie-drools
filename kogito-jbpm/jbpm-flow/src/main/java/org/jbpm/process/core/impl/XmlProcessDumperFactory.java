@@ -15,7 +15,7 @@
 
 package org.jbpm.process.core.impl;
 
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.internal.utils.ServiceRegistry;
 
 public class XmlProcessDumperFactory {
 
@@ -29,16 +29,11 @@ public class XmlProcessDumperFactory {
         XmlProcessDumperFactory.service = service;
     }
 
-    public static synchronized XmlProcessDumperFactoryService getXmlProcessDumperFactoryService() {
-        if (service == null) {
-            loadProvider();
-        }
-        return service;
+    public static XmlProcessDumperFactoryService getXmlProcessDumperFactoryService() {
+        return LazyHolder.service;
     }
 
-    private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault( XmlProcessDumperFactoryService.class, "org.jbpm.bpmn2.xml.XmlProcessDumperFactoryServiceImpl" );
-        setXmlProcessDumperFactoryService(ServiceRegistryImpl.getInstance().get( XmlProcessDumperFactoryService.class ) );
+    private static class LazyHolder {
+        private static final XmlProcessDumperFactoryService service = ServiceRegistry.getInstance().get( XmlProcessDumperFactoryService.class );
     }
-
 }

@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jbpm.test.listener.IterableProcessEventListener.TrackedEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEvent;
 import org.kie.api.event.process.ProcessEventListener;
@@ -11,10 +12,9 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.jbpm.test.listener.IterableProcessEventListener.TrackedEvent;
 import org.slf4j.Logger;
 
 /**
@@ -203,7 +203,7 @@ public class IterableProcessEventListener implements ProcessEventListener, Itera
         }
 
         @Override
-        public KnowledgeRuntime getKieRuntime() {
+        public KieRuntime getKieRuntime() {
             return null;
         }
 

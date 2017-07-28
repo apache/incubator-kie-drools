@@ -16,29 +16,11 @@
 
 package org.jbpm.osgi.bpmn2;
 
-import java.util.Hashtable;
+import org.drools.core.osgi.BaseActivator;
 
-import org.drools.compiler.compiler.BPMN2ProcessProvider;
-import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
-import org.kie.api.Service;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
+public class Activator extends BaseActivator {
 
-public class Activator
-    implements
-    BundleActivator {
-    private ServiceRegistration bpmn2ProcessReg;
-
-    @SuppressWarnings("unchecked")
-	public void start(BundleContext bc) throws Exception {
-        this.bpmn2ProcessReg = bc.registerService( new String[]{ BPMN2ProcessProvider.class.getName(), Service.class.getName()},
-                                                   new BPMN2ProcessProviderImpl(),
-                                                   new Hashtable() );
+    public Activator() {
+        super( Activator.class.getClassLoader() );
     }
-
-    public void stop(BundleContext bc) throws Exception {
-        this.bpmn2ProcessReg.unregister();
-    }
-
 }

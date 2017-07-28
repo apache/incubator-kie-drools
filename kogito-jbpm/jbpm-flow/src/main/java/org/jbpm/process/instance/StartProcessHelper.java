@@ -15,16 +15,16 @@
  */
 package org.jbpm.process.instance;
 
-import org.kie.api.KieBase;
-import org.kie.api.definition.process.Process;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.api.runtime.process.ProcessInstance;
-
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+
+import org.kie.api.KieBase;
+import org.kie.api.definition.process.Process;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public final class StartProcessHelper {
     
@@ -32,7 +32,7 @@ public final class StartProcessHelper {
     
     private static String comparatorClass = System.getProperty(PROCESS_COMPARATOR_CLASS_KEY);
 	
-	public static ProcessInstance startProcessByName(KnowledgeRuntime kruntime, String name, Map<String, Object> parameters) {
+	public static ProcessInstance startProcessByName( KieRuntime kruntime, String name, Map<String, Object> parameters ) {
 		if (name == null) {
 			throw new IllegalArgumentException("Name cannot be null");
 		}
@@ -44,7 +44,7 @@ public final class StartProcessHelper {
 		return kruntime.startProcess(processId, parameters);
 	}
 	
-	public static ProcessInstance startProcessByName(KnowledgeRuntime kruntime, String name, Map<String, Object> parameters, Comparator<Process> comparator) {
+	public static ProcessInstance startProcessByName(KieRuntime kruntime, String name, Map<String, Object> parameters, Comparator<Process> comparator) {
         if (name == null) {
             throw new IllegalArgumentException("Name cannot be null");
         }
