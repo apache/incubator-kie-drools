@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -71,6 +72,17 @@ public class CustomStaxReader extends StaxReader {
     
     public String getAttribute(String namespaceURI, String name) {
         return this.in.getAttributeValue( namespaceURI, this.encodeAttribute(name) );
+    }
+    
+    public Map<QName, String> getAdditionalAttributes() {
+        Map<QName, String> result = new HashMap<>();
+        for (int aIndex = 0; aIndex < in.getAttributeCount(); aIndex++) {
+            String attributePrefix = in.getAttributePrefix(aIndex);
+            if ( !XMLConstants.DEFAULT_NS_PREFIX.equals(attributePrefix) ) {
+                result.put( new QName(in.getAttributeNamespace(aIndex), in.getAttributeLocalName(aIndex), attributePrefix), in.getAttributeValue(aIndex) );
+            }
+        }
+        return result;
     }
     
     @Override
