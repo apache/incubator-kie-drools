@@ -88,7 +88,7 @@ public abstract class ToManyPropertyLiteral<T,R>
 
     @Override
     public OneValuedMetaProperty<T,List<R>> asFunctionalProperty() {
-        return (OneValuedMetaProperty<T,List<R>>) null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
