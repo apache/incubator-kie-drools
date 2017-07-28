@@ -16,11 +16,10 @@
 
 package org.optaplanner.core.impl.solver.kie;
 
+import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.assembler.KieAssemblerService;
-import org.kie.internal.builder.KnowledgeBuilder;
 
 /**
  * Only called for solver configuration files in a kjar that have the {@link ResourceType#SOLVER} extension.
@@ -36,13 +35,7 @@ public class KieSolverAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResource(KnowledgeBuilder kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) {
+    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) {
         // Do nothing for now
     }
-
-    @Override
-    public Class getServiceInterface() {
-        return KieAssemblerService.class;
-    }
-
 }
