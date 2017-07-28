@@ -35,6 +35,8 @@ public class XMLReportWriter
     public void writeReport(OutputStream out,
                             VerifierReport result) throws IOException {
         XStream xstream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream.denyTypes(voidDeny);
 
         xstream.alias( "result",
                        VerifierReport.class );

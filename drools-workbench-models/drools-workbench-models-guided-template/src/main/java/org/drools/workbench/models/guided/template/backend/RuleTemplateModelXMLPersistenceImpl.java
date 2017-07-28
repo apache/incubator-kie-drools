@@ -71,6 +71,8 @@ public class RuleTemplateModelXMLPersistenceImpl
 
     protected RuleTemplateModelXMLPersistenceImpl() {
         this.xt = new XStream( new DomDriver() );
+        String[] voidDeny = {"void.class", "Void.class"};
+        xt.denyTypes(voidDeny);
 
         this.xt.alias( "rule",
                        TemplateModel.class );
