@@ -446,7 +446,12 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
     public void testGetTaskInstancesAsBA() {
 
         query = new SqlQueryDefinition("getBATaskInstances", dataSourceJNDIname, Target.BA_TASK);
-        query.setExpression("select ti.activationTime, ti.actualOwner, ti.createdBy, ti.createdOn, ti.deploymentId, " + "ti.description, ti.dueDate, ti.name, ti.parentId, ti.priority, ti.processId, ti.processInstanceId, " + "ti.processSessionId, ti.status, ti.taskId, ti.workItemId,  oe.id " + "from AuditTaskImpl ti," + "PeopleAssignments_BAs bas, " + "OrganizationalEntity oe " + "where ti.taskId = bas.task_id and bas.entity_id = oe.id ");
+        query.setExpression("select ti.activationTime, ti.actualOwner, ti.createdBy, ti.createdOn, ti.deploymentId, "
+                                    + "ti.description, ti.dueDate, ti.name, ti.parentId, ti.priority, ti.processId, ti.processInstanceId, "
+                                    + "ti.processSessionId, ti.status, ti.taskId, ti.workItemId, oe.id "
+                                    + "from AuditTaskImpl ti," + "PeopleAssignments_BAs bas, "
+                                    + "OrganizationalEntity oe "
+                                    + "where ti.taskId = bas.task_id and bas.entity_id = oe.id ");
 
         queryService.registerQuery(query);
 
@@ -954,8 +959,11 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         roles.add("managers");
         identityProvider.setRoles(roles);
 
-        query = new SqlQueryDefinition("getBATaskInstances", dataSourceJNDIname, Target.FILTERED_BA_TASK);
-        query.setExpression("select ti.activationTime, ti.actualOwner, ti.createdBy, ti.createdOn, ti.deploymentId, " + "ti.description, ti.dueDate, ti.name, ti.parentId, ti.priority, ti.processId, ti.processInstanceId, " + "ti.processSessionId, ti.status, ti.taskId, ti.workItemId,  oe.id " + "from AuditTaskImpl ti," + "PeopleAssignments_BAs bas, " + "OrganizationalEntity oe " + "where ti.taskId = bas.task_id and bas.entity_id = oe.id ");
+        query = new SqlQueryDefinition("getTaskInstancesAdmin", dataSourceJNDIname, Target.FILTERED_BA_TASK);
+        query.setExpression("select ti.activationTime, ti.actualOwner, ti.createdBy, ti.createdOn, ti.deploymentId, "
+                                    + "ti.description, ti.dueDate, ti.name, ti.parentId, ti.priority, ti.processId, ti.processInstanceId, "
+                                    + "ti.processSessionId, ti.status, ti.taskId, ti.workItemId "
+                                    + "from  AuditTaskImpl ti");
 
         queryService.registerQuery(query);
 
@@ -981,22 +989,10 @@ public class QueryServiceImplTest extends AbstractKieServicesBaseTest {
         assertNotNull(taskInstanceLogs);
         assertEquals(0, taskInstanceLogs.size());
 
-        identityProvider.setName("salaboy");
-        identityProvider.setRoles(Arrays.asList("Administrators", "managers"));
-
+        identityProvider.setName("Administrator");
         taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
         assertNotNull(taskInstanceLogs);
         assertEquals(1, taskInstanceLogs.size());
-
-        // let's now change the roles so user should not see instances
-        roles.clear();
-        roles.add("employees");
-        identityProvider.setRoles(roles);
-        identityProvider.setName("Administrator");
-        // even though it's Administrator it has no access to deployment
-        taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceQueryMapper.get(), new QueryContext());
-        assertNotNull(taskInstanceLogs);
-        assertEquals(0, taskInstanceLogs.size());
 
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;

@@ -43,6 +43,7 @@ import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.services.impl.query.persistence.PersistDataSetListener;
 import org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity;
+import org.jbpm.kie.services.impl.query.preprocessor.BusinessAdminPreprocessor;
 import org.jbpm.kie.services.impl.query.preprocessor.BusinessAdminTasksPreprocessor;
 import org.jbpm.kie.services.impl.query.preprocessor.DeploymentIdsPreprocessor;
 import org.jbpm.kie.services.impl.query.preprocessor.PotOwnerTasksPreprocessor;
@@ -169,7 +170,7 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
                 } else if (queryDefinition.getTarget().equals(Target.FILTERED_PROCESS)) {
                     dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_EXTERNALID));
                 } else if (queryDefinition.getTarget().equals(Target.FILTERED_BA_TASK)) {
-                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider));
+                    dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminPreprocessor(identityProvider));
                     dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_DEPLOYMENTID));
                 } else if (queryDefinition.getTarget().equals(Target.FILTERED_PO_TASK)) {
                     dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider));
