@@ -15,7 +15,7 @@
 
 package org.drools.beliefs.bayes;
 
-import org.kie.internal.runtime.beliefs.Mode;
+import org.kie.api.internal.runtime.beliefs.Mode;
 
 public interface BayesModeFactory<T> {
     T create(double[] distribution);
