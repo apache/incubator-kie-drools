@@ -25,6 +25,8 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.kie.api.internal.assembler.KieAssemblerService;
+import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -37,10 +39,7 @@ import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.impl.DMNKnowledgeBuilderError;
 import org.kie.dmn.core.impl.DMNPackageImpl;
-import org.kie.internal.assembler.KieAssemblerService;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.ResultSeverity;
-import org.kie.internal.io.ResourceTypePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +56,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResource(KnowledgeBuilder kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration)
+    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration)
             throws Exception {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate( DMN_COMPILER_CACHE_KEY, () -> getCompiler( kbuilderImpl ) );
@@ -144,10 +143,5 @@ public class DMNAssemblerService implements KieAssemblerService {
             }
         }
         return DMNFactory.newCompiler();
-    }
-
-    @Override
-    public Class getServiceInterface() {
-        return KieAssemblerService.class;
     }
 }

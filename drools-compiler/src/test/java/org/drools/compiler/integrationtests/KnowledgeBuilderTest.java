@@ -15,42 +15,40 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.*;
-
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.compiler.compiler.PMMLCompiler;
-import org.drools.compiler.compiler.PMMLCompilerFactory;
-import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.FileManager;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.internal.utils.ServiceDiscoveryImpl;
+import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.ServiceRegistryImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.io.ResourceFactory;
+
+import static org.junit.Assert.*;
 
 public class KnowledgeBuilderTest {
 
@@ -455,6 +453,32 @@ public class KnowledgeBuilderTest {
 
     @Test
     public void testResourceMapping() throws Exception {
+        ServiceRegistryImpl serviceRegistry = (ServiceRegistryImpl) ServiceRegistry.getInstance();
+        serviceRegistry.reset();
+
+        ServiceDiscoveryImpl.getInstance().addService(PMMLCompiler.class.getCanonicalName(),
+                                                      new PMMLCompiler() {
+                                                          public String compile(InputStream stream, ClassLoader cl) {
+                                                              return "rule R2 when then end";
+                                                          }
+
+                                                          @Override
+                                                          public List<KnowledgeBuilderResult> getResults() {
+                                                              return Collections.emptyList();
+                                                          }
+
+                                                          @Override
+                                                          public void clearResults() {
+                                                              //To change body of implemented methods use File | Settings | File Templates.
+                                                          }
+
+                                                          public Resource[] transform( Resource input, ClassLoader classLoader ) {
+                                                              return new Resource[ 0 ];
+                                                          }
+                                                      } );
+
+        serviceRegistry.reload();
+
         String rule = "package org.drools.compiler.test\n" +
                 "rule R1 when\n" +
                 " \n" +
@@ -475,27 +499,7 @@ public class KnowledgeBuilderTest {
 
         Resource res2 = ResourceFactory.newByteArrayResource( pmml.getBytes() );
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        PMMLCompilerFactory.setProvider(new PMMLCompiler() {
-            public String compile(InputStream stream, ClassLoader cl) {
-                return "rule R2 when then end";
-            }
-
-            @Override
-            public List<KnowledgeBuilderResult> getResults() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public void clearResults() {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            public Resource[] transform( Resource input, ClassLoader classLoader ) {
-                return new Resource[ 0 ];
-            }
-        });
-
+        
         kbuilder2.add( res2, ResourceType.PMML );
         assertFalse( kbuilder2.getErrors().toString(), kbuilder2.hasErrors() );
 

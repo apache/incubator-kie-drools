@@ -21,6 +21,17 @@
 
   <dependencies>
 
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -83,6 +94,7 @@
             <Import-Package>
               *
             </Import-Package>
+            <Bundle-Activator>org.drools.workbench.models.guided.dtable.osgi.Activator</Bundle-Activator>
             <_removeheaders>Private-Package</_removeheaders>
           </instructions>
         </configuration>

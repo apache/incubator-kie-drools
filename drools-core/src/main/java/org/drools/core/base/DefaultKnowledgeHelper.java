@@ -57,6 +57,7 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.internal.runtime.beliefs.Mode;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
@@ -68,8 +69,6 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.RuleUnit;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.beliefs.Mode;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
@@ -472,7 +471,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         return this.workingMemory;
     }
 
-    public KnowledgeRuntime getKnowledgeRuntime() {
+    public KieRuntime getKnowledgeRuntime() {
         return this.workingMemory;
     }
 
