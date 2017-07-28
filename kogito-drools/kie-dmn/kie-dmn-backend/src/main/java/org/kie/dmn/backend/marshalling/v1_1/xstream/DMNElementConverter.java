@@ -63,8 +63,8 @@ public abstract class DMNElementConverter
         super.writeChildren(writer, context, parent);
         DMNElement e = (DMNElement) parent;
 
-        if (e.getDescription() !=null) writeChildrenNodeAsValue(writer, context, e.getDescription(), DESCRIPTION);
-        // TODO what about DMNElement.ExtensionElements extensionElements;
+        if (e.getDescription() !=null) { writeChildrenNodeAsValue(writer, context, e.getDescription(), DESCRIPTION); }
+        if (e.getExtensionElements() != null ) { writeChildrenNode(writer, context, e.getExtensionElements(), EXTENSION_ELEMENTS); }
     }
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {

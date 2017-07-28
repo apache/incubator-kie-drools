@@ -10,11 +10,7 @@
                       exporter="DMN Modeler" exporterVersion="5.0.32.2" name="literal invocation1" 
                       triso:logoChoice="Default" 
                       xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd">
-    <semantic:extensionElements>
-        <rss xmlns="http://purl.org/rss/2.0/" xmlns:trisofeed="http://trisotech.com/feed" version="2.0">
-            <channel/>
-        </rss>
-    </semantic:extensionElements>
+    <semantic:extensionElements/>
     <semantic:itemDefinition name="tLoan">
         <semantic:itemComponent name="amount">
             <semantic:typeRef>feel:number</semantic:typeRef>

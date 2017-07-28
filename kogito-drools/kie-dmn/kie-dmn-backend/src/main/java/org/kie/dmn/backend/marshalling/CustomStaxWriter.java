@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxWriter;
 
 
-public class CustomStaxWriter extends StaxWriter {
+public class CustomStaxWriter extends StaxWriter implements AutoCloseable {
     /** 
      * ATTENTION this is intercepted during XStream StaxDriver creation as there is no proper API to inherit.
      * Do not mutate reference - mutating this reference would not sort any effect on the actual underlying StaxWriter
@@ -92,4 +92,9 @@ public class CustomStaxWriter extends StaxWriter {
         
         this.lastOp = Op.VALUE;
     }
+
+    public QNameMap getQNameMap() {
+        return super.getQNameMap();
+    }
+    
 }

@@ -16,12 +16,10 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.XMLConstants;
-import javax.xml.stream.Location;
+import javax.xml.namespace.QName;
 
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.kie.dmn.backend.marshalling.CustomStaxWriter;
@@ -31,7 +29,6 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.StaxWriter;
 
 public abstract class DMNModelInstrumentedBaseConverter
         extends DMNBaseConverter {
@@ -54,6 +51,8 @@ public abstract class DMNModelInstrumentedBaseConverter
         mib.getNsContext().putAll(currentNSCtx);
 
         mib.setLocation( customStaxReader.getLocation() );
+        
+        mib.setAdditionalAttributes( customStaxReader.getAdditionalAttributes() );
     }
     
     @Override
@@ -67,8 +66,8 @@ public abstract class DMNModelInstrumentedBaseConverter
         CustomStaxWriter staxWriter = ((CustomStaxWriter) writer.underlyingWriter());
         for (Entry<String, String> kv : mib.getNsContext().entrySet()) {
             try {
-                if (XMLConstants.DEFAULT_NS_PREFIX.equals(kv.getKey())) {
-                    // skip as that is the default namespace is handled by the stax driver.
+                if ( DMNModelInstrumentedBase.URI_DMN.equals(kv.getValue()) ) {
+                    // skip as that is the default namespace xmlns<:prefix>=DMN is handled by the stax driver.
                 } else {
                     staxWriter.writeNamespace(kv.getKey(), kv.getValue());
                 }
@@ -76,6 +75,10 @@ public abstract class DMNModelInstrumentedBaseConverter
                 //TODO what to do?
                 e.printStackTrace();
             }
+        }
+        
+        for ( Entry<QName, String> kv : mib.getAdditionalAttributes().entrySet() ) {
+            staxWriter.addAttribute(kv.getKey().getPrefix() + ":" + kv.getKey().getLocalPart(), kv.getValue());
         }
     }
 }
