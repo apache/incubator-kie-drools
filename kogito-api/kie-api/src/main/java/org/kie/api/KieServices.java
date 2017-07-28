@@ -26,6 +26,7 @@ import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.command.KieCommands;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.KieResources;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.marshalling.KieMarshallers;
@@ -326,21 +327,16 @@ public interface KieServices {
      * A Factory for this KieServices
      */
     class Factory {
-        private static KieServices INSTANCE;
 
-        static {
-            try {
-                INSTANCE = ( KieServices ) Class.forName( "org.drools.compiler.kie.builder.impl.KieServicesImpl" ).newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException("Unable to instance KieServices", e);
-            }
+        private static class LazyHolder {
+            private static KieServices INSTANCE = ServiceRegistry.getInstance().get(KieServices.class);
         }
 
         /**
          * Returns a reference to the KieServices singleton
          */
         public static KieServices get() {
-            return INSTANCE;
+            return LazyHolder.INSTANCE;
         }
     }
 }

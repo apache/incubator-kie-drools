@@ -13,13 +13,13 @@
  * limitations under the License.
 */
 
-package org.kie.internal.weaver;
+package org.kie.api.internal.weaver;
 
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.internal.io.ResourceTypePackage;
+import org.kie.api.internal.utils.KieService;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.io.ResourceTypePackage;
-import org.kie.internal.utils.KieService;
 
 public interface KieWeaverService<P extends ResourceTypePackage> extends KieService {
 

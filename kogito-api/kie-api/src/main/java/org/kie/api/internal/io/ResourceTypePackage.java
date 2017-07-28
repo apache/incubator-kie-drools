@@ -13,13 +13,22 @@
  * limitations under the License.
 */
 
-package org.kie.internal.weaver;
+package org.kie.api.internal.io;
 
-import java.util.Map;
-
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.utils.KieService;
 
-public interface KieWeavers extends KieService {
-    public Map<ResourceType, KieWeaverService> getWeavers();
+public interface ResourceTypePackage {
+    ResourceType getResourceType();
+
+    /**
+     * Remove artifacts inside this ResourceTypePackage which belong to the resource passed as parameter.
+     * Concrete implementation of this interface shall extend this method in order to properly support incremental KieContainer updates.
+     * 
+     * @param resource
+     * @return true if this ResourceTypePackage mutated as part of this method invocation.
+     */
+    default boolean removeResource(Resource resource) {
+        return false;
+    }
 }

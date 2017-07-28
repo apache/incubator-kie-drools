@@ -13,22 +13,22 @@
  * limitations under the License.
 */
 
-package org.kie.internal.io;
+package org.kie.api.internal.assembler;
 
-import org.kie.api.io.Resource;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.api.io.ResourceType;
 
-public interface ResourceTypePackage {
-    ResourceType getResourceType();
+public class KieAssemblersImpl implements KieAssemblers {
+    private Map<ResourceType, KieAssemblerService> assemblers;
 
-    /**
-     * Remove artifacts inside this ResourceTypePackage which belong to the resource passed as parameter.
-     * Concrete implementation of this interface shall extend this method in order to properly support incremental KieContainer updates.
-     * 
-     * @param resource
-     * @return true if this ResourceTypePackage mutated as part of this method invocation.
-     */
-    default boolean removeResource(Resource resource) {
-        return false;
+    public KieAssemblersImpl() {
+        assemblers = new HashMap<ResourceType, KieAssemblerService>();
+    }
+
+    @Override
+    public Map<ResourceType, KieAssemblerService> getAssemblers() {
+        return this.assemblers;
     }
 }

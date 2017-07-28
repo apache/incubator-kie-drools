@@ -75,6 +75,7 @@
               org.kie.api.definition.type,
               org.kie.api.event,
               org.kie.api.executor,
+              org.kie.api.internal.utils,
               org.kie.api.io,
               org.kie.api.logger,
               org.kie.api.marshalling,

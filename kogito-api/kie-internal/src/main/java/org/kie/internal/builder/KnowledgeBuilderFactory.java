@@ -21,7 +21,7 @@ import java.util.Properties;
 import com.sun.tools.xjc.Options;
 
 import org.kie.api.KieBase;
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.internal.utils.ServiceRegistry;
 
 /**
  * This factory is used to build the knowledge base resources that are held collectively in
@@ -37,7 +37,7 @@ import org.kie.internal.utils.ServiceRegistryImpl;
 public class KnowledgeBuilderFactory {
 
     private static class FactoryServiceHolder {
-        private static final KnowledgeBuilderFactoryService factoryService = ServiceRegistryImpl.getInstance().get( KnowledgeBuilderFactoryService.class );
+        private static final KnowledgeBuilderFactoryService factoryService = ServiceRegistry.getInstance().get(KnowledgeBuilderFactoryService.class);
     }
 
     /**

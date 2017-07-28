@@ -13,27 +13,25 @@
  * limitations under the License.
 */
 
-package org.kie.internal.assembler;
+package org.kie.api.internal.runtime;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.api.io.ResourceType;
+public class KieRuntimesImpl implements KieRuntimes {
+    private Map<String, Object> runtimes;
 
-public class KieAssemblersImpl implements KieAssemblers {
-    private Map<ResourceType, KieAssemblerService> assemblers;
-
-    public KieAssemblersImpl() {
-        assemblers = new HashMap<ResourceType, KieAssemblerService>();
+    public KieRuntimesImpl() {
+        runtimes = new HashMap<String, Object>();
     }
 
     @Override
-    public Map<ResourceType, KieAssemblerService> getAssemblers() {
-        return this.assemblers;
+    public Map<String, Object> getRuntimes() {
+        return this.runtimes;
     }
 
     @Override
     public Class getServiceInterface() {
-        return KieAssemblerService.class;
+        return KieRuntimes.class;
     }
 }

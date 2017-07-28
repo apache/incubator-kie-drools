@@ -13,8 +13,13 @@
  * limitations under the License.
 */
 
-package org.kie.internal.runtime.beliefs;
+package org.kie.api.internal.weaver;
 
-public interface Mode {
-    public Object getBeliefSystem();
+import java.util.Map;
+
+import org.kie.api.internal.utils.KieService;
+import org.kie.api.io.ResourceType;
+
+public interface KieWeavers extends KieService {
+    public Map<ResourceType, KieWeaverService> getWeavers();
 }

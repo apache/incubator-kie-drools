@@ -13,12 +13,16 @@
  * limitations under the License.
 */
 
-package org.kie.internal.runtime;
+package org.kie.api.internal.runtime.beliefs;
 
 import java.util.Map;
 
-import org.kie.internal.utils.KieService;
+import org.kie.api.internal.utils.KieService;
 
-public interface KieRuntimes extends KieService {
-    Map<String, Object> getRuntimes();
+public interface KieBeliefs extends KieService {
+    Map<String, KieBeliefService> getBeliefs();
+
+
+    public KieBeliefService[] getServices();
+
 }

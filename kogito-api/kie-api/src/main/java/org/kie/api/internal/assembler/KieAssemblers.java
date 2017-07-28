@@ -13,18 +13,13 @@
  * limitations under the License.
 */
 
-package org.kie.internal.utils;
+package org.kie.api.internal.assembler;
 
-import org.kie.api.Service;
+import java.util.Map;
 
-public interface KieService extends Service {
-//    void preInit(T ctx);
-//    void init(T ctx);
-//    void postInit(T ctx);
+import org.kie.api.internal.utils.KieService;
+import org.kie.api.io.ResourceType;
 
-    Class getServiceInterface();
-
-//    ResourceType getResourceType();
-//
-//    RequiredResourceType[] getRequiredResourceType();
+public interface KieAssemblers extends KieService {
+    Map<ResourceType, KieAssemblerService> getAssemblers();
 }

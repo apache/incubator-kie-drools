@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.internal.runtime.beliefs;
+package org.kie.api.internal.runtime.beliefs;
 
 import java.util.HashMap;
 import java.util.Map;

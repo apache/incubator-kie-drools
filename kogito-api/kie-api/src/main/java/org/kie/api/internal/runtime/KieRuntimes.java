@@ -13,16 +13,14 @@
  * limitations under the License.
 */
 
-package org.kie.internal.assembler;
+package org.kie.api.internal.runtime;
 
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceConfiguration;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.utils.KieService;
+import java.util.Map;
 
-public interface KieAssemblerService extends KieService {
-    ResourceType getResourceType();
+import org.kie.api.internal.utils.KieService;
 
-    void addResource(KnowledgeBuilder kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception;
+public interface KieRuntimes extends KieService {
+    Map<String, Object> getRuntimes();
+
+    Class getServiceInterface();
 }
