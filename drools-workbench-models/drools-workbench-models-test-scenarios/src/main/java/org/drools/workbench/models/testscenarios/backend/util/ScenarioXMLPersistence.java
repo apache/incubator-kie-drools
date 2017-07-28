@@ -47,6 +47,8 @@ public class ScenarioXMLPersistence {
 
     private ScenarioXMLPersistence() {
         xt = new XStream(new DomDriver());
+        String[] voidDeny = {"void.class", "Void.class"};
+        xt.denyTypes(voidDeny);
         xt.alias("scenario", Scenario.class);
         xt.alias("execution-trace", ExecutionTrace.class);
         xt.alias("expectation", Expectation.class);

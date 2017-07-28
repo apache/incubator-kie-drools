@@ -29,6 +29,9 @@ public class GuidedScoreCardXMLPersistence {
 
     private GuidedScoreCardXMLPersistence() {
         xt = new XStream( new DomDriver() );
+        String[] voidDeny = {"void.class", "Void.class"};
+        xt.denyTypes(voidDeny);
+
         //All numerical values are historically BigDecimal
         xt.alias( "valueNumeric", Number.class,
                   BigDecimal.class );
