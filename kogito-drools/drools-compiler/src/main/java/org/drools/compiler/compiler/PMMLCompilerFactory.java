@@ -16,35 +16,16 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.internal.utils.ServiceRegistry;
 
 public class PMMLCompilerFactory {
 
-    private static final String PROVIDER_CLASS = "org.drools.pmml.pmml_4_2.PMML4Compiler";
-
-    private static PMMLCompiler provider;
-
-    public static synchronized PMMLCompiler getPMMLCompiler() {
-        if ( provider == null ) {
-            loadProvider();
-        }
-        return provider;
+    private static class LazyHolder {
+        private static final PMMLCompiler provider = ServiceRegistry.getInstance().get(PMMLCompiler.class);
     }
 
-    public static void setProvider(PMMLCompiler provider) {
-        PMMLCompilerFactory.provider = provider;
+    public static PMMLCompiler getPMMLCompiler() {
+        return LazyHolder.provider;
     }
-
-    private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault( PMMLCompiler.class,  PROVIDER_CLASS );
-        setProvider(ServiceRegistryImpl.getInstance().get(PMMLCompiler.class));
-    }
-
-    public static synchronized void loadProvider(ClassLoader cl) {
-        if (provider == null) {
-            try {
-                provider = (PMMLCompiler)Class.forName(PROVIDER_CLASS, true, cl).newInstance();
-            } catch (Exception e) { }
-        }
-    }
+    
 }

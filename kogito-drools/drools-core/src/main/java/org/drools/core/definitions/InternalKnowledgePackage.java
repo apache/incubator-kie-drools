@@ -19,7 +19,7 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.ruleunit.RuleUnitRegistry;
-import org.kie.internal.io.ResourceTypePackage;
+import org.kie.api.internal.io.ResourceTypePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;

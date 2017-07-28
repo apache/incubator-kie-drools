@@ -15,19 +15,18 @@
 
 package org.drools.compiler.compiler;
 
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.internal.utils.ServiceRegistryImpl;
 
 import java.io.InputStream;
 import java.util.List;
 
 public class DecisionTableFactory {
 
-    private static final String PROVIDER_CLASS = "org.drools.decisiontable.DecisionTableProviderImpl";
-
-    private static DecisionTableProvider provider;
+    private static DecisionTableProvider provider = ServiceRegistry.getInstance().get(DecisionTableProvider.class);
     
     public static String loadFromInputStream(InputStream is, DecisionTableConfiguration configuration ) {
         return loadFromResource(ResourceFactory.newInputStreamResource( is ), configuration);
@@ -46,22 +45,6 @@ public class DecisionTableFactory {
     }
     
     public static synchronized DecisionTableProvider getDecisionTableProvider() {
-        if ( provider == null ) {
-            loadProvider();
-        }
         return provider;
-    }
-    
-    private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault( DecisionTableProvider.class, PROVIDER_CLASS );
-        setDecisionTableProvider(ServiceRegistryImpl.getInstance().get( DecisionTableProvider.class ) );
-    }
-
-    public static synchronized void loadProvider(ClassLoader cl) {
-        if (provider == null) {
-            try {
-                provider = (DecisionTableProvider)Class.forName(PROVIDER_CLASS, true, cl).newInstance();
-            } catch (Exception e) { }
-        }
     }
 }

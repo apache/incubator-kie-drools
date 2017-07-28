@@ -31,10 +31,8 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
-import org.kie.internal.runtime.beliefs.Mode;
 
 public class BaseQueueable<T extends ModedAssertion<T>>
         implements

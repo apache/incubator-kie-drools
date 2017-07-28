@@ -18,8 +18,7 @@ package org.drools.core.beliefsystem.simple;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.LinkedListNode;
-import org.kie.internal.runtime.beliefs.Mode;
+import org.kie.api.internal.runtime.beliefs.Mode;
 
 import java.io.IOException;
 import java.io.ObjectInput;

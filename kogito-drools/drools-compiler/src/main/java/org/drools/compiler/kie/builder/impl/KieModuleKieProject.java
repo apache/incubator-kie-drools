@@ -19,9 +19,9 @@ import org.drools.core.common.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
-import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,10 +59,8 @@ public class KieModuleKieProject extends AbstractKieProject {
     public KieModuleKieProject(InternalKieModule kieModule, ClassLoader parent) {
         this.kieModule = kieModule;
         if( parent == null ) {
-            ClassLoaderResolver resolver;
-            try {
-                resolver = ServiceRegistryImpl.getInstance().get(ClassLoaderResolver.class);
-            } catch ( Exception cne ) {
+            ClassLoaderResolver resolver = ServiceRegistry.getInstance().get(ClassLoaderResolver.class);
+            if (resolver==null)  {
                 resolver = new NoDepsClassLoaderResolver();
             }
             parent = resolver.getClassLoader( kieModule );

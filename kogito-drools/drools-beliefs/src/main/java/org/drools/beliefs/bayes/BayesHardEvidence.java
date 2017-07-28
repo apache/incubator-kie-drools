@@ -19,7 +19,7 @@ import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.kie.internal.runtime.beliefs.Mode;
+import org.kie.api.internal.runtime.beliefs.Mode;
 
 import java.util.Arrays;
 

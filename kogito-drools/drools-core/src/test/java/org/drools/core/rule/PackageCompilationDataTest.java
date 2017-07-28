@@ -64,7 +64,7 @@ public class PackageCompilationDataTest {
 
         KnowledgeBaseImpl kBase = new KnowledgeBaseImpl( "xxx", null );
 
-        InternalKnowledgePackage pkg = new KnowledgePackageImpl( "org.drools" );
+        InternalKnowledgePackage pkg = new KnowledgePackageImpl("org.drools");
         pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();
         data.onAdd(pkg.getDialectRuntimeRegistry(), kBase.getRootClassLoader());

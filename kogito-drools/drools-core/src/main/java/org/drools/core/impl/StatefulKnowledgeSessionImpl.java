@@ -125,6 +125,7 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Calendars;
@@ -148,11 +149,10 @@ import org.kie.internal.event.rule.RuleEventManager;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.runtime.KieRuntimeService;
-import org.kie.internal.runtime.KieRuntimes;
+import org.kie.api.internal.runtime.KieRuntimeService;
+import org.kie.api.internal.runtime.KieRuntimes;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.beliefs.Mode;
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.internal.runtime.beliefs.Mode;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -426,7 +426,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         T runtime = (T) runtimeServices.get(cls.getName());
         if (runtime == null) {
-            KieRuntimes runtimes = ServiceRegistryImpl.getInstance().get(KieRuntimes.class);
+            KieRuntimes runtimes = ServiceRegistry.getInstance().get(KieRuntimes.class);
 
             KieRuntimeService service = (KieRuntimeService) runtimes.getRuntimes().get(cls.getName());
             runtime  = (T) service.newKieRuntime(this);

@@ -15,44 +15,21 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.utils.ServiceRegistryImpl;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class GuidedScoreCardFactory {
-
-    private static final String PROVIDER_CLASS = "org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardProviderImpl";
-
-    private static GuidedScoreCardProvider provider;
+    private static GuidedScoreCardProvider provider = ServiceRegistry.getInstance().get(GuidedScoreCardProvider.class);
 
     public static String loadFromInputStream(InputStream is) throws IOException {
         return getGuidedScoreCardProvider().loadFromInputStream(is);
     }
 
-    public static synchronized void setGuidedScoreCardProvider(GuidedScoreCardProvider provider) {
-        GuidedScoreCardFactory.provider = provider;
-    }
-
     public static synchronized GuidedScoreCardProvider getGuidedScoreCardProvider() {
-        if (provider == null) {
-            loadProvider();
-        }
         return provider;
-    }
-
-    private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault(GuidedScoreCardProvider.class, PROVIDER_CLASS);
-        setGuidedScoreCardProvider(ServiceRegistryImpl.getInstance().get(GuidedScoreCardProvider.class));
-    }
-
-    public static synchronized void loadProvider(ClassLoader cl) {
-        if (provider == null) {
-            try {
-                provider = (GuidedScoreCardProvider) Class.forName(PROVIDER_CLASS, true, cl).newInstance();
-            } catch (Exception e) {
-            }
-        }
     }
 
 }

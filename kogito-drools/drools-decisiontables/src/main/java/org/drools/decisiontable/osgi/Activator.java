@@ -16,34 +16,11 @@
 
 package org.drools.decisiontable.osgi;
 
-import java.util.Hashtable;
+import org.drools.core.osgi.BaseActivator;
 
-import org.drools.compiler.compiler.DecisionTableProvider;
-import org.drools.decisiontable.DecisionTableProviderImpl;
-import org.kie.api.Service;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class Activator extends BaseActivator {
 
-public class Activator
-    implements
-    BundleActivator {
-
-    protected static final transient Logger logger = LoggerFactory.getLogger(Activator.class);
-
-    private ServiceRegistration kdtableReg;
-
-    public void start(BundleContext bc) throws Exception {
-        logger.info( "registering decision tables drools services" );
-        this.kdtableReg = bc.registerService(  new String[]{ DecisionTableProvider.class.getName(), Service.class.getName()},
-                                               new DecisionTableProviderImpl(),
-                                               new Hashtable() );
-        logger.info( "drools decision tables services registered" );
-    }
-
-    public void stop(BundleContext bc) throws Exception {
-        this.kdtableReg.unregister();
+    public Activator() {
+        super( Activator.class.getClassLoader() );
     }
 }

@@ -27,7 +27,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.runtime.beliefs.Mode;
+import org.kie.api.internal.runtime.beliefs.Mode;
 
 import java.util.Iterator;
 

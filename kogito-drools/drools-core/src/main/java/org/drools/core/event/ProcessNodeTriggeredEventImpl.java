@@ -17,7 +17,7 @@
 package org.drools.core.event;
 
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 
 public class ProcessNodeTriggeredEventImpl extends ProcessEvent implements ProcessNodeTriggeredEvent {
@@ -26,7 +26,7 @@ public class ProcessNodeTriggeredEventImpl extends ProcessEvent implements Proce
     
     private NodeInstance nodeInstance;
 
-    public ProcessNodeTriggeredEventImpl(final NodeInstance nodeInstance, KnowledgeRuntime kruntime) {
+    public ProcessNodeTriggeredEventImpl(final NodeInstance nodeInstance, KieRuntime kruntime ) {
         super( nodeInstance.getProcessInstance(), kruntime );
         this.nodeInstance = nodeInstance;
     }

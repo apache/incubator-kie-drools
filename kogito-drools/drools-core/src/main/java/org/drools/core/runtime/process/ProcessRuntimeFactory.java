@@ -16,25 +16,15 @@
 package org.drools.core.runtime.process;
 
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.internal.utils.ServiceRegistry;
 
 
 public class ProcessRuntimeFactory {
 
-    private static final String PROVIDER_CLASS = "org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl";
-
     private static ProcessRuntimeFactoryService provider = initializeProvider();
 
     private static ProcessRuntimeFactoryService initializeProvider() {
-        ProcessRuntimeFactoryService service = null;
-        try {
-            ServiceRegistryImpl.getInstance().addDefault(ProcessRuntimeFactoryService.class, PROVIDER_CLASS);
-            service = ServiceRegistryImpl.getInstance().get(ProcessRuntimeFactoryService.class);
-            setProcessRuntimeFactoryService(ServiceRegistryImpl.getInstance().get(ProcessRuntimeFactoryService.class ) );
-        } catch (IllegalArgumentException e) {
-            // intentionally ignored
-        }
-        return service;
+        return ServiceRegistry.getInstance().get( ProcessRuntimeFactoryService.class );
     }
 
     /**

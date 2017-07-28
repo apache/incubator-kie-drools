@@ -47,9 +47,9 @@ import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.event.kiescanner.KieScannerEventListener;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
-import org.kie.internal.utils.ServiceRegistryImpl;
 import org.appformer.maven.support.PomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +91,7 @@ public class KieRepositoryImpl
                     return kieScanner;
                 }
                 try {
-                    KieScannerFactoryService scannerFactoryService = ServiceRegistryImpl.getInstance().get( KieScannerFactoryService.class );
+                    KieScannerFactoryService scannerFactoryService = ServiceRegistry.getInstance().get(KieScannerFactoryService.class);
                     return (InternalKieScanner) scannerFactoryService.newKieScanner();
                 } catch (Exception e) {
                     log.debug( "Cannot load a KieRepositoryScanner, using the DummyKieScanner" );

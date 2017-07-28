@@ -15,13 +15,11 @@
 
 package org.drools.compiler.compiler;
 
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.utils.ServiceRegistryImpl;
 
 
 public class ProcessBuilderFactory {
-
-    private static final String PROVIDER_CLASS = "org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl";
 
     private static IllegalArgumentException initializationException;
     private static ProcessBuilderFactoryService provider = initializeProvider();
@@ -42,16 +40,7 @@ public class ProcessBuilderFactory {
     }
 
     private static ProcessBuilderFactoryService initializeProvider() {
-        ProcessBuilderFactoryService service = null;
-        try {
-            ServiceRegistryImpl.getInstance().addDefault(ProcessBuilderFactoryService.class, PROVIDER_CLASS);
-            service = ServiceRegistryImpl.getInstance().get(ProcessBuilderFactoryService.class);
-            setProcessBuilderFactoryService(ServiceRegistryImpl.getInstance().get(ProcessBuilderFactoryService.class ) );
-        } catch (IllegalArgumentException e) {
-            initializationException = e;
-            // intentionally ignored
-        }
-        return service;
+        return ServiceRegistry.getInstance().get( ProcessBuilderFactoryService.class );
     }
 
     /**
@@ -67,13 +56,4 @@ public class ProcessBuilderFactory {
     public static ProcessBuilderFactoryService getProcessBuilderFactoryService() {
         return provider;
     }
-
-    public static synchronized void loadProvider(ClassLoader cl) {
-        if (provider == null) {
-            try {
-                provider = (ProcessBuilderFactoryService)Class.forName(PROVIDER_CLASS, true, cl).newInstance();
-            } catch (Exception e) { }
-        }
-    }
-
 }

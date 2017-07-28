@@ -16,36 +16,15 @@
 
 package org.drools.compiler.compiler;
 
-import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.api.internal.utils.ServiceRegistry;
 
 public class GuidedRuleTemplateFactory {
-    private static final String PROVIDER_CLASS = "org.drools.workbench.models.guided.template.backend.GuidedRuleTemplateProviderImpl";
 
-    private static GuidedRuleTemplateProvider provider;
-
-    public static synchronized void setGuidedRuleTemplateProvider(GuidedRuleTemplateProvider provider) {
-        GuidedRuleTemplateFactory.provider = provider;
+    private static class LazyHolder {
+        private static final GuidedRuleTemplateProvider provider = ServiceRegistry.getInstance().get( GuidedRuleTemplateProvider.class );
     }
 
-    public static synchronized GuidedRuleTemplateProvider getGuidedRuleTemplateProvider() {
-        if (provider == null) {
-            loadProvider();
-        }
-        return provider;
+    public static GuidedRuleTemplateProvider getGuidedRuleTemplateProvider() {
+        return LazyHolder.provider;
     }
-
-    private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault(GuidedRuleTemplateProvider.class, PROVIDER_CLASS);
-        setGuidedRuleTemplateProvider(ServiceRegistryImpl.getInstance().get(GuidedRuleTemplateProvider.class));
-    }
-
-    public static synchronized void loadProvider(ClassLoader cl) {
-        if (provider == null) {
-            try {
-                provider = (GuidedRuleTemplateProvider) Class.forName(PROVIDER_CLASS, true, cl).newInstance();
-            } catch (Exception e) {
-            }
-        }
-    }
-
 }

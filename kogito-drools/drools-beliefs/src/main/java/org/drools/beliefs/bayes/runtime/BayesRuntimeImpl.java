@@ -20,11 +20,10 @@ import org.drools.beliefs.bayes.JunctionTree;
 import org.drools.beliefs.bayes.assembler.BayesPackage;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.kie.internal.io.ResourceTypePackage;
+import org.kie.api.internal.io.ResourceTypePackage;
 
 import org.kie.api.io.ResourceType;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class BayesRuntimeImpl implements BayesRuntime {

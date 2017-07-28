@@ -17,14 +17,14 @@
 package org.drools.core.event;
 
 import org.kie.api.event.process.ProcessStartedEvent;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessStartedEventImpl extends ProcessEvent implements ProcessStartedEvent {
 
     private static final long serialVersionUID = 510l;
 
-    public ProcessStartedEventImpl(final ProcessInstance instance, KnowledgeRuntime kruntime) {
+    public ProcessStartedEventImpl(final ProcessInstance instance, KieRuntime kruntime ) {
         super( instance, kruntime );
     }
 

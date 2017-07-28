@@ -16,9 +16,10 @@
 
 package org.kie.dmn.api.core;
 
-import org.kie.internal.io.ResourceTypePackage;
 
 import java.util.Map;
+
+import org.kie.api.internal.io.ResourceTypePackage;
 
 public interface DMNPackage
         extends ResourceTypePackage {

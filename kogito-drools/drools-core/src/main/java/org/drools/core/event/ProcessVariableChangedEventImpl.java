@@ -17,7 +17,7 @@
 package org.drools.core.event;
 
 import org.kie.api.event.process.ProcessVariableChangedEvent;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessVariableChangedEventImpl extends ProcessEvent implements ProcessVariableChangedEvent {
@@ -31,7 +31,7 @@ public class ProcessVariableChangedEventImpl extends ProcessEvent implements Pro
 
     public ProcessVariableChangedEventImpl(final String id, final String instanceId,
             final Object oldValue, final Object newValue,
-            final ProcessInstance processInstance, KnowledgeRuntime kruntime) {
+            final ProcessInstance processInstance, KieRuntime kruntime ) {
         super( processInstance, kruntime );
         this.id = id;
         this.instanceId = instanceId;

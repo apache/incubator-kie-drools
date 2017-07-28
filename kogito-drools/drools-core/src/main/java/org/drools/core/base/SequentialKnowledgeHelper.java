@@ -16,30 +16,29 @@
 
 package org.drools.core.base;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.kie.api.runtime.rule.RuleUnit;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.internal.runtime.beliefs.Mode;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.beliefs.Mode;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import org.kie.api.runtime.rule.RuleUnit;
 
 public class SequentialKnowledgeHelper
     implements
@@ -101,7 +100,7 @@ public class SequentialKnowledgeHelper
         return this.workingMemory;
     }
     
-    public KnowledgeRuntime getKnowledgeRuntime() {
+    public KieRuntime getKnowledgeRuntime() {
         return this.workingMemory;
      }
 

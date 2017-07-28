@@ -28,9 +28,9 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.assembler.KieAssemblerService;
+import org.kie.api.internal.assembler.KieAssemblerService;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.io.ResourceTypePackage;
+import org.kie.api.internal.io.ResourceTypePackage;
 
 public class BayesAssemblerService implements KieAssemblerService {
 
@@ -44,11 +44,13 @@ public class BayesAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResource(KnowledgeBuilder kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         BayesNetwork network;
         JunctionTreeBuilder builder;
 
-        Bif bif = XmlBifParser.loadBif(resource, kbuilder.getErrors());
+        KnowledgeBuilder kb = (KnowledgeBuilder) kbuilder;
+
+        Bif bif = XmlBifParser.loadBif(resource, kb.getErrors());
         if (bif == null) {
             return;
         }
@@ -56,14 +58,14 @@ public class BayesAssemblerService implements KieAssemblerService {
         try {
             network = XmlBifParser.buildBayesNetwork(bif);
         } catch (Exception e) {
-            kbuilder.getErrors().add(new BayesNetworkAssemblerError(resource, "Unable to parse opening Stream:\n" + e.toString()));
+            kb.getErrors().add(new BayesNetworkAssemblerError(resource, "Unable to parse opening Stream:\n" + e.toString()));
             return;
         }
 
         try {
             builder = new JunctionTreeBuilder(network);
         }  catch ( Exception e ) {
-            kbuilder.getErrors().add(new BayesNetworkAssemblerError(resource, "Unable to build Junction Tree:\n" + e.toString()));
+            kb.getErrors().add(new BayesNetworkAssemblerError(resource, "Unable to build Junction Tree:\n" + e.toString()));
             return;
         }
 
@@ -79,10 +81,5 @@ public class BayesAssemblerService implements KieAssemblerService {
             rpkg.put(ResourceType.BAYES, bpkg);
         }
         bpkg.addJunctionTree(network.getName(), builder.build());
-    }
-
-    @Override
-    public Class getServiceInterface() {
-        return KieAssemblerService.class;
     }
 }

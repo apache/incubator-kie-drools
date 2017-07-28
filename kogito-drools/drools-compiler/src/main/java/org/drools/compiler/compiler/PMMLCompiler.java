@@ -18,16 +18,15 @@ package org.drools.compiler.compiler;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
 import org.kie.api.Service;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public interface PMMLCompiler extends Service {
 
-    public String compile( InputStream stream, ClassLoader classLoader );
+    String compile( InputStream stream, ClassLoader classLoader );
 
-    public List<KnowledgeBuilderResult> getResults();
+    List<KnowledgeBuilderResult> getResults();
 
-    public void clearResults();
+    void clearResults();
 }

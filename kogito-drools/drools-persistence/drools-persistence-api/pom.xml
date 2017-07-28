@@ -109,7 +109,6 @@
             </Import-Package>
             <Export-Package>
               org.drools.persistence.api,
-              org.drools.persistence.osgi,
               org.drools.persistence.jta,
               org.drools.persistence.processinstance
             </Export-Package>

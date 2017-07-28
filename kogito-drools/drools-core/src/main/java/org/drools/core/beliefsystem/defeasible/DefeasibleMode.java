@@ -17,10 +17,7 @@ package org.drools.core.beliefsystem.defeasible;
 
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.jtms.JTMSMode;
-import org.drools.core.common.LogicalDependency;
-import org.drools.core.spi.Activation;
-import org.drools.core.util.LinkedListEntry;
-import org.kie.internal.runtime.beliefs.Mode;
+import org.kie.api.internal.runtime.beliefs.Mode;
 
 import java.util.Arrays;
 
