@@ -17,6 +17,7 @@ package org.drools.core.impl;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -111,6 +112,8 @@ public interface InternalKnowledgeBase extends KieBase {
     void invalidateSegmentPrototype(LeftTupleNode rootNode);
     SegmentMemory createSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource tupleSource);
     SegmentMemory.Prototype getSegmentPrototype(SegmentMemory segment);
+
+    void processAllTypesDeclaration( List<InternalKnowledgePackage> pkgs );
 
     void addRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
     void removeRules( Collection<RuleImpl> rules ) throws InvalidPatternException;
