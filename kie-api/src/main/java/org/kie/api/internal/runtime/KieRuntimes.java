@@ -20,7 +20,7 @@ import java.util.Map;
 import org.kie.api.internal.utils.KieService;
 
 public interface KieRuntimes extends KieService {
-    Map<String, Object> getRuntimes();
+    Map<String, KieRuntimeService> getRuntimes();
 
     Class getServiceInterface();
 }
