@@ -4123,4 +4123,99 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testPropertyReactivityOfAKnownClass() {
+        String drl1 =
+                "import " + TypeA.class.getCanonicalName() + "\n" +
+                "import " + TypeB.class.getCanonicalName() + "\n" +
+                "rule \"RULE_1\"\n" +
+                "    when\n" +
+                "        TypeA()" +
+                "        TypeB()" +
+                "    then\n" +
+                "end\n";
+
+        String drl2 =
+                "import " + TypeB.class.getCanonicalName() + "\n" +
+                "rule \"RULE_2\"\n" +
+                "    when\n" +
+                "        $b : TypeB() @watch(!*)" +
+                "    then\n" +
+                "        modify($b) { setValue(0) } \n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drl2 );
+        kc.updateToVersion( releaseId2 );
+
+        ksession.insert(new TypeB(1));
+        int fired = ksession.fireAllRules(10);
+
+        assertEquals(1, fired);
+    }
+
+    @Test
+    public void testPropertyReactivityOfAnOriginallyUnknownClass() {
+        // DROOLS-1684
+        String drl1 =
+                "import " + TypeA.class.getCanonicalName() + "\n" +
+                "rule \"RULE_1\"\n" +
+                "    when\n" +
+                "        TypeA()" +
+                "    then\n" +
+                "end\n";
+
+        String drl2 =
+                "import " + TypeB.class.getCanonicalName() + "\n" +
+                "rule \"RULE_2\"\n" +
+                "    when\n" +
+                "        $b : TypeB() @watch(!*)" +
+                "    then\n" +
+                "        modify($b) { setValue(0) } \n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drl2 );
+        kc.updateToVersion( releaseId2 );
+
+        ksession.insert(new TypeB(1));
+        int fired = ksession.fireAllRules(10);
+
+        assertEquals(1, fired);
+    }
+
+    public static class TypeA { }
+
+    public static class TypeB {
+        int value;
+
+        public TypeB(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+    }
 }
