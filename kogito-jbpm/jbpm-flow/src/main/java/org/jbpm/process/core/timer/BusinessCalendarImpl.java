@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.drools.core.time.TimeUtils;
+import org.jbpm.util.PatternConstants;
 import org.kie.api.time.SessionClock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +84,6 @@ public class BusinessCalendarImpl implements BusinessCalendar {
     private List<Integer> weekendDays= new ArrayList<Integer>();
     private SessionClock clock;
     
-    private static final Pattern SIMPLE  = Pattern.compile( "([+-])?\\s*((\\d+)[Ww])?\\s*((\\d+)[Dd])?\\s*((\\d+)[Hh])?\\s*((\\d+)[Mm])?\\s*((\\d+)[Ss])?" );
     private static final int     SIM_WEEK = 3;
     private static final int     SIM_DAY = 5;
     private static final int     SIM_HOU = 7;
@@ -223,7 +222,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
         int sec = 0;
         
         if( trimmed.length() > 0 ) {
-            Matcher mat = SIMPLE.matcher( trimmed );
+            Matcher mat = PatternConstants.SIMPLE_TIME_DATE_MATCHER.matcher(trimmed );
             if ( mat.matches() ) {
                 weeks = (mat.group( SIM_WEEK ) != null) ? Integer.parseInt( mat.group( SIM_WEEK ) ) : 0;
                 days = (mat.group( SIM_DAY ) != null) ? Integer.parseInt( mat.group( SIM_DAY ) ) : 0;

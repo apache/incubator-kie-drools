@@ -16,6 +16,11 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
@@ -28,6 +33,7 @@ import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.ProcessInstanceResolverFactory;
@@ -48,17 +54,11 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+;
 
 public class DynamicUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(DynamicUtils.class);
-    protected static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{([\\S&&[^\\}]]+)\\}",
-                                                                       Pattern.DOTALL);
 
     public static void addDynamicWorkItem(
             final DynamicNodeInstance dynamicContext,
@@ -102,7 +102,7 @@ public class DynamicUtils {
             if (entry.getValue() instanceof String) {
                 String s = (String) entry.getValue();
                 Object variableValue = null;
-                Matcher matcher = PARAMETER_MATCHER.matcher(s);
+                Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(s);
                 while (matcher.find()) {
                     String paramName = matcher.group(1);
                     variableValue = processInstance.getVariable(paramName);

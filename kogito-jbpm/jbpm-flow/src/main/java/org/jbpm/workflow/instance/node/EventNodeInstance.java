@@ -1,5 +1,5 @@
 /**
- * Copyright 2005 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,27 @@
 
 package org.jbpm.workflow.instance.node;
 
-import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
+
+import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
 
 /**
  * Runtime counterpart of an event node.
  * 
  */
 public class EventNodeInstance extends ExtendedNodeInstanceImpl implements EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
-
-    protected static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{([\\S&&[^\\}]]+)\\}", Pattern.DOTALL);
 
     private static final long serialVersionUID = 510l;
 
@@ -130,7 +128,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
 	    if (eventType == null ){
 	        return false;
 	    }
-	    Matcher matcher = PARAMETER_MATCHER.matcher(eventType);
+	    Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(eventType);
 	    if (matcher.find()) {
 	        return true;
 	    }
@@ -144,7 +142,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
         }
 
         Map<String, String> replacements = new HashMap<String, String>();
-        Matcher matcher = PARAMETER_MATCHER.matcher(s);
+        Matcher matcher = PatternConstants.PARAMETER_MATCHER.matcher(s);
         while (matcher.find()) {
             String paramName = matcher.group(1);
             if (replacements.get(paramName) == null) {
