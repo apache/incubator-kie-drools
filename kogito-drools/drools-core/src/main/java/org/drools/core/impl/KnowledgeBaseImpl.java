@@ -851,46 +851,19 @@ public class KnowledgeBaseImpl
 
         }
 
-        List<TypeDeclaration> allTypeDeclarations = new ArrayList<TypeDeclaration>();
-        // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
-        for ( InternalKnowledgePackage newPkg : clonedPkgs ) {
-            // we have to do this before the merging, as it does some classloader resolving
-            if ( newPkg.getTypeDeclarations() != null ) {
-                allTypeDeclarations.addAll( newPkg.getTypeDeclarations().values() );
-            }
-        }
-        Collections.sort(allTypeDeclarations);
-
-        String lastType = null;
-        try {
-            // add type declarations according to the global order
-            for ( TypeDeclaration newDecl : allTypeDeclarations ) {
-                lastType = newDecl.getTypeClassName();
-                InternalKnowledgePackage newPkg = null;
-                for ( InternalKnowledgePackage kpkg : clonedPkgs ) {
-                    if ( kpkg.getTypeDeclarations().containsKey( newDecl.getTypeName() ) ) {
-                        newPkg = kpkg;
-                        break;
-                    }
-                }
-                processTypeDeclaration( newDecl, newPkg );
-            }
-
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
-        }
+        processAllTypesDeclaration( clonedPkgs );
 
         for ( InternalKnowledgePackage newPkg : clonedPkgs ) {
             // Add functions
-            try {
-                JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
+            JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
 
-                for ( Function function : newPkg.getFunctions().values() ) {
-                    String functionClassName = function.getClassName();
+            for ( Function function : newPkg.getFunctions().values() ) {
+                String functionClassName = function.getClassName();
+                try {
                     registerFunctionClassAndInnerClasses( functionClassName, runtime, this::registerAndLoadTypeDefinition );
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException( "Unable to compile function '" + function.getName() + "'", e );
                 }
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
             }
         }
 
@@ -960,6 +933,37 @@ public class KnowledgeBaseImpl
 
         if (config.isMultithreadEvaluation() && !hasMultiplePartitions()) {
             disableMultithreadEvaluation("The rete network cannot be partitioned: disabling multithread evaluation");
+        }
+    }
+
+    public void processAllTypesDeclaration( List<InternalKnowledgePackage> pkgs ) {
+        List<TypeDeclaration> allTypeDeclarations = new ArrayList<TypeDeclaration>();
+        // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
+        for ( InternalKnowledgePackage newPkg : pkgs ) {
+            // we have to do this before the merging, as it does some classloader resolving
+            if ( newPkg.getTypeDeclarations() != null ) {
+                allTypeDeclarations.addAll( newPkg.getTypeDeclarations().values() );
+            }
+        }
+        Collections.sort( allTypeDeclarations );
+
+        String lastType = null;
+        try {
+            // add type declarations according to the global order
+            for ( TypeDeclaration newDecl : allTypeDeclarations ) {
+                lastType = newDecl.getTypeClassName();
+                InternalKnowledgePackage newPkg = null;
+                for ( InternalKnowledgePackage kpkg : pkgs ) {
+                    if ( kpkg.getTypeDeclarations().containsKey( newDecl.getTypeName() ) ) {
+                        newPkg = kpkg;
+                        break;
+                    }
+                }
+                processTypeDeclaration( newDecl, newPkg );
+            }
+
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
         }
     }
 

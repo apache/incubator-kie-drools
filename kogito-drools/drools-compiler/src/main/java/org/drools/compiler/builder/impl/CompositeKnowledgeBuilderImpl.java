@@ -261,7 +261,16 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         for (CompositePackageDescr packageDescr : packages) {
             kBuilder.setAssetFilter(packageDescr.getFilter());
             PackageRegistry pkgRegistry = kBuilder.getPackageRegistry(packageDescr.getNamespace());
-            kBuilder.compileAllRules(packageDescr, pkgRegistry);
+            kBuilder.compileKnowledgePackages(packageDescr, pkgRegistry);
+            kBuilder.setAssetFilter(null);
+        }
+
+        kBuilder.wireAllRules();
+        kBuilder.processKieBaseTypes();
+
+        for (CompositePackageDescr packageDescr : packages) {
+            kBuilder.setAssetFilter(packageDescr.getFilter());
+            kBuilder.compileRete( packageDescr );
             kBuilder.setAssetFilter(null);
         }
     }

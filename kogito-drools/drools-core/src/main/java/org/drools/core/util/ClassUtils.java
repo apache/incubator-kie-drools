@@ -21,8 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -812,10 +810,18 @@ public final class ClassUtils {
         return null;
     }
 
+    public static String getSimpleName(Class<?> c) {
+        return getCanonicalSimpleName( c, '$' );
+    }
+
     public static String getCanonicalSimpleName(Class<?> c) {
+        return getCanonicalSimpleName( c, '.' );
+    }
+
+    public static String getCanonicalSimpleName(Class<?> c, char separator) {
         Class<?> enclosingClass = c.getEnclosingClass();
         return enclosingClass != null ?
-               getCanonicalSimpleName(enclosingClass) + "." + c.getSimpleName() :
+               getCanonicalSimpleName(enclosingClass) + separator + c.getSimpleName() :
                c.getSimpleName();
     }
 }

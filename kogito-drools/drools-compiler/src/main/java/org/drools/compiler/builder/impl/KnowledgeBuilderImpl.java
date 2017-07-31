@@ -979,10 +979,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         // merge into existing package
         mergePackage(pkgRegistry, packageDescr);
 
-        compileAllRules(packageDescr, pkgRegistry);
-    }
-
-    protected void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         compileKnowledgePackages( packageDescr, pkgRegistry );
         wireAllRules();
         compileRete( packageDescr );
@@ -1003,6 +999,17 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             addBuilderResult(new DialectError( null, "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage()) );
         }
         updateResults();
+    }
+
+
+    protected void processKieBaseTypes() {
+        if (!hasErrors() && this.kBase != null) {
+            List<InternalKnowledgePackage> pkgs = new ArrayList<>();
+            for (PackageRegistry pkgReg : pkgRegistryMap.values()) {
+                pkgs.add(pkgReg.getPackage());
+            }
+            this.kBase.processAllTypesDeclaration( pkgs );
+        }
     }
 
     protected void compileRete( PackageDescr packageDescr ) {

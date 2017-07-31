@@ -135,7 +135,7 @@ public class TypeDeclaration
     }
 
     private TypeDeclaration( Class< ? > typeClass ) {
-        this(typeClass.getSimpleName());
+        this(ClassUtils.getSimpleName(typeClass));
         setTypeClass(typeClass);
         javaBased = true;
         setTypeClassDef( new ClassDefinition( typeClass ) );
