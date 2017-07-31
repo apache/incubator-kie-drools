@@ -368,7 +368,7 @@ public class KnowledgePackageImpl
         if (clazz == null) {
             return null;
         }
-        TypeDeclaration typeDeclaration = getTypeDeclaration(clazz.getSimpleName());
+        TypeDeclaration typeDeclaration = getTypeDeclaration(ClassUtils.getSimpleName(clazz));
         if (typeDeclaration == null) {
             // check if clazz is resolved by any of the type declarations
             for ( TypeDeclaration type : this.typeDeclarations.values() ) {
