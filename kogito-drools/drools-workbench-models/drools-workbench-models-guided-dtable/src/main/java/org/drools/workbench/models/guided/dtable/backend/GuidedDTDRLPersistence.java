@@ -17,6 +17,8 @@
 package org.drools.workbench.models.guided.dtable.backend;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,7 @@ import java.util.StringTokenizer;
 
 import org.drools.workbench.models.commons.backend.imports.ImportsWriter;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
+import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
@@ -89,6 +92,12 @@ public class GuidedDTDRLPersistence {
     }
 
     public String marshal(final GuidedDecisionTable52 originalDTable) {
+        return marshal(originalDTable,
+                       Collections.emptyList());
+    }
+
+    public String marshal(final GuidedDecisionTable52 originalDTable,
+                          final Collection<RuleModelIActionPersistenceExtension> extensions) {
 
         final GuidedDecisionTable52 dt = DecisionTableHitPolicyEnhancer.enhance(originalDTable);
 
@@ -149,7 +158,8 @@ public class GuidedDTDRLPersistence {
             }
 
             GuidedDTBRDRLPersistence drlMarshaller = new GuidedDTBRDRLPersistence(rowDataProvider);
-            String rule = drlMarshaller.marshal(rm);
+            String rule = drlMarshaller.marshal(rm,
+                                                extensions);
             sb.append(rule);
             sb.append("\n");
         }

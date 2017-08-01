@@ -456,8 +456,9 @@ public class RuleModelDRLPersistenceImpl
                 } else if (matchingExtensions.size() > 1) {
                     throw new RuleModelDRLPersistenceException("Ambiguous RuleModelIActionPersistenceExtension implementations (" + matchingExtensions + ") found for action " + action);
                 } else {
+                    IAction processedIAction = actionVisitor.preProcessIActionForExtensions(action);
                     buf.append(indentation)
-                            .append(matchingExtensions.get(0).marshal(action))
+                            .append(matchingExtensions.get(0).marshal(processedIAction))
                             .append("\n");
                 }
             }
@@ -1443,6 +1444,11 @@ public class RuleModelDRLPersistenceImpl
         protected void preGenerateSetMethodCallParameterValue(final RHSGeneratorContext gctx,
                                                               final ActionFieldValue fieldValue) {
             gctx.setHasOutput(true);
+        }
+
+        protected IAction preProcessIActionForExtensions(final IAction iAction) {
+            // return parameter value by default, override by child classes where necessary
+            return iAction;
         }
 
         public void visitActionInsertFact(final ActionInsertFact action) {

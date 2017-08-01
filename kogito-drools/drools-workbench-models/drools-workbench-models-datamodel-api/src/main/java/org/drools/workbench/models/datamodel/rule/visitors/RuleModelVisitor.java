@@ -41,6 +41,7 @@ import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.datamodel.rule.TemplateAware;
 
 /**
  * A Rule Model Visitor to extract Interpolation Variables (Template Keys)
@@ -55,260 +56,267 @@ public class RuleModelVisitor {
         //Empty constructor for Errai marshalling
     }
 
-    public RuleModelVisitor( Map<InterpolationVariable, Integer> vars ) {
+    public RuleModelVisitor(Map<InterpolationVariable, Integer> vars) {
         this.vars = vars;
     }
 
-    public RuleModelVisitor( IPattern pattern,
-                             Map<InterpolationVariable, Integer> vars ) {
+    public RuleModelVisitor(IPattern pattern,
+                            Map<InterpolationVariable, Integer> vars) {
         this.vars = vars;
-        this.model.addLhsItem( pattern );
+        this.model.addLhsItem(pattern);
     }
 
-    public RuleModelVisitor( IAction action,
-                             Map<InterpolationVariable, Integer> vars ) {
+    public RuleModelVisitor(IAction action,
+                            Map<InterpolationVariable, Integer> vars) {
         this.vars = vars;
-        this.model.addRhsItem( action );
+        this.model.addRhsItem(action);
     }
 
-    public RuleModelVisitor( IPattern[] lhs,
-                             Map<InterpolationVariable, Integer> vars ) {
+    public RuleModelVisitor(IPattern[] lhs,
+                            Map<InterpolationVariable, Integer> vars) {
         this.vars = vars;
         this.model.lhs = lhs;
     }
 
-    public RuleModelVisitor( IAction[] rhs,
-                             Map<InterpolationVariable, Integer> vars ) {
+    public RuleModelVisitor(IAction[] rhs,
+                            Map<InterpolationVariable, Integer> vars) {
         this.vars = vars;
         this.model.rhs = rhs;
     }
 
-    private void parseStringPattern( String text ) {
-        if ( text == null || text.length() == 0 ) {
+    private void parseStringPattern(String text) {
+        if (text == null || text.length() == 0) {
             return;
         }
         int pos = 0;
-        while ( ( pos = text.indexOf( "@{",
-                                      pos ) ) != -1 ) {
-            int end = text.indexOf( '}',
-                                    pos + 2 );
-            if ( end != -1 ) {
-                String varName = text.substring( pos + 2,
-                                                 end );
+        while ((pos = text.indexOf("@{",
+                                   pos)) != -1) {
+            int end = text.indexOf('}',
+                                   pos + 2);
+            if (end != -1) {
+                String varName = text.substring(pos + 2,
+                                                end);
                 pos = end + 1;
-                InterpolationVariable var = new InterpolationVariable( varName,
-                                                                       DataType.TYPE_OBJECT );
-                if ( !vars.containsKey( var ) ) {
-                    vars.put( var,
-                              vars.size() );
+                InterpolationVariable var = new InterpolationVariable(varName,
+                                                                      DataType.TYPE_OBJECT);
+                if (!vars.containsKey(var)) {
+                    vars.put(var,
+                             vars.size());
                 }
             }
         }
     }
 
-    public void visit( Object o ) {
-        if ( o == null ) {
+    public void visit(Object o) {
+        if (o == null) {
             return;
         }
-        if ( o instanceof RuleModel ) {
-            visitRuleModel( (RuleModel) o );
-        } else if ( o instanceof FactPattern ) {
-            visitFactPattern( (FactPattern) o );
-        } else if ( o instanceof CompositeFieldConstraint ) {
-            visitCompositeFieldConstraint( (CompositeFieldConstraint) o );
-        } else if ( o instanceof SingleFieldConstraintEBLeftSide ) {
-            visitSingleFieldConstraint( (SingleFieldConstraintEBLeftSide) o );
-        } else if ( o instanceof SingleFieldConstraint ) {
-            visitSingleFieldConstraint( (SingleFieldConstraint) o );
-        } else if ( o instanceof CompositeFactPattern ) {
-            visitCompositeFactPattern( (CompositeFactPattern) o );
-        } else if ( o instanceof FreeFormLine ) {
-            visitFreeFormLine( (FreeFormLine) o );
-        } else if ( o instanceof FromAccumulateCompositeFactPattern ) {
-            visitFromAccumulateCompositeFactPattern( (FromAccumulateCompositeFactPattern) o );
-        } else if ( o instanceof FromCollectCompositeFactPattern ) {
-            visitFromCollectCompositeFactPattern( (FromCollectCompositeFactPattern) o );
-        } else if ( o instanceof FromCompositeFactPattern ) {
-            visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
-        } else if ( o instanceof DSLSentence ) {
-            visitDSLSentence( (DSLSentence) o );
-        } else if ( o instanceof ActionInsertFact ) {
-            visitActionFieldList( (ActionInsertFact) o );
-        } else if ( o instanceof ActionUpdateField ) {
-            visitActionFieldList( (ActionUpdateField) o );
-        } else if ( o instanceof ActionSetField ) {
-            visitActionFieldList( (ActionSetField) o );
+        if (o instanceof RuleModel) {
+            visitRuleModel((RuleModel) o);
+        } else if (o instanceof FactPattern) {
+            visitFactPattern((FactPattern) o);
+        } else if (o instanceof CompositeFieldConstraint) {
+            visitCompositeFieldConstraint((CompositeFieldConstraint) o);
+        } else if (o instanceof SingleFieldConstraintEBLeftSide) {
+            visitSingleFieldConstraint((SingleFieldConstraintEBLeftSide) o);
+        } else if (o instanceof SingleFieldConstraint) {
+            visitSingleFieldConstraint((SingleFieldConstraint) o);
+        } else if (o instanceof CompositeFactPattern) {
+            visitCompositeFactPattern((CompositeFactPattern) o);
+        } else if (o instanceof FreeFormLine) {
+            visitFreeFormLine((FreeFormLine) o);
+        } else if (o instanceof FromAccumulateCompositeFactPattern) {
+            visitFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) o);
+        } else if (o instanceof FromCollectCompositeFactPattern) {
+            visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) o);
+        } else if (o instanceof FromCompositeFactPattern) {
+            visitFromCompositeFactPattern((FromCompositeFactPattern) o);
+        } else if (o instanceof DSLSentence) {
+            visitDSLSentence((DSLSentence) o);
+        } else if (o instanceof ActionInsertFact) {
+            visitActionFieldList((ActionInsertFact) o);
+        } else if (o instanceof ActionUpdateField) {
+            visitActionFieldList((ActionUpdateField) o);
+        } else if (o instanceof ActionSetField) {
+            visitActionFieldList((ActionSetField) o);
+        } else if (o instanceof TemplateAware) {
+            visitTemplateVariableAware((TemplateAware) o);
         }
     }
 
     //ActionInsertFact, ActionSetField, ActionUpdateField
-    private void visitActionFieldList( ActionInsertFact afl ) {
+    private void visitActionFieldList(ActionInsertFact afl) {
         String factType = afl.getFactType();
-        for ( ActionFieldValue afv : afl.getFieldValues() ) {
-            InterpolationVariable var = new InterpolationVariable( afv.getValue(),
-                                                                   afv.getType(),
-                                                                   factType,
-                                                                   afv.getField() );
-            if ( afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.containsKey( var ) ) {
-                vars.put( var,
-                          vars.size() );
+        for (ActionFieldValue afv : afl.getFieldValues()) {
+            InterpolationVariable var = new InterpolationVariable(afv.getValue(),
+                                                                  afv.getType(),
+                                                                  factType,
+                                                                  afv.getField());
+            if (afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.containsKey(var)) {
+                vars.put(var,
+                         vars.size());
             }
         }
     }
 
-    private void visitActionFieldList( ActionSetField afl ) {
-        String factType = model.getLHSBindingType( afl.getVariable() );
-        for ( ActionFieldValue afv : afl.getFieldValues() ) {
-            InterpolationVariable var = new InterpolationVariable( afv.getValue(),
-                                                                   afv.getType(),
-                                                                   factType,
-                                                                   afv.getField() );
-            if ( afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.containsKey( var ) ) {
-                vars.put( var,
-                          vars.size() );
+    private void visitActionFieldList(ActionSetField afl) {
+        String factType = model.getLHSBindingType(afl.getVariable());
+        for (ActionFieldValue afv : afl.getFieldValues()) {
+            InterpolationVariable var = new InterpolationVariable(afv.getValue(),
+                                                                  afv.getType(),
+                                                                  factType,
+                                                                  afv.getField());
+            if (afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.containsKey(var)) {
+                vars.put(var,
+                         vars.size());
             }
         }
     }
 
-    private void visitActionFieldList( ActionUpdateField afl ) {
-        String factType = model.getLHSBindingType( afl.getVariable() );
-        for ( ActionFieldValue afv : afl.getFieldValues() ) {
-            InterpolationVariable var = new InterpolationVariable( afv.getValue(),
-                                                                   afv.getType(),
-                                                                   factType,
-                                                                   afv.getField() );
-            if ( afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.containsKey( var ) ) {
-                vars.put( var,
-                          vars.size() );
-
+    private void visitActionFieldList(ActionUpdateField afl) {
+        String factType = model.getLHSBindingType(afl.getVariable());
+        for (ActionFieldValue afv : afl.getFieldValues()) {
+            InterpolationVariable var = new InterpolationVariable(afv.getValue(),
+                                                                  afv.getType(),
+                                                                  factType,
+                                                                  afv.getField());
+            if (afv.getNature() == FieldNatureType.TYPE_TEMPLATE && !vars.containsKey(var)) {
+                vars.put(var,
+                         vars.size());
             }
         }
     }
 
-    private void visitCompositeFactPattern( CompositeFactPattern pattern ) {
-        if ( pattern.getPatterns() != null ) {
-            for ( IFactPattern fp : pattern.getPatterns() ) {
-                visit( fp );
+    private void visitCompositeFactPattern(CompositeFactPattern pattern) {
+        if (pattern.getPatterns() != null) {
+            for (IFactPattern fp : pattern.getPatterns()) {
+                visit(fp);
             }
         }
     }
 
-    private void visitCompositeFieldConstraint( CompositeFieldConstraint cfc ) {
-        if ( cfc.getConstraints() != null ) {
-            for ( FieldConstraint fc : cfc.getConstraints() ) {
-                visit( fc );
+    private void visitCompositeFieldConstraint(CompositeFieldConstraint cfc) {
+        if (cfc.getConstraints() != null) {
+            for (FieldConstraint fc : cfc.getConstraints()) {
+                visit(fc);
             }
         }
     }
 
     //TODO Handle definition and value
-    private void visitDSLSentence( final DSLSentence sentence ) {
+    private void visitDSLSentence(final DSLSentence sentence) {
         String text = sentence.getDefinition();
-        parseStringPattern( text );
+        parseStringPattern(text);
     }
 
-    private void visitFactPattern( FactPattern pattern ) {
+    private void visitFactPattern(FactPattern pattern) {
         this.factPattern = pattern;
-        for ( FieldConstraint fc : pattern.getFieldConstraints() ) {
-            visit( fc );
+        for (FieldConstraint fc : pattern.getFieldConstraints()) {
+            visit(fc);
         }
     }
 
-    private void visitFreeFormLine( FreeFormLine ffl ) {
-        parseStringPattern( ffl.getText() );
+    private void visitFreeFormLine(FreeFormLine ffl) {
+        parseStringPattern(ffl.getText());
     }
 
-    private void visitFromAccumulateCompositeFactPattern( FromAccumulateCompositeFactPattern pattern ) {
-        visit( pattern.getFactPattern() );
-        visit( pattern.getSourcePattern() );
+    private void visitFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern pattern) {
+        visit(pattern.getFactPattern());
+        visit(pattern.getSourcePattern());
 
-        parseStringPattern( pattern.getActionCode() );
-        parseStringPattern( pattern.getInitCode() );
-        parseStringPattern( pattern.getReverseCode() );
+        parseStringPattern(pattern.getActionCode());
+        parseStringPattern(pattern.getInitCode());
+        parseStringPattern(pattern.getReverseCode());
     }
 
-    private void visitFromCollectCompositeFactPattern( FromCollectCompositeFactPattern pattern ) {
-        visit( pattern.getFactPattern() );
-        visit( pattern.getRightPattern() );
+    private void visitFromCollectCompositeFactPattern(FromCollectCompositeFactPattern pattern) {
+        visit(pattern.getFactPattern());
+        visit(pattern.getRightPattern());
     }
 
-    private void visitFromCompositeFactPattern( FromCompositeFactPattern pattern ) {
-        visit( pattern.getFactPattern() );
+    private void visitFromCompositeFactPattern(FromCompositeFactPattern pattern) {
+        visit(pattern.getFactPattern());
         ToStringExpressionVisitor visitor = new ToStringExpressionVisitor();
-        parseStringPattern( pattern.getExpression().getText( visitor ) );
+        parseStringPattern(pattern.getExpression().getText(visitor));
     }
 
-    private void visitRuleModel( RuleModel model ) {
+    private void visitRuleModel(RuleModel model) {
         this.model = model;
-        if ( model.lhs != null ) {
-            for ( IPattern pat : model.lhs ) {
-                visit( pat );
+        if (model.lhs != null) {
+            for (IPattern pat : model.lhs) {
+                visit(pat);
             }
         }
-        if ( model.rhs != null ) {
-            for ( IAction action : model.rhs ) {
-                visit( action );
+        if (model.rhs != null) {
+            for (IAction action : model.rhs) {
+                visit(action);
             }
         }
     }
 
-    private void visitSingleFieldConstraint( SingleFieldConstraint sfc ) {
-        InterpolationVariable var = new InterpolationVariable( sfc.getValue(),
-                                                               sfc.getFieldType(),
-                                                               ( factPattern == null ? "" : factPattern.getFactType() ),
-                                                               sfc.getFieldName() );
-        if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.containsKey( var ) ) {
-            vars.put( var,
-                      vars.size() );
+    private void visitSingleFieldConstraint(SingleFieldConstraint sfc) {
+        InterpolationVariable var = new InterpolationVariable(sfc.getValue(),
+                                                              sfc.getFieldType(),
+                                                              (factPattern == null ? "" : factPattern.getFactType()),
+                                                              sfc.getFieldName());
+        if (BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.containsKey(var)) {
+            vars.put(var,
+                     vars.size());
         }
 
         //Visit Connection constraints
-        if ( sfc.getConnectives() != null ) {
-            for ( int i = 0; i < sfc.getConnectives().length; i++ ) {
-                final ConnectiveConstraint cc = sfc.getConnectives()[ i ];
-                InterpolationVariable ccVar = new InterpolationVariable( cc.getValue(),
-                                                                         cc.getFieldType(),
-                                                                         ( factPattern == null ? "" : factPattern.getFactType() ),
-                                                                         cc.getFieldName() );
-                if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( ccVar ) ) {
-                    vars.put( ccVar,
-                              vars.size() );
+        if (sfc.getConnectives() != null) {
+            for (int i = 0; i < sfc.getConnectives().length; i++) {
+                final ConnectiveConstraint cc = sfc.getConnectives()[i];
+                InterpolationVariable ccVar = new InterpolationVariable(cc.getValue(),
+                                                                        cc.getFieldType(),
+                                                                        (factPattern == null ? "" : factPattern.getFactType()),
+                                                                        cc.getFieldName());
+                if (BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey(ccVar)) {
+                    vars.put(ccVar,
+                             vars.size());
                 }
-
             }
         }
     }
 
-    private void visitSingleFieldConstraint( SingleFieldConstraintEBLeftSide sfexp ) {
+    private void visitSingleFieldConstraint(SingleFieldConstraintEBLeftSide sfexp) {
         String genericType = sfexp.getExpressionLeftSide().getGenericType();
         String factType = sfexp.getExpressionLeftSide().getPreviousClassType();
-        if ( factType == null ) {
+        if (factType == null) {
             factType = sfexp.getExpressionLeftSide().getClassType();
         }
-        InterpolationVariable var = new InterpolationVariable( sfexp.getValue(),
-                                                               genericType,
-                                                               factType,
-                                                               sfexp.getFieldName() );
-        if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfexp.getConstraintValueType() && !vars.containsKey( var ) ) {
-            vars.put( var,
-                      vars.size() );
+        InterpolationVariable var = new InterpolationVariable(sfexp.getValue(),
+                                                              genericType,
+                                                              factType,
+                                                              sfexp.getFieldName());
+        if (BaseSingleFieldConstraint.TYPE_TEMPLATE == sfexp.getConstraintValueType() && !vars.containsKey(var)) {
+            vars.put(var,
+                     vars.size());
         }
 
         //Visit Connection constraints
-        if ( sfexp.getConnectives() != null ) {
-            for ( int i = 0; i < sfexp.getConnectives().length; i++ ) {
-                final ConnectiveConstraint cc = sfexp.getConnectives()[ i ];
-                InterpolationVariable ccVar = new InterpolationVariable( cc.getValue(),
-                                                                         genericType,
-                                                                         factType,
-                                                                         cc.getFieldName() );
-                if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( ccVar ) ) {
-                    vars.put( ccVar,
-                              vars.size() );
+        if (sfexp.getConnectives() != null) {
+            for (int i = 0; i < sfexp.getConnectives().length; i++) {
+                final ConnectiveConstraint cc = sfexp.getConnectives()[i];
+                InterpolationVariable ccVar = new InterpolationVariable(cc.getValue(),
+                                                                        genericType,
+                                                                        factType,
+                                                                        cc.getFieldName());
+                if (BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey(ccVar)) {
+                    vars.put(ccVar,
+                             vars.size());
                 }
             }
         }
-
     }
 
+    private void visitTemplateVariableAware(final TemplateAware templateAware) {
+        for (InterpolationVariable interpolationVariable : templateAware.extractInterpolationVariables()) {
+            if (!vars.containsKey(interpolationVariable)) {
+                vars.put(interpolationVariable,
+                         vars.size());
+            }
+        }
+    }
 }
