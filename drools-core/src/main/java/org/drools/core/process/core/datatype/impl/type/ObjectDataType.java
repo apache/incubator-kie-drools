@@ -89,6 +89,8 @@ public class ObjectDataType implements DataType {
 
     public Object readValue(String value) {
         XStream xstream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream.denyTypes(voidDeny);
         if (classLoader != null) {
             xstream.setClassLoader(classLoader);
         }
@@ -97,6 +99,8 @@ public class ObjectDataType implements DataType {
 
     public String writeValue(Object value) {
         XStream xstream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream.denyTypes(voidDeny);
         if (classLoader != null) {
             xstream.setClassLoader(classLoader);
         }

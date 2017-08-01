@@ -21,6 +21,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.Role;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
@@ -148,5 +149,86 @@ public class SubnetworkTest {
 
         assertEquals(1, list.size());
         assertEquals(4, list.get(0).intValue());
+    }
+
+    @Test
+    public void testSubnetworkSharingWith2Sinks() {
+        // DROOLS-1656
+        String drl1 =
+                "import " + X.class.getCanonicalName() + "\n" +
+                "import " + Y.class.getCanonicalName() + "\n" +
+                "global java.util.List list" +
+                "\n" +
+                "rule R1 agenda-group \"G2\" when\n" +
+                "    Number( intValue == 0 ) from accumulate (\n" +
+                "        X( $id : id )\n" +
+                "        and $y : Y( parentId == $id )\n" +
+                "    ;count($y))\n" +
+                "then\n" +
+                "    list.add(\"R1\");\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 agenda-group \"G1\" when\n" +
+                "    Number( intValue < 1 ) from accumulate (\n" +
+                "        X( $id : id )\n" +
+                "        and $y : Y( parentId == $id )\n" +
+                "    ;count($y))\n" +
+                "then\n" +
+                "    list.add(\"R2\");\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 agenda-group \"G1\" no-loop when\n" +
+                "    $x : X( $id : id )\n" +
+                "then\n" +
+                "    modify($x) { setId($id + 1) };\n" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper()
+                .addContent( drl1, ResourceType.DRL )
+                .build().newKieSession();
+
+        List<String> list = new ArrayList<>();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert( new X(1) );
+        kieSession.insert( new Y(1) );
+
+        final Agenda agenda = kieSession.getAgenda();
+        agenda.getAgendaGroup("G2").setFocus();
+        agenda.getAgendaGroup("G1").setFocus();
+
+        kieSession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( "R2", list.get( 0) );
+        assertEquals( "R1", list.get( 1) );
+    }
+
+    public static class X {
+        private int id;
+
+        public X( int id ) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId( int id ) {
+            this.id = id;
+        }
+    }
+
+    public static class Y {
+        private final int parentId;
+
+        public Y( int parentId ) {
+            this.parentId = parentId;
+        }
+
+        public int getParentId() {
+            return parentId;
+        }
     }
 }

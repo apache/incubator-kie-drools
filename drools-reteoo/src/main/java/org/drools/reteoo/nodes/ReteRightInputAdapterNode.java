@@ -15,11 +15,18 @@
 
 package org.drools.reteoo.nodes;
 
+import java.util.Map;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
+import org.drools.core.marshalling.impl.PersisterHelper;
+import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
+import org.drools.core.marshalling.impl.ProtobufMessages;
+import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -70,11 +77,36 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         this.sink.propagateAssertObject( handle,
                                          context,
                                          workingMemory );
+    }
 
-//        if ( useLeftMemory) {
-//            leftTuple.setObject( handle.getFirstRightTuple() );
-//        }
-
+    private InternalFactHandle createFactHandle(final LeftTuple leftTuple,
+                                               final PropagationContext context,
+                                               final InternalWorkingMemory workingMemory) {
+        InternalFactHandle handle;
+        ProtobufMessages.FactHandle _handle = null;
+        if( context.getReaderContext() != null ) {
+            Map<TupleKey, FactHandle> map = (Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle>) context.getReaderContext().nodeMemories.get( getId() );
+            if( map != null ) {
+                _handle = map.get( PersisterHelper.createTupleKey( leftTuple ) );
+            }
+        }
+        if( _handle != null ) {
+            // create a handle with the given id
+            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
+                                                                         leftTuple,
+                                                                         _handle.getRecency(),
+                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
+                                                                                                                                               leftTuple ),
+                                                                         workingMemory,
+                                                                         null ); // so far, result is not an event
+        } else {
+            handle = workingMemory.getFactHandleFactory().newFactHandle( leftTuple,
+                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
+                                                                                                                                               leftTuple ),
+                                                                         workingMemory,
+                                                                         null ); // so far, result is not an event
+        }
+        return handle;
     }
 
     /**
