@@ -35,8 +35,10 @@ import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IFactPattern;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.TemplateAware;
 import org.drools.workbench.models.datamodel.rule.builder.DRLConstraintValueBuilder;
 
 /**
@@ -319,6 +321,16 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
             FreeFormLine fflClone = new FreeFormLine();
             fflClone.setText(interpolatedResult.toString());
             super.visitFreeFormLine(fflClone);
+        }
+
+        @Override
+        protected IAction preProcessIActionForExtensions(final IAction iAction) {
+            if (iAction instanceof TemplateAware) {
+                TemplateAware clone = ((TemplateAware) iAction).cloneTemplateAware();
+                clone.substituteTemplateVariables(key -> rowDataProvider.getTemplateKeyValue(key));
+                return (IAction) clone;
+            }
+            return iAction;
         }
     }
 }
