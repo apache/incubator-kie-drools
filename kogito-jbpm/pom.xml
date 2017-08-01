@@ -36,7 +36,27 @@
     <maven.jdbc.url>jdbc:h2:tcp://localhost/${project.basedir}/target/jbpm-test;MVCC=TRUE</maven.jdbc.url>
     <maven.jdbc.schema>public</maven.jdbc.schema>
 
+    <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+    <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
     <findbugs.failOnViolation>true</findbugs.failOnViolation>
+    <checkstyle.header.template><![CDATA[
+^\/\*$\n^
+\* Copyright \d\d\d\d Red Hat, Inc\. and\/or its affiliates\.$\n^
+\*$\n^
+\* Licensed under the Apache License, Version 2\.0 \(the &quot;License&quot;\);$\n^
+\* you may not use this file except in compliance with the License\.$\n^
+\* You may obtain a copy of the License at$\n^
+\*$\n^
+\*     http:\/\/www\.apache\.org\/licenses\/LICENSE-2\.0$\n^
+\*$\n^
+\* Unless required by applicable law or agreed to in writing, software$\n^
+\* distributed under the License is distributed on an &quot;AS IS&quot; BASIS,$\n^
+\* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied\.$\n^
+\* See the License for the specific language governing permissions and$\n^
+\* limitations under the License\.$\n^
+\*\/$
+]]>
+    </checkstyle.header.template>
   </properties>
 
   <repositories>
@@ -100,6 +120,30 @@
               <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
             </additionalClasspathElements>
           </configuration>
+        </plugin>
+        <!-- checkstyle plugin should only do header(copyright) check -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>validate</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <configuration>
+                <checkstyleRules>
+                  <module name="Checker">
+                    <module name="RegexpHeader">
+                      <property name="header" value="${checkstyle.header.template}"/>
+                      <property name="fileExtensions" value="${checkstyle.header.extensions}"/>
+                    </module>
+                  </module>
+                </checkstyleRules>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
