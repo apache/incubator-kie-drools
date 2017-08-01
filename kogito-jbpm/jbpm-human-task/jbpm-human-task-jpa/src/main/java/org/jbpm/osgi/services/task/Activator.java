@@ -16,7 +16,7 @@
 
 package org.jbpm.osgi.services.task;
 
-import org.drools.core.osgi.BaseActivator;
+import org.kie.internal.osgi.BaseActivator;
 
 public class Activator extends BaseActivator {
 

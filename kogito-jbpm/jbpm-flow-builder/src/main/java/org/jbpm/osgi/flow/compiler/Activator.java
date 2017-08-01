@@ -15,7 +15,7 @@
 
 package org.jbpm.osgi.flow.compiler;
 
-import org.drools.core.osgi.BaseActivator;
+import org.kie.internal.osgi.BaseActivator;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.osgi.framework.BundleContext;
 
