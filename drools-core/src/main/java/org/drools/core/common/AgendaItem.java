@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.core.InitialFact;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -73,7 +74,7 @@ public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
         while ( entry != null ) {
             if ( entry.getFactHandle() != null ) {
                 Object o = ((InternalFactHandle) entry.getFactHandle()).getObject();
-                if (!(o instanceof QueryElementFactHandle)) {
+                if (!(o instanceof QueryElementFactHandle || o instanceof InitialFact)) {
                     list.add(o);
                     list.addAll( entry.getAccumulatedObjects() );
                 }

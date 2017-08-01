@@ -285,4 +285,27 @@ public class MatchTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+    @Test
+    public void testNestedAccumulate() {
+        // DROOLS-1686
+        String drl = "package testpkg;\n"
+                     + "rule fairAssignmentCountPerTeam\n"
+                     + "    when\n"
+                     + "        accumulate(\n"
+                     + "            $s : String()\n"
+                     + "            and accumulate(\n"
+                     + "                Number(this != null);\n"
+                     + "                $count : count()\n"
+                     + "            );\n"
+                     + "            $result : average($count)\n"
+                     + "        )\n"
+                     + "    then\n"
+                     + "        ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();"
+                     + "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        ksession.insert("");
+        ksession.fireAllRules();
+    }
 }
