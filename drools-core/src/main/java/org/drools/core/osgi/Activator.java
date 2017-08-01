@@ -16,6 +16,8 @@
 
 package org.drools.core.osgi;
 
+import org.kie.internal.osgi.BaseActivator;
+
 public class Activator extends BaseActivator {
 
     public Activator() {
