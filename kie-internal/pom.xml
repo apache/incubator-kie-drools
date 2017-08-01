@@ -75,6 +75,10 @@
               org.kie.api.definition.type,
               org.kie.api.event,
               org.kie.api.executor,
+              org.kie.api.internal.assembler,
+              org.kie.api.internal.runtime,
+              org.kie.api.internal.weaver,
+              org.kie.api.internal.runtime.beliefs,
               org.kie.api.internal.utils,
               org.kie.api.io,
               org.kie.api.logger,
@@ -90,11 +94,14 @@
               org.kie.api.task,
               org.kie.api.task.model,
               org.kie.scanner;resolution:=optional,
+              org.osgi.framework,
+              org.osgi.util.tracker,
               org.slf4j
             </Import-Package>
             <Export-Package>
               org.kie.internal.*
             </Export-Package>
+            <Bundle-Activator>org.kie.internal.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
@@ -116,6 +123,16 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
