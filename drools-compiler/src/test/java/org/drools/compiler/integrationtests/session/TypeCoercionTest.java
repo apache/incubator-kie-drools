@@ -230,4 +230,32 @@ public class TypeCoercionTest extends CommonTestMethodBase {
         return "" + value;
     }
 
+    @Test
+    public void testStringCoercion() {
+        final String drl = "package org.drools.compiler.test;\n" +
+                "import " + Person.class.getCanonicalName() + "\n" +
+                " rule R1\n" +
+                " when\n" +
+                "     Person(name == \"12\")\n" +
+                " then\n" +
+                " end\n" +
+                " rule R2\n" +
+                " when\n" +
+                "     Person(name == 11)\n " +
+                " then\n" +
+                " end\n" +
+                " rule R3\n" +
+                " when\n" +
+                "    Person(name == \"11\")\n" +
+                " then\n" +
+                " end\n";
+
+        final KieBase kieBase = loadKnowledgeBaseFromString(drl);
+        final KieSession kieSession = kieBase.newKieSession();
+
+        final Person person = new Person("11");
+        kieSession.insert(person);
+        assertEquals(2, kieSession.fireAllRules());
+    }
+
 }
