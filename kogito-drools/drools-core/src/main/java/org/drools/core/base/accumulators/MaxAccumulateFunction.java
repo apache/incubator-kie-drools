@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of calculating maximum values
@@ -46,6 +45,11 @@ public class MaxAccumulateFunction extends AbstractAccumulateFunction<MaxAccumul
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject(max);
+        }
+
+        @Override
+        public String toString() {
+            return "max";
         }
     }
 

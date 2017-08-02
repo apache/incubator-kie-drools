@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of counting occurences
@@ -48,6 +47,10 @@ public class CountAccumulateFunction extends AbstractAccumulateFunction<CountAcc
             out.writeLong(count);
         }
 
+        @Override
+        public String toString() {
+            return "count";
+        }
     }
 
     /* (non-Javadoc)

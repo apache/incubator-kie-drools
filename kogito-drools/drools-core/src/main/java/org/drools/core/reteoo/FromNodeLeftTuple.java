@@ -19,10 +19,15 @@ package org.drools.core.reteoo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Stream;
 
 import org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor.JavaAccumulatorFunctionContext;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.PropagationContext;
+import org.kie.api.definition.rule.Rule;
+
+import static java.util.stream.Collectors.joining;
 
 public class FromNodeLeftTuple extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;
@@ -91,7 +96,15 @@ public class FromNodeLeftTuple extends BaseLeftTuple {
             Collection<Object> result = new ArrayList<>();
             JavaAccumulatorFunctionContext accContext = ( (ContextOwner) getContextObject() ).getContext( JavaAccumulatorFunctionContext.class );
             if (accContext != null) {
-                result.addAll( accContext.getAccumulatedObjects() );
+                Collection<Object> accObjs = accContext.getAccumulatedObjects();
+                if (accObjs != null) {
+                    result.addAll( accObjs );
+                } else {
+                    String associatedRules = Stream.of( ((BaseNode)sink).getAssociatedRules() )
+                                                   .map( Rule::getName ).collect( joining(", ", "[", "]") );
+                    throw new UnsupportedOperationException( "Accumulate function (" + accContext + ") used in rule(s) " +
+                                                             associatedRules + " does not have reverseSupport" );
+                }
             }
             if (getFirstChild() != null && getFirstChild().getRightParent() instanceof SubnetworkTuple) {
                 LeftTuple leftParent = ( (SubnetworkTuple) getFirstChild().getRightParent() ).getLeftParent();
