@@ -205,8 +205,12 @@ public class JavaAccumulatorFunctionExecutor
         }
 
         public Collection<Object> getAccumulatedObjects() {
-            return reverseSupport.values();
+            return reverseSupport == null ? null : reverseSupport.values();
+        }
+
+        @Override
+        public String toString() {
+            return context.toString();
         }
     }
-    
 }

@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of calculating sum of values
@@ -44,6 +43,10 @@ public class SumAccumulateFunction extends AbstractAccumulateFunction<SumAccumul
             out.writeDouble(total);
         }
 
+        @Override
+        public String toString() {
+            return "sum";
+        }
     }
 
     public SumData createContext() {
