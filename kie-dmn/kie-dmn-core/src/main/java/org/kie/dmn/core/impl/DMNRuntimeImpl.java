@@ -16,32 +16,39 @@
 
 package org.kie.dmn.core.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.definitions.InternalKnowledgePackage;
+import org.kie.api.internal.io.ResourceTypePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.dmn.api.core.*;
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNPackage;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
+import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
-import org.kie.dmn.core.ast.*;
-import org.kie.dmn.core.compiler.DMNFEELHelper;
+import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
+import org.kie.dmn.core.ast.DMNBaseNode;
+import org.kie.dmn.core.ast.DecisionNodeImpl;
+import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.util.EvalHelper;
-import org.kie.internal.io.ResourceTypePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.Map.Entry;
 
 public class DMNRuntimeImpl
         implements DMNRuntime {

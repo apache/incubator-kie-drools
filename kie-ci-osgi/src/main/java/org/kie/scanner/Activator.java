@@ -15,47 +15,11 @@
 
 package org.kie.scanner;
 
-import org.drools.compiler.kie.builder.impl.InternalKieScanner;
-import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
-import org.kie.api.Service;
-import org.kie.api.builder.KieScannerFactoryService;
-import org.kie.internal.utils.ClassLoaderResolver;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.internal.osgi.BaseActivator;
 
-import java.util.Hashtable;
+public class Activator extends BaseActivator {
 
-public class Activator implements BundleActivator {
-
-    protected static final transient Logger logger = LoggerFactory.getLogger(Activator.class);
-
-    private ServiceRegistration scannerReg;
-    private ServiceRegistration classResolverReg;
-
-    @Override
-    public void start(BundleContext context) throws Exception {
-        logger.info( "registering kiescanner services" );
-
-        KieScannerFactoryService scannerFactoryService = new KieScannerFactoryServiceImpl();
-        KieRepositoryImpl.setInternalKieScanner( (InternalKieScanner) scannerFactoryService.newKieScanner() );
-
-        this.scannerReg = context.registerService( new String[]{ KieScannerFactoryService.class.getName(), Service.class.getName() },
-                                                   scannerFactoryService,
-                                                   new Hashtable() );
-
-        this.classResolverReg = context.registerService( new String[]{ ClassLoaderResolver.class.getName(), Service.class.getName() },
-                                                         new MavenClassLoaderResolver(),
-                                                         new Hashtable() );
-
-        logger.info( "kiescanner services registered" );
-    }
-
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        this.scannerReg.unregister();
-        this.classResolverReg.unregister();
+    public Activator() {
+        super( Activator.class.getClassLoader() );
     }
 }

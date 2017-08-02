@@ -96,17 +96,17 @@ import org.kie.api.definition.type.Expires.Policy;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Role;
 import org.kie.api.event.kiebase.KieBaseEventListener;
+import org.kie.api.internal.io.ResourceTypePackage;
+import org.kie.api.internal.utils.ServiceRegistry;
+import org.kie.api.internal.weaver.KieWeaverService;
+import org.kie.api.internal.weaver.KieWeavers;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.io.ResourceTypePackage;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.utils.ServiceRegistryImpl;
-import org.kie.internal.weaver.KieWeaverService;
-import org.kie.internal.weaver.KieWeavers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -851,46 +851,19 @@ public class KnowledgeBaseImpl
 
         }
 
-        List<TypeDeclaration> allTypeDeclarations = new ArrayList<TypeDeclaration>();
-        // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
-        for ( InternalKnowledgePackage newPkg : clonedPkgs ) {
-            // we have to do this before the merging, as it does some classloader resolving
-            if ( newPkg.getTypeDeclarations() != null ) {
-                allTypeDeclarations.addAll( newPkg.getTypeDeclarations().values() );
-            }
-        }
-        Collections.sort(allTypeDeclarations);
-
-        String lastType = null;
-        try {
-            // add type declarations according to the global order
-            for ( TypeDeclaration newDecl : allTypeDeclarations ) {
-                lastType = newDecl.getTypeClassName();
-                InternalKnowledgePackage newPkg = null;
-                for ( InternalKnowledgePackage kpkg : clonedPkgs ) {
-                    if ( kpkg.getTypeDeclarations().containsKey( newDecl.getTypeName() ) ) {
-                        newPkg = kpkg;
-                        break;
-                    }
-                }
-                processTypeDeclaration( newDecl, newPkg );
-            }
-
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
-        }
+        processAllTypesDeclaration( clonedPkgs );
 
         for ( InternalKnowledgePackage newPkg : clonedPkgs ) {
             // Add functions
-            try {
-                JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
+            JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
 
-                for ( Function function : newPkg.getFunctions().values() ) {
-                    String functionClassName = function.getClassName();
+            for ( Function function : newPkg.getFunctions().values() ) {
+                String functionClassName = function.getClassName();
+                try {
                     registerFunctionClassAndInnerClasses( functionClassName, runtime, this::registerAndLoadTypeDefinition );
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException( "Unable to compile function '" + function.getName() + "'", e );
                 }
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
             }
         }
 
@@ -945,7 +918,7 @@ public class KnowledgeBaseImpl
             }
 
             if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
-                KieWeavers weavers = ServiceRegistryImpl.getInstance().get(KieWeavers.class);
+                KieWeavers weavers = ServiceRegistry.getInstance().get( KieWeavers.class );
                 for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
                     ResourceType rt = rtkKpg.getResourceType();
                     KieWeaverService factory = weavers.getWeavers().get( rt );
@@ -960,6 +933,37 @@ public class KnowledgeBaseImpl
 
         if (config.isMultithreadEvaluation() && !hasMultiplePartitions()) {
             disableMultithreadEvaluation("The rete network cannot be partitioned: disabling multithread evaluation");
+        }
+    }
+
+    public void processAllTypesDeclaration( List<InternalKnowledgePackage> pkgs ) {
+        List<TypeDeclaration> allTypeDeclarations = new ArrayList<TypeDeclaration>();
+        // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
+        for ( InternalKnowledgePackage newPkg : pkgs ) {
+            // we have to do this before the merging, as it does some classloader resolving
+            if ( newPkg.getTypeDeclarations() != null ) {
+                allTypeDeclarations.addAll( newPkg.getTypeDeclarations().values() );
+            }
+        }
+        Collections.sort( allTypeDeclarations );
+
+        String lastType = null;
+        try {
+            // add type declarations according to the global order
+            for ( TypeDeclaration newDecl : allTypeDeclarations ) {
+                lastType = newDecl.getTypeClassName();
+                InternalKnowledgePackage newPkg = null;
+                for ( InternalKnowledgePackage kpkg : pkgs ) {
+                    if ( kpkg.getTypeDeclarations().containsKey( newDecl.getTypeName() ) ) {
+                        newPkg = kpkg;
+                        break;
+                    }
+                }
+                processTypeDeclaration( newDecl, newPkg );
+            }
+
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
         }
     }
 
@@ -1317,7 +1321,7 @@ public class KnowledgeBaseImpl
         if ( ! newPkg.getResourceTypePackages().isEmpty() ) {
             for ( ResourceTypePackage rtkKpg : newPkg.getResourceTypePackages().values() ) {
                 ResourceType rt = rtkKpg.getResourceType();
-                KieWeavers weavers = ServiceRegistryImpl.getInstance().get(KieWeavers.class);
+                KieWeavers weavers = ServiceRegistry.getInstance().get(KieWeavers.class);
 
                 KieWeaverService weaver = weavers.getWeavers().get(rt);
                 weaver.merge( this, pkg, rtkKpg );

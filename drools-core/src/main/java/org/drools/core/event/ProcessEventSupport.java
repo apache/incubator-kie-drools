@@ -24,13 +24,13 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListener> {
 
-    public void fireBeforeProcessStarted(final ProcessInstance instance, KnowledgeRuntime kruntime) {
+    public void fireBeforeProcessStarted(final ProcessInstance instance, KieRuntime kruntime ) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -42,7 +42,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         }
     }
 
-    public void fireAfterProcessStarted(final ProcessInstance instance, KnowledgeRuntime kruntime) {
+    public void fireAfterProcessStarted(final ProcessInstance instance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -54,7 +54,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         }
     }
 
-    public void fireBeforeProcessCompleted(final ProcessInstance instance, KnowledgeRuntime kruntime) {
+    public void fireBeforeProcessCompleted(final ProcessInstance instance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -66,7 +66,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         }
     }
 
-    public void fireAfterProcessCompleted(final ProcessInstance instance, KnowledgeRuntime kruntime) {
+    public void fireAfterProcessCompleted(final ProcessInstance instance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -78,7 +78,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         }
     }
 
-    public void fireBeforeNodeTriggered(final NodeInstance nodeInstance, KnowledgeRuntime kruntime) {
+    public void fireBeforeNodeTriggered(final NodeInstance nodeInstance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -90,7 +90,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         }
     }
 
-    public void fireAfterNodeTriggered(final NodeInstance nodeInstance, KnowledgeRuntime kruntime) {
+    public void fireAfterNodeTriggered(final NodeInstance nodeInstance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -102,7 +102,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         }
     }
 
-    public void fireBeforeNodeLeft(final NodeInstance nodeInstance, KnowledgeRuntime kruntime) {
+    public void fireBeforeNodeLeft(final NodeInstance nodeInstance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -114,7 +114,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         }
     }
 
-    public void fireAfterNodeLeft(final NodeInstance nodeInstance, KnowledgeRuntime kruntime) {
+    public void fireAfterNodeLeft(final NodeInstance nodeInstance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -128,7 +128,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
 
     public void fireBeforeVariableChanged(final String id, final String instanceId, 
             final Object oldValue, final Object newValue,
-            final ProcessInstance processInstance, KnowledgeRuntime kruntime) {
+            final ProcessInstance processInstance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
@@ -143,7 +143,7 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
 
     public void fireAfterVariableChanged(final String name, final String id, 
             final Object oldValue, final Object newValue,
-            final ProcessInstance processInstance, KnowledgeRuntime kruntime) {
+            final ProcessInstance processInstance, KieRuntime kruntime) {
         final Iterator<ProcessEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {

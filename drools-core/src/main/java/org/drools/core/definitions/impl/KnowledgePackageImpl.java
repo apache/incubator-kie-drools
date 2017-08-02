@@ -62,7 +62,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
-import org.kie.internal.io.ResourceTypePackage;
+import org.kie.api.internal.io.ResourceTypePackage;
 
 public class KnowledgePackageImpl
     implements
@@ -368,7 +368,7 @@ public class KnowledgePackageImpl
         if (clazz == null) {
             return null;
         }
-        TypeDeclaration typeDeclaration = getTypeDeclaration(clazz.getSimpleName());
+        TypeDeclaration typeDeclaration = getTypeDeclaration(ClassUtils.getSimpleName(clazz));
         if (typeDeclaration == null) {
             // check if clazz is resolved by any of the type declarations
             for ( TypeDeclaration type : this.typeDeclarations.values() ) {

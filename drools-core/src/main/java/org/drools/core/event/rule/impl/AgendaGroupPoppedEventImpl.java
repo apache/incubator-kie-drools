@@ -17,12 +17,12 @@
 package org.drools.core.event.rule.impl;
 
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.rule.AgendaGroup;
 
 public class AgendaGroupPoppedEventImpl extends AgendaGroupEventImpl implements AgendaGroupPoppedEvent {
 
-    public AgendaGroupPoppedEventImpl(AgendaGroup agendaGroup, KnowledgeRuntime kruntime) {
+    public AgendaGroupPoppedEventImpl(AgendaGroup agendaGroup, KieRuntime kruntime ) {
         super( agendaGroup, kruntime );
     }
 

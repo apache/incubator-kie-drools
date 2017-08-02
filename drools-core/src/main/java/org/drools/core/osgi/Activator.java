@@ -16,44 +16,11 @@
 
 package org.drools.core.osgi;
 
-import java.util.Hashtable;
+import org.kie.internal.osgi.BaseActivator;
 
-import org.drools.core.io.impl.ResourceFactoryServiceImpl;
-import org.drools.core.marshalling.impl.MarshallerProviderImpl;
-import org.kie.api.Service;
-import org.kie.api.io.KieResources;
-import org.kie.api.marshalling.KieMarshallers;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class Activator extends BaseActivator {
 
-public class Activator
-    implements
-    BundleActivator {
-
-    protected static final transient Logger logger = LoggerFactory.getLogger(Activator.class);
-
-    private ServiceRegistration resourceReg;
-    private ServiceRegistration marshallerProviderReg;
-
-    public void start(BundleContext bc) throws Exception {
-        logger.info( "registering core  services" );
-        this.resourceReg = bc.registerService( new String[]{KieResources.class.getName(), Service.class.getName()},
-                                               new ResourceFactoryServiceImpl(),
-                                               new Hashtable() );
-
-        this.marshallerProviderReg = bc.registerService( new String[]{KieMarshallers.class.getName(), Service.class.getName()},
-                new MarshallerProviderImpl(),
-                new Hashtable() );
-
-        logger.info( "core services registered" );
+    public Activator() {
+        super( Activator.class.getClassLoader() );
     }
-
-    public void stop(BundleContext bc) throws Exception {
-        this.resourceReg.unregister();
-        this.marshallerProviderReg.unregister();
-    }
-    
 }

@@ -136,13 +136,14 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
+import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ChangeSet;
-import org.kie.internal.assembler.KieAssemblerService;
-import org.kie.internal.assembler.KieAssemblers;
+import org.kie.api.internal.assembler.KieAssemblerService;
+import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -153,7 +154,6 @@ import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.ScoreCardConfiguration;
-import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -797,7 +797,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     void addPackageForExternalType(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
-        KieAssemblers assemblers = ServiceRegistryImpl.getInstance().get(KieAssemblers.class);
+        KieAssemblers assemblers = ServiceRegistry.getInstance().get(KieAssemblers.class);
 
         KieAssemblerService assembler = assemblers.getAssemblers().get( type );
 
@@ -979,10 +979,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         // merge into existing package
         mergePackage(pkgRegistry, packageDescr);
 
-        compileAllRules(packageDescr, pkgRegistry);
-    }
-
-    protected void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         compileKnowledgePackages( packageDescr, pkgRegistry );
         wireAllRules();
         compileRete( packageDescr );
@@ -1003,6 +999,17 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             addBuilderResult(new DialectError( null, "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage()) );
         }
         updateResults();
+    }
+
+
+    protected void processKieBaseTypes() {
+        if (!hasErrors() && this.kBase != null) {
+            List<InternalKnowledgePackage> pkgs = new ArrayList<>();
+            for (PackageRegistry pkgReg : pkgRegistryMap.values()) {
+                pkgs.add(pkgReg.getPackage());
+            }
+            this.kBase.processAllTypesDeclaration( pkgs );
+        }
     }
 
     protected void compileRete( PackageDescr packageDescr ) {

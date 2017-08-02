@@ -55,6 +55,10 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
 
@@ -114,6 +118,7 @@
               javax.naming,
               javax.naming.directory,
               javax.naming.ldap,
+              javax.net,
               javax.net.ssl,
               javax.security.auth.x500,
               org.apache.commons.logging,
@@ -124,6 +129,7 @@
               org.drools.core.common,
               org.drools.core.event,
               org.drools.core.impl,
+              org.drools.core.osgi,
               org.drools.core.rule,
               org.drools.core.util,
               org.kie.api,
@@ -131,6 +137,7 @@
               org.kie.api.builder.model,
               org.kie.api.event.kiescanner,
               org.kie.api.runtime,
+              org.kie.internal.osgi,
               org.kie.internal.utils,
               org.osgi.framework,
               org.slf4j,

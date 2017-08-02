@@ -16,15 +16,15 @@
 
 package org.drools.core.reteoo;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.KnowledgeRuntime;
-
-import java.util.Arrays;
-import java.util.Comparator;
 
 public class ReteComparator {
 
@@ -44,7 +44,7 @@ public class ReteComparator {
         compare( (InternalKnowledgeBase) kbase1, (InternalKnowledgeBase) kbase2 );
     }
 
-    public static void compare(KnowledgeRuntime session1, KnowledgeRuntime session2) {
+    public static void compare( KieRuntime session1, KieRuntime session2 ) {
         compare( (InternalKnowledgeBase) session1.getKieBase(), (InternalKnowledgeBase) session2.getKieBase() );
     }
 

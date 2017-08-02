@@ -65,7 +65,6 @@
               org.hibernate;resolution:=optional,
               org.hibernate.exception;resolution:=optional,
               org.drools.persistence.api,
-              org.drools.persistence.osgi,
               org.drools.persistence.jta,
               org.drools.persistence.processinstance,
               *
