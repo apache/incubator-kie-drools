@@ -825,6 +825,35 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertNotNull(actualOwner);
         assertEquals("Darth Vader", actualOwner);
     }
+    
+    @Test
+    public void testTaskExitByCustomBusinessAdmin() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("NodeName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("BusinessAdministratorId", "Luke Cage");
+        workItem.setProcessInstanceId(10);
+        getHandler().executeWorkItem(workItem, manager);
+        
+        Task task = taskService.getTaskByWorkItemId(workItem.getId());
+        assertNotNull(task);
+        
+        getHandler().abortWorkItem(workItem, manager);
+        
+        task = taskService.getTaskByWorkItemId(workItem.getId());
+        assertEquals("TaskName", task.getNames().get(0).getText());
+        assertEquals(10, task.getPriority().intValue());
+        assertEquals("Comment", task.getDescriptions().get(0).getText());
+        assertEquals(Status.Exited, task.getTaskData().getStatus());
+        
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(0, tasks.size());
+    }
 
     private WorkItemImpl prepareWorkItemWithTaskVariables(final String taskDescriptionParam) {
         final WorkItemImpl workItem = new WorkItemImpl();

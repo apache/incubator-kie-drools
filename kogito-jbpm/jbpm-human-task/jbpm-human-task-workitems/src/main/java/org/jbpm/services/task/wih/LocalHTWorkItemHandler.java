@@ -16,6 +16,7 @@
 package org.jbpm.services.task.wih;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.jbpm.services.task.exception.PermissionDeniedException;
@@ -25,10 +26,11 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.InternalTaskService;
-import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.exception.TaskException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalHTWorkItemHandler.class);
-    private RuntimeManager runtimeManager;
+    private RuntimeManager runtimeManager;        
     
     public RuntimeManager getRuntimeManager() {
         return runtimeManager;
@@ -100,7 +102,21 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
         Task task = runtime.getTaskService().getTaskByWorkItemId(workItem.getId());
         if (task != null) {
             try {
-                runtime.getTaskService().exit(task.getId(), "Administrator");
+                String adminUser = ADMIN_USER;
+                
+                List<OrganizationalEntity> businessAdmins = task.getPeopleAssignments().getBusinessAdministrators();
+                for (OrganizationalEntity admin : businessAdmins) {
+                    if (admin instanceof Group) {
+                        continue;
+                    }
+                    
+                    if (!admin.getId().equals(ADMIN_USER)) {
+                        adminUser = admin.getId();
+                        break;
+                    }
+                }
+                logger.debug("Task {} is going to be exited by {} who is business admin", task.getId(), adminUser);
+                runtime.getTaskService().exit(task.getId(), adminUser);
             } catch (PermissionDeniedException e) {
                 logger.info(e.getMessage());
             }

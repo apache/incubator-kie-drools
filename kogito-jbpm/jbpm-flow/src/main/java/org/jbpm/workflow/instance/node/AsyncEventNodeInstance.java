@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.jbpm.process.core.async.AsyncSignalEventCommand;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.AsyncEventNode;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
@@ -59,6 +60,15 @@ public class AsyncEventNodeInstance extends EventNodeInstance {
             ctx.setData("Event", null);
             
             executorService.scheduleRequest(AsyncSignalEventCommand.class.getName(), ctx);
+            
+            Node node = getNode();
+            if (node != null) {
+                String uniqueId = (String) node.getMetaData().get("UniqueId");
+                if( uniqueId == null ) { 
+                    uniqueId = ((NodeImpl) node).getUniqueId();
+                }
+                ((WorkflowProcessInstanceImpl) getProcessInstance()).getIterationLevels().remove(getNode().getMetaData().get("UniqueId"));
+            }
     	} else {
     	    logger.warn("No async executor service found continuing as sync operation...");
     	    // if there is no executor service available move as sync node

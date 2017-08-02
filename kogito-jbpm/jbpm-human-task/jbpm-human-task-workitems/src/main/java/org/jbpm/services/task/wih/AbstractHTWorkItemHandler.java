@@ -58,6 +58,8 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractHTWorkItemHandler.class);
     
+    protected static final String ADMIN_USER = System.getProperty("org.jbpm.ht.admin.user", "Administrator");
+    
     protected OnErrorAction action = OnErrorAction.LOG;
 
     public AbstractHTWorkItemHandler() {
