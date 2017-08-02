@@ -16,6 +16,11 @@
 
 package org.drools.core.base;
 
+import java.io.Serializable;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Date;
+
 import org.drools.core.base.field.BooleanFieldImpl;
 import org.drools.core.base.field.ClassFieldImpl;
 import org.drools.core.base.field.DoubleFieldImpl;
@@ -24,11 +29,6 @@ import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.MathUtils;
-
-import java.io.Serializable;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.Date;
 
 public class FieldFactory implements FieldDataFactory, Serializable {
     private static final FieldFactory INSTANCE = new FieldFactory();
@@ -119,7 +119,7 @@ public class FieldFactory implements FieldDataFactory, Serializable {
                 field = new BooleanFieldImpl( ((Boolean) value).booleanValue() );
             }
         }  else if ( valueType == ValueType.STRING_TYPE ) {
-            field = new ObjectFieldImpl( value );
+            field = new ObjectFieldImpl( value.toString() );
         } else if ( valueType == ValueType.DATE_TYPE ) {
             //MN: I think its fine like this, seems to work !
             if( value instanceof String ) {
