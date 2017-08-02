@@ -16,28 +16,13 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
-import org.kie.dmn.api.core.ast.DecisionNode;
-import org.kie.dmn.api.core.event.AfterEvaluateBKMEvent;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionEvent;
-import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
-import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
-import org.kie.dmn.core.api.event.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
 
 public class DMNRuntimeEventManagerImpl implements DMNRuntimeEventManager {
-    private static final Logger logger = LoggerFactory.getLogger( DMNRuntimeEventManagerImpl.class );
 
     private Set<DMNRuntimeEventListener> listeners = new HashSet<>();
 
@@ -58,43 +43,4 @@ public class DMNRuntimeEventManagerImpl implements DMNRuntimeEventManager {
         return listeners;
     }
 
-    public void fireBeforeEvaluateDecision( DecisionNode decision, DMNResult result) {
-        BeforeEvaluateDecisionEvent event = new BeforeEvaluateDecisionEventImpl( decision, result );
-        notifyListeners( l -> l.beforeEvaluateDecision( event ) );
-    }
-
-    public void fireAfterEvaluateDecision( DecisionNode decision, DMNResult result) {
-        AfterEvaluateDecisionEvent event = new AfterEvaluateDecisionEventImpl( decision, result );
-        notifyListeners( l -> l.afterEvaluateDecision( event ) );
-    }
-
-    public void fireBeforeEvaluateBKM(BusinessKnowledgeModelNode bkm, DMNResult result) {
-        BeforeEvaluateBKMEvent event = new BeforeEvaluateBKMEventImpl( bkm, result );
-        notifyListeners( l -> l.beforeEvaluateBKM( event ) );
-    }
-
-    public void fireAfterEvaluateBKM(BusinessKnowledgeModelNode bkm, DMNResult result) {
-        AfterEvaluateBKMEvent event = new AfterEvaluateBKMEventImpl( bkm, result );
-        notifyListeners( l -> l.afterEvaluateBKM( event ) );
-    }
-
-    public void fireBeforeEvaluateDecisionTable(String nodeName, String dtName, DMNResult result) {
-        BeforeEvaluateDecisionTableEvent event = new BeforeEvaluateDecisionTableEventImpl( nodeName, dtName, result );
-        notifyListeners( l -> l.beforeEvaluateDecisionTable( event ) );
-    }
-
-    public void fireAfterEvaluateDecisionTable(String nodeName, String dtName, DMNResult result, List<Integer> matches, List<Integer> fired ) {
-        AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl( nodeName, dtName, result, matches, fired );
-        notifyListeners( l -> l.afterEvaluateDecisionTable( event ) );
-    }
-
-    private void notifyListeners(Consumer<DMNRuntimeEventListener> consumer) {
-        for( DMNRuntimeEventListener listener : listeners ) {
-            try {
-                consumer.accept( listener );
-            } catch ( Throwable t ) {
-                logger.error( "Error notifying listener '"+listener+"'", t );
-            }
-        }
-    }
 }
