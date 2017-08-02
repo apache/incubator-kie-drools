@@ -17,10 +17,7 @@
 package org.kie.dmn.core.ast;
 
 import org.drools.core.rule.Function;
-import org.kie.dmn.api.core.DMNContext;
-import org.kie.dmn.api.core.DMNMessage;
-import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.*;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
@@ -136,7 +133,8 @@ public class DMNInvocationEvaluator
                 }
             }
 
-            EvaluationContextImpl ctx = new EvaluationContextImpl( feel.getEventsManager() );
+            //EvaluationContextImpl ctx = new EvaluationContextImpl( feel.getEventsManager() );
+            EvaluationContextImpl ctx = new EvaluationContextImpl(feel.getEventsManager(), (DMNRuntime)eventManager);
             invocationResult = function.invokeReflectively( ctx, namedParams );
 
             boolean hasErrors = hasErrors( events, eventManager, result );

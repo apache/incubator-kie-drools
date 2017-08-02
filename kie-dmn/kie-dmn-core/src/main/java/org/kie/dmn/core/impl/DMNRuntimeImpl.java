@@ -218,7 +218,7 @@ public class DMNRuntimeImpl
                 }
             }
 
-            EvaluatorResult er = bkm.getEvaluator().evaluate( eventManager, result );
+            EvaluatorResult er = bkm.getEvaluator().evaluate( this, result );
             if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                 FEELFunction resultFn = (FEELFunction) er.getResult();
                 // TODO check of the return type will need calculation/inference of function return type.
@@ -334,7 +334,7 @@ public class DMNRuntimeImpl
                 return false;
             }
             try {
-                EvaluatorResult er = decision.getEvaluator().evaluate( eventManager, result );
+                EvaluatorResult er = decision.getEvaluator().evaluate( this, result );
                 if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                     Object value = er.getResult();
                     if( ! decision.getResultType().isCollection() && value instanceof Collection &&
