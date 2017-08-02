@@ -287,25 +287,97 @@ public class MatchTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testNestedAccumulate() {
+    public void testObjectsDeepOnNestedAccumulate() {
         // DROOLS-1686
-        String drl = "package testpkg;\n"
-                     + "rule fairAssignmentCountPerTeam\n"
-                     + "    when\n"
-                     + "        accumulate(\n"
-                     + "            $s : String()\n"
-                     + "            and accumulate(\n"
-                     + "                Number(this != null);\n"
-                     + "                $count : count()\n"
-                     + "            );\n"
-                     + "            $result : average($count)\n"
-                     + "        )\n"
-                     + "    then\n"
-                     + "        ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();"
-                     + "end\n";
+        String drl = "package testpkg;\n" +
+                     "global java.util.List list;\n" +
+                     "rule fairAssignmentCountPerTeam\n" +
+                     "    when\n" +
+                     "        accumulate(\n" +
+                     "            $s : String()\n" +
+                     "            and accumulate(\n" +
+                     "                Number(this != null);\n" +
+                     "                $count : count()\n" +
+                     "            );\n" +
+                     "            $result : average($count)\n" +
+                     "        )\n" +
+                     "    then\n" +
+                     "        list.addAll( ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep() );" +
+                     "end\n";
 
         KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        List<Object> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
         ksession.insert("");
         ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( 0.0, list.get(0) );
     }
+
+    @Test
+    public void testObjectsDeepOnAccumulateNotSupportingReverse() {
+        // DROOLS-1687
+        String rule = "package testpkg;\n" +
+                      "import " + CloudComputer.class.getCanonicalName() + "\n;" +
+                      "import " + CloudProcess.class.getCanonicalName() + "\n;" +
+                      "rule requiredCpuPowerTotal\n" +
+                      "    when\n" +
+                      "        $computer : CloudComputer($cpuPower : cpuPower)\n" +
+                      "        accumulate(\n" +
+                      "            CloudProcess(\n" +
+                      "                computer == $computer,\n" +
+                      "                $requiredCpuPower : requiredCpuPower);\n" +
+                      "            $requiredCpuPowerTotal : max($requiredCpuPower);\n" +
+                      "            (Integer) $requiredCpuPowerTotal > $cpuPower\n" +
+                      "        )\n" +
+                      "    then\n" +
+                      "        ((org.drools.core.spi.Activation) kcontext.getMatch()).getObjectsDeep();" +
+                      "end";
+        KieSession kieSession = new KieHelper().addContent(rule, ResourceType.DRL).build().newKieSession();
+
+        CloudProcess proc = new CloudProcess();
+        proc.setRequiredCpuPower(1);
+        CloudComputer comp = new CloudComputer();
+        proc.setComputer(comp);
+
+        kieSession.insert( proc );
+        kieSession.insert(comp);
+        try {
+            kieSession.fireAllRules();
+            fail("Using getObjectsDeep() on a rule using an accumulate function not supporting reverse must fail");
+        } catch (Exception e) {
+            assertTrue(e.toString().contains( "max" ));
+            assertTrue(e.toString().contains( "requiredCpuPowerTotal" ));
+        }
+    }
+
+    public static class CloudComputer {
+        public int getCpuPower() {
+            return 0;
+        }
+    }
+
+    public static class CloudProcess {
+
+        private int requiredCpuPower;
+        private CloudComputer computer;
+
+        public void setRequiredCpuPower(int requiredCpuPower) {
+            this.requiredCpuPower = requiredCpuPower;
+        }
+
+        public int getRequiredCpuPower() {
+            return requiredCpuPower;
+        }
+
+        public void setComputer(CloudComputer computer) {
+            this.computer = computer;
+        }
+
+        public CloudComputer getComputer() {
+            return computer;
+        }
+    }
+
 }
