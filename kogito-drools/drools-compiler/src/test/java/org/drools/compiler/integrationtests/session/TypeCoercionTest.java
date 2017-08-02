@@ -230,4 +230,47 @@ public class TypeCoercionTest extends CommonTestMethodBase {
         return "" + value;
     }
 
+    @Test
+    public void testStringCoercion() {
+        // DROOLS-1688
+        final String drl = "package org.drools.compiler.test;\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           " rule R1 when\n" +
+                           "     Person(name == \"12\")\n" +
+                           " then end\n" +
+                           " rule R2 when\n" +
+                           "     Person(name == 11)\n " +
+                           " then\n end\n" +
+                           " rule R3 when\n" +
+                           "    Person(name == \"11\")\n" +
+                           " then end\n";
+
+        KieBase kieBase = loadKnowledgeBaseFromString(drl);
+        KieSession kieSession = kieBase.newKieSession();
+
+        kieSession.insert(new Person("11"));
+        assertEquals(2, kieSession.fireAllRules());
+    }
+
+    @Test
+    public void testIntCoercion() {
+        // DROOLS-1688
+        final String drl = "package org.drools.compiler.test;\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           " rule R1 when\n" +
+                           "     Person(age == 12)\n" +
+                           " then end\n" +
+                           " rule R2 when\n" +
+                           "     Person(age == \"11\")\n " +
+                           " then\n end\n" +
+                           " rule R3 when\n" +
+                           "    Person(age == 11)\n" +
+                           " then end\n";
+
+        KieBase kieBase = loadKnowledgeBaseFromString(drl);
+        KieSession kieSession = kieBase.newKieSession();
+
+        kieSession.insert(new Person("Mario", 11));
+        assertEquals(2, kieSession.fireAllRules());
+    }
 }
