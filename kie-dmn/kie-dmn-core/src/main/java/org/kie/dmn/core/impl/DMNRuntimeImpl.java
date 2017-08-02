@@ -183,7 +183,7 @@ public class DMNRuntimeImpl
             return;
         }
         try {
-            eventManager.fireBeforeEvaluateBKM( bkm, result );
+            DMNRuntimeEventManagerUtils.fireBeforeEvaluateBKM( eventManager, bkm, result );
             for( DMNNode dep : bkm.getDependencies().values() ) {
                 if ( !checkDependencyValueIsValid(dep, result ) ) {
                     MsgUtil.reportMessage( logger,
@@ -235,7 +235,7 @@ public class DMNRuntimeImpl
                                    getIdentifier( bkm ),
                                    t.getMessage() );
         } finally {
-            eventManager.fireAfterEvaluateBKM( bkm, result );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateBKM( eventManager, bkm, result );
         }
     }
 
@@ -253,7 +253,7 @@ public class DMNRuntimeImpl
             }
         }
         try {
-            eventManager.fireBeforeEvaluateDecision( decision, result );
+            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision( eventManager, decision, result );
             boolean missingInput = false;
             DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById( decision.getId() );
             for( DMNNode dep : decision.getDependencies().values() ) {
@@ -393,7 +393,7 @@ public class DMNRuntimeImpl
             }
             return true;
         } finally {
-            eventManager.fireAfterEvaluateDecision( decision, result );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision( eventManager, decision, result );
         }
     }
 
