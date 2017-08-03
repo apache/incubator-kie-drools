@@ -49,11 +49,11 @@ public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemR
                 if (reproducedException.getMessage() != null
                         && reproducedException.getMessage().startsWith("No fact handle for ")) {
                     // this is common when removing insert of a fact that is later updated - not interesting
-                    logger.debug("    Can't remove insert: {}", (Object) reproducedException);
+                    logger.debug("    Can't remove insert: {}", reproducedException.toString());
                 } else if (reproducedException.getMessage() != null
                         && reproducedException.getMessage().startsWith("Error evaluating constraint '")) {
                     // this is common after pruning setup code, which can lead to NPE during rule evaluation
-                    logger.debug("    Can't drop field setup: {}", (Object) reproducedException);
+                    logger.debug("    Can't drop field setup: {}", reproducedException.toString());
                 } else {
                     logger.info("Unexpected exception", reproducedException);
                 }
