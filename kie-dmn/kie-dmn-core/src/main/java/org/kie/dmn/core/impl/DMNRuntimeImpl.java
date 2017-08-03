@@ -421,4 +421,9 @@ public class DMNRuntimeImpl
         return DMNFactory.newContext();
     }
 
+    @Override
+    public DMNRuntime getRuntime() {
+        return this;
+    }
+
 }
