@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.parser.messages;
 
-import org.appformer.project.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * The data-type of a class's field could not be found

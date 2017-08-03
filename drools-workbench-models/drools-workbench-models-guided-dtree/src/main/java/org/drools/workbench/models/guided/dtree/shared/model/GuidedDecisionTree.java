@@ -21,7 +21,7 @@ import java.util.List;
 import org.appformer.project.datamodel.imports.HasImports;
 import org.appformer.project.datamodel.imports.Imports;
 import org.appformer.project.datamodel.packages.HasPackageName;
-import org.appformer.project.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.GuidedDecisionTreeParserError;
 

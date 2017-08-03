@@ -29,6 +29,7 @@ import org.appformer.project.datamodel.oracle.DataType;
 import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.appformer.project.datamodel.commons.imports.ImportsWriter;
 import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
+import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldList;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;

@@ -17,7 +17,7 @@ package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
 import java.util.Date;
 
-import org.appformer.project.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 
 public class DateValue implements Value<Date> {

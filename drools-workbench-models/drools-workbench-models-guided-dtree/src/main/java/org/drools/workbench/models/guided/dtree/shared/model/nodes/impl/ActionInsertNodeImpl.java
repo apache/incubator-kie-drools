@@ -18,7 +18,7 @@ package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.appformer.project.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
 

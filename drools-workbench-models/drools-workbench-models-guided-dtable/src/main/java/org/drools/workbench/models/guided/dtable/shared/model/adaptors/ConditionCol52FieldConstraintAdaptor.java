@@ -17,7 +17,7 @@ package org.drools.workbench.models.guided.dtable.shared.model.adaptors;
 
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
-import org.appformer.project.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 
 /**

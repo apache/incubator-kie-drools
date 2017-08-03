@@ -35,7 +35,7 @@ import org.appformer.project.datamodel.oracle.DataType;
 import org.appformer.project.datamodel.oracle.MethodInfo;
 import org.appformer.project.datamodel.oracle.ModelField;
 import org.appformer.project.datamodel.oracle.OperatorsOracle;
-import org.appformer.project.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
