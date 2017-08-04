@@ -20,7 +20,10 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
 public class CallDecisionFunction extends BaseFEELFunction {
 
@@ -29,13 +32,37 @@ public class CallDecisionFunction extends BaseFEELFunction {
     }
 
 
-    public FEELFnResult<DMNResult> invoke(@ParameterName("ctx") EvaluationContext ctx, @ParameterName("namespace") String namespace, @ParameterName("modelName") String modelName,
-                                          @ParameterName("decisionName") String decisionName, @ParameterName("dmnContext") DMNContext dmnContext) {
+    public FEELFnResult<Object> invoke(@ParameterName("ctx") EvaluationContext ctx, @ParameterName("namespace") String namespace, @ParameterName("model name") String modelName,
+                                          @ParameterName("decision name") String decisionName, @ParameterName("dmn context") DMNContext dmnContext) {
         DMNRuntime dmnRuntime = ctx.getDMNRuntime();
-        DMNModel dmnModel = dmnRuntime.getModel(namespace, modelName);
-        DMNResult requiredDecisionResult = dmnRuntime.evaluateDecisionByName(dmnModel, decisionName, dmnContext);
-        return FEELFnResult.ofResult(requiredDecisionResult);
+        if(namespace == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "namespace", "cannot be null"));
+        }
 
+        if(modelName == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "model name", "cannot be null"));
+        }
+
+        if(decisionName == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "decision name", "cannot be null"));
+        }
+
+        if(dmnContext == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "dmn context", "cannot be null"));
+        }
+        FEELEvent capturedException = null;
+        try {
+            ctx.enterFrame();
+            DMNModel dmnModel = dmnRuntime.getModel(namespace, modelName);
+            DMNResult requiredDecisionResult = dmnRuntime.evaluateDecisionByName(dmnModel, decisionName, dmnContext);
+            return FEELFnResult.ofResult(requiredDecisionResult.getContext().get(decisionName));
+        } catch(Exception e) {
+            capturedException = new FEELEventBase(FEELEvent.Severity.ERROR, "Error invoking function", new RuntimeException("Error invoking function " + getName() + ".", e));
+        } finally {
+            ctx.exitFrame();
+        }
+
+        return FEELFnResult.ofError(capturedException);
     }
 
 }

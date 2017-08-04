@@ -133,7 +133,6 @@ public class DMNInvocationEvaluator
                 }
             }
 
-            //EvaluationContextImpl ctx = new EvaluationContextImpl( feel.getEventsManager() );
             EvaluationContextImpl ctx = new EvaluationContextImpl(feel.getEventsManager(), eventManager.getRuntime());
             invocationResult = function.invokeReflectively( ctx, namedParams );
 
