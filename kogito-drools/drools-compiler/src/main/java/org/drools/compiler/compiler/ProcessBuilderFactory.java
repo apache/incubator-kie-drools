@@ -21,39 +21,24 @@ import org.kie.internal.builder.KnowledgeBuilder;
 
 public class ProcessBuilderFactory {
 
-    private static IllegalArgumentException initializationException;
     private static ProcessBuilderFactoryService provider = initializeProvider();
 
     public static ProcessBuilder newProcessBuilder(KnowledgeBuilder kBuilder) {
-        if (initializationException != null) {
-            // KnowledgeBuilderImpl expects an exception to report the origin of the failure
-            throw initializationException;
-        } else if (getProcessBuilderFactoryService() == null) {
+        if (provider == null) {
             return null;
         } else {
-            return getProcessBuilderFactoryService().newProcessBuilder(kBuilder);
+            return provider.newProcessBuilder(kBuilder);
         }
     }
 
+    /**
+     * This method is for test utility only.
+     */
     public static void setProcessBuilderFactoryService(ProcessBuilderFactoryService provider) {
         ProcessBuilderFactory.provider = provider;
     }
 
     private static ProcessBuilderFactoryService initializeProvider() {
         return ServiceRegistry.getInstance().get( ProcessBuilderFactoryService.class );
-    }
-
-    /**
-     * This method is used in jBPM OSGi Activators as we need a way to force re-initialization when starting
-     * the bundles.
-     */
-    public static synchronized  void reInitializeProvider() {
-        // reset the possible initialization exception captured before
-        initializationException = null;
-        provider = initializeProvider();
-    }
-
-    public static ProcessBuilderFactoryService getProcessBuilderFactoryService() {
-        return provider;
     }
 }
