@@ -194,8 +194,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
 
-    private IllegalArgumentException                          processBuilderCreationFailure;
-
     private PMMLCompiler                                      pmmlCompiler;
 
     //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.
@@ -274,7 +272,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             pkgRegistry.addImport(new ImportDescr(implDecl.getTarget()));
         }
 
-        processBuilder = createProcessBuilder();
+        processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
         typeBuilder = new TypeDeclarationBuilder(this);
     }
 
@@ -300,17 +298,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         this.kBase = kBase;
 
-        processBuilder = createProcessBuilder();
+        processBuilder = ProcessBuilderFactory.newProcessBuilder(this);
         typeBuilder = new TypeDeclarationBuilder(this);
-    }
-
-    private ProcessBuilder createProcessBuilder() {
-        try {
-            return ProcessBuilderFactory.newProcessBuilder(this);
-        } catch (IllegalArgumentException e) {
-            processBuilderCreationFailure = e;
-            return null;
-        }
     }
 
     private PMMLCompiler getPMMLCompiler() {
@@ -700,7 +689,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public void addProcessFromXml(Resource resource) {
         if (processBuilder == null) {
-            throw new RuntimeException("Unable to instantiate a process assembler", processBuilderCreationFailure);
+            throw new RuntimeException("Unable to instantiate a process assembler");
         }
 
         if (ResourceType.DRF.equals(resource.getResourceType())) {
