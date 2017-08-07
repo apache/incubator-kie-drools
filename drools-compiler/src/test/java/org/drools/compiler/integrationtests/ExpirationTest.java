@@ -448,7 +448,7 @@ public class ExpirationTest {
                 " then \n" +
                 " end\n";
 
-        testEventsExpiredInThePast(drl, 2);
+        testEventsExpiredInThePast(drl);
     }
 
     @Test
@@ -469,10 +469,10 @@ public class ExpirationTest {
                         " then \n" +
                         " end\n";
 
-        testEventsExpiredInThePast(drl, 0);
+        testEventsExpiredInThePast(drl);
     }
 
-    private void testEventsExpiredInThePast(final String drl, final int expectedNumOfObjectsInWmAfterFire) {
+    private void testEventsExpiredInThePast(final String drl) {
         final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
@@ -495,6 +495,6 @@ public class ExpirationTest {
 
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
         clock.advanceTime(10, TimeUnit.MILLISECONDS);
-        Assertions.assertThat(kieSession.getObjects()).hasSize(expectedNumOfObjectsInWmAfterFire);
+        Assertions.assertThat(kieSession.getObjects()).isEmpty();
     }
 }
