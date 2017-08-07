@@ -450,26 +450,25 @@ public class ExpirationTest {
                 " end\n";
 
         final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-//        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
         final KieHelper helper = new KieHelper();
         helper.addContent( drl, ResourceType.DRL );
         final KieBase kieBase = helper.build( EventProcessingOption.STREAM );
         final KieSession kieSession = kieBase.newKieSession( sessionConfig, null );
 
-//        PseudoClockScheduler clock = kieSession.getSessionClock();
+        PseudoClockScheduler clock = kieSession.getSessionClock();
 
-//        final long currentTime = clock.getCurrentTime();
-        final long currentTime = LocalDateTime.now().getNano();
+        final long currentTime = clock.getCurrentTime();
 
-//        clock.advanceTime(100, TimeUnit.MILLISECONDS);
-        TimerUtils.sleepMillis(100);
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
 
         kieSession.insert(new BasicEvent(new Date(currentTime + 20), 10L, "20ms-30ms"));
+        clock.advanceTime(1, TimeUnit.MILLISECONDS);
         kieSession.insert(new BasicEvent(new Date(currentTime + 20), 20L, "20ms-40ms"));
 
-//        clock.advanceTime(100, TimeUnit.MILLISECONDS);
-//        TimerUtils.sleepMillis(100);
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
+
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 }
