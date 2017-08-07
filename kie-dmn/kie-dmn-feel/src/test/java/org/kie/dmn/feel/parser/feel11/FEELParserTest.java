@@ -745,6 +745,7 @@ public class FEELParserTest {
 
         ContextEntryNode entry = ctx.getEntries().get( 1 );
         assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
+        assertThat( entry.getResultType(), is( BuiltInType.STRING ) );
         NameDefNode name = (NameDefNode) entry.getName();
         assertThat( name.getText(), is("street") );
         assertThat( entry.getValue(), is( instanceOf( QualifiedNameNode.class ) ) );
