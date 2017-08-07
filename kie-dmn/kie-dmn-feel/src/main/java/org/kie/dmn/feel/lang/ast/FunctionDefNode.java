@@ -20,6 +20,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
 import org.kie.dmn.feel.util.Msg;
@@ -192,7 +193,7 @@ public class FunctionDefNode
 
     @Override
     public Type getResultType() {
-        // TODO FIXME wrong: this should be FUNCTION<type>
-        return body.getResultType();
+        // TODO when built-in type can be parametrized as FUNCTION<type>
+        return BuiltInType.FUNCTION;
     }
 }
