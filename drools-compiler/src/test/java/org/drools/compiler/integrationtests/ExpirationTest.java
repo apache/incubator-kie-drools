@@ -19,13 +19,11 @@ package org.drools.compiler.integrationtests;
 import static org.junit.Assert.*;
 import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.integrationtests.facts.BasicEvent;
-import org.drools.compiler.util.TimerUtils;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -39,6 +37,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
 public class ExpirationTest {
@@ -449,6 +448,31 @@ public class ExpirationTest {
                 " then \n" +
                 " end\n";
 
+        testEventsExpiredInThePast(drl, 2);
+    }
+
+    @Test
+    public void testEventsExpiredInThePastTemporalConstraint() throws InterruptedException {
+        final String drl =
+                " package org.drools.compiler.integrationtests;\n" +
+                        " import " + BasicEvent.class.getCanonicalName() + ";\n" +
+                        " declare BasicEvent\n" +
+                        "     @role( event )\n" +
+                        "     @timestamp( eventTimestamp )\n" +
+                        "     @duration( eventDuration )\n" +
+                        " end\n" +
+                        " \n" +
+                        " rule R1\n" +
+                        " when\n" +
+                        "     $A : BasicEvent()\n" +
+                        "     $B : BasicEvent( this starts[5ms] $A )\n" +
+                        " then \n" +
+                        " end\n";
+
+        testEventsExpiredInThePast(drl, 0);
+    }
+
+    private void testEventsExpiredInThePast(final String drl, final int expectedNumOfObjectsInWmAfterFire) {
         final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
@@ -470,5 +494,7 @@ public class ExpirationTest {
         clock.advanceTime(100, TimeUnit.MILLISECONDS);
 
         Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        clock.advanceTime(10, TimeUnit.MILLISECONDS);
+        Assertions.assertThat(kieSession.getObjects()).hasSize(expectedNumOfObjectsInWmAfterFire);
     }
 }
