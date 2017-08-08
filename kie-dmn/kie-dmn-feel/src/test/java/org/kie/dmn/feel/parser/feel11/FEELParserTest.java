@@ -837,6 +837,7 @@ public class FEELParserTest {
 
         assertThat( forbase, is( instanceOf( ForExpressionNode.class ) ) );
         assertThat( forbase.getText(), is( inputExpression ) );
+        assertThat( forbase.getResultType(), is( BuiltInType.LIST ) );
 
         ForExpressionNode forExpr = (ForExpressionNode) forbase;
         assertThat( forExpr.getIterationContexts().size(), is( 1 ) );
@@ -856,6 +857,7 @@ public class FEELParserTest {
 
         assertThat( ifBase, is( instanceOf( IfExpressionNode.class ) ) );
         assertThat( ifBase.getText(), is( inputExpression ) );
+        assertThat( ifBase.getResultType(), is( BuiltInType.STRING ) );
 
         IfExpressionNode ifExpr = (IfExpressionNode) ifBase;
         assertThat( ifExpr.getCondition().getText(), is( "applicant.age < 18" ) );
@@ -870,6 +872,7 @@ public class FEELParserTest {
 
         assertThat( someBase, is( instanceOf( QuantifiedExpressionNode.class ) ) );
         assertThat( someBase.getText(), is( inputExpression ) );
+        assertThat( someBase.getResultType(), is( BuiltInType.BOOLEAN ) );
 
         QuantifiedExpressionNode someExpr = (QuantifiedExpressionNode) someBase;
         assertThat( someExpr.getQuantifier(), is( QuantifiedExpressionNode.Quantifier.SOME ) );
@@ -881,16 +884,17 @@ public class FEELParserTest {
     @Test
     public void testQuantifiedExpressionEvery() {
         String inputExpression = "every item in order.items satisfies item.price > 100";
-        BaseNode someBase = parse( inputExpression );
+        BaseNode everyBase = parse( inputExpression );
 
-        assertThat( someBase, is( instanceOf( QuantifiedExpressionNode.class ) ) );
-        assertThat( someBase.getText(), is( inputExpression ) );
+        assertThat( everyBase, is( instanceOf( QuantifiedExpressionNode.class ) ) );
+        assertThat( everyBase.getText(), is( inputExpression ) );
+        assertThat( everyBase.getResultType(), is( BuiltInType.BOOLEAN ) );
 
-        QuantifiedExpressionNode someExpr = (QuantifiedExpressionNode) someBase;
-        assertThat( someExpr.getQuantifier(), is( QuantifiedExpressionNode.Quantifier.EVERY ) );
-        assertThat( someExpr.getIterationContexts().size(), is( 1 ) );
-        assertThat( someExpr.getIterationContexts().get( 0 ).getText(), is( "item in order.items" ) );
-        assertThat( someExpr.getExpression().getText(), is( "item.price > 100" ) );
+        QuantifiedExpressionNode everyExpr = (QuantifiedExpressionNode) everyBase;
+        assertThat( everyExpr.getQuantifier(), is( QuantifiedExpressionNode.Quantifier.EVERY ) );
+        assertThat( everyExpr.getIterationContexts().size(), is( 1 ) );
+        assertThat( everyExpr.getIterationContexts().get( 0 ).getText(), is( "item in order.items" ) );
+        assertThat( everyExpr.getExpression().getText(), is( "item.price > 100" ) );
     }
 
     @Test
@@ -900,6 +904,7 @@ public class FEELParserTest {
 
         assertThat( instanceOfBase, is( instanceOf( InstanceOfNode.class ) ) );
         assertThat( instanceOfBase.getText(), is( inputExpression ) );
+        assertThat( instanceOfBase.getResultType(), is( BuiltInType.BOOLEAN ) );
 
         InstanceOfNode ioExpr = (InstanceOfNode) instanceOfBase;
         assertThat( ioExpr.getExpression(), is( instanceOf( StringNode.class ) ) );
@@ -915,6 +920,7 @@ public class FEELParserTest {
 
         assertThat( andExpr, is( instanceOf( InfixOpNode.class ) ) );
         assertThat( andExpr.getText(), is( inputExpression ) );
+        assertThat( andExpr.getResultType(), is( BuiltInType.BOOLEAN ) );
 
         InfixOpNode and = (InfixOpNode) andExpr;
         assertThat( and.getOperator(), is( InfixOpNode.InfixOperator.AND ) );
@@ -922,6 +928,8 @@ public class FEELParserTest {
         assertThat( and.getRight(), is( instanceOf( InstanceOfNode.class ) ) );
         assertThat( and.getLeft().getText(), is( "\"foo\" instance of string" ) );
         assertThat( and.getRight().getText(), is( "10 instance of number" ) );
+        assertThat( and.getLeft().getResultType(), is( BuiltInType.BOOLEAN ) );
+        assertThat( and.getRight().getResultType(), is( BuiltInType.BOOLEAN ) );
 
         InstanceOfNode ioExpr = (InstanceOfNode) and.getLeft();
         assertThat( ioExpr.getExpression(), is( instanceOf( StringNode.class ) ) );
@@ -943,6 +951,7 @@ public class FEELParserTest {
 
         assertThat( instanceOfBase, is( instanceOf( InstanceOfNode.class ) ) );
         assertThat( instanceOfBase.getText(), is( inputExpression ) );
+        assertThat( instanceOfBase.getResultType(), is( BuiltInType.BOOLEAN ) );
 
         InstanceOfNode ioExpr = (InstanceOfNode) instanceOfBase;
         assertThat( ioExpr.getExpression(), is( instanceOf( NameRefNode.class ) ) );
@@ -1150,6 +1159,7 @@ public class FEELParserTest {
 
         assertThat( pathBase, is( instanceOf( PathExpressionNode.class ) ) );
         assertThat( pathBase.getText(), is( inputExpression ) );
+        assertThat( pathBase.getResultType(), is( BuiltInType.STRING ) );
 
         PathExpressionNode pathExpr = (PathExpressionNode) pathBase;
         assertThat( pathExpr.getExpression(), is( instanceOf( ContextNode.class ) ) );
@@ -1165,6 +1175,7 @@ public class FEELParserTest {
 
         assertThat( pathBase, is( instanceOf( PathExpressionNode.class ) ) );
         assertThat( pathBase.getText(), is( inputExpression ) );
+        assertThat( pathBase.getResultType(), is( BuiltInType.STRING ) );
 
         PathExpressionNode pathExpr = (PathExpressionNode) pathBase;
         assertThat( pathExpr.getExpression(), is( instanceOf( ContextNode.class ) ) );
@@ -1180,6 +1191,7 @@ public class FEELParserTest {
 
         assertThat( pathBase, is( instanceOf( PathExpressionNode.class ) ) );
         assertThat( pathBase.getText(), is( inputExpression ) );
+        assertThat( pathBase.getResultType(), is( BuiltInType.STRING ) );
 
         PathExpressionNode pathExpr = (PathExpressionNode) pathBase;
         assertThat( pathExpr.getExpression(), is( instanceOf( ContextNode.class ) ) );
