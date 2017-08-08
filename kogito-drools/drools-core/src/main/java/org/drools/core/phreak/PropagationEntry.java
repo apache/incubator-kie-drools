@@ -185,7 +185,7 @@ public interface PropagationEntry {
             long nextTimestamp = getNextTimestamp( insertionTime, expirationOffset, eventFactHandle );
 
             WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
-            if (nextTimestamp < wm.getTimerService().getCurrentTime()) {
+            if (nextTimestamp <= wm.getTimerService().getCurrentTime()) {
                 wm.addPropagation( action );
             } else {
                 JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, wm );

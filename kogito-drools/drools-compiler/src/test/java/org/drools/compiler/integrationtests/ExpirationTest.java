@@ -16,9 +16,14 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.*;
+import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
+
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import org.assertj.core.api.Assertions;
+import org.drools.compiler.integrationtests.facts.BasicEvent;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
 import org.drools.core.impl.KnowledgeBaseFactory;
@@ -32,10 +37,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
-
-import static org.junit.Assert.assertEquals;
-import static org.kie.api.definition.type.Expires.Policy.TIME_SOFT;
 
 public class ExpirationTest {
 
@@ -425,5 +428,73 @@ public class ExpirationTest {
         assertEquals( 0, ksession.getObjects( new ClassObjectFilter( A.class ) ).size() );
         assertEquals( 0, ksession.getObjects( new ClassObjectFilter( B.class ) ).size() );
         assertEquals( 0, ksession.getObjects( new ClassObjectFilter( C.class ) ).size() );
+    }
+
+    @Test
+    public void testEventsExpiredInThePast() throws InterruptedException {
+        final String drl =
+                " package org.drools.compiler.integrationtests;\n" +
+                " import " + BasicEvent.class.getCanonicalName() + ";\n" +
+                " declare BasicEvent\n" +
+                "     @role( event )\n" +
+                "     @timestamp( eventTimestamp )\n" +
+                "     @duration( eventDuration )\n" +
+                " end\n" +
+                " \n" +
+                " rule R1\n" +
+                " when\n" +
+                "     $A : BasicEvent()\n" +
+                "     $B : BasicEvent( this starts $A )\n" +
+                " then \n" +
+                " end\n";
+
+        testEventsExpiredInThePast(drl);
+    }
+
+    @Test
+    public void testEventsExpiredInThePastTemporalConstraint() throws InterruptedException {
+        final String drl =
+                " package org.drools.compiler.integrationtests;\n" +
+                        " import " + BasicEvent.class.getCanonicalName() + ";\n" +
+                        " declare BasicEvent\n" +
+                        "     @role( event )\n" +
+                        "     @timestamp( eventTimestamp )\n" +
+                        "     @duration( eventDuration )\n" +
+                        " end\n" +
+                        " \n" +
+                        " rule R1\n" +
+                        " when\n" +
+                        "     $A : BasicEvent()\n" +
+                        "     $B : BasicEvent( this starts[5ms] $A )\n" +
+                        " then \n" +
+                        " end\n";
+
+        testEventsExpiredInThePast(drl);
+    }
+
+    private void testEventsExpiredInThePast(final String drl) {
+        final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        final KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        final KieBase kieBase = helper.build( EventProcessingOption.STREAM );
+        final KieSession kieSession = kieBase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler clock = kieSession.getSessionClock();
+
+        final long currentTime = clock.getCurrentTime();
+
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
+
+        kieSession.insert(new BasicEvent(new Date(currentTime + 20), 10L, "20ms-30ms"));
+        clock.advanceTime(1, TimeUnit.MILLISECONDS);
+        kieSession.insert(new BasicEvent(new Date(currentTime + 20), 20L, "20ms-40ms"));
+
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
+
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+        clock.advanceTime(10, TimeUnit.MILLISECONDS);
+        Assertions.assertThat(kieSession.getObjects()).isEmpty();
     }
 }
