@@ -160,7 +160,6 @@ public class InfixOpNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
-        // TODO throw warning during evaluation if resultType is unknown?
         Object left = this.left.evaluate( ctx );
         Object right = this.right.evaluate( ctx );
         switch ( operator ) {
