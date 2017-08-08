@@ -348,7 +348,7 @@ public class ASTBuilderVisitor
         for ( FEEL_1_1Parser.NameRefContext t : ctx.nameRef() ) {
             String originalText = ParserHelper.getOriginalText(t);
             if ( typeCursor == null ) {
-                typeCursor = scopeHelper.resolveType( originalText ).orElse( null );
+                typeCursor = scopeHelper.resolveType( originalText ).orElse( BuiltInType.UNKNOWN );
             } else if ( typeCursor instanceof CompositeType ) {
                 typeCursor = ((CompositeType) typeCursor).getFields().get(originalText);
             } else {
