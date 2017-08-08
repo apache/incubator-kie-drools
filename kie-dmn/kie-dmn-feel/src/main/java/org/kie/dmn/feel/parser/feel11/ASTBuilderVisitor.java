@@ -112,8 +112,7 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitLogicalNegation(FEEL_1_1Parser.LogicalNegationContext ctx) {
-        // TODO finish return type for this case...
-        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.UNKNOWN );
+        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.BOOLEAN );
         BaseNode node = visit( ctx.unaryExpression() );
         ListNode params = ASTBuilderFactory.newListNode( ctx.unaryExpression(), Arrays.asList( node ) );
 
