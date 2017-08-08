@@ -77,7 +77,21 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public Object getValue(String[] name) {
-        throw new UnsupportedOperationException( "needs implementation?" );
+        if (name.length == 1) {
+          return getValue(name[0]);
+        } else if (name.length > 1) {
+            Map actualObject = (Map) peek().getValue(name[0]);
+            // Each sublevel must be a context until the last one.
+            for (int i = 1; i < name.length - 1; i++) {
+                actualObject = (Map) actualObject.get(name[i]);
+                if (actualObject == null) {
+                    return null;
+                }
+            }
+            return actualObject.get(name[name.length - 1]);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -87,7 +101,21 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public boolean isDefined(String[] name) {
-        throw new UnsupportedOperationException( "needs implementation?" );
+        if (name.length == 1) {
+            return isDefined(name[0]);
+        } else if (name.length > 1) {
+            Map actualObject = (Map) peek().getValue(name[0]);
+            // Each sublevel must be a context until the last one.
+            for (int i = 1; i < name.length - 1; i++) {
+                actualObject = (Map) actualObject.get(name[i]);
+                if (actualObject == null) {
+                    return false;
+                }
+            }
+            return actualObject.get(name[name.length - 1]) != null;
+        } else {
+            return false;
+        }
     }
 
     @Override
