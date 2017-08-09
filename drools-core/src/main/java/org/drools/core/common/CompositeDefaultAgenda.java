@@ -179,33 +179,34 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
         ExecutorService fireUntilHaltExecutor = EXECUTOR;
 
         if ( FIRING_UNTIL_HALT_USING_EXECUTOR.getAndSet( true )) {
-            fireUntilHaltExecutor = (ExecutorService) ExecutorProviderFactory.getExecutorProvider().newFixedThreadPool();
+            fireUntilHaltExecutor = ExecutorProviderFactory.getExecutorProvider().newFixedThreadPool();
         }
 
         if ( log.isTraceEnabled() ) {
             log.trace("Starting Fire Until Halt");
         }
-        executionStateMachine.toFireUntilHalt();
-        try {
-            while (isFiring()) {
-                CompletableFuture<Void>[] futures = new CompletableFuture[agendas.length-1];
-                for (int i = 0; i < futures.length; i++) {
-                    final int j = i;
-                    futures[j] = runAsync( () -> agendas[j].internalFireUntilHalt( agendaFilter, false ), fireUntilHaltExecutor );
-                }
+        if (executionStateMachine.toFireUntilHalt()) {
+            try {
+                while ( isFiring() ) {
+                    CompletableFuture<Void>[] futures = new CompletableFuture[agendas.length - 1];
+                    for ( int i = 0; i < futures.length; i++ ) {
+                        final int j = i;
+                        futures[j] = runAsync( () -> agendas[j].internalFireUntilHalt( agendaFilter, false ), fireUntilHaltExecutor );
+                    }
 
-                agendas[agendas.length-1].internalFireUntilHalt( agendaFilter, false );
+                    agendas[agendas.length - 1].internalFireUntilHalt( agendaFilter, false );
 
-                for (int i = 0; i < futures.length; i++) {
-                    futures[i].join();
+                    for ( int i = 0; i < futures.length; i++ ) {
+                        futures[i].join();
+                    }
                 }
-            }
-        } finally {
-            executionStateMachine.immediateHalt(propagationList);
-            if (fireUntilHaltExecutor == EXECUTOR) {
-                FIRING_UNTIL_HALT_USING_EXECUTOR.set( false );
-            } else {
-                fireUntilHaltExecutor.shutdown();
+            } finally {
+                executionStateMachine.immediateHalt( propagationList );
+                if ( fireUntilHaltExecutor == EXECUTOR ) {
+                    FIRING_UNTIL_HALT_USING_EXECUTOR.set( false );
+                } else {
+                    fireUntilHaltExecutor.shutdown();
+                }
             }
         }
         if ( log.isTraceEnabled() ) {

@@ -514,10 +514,8 @@ public class DefaultAgenda
         return agendaGroup;
     }
 
-    private InternalAgendaGroup removeLast() {
-        InternalAgendaGroup group = (InternalAgendaGroup) this.focusStack.removeLast();
-        group.visited();
-        return group;
+    private void removeLast() {
+        ( (InternalAgendaGroup) this.focusStack.removeLast() ).visited();
     }
 
     private boolean removeGroup(InternalAgendaGroup group) {
@@ -986,8 +984,9 @@ public class DefaultAgenda
         if ( log.isTraceEnabled() ) {
             log.trace("Starting Fire Until Halt");
         }
-        executionStateMachine.toFireUntilHalt();
-        internalFireUntilHalt( agendaFilter, true );
+        if (executionStateMachine.toFireUntilHalt()) {
+            internalFireUntilHalt( agendaFilter, true );
+        }
         if ( log.isTraceEnabled() ) {
             log.trace("Ending Fire Until Halt");
         }
@@ -1019,7 +1018,7 @@ public class DefaultAgenda
         int fireCount = 0;
         try {
             PropagationEntry head = propagationList.takeAll();
-            int returnedFireCount = 0;
+            int returnedFireCount;
 
             boolean limitReached = fireLimit == 0; // -1 or > 0 will return false. No reason for user to give 0, just handled for completeness.
 
@@ -1233,10 +1232,6 @@ public class DefaultAgenda
         executionStateMachine.internalHalt();
     }
 
-    public ConsequenceExceptionHandler getConsequenceExceptionHandler() {
-        return this.legacyConsequenceExceptionHandler;
-    }
-
     public void setActivationsFilter(ActivationsFilter filter) {
         this.activationsFilter = filter;
     }
@@ -1338,13 +1333,14 @@ public class DefaultAgenda
             return true;
         }
 
-        public void toFireUntilHalt() {
+        public boolean toFireUntilHalt() {
             synchronized (stateMachineLock) {
                 if ( currentState == ExecutionState.FIRING_UNTIL_HALT ) {
-                    return;
+                    return false;
                 }
                 waitAndEnterExecutionState( ExecutionState.FIRING_UNTIL_HALT );
             }
+            return true;
         }
 
         public boolean toExecuteTask( ExecutableEntry executable ) {
