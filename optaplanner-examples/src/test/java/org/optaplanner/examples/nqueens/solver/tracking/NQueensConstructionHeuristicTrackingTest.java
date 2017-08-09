@@ -68,12 +68,12 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTra
         solverConfig.setPhaseConfigList(Collections.<PhaseConfig>singletonList(chConfig));
 
         NQueensGenerator generator = new NQueensGenerator();
-        NQueens planningProblem = generator.createNQueens(8);
+        NQueens problem = generator.createNQueens(8);
 
         NQueensStepTracker listener = new NQueensStepTracker();
         DefaultSolver<NQueens> solver = (DefaultSolver<NQueens>) solverFactory.buildSolver();
         solver.addPhaseLifecycleListener(listener);
-        NQueens bestSolution = solver.solve(planningProblem);
+        NQueens bestSolution = solver.solve(problem);
 
         assertNotNull(bestSolution);
         assertTrackingList(expectedCoordinates, listener.getTrackingList());

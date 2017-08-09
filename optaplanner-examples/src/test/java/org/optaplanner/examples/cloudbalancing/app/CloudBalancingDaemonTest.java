@@ -51,7 +51,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     public void daemon() throws InterruptedException {
         // In main thread
         Solver<CloudBalance> solver = buildSolver();
-        CloudBalance cloudBalance = buildPlanningProblem(4, 12);
+        CloudBalance cloudBalance = buildProblem(4, 12);
         SolverThread solverThread = new SolverThread(solver, cloudBalance);
         solverThread.start();
         // Wait for the solver thread to start up
@@ -132,7 +132,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         return solverFactory.buildSolver();
     }
 
-    private CloudBalance buildPlanningProblem(int computerListSize, int processListSize) {
+    private CloudBalance buildProblem(int computerListSize, int processListSize) {
         CloudBalance cloudBalance = new CloudBalancingGenerator().createCloudBalance(computerListSize, processListSize);
         notYetAddedProcessQueue.addAll(cloudBalance.getProcessList());
         cloudBalance.setProcessList(new ArrayList<>(notYetAddedProcessQueue.size()));

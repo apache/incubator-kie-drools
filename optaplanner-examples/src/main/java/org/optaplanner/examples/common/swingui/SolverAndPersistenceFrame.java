@@ -301,23 +301,23 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             setSolvingState(true);
-            Solution_ planningProblem = solutionBusiness.getSolution();
-            new SolveWorker(planningProblem).execute();
+            Solution_ problem = solutionBusiness.getSolution();
+            new SolveWorker(problem).execute();
         }
 
     }
 
     protected class SolveWorker extends SwingWorker<Solution_, Void> {
 
-        protected final Solution_ planningProblem;
+        protected final Solution_ problem;
 
-        public SolveWorker(Solution_ planningProblem) {
-            this.planningProblem = planningProblem;
+        public SolveWorker(Solution_ problem) {
+            this.problem = problem;
         }
 
         @Override
         protected Solution_ doInBackground() throws Exception {
-            return solutionBusiness.solve(planningProblem);
+            return solutionBusiness.solve(problem);
         }
 
         @Override

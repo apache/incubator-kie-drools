@@ -73,10 +73,10 @@ public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
     @Test(timeout = 600000)
     public void runPhase() {
         SolverFactory<Solution_> solverFactory = buildSolverFactory();
-        Solution_ planningProblem = readPlanningProblem();
+        Solution_ problem = readProblem();
         Solver<Solution_> solver = solverFactory.buildSolver();
 
-        Solution_ bestSolution = solver.solve(planningProblem);
+        Solution_ bestSolution = solver.solve(problem);
         assertSolution(bestSolution);
         assertNotNull(solver.getBestScore());
     }
@@ -89,7 +89,7 @@ public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
 
     protected abstract String createSolverConfigResource();
 
-    protected Solution_ readPlanningProblem() {
+    protected Solution_ readProblem() {
         return solutionDao.readSolution(dataFile);
     }
 

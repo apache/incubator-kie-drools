@@ -155,12 +155,11 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     // ************************************************************************
 
     @Override
-    public final Solution_ solve(Solution_ planningProblem) {
-        if (planningProblem == null) {
-            throw new IllegalArgumentException("The planningProblem (" + planningProblem
-                    + ") must not be null.");
+    public final Solution_ solve(Solution_ problem) {
+        if (problem == null) {
+            throw new IllegalArgumentException("The problem (" + problem + ") must not be null.");
         }
-        solverScope.setBestSolution(planningProblem);
+        solverScope.setBestSolution(problem);
         outerSolvingStarted(solverScope);
         boolean restartSolver = true;
         while (restartSolver) {

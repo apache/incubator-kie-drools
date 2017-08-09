@@ -108,10 +108,10 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
     // ************************************************************************
 
     @Override
-    public Solution_ solve(Solution_ part) {
+    public Solution_ solve(Solution_ problem) {
         solverScope.initializeYielding();
         try {
-            solverScope.setBestSolution(part);
+            solverScope.setBestSolution(problem);
             solvingStarted(solverScope);
             runPhases(solverScope);
             solvingEnded(solverScope);

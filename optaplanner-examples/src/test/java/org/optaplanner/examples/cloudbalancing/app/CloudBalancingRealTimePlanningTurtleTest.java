@@ -44,7 +44,7 @@ public class CloudBalancingRealTimePlanningTurtleTest extends RealTimePlanningTu
     }
 
     @Override
-    protected CloudBalance readPlanningProblem() {
+    protected CloudBalance readProblem() {
         CloudBalance cloudBalance = generator.createCloudBalance(1200, 4800);
         existingComputerList = new ArrayList<>(cloudBalance.getComputerList());
         existingProcessList = new ArrayList<>(cloudBalance.getProcessList());

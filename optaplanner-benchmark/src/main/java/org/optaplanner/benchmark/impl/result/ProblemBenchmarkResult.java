@@ -296,7 +296,7 @@ public class ProblemBenchmarkResult<Solution_> {
         return totalSubSingleCount;
     }
 
-    public Solution_ readPlanningProblem() {
+    public Solution_ readProblem() {
         return solutionFileIO.read(inputSolutionFile);
     }
 
@@ -398,7 +398,7 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     /**
-     * HACK to avoid loading the planningProblem just to extract it's problemScale.
+     * HACK to avoid loading the problem just to extract it's problemScale.
      * Called multiple times, for every {@link SingleBenchmarkResult} of this {@link ProblemBenchmarkResult}.
      *
      * @param registeringEntityCount {@code >= 0}

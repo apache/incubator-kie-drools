@@ -50,10 +50,10 @@ public class DefaultSolverScope<Solution_> {
     protected Long startingSystemTimeMillis;
     protected Long endingSystemTimeMillis;
 
-    protected Score startingInitializedScore; // TODO after initialization => ambiguous with solve()'s planningProblem
+    protected Score startingInitializedScore;
 
     protected volatile Solution_ bestSolution;
-    protected volatile Score bestScore; // TODO remove me by folding me into bestSolution.getScore()?
+    protected volatile Score bestScore;
     protected Long bestSolutionTimeMillis;
 
     // ************************************************************************

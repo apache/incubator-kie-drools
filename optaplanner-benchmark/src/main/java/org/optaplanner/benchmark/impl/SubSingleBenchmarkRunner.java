@@ -82,7 +82,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         MDC.put(NAME_MDC, subSingleBenchmarkResult.getName());
         Runtime runtime = Runtime.getRuntime();
         ProblemBenchmarkResult<Solution_> problemBenchmarkResult = subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult();
-        Solution_ inputSolution = problemBenchmarkResult.readPlanningProblem();
+        Solution_ inputSolution = problemBenchmarkResult.readProblem();
         if (!problemBenchmarkResult.getPlannerBenchmarkResult().hasMultipleParallelBenchmarks()) {
             runtime.gc();
             subSingleBenchmarkResult.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());

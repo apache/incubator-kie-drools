@@ -60,9 +60,9 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 
     protected void runSpeedTest(File unsolvedDataFile, String bestScoreLimitString, EnvironmentMode environmentMode) {
         SolverFactory<Solution_> solverFactory = buildSolverFactory(bestScoreLimitString, environmentMode);
-        Solution_ planningProblem = solutionDao.readSolution(unsolvedDataFile);
+        Solution_ problem = solutionDao.readSolution(unsolvedDataFile);
         Solver<Solution_> solver = solverFactory.buildSolver();
-        Solution_ bestSolution = solver.solve(planningProblem);
+        Solution_ bestSolution = solver.solve(problem);
         assertBestSolution(solver, bestSolution, bestScoreLimitString);
     }
 

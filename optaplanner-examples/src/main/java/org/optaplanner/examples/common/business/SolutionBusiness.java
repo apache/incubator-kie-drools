@@ -312,11 +312,11 @@ public class SolutionBusiness<Solution_> {
      * Can be called on any thread.
      * <p>
      * Note: This method does not change the guiScoreDirector because that can only be changed on the event thread.
-     * @param planningProblem never null
+     * @param problem never null
      * @return never null
      */
-    public Solution_ solve(Solution_ planningProblem) {
-        return solver.solve(planningProblem);
+    public Solution_ solve(Solution_ problem) {
+        return solver.solve(problem);
     }
 
     public void terminateSolvingEarly() {

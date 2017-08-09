@@ -43,10 +43,10 @@ public abstract class RealTimePlanningTurtleTest<Solution_> extends AbstractTurt
     public void realTimePlanning() throws InterruptedException, ExecutionException {
         checkRunTurtleTests();
         final SolverFactory<Solution_> solverFactory = buildSolverFactory();
-        final Solution_ planningProblem = readPlanningProblem();
+        final Solution_ problem = readProblem();
         solver = solverFactory.buildSolver();
         ExecutorService executorService = Executors.newFixedThreadPool(2);
-        Future<?> solveFuture = executorService.submit(() -> runSolve(solver, planningProblem));
+        Future<?> solveFuture = executorService.submit(() -> runSolve(solver, problem));
         Future<?> changesFuture = executorService.submit(() -> runChanges());
         solveFuture.get();
         changesFuture.get();
@@ -64,10 +64,10 @@ public abstract class RealTimePlanningTurtleTest<Solution_> extends AbstractTurt
 
     protected abstract String createSolverConfigResource();
 
-    protected abstract Solution_ readPlanningProblem();
+    protected abstract Solution_ readProblem();
 
-    protected void runSolve(Solver<Solution_> solver, Solution_ planningProblem) {
-        solver.solve(planningProblem);
+    protected void runSolve(Solver<Solution_> solver, Solution_ problem) {
+        solver.solve(problem);
     }
 
     protected void runChanges() {

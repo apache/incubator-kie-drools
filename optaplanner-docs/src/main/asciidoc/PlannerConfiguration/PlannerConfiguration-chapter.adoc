@@ -16,7 +16,7 @@ Solving a planning problem with Planner consists of the following steps:
 . *Model your planning problem* as a class that implements the interface ``Solution``, for example the class ``NQueens``.
 . **Configure a ``**Solver**``**, for example a First Fit and Tabu Search solver for any `NQueens` instance.
 . *Load a problem data set* from your data layer, for example a Four Queens instance. That is the planning problem.
-. *Solve it* with `Solver.solve(planningProblem)` which returns the best solution found.
+. *Solve it* with `Solver.solve(problem)` which returns the best solution found.
 
 image::PlannerConfiguration/inputOutputOverview.png[align="center"]
 
@@ -1691,7 +1691,7 @@ A `Solver` implementation will solve your planning problem.
 ----
 public interface Solver<Solution_> {
 
-    Solution_ solve(Solution_ planningProblem);
+    Solution_ solve(Solution_ problem);
 
     ...
 }
@@ -1714,7 +1714,7 @@ Just provide the planning problem as argument to the `solve()` method and it wil
 
 [source,java,options="nowrap"]
 ----
-    NQueens bestSolution = solver.solve(planningProblem);
+    NQueens bestSolution = solver.solve(problem);
 ----
 
 For example in n queens, the `solve()` method will return an `NQueens` instance with every `Queen` assigned to a ``Row``.
@@ -1951,7 +1951,7 @@ To separate their logging into distinct files, surround the `solve()` call with 
 [source,java,options="nowrap"]
 ----
         MDC.put("tenant.name",tenantName);
-        MySolution bestSolution = solver.solve(planningProblem);
+        MySolution bestSolution = solver.solve(problem);
         MDC.remove("tenant.name");
 ----
 

@@ -66,7 +66,7 @@ public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllT
     protected abstract SolutionDao<Solution_> createSolutionDao();
 
     @Override
-    protected Solution_ readPlanningProblem() {
+    protected Solution_ readProblem() {
         return solutionDao.readSolution(dataFile);
     }
 

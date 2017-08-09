@@ -36,24 +36,24 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
 
     protected abstract String createSolverConfigResource();
 
-    protected abstract Solution_ readPlanningProblem();
+    protected abstract Solution_ readProblem();
 
     @Test
     public void runFastAndFullAssert() {
         checkRunTurtleTests();
         SolverFactory<Solution_> solverFactory = buildSolverFactory();
-        Solution_ planningProblem = readPlanningProblem();
+        Solution_ problem = readProblem();
         // Specifically use NON_INTRUSIVE_FULL_ASSERT instead of FULL_ASSERT to flush out bugs hidden by intrusiveness
         // 1) NON_INTRUSIVE_FULL_ASSERT ASSERT to find CH bugs (but covers little ground)
-        planningProblem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, planningProblem, 2L);
+        problem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, problem, 2L);
         // 2) FAST_ASSERT to run past CH into LS to find easy bugs (but covers much ground)
-        planningProblem = buildAndSolve(solverFactory, EnvironmentMode.FAST_ASSERT, planningProblem, 5L);
+        problem = buildAndSolve(solverFactory, EnvironmentMode.FAST_ASSERT, problem, 5L);
         // 3) NON_INTRUSIVE_FULL_ASSERT ASSERT to find LS bugs (but covers little ground)
-        planningProblem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, planningProblem, 3L);
+        problem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, problem, 3L);
     }
 
     protected Solution_ buildAndSolve(SolverFactory<Solution_> solverFactory, EnvironmentMode environmentMode,
-            Solution_ planningProblem, long maximumMinutesSpent) {
+            Solution_ problem, long maximumMinutesSpent) {
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.getTerminationConfig().setMinutesSpentLimit(maximumMinutesSpent);
         solverConfig.setEnvironmentMode(environmentMode);
@@ -65,7 +65,7 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
                     assertionScoreDirectorFactoryConfig);
         }
         Solver<Solution_> solver = solverFactory.buildSolver();
-        Solution_ bestSolution = solver.solve(planningProblem);
+        Solution_ bestSolution = solver.solve(problem);
         return bestSolution;
     }
 

@@ -63,7 +63,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
         SolverConfig solverConfig = solverFactory.getSolverConfig();
 
         NQueensGenerator generator = new NQueensGenerator();
-        NQueens planningProblem = NQueensSolutionInitializer.initialize(generator.createNQueens(N));
+        NQueens problem = NQueensSolutionInitializer.initialize(generator.createNQueens(N));
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
         localSearchPhaseConfig.setAcceptorConfig(acceptorConfig);
@@ -78,7 +78,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
         NQueensStepTracker listener = new NQueensStepTracker();
         DefaultSolver<NQueens> solver = (DefaultSolver<NQueens>) solverFactory.buildSolver();
         solver.addPhaseLifecycleListener(listener);
-        NQueens bestSolution = solver.solve(planningProblem);
+        NQueens bestSolution = solver.solve(problem);
 
         assertNotNull(bestSolution);
         assertTrackingList(expectedCoordinates, listener.getTrackingList());

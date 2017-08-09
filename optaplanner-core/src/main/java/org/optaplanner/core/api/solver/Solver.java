@@ -77,11 +77,11 @@ public interface Solver<Solution_> {
      * It can take seconds, minutes, even hours or days before this method returns,
      * depending on the {@link Termination} configuration.
      * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
-     * @param planningProblem never null, usually its planning variables are uninitialized
+     * @param problem never null, usually its planning variables are uninitialized
      * @return never null, but it can return the original, uninitialized {@link PlanningSolution} with a {@link Score} null.
      * @see #terminateEarly()
      */
-    Solution_ solve(Solution_ planningProblem);
+    Solution_ solve(Solution_ problem);
 
     /**
      * This method is thread-safe.
