@@ -35,8 +35,6 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
  */
 public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
-    public static final String FILE_EXTENSION = "xml";
-
     protected XStream xStream;
 
     public XStreamSolutionFileIO(Class... xStreamAnnotatedClasses) {
@@ -51,12 +49,7 @@ public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution
 
     @Override
     public String getInputFileExtension() {
-        return FILE_EXTENSION;
-    }
-
-    @Override
-    public String getOutputFileExtension() {
-        return FILE_EXTENSION;
+        return "xml";
     }
 
     @Override

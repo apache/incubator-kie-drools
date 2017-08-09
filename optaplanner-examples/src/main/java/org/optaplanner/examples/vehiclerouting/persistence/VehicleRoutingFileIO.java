@@ -23,18 +23,11 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class VehicleRoutingFileIO implements SolutionFileIO<VehicleRoutingSolution> {
 
-    public static final String FILE_EXTENSION = "vrp";
-
     private VehicleRoutingImporter importer = new VehicleRoutingImporter();
 
     @Override
     public String getInputFileExtension() {
-        return FILE_EXTENSION;
-    }
-
-    @Override
-    public String getOutputFileExtension() {
-        return FILE_EXTENSION;
+        return "vrp";
     }
 
     @Override

@@ -31,11 +31,6 @@ public class RigidTestdataSolutionFileIO implements SolutionFileIO<TestdataSolut
     }
 
     @Override
-    public String getOutputFileExtension() {
-        return "txt";
-    }
-
-    @Override
     public TestdataSolution read(File inputSolutionFile) {
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));

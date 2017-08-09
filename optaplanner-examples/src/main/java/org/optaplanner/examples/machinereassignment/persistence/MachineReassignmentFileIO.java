@@ -23,19 +23,12 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class MachineReassignmentFileIO implements SolutionFileIO<MachineReassignment> {
 
-    public static final String FILE_EXTENSION = "txt";
-
     private MachineReassignmentImporter importer = new MachineReassignmentImporter();
     private MachineReassignmentExporter exporter = new MachineReassignmentExporter();
 
     @Override
     public String getInputFileExtension() {
-        return FILE_EXTENSION;
-    }
-
-    @Override
-    public String getOutputFileExtension() {
-        return FILE_EXTENSION;
+        return "txt";
     }
 
     @Override

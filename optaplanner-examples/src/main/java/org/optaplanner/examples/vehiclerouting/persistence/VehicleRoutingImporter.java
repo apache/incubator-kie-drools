@@ -63,7 +63,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
 
     @Override
     public String getInputFileSuffix() {
-        return VehicleRoutingFileIO.FILE_EXTENSION;
+        return "vrp";
     }
 
     @Override

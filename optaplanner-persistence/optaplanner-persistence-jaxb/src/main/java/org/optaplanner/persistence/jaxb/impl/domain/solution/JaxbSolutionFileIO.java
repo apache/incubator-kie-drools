@@ -38,8 +38,6 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
  */
 public class JaxbSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
-    public static final String FILE_EXTENSION = "xml";
-
     private final Marshaller marshaller;
     private final Unmarshaller unmarshaller;
 
@@ -57,12 +55,7 @@ public class JaxbSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> 
 
     @Override
     public String getInputFileExtension() {
-        return FILE_EXTENSION;
-    }
-
-    @Override
-    public String getOutputFileExtension() {
-        return FILE_EXTENSION;
+        return "xml";
     }
 
     @Override

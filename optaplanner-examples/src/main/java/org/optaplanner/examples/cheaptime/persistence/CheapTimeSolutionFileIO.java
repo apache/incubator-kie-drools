@@ -23,8 +23,6 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class CheapTimeSolutionFileIO implements SolutionFileIO<CheapTimeSolution> {
 
-    public static final String OUTPUT_FILE_EXTENSION = "txt";
-
     private CheapTimeImporter importer = new CheapTimeImporter();
     private CheapTimeExporter exporter = new CheapTimeExporter();
 
@@ -35,7 +33,7 @@ public class CheapTimeSolutionFileIO implements SolutionFileIO<CheapTimeSolution
 
     @Override
     public String getOutputFileExtension() {
-        return OUTPUT_FILE_EXTENSION;
+        return "txt";
     }
 
     @Override

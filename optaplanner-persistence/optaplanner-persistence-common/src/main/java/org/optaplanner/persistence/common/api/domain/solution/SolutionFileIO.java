@@ -29,14 +29,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 public interface SolutionFileIO<Solution_> {
 
     /**
-     * It's highly recommended that this method returns the same value as {@link #getOutputFileExtension()},
-     * because a good output file is able to function as an input file.
-     * @return never null, for example "xml"
-     * @see #getOutputFileExtension()
-     */
-    String getInputFileExtension();
-
-    /**
      * Every {@link PlanningSolution} type potentially has its own file extension.
      * If no specific file extension is defined by the use case, the following are recommended:
      * <ul>
@@ -47,13 +39,25 @@ public interface SolutionFileIO<Solution_> {
      * <p>
      * It's good practice that both the input and the output file have the same file extension,
      * because a good output file is able to function as an input file.
+     * Therefore {@link #getOutputFileExtension} defaults to returning the same as this method.
      * <p>
      * The file extension does not include the dot that separates it from the base name.
      * <p>
      * This method is thread-safe.
      * @return never null, for example "xml"
      */
-    String getOutputFileExtension();
+    String getInputFileExtension();
+
+    /**
+     * It's highly recommended that this method returns the same value as {@link #getInputFileExtension()},
+     * which it does by default unless it's overridden,
+     * because a good output file is able to function as an input file.
+     * @return never null, for example "xml"
+     * @see #getInputFileExtension()
+     */
+    default String getOutputFileExtension() {
+        return getInputFileExtension();
+    }
 
     /**
      * This method is thread-safe.

@@ -45,7 +45,7 @@ public class CheapTimeExporter extends AbstractTxtSolutionExporter<CheapTimeSolu
 
     @Override
     public String getOutputFileSuffix() {
-        return CheapTimeSolutionFileIO.OUTPUT_FILE_EXTENSION;
+        return "txt";
     }
 
     @Override

@@ -36,7 +36,7 @@ public class MachineReassignmentExporter extends AbstractTxtSolutionExporter<Mac
 
     @Override
     public String getOutputFileSuffix() {
-        return MachineReassignmentFileIO.FILE_EXTENSION;
+        return "txt";
     }
 
     @Override

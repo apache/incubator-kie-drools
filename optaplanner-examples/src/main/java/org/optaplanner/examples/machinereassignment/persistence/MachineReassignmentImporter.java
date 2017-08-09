@@ -70,7 +70,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
 
     @Override
     public String getInputFileSuffix() {
-        return MachineReassignmentFileIO.FILE_EXTENSION;
+        return "txt";
     }
 
     @Override
