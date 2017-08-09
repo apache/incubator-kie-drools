@@ -16,6 +16,22 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.ReviseTraitTestWithPRAlwaysCategory;
@@ -80,25 +96,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.*;
@@ -6137,5 +6136,84 @@ public class TraitTest extends CommonTestMethodBase {
             ks.fireAllRules();
             fail("don should fail due to the conflict in getShared() method");
         } catch (Exception e) { }
+    }
+
+    @Test
+    public void testPreserveAllSetBitMask() {
+        // DROOLS-1699
+        String drl =
+                "package t.x;\n" +
+                "" +
+                "import " + Entity.class.getName() + "; " +
+                "" +
+                "declare trait MyThing end\n" +
+                "" +
+                "declare trait RootThing extends MyThing " +
+                " objProp : java.util.List = new java.util.ArrayList() " +
+                "end " +
+                "" +
+                "declare trait F extends RootThing end\n" +
+                "" +
+                "declare trait D extends RootThing end\n" +
+                "" +
+                "declare trait E extends D end\n" +
+                "" +
+                "rule Init when\n" +
+                "then " +
+                " Entity e1 = new Entity( \"X\" ); " +
+                " insert( e1 ); " +
+                " Entity e2 = new Entity( \"Y\" ); " +
+                " insert( e2 ); " +
+                " " +
+                " D d1 = don( e1, D.class, true ); " +
+                " F f2 = don( e2, F.class, true ); " +
+                " " +
+                " modify ( d1 ) { getObjProp().add( f2.getCore() ); } " +
+                " modify ( f2.getCore() ) {} " +
+                "end " +
+                "" +
+                "rule Rec no-loop when\n" +
+                " MyThing( $x_0 := core, this isA D.class, $p : this#RootThing.objProp ) " +
+                " exists MyThing( $x_1 := core , core memberOf $p, this isA F.class ) " +
+                "then " +
+                " System.out.println( \"Recognized \" + $x_0 + \" as an instance of E by rule \" + drools.getRule().getName() ); " +
+                " don( $x_0, E.class, true ); " +
+                "end " +
+                "" +
+                "rule Shed_2 when\n" +
+                " $s : String( this == \"go2\") " +
+                " $x : E( $objs : objProp ) " +
+                " $y : F( $z : core memberOf $objs ) " +
+                "then " +
+                " retract( $s ); " +
+                " System.out.println( \"SUCCESS : E has been recognized, removing Y \" ); " +
+                " modify ( $x ) { getObjProp().remove( $z ); } " +
+                " modify ( $y ) {} " +
+                "end ";
+
+        KieHelper helper = new KieHelper();
+        KieBase kieBase = helper.addContent( drl, ResourceType.DRL ).getKieContainer().getKieBase();
+
+        KieSession kSession = kieBase.newKieSession();
+        kSession.fireAllRules();
+
+        kSession.insert( "go2" );
+        kSession.fireAllRules();
+
+        for ( Object o : kSession.getObjects( new ClassObjectFilter( Entity.class ) ) ) {
+            Entity e = (Entity) o;
+            if ( e.getId().equals( "X" ) ) {
+                assertTrue( e.hasTrait( "t.x.D" ) );
+                assertFalse( e.hasTrait( "t.x.E" ) );
+                assertFalse( e.hasTrait( "t.x.F" ) );
+                assertEquals( 0, ( (List) e._getDynamicProperties().get( "objProp" ) ).size() );
+            } else if ( e.getId().equals( "Y" ) ) {
+                assertTrue( e.hasTrait( "t.x.F" ) );
+                assertFalse( e.hasTrait( "t.x.D" ) );
+                assertFalse( e.hasTrait( "t.x.E" ) );
+            } else {
+                fail( "Unrecognized entity in WM" );
+            }
+        }
     }
 }
