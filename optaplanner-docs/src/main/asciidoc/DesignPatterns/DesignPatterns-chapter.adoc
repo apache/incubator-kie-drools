@@ -56,9 +56,11 @@ It's effectively every spot that needs to be filled with an employee.
 +
 image::DesignPatterns/employeeShiftRosteringModelingGuideA.png[align="center"]
 
-. In a _many to one_ relationship, *usually the _many_ side is the planning entity class*.
+. In a _many to one_ relationship, *usually the _many_ side is the planning entity class with the planning variable*.
 Annotate it with a `@PlanningEntity` annotation.
 ** For example in employee rostering, the `ShiftAssignment` class has an `@PlanningEntity` annotation.
+** If it's a bi-directional relationship, both sides are a planning entity class,
+but usually the _many_ side has the planning variable and the _one_ side the shadow variable.
 
 . The planning entity class should have *at least one problem property*.
 So a planning entity class cannot consist out of only planning variables
