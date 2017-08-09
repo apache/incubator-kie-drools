@@ -54,7 +54,6 @@
     <module>drools-core</module>
     <module>drools-compiler</module>
     <module>drools-cdi</module>
-    <module>drools-jsr94</module>
     <module>drools-verifier</module>
     <module>drools-persistence</module>
     <module>drools-templates</module>
