@@ -120,6 +120,7 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelec
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
             ChangeMoveSelectorConfig childMoveSelectorConfig = new ChangeMoveSelectorConfig();
+            // Different EntitySelector per child because it is a union
             EntitySelectorConfig childEntitySelectorConfig = new EntitySelectorConfig(entitySelectorConfig);
             if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
                 childEntitySelectorConfig.setEntityClass(variableDescriptor.getEntityDescriptor().getEntityClass());
