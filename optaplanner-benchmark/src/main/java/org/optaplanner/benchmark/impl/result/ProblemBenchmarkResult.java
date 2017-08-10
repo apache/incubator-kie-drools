@@ -36,6 +36,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
+import org.optaplanner.benchmark.impl.loader.ProblemProvider;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -45,7 +46,6 @@ import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,11 +62,8 @@ public class ProblemBenchmarkResult<Solution_> {
 
     private String name = null;
 
-    @XStreamOmitField // TODO move solutionFileIO out of ProblemBenchmarkResult
-    private SolutionFileIO<Solution_> solutionFileIO = null;
+    private ProblemProvider<Solution_> problemProvider;
     private boolean writeOutputSolutionEnabled = false;
-
-    private File inputSolutionFile = null;
 
     @XStreamImplicit(itemFieldName = "problemStatistic")
     private List<ProblemStatistic> problemStatisticList = null;
@@ -119,12 +116,12 @@ public class ProblemBenchmarkResult<Solution_> {
         this.name = name;
     }
 
-    public SolutionFileIO<Solution_> getSolutionFileIO() {
-        return solutionFileIO;
+    public ProblemProvider<Solution_> getProblemProvider() {
+        return problemProvider;
     }
 
-    public void setSolutionFileIO(SolutionFileIO<Solution_> solutionFileIO) {
-        this.solutionFileIO = solutionFileIO;
+    public void setProblemProvider(ProblemProvider<Solution_> problemProvider) {
+        this.problemProvider = problemProvider;
     }
 
     public boolean isWriteOutputSolutionEnabled() {
@@ -133,14 +130,6 @@ public class ProblemBenchmarkResult<Solution_> {
 
     public void setWriteOutputSolutionEnabled(boolean writeOutputSolutionEnabled) {
         this.writeOutputSolutionEnabled = writeOutputSolutionEnabled;
-    }
-
-    public File getInputSolutionFile() {
-        return inputSolutionFile;
-    }
-
-    public void setInputSolutionFile(File inputSolutionFile) {
-        this.inputSolutionFile = inputSolutionFile;
     }
 
     public List<ProblemStatistic> getProblemStatisticList() {
@@ -297,16 +286,14 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     public Solution_ readProblem() {
-        return solutionFileIO.read(inputSolutionFile);
+        return problemProvider.readProblem();
     }
 
-    public void writeOutputSolution(SubSingleBenchmarkResult subSingleBenchmarkResult, Solution_ outputSolution) {
+    public void writeSolution(SubSingleBenchmarkResult subSingleBenchmarkResult, Solution_ solution) {
         if (!writeOutputSolutionEnabled) {
             return;
         }
-        String filename = getName() + "." + solutionFileIO.getOutputFileExtension();
-        File outputSolutionFile = new File(subSingleBenchmarkResult.getResultDirectory(), filename);
-        solutionFileIO.write(outputSolution, outputSolutionFile);
+        problemProvider.writeSolution(solution, subSingleBenchmarkResult);
     }
 
     // ************************************************************************
@@ -456,7 +443,7 @@ public class ProblemBenchmarkResult<Solution_> {
             return true;
         } else if (o instanceof ProblemBenchmarkResult) {
             ProblemBenchmarkResult other = (ProblemBenchmarkResult) o;
-            return inputSolutionFile.equals(other.getInputSolutionFile());
+            return problemProvider.equals(other.getProblemProvider());
         } else {
             return false;
         }
@@ -464,7 +451,7 @@ public class ProblemBenchmarkResult<Solution_> {
 
     @Override
     public int hashCode() {
-        return inputSolutionFile.hashCode();
+        return problemProvider.hashCode();
     }
 
     // ************************************************************************
@@ -476,15 +463,15 @@ public class ProblemBenchmarkResult<Solution_> {
         // IdentityHashMap but despite that different ProblemBenchmarkResult instances are merged
         Map<ProblemBenchmarkResult, ProblemBenchmarkResult> mergeMap
                 = new IdentityHashMap<>();
-        Map<File, ProblemBenchmarkResult> fileToNewResultMap = new HashMap<>();
+        Map<ProblemProvider<Solution_>, ProblemBenchmarkResult> problemProviderToNewResultMap = new HashMap<>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             ProblemBenchmarkResult<Solution_> oldResult = singleBenchmarkResult.getProblemBenchmarkResult();
             if (!mergeMap.containsKey(oldResult)) {
                 ProblemBenchmarkResult<Solution_> newResult;
-                if (!fileToNewResultMap.containsKey(oldResult.inputSolutionFile)) {
+                if (!problemProviderToNewResultMap.containsKey(oldResult.problemProvider)) {
                     newResult = new ProblemBenchmarkResult<>(newPlannerBenchmarkResult);
                     newResult.name = oldResult.name;
-                    newResult.inputSolutionFile = oldResult.inputSolutionFile;
+                    newResult.problemProvider = oldResult.problemProvider;
                     // Skip oldResult.problemReportDirectory
                     newResult.problemStatisticList = new ArrayList<>(oldResult.problemStatisticList.size());
                     for (ProblemStatistic oldProblemStatistic : oldResult.problemStatisticList) {
@@ -497,15 +484,15 @@ public class ProblemBenchmarkResult<Solution_> {
                     newResult.variableCount = oldResult.variableCount;
                     newResult.maximumValueCount = oldResult.maximumValueCount;
                     newResult.problemScale = oldResult.problemScale;
-                    fileToNewResultMap.put(oldResult.inputSolutionFile, newResult);
+                    problemProviderToNewResultMap.put(oldResult.problemProvider, newResult);
                     newPlannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().add(newResult);
                 } else {
-                    newResult = fileToNewResultMap.get(oldResult.inputSolutionFile);
+                    newResult = problemProviderToNewResultMap.get(oldResult.problemProvider);
                     if (!Objects.equals(oldResult.name, newResult.name)) {
                         throw new IllegalStateException(
                                 "The oldResult (" + oldResult + ") and newResult (" + newResult
-                                + ") should have the same name, because they have the same inputSolutionFile ("
-                                + oldResult.inputSolutionFile + ").");
+                                + ") should have the same name, because they have the same problemProvider ("
+                                + oldResult.problemProvider + ").");
                     }
                     newResult.problemStatisticList.removeIf(
                             newStatistic -> !oldResult.hasProblemStatisticType(newStatistic.getProblemStatisticType()));

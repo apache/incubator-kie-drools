@@ -25,6 +25,8 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
+import org.optaplanner.benchmark.impl.loader.FileProblemProvider;
+import org.optaplanner.benchmark.impl.loader.ProblemProvider;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -125,7 +127,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
             ProblemBenchmarkResult newProblemBenchmarkResult = buildProblemBenchmark(
                     solverConfigContext, plannerBenchmarkResult,
-                    solutionFileIO, inputSolutionFile);
+                    new FileProblemProvider(solutionFileIO, inputSolutionFile));
             ProblemBenchmarkResult problemBenchmarkResult;
             int index = unifiedProblemBenchmarkResultList.indexOf(newProblemBenchmarkResult);
             if (index < 0) {
@@ -167,14 +169,12 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
 
     private ProblemBenchmarkResult buildProblemBenchmark(SolverConfigContext solverConfigContext,
             PlannerBenchmarkResult plannerBenchmarkResult,
-            SolutionFileIO solutionFileIO, File inputSolutionFile) {
+            ProblemProvider problemProvider) {
         ProblemBenchmarkResult problemBenchmarkResult = new ProblemBenchmarkResult(plannerBenchmarkResult);
-        String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
-        problemBenchmarkResult.setName(name);
-        problemBenchmarkResult.setSolutionFileIO(solutionFileIO);
+        problemBenchmarkResult.setName(problemProvider.getProblemName());
+        problemBenchmarkResult.setProblemProvider(problemProvider);
         problemBenchmarkResult.setWriteOutputSolutionEnabled(
                 writeOutputSolutionEnabled == null ? false : writeOutputSolutionEnabled);
-        problemBenchmarkResult.setInputSolutionFile(inputSolutionFile);
         List<ProblemStatistic> problemStatisticList = new ArrayList<>(
                 problemStatisticTypeList == null ? 0 : problemStatisticTypeList.size());
         if (problemStatisticTypeList != null) {

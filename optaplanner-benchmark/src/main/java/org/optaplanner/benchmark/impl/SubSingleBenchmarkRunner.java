@@ -82,12 +82,12 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         MDC.put(NAME_MDC, subSingleBenchmarkResult.getName());
         Runtime runtime = Runtime.getRuntime();
         ProblemBenchmarkResult<Solution_> problemBenchmarkResult = subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult();
-        Solution_ inputSolution = problemBenchmarkResult.readProblem();
+        Solution_ problem = problemBenchmarkResult.readProblem();
         if (!problemBenchmarkResult.getPlannerBenchmarkResult().hasMultipleParallelBenchmarks()) {
             runtime.gc();
             subSingleBenchmarkResult.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());
         }
-        logger.trace("Benchmark inputSolution has been read for subSingleBenchmarkResult ({}).",
+        logger.trace("Benchmark problem has been read for subSingleBenchmarkResult ({}).",
                 subSingleBenchmarkResult);
 
         SolverConfig solverConfig = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig();
@@ -103,16 +103,16 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
             subSingleStatistic.initPointList();
         }
 
-        Solution_ outputSolution = solver.solve(inputSolution);
+        Solution_ solution = solver.solve(problem);
         long timeMillisSpent = solver.getTimeMillisSpent();
 
         DefaultSolverScope<Solution_> solverScope = ((DefaultSolver<Solution_>) solver).getSolverScope();
         SolutionDescriptor<Solution_> solutionDescriptor = solverScope.getSolutionDescriptor();
-        problemBenchmarkResult.registerScale(solutionDescriptor.getEntityCount(outputSolution),
-                solutionDescriptor.getGenuineVariableCount(outputSolution),
-                solutionDescriptor.getMaximumValueCount(outputSolution),
-                solutionDescriptor.getProblemScale(outputSolution));
-        subSingleBenchmarkResult.setScore(solutionDescriptor.getScore(outputSolution));
+        problemBenchmarkResult.registerScale(solutionDescriptor.getEntityCount(solution),
+                solutionDescriptor.getGenuineVariableCount(solution),
+                solutionDescriptor.getMaximumValueCount(solution),
+                solutionDescriptor.getProblemScale(solution));
+        subSingleBenchmarkResult.setScore(solutionDescriptor.getScore(solution));
         subSingleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
         subSingleBenchmarkResult.setScoreCalculationCount(solverScope.getScoreCalculationCount());
 
@@ -121,7 +121,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
             subSingleStatistic.hibernatePointList();
         }
         if (!warmUp) {
-            problemBenchmarkResult.writeOutputSolution(subSingleBenchmarkResult, outputSolution);
+            problemBenchmarkResult.writeSolution(subSingleBenchmarkResult, solution);
         }
         MDC.remove(NAME_MDC);
         return this;
