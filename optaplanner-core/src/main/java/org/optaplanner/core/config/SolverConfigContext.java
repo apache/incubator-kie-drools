@@ -25,13 +25,15 @@ import org.optaplanner.core.config.solver.SolverConfig;
  */
 public class SolverConfigContext {
 
-    private ClassLoader classLoader;
-    private KieContainer kieContainer;
+    private final ClassLoader classLoader;
+    private final KieContainer kieContainer;
 
     /**
      * Vanilla context.
      */
     public SolverConfigContext() {
+        classLoader = null;
+        kieContainer = null;
     }
 
     /**
@@ -40,6 +42,7 @@ public class SolverConfigContext {
      */
     public SolverConfigContext(ClassLoader classLoader) {
         this.classLoader = classLoader;
+        kieContainer = null;
     }
 
     /**
@@ -47,6 +50,7 @@ public class SolverConfigContext {
      * @param kieContainer if null behaves as {@link #SolverConfigContext()}
      */
     public SolverConfigContext(KieContainer kieContainer) {
+        classLoader = null;
         this.kieContainer = kieContainer;
     }
 
@@ -61,20 +65,12 @@ public class SolverConfigContext {
         return classLoader;
     }
 
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
-
     /**
      * Must be null if {@link #getClassLoader()} is not null.
      * @return sometimes null, affects the {@link ClassLoader} to use for loading all resources and {@link Class}es
      */
     public KieContainer getKieContainer() {
         return kieContainer;
-    }
-
-    public void setKieContainer(KieContainer kieContainer) {
-        this.kieContainer = kieContainer;
     }
 
     // ************************************************************************

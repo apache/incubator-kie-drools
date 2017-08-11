@@ -38,12 +38,30 @@
           "justification": "PLANNER-778 Solver.addAllProblemFactChanges(List)"
         },
         {
-        "code": "java.annotation.added",
-        "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.variableName",
-        "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.variableName",
-        "annotationType": "com.thoughtworks.xstream.annotations.XStreamAsAttribute",
-        "elementKind": "annotation",
-        "justification": "Less verbose power configuration. See upgrade recipe. Backwards compatible."
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.variableName",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.variableName",
+          "annotationType": "com.thoughtworks.xstream.annotations.XStreamAsAttribute",
+          "elementKind": "annotation",
+          "justification": "Less verbose power configuration. See upgrade recipe. Backwards compatible."
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void org.optaplanner.core.config.SolverConfigContext::setClassLoader(java.lang.ClassLoader)",
+          "package": "org.optaplanner.core.config",
+          "classSimpleName": "SolverConfigContext",
+          "methodName": "setClassLoader",
+          "elementKind": "method",
+          "justification": "Encapsulate SolverConfigContext"
+        },
+        {
+          "code": "java.method.removed",
+          "old": "method void org.optaplanner.core.config.SolverConfigContext::setKieContainer(org.kie.api.runtime.KieContainer)",
+          "package": "org.optaplanner.core.config",
+          "classSimpleName": "SolverConfigContext",
+          "methodName": "setKieContainer",
+          "elementKind": "method",
+          "justification": "Encapsulate SolverConfigContext"
         }
       ]
     }

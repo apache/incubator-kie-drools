@@ -38,11 +38,9 @@ import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 /**
  * @see PlannerBenchmarkFactory
  */
-public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
+public class XStreamXmlPlannerBenchmarkFactory extends AbstractPlannerBenchmarkFactory {
 
-    protected final SolverConfigContext solverConfigContext;
     protected XStream xStream;
-    protected PlannerBenchmarkConfig plannerBenchmarkConfig = null;
 
     public XStreamXmlPlannerBenchmarkFactory() {
         this(new SolverConfigContext());
@@ -52,7 +50,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
      * @param solverConfigContext never null
      */
     public XStreamXmlPlannerBenchmarkFactory(SolverConfigContext solverConfigContext) {
-        this.solverConfigContext = solverConfigContext;
+        super(solverConfigContext);
         xStream = XStreamXmlSolverFactory.buildXStream();
         ClassLoader actualClassLoader = solverConfigContext.determineActualClassLoader();
         xStream.setClassLoader(actualClassLoader);
@@ -133,36 +131,6 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
     public XStreamXmlPlannerBenchmarkFactory configure(Reader reader) {
         plannerBenchmarkConfig = (PlannerBenchmarkConfig) xStream.fromXML(reader);
         return this;
-    }
-
-    // ************************************************************************
-    // Worker methods
-    // ************************************************************************
-
-    @Override
-    public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
-        checkPlannerBenchmarkConfigNotNull();
-        return plannerBenchmarkConfig;
-    }
-
-    @Override
-    public PlannerBenchmark buildPlannerBenchmark() {
-        checkPlannerBenchmarkConfigNotNull();
-        return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext);
-    }
-
-    @Override
-    @SafeVarargs
-    public final <Solution_> PlannerBenchmark buildPlannerBenchmark(Solution_... problems) {
-        checkPlannerBenchmarkConfigNotNull();
-        return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext, problems);
-    }
-
-    public void checkPlannerBenchmarkConfigNotNull() {
-        if (plannerBenchmarkConfig == null) {
-            throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
-                    " call configure(...) first.");
-        }
     }
 
 }

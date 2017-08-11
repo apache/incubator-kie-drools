@@ -38,10 +38,7 @@ import org.optaplanner.core.config.SolverConfigContext;
 /**
  * @see PlannerBenchmarkFactory
  */
-public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
-
-    protected final SolverConfigContext solverConfigContext;
-    private final XStreamXmlPlannerBenchmarkFactory xmlPlannerBenchmarkFactory;
+public class FreemarkerXmlPlannerBenchmarkFactory extends AbstractPlannerBenchmarkFactory {
 
     public FreemarkerXmlPlannerBenchmarkFactory() {
         this(new SolverConfigContext());
@@ -51,8 +48,7 @@ public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactor
      * @param solverConfigContext never null
      */
     public FreemarkerXmlPlannerBenchmarkFactory(SolverConfigContext solverConfigContext) {
-        this.solverConfigContext = solverConfigContext;
-        xmlPlannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory(solverConfigContext);
+        super(solverConfigContext);
     }
 
     // ************************************************************************
@@ -158,30 +154,13 @@ public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactor
         } catch (TemplateException e) {
             throw new IllegalArgumentException("Can not process Freemarker template to configWriter.", e);
         }
+        XStreamXmlPlannerBenchmarkFactory xmlPlannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory(
+                solverConfigContext);
         try (StringReader configReader = new StringReader(content)) {
             xmlPlannerBenchmarkFactory.configure(configReader);
         }
+        plannerBenchmarkConfig = xmlPlannerBenchmarkFactory.getPlannerBenchmarkConfig();
         return this;
-    }
-
-    // ************************************************************************
-    // Worker methods
-    // ************************************************************************
-
-    @Override
-    public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
-        return xmlPlannerBenchmarkFactory.getPlannerBenchmarkConfig();
-    }
-
-    @Override
-    public PlannerBenchmark buildPlannerBenchmark() {
-        return xmlPlannerBenchmarkFactory.buildPlannerBenchmark();
-    }
-
-    @Override
-    @SafeVarargs
-    public final <Solution_> PlannerBenchmark buildPlannerBenchmark(Solution_... problems) {
-        return xmlPlannerBenchmarkFactory.buildPlannerBenchmark(solverConfigContext, problems);
     }
 
 }

@@ -35,6 +35,10 @@ public class AbstractSolverFactory<Solution_> extends SolverFactory<Solution_> {
         this.solverConfigContext = solverConfigContext;
     }
 
+    public SolverConfigContext getSolverConfigContext() {
+        return solverConfigContext;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

@@ -33,10 +33,9 @@ public class InstanceProblemProvider<Solution_> implements ProblemProvider<Solut
     private final Solution_ problem;
     private final SolutionCloner<Solution_> solutionCloner;
 
-    public InstanceProblemProvider(String problemName, Solution_ problem) {
+    public InstanceProblemProvider(String problemName, SolutionDescriptor<Solution_> solutionDescriptor, Solution_ problem) {
         this.problemName = problemName;
         this.problem = problem;
-        SolutionDescriptor<Solution_> solutionDescriptor = new SolutionDescriptor<>((Class<Solution_>) problem.getClass());
         solutionCloner = solutionDescriptor.getSolutionCloner();
     }
 

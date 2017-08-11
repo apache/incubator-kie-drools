@@ -37,8 +37,7 @@ public class XStreamXmlSolverFactoryTest {
         XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory().configure(originalConfigInputStream);
         solverFactory.getXStream().setMode(XStream.NO_REFERENCES);
         SolverConfig solverConfig = solverFactory.getSolverConfig();
-        SolverConfigContext configContext = new SolverConfigContext();
-        configContext.setClassLoader(getClass().getClassLoader());
+        SolverConfigContext configContext = new SolverConfigContext(getClass().getClassLoader());
         solverConfig.buildSolver(configContext);
         String savedXml = solverFactory.getXStream().toXML(solverConfig);
         assertEquals(originalXml.trim(), savedXml.trim());

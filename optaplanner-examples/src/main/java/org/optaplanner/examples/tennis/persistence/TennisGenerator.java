@@ -45,13 +45,12 @@ public class TennisGenerator extends LoggingMain {
     }
 
     public void generate() {
-        String inputId = "munich-7teams";
-        File outputFile = new File(outputDir, inputId + ".xml");
-        TennisSolution tennisSolution = createTennisSolution(inputId);
+        File outputFile = new File(outputDir, "munich-7teams.xml");
+        TennisSolution tennisSolution = createTennisSolution();
         solutionDao.writeSolution(tennisSolution, outputFile);
     }
 
-    private TennisSolution createTennisSolution(String inputId) {
+    public TennisSolution createTennisSolution() {
         TennisSolution tennisSolution = new TennisSolution();
         tennisSolution.setId(0L);
 
@@ -100,7 +99,7 @@ public class TennisGenerator extends LoggingMain {
                 teamAssignmentList.size());
         logger.info("Tennis {} has {} teams, {} days, {} unavailabilityPenalties and {} teamAssignments"
                 + " with a search space of {}.",
-                inputId, teamList.size(), dayList.size(), unavailabilityPenaltyList.size(), teamAssignmentList.size(),
+                "munich-7teams", teamList.size(), dayList.size(), unavailabilityPenaltyList.size(), teamAssignmentList.size(),
                 AbstractSolutionImporter.getFlooredPossibleSolutionSize(possibleSolutionSize));
         return tennisSolution;
     }
