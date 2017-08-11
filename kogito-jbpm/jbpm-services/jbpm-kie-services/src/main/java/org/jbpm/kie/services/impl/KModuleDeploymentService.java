@@ -88,19 +88,19 @@ import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 public class KModuleDeploymentService extends AbstractDeploymentService {
 
-    private static Logger logger = LoggerFactory.getLogger(KModuleDeploymentService.class);
+    protected static Logger logger = LoggerFactory.getLogger(KModuleDeploymentService.class);
     private static final String DEFAULT_KBASE_NAME = "defaultKieBase";
     private static final String PROCESS_ID_XPATH = "/*[local-name() = 'definitions']/*[local-name() = 'process']/@id";
 
-    private DefinitionService bpmn2Service;
+    protected DefinitionService bpmn2Service;
 
-    private DeploymentDescriptorMerger merger = new DeploymentDescriptorMerger();
+    protected DeploymentDescriptorMerger merger = new DeploymentDescriptorMerger();
 
-    private FormManagerService formManagerService;
+    protected FormManagerService formManagerService;
 
-    private ExecutorService executorService;
+    protected ExecutorService executorService;
 
-    private XPathExpression processIdXPathExpression;
+    protected XPathExpression processIdXPathExpression;
 
     public KModuleDeploymentService() {
         try {
@@ -400,7 +400,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
         }
     }
 
-	private void addClassToDeployedUnit(Class deploymentClass, DeployedUnitImpl deployedUnit) {
+	protected void addClassToDeployedUnit(Class deploymentClass, DeployedUnitImpl deployedUnit) {
         if( deploymentClass != null ) {
             DeploymentUnit unit = deployedUnit.getDeploymentUnit();
             Boolean limitClasses = false;
