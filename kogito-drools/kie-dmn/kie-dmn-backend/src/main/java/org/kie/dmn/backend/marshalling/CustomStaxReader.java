@@ -78,6 +78,10 @@ public class CustomStaxReader extends StaxReader {
         Map<QName, String> result = new HashMap<>();
         for (int aIndex = 0; aIndex < in.getAttributeCount(); aIndex++) {
             String attributePrefix = in.getAttributePrefix(aIndex);
+            
+            // DROOLS-1695 : IBM JDK would return a null instead of respecting JDK contract of returning XMLConstants.DEFAULT_NS_PREFIX (an empty String)
+            if ( attributePrefix == null ) { attributePrefix = XMLConstants.DEFAULT_NS_PREFIX; }
+            
             if ( !XMLConstants.DEFAULT_NS_PREFIX.equals(attributePrefix) ) {
                 result.put( new QName(in.getAttributeNamespace(aIndex), in.getAttributeLocalName(aIndex), attributePrefix), in.getAttributeValue(aIndex) );
             }
