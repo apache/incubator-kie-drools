@@ -26,12 +26,12 @@ image::BenchmarkingAndTweaking/benchmarkOverview.png[align="center"]
 == Benchmark Configuration
 
 
-[[benchmarker.addDependency]]
-=== Add Dependency On `optaplanner-benchmark`
+[[addADependencyOnBenchmarkJar]]
+=== Add a Dependency on `optaplanner-benchmark`
 
 The benchmarker is in a separate artifact called ``optaplanner-benchmark``.
 
-If you use Maven, add a dependency in your [path]_pom.xml_ file:
+If you use Maven, add a dependency in your `pom.xml` file:
 
 [source,xml,options="nowrap"]
 ----
@@ -47,9 +47,33 @@ The version must be exactly the same as the `optaplanner-core` version used (whi
 If you use ANT, you've probably already copied the required jars from the download zip's [path]_binaries_
  directory.
 
+[[runASimpleBenchmark]]
+=== Run a Simple Benchmark
+
+To quickly setup a benchmark, create a `PlannerBenchmarkFactory` from your `SolverFactory`,
+load a few datasets and benchmark them. For example, with 3 datasets:
+
+[source,java,options="nowrap"]
+----
+        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(...);
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(solverFactory);
+
+        CloudBalance dataset1 = ...;
+        CloudBalance dataset2 = ...;
+        CloudBalance dataset3 = ...;
+        PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark(dataset1, dataset2, dataset3);
+        plannerBenchmark.benchmark();
+----
+
+This will generate a benchmark report in `local/benchmarkReport`. Take a look.
+To configure a different benchmark directory, pass a `File` parameter to `createFromSolverFactory()`.
+
+The generated benchmark report already contains interesting information,
+but it doesn't allow comparing solver configurations to find the best algorithm.
+To do that, set up an benchmark configuration:
 
 [[buildAndRunAPlannerBenchmark]]
-=== Build And Run A `PlannerBenchmark`
+=== Configure and Run an Advanced Benchmark
 
 Build a `PlannerBenchmark` instance with a ``PlannerBenchmarkFactory``.
 Configure it with a benchmark configuration XML file, provided as a classpath resource:
@@ -73,8 +97,8 @@ A benchmark configuration file looks like this:
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       ...
-      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
-      <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
       ...<!-- Common solver configuration -->
@@ -102,7 +126,8 @@ A benchmark configuration file looks like this:
 </plannerBenchmark>
 ----
 
-This `PlannerBenchmark` will try three configurations (Tabu Search, Simulated Annealing and Late Acceptance) on two data sets (32queens and 64queens), so it will run six solvers.
+This `PlannerBenchmark` will try three configurations (Tabu Search, Simulated Annealing and Late Acceptance)
+on two data sets (``100computers-300processes`` and ``200computers-600processes``), so it will run six solvers.
 
 Every `<solverBenchmark>` element contains a solver configuration and one or more `<inputSolutionFile>` elements.
 It will run the solver configuration on each of those unsolved solution files.
@@ -122,7 +147,7 @@ The benchmark report will be written in the directory specified the `<benchmarkD
 ====
 It's recommended that the `benchmarkDirectory` is a directory ignored for source control and not cleaned by your build system.
 This way the generated files are not bloating your source control and they aren't lost when doing a build.
-Usually that directory is called ``local``.
+For example in git, it should be added to ``.gitignore``. Usually that directory is called ``local``.
 ====
 
 If an `Exception` or `Error` occurs in a single benchmark, the entire Benchmarker will not fail-fast (unlike everything else in Planner).
@@ -214,22 +239,20 @@ A `SolutionFileIO` implementation must be thread-safe.
 
 
 [[readingAnInputSolutionFromADatabase]]
-==== Reading An Input Solution From A Database (Or Other Repository)
+==== Reading An Input Solution From A Database (Or Other Storage)
 
-The benchmark configuration currently expects an `<inputSolutionFile>` element, so a separate file, for each dataset.
-There are two ways to deal with this if your dataset is in a relational database or another type of repository:
+There are two options if your dataset is in a relational database or another type of repository:
 
 * Extract the datasets from the database and serialize them to a local file (for example as XML with `XStreamSolutionFileIO` if XML isn't too verbose).
 Then use those files an `<inputSolutionFile>` elements.
-* For each dataset, create a txt file that holds the unique id of the dataset.
-Write <<customSolutionFileIO,a custom `SolutionFileIO`>> that reads that identifier, connects to the database and extract the problem identified by that id. Configure those txt files as `<inputSolutionFile>` elements.
-
-
-[NOTE]
-====
-Local files are always better: they allow for faster, more reliable, offline benchmarking.
-Otherwise, an unstable network connection can ruin a long running benchmark.
-====
+** The benchmarks is now more reliable because they run offline.
+** Each dataset is only loaded just in time.
+* Load all the datasets in advance and pass them to the `buildPlannerBenchmark()` method:
++
+[source,java,options="nowrap"]
+----
+        PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark(dataset1, dataset2, dataset3);
+----
 
 
 [[warmingUpTheHotSpotCompiler]]
