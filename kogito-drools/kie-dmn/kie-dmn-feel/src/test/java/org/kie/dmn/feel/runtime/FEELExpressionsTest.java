@@ -57,7 +57,7 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"{ is minor : < 18, bob is minor : is minor(16) }.bob is minor", Boolean.TRUE , null},
 
                 // negated unary tests
-                {"10 in ( not( <5, >=20, =15 ) )", Boolean.TRUE, null},
+                {"10 in ( not( <5, >=20, =15, !=10 ) )", Boolean.TRUE, null},
                 {"10 in ( not( <5, >=20, =10 ) )", Boolean.FALSE, null},
                 {"10 in ( not( <5 ) )", Boolean.TRUE, null},
                 {"10 in ( not( (10..20] ) )", Boolean.TRUE, null},
@@ -76,6 +76,9 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 // unary tests with context evaluation, i.e., the test is defined before the variable "x"
                 {"{ test : > x, y : 20, x : 10, result : y in ( test ) }.result", Boolean.TRUE , null},
                 {"{ test : > x, y : 20, x : 10, result : test( y ) }.result", Boolean.TRUE , null},
+
+                // TODO - DROOLS-1678
+//                {"{ test : in x, y : 20, x : [10, 20, 30], result : test( y ) }.result", Boolean.TRUE , null},
                 
                 {"2 in 2", Boolean.TRUE , null},
                 {"{ x : 2, result : x in 2 }.result", Boolean.TRUE , null},

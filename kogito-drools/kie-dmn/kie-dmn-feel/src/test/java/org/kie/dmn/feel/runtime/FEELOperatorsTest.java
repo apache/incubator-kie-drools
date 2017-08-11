@@ -35,6 +35,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 // between
                 { "10 between 5 and 12", Boolean.TRUE , null},
                 { "10 between 20 and 30", Boolean.FALSE , null},
+                { "10 between 20 and \"foo\"", null , FEELEvent.Severity.ERROR},
                 {"\"foo\" between 5 and 12", null , FEELEvent.Severity.ERROR},
                 { "\"foo\" between \"bar\" and \"zap\"", Boolean.TRUE , null},
                 { "\"foo\" between null and \"zap\"", null , FEELEvent.Severity.ERROR},
