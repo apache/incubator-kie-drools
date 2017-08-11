@@ -19,11 +19,13 @@ package org.kie.dmn.feel.runtime;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class FEELRangesTest extends BaseFEELTest {
@@ -61,6 +63,12 @@ public class FEELRangesTest extends BaseFEELTest {
                         new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.CLOSED), null},
                 {"(duration(\"P2DT20H14M\")..duration(\"P3DT20H14M\"))",
                         new RangeImpl(Range.RangeBoundary.OPEN, Duration.parse("P2DT20H14M"), Duration.parse("P3DT20H14M"), Range.RangeBoundary.OPEN), null},
+
+                {"(duration(\"P1Y6M\")..duration(\"P2Y6M\"))",
+                        new RangeImpl(Range.RangeBoundary.OPEN,
+                                      new RangeNode.ComparablePeriod(Period.parse("P1Y6M")),
+                                      new RangeNode.ComparablePeriod(Period.parse("P2Y6M")),
+                                      Range.RangeBoundary.OPEN), null},
 
                 {"[1+2..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED), null},
                 {"[1+2..8)", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(3), BigDecimal.valueOf(8), Range.RangeBoundary.OPEN), null},

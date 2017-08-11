@@ -16,13 +16,16 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.Msg;
-
-import java.util.*;
 
 public class FilterExpressionNode
         extends BaseNode {
@@ -77,24 +80,22 @@ public class FilterExpressionNode
                         return null;
                     }
                 } else {
-                    List results = new ArrayList(  );
-                    for( Object v : list ) {
-                        evaluateExpressionInContext( ctx, results, v );
-                    }
-                    return results;
+                    return evaluateExpressionsInContext(ctx, list);
                 }
             } else {
-                List results = new ArrayList(  );
-                for( Object v : list ) {
-                    evaluateExpressionInContext( ctx, results, v );
-                }
-                return results;
+                return evaluateExpressionsInContext(ctx, list);
             }
         } catch ( Exception e ) {
             ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.ERROR_EXECUTING_LIST_FILTER, getText()), e) );
         }
 
         return null;
+    }
+
+    private List evaluateExpressionsInContext(EvaluationContext ctx, List expressions) {
+        List results = new ArrayList();
+        expressions.forEach(expression -> evaluateExpressionInContext( ctx, results, expression));
+        return results;
     }
 
     private void evaluateExpressionInContext(EvaluationContext ctx, List results, Object v) {

@@ -99,6 +99,13 @@ public class JavaFunction
                     } else {
                         throw new IllegalArgumentException( "Unable to coerce parameter "+parameters.get( 0 )+". Expected "+paramTypes[i]+" but found "+params[i].getClass() );
                     }
+                } else if ( params[i] instanceof String
+                        && ((String) params[i]).length() == 1
+                        && (paramTypes[i] == char.class || paramTypes[i] == Character.class) ) {
+                    actual[i] = ((String) params[i]).charAt(0);
+                } else if ( params[i] instanceof Boolean && paramTypes[i] == boolean.class ) {
+                    // Because Boolean can be also null, boolean.class is not assignable from Boolean.class. So we must coerce this.
+                    actual[i] = params[i];
                 } else {
                     throw new IllegalArgumentException( "Unable to coerce parameter "+parameters.get( 0 )+". Expected "+paramTypes[i]+" but found "+params[i].getClass() );
                 }
