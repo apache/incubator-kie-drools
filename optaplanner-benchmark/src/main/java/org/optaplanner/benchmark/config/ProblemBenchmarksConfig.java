@@ -18,14 +18,16 @@ package org.optaplanner.benchmark.config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.loader.FileProblemProvider;
+import org.optaplanner.benchmark.impl.loader.InstanceProblemProvider;
 import org.optaplanner.benchmark.impl.loader.ProblemProvider;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
@@ -112,22 +114,15 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     // Builder methods
     // ************************************************************************
 
-    public void buildProblemBenchmarkList(SolverConfigContext solverConfigContext,
-            SolverBenchmarkResult solverBenchmarkResult) {
-        validate(solverBenchmarkResult);
+    public <Solution_> void buildProblemBenchmarkList(SolverConfigContext solverConfigContext,
+            SolverBenchmarkResult solverBenchmarkResult, Solution_[] extraProblems) {
         PlannerBenchmarkResult plannerBenchmarkResult = solverBenchmarkResult.getPlannerBenchmarkResult();
-        SolutionFileIO solutionFileIO = buildSolutionFileIO();
-        List<ProblemBenchmarkResult> problemBenchmarkResultList = new ArrayList<>(inputSolutionFileList.size());
         List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList
                 = plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList();
-        for (File inputSolutionFile : inputSolutionFileList) {
-            if (!inputSolutionFile.exists()) {
-                throw new IllegalArgumentException("The inputSolutionFile (" + inputSolutionFile + ") does not exist.");
-            }
+        for (ProblemProvider<Solution_> problemProvider : buildProblemProviderList(solverBenchmarkResult, extraProblems)) {
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
-            ProblemBenchmarkResult newProblemBenchmarkResult = buildProblemBenchmark(
-                    solverConfigContext, plannerBenchmarkResult,
-                    new FileProblemProvider(solutionFileIO, inputSolutionFile));
+            ProblemBenchmarkResult<Solution_> newProblemBenchmarkResult = buildProblemBenchmark(
+                    solverConfigContext, plannerBenchmarkResult, problemProvider);
             ProblemBenchmarkResult problemBenchmarkResult;
             int index = unifiedProblemBenchmarkResultList.indexOf(newProblemBenchmarkResult);
             if (index < 0) {
@@ -136,20 +131,50 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
             } else {
                 problemBenchmarkResult = unifiedProblemBenchmarkResultList.get(index);
             }
-            problemBenchmarkResultList.add(problemBenchmarkResult);
             buildSingleBenchmark(solverConfigContext, solverBenchmarkResult, problemBenchmarkResult);
         }
     }
 
-    private void validate(SolverBenchmarkResult solverBenchmarkResult) {
-        if (ConfigUtils.isEmptyCollection(inputSolutionFileList)) {
+    private <Solution_> List<ProblemProvider<Solution_>> buildProblemProviderList(
+            SolverBenchmarkResult solverBenchmarkResult, Solution_[] extraProblems) {
+        if (ConfigUtils.isEmptyCollection(inputSolutionFileList) && extraProblems.length == 0) {
             throw new IllegalArgumentException(
-                    "Configure at least 1 <inputSolutionFile> for the solverBenchmarkResult (" + solverBenchmarkResult.getName()
-                            + ") directly or indirectly by inheriting it.");
+                    "The solverBenchmarkResult (" + solverBenchmarkResult.getName() + ") has no problems.\n"
+                    + "Maybe configure at least 1 <inputSolutionFile> directly or indirectly by inheriting it.\n"
+                    + "Or maybe pass at least one problem to " + PlannerBenchmarkFactory.class.getSimpleName()
+                    + ".buildPlannerBenchmark().");
         }
+        List<ProblemProvider<Solution_>> problemProviderList = new ArrayList<>(
+                extraProblems.length + (inputSolutionFileList == null ? 0 : inputSolutionFileList.size()));
+        int extraProblemIndex = 0;
+        for (Solution_ extraProblem : extraProblems) {
+            if (extraProblem == null) {
+                throw new IllegalStateException("The benchmark problem (" + extraProblem + ") is null.");
+            }
+            String problemName = "problem_" + extraProblemIndex;
+            problemProviderList.add(new InstanceProblemProvider<>(problemName, extraProblem));
+            extraProblemIndex++;
+        }
+        if (ConfigUtils.isEmptyCollection(inputSolutionFileList)) {
+            if (solutionFileIOClass != null || xStreamAnnotatedClassList != null) {
+                throw new IllegalArgumentException("Cannot use solutionFileIOClass (" + solutionFileIOClass
+                        + ") or xStreamAnnotatedClassList (" + xStreamAnnotatedClassList
+                        + ") with an empty inputSolutionFileList (" + inputSolutionFileList + ").");
+            }
+        } else {
+            SolutionFileIO<Solution_> solutionFileIO = buildSolutionFileIO();
+            for (File inputSolutionFile : inputSolutionFileList) {
+                if (!inputSolutionFile.exists()) {
+                    throw new IllegalArgumentException("The inputSolutionFile (" + inputSolutionFile
+                            + ") does not exist.");
+                }
+                problemProviderList.add(new FileProblemProvider<>(solutionFileIO, inputSolutionFile));
+            }
+        }
+        return problemProviderList;
     }
 
-    private SolutionFileIO buildSolutionFileIO() {
+    private <Solution_> SolutionFileIO<Solution_> buildSolutionFileIO() {
         if (solutionFileIOClass != null && xStreamAnnotatedClassList != null) {
             throw new IllegalArgumentException("Cannot use solutionFileIOClass (" + solutionFileIOClass
                     + ") and xStreamAnnotatedClassList (" + xStreamAnnotatedClassList + ") together.");
@@ -163,14 +188,14 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
             } else {
                 xStreamAnnotatedClasses = new Class[0];
             }
-            return new XStreamSolutionFileIO(xStreamAnnotatedClasses);
+            return new XStreamSolutionFileIO<>(xStreamAnnotatedClasses);
         }
     }
 
-    private ProblemBenchmarkResult buildProblemBenchmark(SolverConfigContext solverConfigContext,
+    private <Solution_> ProblemBenchmarkResult<Solution_> buildProblemBenchmark(SolverConfigContext solverConfigContext,
             PlannerBenchmarkResult plannerBenchmarkResult,
-            ProblemProvider problemProvider) {
-        ProblemBenchmarkResult problemBenchmarkResult = new ProblemBenchmarkResult(plannerBenchmarkResult);
+            ProblemProvider<Solution_> problemProvider) {
+        ProblemBenchmarkResult<Solution_> problemBenchmarkResult = new ProblemBenchmarkResult<>(plannerBenchmarkResult);
         problemBenchmarkResult.setName(problemProvider.getProblemName());
         problemBenchmarkResult.setProblemProvider(problemProvider);
         problemBenchmarkResult.setWriteOutputSolutionEnabled(

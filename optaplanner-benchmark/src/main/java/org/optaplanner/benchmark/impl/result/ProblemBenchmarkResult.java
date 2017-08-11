@@ -433,7 +433,7 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     /**
-     * Used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList(SolverConfigContext, SolverBenchmarkResult)}.
+     * Used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList(SolverConfigContext, SolverBenchmarkResult, Solution_[])}.
      * @param o sometimes null
      * @return true if equal
      */

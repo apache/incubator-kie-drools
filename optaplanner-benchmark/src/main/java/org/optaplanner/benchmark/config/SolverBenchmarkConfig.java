@@ -79,7 +79,8 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
     // Builder methods
     // ************************************************************************
 
-    public void buildSolverBenchmark(SolverConfigContext solverConfigContext, PlannerBenchmarkResult plannerBenchmark) {
+    public void buildSolverBenchmark(SolverConfigContext solverConfigContext, PlannerBenchmarkResult plannerBenchmark,
+            Solution_[] extraProblems) {
         validate();
         SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
         solverBenchmarkResult.setName(name);
@@ -92,7 +93,7 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
                 = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;
         plannerBenchmark.getSolverBenchmarkResultList().add(solverBenchmarkResult);
-        problemBenchmarksConfig_.buildProblemBenchmarkList(solverConfigContext, solverBenchmarkResult);
+        problemBenchmarksConfig_.buildProblemBenchmarkList(solverConfigContext, solverBenchmarkResult, extraProblems);
     }
 
     protected void validate() {

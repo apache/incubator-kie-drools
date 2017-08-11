@@ -197,6 +197,11 @@ public class PlannerBenchmarkConfig {
     }
 
     public PlannerBenchmark buildPlannerBenchmark(SolverConfigContext solverConfigContext) {
+        return buildPlannerBenchmark(solverConfigContext, new Object[0]);
+    }
+
+    public <Solution_> PlannerBenchmark buildPlannerBenchmark(SolverConfigContext solverConfigContext,
+            Solution_[] extraProblems) {
         validate();
         generateSolverBenchmarkConfigNames();
         List<SolverBenchmarkConfig> effectiveSolverBenchmarkConfigList = buildEffectiveSolverBenchmarkConfigList();
@@ -211,7 +216,7 @@ public class PlannerBenchmarkConfig {
         plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(
                 effectiveSolverBenchmarkConfigList.size()));
         for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
-            solverBenchmarkConfig.buildSolverBenchmark(solverConfigContext, plannerBenchmarkResult);
+            solverBenchmarkConfig.buildSolverBenchmark(solverConfigContext, plannerBenchmarkResult, extraProblems);
         }
 
         BenchmarkReportConfig benchmarkReportConfig_ = benchmarkReportConfig == null ? new BenchmarkReportConfig()

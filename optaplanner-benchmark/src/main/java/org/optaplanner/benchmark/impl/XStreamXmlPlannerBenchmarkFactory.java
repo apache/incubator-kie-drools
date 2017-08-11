@@ -141,20 +141,28 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
     @Override
     public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
-        if (plannerBenchmarkConfig == null) {
-            throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
-                    " call configure(...) first.");
-        }
+        checkPlannerBenchmarkConfigNotNull();
         return plannerBenchmarkConfig;
     }
 
     @Override
     public PlannerBenchmark buildPlannerBenchmark() {
+        checkPlannerBenchmarkConfigNotNull();
+        return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext);
+    }
+
+    @Override
+    @SafeVarargs
+    public final <Solution_> PlannerBenchmark buildPlannerBenchmark(Solution_... problems) {
+        checkPlannerBenchmarkConfigNotNull();
+        return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext, problems);
+    }
+
+    public void checkPlannerBenchmarkConfigNotNull() {
         if (plannerBenchmarkConfig == null) {
             throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
                     " call configure(...) first.");
         }
-        return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext);
     }
 
 }

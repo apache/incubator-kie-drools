@@ -23,6 +23,8 @@ import java.io.Reader;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.impl.FreemarkerXmlPlannerBenchmarkFactory;
 import org.optaplanner.benchmark.impl.XStreamXmlPlannerBenchmarkFactory;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.SolverConfigContext;
 
 /**
@@ -301,5 +303,13 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public abstract PlannerBenchmark buildPlannerBenchmark();
+
+    /**
+     * Creates a new {@link PlannerBenchmark} instance.
+     * @param problems never null, can be none
+     * @return never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     */
+    public abstract <Solution_> PlannerBenchmark buildPlannerBenchmark(Solution_... problems);
 
 }

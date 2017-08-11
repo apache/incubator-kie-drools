@@ -178,4 +178,10 @@ public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactor
         return xmlPlannerBenchmarkFactory.buildPlannerBenchmark();
     }
 
+    @Override
+    @SafeVarargs
+    public final <Solution_> PlannerBenchmark buildPlannerBenchmark(Solution_... problems) {
+        return xmlPlannerBenchmarkFactory.buildPlannerBenchmark(solverConfigContext, problems);
+    }
+
 }

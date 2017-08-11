@@ -26,11 +26,12 @@ import org.optaplanner.core.config.SolverConfigContext;
 
 /**
  * Subclasses need to implement {@link #equals(Object)} and {@link #hashCode()}
- * which is used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList(SolverConfigContext, SolverBenchmarkResult)}..
+ * which is used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList(SolverConfigContext, SolverBenchmarkResult, Solution_[])}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @XStreamAlias("problemProvider")
 @XStreamInclude({
+        InstanceProblemProvider.class,
         FileProblemProvider.class
 })
 public interface ProblemProvider<Solution_> {
