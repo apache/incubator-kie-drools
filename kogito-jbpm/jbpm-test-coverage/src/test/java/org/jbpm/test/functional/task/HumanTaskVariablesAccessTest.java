@@ -130,7 +130,9 @@ public class HumanTaskVariablesAccessTest extends JbpmTestCase {
 
     // In *TaskCompleted events, the task is already pre-populated with output variables, input variables are accessible after loading.
     private void assertTaskCompletedEvent(TaskEvent event) {
-        assertNull(event.getTask().getTaskData().getTaskInputVariables());
+        assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+        assertEquals(5, event.getTask().getTaskData().getTaskInputVariables().size());
+        assertEquals("Simple human task input", event.getTask().getTaskData().getTaskInputVariables().get("humanTaskInput"));
 
         assertNotNull(event.getTask().getTaskData().getTaskOutputVariables());
         assertEquals(1, event.getTask().getTaskData().getTaskOutputVariables().size());
@@ -150,6 +152,8 @@ public class HumanTaskVariablesAccessTest extends JbpmTestCase {
     // In *TaskAdded events, the task is already pre-populated with input variables, output variables are not accessible even after loading.
     private void assertTaskAddedEvent(TaskEvent event) {
         assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+        assertEquals(5, event.getTask().getTaskData().getTaskInputVariables().size());
+        assertEquals("Simple human task input", event.getTask().getTaskData().getTaskInputVariables().get("humanTaskInput"));
         assertEquals(5, event.getTask().getTaskData().getTaskInputVariables().size());
         assertEquals("Simple human task input", event.getTask().getTaskData().getTaskInputVariables().get("humanTaskInput"));
 

@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -74,8 +76,22 @@ public class CompleteTaskCommand extends UserGroupCallbackTaskCommand<Void> {
         if (task == null) {            
             throw new PermissionDeniedException("Task '" + taskId + "' not found");
         }
-        context.getTaskRuleService().executeRules(task, userId, data, TaskRuleService.COMPLETE_TASK_SCOPE);
         
+        context.loadTaskVariables(task);
+
+        Map<String, Object> outputdata = task.getTaskData().getTaskOutputVariables();
+        if (outputdata != null) {
+            // if there are data given with completion, merged them into existing outputs
+            if (data != null) {
+                outputdata.putAll(data);
+            }
+            // since output data was non null make it the actual data
+            data = outputdata;
+            
+        }
+        
+        
+        context.getTaskRuleService().executeRules(task, userId, data, TaskRuleService.COMPLETE_TASK_SCOPE);
         ((InternalTaskData)task.getTaskData()).setTaskOutputVariables(data);
         
         TaskInstanceService instanceService = context.getTaskInstanceService();
