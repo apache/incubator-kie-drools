@@ -21,9 +21,12 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.time.TimerService;
 import org.drools.persistence.api.OrderedTransactionSynchronization;
 import org.drools.persistence.api.TransactionManager;
 import org.drools.persistence.api.TransactionManagerHelper;
+import org.jbpm.process.core.timer.TimerServiceRegistry;
+import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.mapper.EnvironmentAwareProcessInstanceContext;
@@ -224,15 +227,25 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         	if (canDispose(runtime)) {
             	removeLocalRuntime(runtime);            	
             	((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
+            	
+            	Long ksessionId = ((RuntimeEngineImpl)runtime).getKieSessionId();
             	if (runtime instanceof Disposable) {
                 	// special handling for in memory to not allow to dispose if there is any context in the mapper
-                	if (mapper instanceof InMemoryMapper && ((InMemoryMapper)mapper).hasContext(runtime.getKieSession().getIdentifier())){
+                	if (mapper instanceof InMemoryMapper && ((InMemoryMapper)mapper).hasContext(ksessionId)){
                 		return;
                 	}
                     ((Disposable) runtime).dispose();
                 }
                 
             	releaseAndCleanLock(runtime);
+            	if (ksessionId != null) {
+                	TimerService timerService = TimerServiceRegistry.getInstance().get(getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
+                    if (timerService != null) {
+                        if (timerService instanceof GlobalTimerService) {
+                            ((GlobalTimerService) timerService).clearTimerJobInstances(ksessionId);
+                        }
+                    }
+            	}
         	}
     	} catch (Exception e) {
     	    releaseAndCleanLock(runtime);

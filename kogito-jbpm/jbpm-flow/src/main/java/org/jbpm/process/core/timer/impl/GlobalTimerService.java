@@ -59,6 +59,7 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
     protected GlobalSchedulerService schedulerService;
     protected RuntimeManager manager;
     protected ConcurrentHashMap<Long, List<GlobalJobHandle>> timerJobsPerSession = new ConcurrentHashMap<Long, List<GlobalJobHandle>>();
+ 
     private String timerServiceId;
     
     public GlobalTimerService(RuntimeManager manager, GlobalSchedulerService schedulerService) {
@@ -168,6 +169,15 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         logger.debug("Returning  timers {} for session {}", timers, id);
         return timers;
     }
+    
+    public void clearTimerJobInstances(long id) {
+        synchronized (timerJobsPerSession) {            
+            List<GlobalJobHandle> jobs = timerJobsPerSession.remove(id); 
+            logger.debug("Removed {} jobs for session {}", jobs, id);
+            
+            logger.debug("Size of timer jobs per session is {}", timerJobsPerSession.size());
+        }
+    }
 
     @Override
     public void internalSchedule(TimerJobInstance timerJobInstance) {
@@ -254,6 +264,11 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
                ( (CommandServiceTimerJobFactoryManager) jobFactoryManager ).getRunner() :
                null;
     }
+        
+    public ConcurrentHashMap<Long, List<GlobalJobHandle>> getTimerJobsPerSession() {
+        return timerJobsPerSession;
+    }
+
 
     public static class GlobalJobHandle extends DefaultJobHandle
         implements

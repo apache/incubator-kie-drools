@@ -223,15 +223,19 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     	cacheManager.dispose();
         environment.close();
         registry.remove(identifier);
-        TimerService timerService = TimerServiceRegistry.getInstance().remove(getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
+        TimerService timerService = TimerServiceRegistry.getInstance().get(getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
         if (timerService != null) {
-            if (removeJobs && timerService instanceof GlobalTimerService) {
-                ((GlobalTimerService) timerService).destroy();
-            }
-            timerService.shutdown();
-            GlobalSchedulerService schedulerService = ((SchedulerProvider) environment).getSchedulerService();  
-            if (schedulerService != null) {
-                schedulerService.shutdown();
+            try {
+                if (removeJobs && timerService instanceof GlobalTimerService) {
+                    ((GlobalTimerService) timerService).destroy();
+                }
+                timerService.shutdown();
+                GlobalSchedulerService schedulerService = ((SchedulerProvider) environment).getSchedulerService();  
+                if (schedulerService != null) {
+                    schedulerService.shutdown();
+                }
+            } finally {
+                TimerServiceRegistry.getInstance().remove(getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
             }
         }
         this.closed = true;

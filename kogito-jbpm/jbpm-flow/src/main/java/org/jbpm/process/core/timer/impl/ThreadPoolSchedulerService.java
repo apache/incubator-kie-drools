@@ -75,6 +75,7 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
 
     @Override
     public void shutdown() {
+        
         try {
         	this.scheduler.shutdown();
             if ( !this.scheduler.awaitTermination( 10, TimeUnit.SECONDS ) ) {
@@ -84,6 +85,7 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
         	this.scheduler.shutdownNow();
             Thread.currentThread().interrupt();
         }
+        this.activeTimer.clear();
     }
 
     @Override

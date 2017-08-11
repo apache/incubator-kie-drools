@@ -18,6 +18,9 @@ package org.jbpm.runtime.manager.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.time.TimerService;
+import org.jbpm.process.core.timer.TimerServiceRegistry;
+import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.runtime.manager.impl.error.ExecutionErrorManagerImpl;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
@@ -136,12 +139,21 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
         	    local.get().remove(identifier);
         	    ((ExecutionErrorManagerImpl)executionErrorManager).closeHandler();
                 try {
-                    factory.onDispose(((RuntimeEngineImpl)runtime).getKieSessionId());
+                    Long ksessionId = ((RuntimeEngineImpl)runtime).getKieSessionId();
+                    factory.onDispose(ksessionId);
                     if (canDestroy(runtime)) {
                         runtime.getKieSession().destroy();
                     } else {
                         if (runtime instanceof Disposable) {
                             ((Disposable) runtime).dispose();
+                        }
+                    }
+                    if (ksessionId != null) {
+                        TimerService timerService = TimerServiceRegistry.getInstance().get(getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
+                        if (timerService != null) {
+                            if (timerService instanceof GlobalTimerService) {
+                                ((GlobalTimerService) timerService).clearTimerJobInstances(ksessionId);
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -150,6 +162,8 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
                         ((Disposable) runtime).dispose();
                     }
                 }
+                
+                
         	}
     	} catch (Exception e) {
     	    local.get().remove(identifier);
