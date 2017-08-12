@@ -18,18 +18,66 @@ package org.kie.dmn.feel.parser.feel11;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.kie.dmn.feel.lang.CompositeType;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.*;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.RelExpressionValueContext;
-import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
-import java.util.StringJoiner;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ASTBuilderVisitor
         extends FEEL_1_1BaseVisitor<BaseNode> {
+    
+    private ScopeHelper scopeHelper;
+
+    private static class ScopeHelper {
+        Deque<Map<String, Type>> stack;
+        
+        public ScopeHelper() {
+            this.stack = new ArrayDeque<>();
+            this.stack.push(new HashMap<>());
+        }
+        
+        public void addTypes(Map<String, Type> inputTypes) {
+            stack.peek().putAll(inputTypes);
+        }
+        
+        public void addType(String name, Type type) {
+            stack.peek().put(name, type);
+        }
+        
+        public void pushScope() {
+            stack.push(new HashMap<>());
+        }
+        
+        public void popScope() {
+            stack.pop();
+        }
+        
+        public Optional<Type> resolveType(String name) {
+            return stack.stream()
+                .map( scope -> Optional.ofNullable( scope.get( name )) )
+                .flatMap( o -> o.isPresent() ? Stream.of( o.get() ) : Stream.empty() )
+                .findFirst()
+                ;
+        }
+    }
+
+    public ASTBuilderVisitor(Map<String, Type> inputTypes) {
+        this.scopeHelper = new ScopeHelper();
+        this.scopeHelper.addTypes(inputTypes);
+    }
 
     @Override
     public BaseNode visitNumberLiteral(FEEL_1_1Parser.NumberLiteralContext ctx) {
@@ -64,7 +112,7 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitLogicalNegation(FEEL_1_1Parser.LogicalNegationContext ctx) {
-        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key() );
+        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.BOOLEAN );
         BaseNode node = visit( ctx.unaryExpression() );
         ListNode params = ASTBuilderFactory.newListNode( ctx.unaryExpression(), Arrays.asList( node ) );
 
@@ -234,9 +282,13 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitContextEntries(FEEL_1_1Parser.ContextEntriesContext ctx) {
         List<BaseNode> nodes = new ArrayList<>();
+        scopeHelper.pushScope();
         for ( FEEL_1_1Parser.ContextEntryContext c : ctx.contextEntry() ) {
-            nodes.add( visit( c ) );
+            ContextEntryNode visited = (ContextEntryNode) visit( c ); // forced cast similarly to visitFunctionDefinition() method
+            nodes.add( visited );
+            scopeHelper.addType( visited.getName().getText() , visited.getResultType() );
         }
+        scopeHelper.popScope();
         return ASTBuilderFactory.newListNode( ctx, nodes );
     }
 
@@ -292,10 +344,20 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitQualifiedName(FEEL_1_1Parser.QualifiedNameContext ctx) {
         ArrayList<NameRefNode> parts = new ArrayList<>();
+        Type typeCursor = null;
         for ( FEEL_1_1Parser.NameRefContext t : ctx.nameRef() ) {
-            parts.add( ASTBuilderFactory.newNameRefNode( t ) );
+            String originalText = ParserHelper.getOriginalText(t);
+            if ( typeCursor == null ) {
+                typeCursor = scopeHelper.resolveType( originalText ).orElse( BuiltInType.UNKNOWN );
+            } else if ( typeCursor instanceof CompositeType ) {
+                typeCursor = ((CompositeType) typeCursor).getFields().get(originalText);
+            } else {
+                // TODO throw error here?
+                typeCursor = BuiltInType.UNKNOWN;
+            }
+            parts.add( ASTBuilderFactory.newNameRefNode( t, typeCursor ) );
         }
-        return parts.size() > 1 ? ASTBuilderFactory.newQualifiedNameNode( ctx, parts ) : parts.get( 0 );
+        return parts.size() > 1 ? ASTBuilderFactory.newQualifiedNameNode( ctx, parts, typeCursor ) : parts.get( 0 );
     }
 
     @Override
@@ -320,9 +382,10 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newQuantifiedExpression( ctx, QuantifiedExpressionNode.Quantifier.EVERY, list, expr );
     }
 
+    // TODO verify, this is never covered in test, possibly as qualifiedName visitor "ingest" it directly.
     @Override
     public BaseNode visitNameRef(FEEL_1_1Parser.NameRefContext ctx) {
-        return ASTBuilderFactory.newNameRefNode( ctx );
+        return ASTBuilderFactory.newNameRefNode( ctx, BuiltInType.UNKNOWN );
     }
 
     @Override
@@ -482,7 +545,7 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
-        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key() );
+        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key(), BuiltInType.BOOLEAN ); // negating a unary tests: BOOLEAN-type anyway
         ListNode value = (ListNode) visit( ctx.simpleUnaryTests() );
         return buildFunctionCall( ctx, name, value );
     }

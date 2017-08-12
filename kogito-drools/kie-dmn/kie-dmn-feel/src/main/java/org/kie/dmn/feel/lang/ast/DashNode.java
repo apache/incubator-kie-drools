@@ -18,6 +18,8 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 public class DashNode
@@ -48,5 +50,10 @@ public class DashNode
         public String toString() {
             return "UnaryTest{-}";
         }
+    }
+
+    @Override
+    public Type getResultType() {
+        return BuiltInType.BOOLEAN;
     }
 }

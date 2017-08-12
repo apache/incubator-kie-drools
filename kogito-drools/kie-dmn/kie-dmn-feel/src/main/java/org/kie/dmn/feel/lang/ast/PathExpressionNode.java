@@ -18,13 +18,23 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 public class PathExpressionNode
         extends BaseNode {
@@ -88,5 +98,30 @@ public class PathExpressionNode
             }
         }
         return o;
+    }
+
+    @Override
+    public Type getResultType() {
+        return findType(expression.getResultType(), name);
+    }
+    
+    private static Type findType(Type startType, BaseNode accessor) {
+        if (!(startType instanceof CompositeType)) {
+            return BuiltInType.UNKNOWN;
+        }
+        CompositeType compositeType = (CompositeType) startType;
+
+        if ( accessor instanceof NameRefNode ) {
+            NameRefNode nameRefNode = (NameRefNode) accessor;
+            return compositeType.getFields().getOrDefault(nameRefNode.getText() , BuiltInType.UNKNOWN);
+        } else if ( accessor instanceof QualifiedNameNode ) {
+            QualifiedNameNode qualifiedNameNode = (QualifiedNameNode) accessor;
+            Type typeCursor = startType;
+            for ( NameRefNode part : qualifiedNameNode.getParts() ) {
+                typeCursor = findType(typeCursor, part);
+            }
+            return typeCursor;
+        }
+        return BuiltInType.UNKNOWN;
     }
 }

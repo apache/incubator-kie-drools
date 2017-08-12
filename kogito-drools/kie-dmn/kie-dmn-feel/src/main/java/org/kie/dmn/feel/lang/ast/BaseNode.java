@@ -19,13 +19,12 @@ package org.kie.dmn.feel.lang.ast;
 import java.util.function.Supplier;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.misc.Interval;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.parser.feel11.ParserHelper;
 import org.kie.dmn.feel.runtime.events.ASTEventBase;
 import org.kie.dmn.feel.util.Msg;
 
@@ -50,7 +49,7 @@ public class BaseNode
         this.setEndChar( ctx.getStop().getStopIndex() );
         this.setEndLine( ctx.getStop().getLine() );
         this.setEndColumn( ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() );
-        this.setText( getOriginalText( ctx ) );
+        this.setText( ParserHelper.getOriginalText( ctx ) );
     }
 
     @Override
@@ -137,13 +136,6 @@ public class BaseNode
     public Object evaluate(EvaluationContext ctx) {
         ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.BASE_NODE_EVALUATE_CALLED) ) );
         return null;
-    }
-
-    private String getOriginalText( ParserRuleContext ctx ) {
-        int a = ctx.start.getStartIndex();
-        int b = ctx.stop.getStopIndex();
-        Interval interval = new Interval(a,b);
-        return ctx.getStart().getInputStream().getText(interval);
     }
 
 }

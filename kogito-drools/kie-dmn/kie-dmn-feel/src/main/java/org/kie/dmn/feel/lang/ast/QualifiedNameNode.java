@@ -19,6 +19,7 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
@@ -30,10 +31,12 @@ public class QualifiedNameNode
         extends BaseNode {
 
     private List<NameRefNode> parts;
+    private Type resultType;
 
-    public QualifiedNameNode(ParserRuleContext ctx, List<NameRefNode> parts) {
+    public QualifiedNameNode(ParserRuleContext ctx, List<NameRefNode> parts, Type type) {
         super( ctx );
         this.parts = parts;
+        this.resultType = type;
     }
 
     public List<NameRefNode> getParts() {
@@ -76,4 +79,9 @@ public class QualifiedNameNode
         return null;
     }
 
+    @Override
+    public Type getResultType() {
+        return resultType;
+    }
+    
 }

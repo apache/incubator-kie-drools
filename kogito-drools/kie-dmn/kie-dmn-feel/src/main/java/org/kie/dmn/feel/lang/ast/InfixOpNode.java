@@ -115,9 +115,47 @@ public class InfixOpNode
 
     @Override
     public Type getResultType() {
-        // bellow is not exactly correct, as the result type depends on both
-        // left and right
-        return operator.isBoolean() ? BuiltInType.BOOLEAN : this.left.getResultType();
+        // see FEEL spec Table 45.
+        if ( operator.isBoolean() ) { return BuiltInType.BOOLEAN; }
+        switch ( operator ) {
+            case ADD:
+            case SUB: {
+                if ( left.getResultType() == BuiltInType.NUMBER && right.getResultType() == BuiltInType.NUMBER ) {
+                    return BuiltInType.NUMBER;
+                } else if ( left.getResultType() == BuiltInType.DATE_TIME && right.getResultType() == BuiltInType.DATE_TIME ) {
+                    return BuiltInType.DATE_TIME;
+                } else if ( left.getResultType() == BuiltInType.TIME && right.getResultType() == BuiltInType.TIME ) {
+                    return BuiltInType.TIME;
+                } else if ( left.getResultType() == BuiltInType.DURATION || right.getResultType() == BuiltInType.DURATION ) {
+                    if ( left.getResultType() == BuiltInType.DATE_TIME || right.getResultType() == BuiltInType.DATE_TIME ) {
+                        return BuiltInType.DATE_TIME;
+                    } else if ( left.getResultType() == BuiltInType.TIME || right.getResultType() == BuiltInType.TIME ) {
+                        return BuiltInType.TIME;
+                    } else if ( left.getResultType() == BuiltInType.DURATION && right.getResultType() == BuiltInType.DURATION ) {
+                        return BuiltInType.DURATION;
+                    }
+                } else if ( left.getResultType() == BuiltInType.STRING && right.getResultType() == BuiltInType.STRING ) {
+                    return BuiltInType.STRING;
+                }
+            }
+            case MULT:
+            case DIV: {
+                if ( left.getResultType() == BuiltInType.NUMBER && right.getResultType() == BuiltInType.NUMBER ) {
+                    return BuiltInType.NUMBER;
+                } else if ( left.getResultType() == BuiltInType.DURATION || right.getResultType() == BuiltInType.DURATION ) {
+                    if ( left.getResultType() == BuiltInType.NUMBER || right.getResultType() == BuiltInType.NUMBER ) {
+                        return BuiltInType.NUMBER;
+                    }
+                }
+            }
+            case POW: {
+                if ( left.getResultType() == BuiltInType.NUMBER && right.getResultType() == BuiltInType.NUMBER ) {
+                    return BuiltInType.NUMBER;
+                }
+            }
+            default:
+                return BuiltInType.UNKNOWN;
+        }
     }
 
     @Override

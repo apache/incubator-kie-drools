@@ -18,6 +18,8 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,6 +89,11 @@ public class ForExpressionNode
 
     private void setValueIntoContext(EvaluationContext ctx, ForIteration forIteration) {
         ctx.setValue( forIteration.getName(), forIteration.getNextValue() );
+    }
+    
+    @Override
+    public Type getResultType() {
+        return BuiltInType.LIST;
     }
 
     private ForIteration[] initializeContexts(EvaluationContext ctx, List<IterationContextNode> iterationContexts) {

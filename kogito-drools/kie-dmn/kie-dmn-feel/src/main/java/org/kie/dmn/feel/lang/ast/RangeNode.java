@@ -20,6 +20,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -147,5 +148,10 @@ public class RangeNode
         public int hashCode() {
             return left;
         }
+    }
+
+    @Override
+    public Type getResultType() {
+        return BuiltInType.RANGE;
     }
 }
