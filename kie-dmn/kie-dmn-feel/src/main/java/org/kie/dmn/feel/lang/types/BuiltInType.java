@@ -43,7 +43,7 @@ public enum BuiltInType implements SimpleType {
     DURATION("duration", "days and time duration", "years and months duration", "dayTimeDuration", "yearMonthDuration"),
     BOOLEAN("boolean"),
     RANGE("range"),
-    FUNCTION("function"),
+    FUNCTION("function"),         // TODO be parametrized as FUNCTION<type>
     LIST("list"),
     CONTEXT("context"),
     UNARY_TEST("unary test");

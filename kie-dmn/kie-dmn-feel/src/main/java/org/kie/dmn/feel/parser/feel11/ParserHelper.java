@@ -240,7 +240,7 @@ public class ParserHelper {
         return follow;
     }
 
-    public String getOriginalText(ParserRuleContext ctx) {
+    public static String getOriginalText(ParserRuleContext ctx) {
         int a = ctx.start.getStartIndex();
         int b = ctx.stop.getStopIndex();
         Interval interval = new Interval( a, b );

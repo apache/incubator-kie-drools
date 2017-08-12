@@ -18,7 +18,9 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,5 +52,10 @@ public class ListNode
     @Override
     public List evaluate(EvaluationContext ctx) {
         return elements.stream().map( e -> e != null ? e.evaluate( ctx ) : null ).collect( Collectors.toList() );
+    }
+
+    @Override
+    public Type getResultType() {
+        return BuiltInType.LIST;
     }
 }

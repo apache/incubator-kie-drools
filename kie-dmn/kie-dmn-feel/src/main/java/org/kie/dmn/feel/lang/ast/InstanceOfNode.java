@@ -55,4 +55,9 @@ public class InstanceOfNode
         Type t = type.evaluate( ctx );
         return t.isInstanceOf( value );
     }
+
+    @Override
+    public Type getResultType() {
+        return BuiltInType.BOOLEAN;
+    }
 }
