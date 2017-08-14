@@ -19,7 +19,7 @@ package org.jbpm.kie.services.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,8 +46,8 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.identity.IdentityProvider;
 import org.kie.api.runtime.query.QueryContext;
+import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.slf4j.Logger;
@@ -62,7 +62,7 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
     protected EntityManagerFactory emf;    
     protected IdentityProvider identityProvider;
     
-    protected Set<DeploymentEventListener> listeners = new HashSet<DeploymentEventListener>();
+    protected Set<DeploymentEventListener> listeners = new LinkedHashSet<DeploymentEventListener>();
     
     
     @Override

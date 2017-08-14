@@ -176,8 +176,7 @@ public class DeactivateDeploymentServiceWithSyncTest extends AbstractKieServices
         CoundDownDeploymentListener countDownListener = new CoundDownDeploymentListener(1) {
             @Override
             public void onDeploy(DeploymentEvent event) {
-                // This used to use a specific listener for setting the active state however
-                // the listeners are stored in a hashset so the order is not guaranteed
+                // This used to use a specific listener for setting the active state
                 deploymentActive.set(event.getDeployedUnit().isActive());
                 super.onDeploy(event);
             }
