@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Collections;
+import java.util.List;
 
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
@@ -338,11 +339,19 @@ public abstract class PlannerBenchmarkFactory {
     public abstract PlannerBenchmark buildPlannerBenchmark();
 
     /**
-     * Creates a new {@link PlannerBenchmark} instance.
+     * Creates a new {@link PlannerBenchmark} instance for datasets that are already in memory.
      * @param problems never null, can be none
      * @return never null
      * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
      */
     public abstract <Solution_> PlannerBenchmark buildPlannerBenchmark(Solution_... problems);
+
+    /**
+     * Creates a new {@link PlannerBenchmark} instance for datasets that are already in memory.
+     * @param problemList never null, can be empty
+     * @return never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     */
+    public abstract <Solution_> PlannerBenchmark buildPlannerBenchmark(List<Solution_> problemList);
 
 }

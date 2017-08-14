@@ -35,7 +35,17 @@
           "methodName": "buildPlannerBenchmark",
           "elementKind": "method",
           "justification": "New method to create benchmark with problem instances directly."
+        },
+        {
+          "code": "java.method.abstractMethodAdded",
+          "new": "method <Solution_> org.optaplanner.benchmark.api.PlannerBenchmark org.optaplanner.benchmark.api.PlannerBenchmarkFactory::buildPlannerBenchmark(java.util.List<Solution_>)",
+          "package": "org.optaplanner.benchmark.api",
+          "classSimpleName": "PlannerBenchmarkFactory",
+          "methodName": "buildPlannerBenchmark",
+          "elementKind": "method",
+          "justification": "New method to create benchmark with problem instances directly."
         }
+
       ]
     }
   }
