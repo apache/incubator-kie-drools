@@ -15,7 +15,7 @@
  */
 package org.jbpm.test.functional.workitem;
 
-import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
+import org.jbpm.process.workitem.core.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 

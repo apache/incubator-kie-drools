@@ -60,7 +60,7 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-workitems</artifactId>
+      <artifactId>jbpm-workitems-core</artifactId>
       <optional>true</optional>
     </dependency>
     

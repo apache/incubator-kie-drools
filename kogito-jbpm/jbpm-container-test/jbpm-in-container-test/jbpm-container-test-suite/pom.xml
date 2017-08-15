@@ -120,7 +120,7 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-workitems</artifactId>
+      <artifactId>jbpm-workitems-core</artifactId>
       <exclusions>
         <!-- excluded because of WAS libraries for Arquillian WAS connector -->
         <exclusion>
@@ -128,6 +128,18 @@
           <artifactId>asm</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-workitems-rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-workitems-webservice</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-workitems-bpmn2</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -252,6 +264,10 @@
         <exclusion>
           <groupId>net.jcip</groupId>
           <artifactId>jcip-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
