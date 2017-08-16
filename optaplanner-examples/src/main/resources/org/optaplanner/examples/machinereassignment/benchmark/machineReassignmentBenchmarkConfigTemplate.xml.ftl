@@ -27,9 +27,7 @@
       <inputSolutionFile>data/machinereassignment/import/model_b_8.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/import/model_b_9.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/import/model_b_10.txt</inputSolutionFile>
-      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
-      <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
-      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
+      <problemStatisticEnabled>false</problemStatisticEnabled>
     </problemBenchmarks>
 
     <solver>

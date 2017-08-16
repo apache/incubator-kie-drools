@@ -9,7 +9,7 @@
       <inputSolutionFile>data/tsp/import/other/air/europe40.tsp</inputSolutionFile>
       <inputSolutionFile>data/tsp/import/cook/air/dj38.tsp</inputSolutionFile>
       <inputSolutionFile>data/tsp/import/cook/air/lu980.tsp</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
       <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->

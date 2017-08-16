@@ -7,7 +7,7 @@
     <problemBenchmarks>
       <xStreamAnnotatedClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</xStreamAnnotatedClass>
       <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
       <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->

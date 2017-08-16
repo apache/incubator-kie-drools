@@ -308,7 +308,6 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
       <xStreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xStreamAnnotatedClass>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
     <solver>
       <scanAnnotatedClasses/>
@@ -388,8 +387,7 @@ For example with Logback in ``logback.xml``:
 [[benchmarkHtmlReport]]
 === HTML Report
 
-After running a benchmark, an HTML report will be written in the `benchmarkDirectory` with the [path]_index.html_
- filename.
+After running a benchmark, an HTML report will be written in the `benchmarkDirectory` with the `index.html` filename.
 Open it in your browser.
 It has a nice overview of your benchmark including:
 
@@ -569,7 +567,7 @@ Useful for visualizing trade-off between the best score versus the time spent fo
 === Enable A Problem Statistic
 
 The benchmarker supports outputting problem statistics as graphs and CSV (comma separated values) files to the ``benchmarkDirectory``.
-To configure one, add a `problemStatisticType` line:
+To configure one or more, add a `problemStatisticType` line for each one:
 
 [source,xml,options="nowrap"]
 ----
@@ -587,14 +585,21 @@ To configure one, add a `problemStatisticType` line:
 </plannerBenchmark>
 ----
 
-Multiple `problemStatisticType` elements are allowed.
-
 [NOTE]
 ====
-These statistic per dataset can slow down the solver noticeably, which affects the benchmark results.
-That's why they are optional and not enabled by default.
+These problem statistics can slow down the solvers noticeably, which affects the benchmark results.
+That's why they are optional and only `BEST_SCORE` is enabled by default.
+To disable that one too, use `problemStatisticEnabled`:
 
-The non-optional summary statistics cannot slow down the solver noticeably.
+[source,xml,options="nowrap"]
+----
+    <problemBenchmarks>
+      ...
+      <problemStatisticEnabled>false</problemStatisticEnabled>
+    </problemBenchmarks>
+----
+
+The summary statistics do not slow down the solver and are always generated.
 ====
 
 The following types are supported:
@@ -603,7 +608,8 @@ The following types are supported:
 [[benchmarkReportBestScoreOverTimeStatistic]]
 === Best Score Over Time Statistic (Graph And CSV)
 
-To see how the best score evolves over time, add:
+Shows how the best score evolves over time. It is run by default.
+To run it when other statistics are configured, also add:
 
 [source,xml,options="nowrap"]
 ----
@@ -615,7 +621,6 @@ To see how the best score evolves over time, add:
 
 .Best Score Over Time Statistic
 image::BenchmarkingAndTweaking/bestScoreStatistic.png[align="center"]
-
 
 [NOTE]
 ====
@@ -651,7 +656,9 @@ But it shouldn't deteriorate too much either.
 
 [WARNING]
 ====
-The step score statistic has been seen to slow down the solver noticeably due to GC stress, especially for fast stepping algorithms (such as Simulated Annealing and Late Acceptance).
+The step score statistic has been seen to slow down the solver noticeably due to GC stress,
+especially for fast stepping algorithms
+(such as <<simulatedAnnealing,Simulated Annealing>> and <<lateAcceptance,Late Acceptance>>).
 ====
 
 
@@ -801,11 +808,13 @@ To see which constraints are matched in the best score (and how much) over time,
 .Constraint Match Total Best Score Diff Over Time Statistic
 image::BenchmarkingAndTweaking/constraintMatchTotalBestScoreStatistic.png[align="center"]
 
-Requires the score calculation to support <<explainingTheScore,constraint matches>>. <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires more work.
+Requires the score calculation to support <<explainingTheScore,constraint matches>>.
+<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
+but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires more work.
 
 [WARNING]
 ====
-The constraint match total statistics has been seen to affect the solver noticeably.
+The constraint match total statistics affect the solver noticeably.
 ====
 
 
@@ -825,11 +834,11 @@ To see which constraints are matched in the step score (and how much) over time,
 .Constraint Match Total Step Score Diff Over Time Statistic
 image::BenchmarkingAndTweaking/constraintMatchTotalStepScoreStatistic.png[align="center"]
 
-Requires the score calculation to support <<explainingTheScore,constraint matches>>. <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires more work.
+Also requires the score calculation to support <<explainingTheScore,constraint matches>>.
 
 [WARNING]
 ====
-The constraint match total statistics has been seen to affect the solver noticeably.
+The constraint match total statistics affect the solver noticeably.
 ====
 
 

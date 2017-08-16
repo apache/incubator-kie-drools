@@ -30,7 +30,7 @@
       <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/1600computers-4800processes.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
       <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->

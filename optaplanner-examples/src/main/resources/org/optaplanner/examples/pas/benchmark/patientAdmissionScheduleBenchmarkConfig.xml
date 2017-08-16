@@ -19,7 +19,7 @@
       <inputSolutionFile>data/pas/unsolved/testdata11.xml</inputSolutionFile>
       <inputSolutionFile>data/pas/unsolved/testdata12.xml</inputSolutionFile>
       <inputSolutionFile>data/pas/unsolved/testdata13.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
       <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->

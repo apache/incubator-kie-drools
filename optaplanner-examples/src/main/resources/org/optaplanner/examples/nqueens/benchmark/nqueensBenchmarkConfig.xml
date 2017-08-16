@@ -9,7 +9,7 @@
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
       <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
       <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->

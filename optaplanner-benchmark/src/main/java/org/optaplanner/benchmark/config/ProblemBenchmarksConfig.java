@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.lang3.BooleanUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
@@ -53,6 +54,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     @XStreamImplicit(itemFieldName = "inputSolutionFile")
     private List<File> inputSolutionFileList = null;
 
+    private Boolean problemStatisticEnabled = null;
     @XStreamImplicit(itemFieldName = "problemStatisticType")
     private List<ProblemStatisticType> problemStatisticTypeList = null;
 
@@ -93,6 +95,14 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
 
     public void setInputSolutionFileList(List<File> inputSolutionFileList) {
         this.inputSolutionFileList = inputSolutionFileList;
+    }
+
+    public Boolean getProblemStatisticEnabled() {
+        return problemStatisticEnabled;
+    }
+
+    public void setProblemStatisticEnabled(Boolean problemStatisticEnabled) {
+        this.problemStatisticEnabled = problemStatisticEnabled;
     }
 
     public List<ProblemStatisticType> getProblemStatisticTypeList() {
@@ -181,8 +191,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
 
     private <Solution_> SolutionFileIO<Solution_> buildSolutionFileIO() {
         if (solutionFileIOClass != null && xStreamAnnotatedClassList != null) {
-            throw new IllegalArgumentException("Cannot use solutionFileIOClass (" + solutionFileIOClass
-                    + ") and xStreamAnnotatedClassList (" + xStreamAnnotatedClassList + ") together.");
+            throw new IllegalArgumentException("The solutionFileIOClass (" + solutionFileIOClass
+                    + ") and xStreamAnnotatedClassList (" + xStreamAnnotatedClassList + ") can be used together.");
         }
         if (solutionFileIOClass != null) {
             return ConfigUtils.newInstance(this, "solutionFileIOClass", solutionFileIOClass);
@@ -205,10 +215,18 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         problemBenchmarkResult.setProblemProvider(problemProvider);
         problemBenchmarkResult.setWriteOutputSolutionEnabled(
                 writeOutputSolutionEnabled == null ? false : writeOutputSolutionEnabled);
-        List<ProblemStatistic> problemStatisticList = new ArrayList<>(
-                problemStatisticTypeList == null ? 0 : problemStatisticTypeList.size());
-        if (problemStatisticTypeList != null) {
-            for (ProblemStatisticType problemStatisticType : problemStatisticTypeList) {
+        List<ProblemStatistic> problemStatisticList;
+        if (BooleanUtils.isFalse(problemStatisticEnabled)) {
+            if (!ConfigUtils.isEmptyCollection(problemStatisticTypeList)) {
+                throw new IllegalArgumentException("The problemStatisticEnabled (" + problemStatisticEnabled
+                        + ") and problemStatisticTypeList (" + problemStatisticTypeList + ") can be used together.");
+            }
+            problemStatisticList = Collections.emptyList();
+        } else {
+            List<ProblemStatisticType> problemStatisticTypeList_ = (problemStatisticTypeList == null)
+                    ? Collections.singletonList(ProblemStatisticType.BEST_SCORE) : problemStatisticTypeList;
+            problemStatisticList = new ArrayList<>(problemStatisticTypeList_.size());
+            for (ProblemStatisticType problemStatisticType : problemStatisticTypeList_) {
                 problemStatisticList.add(problemStatisticType.buildProblemStatistic(problemBenchmarkResult));
             }
         }
@@ -228,7 +246,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         if (singleStatisticTypeList != null) {
             for (SingleStatisticType singleStatisticType : singleStatisticTypeList) {
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                    subSingleBenchmarkResult.getPureSubSingleStatisticList().add(singleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
+                    subSingleBenchmarkResult.getPureSubSingleStatisticList().add(
+                            singleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
                 }
             }
         }
@@ -256,6 +275,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
                 inheritedConfig.getWriteOutputSolutionEnabled());
         inputSolutionFileList = ConfigUtils.inheritMergeableListProperty(inputSolutionFileList,
                 inheritedConfig.getInputSolutionFileList());
+        problemStatisticEnabled = ConfigUtils.inheritOverwritableProperty(problemStatisticEnabled,
+                inheritedConfig.getProblemStatisticEnabled());
         problemStatisticTypeList = ConfigUtils.inheritMergeableListProperty(problemStatisticTypeList,
                 inheritedConfig.getProblemStatisticTypeList());
         singleStatisticTypeList = ConfigUtils.inheritMergeableListProperty(singleStatisticTypeList,

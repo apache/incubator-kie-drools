@@ -12,7 +12,6 @@
       <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>

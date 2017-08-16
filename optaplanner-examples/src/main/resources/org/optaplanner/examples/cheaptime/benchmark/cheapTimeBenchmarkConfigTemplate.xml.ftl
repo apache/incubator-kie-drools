@@ -56,14 +56,6 @@
       <inputSolutionFile>data/cheaptime/import/instance47</inputSolutionFile>
       <inputSolutionFile>data/cheaptime/import/instance48</inputSolutionFile>
       <inputSolutionFile>data/cheaptime/import/instance49</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
-      <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
-      <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
-      <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->
-      <!--<problemStatisticType>MOVE_COUNT_PER_STEP</problemStatisticType>-->
-      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
-      <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
-      <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
     </problemBenchmarks>
 
     <solver>

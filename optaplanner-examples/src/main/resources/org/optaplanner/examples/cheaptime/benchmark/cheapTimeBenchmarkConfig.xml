@@ -56,7 +56,7 @@
       <inputSolutionFile>data/cheaptime/import/instance47</inputSolutionFile>
       <inputSolutionFile>data/cheaptime/import/instance48</inputSolutionFile>
       <inputSolutionFile>data/cheaptime/import/instance49</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
       <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->

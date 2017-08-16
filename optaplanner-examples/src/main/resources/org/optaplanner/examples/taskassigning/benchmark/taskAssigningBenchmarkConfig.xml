@@ -10,7 +10,7 @@
       <inputSolutionFile>data/taskassigning/unsolved/50tasks-5employees.xml</inputSolutionFile>
       <inputSolutionFile>data/taskassigning/unsolved/100tasks-5employees.xml</inputSolutionFile>
       <inputSolutionFile>data/taskassigning/unsolved/500tasks-20employees.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
       <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->

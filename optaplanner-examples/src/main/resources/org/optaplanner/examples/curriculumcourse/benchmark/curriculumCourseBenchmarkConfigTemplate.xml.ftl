@@ -20,7 +20,6 @@
       <inputSolutionFile>data/curriculumcourse/unsolved/comp12.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp13.xml</inputSolutionFile>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp14.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>

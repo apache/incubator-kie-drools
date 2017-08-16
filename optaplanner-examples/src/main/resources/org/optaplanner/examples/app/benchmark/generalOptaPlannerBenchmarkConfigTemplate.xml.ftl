@@ -3,9 +3,6 @@
   <benchmarkDirectory>local/data/general/template</benchmarkDirectory>
 
   <inheritedSolverBenchmark>
-    <problemBenchmarks>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
-    </problemBenchmarks>
     <solver>
       <termination>
         <minutesSpentLimit>5</minutesSpentLimit>

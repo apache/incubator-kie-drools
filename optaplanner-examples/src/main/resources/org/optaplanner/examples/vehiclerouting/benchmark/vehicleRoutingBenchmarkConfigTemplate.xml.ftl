@@ -97,7 +97,6 @@
       <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_1000_R210_1.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_1000_RC110_1.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_1000_RC210_1.vrp</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>
