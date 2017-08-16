@@ -180,6 +180,8 @@ public class KieModuleModelImpl implements KieModuleModel {
             xStream.alias("fileLogger", FileLoggerModelImpl.class);
             xStream.alias("ruleTemplate", RuleTemplateModelImpl.class);
             xStream.setClassLoader(KieModuleModelImpl.class.getClassLoader());
+            String[] voidDeny = {"void.class", "Void.class"};
+            xStream.denyTypes(voidDeny);
         }
 
         public String toXML(KieModuleModel kieProject) {
