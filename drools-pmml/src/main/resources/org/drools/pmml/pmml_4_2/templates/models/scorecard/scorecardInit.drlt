@@ -24,15 +24,19 @@
 
 @declare{'scorecardInit'}
 
+
+
+
 rule "Init ScoreCard @{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
     ModelMarker( "@{context}" ; enabled == true )
 then
-    @{ pmmlPackageName }.ScoreCardData data = new @{name}ScoreCardData ( "@{context}" );
+    AbstractPMMLData data = new @{name}ScoreCardData("@{context}" );
+//    @{ pmmlPackageName }.ScoreCardData data = new @{name}ScoreCardData ( "@{context}" );
     @{ pmmlPackageName }.ScoreCard card = new ScoreCard( "@{context}", 0.0, data, @{useRC}, @{pointsBelow}, new java.util.LinkedHashMap() );
-    insertLogical( data );
-    insertLogical( card );
+    insert( data );
+    insert( card );
 
     @if{ zero != null } insertLogical( new @{ pmmlPackageName }.InitialScore( "@{context}", @{ zero } ) ); @end{}
 end

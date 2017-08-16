@@ -33,24 +33,23 @@
     */
 }
 @declare{'inputFromEPRule'}
-rule "Input_@{name}"
-@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
-when
-    $in : @{box(type)}() from entry-point "in_@{name}"
-    not @{name}( value == $in, context == null )
-then
-    // @{box(type)}
-    @{name} input = new @{name}();
-        input.setValue( $in );
-        input.setName(@{format("string",name)});
-        input.setMissing(false);
-        input.setValid(@{notRestricted});
-        input.setContext(null);
-    //System.out.println("Rule " + drools.getRule().getName() + " for input " + $in + " : will insert  " + input.toString());
-    retract( $in );
-    insert( input );
-end
 
+rule "Input_@{name} via PMMLRequestData"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 100
+when
+   $rd: PMMLRequestData( requestParams != null )
+   $pi: ParameterInfo( capitalizedName == "@{name}", $value: value ) from $rd.requestParams
+   not @{name}( value == $value, context == null )
+then
+   @{name} input = new @{name}();
+   input.setValue((@{type})$value);
+   input.setName(@{format("string",name)});
+   input.setMissing(false);
+   input.setValid(@{notRestricted});
+   input.setContext(null);
+   insert( input );
+end
 
 rule "OverrideInput_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }

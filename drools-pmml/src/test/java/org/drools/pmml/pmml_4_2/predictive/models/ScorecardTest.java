@@ -19,6 +19,7 @@ package org.drools.pmml.pmml_4_2.predictive.models;
 
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_2.PMML4Helper;
+import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
@@ -54,10 +55,13 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();  //init model
 
-        kSession.getEntryPoint( "in_Age" ).insert( 33.0 );
-        kSession.getEntryPoint( "in_Occupation" ).insert( "SKYDIVER" );
-        kSession.getEntryPoint( "in_ResidenceState" ).insert( "KN" );
-        kSession.getEntryPoint( "in_ValidLicense" ).insert( true );
+        PMMLRequestData requestData = new PMMLRequestData("Sample Score");
+        requestData.addRequestParam("age",33.0);
+        requestData.addRequestParam("occupation", "SKYDIVER");
+        requestData.addRequestParam("residenceState","KN");
+        requestData.addRequestParam("validLicense", true);
+        kSession.insert(requestData);
+
 
         kSession.fireAllRules();  //init model
 
@@ -98,9 +102,12 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
         kSession.fireAllRules();  //init model
 
-        kSession.getEntryPoint( "in_Cage" ).insert( "engineering" );
-        kSession.getEntryPoint( "in_Age" ).insert( 25 );
-        kSession.getEntryPoint( "in_Wage" ).insert( 500.0 );
+        PMMLRequestData requestData = new PMMLRequestData("SampleScorecard");
+        requestData.addRequestParam("cage","engineering");
+        requestData.addRequestParam("age",25);
+        requestData.addRequestParam("wage",500.0);
+        kSession.insert(requestData);
+
 
         kSession.fireAllRules();  //init model
 

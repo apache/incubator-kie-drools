@@ -27,11 +27,12 @@
 @comment{ The inner data structure collects the info from the datafield, and is used to be compatible with predicates,
  as in decision trees. The containment is then used to update data and aggregate scores independently, preserving truth maintenance }
 
+
 declare @{ pmmlPackageName }.ScoreCard
 @propertyReactive
     modelName   : String @key
     score       : double
-    holder      : @{ pmmlPackageName }.ScoreCardData
+    holder      : AbstractPMMLData
     enableRC    : boolean
     pointsBelow : boolean
     ranking     : java.util.Map
