@@ -33,6 +33,7 @@ import javax.transaction.UserTransaction;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.time.TimerService;
+import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
@@ -202,16 +203,22 @@ public class GlobalTimerServiceVolumeTest extends TimerBaseTest {
             counter--;
         }
 
+        Collection<TimerJobInstance> timers = null;
         Map<Long, List<GlobalJobHandle>> jobs = null;
         TimerService timerService = TimerServiceRegistry.getInstance().get(manager.getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
         if (timerService != null) {
             if (timerService instanceof GlobalTimerService) {
                 jobs = ((GlobalTimerService) timerService).getTimerJobsPerSession();
+                
+                timers = ((GlobalTimerService) timerService).getTimerJobFactoryManager().getTimerJobInstances();
             }
         }
 
         assertNotNull("Jobs should not be null as number of timers have been created", jobs);
         assertEquals("There should be no jobs in the global timer service", 0, jobs.size());
+        
+        assertNotNull("Timer instances should not be null as number of timers have been created", timers);
+        assertEquals("There should be no timer instances in the global timer service manager", 0, timers.size());
 
         RuntimeEngine empty = manager.getRuntimeEngine(EmptyContext.get());
         AuditService logService = empty.getAuditService();

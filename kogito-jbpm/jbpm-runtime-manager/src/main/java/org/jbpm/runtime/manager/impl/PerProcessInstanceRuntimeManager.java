@@ -236,8 +236,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
                 	}
                     ((Disposable) runtime).dispose();
                 }
-                
-            	releaseAndCleanLock(runtime);
+                            	
             	if (ksessionId != null) {
                 	TimerService timerService = TimerServiceRegistry.getInstance().get(getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
                     if (timerService != null) {
@@ -246,6 +245,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
                         }
                     }
             	}
+            	releaseAndCleanLock(runtime);
         	}
     	} catch (Exception e) {
     	    releaseAndCleanLock(runtime);

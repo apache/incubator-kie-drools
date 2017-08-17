@@ -97,13 +97,14 @@ public class GlobalJPATimerJobFactoryManager implements CommandServiceTimerJobFa
     }
     
     public void removeTimerJobInstance(TimerJobInstance instance) {
+        Long sessionId = null;
         JobContext ctx = instance.getJobContext();
         if (ctx instanceof SelfRemovalJobContext) {
             ctx = ((SelfRemovalJobContext) ctx).getJobContext();
         }
         Map<Long, TimerJobInstance> instances = null;
         if (ctx instanceof ProcessJobContext) {
-            long sessionId = ((ProcessJobContext)ctx).getSessionId();
+            sessionId = ((ProcessJobContext)ctx).getSessionId();
             instances = timerInstances.get(sessionId);
             if (instances == null) {
                 instances = new ConcurrentHashMap<Long, TimerJobInstance>();
@@ -112,7 +113,10 @@ public class GlobalJPATimerJobFactoryManager implements CommandServiceTimerJobFa
         } else {
             instances = singleTimerInstances;
         }
-        instances.remove( instance.getJobHandle().getId() );        
+        instances.remove( instance.getJobHandle().getId() );  
+        if (sessionId != null && instances.isEmpty()) {
+            timerInstances.remove(sessionId);
+        }
     }
     
     
