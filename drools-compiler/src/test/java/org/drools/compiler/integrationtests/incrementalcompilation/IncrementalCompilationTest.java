@@ -4218,4 +4218,117 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
             this.value = value;
         }
     }
+
+    private static final String DECLARES_DRL =
+            "package org.drools.example.api.kiedeclare;\n" +
+            "declare Message\n" +
+            "name : String\n" +
+            "text : String\n" +
+            "end \n";
+
+    private static final String RULES1_DRL =
+            "package org.drools.example.api.kiemodulemodel;\n" +
+            "import org.drools.example.api.kiedeclare.*;\n" +
+            "rule rule6 when \n" +
+            "    $m : Message(text == \"What's the problem?\") \n" +
+            "then\n" +
+            "    delete( $m );\n" +
+            "    insert( new Message(\"HAL\", \"reply 1\" ) ); \n" +
+            "end \n";
+
+    private static final String RULES2_DRL =
+            "package org.drools.example.api.kiemodulemodel;\n" +
+            "import org.drools.example.api.kiedeclare.*;\n" +
+            "rule rule6 when \n" +
+            "    $m : Message(text == \"What's the problem?\") \n" +
+            "then\n" +
+            "    delete( $m );\n" +
+            "    insert( new Message(\"HAL\", \"reply 2\" ) ); \n" +
+            "end \n";
+
+    @Test
+    public void testDeclaredTypeInDifferentPackage() {
+        // DROOLS-1707
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, DECLARES_DRL, RULES1_DRL  );
+
+        KieContainer kContainer = ks.newKieContainer(km.getReleaseId());
+        doFire(kContainer.getKieBase(), "reply 1");
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        km = createAndDeployJar( ks, releaseId2, DECLARES_DRL, RULES2_DRL );
+
+        kContainer.updateToVersion( releaseId2 );
+        doFire(kContainer.getKieBase(), "reply 2");
+    }
+
+    @Test
+    public void testDeclaredTypeInIncludedKieBase() {
+        // DROOLS-1707
+        KieServices ks = KieServices.Factory.get();
+
+        KieModule kModule = buildKieModule("0.0.1", DECLARES_DRL, RULES1_DRL);
+        KieContainer kContainer = ks.newKieContainer(kModule.getReleaseId());
+        doFire(kContainer.getKieBase("kiemodulemodel"), "reply 1");
+
+        KieModule kModule2 = buildKieModule("0.0.2", DECLARES_DRL, RULES2_DRL);
+        kContainer.updateToVersion(kModule2.getReleaseId());
+        doFire(kContainer.getKieBase("kiemodulemodel"), "reply 2");
+    }
+
+    private KieModule buildKieModule(String version, String declares, String rules) {
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        ReleaseId rid = ks.newReleaseId("org.drools", "kiemodulemodel-example", version);
+        kfs.generateAndWritePomXML(rid);
+
+        KieModuleModel kModuleModel = ks.newKieModuleModel();
+        kModuleModel.newKieBaseModel("kiemodulemodel")
+                    .addPackage("kiemodulemodel")
+                    .addInclude("kiedeclare");
+        kModuleModel.newKieBaseModel("kiedeclare")
+                    .addPackage("kiedeclare");
+
+        kfs.writeKModuleXML(kModuleModel.toXML());
+        kfs.write("src/main/resources/kiedeclare/declares.drl", declares);
+        kfs.write("src/main/resources/kiemodulemodel/rules.drl", rules);
+
+        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
+        return kb.getKieModule();
+    }
+
+    private void doFire(KieBase kbase, String reply) {
+        FactType ftype = kbase.getFactType("org.drools.example.api.kiedeclare", "Message");
+
+        KieSession kSession = kbase.newKieSession();
+
+        kSession.insert(createMessage(ftype, "Dave", "What's the problem?"));
+        assertEquals(1, kSession.fireAllRules());
+        assertEquals(1, kSession.getObjects().size());
+
+        Object fact = kSession.getObjects().iterator().next();
+        assertEquals("HAL", ftype.get(fact, "name"));
+        assertEquals(reply, ftype.get(fact, "text"));
+        kSession.dispose();
+    }
+
+    private Object createMessage(FactType ftype, String name, String text) {
+        Object fact = null;
+        try {
+            fact = ftype.newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException( e );
+        }
+
+        ftype.set(fact, "name", name);
+        ftype.set(fact, "text", text);
+
+        assertEquals(name, ftype.get(fact, "name"));
+        assertEquals(text, ftype.get(fact, "text"));
+
+        return fact;
+    }
 }
