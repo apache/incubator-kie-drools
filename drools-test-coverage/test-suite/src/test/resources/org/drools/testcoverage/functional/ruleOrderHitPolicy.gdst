@@ -87,9 +87,9 @@
   </auditLog>
   <imports>
     <imports>
-      <org.drools.workbench.models.datamodel.imports.Import>
+      <org.appformer.project.datamodel.imports.Import>
         <type>org.drools.testcoverage.common.model.Person</type>
-      </org.drools.workbench.models.datamodel.imports.Import>
+      </org.appformer.project.datamodel.imports.Import>
     </imports>
   </imports>
   <packageName>org.drools.testcoverage.functional</packageName>
