@@ -16,10 +16,6 @@
 
 package org.drools.compiler.lang.descr;
 
-import org.drools.core.rule.Namespaceable;
-import org.kie.api.io.Resource;
-import org.kie.internal.definition.KnowledgeDescr;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -30,6 +26,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.drools.core.rule.Namespaceable;
+import org.kie.api.io.Resource;
+import org.kie.internal.definition.KnowledgeDescr;
 
 public class PackageDescr extends BaseDescr
         implements
@@ -101,6 +101,11 @@ public class PackageDescr extends BaseDescr
         out.writeObject(entryPointDeclarations);
         out.writeObject(typeDeclarations);
         out.writeObject(enumDeclarations);
+    }
+
+    @Override
+    public String toString() {
+        return "package " + getName();
     }
 
     public String getName() {

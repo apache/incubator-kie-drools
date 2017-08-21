@@ -69,7 +69,6 @@ import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ParserError;
-import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.compiler.ProcessLoadError;
 import org.drools.compiler.compiler.ResourceConversionResult;
@@ -136,14 +135,14 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
+import org.kie.api.internal.assembler.KieAssemblerService;
+import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ChangeSet;
-import org.kie.api.internal.assembler.KieAssemblerService;
-import org.kie.api.internal.assembler.KieAssemblers;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -1773,6 +1772,15 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration(Class<?> cls, String packageName) {
+        if (kBase != null) {
+            InternalKnowledgePackage pkg = kBase.getPackage( packageName );
+            if ( pkg != null ) {
+                TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( cls );
+                if ( typeDeclaration != null ) {
+                    return typeDeclaration;
+                }
+            }
+        }
         return typeBuilder.getAndRegisterTypeDeclaration(cls, packageName);
     }
 
