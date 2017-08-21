@@ -76,6 +76,8 @@ public class XStreamJSon {
     public static XStream newJSonMarshaller() {
         JettisonMappedXmlDriver jet = new JettisonMappedXmlDriver();
         XStream xstream = new XStream( jet );
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream.denyTypes(voidDeny);
 
         XStreamHelper.setAliases( xstream );
 

@@ -215,6 +215,9 @@ public class RuleModelTest {
         assertFalse( model.isBoundFactUsed( "x" ) );
 
         final XStream xt = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xt.denyTypes(voidDeny);
+
         xt.alias( "rule",
                 RuleModel.class );
         xt.alias( "fact",
