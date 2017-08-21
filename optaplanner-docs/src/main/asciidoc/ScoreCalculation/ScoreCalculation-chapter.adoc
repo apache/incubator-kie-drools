@@ -1293,7 +1293,7 @@ get the `Indictment` map from the ``ScoreDirector``:
 [source,java,options="nowrap"]
 ----
 Map<Object, Indictment> indictmentMap = guiScoreDirector.getIndictmentMap();
-for (CloudProcess process = cloudBalance.getProcessList()) {
+for (CloudProcess process : cloudBalance.getProcessList()) {
     Indictment indictment = indictmentMap.get(process);
     if (indictment == null) {
         continue;
