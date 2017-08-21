@@ -214,7 +214,7 @@ Advanced configuration:
 
 [source,xml,options="nowrap"]
 ----
-    <pillarSwapMoveSelector>
+    <pillarChangeMoveSelector>
       ... <!-- Normal selector properties -->
       <pillarSelector>
         <entitySelector>
@@ -228,7 +228,7 @@ Advanced configuration:
       <valueSelector variableName="room">
         ...
       </valueSelector>
-    </pillarSwapMoveSelector>
+    </pillarChangeMoveSelector>
 ----
 
 A sub pillar is a subset of entities that share the same value(s) for their variable(s). For example if queen A, B, C and D are all located on row 0, they are a pillar and `[A, D]` is one of the many sub pillars.
