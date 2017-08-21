@@ -366,8 +366,10 @@ public class KieContainerImpl
         if (modifyingUsedClass) {
             // invalidate accessors for old class
             for (Class<?> cls : modifiedClasses) {
-                ( (InternalKnowledgePackage) kBase.getKiePackage( cls.getPackage().getName() ) )
-                        .getClassFieldAccessorStore().removeClass( cls );
+                InternalKnowledgePackage kpackage = ( (InternalKnowledgePackage) kBase.getKiePackage( cls.getPackage().getName() ) );
+                if (kpackage != null) {
+                    kpackage.getClassFieldAccessorStore().removeClass( cls );
+                }
             }
 
             // there are modified classes used by this kbase, so it has to be completely updated

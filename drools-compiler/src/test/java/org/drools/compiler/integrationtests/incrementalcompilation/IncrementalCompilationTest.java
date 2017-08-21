@@ -4331,4 +4331,50 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         return fact;
     }
+
+    @Test
+    public void testRemoveAndReaddJavaClass() {
+        // DROOLS-1704
+        String javaSource = "package org.drools.test;\n" +
+                            "public class Person { }\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        ReleaseId releaseId3 = ks.newReleaseId( "org.kie", "test-upgrade", "1.2.0" );
+
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.generateAndWritePomXML(releaseId1);
+        KieModuleModel kModuleModel = ks.newKieModuleModel();
+        kfs.writeKModuleXML(kModuleModel.toXML());
+        kfs.write("src/main/java/org/drools/test/Person.java", javaSource);
+        ks.newKieBuilder(kfs).buildAll();
+
+        KieContainer kContainer = ks.newKieContainer(releaseId1);
+        try {
+            Class.forName("org.drools.test.Person", true, kContainer.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( e );
+        }
+        kContainer.getKieBase();
+
+        kfs = ks.newKieFileSystem();
+        kfs.generateAndWritePomXML(releaseId2);
+        kModuleModel = ks.newKieModuleModel();
+        kfs.writeKModuleXML(kModuleModel.toXML());
+        ks.newKieBuilder(kfs).buildAll();
+
+        kContainer.updateToVersion(releaseId2);
+        kContainer.getKieBase();
+
+        kfs = ks.newKieFileSystem();
+        kfs.generateAndWritePomXML(releaseId3);
+        kModuleModel = ks.newKieModuleModel();
+        kfs.writeKModuleXML(kModuleModel.toXML());
+        kfs.write("src/main/java/org/drools/test/Person.java", javaSource);
+        ks.newKieBuilder(kfs).buildAll();
+
+        kContainer.updateToVersion(releaseId3);
+    }
 }
