@@ -52,6 +52,8 @@ public class DeploymentStore {
 	private TransactionalCommandService commandService;
 	
 	public DeploymentStore() {
+		String[] voidDeny = {"void.class", "Void.class"};
+		xstream.denyTypes(voidDeny);
 	    this.xstream.registerConverter(new TransientObjectConverter());
 	}
 	

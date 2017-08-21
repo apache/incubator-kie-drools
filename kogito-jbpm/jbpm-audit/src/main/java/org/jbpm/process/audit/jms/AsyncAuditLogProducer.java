@@ -171,6 +171,8 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
             queueSession = queueConnection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
            
             XStream xstream = new XStream();
+            String[] voidDeny = {"void.class", "Void.class"};
+            xstream.denyTypes(voidDeny);
             String eventXml = xstream.toXML(messageContent);
             TextMessage message = queueSession.createTextMessage(eventXml);
             message.setIntProperty("EventType", eventType);
