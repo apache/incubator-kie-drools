@@ -127,6 +127,9 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger implements KieR
             writer = new OutputStreamWriter( fileOut,
                                              IoUtils.UTF8_CHARSET );
             final XStream xstream = new XStream();
+            String[] voidDeny = {"void.class", "Void.class"};
+            xstream.denyTypes(voidDeny);
+
             WorkingMemoryLog log = null;
             synchronized ( this.events ) {
                 log = new WorkingMemoryLog(new ArrayList<LogEvent>( this.events ));

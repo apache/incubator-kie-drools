@@ -63,6 +63,8 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
 
     public String getEvents() {
         final XStream xstream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream.denyTypes(voidDeny);
         StringWriter writer = new StringWriter();
         try {
             final ObjectOutputStream out = xstream.createObjectOutputStream(writer);

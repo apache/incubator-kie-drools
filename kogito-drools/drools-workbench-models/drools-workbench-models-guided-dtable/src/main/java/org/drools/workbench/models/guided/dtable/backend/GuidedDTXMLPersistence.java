@@ -51,6 +51,8 @@ public class GuidedDTXMLPersistence {
 
     private GuidedDTXMLPersistence() {
         xt = new XStream( new DomDriver() );
+        String[] voidDeny = {"void.class", "Void.class"};
+        xt.denyTypes(voidDeny);
 
         //Legacy model
         xt.alias( "decision-table",

@@ -54,8 +54,12 @@ public class XmlBifParser {
             XStream xstream;
             if (encoding != null) {
                 xstream = new XStream(new DomDriver(encoding));
+                String[] voidDeny = {"void.class", "Void.class"};
+                xstream.denyTypes(voidDeny);
             } else {
                 xstream = new XStream();
+                String[] voidDeny = {"void.class", "Void.class"};
+                xstream.denyTypes(voidDeny);
             }
 
             initXStream(xstream);
@@ -70,6 +74,8 @@ public class XmlBifParser {
 
     public static Bif loadBif(URL url) {
         XStream xstream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream.denyTypes(voidDeny);
         initXStream( xstream );
 
         Bif bif = (Bif) xstream.fromXML(url);

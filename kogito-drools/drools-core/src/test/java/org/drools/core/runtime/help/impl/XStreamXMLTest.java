@@ -50,7 +50,10 @@ public class XStreamXMLTest {
 
     @Before
     public void setup() {
-        xstream = XStreamXML.newXStreamMarshaller( new XStream() );
+        xstream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream.denyTypes(voidDeny);
+        xstream = XStreamXML.newXStreamMarshaller(xstream);
     }
 
     @Test

@@ -25,7 +25,10 @@ public class BatchExecutionHelperProviderImpl
     BatchExecutionHelperProvider {
 
     public XStream newXStreamMarshaller() {
-        return newXStreamMarshaller( new XStream() );
+        XStream xstream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream.denyTypes(voidDeny);
+        return newXStreamMarshaller(xstream);
     }
 
     public XStream newJSonMarshaller() {

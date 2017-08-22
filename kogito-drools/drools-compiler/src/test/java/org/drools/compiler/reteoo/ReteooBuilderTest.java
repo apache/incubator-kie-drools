@@ -62,6 +62,8 @@ public class ReteooBuilderTest {
     private void writeRuleBase(final InternalKnowledgeBase kBase,
                                final String fileName) throws IOException {
         final XStream xstream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream.denyTypes(voidDeny);
 
         final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( "src/test/resources/org/drools/reteoo/" + fileName ) ) );
 
@@ -83,6 +85,8 @@ public class ReteooBuilderTest {
         }
 
         final XStream xstream = new XStream();
+        String[] voidDeny = {"void.class", "Void.class"};
+        xstream.denyTypes(voidDeny);
 
         final InternalKnowledgeBase goodKBase = (InternalKnowledgeBase) xstream.fromXML( getClass().getResourceAsStream( name ) );
 

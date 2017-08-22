@@ -27,6 +27,8 @@ public class KieModuleMetaInfo implements Serializable{
 
     static {
         xStream.setClassLoader( KieModuleMetaInfo.class.getClassLoader() );
+        String[] voidDeny = {"void.class", "Void.class"};
+        xStream.denyTypes(voidDeny);
     }
 
     private Map<String, TypeMetaInfo> typeMetaInfos;
