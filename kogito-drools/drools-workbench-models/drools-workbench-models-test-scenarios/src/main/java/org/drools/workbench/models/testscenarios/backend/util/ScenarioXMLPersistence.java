@@ -36,6 +36,8 @@ import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 
 /**
  * Persists the scenario model.
@@ -46,9 +48,7 @@ public class ScenarioXMLPersistence {
     private static final ScenarioXMLPersistence INSTANCE = new ScenarioXMLPersistence();
 
     private ScenarioXMLPersistence() {
-        xt = new XStream(new DomDriver());
-        String[] voidDeny = {"void.class", "Void.class"};
-        xt.denyTypes(voidDeny);
+        xt = createXStream(new DomDriver());
         xt.alias("scenario", Scenario.class);
         xt.alias("execution-trace", ExecutionTrace.class);
         xt.alias("expectation", Expectation.class);
