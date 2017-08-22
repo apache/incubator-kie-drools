@@ -16,7 +16,7 @@
 package org.drools.compiler.rule.builder.util;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.core.base.TypeResolver;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
@@ -83,7 +83,7 @@ public class AnnotationFactory {
         @Override
         public boolean equals(Object obj) {
             return obj instanceof AnnotationInvocationHandler &&
-                   annotationDescr.equals(((AnnotationInvocationHandler)obj).annotationDescr);
+                    annotationDescr.equals(((AnnotationInvocationHandler) obj).annotationDescr);
         }
 
         @Override
@@ -92,11 +92,11 @@ public class AnnotationFactory {
         }
 
         private Object normalizeResult(Class<?> resultClass, Object val) {
-            if ( resultClass == String.class ) {
+            if (resultClass == String.class) {
                 String value = val.toString();
-                if ( annotationDescr.isStrict() ) {
+                if (annotationDescr.isStrict()) {
                     // quotes on a String value of a strict annotation are required
-                    if (value.charAt(0) == '"' && value.charAt(value.length()-1) == '"') {
+                    if (value.charAt(0) == '"' && value.charAt(value.length() - 1) == '"') {
                         return value.substring(1, value.length() - 1);
                     } else {
                         throw new RuntimeException("Cannot convert " + value + " to an instance of type " + resultClass.getName());
@@ -106,7 +106,7 @@ public class AnnotationFactory {
                 }
             }
 
-            if (resultClass.isInstance( val )) {
+            if (resultClass.isInstance(val)) {
                 return val;
             }
 
@@ -121,12 +121,12 @@ public class AnnotationFactory {
                 String annotationHead = resultClass.getSimpleName() + ".";
                 int typePos = value.indexOf(annotationHead);
                 if (typePos >= 0) {
-                    value = value.substring(typePos+annotationHead.length());
+                    value = value.substring(typePos + annotationHead.length());
                 }
                 try {
                     return Enum.valueOf((Class<Enum>) resultClass, value);
                 } catch (IllegalArgumentException e) {
-                    if ( !annotationDescr.isStrict() ) {
+                    if (!annotationDescr.isStrict()) {
                         value = ucFirst(value);
                         try {
                             return Enum.valueOf((Class<Enum>) resultClass, value);

@@ -20,10 +20,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 class NewFactPopulator extends FactPopulatorBase {
 
@@ -32,36 +32,35 @@ class NewFactPopulator extends FactPopulatorBase {
     public NewFactPopulator(
             Map<String, Object> populatedData,
             TypeResolver typeResolver,
-            FactData fact ) throws ClassNotFoundException,
+            FactData fact) throws ClassNotFoundException,
             InstantiationException,
             IllegalAccessException {
-        super( populatedData,
-               typeResolver,
-               fact );
+        super(populatedData,
+              typeResolver,
+              fact);
         factObject = resolveFactObject();
     }
 
     protected Object resolveFactObject() throws ClassNotFoundException,
             IllegalAccessException,
             InstantiationException {
-        Object factObject = typeResolver.resolveType( getTypeName( typeResolver,
-                                                                   fact ) ).newInstance();
-        populatedData.put( fact.getName(),
-                           factObject );
+        Object factObject = typeResolver.resolveType(getTypeName(typeResolver,
+                                                                 fact)).newInstance();
+        populatedData.put(fact.getName(),
+                          factObject);
         return factObject;
     }
 
     @Override
     public List<FieldPopulator> getFieldPopulators()
             throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
-        return getFieldPopulators( factObject );
+        return getFieldPopulators(factObject);
     }
 
     @Override
-    public void populate( KieSession ksession,
-                          Map<String, FactHandle> factHandles ) {
-        factHandles.put( fact.getName(),
-                         ksession.insert( factObject ) );
+    public void populate(KieSession ksession,
+                         Map<String, FactHandle> factHandles) {
+        factHandles.put(fact.getName(),
+                        ksession.insert(factObject));
     }
-
 }

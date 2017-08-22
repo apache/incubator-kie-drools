@@ -65,7 +65,7 @@ public class MVELSafeHelperTest {
                 + "field.setAccessible(true);\n"  
                 + "field.set(null, \"new org.drools.core.util.MVELSafeHelper.RawMVELEvaluator()\");";
         try {
-            Assert.assertEquals( MVELSafeHelper.SafeMVELEvaluator.class.getName(), MVELSafeHelper.getEvaluator().getClass().getName() );
+            Assert.assertEquals( SafeMVELEvaluator.class.getName(), MVELSafeHelper.getEvaluator().getClass().getName() );
             MVELSafeHelper.getEvaluator().eval(setup, new HashMap<String,Object>());
             Assert.fail("Should have raised an AccessControlException");
         } catch (PropertyAccessException e) {

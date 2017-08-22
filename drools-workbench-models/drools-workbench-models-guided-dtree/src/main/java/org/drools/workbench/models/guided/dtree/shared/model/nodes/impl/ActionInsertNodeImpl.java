@@ -18,9 +18,9 @@ package org.drools.workbench.models.guided.dtree.shared.model.nodes.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class ActionInsertNodeImpl extends BaseNodeImpl implements ActionInsertNode {
 
@@ -32,8 +32,8 @@ public class ActionInsertNodeImpl extends BaseNodeImpl implements ActionInsertNo
         //Errai marshalling
     }
 
-    public ActionInsertNodeImpl( final String className ) {
-        setClassName( className );
+    public ActionInsertNodeImpl(final String className) {
+        setClassName(className);
     }
 
     @Override
@@ -42,9 +42,9 @@ public class ActionInsertNodeImpl extends BaseNodeImpl implements ActionInsertNo
     }
 
     @Override
-    public void setClassName( final String className ) {
-        this.className = PortablePreconditions.checkNotNull( "className",
-                                                             className );
+    public void setClassName(final String className) {
+        this.className = PortablePreconditions.checkNotNull("className",
+                                                            className);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ActionInsertNodeImpl extends BaseNodeImpl implements ActionInsertNo
     }
 
     @Override
-    public void setLogicalInsertion( final boolean isLogicalInsertion ) {
+    public void setLogicalInsertion(final boolean isLogicalInsertion) {
         this.isLogicalInsertion = isLogicalInsertion;
     }
 
@@ -63,23 +63,23 @@ public class ActionInsertNodeImpl extends BaseNodeImpl implements ActionInsertNo
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ActionInsertNodeImpl ) ) {
+        if (!(o instanceof ActionInsertNodeImpl)) {
             return false;
         }
 
         ActionInsertNodeImpl nodes = (ActionInsertNodeImpl) o;
 
-        if ( isLogicalInsertion != nodes.isLogicalInsertion ) {
+        if (isLogicalInsertion != nodes.isLogicalInsertion) {
             return false;
         }
-        if ( !className.equals( nodes.className ) ) {
+        if (!className.equals(nodes.className)) {
             return false;
         }
-        if ( !fieldValues.equals( nodes.fieldValues ) ) {
+        if (!fieldValues.equals(nodes.fieldValues)) {
             return false;
         }
 
@@ -89,7 +89,7 @@ public class ActionInsertNodeImpl extends BaseNodeImpl implements ActionInsertNo
     @Override
     public int hashCode() {
         int result = className.hashCode();
-        result = 31 * result + ( isLogicalInsertion ? 1 : 0 );
+        result = 31 * result + (isLogicalInsertion ? 1 : 0);
         result = 31 * result + fieldValues.hashCode();
         return result;
     }

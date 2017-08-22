@@ -19,10 +19,10 @@ package org.drools.workbench.models.testscenarios.backend.verifiers;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.kie.api.runtime.KieSession;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 public class FactVerifier {
 
@@ -31,82 +31,82 @@ public class FactVerifier {
     private final KieSession ksession;
     private final Map<String, Object> globalData;
 
-    public FactVerifier( Map<String, Object> populatedData,
-                         TypeResolver resolver,
-                         KieSession ksession,
-                         Map<String, Object> globalData ) {
+    public FactVerifier(Map<String, Object> populatedData,
+                        TypeResolver resolver,
+                        KieSession ksession,
+                        Map<String, Object> globalData) {
         this.populatedData = populatedData;
         this.resolver = resolver;
         this.ksession = ksession;
         this.globalData = globalData;
     }
 
-    public void verify( VerifyFact verifyFact ) throws InvocationTargetException,
+    public void verify(VerifyFact verifyFact) throws InvocationTargetException,
             NoSuchMethodException,
             InstantiationException,
             IllegalAccessException {
 
         //Clear existing results
-        for ( VerifyField vf : verifyFact.getFieldValues() ) {
-            vf.setSuccessResult( null );
-            vf.setExplanation( "Fact of type [" + verifyFact.getName() + "] was not found in the results." );
+        for (VerifyField vf : verifyFact.getFieldValues()) {
+            vf.setSuccessResult(null);
+            vf.setExplanation("Fact of type [" + verifyFact.getName() + "] was not found in the results.");
         }
 
-        if ( !verifyFact.anonymous ) {
-            FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
-                                                                               verifyFact.getName(),
-                                                                               getFactObject(
-                                                                                       verifyFact.getName(),
-                                                                                       populatedData,
-                                                                                       globalData ),
-                                                                               resolver );
-            fieldVerifier.checkFields( verifyFact.getFieldValues() );
+        if (!verifyFact.anonymous) {
+            FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier(populatedData,
+                                                                              verifyFact.getName(),
+                                                                              getFactObject(
+                                                                                      verifyFact.getName(),
+                                                                                      populatedData,
+                                                                                      globalData),
+                                                                              resolver);
+            fieldVerifier.checkFields(verifyFact.getFieldValues());
         } else {
-            for ( Object object : ksession.getObjects() ) {
-                if ( verifyFact( object,
-                                 verifyFact,
-                                 populatedData,
-                                 resolver ) ) {
+            for (Object object : ksession.getObjects()) {
+                if (verifyFact(object,
+                               verifyFact,
+                               populatedData,
+                               resolver)) {
                     return;
                 }
             }
-            for ( VerifyField verifyField : verifyFact.getFieldValues() ) {
-                if ( verifyField.getSuccessResult() == null ) {
-                    verifyField.setSuccessResult( Boolean.FALSE );
-                    verifyField.setActualResult( "No match" );
+            for (VerifyField verifyField : verifyFact.getFieldValues()) {
+                if (verifyField.getSuccessResult() == null) {
+                    verifyField.setSuccessResult(Boolean.FALSE);
+                    verifyField.setActualResult("No match");
                 }
             }
         }
     }
 
-    private boolean verifyFact( Object factObject,
-                                VerifyFact verifyFact,
-                                Map<String, Object> populatedData,
-                                TypeResolver resolver ) throws InvocationTargetException,
+    private boolean verifyFact(Object factObject,
+                               VerifyFact verifyFact,
+                               Map<String, Object> populatedData,
+                               TypeResolver resolver) throws InvocationTargetException,
             NoSuchMethodException,
             InstantiationException,
             IllegalAccessException {
-        if ( factObject.getClass().getSimpleName().equals( verifyFact.getName() ) ) {
-            FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
-                                                                               verifyFact.getName(),
-                                                                               factObject,
-                                                                               resolver );
-            fieldVerifier.checkFields( verifyFact.getFieldValues() );
-            if ( verifyFact.wasSuccessful() ) {
+        if (factObject.getClass().getSimpleName().equals(verifyFact.getName())) {
+            FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier(populatedData,
+                                                                              verifyFact.getName(),
+                                                                              factObject,
+                                                                              resolver);
+            fieldVerifier.checkFields(verifyFact.getFieldValues());
+            if (verifyFact.wasSuccessful()) {
                 return true;
             }
         }
         return false;
     }
 
-    private Object getFactObject( String factName,
-                                  Map<String, Object> populatedData,
-                                  Map<String, Object> globalData ) {
+    private Object getFactObject(String factName,
+                                 Map<String, Object> populatedData,
+                                 Map<String, Object> globalData) {
 
-        if ( populatedData.containsKey( factName ) ) {
-            return populatedData.get( factName );
+        if (populatedData.containsKey(factName)) {
+            return populatedData.get(factName);
         } else {
-            return globalData.get( factName );
+            return globalData.get(factName);
         }
     }
 }

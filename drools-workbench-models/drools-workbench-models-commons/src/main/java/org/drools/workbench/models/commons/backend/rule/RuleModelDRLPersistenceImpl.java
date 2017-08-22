@@ -29,16 +29,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.appformer.project.datamodel.commons.imports.ImportsParser;
-import org.appformer.project.datamodel.commons.imports.ImportsWriter;
-import org.appformer.project.datamodel.commons.packages.PackageNameParser;
-import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.imports.Imports;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.appformer.project.datamodel.oracle.MethodInfo;
-import org.appformer.project.datamodel.oracle.ModelField;
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -69,7 +59,6 @@ import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorCont
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.exception.RuleModelDRLPersistenceException;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
@@ -125,9 +114,20 @@ import org.drools.workbench.models.datamodel.workitems.PortableObjectParameterDe
 import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.soup.project.datamodel.commons.imports.ImportsParser;
+import org.kie.soup.project.datamodel.commons.imports.ImportsWriter;
+import org.kie.soup.project.datamodel.commons.packages.PackageNameParser;
+import org.kie.soup.project.datamodel.commons.packages.PackageNameWriter;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.MethodInfo;
+import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.adjustParam;
@@ -278,6 +278,7 @@ public class RuleModelDRLPersistenceImpl
 
     /**
      * Marshal model attributes
+     *
      * @param buf
      * @param model
      */
@@ -308,6 +309,7 @@ public class RuleModelDRLPersistenceImpl
 
     /**
      * Marshal model metadata
+     *
      * @param buf
      * @param model
      */
@@ -322,6 +324,7 @@ public class RuleModelDRLPersistenceImpl
 
     /**
      * Marshal LHS patterns
+     *
      * @param buf
      * @param model
      */

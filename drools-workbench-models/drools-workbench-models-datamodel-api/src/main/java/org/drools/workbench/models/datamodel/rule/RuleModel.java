@@ -21,9 +21,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.appformer.project.datamodel.imports.HasImports;
-import org.appformer.project.datamodel.imports.Imports;
-import org.appformer.project.datamodel.packages.HasPackageName;
+import org.kie.soup.project.datamodel.imports.HasImports;
+import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.project.datamodel.packages.HasPackageName;
 
 public class RuleModel implements HasImports,
                                   HasPackageName {
@@ -53,6 +53,7 @@ public class RuleModel implements HasImports,
 
     /**
      * This will return a List<String> of all FactPattern bindings
+     *
      * @return The bindings or an empty list if no bindings are found.
      */
     public List<String> getLHSBoundFacts() {
@@ -77,6 +78,7 @@ public class RuleModel implements HasImports,
 
     /**
      * This will return the FactPattern that a variable is bound Eto.
+     *
      * @param var The bound fact variable (NOT bound field).
      * @return null or the FactPattern found.
      */
@@ -101,6 +103,7 @@ public class RuleModel implements HasImports,
 
     /**
      * This will return the FieldConstraint that a variable is bound to.
+     *
      * @param var The bound field variable (NOT bound fact).
      * @return null or the FieldConstraint found.
      */
@@ -156,6 +159,7 @@ public class RuleModel implements HasImports,
 
     /**
      * Get the data-type associated with the binding
+     *
      * @param var
      * @return The data-type, or null if the binding could not be found
      */
@@ -233,6 +237,7 @@ public class RuleModel implements HasImports,
 
     /**
      * This will return a List<String> of all ActionInsertFact bindings
+     *
      * @return The bindings or an empty list if no bindings are found.
      */
     public List<String> getRHSBoundFacts() {
@@ -253,6 +258,7 @@ public class RuleModel implements HasImports,
 
     /**
      * This will return the ActionInsertFact that a variable is bound to.
+     *
      * @param var The bound fact variable (NOT bound field).
      * @return null or the ActionInsertFact found.
      */
@@ -275,6 +281,7 @@ public class RuleModel implements HasImports,
      * This will return the FactPattern that a variable is bound to. If the
      * variable is bound to a FieldConstraint the parent FactPattern will be
      * returned.
+     *
      * @param var The variable binding
      * @return null or the FactPattern found.
      */
@@ -421,7 +428,7 @@ public class RuleModel implements HasImports,
 
     /**
      * @param idx Remove this index from the LHS. returns false if it was NOT
-     * allowed to remove this item (ie it is used on the RHS).
+     *            allowed to remove this item (ie it is used on the RHS).
      */
     public boolean removeLhsItem(final int idx) {
 
@@ -656,6 +663,7 @@ public class RuleModel implements HasImports,
 
     /**
      * Add metaData
+     *
      * @param metadata
      */
     public void addMetadata(final RuleMetadata metadata) {
@@ -685,6 +693,7 @@ public class RuleModel implements HasImports,
 
     /**
      * Locate metadata element
+     *
      * @param attributeName - value to look for
      * @return null if not found
      */
@@ -702,6 +711,7 @@ public class RuleModel implements HasImports,
 
     /**
      * Update metaData element if it exists or add it otherwise
+     *
      * @param target
      * @return true on update of existing element false on added of element
      */
@@ -833,6 +843,7 @@ public class RuleModel implements HasImports,
 
     /**
      * Is the Rule to be negated, i.e. "not ( PatternX, PatternY... )"
+     *
      * @return
      */
     public boolean isNegated() {
@@ -841,6 +852,7 @@ public class RuleModel implements HasImports,
 
     /**
      * Set whether the Rule is to be negated
+     *
      * @param isNegated
      */
     public void setNegated(boolean isNegated) {

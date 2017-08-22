@@ -20,9 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.appformer.project.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
@@ -67,6 +64,9 @@ import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDe
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.soup.project.datamodel.imports.Import;
+import org.kie.soup.project.datamodel.oracle.DataType;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

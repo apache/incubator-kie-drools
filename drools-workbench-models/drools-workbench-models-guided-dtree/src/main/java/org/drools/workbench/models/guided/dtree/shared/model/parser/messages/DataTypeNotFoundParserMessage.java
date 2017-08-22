@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.parser.messages;
 
-import org.uberfire.commons.validation.PortablePreconditions;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * The data-type of a class's field could not be found
@@ -29,12 +29,12 @@ public class DataTypeNotFoundParserMessage implements ParserMessage {
         //Errai marshalling
     }
 
-    public DataTypeNotFoundParserMessage( final String className,
-                                          final String fieldName ) {
-        this.className = PortablePreconditions.checkNotNull( "className",
-                                                             className );
-        this.fieldName = PortablePreconditions.checkNotNull( "fieldName",
-                                                             fieldName );
+    public DataTypeNotFoundParserMessage(final String className,
+                                         final String fieldName) {
+        this.className = PortablePreconditions.checkNotNull("className",
+                                                            className);
+        this.fieldName = PortablePreconditions.checkNotNull("fieldName",
+                                                            fieldName);
     }
 
     public String getClassName() {

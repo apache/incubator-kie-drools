@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.core.util.StringUtils;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
@@ -38,6 +37,7 @@ import org.drools.workbench.models.datamodel.rule.IFactPattern;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.TemplateAware;
 import org.drools.workbench.models.datamodel.rule.builder.DRLConstraintValueBuilder;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 
 /**
  * A specialised implementation of BRDELPersistence that can expand Template
@@ -160,7 +160,7 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                                                final String fieldType,
                                                final String value,
                                                final StringBuilder buf) {
-            if (OperatorsOracle.operatorRequiresList( operator)) {
+            if (OperatorsOracle.operatorRequiresList(operator)) {
                 populateValueList(buf,
                                   type,
                                   fieldType,

@@ -22,7 +22,6 @@ import java.util.List;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.FieldFactory;
 import org.drools.core.base.ValueType;
@@ -38,21 +37,22 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
 
 public class ReteTesterHelper {
 
     private InternalKnowledgePackage pkg;
     private ClassFieldAccessorStore store;
-    private EvaluatorRegistry       registry = new EvaluatorRegistry();
+    private EvaluatorRegistry registry = new EvaluatorRegistry();
     private final ClassTypeResolver typeResolver;
 
     public ReteTesterHelper() {
-        this.pkg = new KnowledgePackageImpl( "org.drools.examples.manners" );
-        this.pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
+        this.pkg = new KnowledgePackageImpl("org.drools.examples.manners");
+        this.pkg.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));
         this.store = this.pkg.getClassFieldAccessorStore();
-        this.store.setEagerWire( true );
-        this.typeResolver = new ClassTypeResolver( new HashSet<String>(),
-                                                   getClass().getClassLoader() );
+        this.store.setEagerWire(true);
+        this.typeResolver = new ClassTypeResolver(new HashSet<String>(),
+                                                  getClass().getClassLoader());
     }
 
     public InternalKnowledgePackage getPkg() {
@@ -76,8 +76,8 @@ public class ReteTesterHelper {
                                                               final Declaration declaration,
                                                               final String evaluatorString) {
 
-        final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                fieldName );
+        final InternalReadAccessor extractor = store.getReader(clazz,
+                                                               fieldName);
         String expression = fieldName + " " + evaluatorString + " " + declaration.getIdentifier();
         return new MvelConstraintTestUtil(expression, declaration, extractor);
     }
@@ -85,38 +85,38 @@ public class ReteTesterHelper {
     public AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
                                                          final String fieldName,
                                                          final String evaluatorString,
-                                                         final String value ) {
-        final Class< ? > clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
+                                                         final String value) {
+        final Class<?> clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                fieldName );
+        final InternalReadAccessor extractor = store.getReader(clazz,
+                                                               fieldName);
 
-        FieldValue fieldValue = FieldFactory.getInstance().getFieldValue( value, extractor.getValueType() );
+        FieldValue fieldValue = FieldFactory.getInstance().getFieldValue(value, extractor.getValueType());
 
-        return new MvelConstraintTestUtil( fieldName + evaluatorString + value,
-                                           fieldValue,
-                                           extractor );
+        return new MvelConstraintTestUtil(fieldName + evaluatorString + value,
+                                          fieldValue,
+                                          extractor);
     }
 
-    public Evaluator getEvaluator(Class< ? > cls,
+    public Evaluator getEvaluator(Class<?> cls,
                                   String operator) {
-        if ( cls == DroolsQuery.class ) {
+        if (cls == DroolsQuery.class) {
             cls = Object.class;
         }
-        return registry.getEvaluator( ValueType.determineValueType( cls ),
-                                      Operator.determineOperator( operator,
-                                                                  false ) );
+        return registry.getEvaluator(ValueType.determineValueType(cls),
+                                     Operator.determineOperator(operator,
+                                                                false));
     }
 
     public Pattern getPattern(int index,
                               String type) throws ClassNotFoundException {
-        return new Pattern( index, new ClassObjectType( typeResolver.resolveType( type ) ) );
+        return new Pattern(index, new ClassObjectType(typeResolver.resolveType(type)));
     }
 
     public void addImports(List<String> imports) {
         typeResolver.clearImports();
-        for( String importEntry : imports ) {
-            typeResolver.addImport( importEntry );
+        for (String importEntry : imports) {
+            typeResolver.addImport(importEntry);
         }
     }
 }

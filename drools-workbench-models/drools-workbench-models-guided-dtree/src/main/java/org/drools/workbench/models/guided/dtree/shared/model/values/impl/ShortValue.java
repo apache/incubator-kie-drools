@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class ShortValue implements Value<Short> {
 
@@ -26,27 +26,27 @@ public class ShortValue implements Value<Short> {
         //Errai marshalling
     }
 
-    public ShortValue( final Short value ) {
-        setValue( value );
+    public ShortValue(final Short value) {
+        setValue(value);
     }
 
-    public ShortValue( final ShortValue value ) {
-        setValue( value.getValue() );
+    public ShortValue(final ShortValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final String value ) {
+    public void setValue(final String value) {
         try {
-            setValue( new Short( value ) );
-        } catch ( NumberFormatException nfe ) {
-            setValue( new Short( "0" ) );
+            setValue(new Short(value));
+        } catch (NumberFormatException nfe) {
+            setValue(new Short("0"));
         }
     }
 
     @Override
-    public void setValue( final Short value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final Short value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -55,17 +55,17 @@ public class ShortValue implements Value<Short> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ShortValue ) ) {
+        if (!(o instanceof ShortValue)) {
             return false;
         }
 
         ShortValue that = (ShortValue) o;
 
-        if ( !value.equals( that.value ) ) {
+        if (!value.equals(that.value)) {
             return false;
         }
 

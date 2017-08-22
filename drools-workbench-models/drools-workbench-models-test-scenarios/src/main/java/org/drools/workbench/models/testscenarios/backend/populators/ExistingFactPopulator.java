@@ -20,26 +20,26 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 class ExistingFactPopulator extends FactPopulatorBase {
 
-    public ExistingFactPopulator( Map<String, Object> populatedData,
-                                  TypeResolver typeResolver,
-                                  FactData fact ) throws ClassNotFoundException {
-        super( populatedData,
-               typeResolver,
-               fact );
+    public ExistingFactPopulator(Map<String, Object> populatedData,
+                                 TypeResolver typeResolver,
+                                 FactData fact) throws ClassNotFoundException {
+        super(populatedData,
+              typeResolver,
+              fact);
     }
 
     protected Object resolveFactObject() throws ClassNotFoundException {
-        if ( !populatedData.containsKey( fact.getName() ) ) {
-            throw new IllegalArgumentException( "Was not a previously inserted fact. [" + fact.getName() + "]" );
+        if (!populatedData.containsKey(fact.getName())) {
+            throw new IllegalArgumentException("Was not a previously inserted fact. [" + fact.getName() + "]");
         }
-        return populatedData.get( fact.getName() );
+        return populatedData.get(fact.getName());
     }
 
     @Override
@@ -48,14 +48,13 @@ class ExistingFactPopulator extends FactPopulatorBase {
             InstantiationException,
             InvocationTargetException,
             NoSuchMethodException {
-        return getFieldPopulators( resolveFactObject() );
+        return getFieldPopulators(resolveFactObject());
     }
 
     @Override
-    public void populate( KieSession ksession,
-                          Map<String, FactHandle> factHandles ) {
-        ksession.update( factHandles.get( fact.getName() ),
-                         populatedData.get( fact.getName() ) );
-
+    public void populate(KieSession ksession,
+                         Map<String, FactHandle> factHandles) {
+        ksession.update(factHandles.get(fact.getName()),
+                        populatedData.get(fact.getName()));
     }
 }

@@ -15,10 +15,10 @@
  */
 package org.drools.workbench.models.guided.dtree.backend;
 
-import org.appformer.project.datamodel.commons.imports.ImportsWriter;
-import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
+import org.kie.soup.project.datamodel.commons.imports.ImportsWriter;
+import org.kie.soup.project.datamodel.commons.packages.PackageNameWriter;
+import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
 /**
  * This takes care of converting GuidedDecisionTree object to DRL
@@ -29,30 +29,29 @@ public class GuidedDecisionTreeDRLPersistence {
         return new GuidedDecisionTreeDRLPersistence();
     }
 
-    public String marshal( final GuidedDecisionTree model ) {
+    public String marshal(final GuidedDecisionTree model) {
         final StringBuilder sb = new StringBuilder();
 
         //Append package name and imports to DRL
-        PackageNameWriter.write( sb,
-                                 model );
-        ImportsWriter.write( sb,
-                             model );
+        PackageNameWriter.write(sb,
+                                model);
+        ImportsWriter.write(sb,
+                            model);
 
         //Marshall model
         final GuidedDecisionTreeModelMarshallingVisitor visitor = new GuidedDecisionTreeModelMarshallingVisitor();
-        sb.append( visitor.visit( model ) );
+        sb.append(visitor.visit(model));
 
         return sb.toString();
     }
 
-    public GuidedDecisionTree unmarshal( final String drl,
-                                         final String baseFileName,
-                                         final PackageDataModelOracle dmo ) {
+    public GuidedDecisionTree unmarshal(final String drl,
+                                        final String baseFileName,
+                                        final PackageDataModelOracle dmo) {
         //Unmarshal model
         final GuidedDecisionTreeModelUnmarshallingVisitor visitor = new GuidedDecisionTreeModelUnmarshallingVisitor();
-        return visitor.visit( drl,
-                              baseFileName,
-                              dmo );
+        return visitor.visit(drl,
+                             baseFileName,
+                             dmo);
     }
-
 }

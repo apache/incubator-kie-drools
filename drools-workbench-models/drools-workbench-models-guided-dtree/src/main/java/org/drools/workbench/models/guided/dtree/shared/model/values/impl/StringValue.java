@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class StringValue implements Value<String> {
 
@@ -26,18 +26,18 @@ public class StringValue implements Value<String> {
         //Errai marshalling
     }
 
-    public StringValue( final String value ) {
-        setValue( value );
+    public StringValue(final String value) {
+        setValue(value);
     }
 
-    public StringValue( final StringValue value ) {
-        setValue( value.getValue() );
+    public StringValue(final StringValue value) {
+        setValue(value.getValue());
     }
 
     @Override
-    public void setValue( final String value ) {
-        this.value = PortablePreconditions.checkNotNull( "value",
-                                                         value );
+    public void setValue(final String value) {
+        this.value = PortablePreconditions.checkNotNull("value",
+                                                        value);
     }
 
     @Override
@@ -46,17 +46,17 @@ public class StringValue implements Value<String> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof StringValue ) ) {
+        if (!(o instanceof StringValue)) {
             return false;
         }
 
         StringValue that = (StringValue) o;
 
-        if ( !value.equals( that.value ) ) {
+        if (!value.equals(that.value)) {
             return false;
         }
 

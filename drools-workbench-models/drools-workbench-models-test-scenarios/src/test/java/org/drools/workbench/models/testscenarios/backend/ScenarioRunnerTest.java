@@ -16,9 +16,6 @@
 
 package org.drools.workbench.models.testscenarios.backend;
 
-import org.appformer.project.datamodel.imports.Import;
-import org.drools.core.base.ClassTypeResolver;
-import org.drools.core.base.TypeResolver;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -38,6 +35,9 @@ import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.soup.project.datamodel.commons.types.ClassTypeResolver;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
+import org.kie.soup.project.datamodel.imports.Import;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,7 +92,6 @@ public class ScenarioRunnerTest extends RuleUnit {
         runner.run(scenario);
 
         assertTrue(scenario.wasSuccessful());
-
     }
 
     @Test
@@ -100,20 +99,19 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario sc = new Scenario();
         sc.getImports().addImport(new Import("java.util.List"));
         List facts = ls(new FactData("List",
-                "ls",
-                new ArrayList(),
-                false));
+                                     "ls",
+                                     new ArrayList(),
+                                     false));
 
         List globals = ls(new FactData("List",
-                "ls",
-                new ArrayList(),
-                false));
+                                       "ls",
+                                       new ArrayList(),
+                                       false));
         sc.getFixtures().addAll(facts);
         sc.getGlobals().addAll(globals);
 
         ScenarioRunner runner = new ScenarioRunner(ksession);
         runner.run(sc);
-
     }
 
     @Test
@@ -290,6 +288,7 @@ public class ScenarioRunnerTest extends RuleUnit {
             assertTrue(field.getSuccessResult());
         }
     }
+
     @Test
     public void testVerifyFactsWithEnumWildCardImport() throws Exception {
 
@@ -312,7 +311,6 @@ public class ScenarioRunnerTest extends RuleUnit {
         ScenarioRunner runner = new ScenarioRunner(ksession);
 
         runner.run(scenario);
-
     }
 
     @Test
@@ -334,7 +332,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         verify(ksession).addEventListener(any(TestingEventListener.class));
         assertEquals(2,
-                sc.getRules().size());
+                     sc.getRules().size());
         assertTrue(sc.getRules().contains("foo"));
         assertTrue(sc.getRules().contains("bar"));
     }
@@ -348,20 +346,20 @@ public class ScenarioRunnerTest extends RuleUnit {
         sc.getImports().addImport(new Import("java.util.List"));
         ArrayList testList = new ArrayList();
         sc.getGlobals().add(new FactData("List",
-                "testList",
-                testList,
-                false));
+                                         "testList",
+                                         testList,
+                                         false));
 
         Expectation[] assertions = new Expectation[2];
 
         assertions[0] = new VerifyFact("testList",
-                ls(new VerifyField("empty",
-                        "true",
-                        "==")));
+                                       ls(new VerifyField("empty",
+                                                          "true",
+                                                          "==")));
         assertions[1] = new VerifyFact("testList",
-                ls(new VerifyField("size",
-                        "0",
-                        "==")));
+                                       ls(new VerifyField("size",
+                                                          "0",
+                                                          "==")));
 
         sc.getFixtures().addAll(Arrays.asList(assertions));
 
@@ -384,7 +382,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         run.run(sc);
 
         assertEquals(time,
-                ksession.getSessionClock().getCurrentTime());
+                     ksession.getSessionClock().getCurrentTime());
 
         ExecutionTrace ext = new ExecutionTrace();
         ext.setScenarioSimulatedDate(new Date("10-Jul-1974"));
@@ -394,7 +392,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         long expected = ext.getScenarioSimulatedDate().getTime();
         assertEquals(expected,
-                ksession.getSessionClock().getCurrentTime());
+                     ksession.getSessionClock().getCurrentTime());
     }
 
     /**
@@ -408,18 +406,17 @@ public class ScenarioRunnerTest extends RuleUnit {
         sc.getImports().addImport(new Import("org.drools.workbench.models.testscenarios.backend.Person"));
 
         FactData[] facts = new FactData[]{new FactData("Cheese",
-                "c1",
-                Arrays.<Field>asList(new FieldData("type",
-                        "cheddar"),
-                        new FieldData("price",
-                                "42")),
-                false)
-
+                                                       "c1",
+                                                       Arrays.<Field>asList(new FieldData("type",
+                                                                                          "cheddar"),
+                                                                            new FieldData("price",
+                                                                                          "42")),
+                                                       false)
         };
         sc.getGlobals().add(new FactData("Person",
-                "p",
-                new ArrayList(),
-                false));
+                                         "p",
+                                         new ArrayList(),
+                                         false));
         sc.getFixtures().addAll(Arrays.asList(facts));
 
         ExecutionTrace executionTrace = new ExecutionTrace();
@@ -432,31 +429,31 @@ public class ScenarioRunnerTest extends RuleUnit {
         Expectation[] assertions = new Expectation[5];
 
         assertions[0] = new VerifyFact("c1",
-                ls(new VerifyField("type",
-                        "cheddar",
-                        "==")
+                                       ls(new VerifyField("type",
+                                                          "cheddar",
+                                                          "==")
 
-                ));
+                                       ));
 
         assertions[1] = new VerifyFact("p",
-                ls(new VerifyField("name",
-                        "rule1",
-                        "=="),
-                        new VerifyField("status",
-                                "rule2",
-                                "=="))
+                                       ls(new VerifyField("name",
+                                                          "rule1",
+                                                          "=="),
+                                          new VerifyField("status",
+                                                          "rule2",
+                                                          "=="))
 
         );
 
         assertions[2] = new VerifyRuleFired("rule1",
-                1,
-                null);
+                                            1,
+                                            null);
         assertions[3] = new VerifyRuleFired("rule2",
-                1,
-                null);
+                                            1,
+                                            null);
         assertions[4] = new VerifyRuleFired("rule3",
-                0,
-                null);
+                                            0,
+                                            null);
 
         sc.getFixtures().addAll(Arrays.asList(assertions));
 
@@ -466,7 +463,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         run.run(sc);
 
         assertEquals(2,
-                executionTrace.getNumberOfRulesFired().intValue());
+                     executionTrace.getNumberOfRulesFired().intValue());
 
         assertTrue(sc.wasSuccessful());
 
@@ -486,18 +483,17 @@ public class ScenarioRunnerTest extends RuleUnit {
         sc.getImports().addImport(new Import("org.drools.workbench.models.testscenarios.backend.Person"));
 
         FactData[] facts = new FactData[]{new FactData("Cheese",
-                "c1",
-                Arrays.<Field>asList(new FieldData("type",
-                        "cheddar"),
-                        new FieldData("price",
-                                "42")),
-                false)
-
+                                                       "c1",
+                                                       Arrays.<Field>asList(new FieldData("type",
+                                                                                          "cheddar"),
+                                                                            new FieldData("price",
+                                                                                          "42")),
+                                                       false)
         };
         sc.getGlobals().add(new FactData("Person",
-                "p",
-                new ArrayList(),
-                false));
+                                         "p",
+                                         new ArrayList(),
+                                         false));
         sc.getFixtures().addAll(Arrays.asList(facts));
 
         ExecutionTrace executionTrace = new ExecutionTrace();
@@ -510,31 +506,31 @@ public class ScenarioRunnerTest extends RuleUnit {
         Expectation[] assertions = new Expectation[5];
 
         assertions[0] = new VerifyFact("c1",
-                ls(new VerifyField("type",
-                        "cheddar",
-                        "==")
+                                       ls(new VerifyField("type",
+                                                          "cheddar",
+                                                          "==")
 
-                ));
+                                       ));
 
         assertions[1] = new VerifyFact("p",
-                ls(new VerifyField("name",
-                        "rule1",
-                        "=="),
-                        new VerifyField("status",
-                                "rule2",
-                                "=="))
+                                       ls(new VerifyField("name",
+                                                          "rule1",
+                                                          "=="),
+                                          new VerifyField("status",
+                                                          "rule2",
+                                                          "=="))
 
         );
 
         assertions[2] = new VerifyRuleFired("rule1",
-                1,
-                null);
+                                            1,
+                                            null);
         assertions[3] = new VerifyRuleFired("rule2",
-                1,
-                null);
+                                            1,
+                                            null);
         assertions[4] = new VerifyRuleFired("rule3",
-                0,
-                null);
+                                            0,
+                                            null);
 
         sc.getFixtures().addAll(Arrays.asList(assertions));
 
@@ -544,8 +540,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         run.run(sc);
 
         assertEquals(sc.getMaxRuleFirings(),
-                executionTrace.getNumberOfRulesFired().intValue());
-
+                     executionTrace.getNumberOfRulesFired().intValue());
     }
 
     @Test
@@ -553,13 +548,12 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario scenario = new Scenario();
         scenario.getImports().addImport(new Import("foo.bar.Coolness"));
         FactData[] facts = new FactData[]{new FactData("Coolness",
-                "c",
-                Arrays.<Field>asList(new FieldData("num",
-                        "42"),
-                        new FieldData("name",
-                                "mic")),
-                false)
-
+                                                       "c",
+                                                       Arrays.<Field>asList(new FieldData("num",
+                                                                                          "42"),
+                                                                            new FieldData("name",
+                                                                                          "mic")),
+                                                       false)
         };
         scenario.getFixtures().addAll(Arrays.asList(facts));
 
@@ -572,15 +566,15 @@ public class ScenarioRunnerTest extends RuleUnit {
         Expectation[] assertions = new Expectation[2];
 
         assertions[0] = new VerifyFact("c",
-                ls(new VerifyField("num",
-                        "42",
-                        "==")
+                                       ls(new VerifyField("num",
+                                                          "42",
+                                                          "==")
 
-                ));
+                                       ));
 
         assertions[1] = new VerifyRuleFired("rule1",
-                1,
-                null);
+                                            1,
+                                            null);
 
         scenario.getFixtures().addAll(Arrays.asList(assertions));
 
@@ -601,7 +595,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         run.run(scenario);
 
         assertEquals(1,
-                executionTrace.getNumberOfRulesFired().intValue());
+                     executionTrace.getNumberOfRulesFired().intValue());
 
         assertTrue(scenario.wasSuccessful());
 
@@ -613,13 +607,12 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario scenario = new Scenario();
         scenario.getImports().addImport(new Import("foo.bar.Coolness"));
         Fixture[] given = new Fixture[]{new FactData("Coolness",
-                "c",
-                Arrays.<Field>asList(new FieldData("num",
-                        "42"),
-                        new FieldData("name",
-                                "mic")),
-                false)
-
+                                                     "c",
+                                                     Arrays.<Field>asList(new FieldData("num",
+                                                                                        "42"),
+                                                                          new FieldData("name",
+                                                                                        "mic")),
+                                                     false)
         };
         scenario.getFixtures().addAll(Arrays.asList(given));
 
@@ -632,13 +625,13 @@ public class ScenarioRunnerTest extends RuleUnit {
         Expectation[] assertions = new Expectation[2];
 
         assertions[0] = new VerifyFact("c",
-                ls(new VerifyField("num",
-                        "42",
-                        "==")));
+                                       ls(new VerifyField("num",
+                                                          "42",
+                                                          "==")));
 
         assertions[1] = new VerifyRuleFired("rule1",
-                1,
-                null);
+                                            1,
+                                            null);
 
         scenario.getFixtures().addAll(Arrays.asList(assertions));
 
@@ -649,7 +642,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         imports.add("foo.bar.*");
 
         TypeResolver resolver = new ClassTypeResolver(imports,
-                classLoader);
+                                                      classLoader);
 
         Class<?> coolnessClass = classLoader.loadClass("foo.bar.Coolness");
         assertNotNull(coolnessClass);
@@ -664,22 +657,22 @@ public class ScenarioRunnerTest extends RuleUnit {
         scenarioRunner.run(scenario);
 
         assertEquals(0,
-                executionTrace.getNumberOfRulesFired().intValue());
+                     executionTrace.getNumberOfRulesFired().intValue());
 
         assertFalse(scenario.wasSuccessful());
 
         // Activate rule flow
         scenario.getFixtures().clear();
         given = new Fixture[]{new FactData("Coolness",
-                "c",
-                Arrays.<Field>asList(new FieldData("num",
-                        "42"),
-                        new FieldData("name",
-                                "mic")),
-                false), new ActivateRuleFlowGroup("asdf")};
+                                           "c",
+                                           Arrays.<Field>asList(new FieldData("num",
+                                                                              "42"),
+                                                                new FieldData("name",
+                                                                              "mic")),
+                                           false), new ActivateRuleFlowGroup("asdf")};
         scenario.getFixtures().addAll(Arrays.asList(given));
         scenario.getFixtures().add(executionTrace);
-        ((InternalAgendaGroup)ksession.getAgenda().getRuleFlowGroup( "asdf" )).setAutoDeactivate( false );
+        ((InternalAgendaGroup) ksession.getAgenda().getRuleFlowGroup("asdf")).setAutoDeactivate(false);
         scenarioRunner = new ScenarioRunner(ksession);
 
         scenarioRunner.run(scenario);
@@ -694,34 +687,33 @@ public class ScenarioRunnerTest extends RuleUnit {
         Scenario sc = new Scenario();
         sc.getImports().addImport(new Import("org.drools.workbench.models.testscenarios.backend.Cheese"));
         sc.getFixtures().add(new FactData("Cheese",
-                "c1",
-                Arrays.<Field>asList(new FieldData("price",
-                        "1")),
-                false));
+                                          "c1",
+                                          Arrays.<Field>asList(new FieldData("price",
+                                                                             "1")),
+                                          false));
         ExecutionTrace ex = new ExecutionTrace();
         sc.getFixtures().add(ex);
         sc.getFixtures().add(new FactData("Cheese",
-                "c2",
-                Arrays.<Field>asList(new FieldData("price",
-                        "2")),
-                false));
+                                          "c2",
+                                          Arrays.<Field>asList(new FieldData("price",
+                                                                             "2")),
+                                          false));
         sc.getFixtures().add(new VerifyFact("c1",
-                ls(new VerifyField("type",
-                        "rule1",
-                        "=="))));
+                                            ls(new VerifyField("type",
+                                                               "rule1",
+                                                               "=="))));
         ex = new ExecutionTrace();
         sc.getFixtures().add(ex);
         sc.getFixtures().add(new VerifyFact("c1",
-                ls(new VerifyField("type",
-                        "rule2",
-                        "=="))));
+                                            ls(new VerifyField("type",
+                                                               "rule2",
+                                                               "=="))));
 
         KieSession ksession = getKieSession("test_stateful.drl");
         ScenarioRunner run = new ScenarioRunner(ksession);
         run.run(sc);
 
         assertTrue(sc.wasSuccessful());
-
     }
 
     @Test
@@ -730,29 +722,29 @@ public class ScenarioRunnerTest extends RuleUnit {
         sc.getImports().addImport(new Import("org.drools.workbench.models.testscenarios.backend.Cheese"));
 
         sc.getFixtures().add(new FactData("Cheese",
-                "c1",
-                Arrays.<Field>asList(new FieldData("price",
-                        "1")),
-                false));
+                                          "c1",
+                                          Arrays.<Field>asList(new FieldData("price",
+                                                                             "1")),
+                                          false));
 
         sc.getFixtures().add(new ExecutionTrace());
 
         sc.getFixtures().add(new VerifyFact("c1",
-                ls(new VerifyField("type",
-                        "rule1",
-                        "=="))));
+                                            ls(new VerifyField("type",
+                                                               "rule1",
+                                                               "=="))));
 
         sc.getFixtures().add(new FactData("Cheese",
-                "c1",
-                Arrays.<Field>asList(new FieldData("price",
-                        "42")),
-                true));
+                                          "c1",
+                                          Arrays.<Field>asList(new FieldData("price",
+                                                                             "42")),
+                                          true));
         sc.getFixtures().add(new ExecutionTrace());
 
         sc.getFixtures().add(new VerifyFact("c1",
-                ls(new VerifyField("type",
-                        "rule3",
-                        "=="))));
+                                            ls(new VerifyField("type",
+                                                               "rule3",
+                                                               "=="))));
 
         KieSession ksession = getKieSession("test_stateful.drl");
         ScenarioRunner run = new ScenarioRunner(ksession);
@@ -768,31 +760,31 @@ public class ScenarioRunnerTest extends RuleUnit {
         sc.getImports().addImport(new Import("org.drools.workbench.models.testscenarios.backend.Cheese"));
 
         sc.getFixtures().add(new FactData("Cheese",
-                "c1",
-                Arrays.<Field>asList(new FieldData("price",
-                        "46"),
-                        new FieldData("type",
-                                "XXX")),
-                false));
+                                          "c1",
+                                          Arrays.<Field>asList(new FieldData("price",
+                                                                             "46"),
+                                                               new FieldData("type",
+                                                                             "XXX")),
+                                          false));
         sc.getFixtures().add(new FactData("Cheese",
-                "c2",
-                Arrays.<Field>asList(new FieldData("price",
-                        "42")),
-                false));
+                                          "c2",
+                                          Arrays.<Field>asList(new FieldData("price",
+                                                                             "42")),
+                                          false));
         sc.getFixtures().add(new ExecutionTrace());
 
         sc.getFixtures().add(new VerifyFact("c1",
-                ls(new VerifyField("type",
-                        "XXX",
-                        "=="))));
+                                            ls(new VerifyField("type",
+                                                               "XXX",
+                                                               "=="))));
 
         sc.getFixtures().add(new RetractFact("c2"));
         sc.getFixtures().add(new ExecutionTrace());
 
         sc.getFixtures().add(new VerifyFact("c1",
-                ls(new VerifyField("type",
-                        "rule4",
-                        "=="))));
+                                            ls(new VerifyField("type",
+                                                               "rule4",
+                                                               "=="))));
 
         KieSession ksession = getKieSession("test_stateful.drl");
         ScenarioRunner run = new ScenarioRunner(ksession);
@@ -820,19 +812,18 @@ public class ScenarioRunnerTest extends RuleUnit {
         VerifyFact vf = (VerifyFact) assertions[1];
         assertFalse((vf.getFieldValues().get(0)).getSuccessResult());
         assertEquals("XXX",
-                vf.getFieldValues().get(0).getExpected());
+                     vf.getFieldValues().get(0).getExpected());
         assertEquals("rule1",
-                vf.getFieldValues().get(0).getActualResult());
+                     vf.getFieldValues().get(0).getActualResult());
         assertNotNull(vf.getFieldValues().get(0).getExplanation());
 
         VerifyRuleFired vr = (VerifyRuleFired) assertions[4];
         assertFalse(vr.getSuccessResult());
 
         assertEquals(2,
-                vr.getExpectedCount().intValue());
+                     vr.getExpectedCount().intValue());
         assertEquals(0,
-                vr.getActualResult().intValue());
-
+                     vr.getActualResult().intValue());
     }
 
     @Test
@@ -847,24 +838,22 @@ public class ScenarioRunnerTest extends RuleUnit {
         scenario.getImports().addImport(new Import("org.drools.workbench.models.testscenarios.backend.Cheesery"));
 
         run.run(scenario);
-
     }
 
     private Expectation[] populateScenarioForFailure(Scenario sc) {
         FactData[] facts = new FactData[]{new FactData("Cheese",
-                "c1",
-                Arrays.<Field>asList(new FieldData("type",
-                        "cheddar"),
-                        new FieldData("price",
-                                "42")),
-                false)
-
+                                                       "c1",
+                                                       Arrays.<Field>asList(new FieldData("type",
+                                                                                          "cheddar"),
+                                                                            new FieldData("price",
+                                                                                          "42")),
+                                                       false)
         };
         sc.getFixtures().addAll(Arrays.asList(facts));
         sc.getGlobals().add(new FactData("Person",
-                "p",
-                new ArrayList(),
-                false));
+                                         "p",
+                                         new ArrayList(),
+                                         false));
 
         ExecutionTrace executionTrace = new ExecutionTrace();
         sc.getRules().add("rule1");
@@ -875,31 +864,31 @@ public class ScenarioRunnerTest extends RuleUnit {
         Expectation[] assertions = new Expectation[5];
 
         assertions[0] = new VerifyFact("c1",
-                ls(new VerifyField("type",
-                        "cheddar",
-                        "==")
+                                       ls(new VerifyField("type",
+                                                          "cheddar",
+                                                          "==")
 
-                ));
+                                       ));
 
         assertions[1] = new VerifyFact("p",
-                ls(new VerifyField("name",
-                        "XXX",
-                        "=="),
-                        new VerifyField("status",
-                                "rule2",
-                                "==")
+                                       ls(new VerifyField("name",
+                                                          "XXX",
+                                                          "=="),
+                                          new VerifyField("status",
+                                                          "rule2",
+                                                          "==")
 
-                ));
+                                       ));
 
         assertions[2] = new VerifyRuleFired("rule1",
-                1,
-                null);
+                                            1,
+                                            null);
         assertions[3] = new VerifyRuleFired("rule2",
-                1,
-                null);
+                                            1,
+                                            null);
         assertions[4] = new VerifyRuleFired("rule3",
-                2,
-                null);
+                                            2,
+                                            null);
 
         sc.getFixtures().addAll(Arrays.asList(assertions));
         return assertions;
@@ -909,5 +898,4 @@ public class ScenarioRunnerTest extends RuleUnit {
             (T... objects) {
         return Arrays.asList(objects);
     }
-
 }

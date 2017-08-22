@@ -20,35 +20,35 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.soup.project.datamodel.commons.types.TypeResolver;
 
 class GlobalFactPopulator extends FactPopulatorBase {
 
     private final Object factObject;
 
-    public GlobalFactPopulator( Map<String, Object> populatedData,
-                                TypeResolver typeResolver,
-                                FactData fact,
-                                Map<String, Object> globalData ) throws ClassNotFoundException,
+    public GlobalFactPopulator(Map<String, Object> populatedData,
+                               TypeResolver typeResolver,
+                               FactData fact,
+                               Map<String, Object> globalData) throws ClassNotFoundException,
             InstantiationException,
             IllegalAccessException {
-        super( populatedData,
-               typeResolver,
-               fact );
+        super(populatedData,
+              typeResolver,
+              fact);
 
         factObject = resolveFactObject();
-        globalData.put( fact.getName(),
-                        factObject );
+        globalData.put(fact.getName(),
+                       factObject);
     }
 
     protected Object resolveFactObject() throws ClassNotFoundException,
             IllegalAccessException,
             InstantiationException {
-        return typeResolver.resolveType( getTypeName( typeResolver,
-                                                      fact ) ).newInstance();
+        return typeResolver.resolveType(getTypeName(typeResolver,
+                                                    fact)).newInstance();
     }
 
     @Override
@@ -57,14 +57,13 @@ class GlobalFactPopulator extends FactPopulatorBase {
             InstantiationException,
             InvocationTargetException,
             NoSuchMethodException {
-        return getFieldPopulators( factObject );
+        return getFieldPopulators(factObject);
     }
 
     @Override
-    public void populate( KieSession ksession,
-                          Map<String, FactHandle> factHandles ) {
-        ksession.setGlobal( fact.getName(),
-                            factObject );
+    public void populate(KieSession ksession,
+                         Map<String, FactHandle> factHandles) {
+        ksession.setGlobal(fact.getName(),
+                           factObject);
     }
-
 }
