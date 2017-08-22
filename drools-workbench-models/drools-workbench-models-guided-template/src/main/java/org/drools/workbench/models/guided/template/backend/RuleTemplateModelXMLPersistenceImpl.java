@@ -52,6 +52,8 @@ import org.drools.workbench.models.guided.template.backend.upgrade.RuleModelUpgr
 import org.drools.workbench.models.guided.template.backend.upgrade.TemplateModelUpgradeHelper1;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 /**
  * This class persists the rule model to XML and back. This is the 'brl' xml
  * format (Business Rule Language).
@@ -70,7 +72,7 @@ public class RuleTemplateModelXMLPersistenceImpl
     private static final RuleTemplateModelPersistence INSTANCE = new RuleTemplateModelXMLPersistenceImpl();
 
     protected RuleTemplateModelXMLPersistenceImpl() {
-        this.xt = new XStream( new DomDriver() );
+        this.xt = createXStream( new DomDriver() );
 
         this.xt.alias( "rule",
                        TemplateModel.class );

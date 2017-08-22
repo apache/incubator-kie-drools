@@ -15,6 +15,8 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.XStream;
 import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
@@ -23,7 +25,6 @@ import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
-import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
@@ -36,9 +37,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 import static org.junit.Assert.*;
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
 
 public class RuleModelTest {
 
@@ -214,7 +214,8 @@ public class RuleModelTest {
         assertTrue( model.isBoundFactUsed( "q" ) );
         assertFalse( model.isBoundFactUsed( "x" ) );
 
-        final XStream xt = new XStream();
+        final XStream xt = createXStream();
+
         xt.alias( "rule",
                 RuleModel.class );
         xt.alias( "fact",
