@@ -74,6 +74,8 @@ public class Jenerator {
 
     private byte[] toXML(Fact[] facts) {
         XStream x = new XStream(new DomDriver());
+        String[] voidDeny = {"void.class", "Void.class"};
+        x.denyTypes(voidDeny);
         return x.toXML(facts).getBytes(IoUtils.UTF8_CHARSET);
 
     }
@@ -91,6 +93,8 @@ public class Jenerator {
 
     private Fact[] fromXML(JarInputStream jis) {
         XStream x = new XStream(new DomDriver());
+        String[] voidDeny = {"void.class", "Void.class"};
+        x.denyTypes(voidDeny);
         return (Fact[]) x.fromXML(jis);
 
     }
