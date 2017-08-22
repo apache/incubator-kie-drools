@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
 
 public class ReteooBuilderTest {
 
@@ -61,9 +62,7 @@ public class ReteooBuilderTest {
 
     private void writeRuleBase(final InternalKnowledgeBase kBase,
                                final String fileName) throws IOException {
-        final XStream xstream = new XStream();
-        String[] voidDeny = {"void.class", "Void.class"};
-        xstream.denyTypes(voidDeny);
+        final XStream xstream = createXStream();
 
         final PrintWriter out = new PrintWriter( new BufferedWriter( new FileWriter( "src/test/resources/org/drools/reteoo/" + fileName ) ) );
 
@@ -84,9 +83,7 @@ public class ReteooBuilderTest {
                            name );
         }
 
-        final XStream xstream = new XStream();
-        String[] voidDeny = {"void.class", "Void.class"};
-        xstream.denyTypes(voidDeny);
+        final XStream xstream = createXStream();
 
         final InternalKnowledgeBase goodKBase = (InternalKnowledgeBase) xstream.fromXML( getClass().getResourceAsStream( name ) );
 
