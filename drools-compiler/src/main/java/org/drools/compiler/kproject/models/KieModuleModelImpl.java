@@ -15,6 +15,19 @@
 
 package org.drools.compiler.kproject.models;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -28,20 +41,8 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
 
 public class KieModuleModelImpl implements KieModuleModel {
 
@@ -166,7 +167,7 @@ public class KieModuleModelImpl implements KieModuleModel {
     private static final kModuleMarshaller MARSHALLER = new kModuleMarshaller();
 
     private static class kModuleMarshaller {
-        private final XStream xStream = new XStream(new DomDriver());
+        private final XStream xStream = createXStream(new DomDriver());
 
         private kModuleMarshaller() {
             xStream.registerConverter(new kModuleConverter());
@@ -185,8 +186,6 @@ public class KieModuleModelImpl implements KieModuleModel {
             xStream.alias("fileLogger", FileLoggerModelImpl.class);
             xStream.alias("ruleTemplate", RuleTemplateModelImpl.class);
             xStream.setClassLoader(KieModuleModelImpl.class.getClassLoader());
-            String[] voidDeny = {"void.class", "Void.class"};
-            xStream.denyTypes(voidDeny);
         }
 
         public String toXML(KieModuleModel kieProject) {

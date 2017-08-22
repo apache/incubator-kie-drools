@@ -15,6 +15,15 @@
  */
 package org.drools.core.runtime.help.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.thoughtworks.xstream.XStream;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
@@ -26,7 +35,6 @@ import org.drools.core.command.runtime.rule.DeleteCommand;
 import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.metadata.Modify;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.junit.Assert;
@@ -35,14 +43,7 @@ import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
 
 public class XStreamXMLTest {
 
@@ -50,9 +51,7 @@ public class XStreamXMLTest {
 
     @Before
     public void setup() {
-        xstream = new XStream();
-        String[] voidDeny = {"void.class", "Void.class"};
-        xstream.denyTypes(voidDeny);
+        xstream = createXStream();
         xstream = XStreamXML.newXStreamMarshaller(xstream);
     }
 

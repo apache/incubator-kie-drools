@@ -15,20 +15,20 @@
 
 package org.drools.core.rule;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 public class KieModuleMetaInfo implements Serializable{
-    private static final XStream xStream = new XStream(new DomDriver());
+    private static final XStream xStream = createXStream(new DomDriver());
 
     static {
         xStream.setClassLoader( KieModuleMetaInfo.class.getClassLoader() );
-        String[] voidDeny = {"void.class", "Void.class"};
-        xStream.denyTypes(voidDeny);
     }
 
     private Map<String, TypeMetaInfo> typeMetaInfos;

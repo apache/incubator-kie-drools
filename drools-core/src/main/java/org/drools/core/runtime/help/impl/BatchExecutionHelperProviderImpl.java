@@ -20,14 +20,14 @@ import org.kie.internal.runtime.helper.BatchExecutionHelperProvider;
 
 import com.thoughtworks.xstream.XStream;
 
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 public class BatchExecutionHelperProviderImpl
     implements
     BatchExecutionHelperProvider {
 
     public XStream newXStreamMarshaller() {
-        XStream xstream = new XStream();
-        String[] voidDeny = {"void.class", "Void.class"};
-        xstream.denyTypes(voidDeny);
+        XStream xstream = createXStream();
         return newXStreamMarshaller(xstream);
     }
 
