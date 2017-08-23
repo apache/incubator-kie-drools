@@ -17,7 +17,7 @@ package org.drools.workbench.models.guided.dtree.shared.model.values.impl;
 
 import java.math.BigDecimal;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 
 public class BigDecimalValue implements Value<BigDecimal> {

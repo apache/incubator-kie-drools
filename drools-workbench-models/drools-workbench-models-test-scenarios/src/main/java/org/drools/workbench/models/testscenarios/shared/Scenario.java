@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.workbench.models.datamodel.imports.HasImports;
-import org.drools.workbench.models.datamodel.imports.Imports;
+import org.appformer.project.datamodel.imports.HasImports;
+import org.appformer.project.datamodel.imports.Imports;
 
 /**
  * This represents a test scenario. It also encapsulates the result of a

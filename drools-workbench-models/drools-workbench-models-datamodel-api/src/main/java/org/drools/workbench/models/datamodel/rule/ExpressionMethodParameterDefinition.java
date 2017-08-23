@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Meta Data for a ExpressionMethod's parameter definitions.
@@ -33,8 +33,8 @@ public class ExpressionMethodParameterDefinition {
     public ExpressionMethodParameterDefinition( final int index,
                                                 final String dataType ) {
         this.index = index;
-        this.dataType = PortablePreconditions.checkNotNull( "dataType",
-                                                            dataType );
+        this.dataType = PortablePreconditions.checkNotNull("dataType",
+                                                           dataType );
     }
 
     public int getIndex() {

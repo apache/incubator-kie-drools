@@ -18,7 +18,7 @@ package org.drools.workbench.models.guided.dtree.backend;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

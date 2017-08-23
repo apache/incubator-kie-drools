@@ -19,6 +19,7 @@ package org.drools.workbench.models.datamodel.oracle;
 import java.util.List;
 import java.util.Map;
 
+import org.appformer.project.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 
 public interface PackageDataModelOracle extends ProjectDataModelOracle {

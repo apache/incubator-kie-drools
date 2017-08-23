@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.template.backend.upgrade;
 
-import org.drools.workbench.models.commons.backend.IUpgradeHelper;
+import org.appformer.project.datamodel.commons.IUpgradeHelper;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
