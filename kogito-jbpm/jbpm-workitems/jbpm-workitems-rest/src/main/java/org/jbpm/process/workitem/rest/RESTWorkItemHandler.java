@@ -16,9 +16,22 @@
 
 package org.jbpm.process.workitem.rest;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.nio.charset.UnsupportedCharsetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.xml.bind.JAXBContext;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -83,11 +96,12 @@ import org.slf4j.LoggerFactory;
  * of non successful response codes (other than 2XX)</li>
  * <li>ResultClass - fully qualified class name of the class that response should be transformed to,
  * if not given string format will be returned</li>
+ * <li>AcceptHeader - accept header value</li>
  * </ul>
  */
 public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(org.jbpm.process.workitem.rest.RESTWorkItemHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(RESTWorkItemHandler.class);
 
     private String username;
     private String password;
@@ -113,7 +127,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
      */
     public RESTWorkItemHandler() {
         logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
-        this.type = org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.NONE;
+        this.type = AuthenticationType.NONE;
         this.classLoader = this.getClass().getClassLoader();
     }
 
@@ -127,7 +141,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         this();
         this.username = username;
         this.password = password;
-        this.type = org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.BASIC;
+        this.type = AuthenticationType.BASIC;
         this.classLoader = this.getClass().getClassLoader();
     }
 
@@ -143,7 +157,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         this();
         this.username = username;
         this.password = password;
-        this.type = org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.FORM_BASED;
+        this.type = AuthenticationType.FORM_BASED;
         this.authUrl = authUrl;
         this.classLoader = this.getClass().getClassLoader();
     }
@@ -153,7 +167,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
      */
     public RESTWorkItemHandler(ClassLoader classLoader) {
         logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
-        this.type = org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.NONE;
+        this.type = AuthenticationType.NONE;
         this.classLoader = classLoader;
     }
 
@@ -168,7 +182,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         this();
         this.username = username;
         this.password = password;
-        this.type = org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.BASIC;
+        this.type = AuthenticationType.BASIC;
         this.classLoader = classLoader;
     }
 
@@ -185,7 +199,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         this();
         this.username = username;
         this.password = password;
-        this.type = org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.FORM_BASED;
+        this.type = AuthenticationType.FORM_BASED;
         this.authUrl = authUrl;
         this.classLoader = classLoader;
     }
@@ -202,6 +216,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         String method = (String) workItem.getParameter("Method");
         String handleExceptionStr = (String) workItem.getParameter("HandleResponseErrors");
         String resultClass = (String) workItem.getParameter("ResultClass");
+        String acceptHeader = (String) workItem.getParameter("AcceptHeader");
+
         if (urlStr == null) {
             throw new IllegalArgumentException("Url is a required parameter");
         }
@@ -211,12 +227,12 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         if (handleExceptionStr != null) {
             handleException = Boolean.parseBoolean(handleExceptionStr);
         }
-        java.util.Map<String, Object> params = workItem.getParameters();
+        Map<String, Object> params = workItem.getParameters();
 
         // authentication type from parameters
         AuthenticationType authType = type;
         if (params.get("AuthType") != null) {
-            authType = org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.valueOf((String) params.get("AuthType"));
+            authType = AuthenticationType.valueOf((String) params.get("AuthType"));
         }
 
         // optional timeout config parameters, defaulted to 60 seconds
@@ -234,7 +250,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
         Object methodObject = configureRequest(method,
                                                urlStr,
-                                               params);
+                                               params,
+                                               acceptHeader);
         try {
             HttpResponse response = doRequestWithAuthorization(httpClient,
                                                                methodObject,
@@ -242,7 +259,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                                                                authType);
             StatusLine statusLine = response.getStatusLine();
             int responseCode = statusLine.getStatusCode();
-            java.util.Map<String, Object> results = new java.util.HashMap<String, Object>();
+            Map<String, Object> results = new HashMap<String, Object>();
             HttpEntity respEntity = response.getEntity();
             String responseBody = null;
             String contentType = null;
@@ -306,8 +323,24 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         return null;
     }
 
+    protected void addAcceptHeader(RequestBuilder builder,
+                                   String value) {
+        if (value != null) {
+            builder.addHeader(HttpHeaders.ACCEPT,
+                              value);
+        }
+    }
+
+    protected void addAcceptHeader(HttpRequestBase theMethod,
+                                   String value) {
+        if (value != null) {
+            theMethod.addHeader(HttpHeaders.ACCEPT,
+                                value);
+        }
+    }
+
     protected void setBody(RequestBuilder builder,
-                           java.util.Map<String, Object> params) {
+                           Map<String, Object> params) {
         if (params.containsKey("Content")) {
             try {
                 String contentType = (String) params.get("ContentType");
@@ -320,7 +353,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                 StringEntity entity = new StringEntity((String) content,
                                                        ContentType.parse(contentType));
                 builder.setEntity(entity);
-            } catch (java.nio.charset.UnsupportedCharsetException e) {
+            } catch (UnsupportedCharsetException e) {
                 throw new RuntimeException("Cannot set body for REST request [" + builder.getMethod() + "] " + builder.getUri(),
                                            e);
             }
@@ -328,7 +361,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     }
 
     protected void setBody(HttpRequestBase theMethod,
-                           java.util.Map<String, Object> params) {
+                           Map<String, Object> params) {
         if (params.containsKey("Content")) {
             Object content = params.get("Content");
             if (!(content instanceof String)) {
@@ -344,7 +377,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     protected void postProcessResult(String result,
                                      String resultClass,
                                      String contentType,
-                                     java.util.Map<String, Object> results) {
+                                     Map<String, Object> results) {
         if (!StringUtils.isEmpty(resultClass) && !StringUtils.isEmpty(contentType)) {
             try {
                 Class<?> clazz = Class.forName(resultClass,
@@ -358,7 +391,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                 results.put("Result",
                             resultObject);
             } catch (Throwable e) {
-                throw new RuntimeException("Unable to transform response to object",
+                throw new RuntimeException("Unable to transform respose to object",
                                            e);
             }
         } else {
@@ -376,8 +409,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
                 return mapper.writeValueAsString(data);
             } else if (contentType.toLowerCase().contains("application/xml")) {
-                java.io.StringWriter stringRep = new java.io.StringWriter();
-                javax.xml.bind.JAXBContext jaxbContext = javax.xml.bind.JAXBContext.newInstance(new Class[]{data.getClass()});
+                StringWriter stringRep = new StringWriter();
+                JAXBContext jaxbContext = JAXBContext.newInstance(new Class[]{data.getClass()});
 
                 jaxbContext.createMarshaller().marshal(data,
                                                        stringRep);
@@ -401,8 +434,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             return mapper.readValue(content,
                                     clazz);
         } else if (contentType.toLowerCase().contains("application/xml")) {
-            java.io.StringReader result = new java.io.StringReader(content);
-            javax.xml.bind.JAXBContext jaxbContext = javax.xml.bind.JAXBContext.newInstance(new Class[]{clazz});
+            StringReader result = new StringReader(content);
+            JAXBContext jaxbContext = JAXBContext.newInstance(new Class[]{clazz});
 
             return jaxbContext.createUnmarshaller().unmarshal(result);
         }
@@ -415,7 +448,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     protected HttpResponse doRequestWithAuthorization(HttpClient httpclient,
                                                       Object method,
-                                                      java.util.Map<String, Object> params,
+                                                      Map<String, Object> params,
                                                       AuthenticationType authType) {
         if (HTTP_CLIENT_API_43) {
             return doRequestWithAuthorization(httpclient,
@@ -443,10 +476,10 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
      */
     protected HttpResponse doRequestWithAuthorization(HttpClient httpclient,
                                                       RequestBuilder requestBuilder,
-                                                      java.util.Map<String, Object> params,
+                                                      Map<String, Object> params,
                                                       AuthenticationType type) {
         // no authorization
-        if (type == null || type == org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.NONE) {
+        if (type == null || type == AuthenticationType.NONE) {
             HttpUriRequest request = requestBuilder.build();
             try {
                 return httpclient.execute(request);
@@ -470,9 +503,9 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             throw new IllegalArgumentException("Could not find password");
         }
 
-        if (type == org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.BASIC) {
+        if (type == AuthenticationType.BASIC) {
             // basic auth
-            java.net.URI requestUri = requestBuilder.getUri();
+            URI requestUri = requestBuilder.getUri();
 
             HttpHost targetHost = new HttpHost(requestUri.getHost(),
                                                requestUri.getPort(),
@@ -509,7 +542,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                 throw new RuntimeException("Could not execute request with preemptive authentication [" + request.getMethod() + "] " + request.getURI(),
                                            e);
             }
-        } else if (type == org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.FORM_BASED) {
+        } else if (type == AuthenticationType.FORM_BASED) {
             // form auth
 
             // 1. do initial request to trigger authentication
@@ -518,7 +551,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             try {
                 HttpResponse initialResponse = httpclient.execute(request);
                 statusCode = initialResponse.getStatusLine().getStatusCode();
-            } catch (java.io.IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException("Could not execute request for form-based authentication",
                                            e);
             } finally {
@@ -543,7 +576,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                 throw new IllegalArgumentException("Could not find authentication url");
             }
             HttpPost authMethod = new HttpPost(authUrlStr);
-            java.util.List<NameValuePair> formParams = new java.util.ArrayList<NameValuePair>(2);
+            List<NameValuePair> formParams = new ArrayList<NameValuePair>(2);
             formParams.add(new BasicNameValuePair("j_username",
                                                   u));
             formParams.add(new BasicNameValuePair("j_password",
@@ -551,14 +584,14 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             UrlEncodedFormEntity formEntity;
             try {
                 formEntity = new UrlEncodedFormEntity(formParams);
-            } catch (java.io.UnsupportedEncodingException uee) {
+            } catch (UnsupportedEncodingException uee) {
                 throw new RuntimeException("Could not encode authentication parameters into request body",
                                            uee);
             }
             authMethod.setEntity(formEntity);
             try {
                 httpclient.execute(authMethod);
-            } catch (java.io.IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException("Could not initialize form-based authentication",
                                            e);
             } finally {
@@ -580,9 +613,9 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     protected HttpResponse doRequestWithAuthorization(HttpClient httpclient,
                                                       HttpRequestBase httpMethod,
-                                                      java.util.Map<String, Object> params,
+                                                      Map<String, Object> params,
                                                       AuthenticationType type) {
-        if (type == null || type == org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.NONE) {
+        if (type == null || type == AuthenticationType.NONE) {
             try {
                 return httpclient.execute(httpMethod);
             } catch (Exception e) {
@@ -602,7 +635,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         if (p == null) {
             throw new IllegalArgumentException("Could not find password");
         }
-        if (type == org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.BASIC) {
+        if (type == AuthenticationType.BASIC) {
 
             HttpHost targetHost = new HttpHost(httpMethod.getURI().getHost(),
                                                httpMethod.getURI().getPort(),
@@ -634,7 +667,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                 throw new RuntimeException("Could not execute request [" + httpMethod.getMethod() + "] " + httpMethod.getURI(),
                                            e);
             }
-        } else if (type == org.jbpm.process.workitem.rest.RESTWorkItemHandler.AuthenticationType.FORM_BASED) {
+        } else if (type == AuthenticationType.FORM_BASED) {
             String authUrlStr = (String) params.get("AuthUrl");
             if (authUrlStr == null) {
                 authUrlStr = authUrl;
@@ -644,7 +677,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             }
             try {
                 httpclient.execute(httpMethod);
-            } catch (java.io.IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException("Could not execute request for form-based authentication",
                                            e);
             } finally {
@@ -652,7 +685,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             }
             HttpPost authMethod = new HttpPost(authUrlStr);
 
-            java.util.List<NameValuePair> nvps = new java.util.ArrayList<NameValuePair>();
+            List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(new BasicNameValuePair("j_username",
                                             u));
             nvps.add(new BasicNameValuePair("j_password",
@@ -662,7 +695,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
                                                           Consts.UTF_8));
             try {
                 httpclient.execute(authMethod);
-            } catch (java.io.IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException("Could not initialize form-based authentication",
                                            e);
             } finally {
@@ -719,7 +752,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     }
 
     protected void close(HttpClient httpClient,
-                         Object httpMethod) throws java.io.IOException {
+                         Object httpMethod) throws IOException {
         if (HTTP_CLIENT_API_43) {
             ((CloseableHttpClient) httpClient).close();
         } else {
@@ -729,20 +762,27 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     protected Object configureRequest(String method,
                                       String urlStr,
-                                      java.util.Map<String, Object> params) {
+                                      Map<String, Object> params,
+                                      String acceptHeaderValue) {
 
         if (HTTP_CLIENT_API_43) {
             RequestBuilder builder = null;
             if ("GET".equals(method)) {
                 builder = RequestBuilder.get().setUri(urlStr);
+                addAcceptHeader(builder,
+                                acceptHeaderValue);
             } else if ("POST".equals(method)) {
                 builder = RequestBuilder.post().setUri(urlStr);
                 setBody(builder,
                         params);
+                addAcceptHeader(builder,
+                                acceptHeaderValue);
             } else if ("PUT".equals(method)) {
                 builder = RequestBuilder.put().setUri(urlStr);
                 setBody(builder,
                         params);
+                addAcceptHeader(builder,
+                                acceptHeaderValue);
             } else if ("DELETE".equals(method)) {
                 builder = RequestBuilder.delete().setUri(urlStr);
             } else {
@@ -754,14 +794,20 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
             HttpRequestBase theMethod = null;
             if ("GET".equals(method)) {
                 theMethod = new HttpGet(urlStr);
+                addAcceptHeader(theMethod,
+                                acceptHeaderValue);
             } else if ("POST".equals(method)) {
                 theMethod = new HttpPost(urlStr);
                 setBody(theMethod,
                         params);
+                addAcceptHeader(theMethod,
+                                acceptHeaderValue);
             } else if ("PUT".equals(method)) {
                 theMethod = new HttpPut(urlStr);
                 setBody(theMethod,
                         params);
+                addAcceptHeader(theMethod,
+                                acceptHeaderValue);
             } else if ("DELETE".equals(method)) {
                 theMethod = new HttpDelete(urlStr);
             } else {

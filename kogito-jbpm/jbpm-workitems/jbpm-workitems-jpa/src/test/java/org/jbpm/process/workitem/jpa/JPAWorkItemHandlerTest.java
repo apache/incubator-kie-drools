@@ -53,6 +53,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
+import org.jbpm.process.workitem.core.TestWorkItemManager;
+
 public class JPAWorkItemHandlerTest {
 
     private static final String P_UNIT = "org.jbpm.test.jpaWIH";
@@ -152,6 +154,7 @@ public class JPAWorkItemHandlerTest {
 
     @Test
     public void queryWithParameterActionTest() throws Exception {
+        WorkItemManager manager = new TestWorkItemManager();
         String DESC = "Cheese";
         Product p1 = new Product("Bread", 2f);
         Product p2 = new Product("Milk", 3f);
@@ -170,11 +173,11 @@ public class JPAWorkItemHandlerTest {
         workItem.setParameter(JPAWorkItemHandler.P_QUERY_PARAMS, params);
         UserTransaction ut = getUserTransaction();
         ut.begin();
-        handler.executeWorkItem(workItem, new TestWorkItemManager(workItem));
+        handler.executeWorkItem(workItem, manager);
         ut.commit();
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
         @SuppressWarnings("unchecked")
-        List<Product> products = (List<Product>) workItem
-                .getResult(JPAWorkItemHandler.P_QUERY_RESULTS);
+        List<Product> products = (List<Product>) results.get(JPAWorkItemHandler.P_QUERY_RESULTS);
         assertEquals(1, products.size());
         products = getAllProducts();
         assertEquals(3, products.size());
@@ -204,6 +207,7 @@ public class JPAWorkItemHandlerTest {
     }
 
     private List<Product> getAllProducts() throws Exception {
+        WorkItemManager manager = new TestWorkItemManager();
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter(JPAWorkItemHandler.P_ACTION,
                               JPAWorkItemHandler.QUERY_ACTION);
@@ -211,15 +215,16 @@ public class JPAWorkItemHandlerTest {
                               "SELECT p FROM Product p");
         UserTransaction ut = getUserTransaction();
         ut.begin();
-        handler.executeWorkItem(workItem, new TestWorkItemManager(workItem));
+        handler.executeWorkItem(workItem,manager);
         ut.commit();
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
         @SuppressWarnings("unchecked")
-        List<Product> products = (List<Product>) workItem
-                .getResult(JPAWorkItemHandler.P_QUERY_RESULTS);
+        List<Product> products = (List<Product>) results.get(JPAWorkItemHandler.P_QUERY_RESULTS);
         return products;
     }
 
     private Product getProduct(String id) throws Exception {
+        WorkItemManager manager = new TestWorkItemManager();
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter(JPAWorkItemHandler.P_ACTION,
                               JPAWorkItemHandler.GET_ACTION);
@@ -228,10 +233,10 @@ public class JPAWorkItemHandlerTest {
         workItem.setParameter(JPAWorkItemHandler.P_ID, id);
         UserTransaction ut = getUserTransaction();
         ut.begin();
-        handler.executeWorkItem(workItem, new TestWorkItemManager(workItem));
+        handler.executeWorkItem(workItem, manager);
         ut.commit();
-        Product product = (Product) workItem
-                .getResult(JPAWorkItemHandler.P_RESULT);
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        Product product = (Product) results.get(JPAWorkItemHandler.P_RESULT);
         return product;
     }
 
@@ -274,29 +279,6 @@ public class JPAWorkItemHandlerTest {
 
     private static UserTransaction getUserTransaction() throws NamingException {
         return (UserTransaction) InitialContext.doLookup("java:comp/UserTransaction");
-    }
-
-    private class TestWorkItemManager implements WorkItemManager {
-
-        private WorkItem workItem;
-
-        TestWorkItemManager(WorkItem workItem) {
-            this.workItem = workItem;
-        }
-
-        public void completeWorkItem(long id, Map<String, Object> results) {
-            ((WorkItemImpl) workItem).setResults(results);
-
-        }
-
-        public void abortWorkItem(long id) {
-
-        }
-
-        public void registerWorkItemHandler(String workItemName,
-                                            WorkItemHandler handler) {
-        }
-
     }
 
     public static PoolingDataSource setupPoolingDataSource() {

@@ -19,10 +19,9 @@ package org.jbpm.process.workitem.parser;
 import java.util.Map;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.jbpm.process.workitem.core.TestWorkItemManager;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
 import static org.junit.Assert.*;
@@ -45,6 +44,7 @@ public class ParserWorkItemHandlerTest {
 
     @Test
     public void testXmlToObject() {
+        WorkItemManager manager = new TestWorkItemManager();
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter(ParserWorkItemHandler.INPUT,
                               PERSON_XML);
@@ -53,8 +53,10 @@ public class ParserWorkItemHandlerTest {
         workItem.setParameter(ParserWorkItemHandler.TYPE,
                               "org.jbpm.process.workitem.parser.Person");
         handler.executeWorkItem(workItem,
-                                new TestWorkItemManager(workItem));
-        Person result = (Person) workItem.getResult(ParserWorkItemHandler.RESULT);
+                                manager);
+
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        Person result = (Person) results.get(ParserWorkItemHandler.RESULT);
         assertEquals(AGE,
                      result.getAge());
         assertEquals(NAME,
@@ -63,6 +65,7 @@ public class ParserWorkItemHandlerTest {
 
     @Test
     public void testObjectToXml() {
+        WorkItemManager manager = new TestWorkItemManager();
         Person p = new Person(NAME,
                               AGE);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -71,14 +74,16 @@ public class ParserWorkItemHandlerTest {
         workItem.setParameter(ParserWorkItemHandler.FORMAT,
                               ParserWorkItemHandler.XML);
         handler.executeWorkItem(workItem,
-                                new TestWorkItemManager(workItem));
-        String result = (String) workItem.getResult(ParserWorkItemHandler.RESULT);
+                                manager);
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        String result = (String) results.get(ParserWorkItemHandler.RESULT);
         assertEquals(PERSON_XML,
                      result);
     }
 
     @Test
     public void testJsonToObject() {
+        WorkItemManager manager = new TestWorkItemManager();
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter(ParserWorkItemHandler.INPUT,
                               PERSON_JSON);
@@ -87,8 +92,9 @@ public class ParserWorkItemHandlerTest {
         workItem.setParameter(ParserWorkItemHandler.TYPE,
                               "org.jbpm.process.workitem.parser.Person");
         handler.executeWorkItem(workItem,
-                                new TestWorkItemManager(workItem));
-        Person result = (Person) workItem.getResult(ParserWorkItemHandler.RESULT);
+                                manager);
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        Person result = (Person) results.get(ParserWorkItemHandler.RESULT);
         assertEquals(AGE,
                      result.getAge());
         assertEquals(NAME,
@@ -97,6 +103,7 @@ public class ParserWorkItemHandlerTest {
 
     @Test
     public void testObjectToJson() {
+        WorkItemManager manager = new TestWorkItemManager();
         Person p = new Person(NAME,
                               AGE);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -105,33 +112,11 @@ public class ParserWorkItemHandlerTest {
         workItem.setParameter(ParserWorkItemHandler.FORMAT,
                               ParserWorkItemHandler.JSON);
         handler.executeWorkItem(workItem,
-                                new TestWorkItemManager(workItem));
-        String result = (String) workItem.getResult(ParserWorkItemHandler.RESULT);
+                                manager);
+        Map<String, Object> results = ((TestWorkItemManager) manager).getResults(workItem.getId());
+        String result = (String) results.get(ParserWorkItemHandler.RESULT);
         assertEquals(PERSON_JSON,
                      result);
-    }
-
-    private class TestWorkItemManager implements WorkItemManager {
-
-        private WorkItem workItem;
-
-        TestWorkItemManager(WorkItem workItem) {
-            this.workItem = workItem;
-        }
-
-        public void completeWorkItem(long id,
-                                     Map<String, Object> results) {
-            ((WorkItemImpl) workItem).setResults(results);
-        }
-
-        public void abortWorkItem(long id) {
-
-        }
-
-        public void registerWorkItemHandler(String workItemName,
-                                            WorkItemHandler handler) {
-
-        }
     }
 }
 
