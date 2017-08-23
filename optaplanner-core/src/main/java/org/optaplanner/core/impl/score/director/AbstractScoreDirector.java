@@ -466,6 +466,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         }
         Score workingScore = calculateScore();
         if (!expectedWorkingScore.equals(workingScore)) {
+            assertWorkingScoreFromScratch(workingScore,
+                    "assertShadowVariablesAreNotStale(" + expectedWorkingScore + ", " + completedAction + ")");
             throw new IllegalStateException("Impossible " + VariableListener.class.getSimpleName() + " corruption:"
                     + " the expectedWorkingScore (" + expectedWorkingScore
                     + ") is not the workingScore (" + workingScore
