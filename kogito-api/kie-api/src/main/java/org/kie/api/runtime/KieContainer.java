@@ -49,7 +49,7 @@ public interface KieContainer {
 
     /**
      * Builds the KieBases with the given name(s) in the KieModule wrapped by this KieContainer
-     * and return te Results of this building process
+     * and return the Results of this building process
      */
     Results verify(String... kBaseNames);
 
