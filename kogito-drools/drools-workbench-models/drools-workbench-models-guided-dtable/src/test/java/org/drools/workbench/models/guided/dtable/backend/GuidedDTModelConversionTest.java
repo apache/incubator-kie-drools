@@ -15,10 +15,9 @@
  */
 package org.drools.workbench.models.guided.dtable.backend;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper1;
 import org.junit.Test;
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;

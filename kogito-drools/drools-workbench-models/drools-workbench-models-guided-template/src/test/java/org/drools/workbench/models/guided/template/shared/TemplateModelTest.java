@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.guided.template.shared;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.junit.Assert;

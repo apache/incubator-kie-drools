@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -16,8 +16,8 @@
 
 package org.drools.workbench.models.guided.dtable.backend;
 
+import org.appformer.project.datamodel.oracle.DataType;
 import org.assertj.core.api.Assertions;
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.util.DataUtilities;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.junit.Before;

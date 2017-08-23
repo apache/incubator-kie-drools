@@ -15,11 +15,8 @@
 
 package org.drools.compiler.kproject;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.Collection;
-import java.util.Properties;
 
 import org.kie.api.builder.ReleaseId;
 
@@ -51,32 +48,10 @@ public class ReleaseIdImpl extends org.appformer.maven.support.AFReleaseIdImpl i
     }
 
     public static ReleaseId fromPropertiesString( String path ) {
-        Properties props = new Properties();
-        try {
-            props.load(new StringReader( path) );
-            return getReleaseIdFromProperties(props, path);
-        } catch (IOException e) {
-            throw new RuntimeException("pom.properties was malformed\n" + path, e);
-        }
+        return adapt( org.appformer.maven.support.AFReleaseIdImpl.fromPropertiesString(path) );
     }
 
     public static ReleaseId fromPropertiesStream( InputStream stream, String path ) {
-        Properties props = new Properties();
-        try {
-            props.load(stream);
-            return getReleaseIdFromProperties(props, path);
-        } catch (IOException e) {
-            throw new RuntimeException("pom.properties was malformed\n" + path, e);
-        }
-    }
-
-    private static ReleaseId getReleaseIdFromProperties( Properties props, String path ) {
-        String groupId = props.getProperty("groupId");
-        String artifactId = props.getProperty("artifactId");
-        String version = props.getProperty("version");
-        if (isEmpty(groupId) || isEmpty(artifactId) || isEmpty(version)) {
-            throw new RuntimeException("pom.properties exists but ReleaseId content is malformed\n" + path);
-        }
-        return new ReleaseIdImpl( groupId, artifactId, version);
+        return adapt( org.appformer.maven.support.AFReleaseIdImpl.fromPropertiesStream(stream, path) );
     }
 }

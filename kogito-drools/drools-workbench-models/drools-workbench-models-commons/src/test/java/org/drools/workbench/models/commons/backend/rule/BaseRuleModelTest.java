@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.appformer.project.datamodel.oracle.MethodInfo;
+import org.appformer.project.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.junit.After;
 import org.junit.Before;

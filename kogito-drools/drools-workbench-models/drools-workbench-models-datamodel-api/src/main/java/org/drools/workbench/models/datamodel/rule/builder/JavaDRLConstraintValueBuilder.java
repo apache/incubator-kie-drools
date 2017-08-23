@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.datamodel.rule.builder;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 
 /**
  * Specific implementation for MVEL

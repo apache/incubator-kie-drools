@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.imports.Import;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;

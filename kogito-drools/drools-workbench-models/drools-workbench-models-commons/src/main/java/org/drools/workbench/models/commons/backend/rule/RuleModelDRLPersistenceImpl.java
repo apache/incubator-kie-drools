@@ -29,6 +29,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.appformer.project.datamodel.imports.Import;
+import org.appformer.project.datamodel.imports.Imports;
+import org.appformer.project.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.MethodInfo;
+import org.appformer.project.datamodel.oracle.ModelField;
+import org.appformer.project.datamodel.oracle.OperatorsOracle;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -54,21 +61,15 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.util.ReflectiveVisitor;
-import org.drools.workbench.models.commons.backend.imports.ImportsParser;
-import org.drools.workbench.models.commons.backend.imports.ImportsWriter;
-import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
-import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
+import org.appformer.project.datamodel.commons.imports.ImportsParser;
+import org.appformer.project.datamodel.commons.imports.ImportsWriter;
+import org.appformer.project.datamodel.commons.packages.PackageNameParser;
+import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.exception.RuleModelDRLPersistenceException;
-import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
-import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
@@ -116,7 +117,6 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.drools.workbench.models.datamodel.rule.builder.DRLConstraintValueBuilder;
 import org.drools.workbench.models.datamodel.rule.visitors.ToStringExpressionVisitor;
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.drools.workbench.models.datamodel.workitems.HasBinding;
 import org.drools.workbench.models.datamodel.workitems.PortableBooleanParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
@@ -186,8 +186,8 @@ public class RuleModelDRLPersistenceImpl
     @Override
     public String marshal(final RuleModel model,
                           final Collection<RuleModelIActionPersistenceExtension> extensions) {
-        PortablePreconditions.checkNotNull("extensions",
-                                           extensions);
+        PortablePreconditions.checkNotNull( "extensions",
+                                            extensions);
 
         return marshalRule(model,
                            extensions);
@@ -1369,7 +1369,7 @@ public class RuleModelDRLPersistenceImpl
                                          final String value,
                                          final StringBuilder buf) {
 
-            if (OperatorsOracle.operatorRequiresList(operator)) {
+            if (OperatorsOracle.operatorRequiresList( operator)) {
                 populateValueList(buf,
                                   type,
                                   fieldType,
@@ -2017,7 +2017,7 @@ public class RuleModelDRLPersistenceImpl
         model.setPackageName(packageName);
 
         //De-serialize imports
-        final Imports imports = ImportsParser.parseImports(expandedDRLInfo.plainDrl);
+        final Imports imports = ImportsParser.parseImports( expandedDRLInfo.plainDrl);
         for (Import item : imports.getImports()) {
             model.getImports().addImport(item);
         }
@@ -2614,9 +2614,9 @@ public class RuleModelDRLPersistenceImpl
                 String sourcePart = splitSource[i];
                 if (i == 0) {
                     String type = boundParams.get(sourcePart);
-                    expression.appendPart(new ExpressionVariable(sourcePart,
-                                                                 type,
-                                                                 DataType.TYPE_NUMERIC));
+                    expression.appendPart(new ExpressionVariable( sourcePart,
+                                                                  type,
+                                                                  DataType.TYPE_NUMERIC));
                     fields = findFields(m,
                                         dmo,
                                         type);

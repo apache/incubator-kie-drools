@@ -20,10 +20,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.appformer.project.datamodel.imports.HasImports;
+import org.appformer.project.datamodel.imports.Imports;
+import org.appformer.project.datamodel.packages.HasPackageName;
 import org.drools.workbench.models.datamodel.auditlog.AuditLog;
-import org.drools.workbench.models.datamodel.imports.HasImports;
-import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.datamodel.packages.HasPackageName;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;

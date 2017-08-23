@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.datamodel.rule;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 
 public class ExpressionText extends ExpressionPart {
 

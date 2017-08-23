@@ -16,8 +16,8 @@
 
 package org.drools.workbench.models.guided.template.backend;
 
+import org.appformer.project.datamodel.oracle.DataType;
 import org.drools.workbench.models.commons.backend.rule.RuleModelPersistence;
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;

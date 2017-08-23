@@ -16,13 +16,13 @@
 
 package org.drools.workbench.models.testscenarios.backend;
 
+import org.appformer.project.datamodel.imports.Import;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.testscenarios.shared.ActivateRuleFlowGroup;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Expectation;

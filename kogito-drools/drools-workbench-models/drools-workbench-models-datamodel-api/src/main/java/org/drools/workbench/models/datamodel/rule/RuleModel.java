@@ -21,9 +21,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.imports.HasImports;
-import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.datamodel.packages.HasPackageName;
+import org.appformer.project.datamodel.imports.HasImports;
+import org.appformer.project.datamodel.imports.Imports;
+import org.appformer.project.datamodel.packages.HasPackageName;
 
 public class RuleModel implements HasImports,
                                   HasPackageName {

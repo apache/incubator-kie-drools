@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtree.shared.model.parser.messages;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * A String value could not be converted to a type-safe Value class

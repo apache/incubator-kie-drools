@@ -18,10 +18,10 @@ package org.drools.workbench.models.guided.dtree.shared.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.imports.HasImports;
-import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.datamodel.packages.HasPackageName;
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.appformer.project.datamodel.imports.HasImports;
+import org.appformer.project.datamodel.imports.Imports;
+import org.appformer.project.datamodel.packages.HasPackageName;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.GuidedDecisionTreeParserError;
 

@@ -26,9 +26,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.appformer.project.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.MethodInfo;
 import org.drools.core.util.DateUtils;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
@@ -253,7 +253,7 @@ public class ActionCallMethodBuilder {
                     return methodParamDataType;
                 }
                 return null;
-            } else if (DataType.TYPE_DATE.equals(methodParamDataType)) {
+            } else if (DataType.TYPE_DATE.equals( methodParamDataType)) {
                 try {
                     new SimpleDateFormat(DateUtils.getDateFormatMask(),
                                          Locale.ENGLISH).parse(adjustParam(methodParamDataType,
