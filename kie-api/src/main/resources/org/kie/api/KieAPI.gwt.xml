@@ -6,5 +6,6 @@
   <inherits name="org.appformer.maven.support.AFMavenSupportAPI"/>
 
   <source path='builder' includes="ReleaseId.java"/>
+  <source path='builder' includes="ReleaseIdComparator.java"/>
 
 </module>
