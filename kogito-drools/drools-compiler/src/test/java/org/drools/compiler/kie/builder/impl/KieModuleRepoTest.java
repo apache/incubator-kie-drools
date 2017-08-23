@@ -1,6 +1,9 @@
 package org.drools.compiler.kie.builder.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -17,7 +20,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.ComparableVersion;
+
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.KieModuleRepo;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.common.ResourceProvider;
@@ -27,6 +30,7 @@ import org.junit.Test;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.ReleaseIdComparator.ComparableVersion;
 import org.kie.api.builder.model.KieBaseModel;
 
 /**
