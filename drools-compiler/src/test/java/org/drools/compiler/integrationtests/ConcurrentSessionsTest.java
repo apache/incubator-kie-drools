@@ -16,7 +16,10 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -25,121 +28,126 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertEquals;
-
+@RunWith(Parameterized.class)
 public class ConcurrentSessionsTest {
+
+    private final boolean enforcedJitting;
+
+    @Parameterized.Parameters(name = "Enforced jitting={0}")
+    public static List<Boolean> getTestParameters() {
+        return Arrays.asList(false, true);
+    }
+
+    public ConcurrentSessionsTest(final boolean enforcedJitting) {
+        this.enforcedJitting = enforcedJitting;
+    }
 
     interface KieSessionExecutor {
         boolean execute(KieSession kieSession, int counter);
     }
 
-    private void parallelTest(int repetitions, int threadCount, final KieSessionExecutor kieSessionExecutor, String... drls) {
+    private void parallelTest(final int repetitions, final int threadCount, final KieSessionExecutor kieSessionExecutor,
+            final String... drls) throws InterruptedException {
         for (int rep = 0; rep < repetitions; rep++) {
-            KieHelper kieHelper = new KieHelper();
-            for (String drl : drls) {
+            final KieHelper kieHelper = new KieHelper();
+            for (final String drl : drls) {
                 kieHelper.addContent( drl, ResourceType.DRL );
             }
-            final KieBase kieBase = kieHelper.build();
+            final KieBase kieBase;
+            if (enforcedJitting) {
+                kieBase = kieHelper.build(ConstraintJittingThresholdOption.get(2));
+            } else {
+                kieBase = kieHelper.build();
+            }
 
-            ExecutorService executor = Executors.newFixedThreadPool( threadCount, new ThreadFactory() {
-                public Thread newThread( Runnable r ) {
-                    Thread t = new Thread( r );
+//            ReteDumper.dumpRete(kieBase.newKieSession());
+
+            final ExecutorService executor = Executors.newFixedThreadPool( threadCount, new ThreadFactory() {
+                public Thread newThread( final Runnable r ) {
+                    final Thread t = new Thread( r );
                     t.setDaemon( true );
-                    return t;
+                    return new Thread(r);
                 }
             } );
 
             try {
-                Callable<Boolean>[] tasks = new Callable[threadCount];
+                final Callable<Boolean>[] tasks = new Callable[threadCount];
 
-                for ( int i = 0; i < threadCount; i++ ) {
+                for (int i = 0; i < threadCount; i++) {
                     final int counter = i;
                     tasks[i] = new Callable<Boolean>() {
                         @Override
                         public Boolean call() throws Exception {
-                            return kieSessionExecutor.execute( kieBase.newKieSession(), counter );
+                            return kieSessionExecutor.execute(kieBase.newKieSession(), counter);
                         }
                     };
                 }
 
-                CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>( executor );
-                for ( Callable<Boolean> task : tasks ) {
-                    ecs.submit( task );
+                final CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+                for (final Callable<Boolean> task : tasks) {
+                    ecs.submit(task);
                 }
 
                 int successCounter = 0;
-                for ( int i = 0; i < threadCount; i++ ) {
+                for (int i = 0; i < threadCount; i++) {
                     try {
-                        if ( ecs.take().get() ) {
+                        if (ecs.take().get()) {
                             successCounter++;
                         }
-                    } catch (Exception e) {
-                        throw new RuntimeException( e );
+                    } catch (final Exception e) {
+                        throw new RuntimeException(e);
                     }
                 }
 
-                assertEquals( threadCount, successCounter );
+                assertEquals(threadCount, successCounter);
             } finally {
                 executor.shutdown();
-                try {
-                    if ( !executor.awaitTermination( 5, TimeUnit.SECONDS ) ) {
-                        executor.shutdownNow();
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException( e );
+                if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
                 }
             }
         }
     }
 
-    @Test
-    public void test1() {
-        String drl = "rule R when String() then end";
+    @Test(timeout = 5000)
+    public void test1() throws InterruptedException {
+        final String drl = "rule R when String() then end";
 
         parallelTest( 10, 10, new KieSessionExecutor() {
             @Override
-            public boolean execute( KieSession kieSession, int counter ) {
+            public boolean execute( final KieSession kieSession, final int counter ) {
                 kieSession.insert( "test" );
                 return kieSession.fireAllRules() == 1;
             }
         }, drl );
     }
 
-    @Test
-    public void test2() {
-        String drl1 =
-                "import " + Product.class.getCanonicalName() + ";\n" +
-                "rule R1 when\n" +
-                "  $s : String( this == \"odd\" )\n" +
-                "  $p : Product( category == $s, firings not contains \"R1\" )\n" +
-                "then\n" +
-                "  $p.getFirings().add(\"R1\");\n" +
-                "  $p.appendDescription($s);\n" +
-                "  update($p);\n" +
-                "end\n";
+    @Test(timeout = 5000)
+    public void test2NoSubnetwork() throws InterruptedException {
+        test2(getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
+                getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
+    }
 
-        String drl2 =
-                "import " + Product.class.getCanonicalName() + ";\n" +
-                "rule R2 when\n" +
-                "  $s : String( this == \"pair\" )\n" +
-                "  $p : Product( category == $s, firings not contains \"R2\" )\n" +
-                "then\n" +
-                "  $p.getFirings().add(\"R2\");\n" +
-                "  $p.appendDescription($s);\n" +
-                "  update($p);" +
-                "end\n";
+    @Test(timeout = 5000)
+    public void test2WithSubnetwork() throws InterruptedException {
+        test2(getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
+                getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
+    }
 
+    private void test2(final String... drls) throws InterruptedException {
         parallelTest( 10, 10, new KieSessionExecutor() {
             @Override
-            public boolean execute( KieSession kieSession, int counter ) {
-                Product[] products = new Product[10];
+            public boolean execute( final KieSession kieSession, final int counter ) {
+                final Product[] products = new Product[10];
                 for (int i = 0; i < 10; i++) {
                     products[i] = new Product( "" + i, i % 2 == 0 ? "pair" : "odd" );
                 }
@@ -159,47 +167,60 @@ public class ConcurrentSessionsTest {
                 }
                 return true;
             }
-        }, drl1, drl2 );
+        }, drls );
+    }
+
+    @Test(timeout = 5000)
+    public void test3NoSubnetwork() throws InterruptedException {
+        test3(getRule("R1", "this == \"odd\"", false, false, "Number( intValue > 0 )"),
+                getRule("R2", "this == \"pair\"", false, false, "Number( intValue < 10000 )"));
+    }
+
+    @Test(timeout = 5000)
+    public void test3WithSubnetwork() throws InterruptedException {
+        test3(getRule("R1", "this == \"odd\"", false, true, "Number( intValue > 0 )"),
+                getRule("R2", "this == \"pair\"", false, true, "Number( intValue < 10000 )"));
     }
 
     @Test
-    public void test3() {
-        String drl1 =
-                "import " + Product.class.getCanonicalName() + ";\n" +
-                "rule R1 when\n" +
-                "  $s : String( this == \"odd\" )\n" +
-                "  $p : Product( category == $s, firings not contains \"R1\" )\n" +
+    public void test3WithSharedSubnetwork() throws InterruptedException {
+        final String ruleTemplate = "import " + Product.class.getCanonicalName() + ";\n" +
+                "rule ${ruleName} when\n" +
+                "  $s : String()\n" +
+                "  $p : Product( category == $s )\n" +
+                "  $n : Number(intValue > 0) from accumulate (\n" +
+                "    $s_1 : String( this == $s ) and\n" +
+                "    $p_1 : Product( category == $s_1 )\n" +
+                "    ;count($p_1))\n" +
+                "  Product(this == $p, category == \"${category}\", firings not contains \"${ruleName}\")\n" +
                 "then\n" +
-                "  $p.getFirings().add(\"R1\");\n" +
+                "  $p.getFirings().add(\"${ruleName}\");\n" +
                 "  $p.appendDescription($s);\n" +
                 "  update($p);\n" +
                 "end\n";
 
-        String drl2 =
-                "import " + Product.class.getCanonicalName() + ";\n" +
-                "rule R2 when\n" +
-                "  $s : String( this == \"pair\" )\n" +
-                "  $p : Product( category == $s, firings not contains \"R2\" )\n" +
-                "then\n" +
-                "  $p.getFirings().add(\"R2\");\n" +
-                "  $p.appendDescription($s);\n" +
-                "  update($p);" +
-                "end\n";
+        final String drl1 = ruleTemplate.replace("${ruleName}", "R1").replace("${category}", "odd");
+        final String drl2 = ruleTemplate.replace("${ruleName}", "R2").replace("${category}", "pair");
+        test3(drl1, drl2);
+    }
 
+    private void test3(final String... drls) throws InterruptedException {
         parallelTest( 10, 10, new KieSessionExecutor() {
             @Override
-            public boolean execute( KieSession kieSession, int counter ) {
-                Product[] products = new Product[10];
+            public boolean execute( final KieSession kieSession, final int counter ) {
+                final Product[] products = new Product[10];
                 for (int i = 0; i < 10; i++) {
                     products[i] = new Product( "" + i, i % 2 == 0 ? "pair" : "odd" );
                 }
 
-                boolean pair = counter % 2 == 0;
-                kieSession.insert( pair ? "pair" : "odd" );
-
                 for (int i = 0; i < 10; i++) {
                     kieSession.insert( products[i] );
                 }
+
+                kieSession.fireAllRules();
+
+                final boolean pair = counter % 2 == 0;
+                kieSession.insert( pair ? "pair" : "odd" );
 
                 kieSession.fireAllRules();
 
@@ -223,45 +244,26 @@ public class ConcurrentSessionsTest {
                 }
                 return true;
             }
-        }, drl1, drl2 );
+        }, drls );
     }
 
-    @Test
-    public void test4() {
-        String drl1 =
-                "import " + Product.class.getCanonicalName() + ";\n" +
-                "rule R1 when\n" +
-                "  $s : String()\n" +
-                "  $p : Product( category == $s, firings not contains \"R1\" )" +
-                "  $n : Number( intValue > 5 ) from accumulate (" +
-                "    $s_1 : String( this == $s ) and" +
-                "    $p_1 : Product( category == $s_1 )" +
-                "    ;count($p_1))\n" +
-                "then\n" +
-                "  $p.getFirings().add(\"R1\");\n" +
-                "  $p.appendDescription($s);\n" +
-                "  update($p);\n" +
-                "end\n";
+    @Test(timeout = 10000)
+    public void test4NoSharing() throws InterruptedException {
+        test4(getRule("R1", "", false, true, "Number( intValue > 5 )"),
+                getRule("R2", "", false, true, "Number( intValue < 5 )"));
+    }
 
-        String drl2 =
-                "import " + Product.class.getCanonicalName() + ";\n" +
-                "rule R2 when\n" +
-                "  $s : String()\n" +
-                "  $p : Product( category == $s, firings not contains \"R2\" )" +
-                "  $n : Number( intValue < 5 ) from accumulate (" +
-                "    $s_1 : String( this == $s ) and" +
-                "    $p_1 : Product( category == $s_1 )" +
-                "    ;count($p_1))\n" +
-                "then\n" +
-                "  $p.getFirings().add(\"R2\");\n" +
-                "  $p.appendDescription($s);\n" +
-                "  update($p);" +
-                "end\n";
+    @Test(timeout = 10000)
+    public void test4WithSharing() throws InterruptedException {
+        test4(getRule("R1", "", true, true, "Number( intValue > 5 )"),
+                getRule("R2", "", true, true, "Number( intValue < 5 )"));
+    }
 
+    private void test4(final String... drls) throws InterruptedException {
         parallelTest( 10, 10, new KieSessionExecutor() {
             @Override
-            public boolean execute( KieSession kieSession, int counter ) {
-                Product[] products = new Product[10];
+            public boolean execute( final KieSession kieSession, final int counter ) {
+                final Product[] products = new Product[10];
                 for (int i = 0; i < 10; i++) {
                     products[i] = new Product( "" + i, i % 3 == 0 ? "few" : "many" );
                 }
@@ -282,7 +284,29 @@ public class ConcurrentSessionsTest {
                 }
                 return true;
             }
-        }, drl1, drl2 );
+        }, drls );
+    }
+
+    private String getRule(final String ruleName, final String stringFactCondition,
+            final boolean withSharing, final boolean withSubnetwork, final String accumulateResultFilter) {
+        final String sharingCondition = withSharing ? "" : ", firings not contains \"" + ruleName + "\"";
+        final String accumulateWithSubnetwork = withSubnetwork ?
+                "  $n : " + accumulateResultFilter + " from accumulate (\n" +
+                        "    $s_1 : String( this == $s ) and\n" +
+                        "    $p_1 : Product( category == $s_1 )\n" +
+                        "    ;count($p_1))\n"
+                : "";
+
+        return "import " + Product.class.getCanonicalName() + ";\n" +
+                "rule " + ruleName + " no-loop when\n" +
+                "  $s : String(" + stringFactCondition + ")\n" +
+                "  $p : Product( category == $s " + sharingCondition + ")\n" +
+                accumulateWithSubnetwork +
+                "then\n" +
+                "  $p.getFirings().add(\"" + ruleName +"\");\n" +
+                "  $p.appendDescription($s);\n" +
+                "  update($p);\n" +
+                "end\n";
     }
 
     public static class Product {
@@ -293,7 +317,7 @@ public class ConcurrentSessionsTest {
 
         private String description = "";
 
-        public Product( String id, String category ) {
+        public Product( final String id, final String category ) {
             this.id = id;
             this.category = category;
         }
@@ -314,7 +338,7 @@ public class ConcurrentSessionsTest {
             return description;
         }
 
-        public void appendDescription( String append ) {
+        public void appendDescription( final String append ) {
             description += append;
         }
     }
