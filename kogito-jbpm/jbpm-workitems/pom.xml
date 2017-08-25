@@ -29,6 +29,7 @@
     <module>jbpm-workitems-rss</module>
     <module>jbpm-workitems-transform</module>
     <module>jbpm-workitems-webservice</module>
+    <module>jbpm-workitems-archetype</module>
   </modules>
 
   <dependencies>

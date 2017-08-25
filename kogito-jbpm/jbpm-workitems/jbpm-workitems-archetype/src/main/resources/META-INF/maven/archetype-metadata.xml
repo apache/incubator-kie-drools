@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="${artifactId}">
+
+  <requiredProperties>
+    <requiredProperty key="classPrefix"/>
+  </requiredProperties>
+
+  <modules>
+    <module id="jbpm-workitems-${rootArtifactId}" dir="jbpm-workitems-__rootArtifactId__" name="jbpm-workitems-${rootArtifactId}">
+      <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/main/resources</directory>
+        </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+          <directory>src/main/repository</directory>
+          <includes>
+            <include>**/*.conf</include>
+            <include>**/*.wid</include>
+            <include>**/*.png</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+          <directory>src/assembly</directory>
+          <includes>
+            <include>**/*.xml</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/test/java</directory>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+          <directory>src/test/resources</directory>
+        </fileSet>
+      </fileSets>
+    </module>
+  </modules>
+</archetype-descriptor>

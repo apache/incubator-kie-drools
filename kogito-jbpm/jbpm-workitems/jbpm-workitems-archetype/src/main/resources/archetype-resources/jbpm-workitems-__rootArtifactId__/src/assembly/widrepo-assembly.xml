@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>bin</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+
+  <fileSets>
+    <fileSet>
+      <directory>src/main/repository</directory>
+      <outputDirectory/>
+      <includes>
+        <include>*.conf</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/repository/${classPrefix}</directory>
+      <outputDirectory>${classPrefix}</outputDirectory>
+      <includes>
+        <include>*.wid</include>
+        <include>*.png</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>target</directory>
+      <outputDirectory>${classPrefix}</outputDirectory>
+      <includes>
+        <include>*.jar</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>
