@@ -74,12 +74,12 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
+import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -3626,5 +3626,25 @@ public class AccumulateTest extends CommonTestMethodBase {
         public String toString() {
             return "BusStop[" + id + "]";
         }
+    }
+
+    @Test
+    public void testCompileFailureOnMissingImport() {
+        // DROOLS-1714
+        String drl = "import " + BusStop.class.getCanonicalName() + ";\n" +
+                     "rule \"sample rule\"\n" +
+                     "when\n" +
+                     "\n" +
+                     "    $bus: Bus()\n" +
+                     "    \n" +
+                     "    accumulate(\n" +
+                     "         $sample: BusStop(bus == $bus);\n" +
+                     "    $count: count()\n" +
+                     "    )\n" +
+                     "then\n" +
+                     "    System.out.println(\"wierd error: \" + $count );\n" +
+                     "end";
+
+        assertDrlHasCompilationError( drl, -1 );
     }
 }
