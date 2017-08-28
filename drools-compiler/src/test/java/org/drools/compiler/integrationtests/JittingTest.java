@@ -16,11 +16,17 @@
 
 package org.drools.compiler.integrationtests;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.compiler.integrationtests.facts.AnEnum;
+import org.drools.compiler.integrationtests.facts.FactWithEnum;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.conf.ConstraintJittingThresholdOption;
+import org.kie.internal.utils.KieHelper;
 
 public class JittingTest extends CommonTestMethodBase {
 
@@ -75,5 +81,42 @@ public class JittingTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         ksession.dispose();
+    }
+
+    @Test
+    public void testJittingEnum() {
+        final String drl = "import " + AnEnum.class.getCanonicalName() + ";\n" +
+                " rule R1 \n" +
+                " when \n" +
+                "    $enumFact: AnEnum(this == AnEnum.FIRST)\n" +
+                " then \n" +
+                " end ";
+
+        final KieHelper kieHelper = new KieHelper();
+        kieHelper.addContent( drl, ResourceType.DRL );
+        final KieBase kieBase = kieHelper.build(ConstraintJittingThresholdOption.get(0));
+        final KieSession kieSession = kieBase.newKieSession();
+
+        kieSession.insert(AnEnum.FIRST);
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testJittingEnumAttribute() {
+        final String drl = "import " + AnEnum.class.getCanonicalName() + ";\n" +
+                "import " + FactWithEnum.class.getCanonicalName() + ";\n" +
+                " rule R1 \n" +
+                " when \n" +
+                "    $factWithEnum: FactWithEnum(enumValue == AnEnum.FIRST) \n" +
+                " then \n" +
+                " end ";
+
+        final KieHelper kieHelper = new KieHelper();
+        kieHelper.addContent( drl, ResourceType.DRL );
+        final KieBase kieBase = kieHelper.build(ConstraintJittingThresholdOption.get(0));
+
+        final KieSession kieSession = kieBase.newKieSession();
+        kieSession.insert(new FactWithEnum(AnEnum.FIRST));
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
     }
 }
