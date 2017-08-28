@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.api.marshalling.v1_1;
+package org.kie.dmn.backend.marshalling.v1_1.extensions;
+
+import javax.xml.namespace.QName;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.QNameMap;
+import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
 
+public class MyTestRegister implements DMNExtensionRegister {
 
-public interface DMNExtensionRegister {
-
-    public void registerExtensionConverters(XStream xstream);
-
-    default void beforeMarshal(Object o, QNameMap qmap) {
-        // do nothing.
+    @Override
+    public void registerExtensionConverters(XStream xStream) {
+        xStream.processAnnotations(MyKieExt.class);
+        xStream.processAnnotations(MyDroolsExt.class);
     }
+
+    @Override
+    public void beforeMarshal(Object o, QNameMap qmap) {
+        qmap.registerMapping(new QName("https://github.com/kiegroup/drools", "mykieext", "kie"), "mykieext");
+        qmap.registerMapping(new QName("http://drools.org", "mydroolsext", "drools"), "mydroolsext");
+    }
+    
 }

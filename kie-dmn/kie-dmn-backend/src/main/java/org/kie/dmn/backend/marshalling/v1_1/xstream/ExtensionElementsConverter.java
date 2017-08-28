@@ -22,6 +22,7 @@ import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.DMNElement.ExtensionElements;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -29,9 +30,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Currently ignoring all extensionElements
- */
 public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverter {
 
     private List<DMNExtensionRegister> extensionRegisters = new ArrayList<>();
@@ -71,6 +69,22 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);
         // no attributes.
+    }
+    
+    @Override
+    protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
+        super.writeChildren(writer, context, parent);
+        
+        if(extensionRegisters.size() == 0) {
+            return;
+        }
+
+        ExtensionElements ee = (ExtensionElements) parent;
+        if ( ee.getAny() != null ) {
+            for ( Object a : ee.getAny() ) {
+                writeItem(a, context, writer);
+            }
+        }
     }
 
     public ExtensionElementsConverter(XStream xstream) {
