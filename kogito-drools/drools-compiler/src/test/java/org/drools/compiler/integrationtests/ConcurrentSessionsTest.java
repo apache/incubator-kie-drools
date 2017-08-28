@@ -16,8 +16,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -36,6 +35,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.utils.KieHelper;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class ConcurrentSessionsTest {
@@ -334,6 +335,10 @@ public class ConcurrentSessionsTest {
             return category;
         }
 
+        public CategoryTypeEnum getCategoryAsEnum() {
+            return CategoryTypeEnum.fromString(category);
+        }
+
         public String getDescription() {
             return description;
         }
@@ -341,5 +346,71 @@ public class ConcurrentSessionsTest {
         public void appendDescription( final String append ) {
             description += append;
         }
+    }
+
+    public enum CategoryTypeEnum {
+        ODD, PAIR;
+
+        static CategoryTypeEnum fromString(String s) {
+            if (s.equalsIgnoreCase( "odd" )) {
+                return ODD;
+            }
+            if (s.equalsIgnoreCase( "pair" )) {
+                return PAIR;
+            }
+            throw new RuntimeException( "Unknown category: " + s );
+        }
+    }
+
+    @Test
+    public void testWithEnum() throws InterruptedException {
+        String drl1 =
+                "import " + Product.class.getCanonicalName() + ";\n" +
+                "import " + CategoryTypeEnum.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                "  $s : String( this == \"odd\" )\n" +
+                "  $p : Product( categoryAsEnum == CategoryTypeEnum.ODD, firings not contains \"R1\" )\n" +
+                "then\n" +
+                "  $p.getFirings().add(\"R1\");\n" +
+                "  $p.appendDescription($s);\n" +
+                "  update($p);\n" +
+                "end\n";
+
+        String drl2 =
+                "import " + Product.class.getCanonicalName() + ";\n" +
+                "import " + CategoryTypeEnum.class.getCanonicalName() + ";\n" +
+                "rule R2 when\n" +
+                "  $s : String( this == \"pair\" )\n" +
+                "  $p : Product( categoryAsEnum == CategoryTypeEnum.PAIR, firings not contains \"R2\" )\n" +
+                "then\n" +
+                "  $p.getFirings().add(\"R2\");\n" +
+                "  $p.appendDescription($s);\n" +
+                "  update($p);" +
+                "end\n";
+
+        parallelTest( 10, 10, new KieSessionExecutor() {
+            @Override
+            public boolean execute( KieSession kieSession, int counter ) {
+                Product[] products = new Product[10];
+                for (int i = 0; i < 10; i++) {
+                    products[i] = new Product( "" + i, i % 2 == 0 ? "pair" : "odd" );
+                }
+
+                kieSession.insert( "odd" );
+                kieSession.insert( "pair" );
+                for (int i = 0; i < 10; i++) {
+                    kieSession.insert( products[i] );
+                }
+
+                kieSession.fireAllRules();
+
+                for (int i = 0; i < 10; i++) {
+                    if ( !products[i].getCategory().equals( products[i].getDescription() ) ) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }, drl1, drl2 );
     }
 }
