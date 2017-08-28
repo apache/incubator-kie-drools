@@ -462,7 +462,8 @@
       <arg value="-Dorg.uberfire.nio.git.ssh.port=${org.uberfire.nio.git.ssh.port}" />
       <arg value="-Djboss.socket.binding.port-offset=${jboss.port.offset}" />
       <arg value="-Dorg.uberfire.nio.git.dir=${jboss.home}" />
-      <arg value="-Dorg.uberfire.metadata.index.dir=${jboss.home}" /-->
+      <arg value="-Dorg.uberfire.metadata.index.dir=${jboss.home}" />
+      <arg value="-Dorg.kie.server.persistence.dialect=${org.kie.server.persistence.dialect}" / -->
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/standalone.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
@@ -480,7 +481,8 @@
       <arg value="-Dorg.uberfire.nio.git.ssh.port=${org.uberfire.nio.git.ssh.port}" />
       <arg value="-Djboss.socket.binding.port-offset=${jboss.port.offset}" />
       <arg value="-Dorg.uberfire.nio.git.dir=${jboss.home}" />
-      <arg value="-Dorg.uberfire.metadata.index.dir=${jboss.home}" /-->
+      <arg value="-Dorg.uberfire.metadata.index.dir=${jboss.home}" />
+      <arg value="-Dorg.kie.server.persistence.dialect=${org.kie.server.persistence.dialect}" / -->
     </exec>
     <waitfor maxwait="5" maxwaitunit="minute" checkevery="10"
              checkeveryunit="second" timeoutproperty="jboss.timeout">
