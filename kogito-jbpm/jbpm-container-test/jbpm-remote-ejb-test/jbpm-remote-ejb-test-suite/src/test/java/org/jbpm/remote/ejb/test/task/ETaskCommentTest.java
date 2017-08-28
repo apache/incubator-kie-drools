@@ -54,8 +54,9 @@ public class ETaskCommentTest extends RemoteEjbTest {
         Assertions.assertThat(comment.getAddedBy().getId()).isEqualTo(userId);
         // Note: must ignore millis because some databases ignore them by default which is the same
         //       as setting them to 0. This will do a very small difference in the time and equals
-        //       will fail.
-        Assertions.assertThat(comment.getAddedAt()).isEqualToIgnoringMillis(TODAY);
+        //       will fail. Moreover, some databases are rounding this value, therefore we cannot use
+        //       isEqualToIgnoringMillis() method.
+        Assertions.assertThat(comment.getAddedAt()).isCloseTo(TODAY, 1000);
 
         // Delete the comment
         ejb.deleteComment(taskId, comment.getId());
