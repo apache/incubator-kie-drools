@@ -34,6 +34,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1_1.extensions.MyTestRegister;
 import org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller;
 import org.kie.dmn.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.Definitions;
@@ -98,6 +100,12 @@ public class UnmarshalMarshalTest {
     }
     
     @Test
+    public void testHello_World_semantic_namespace_with_extensions() throws Exception {
+        DMNMarshaller marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Arrays.asList( new MyTestRegister() ));
+        testRoundTrip("", "Hello_World_semantic_namespace_with_extensions.dmn", marshaller);
+    }
+    
+    @Test
     public void testSemanticNamespace() throws Exception {
         testRoundTrip("", "semantic-namespace.xml");
     }
@@ -113,9 +121,13 @@ public class UnmarshalMarshalTest {
     public void testFAILforMissingNamespaces() {
         fail("PERFORM A MANUAL CHECK: does now the Stax driver do output the namespace for 'feel:' ?? ");
     }
-
+    
     public void testRoundTrip(String subdir, String xmlfile) throws Exception {
-        XStreamMarshaller marshaller = new XStreamMarshaller();
+        DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();
+        testRoundTrip(subdir, xmlfile, marshaller);
+    }
+
+    public void testRoundTrip(String subdir, String xmlfile, DMNMarshaller marshaller) throws Exception {
         
         File baseOutputDir = new File("target/test-xmlunit/");
         File testClassesBaseDir = new File("target/test-classes/");
