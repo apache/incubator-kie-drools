@@ -16,6 +16,13 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,30 +33,34 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.conf.KieBaseOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.assertEquals;
-
 @RunWith(Parameterized.class)
 public class ConcurrentSessionsTest {
 
     private final boolean enforcedJitting;
+    private final boolean serializeKieBase;
 
-    @Parameterized.Parameters(name = "Enforced jitting={0}")
-    public static List<Boolean> getTestParameters() {
-        return Arrays.asList(false, true);
+    @Parameterized.Parameters(name = "Enforced jitting={0}, Serialize KieBase={1}")
+    public static List<Boolean[]> getTestParameters() {
+        return Arrays.asList(
+                new Boolean[]{false, false},
+                new Boolean[]{false, true},
+                new Boolean[]{true, false},
+                new Boolean[]{true, true});
     }
 
-    public ConcurrentSessionsTest(final boolean enforcedJitting) {
+    public ConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
         this.enforcedJitting = enforcedJitting;
+        this.serializeKieBase = serializeKieBase;
     }
 
     interface KieSessionExecutor {
@@ -63,11 +74,19 @@ public class ConcurrentSessionsTest {
             for (final String drl : drls) {
                 kieHelper.addContent( drl, ResourceType.DRL );
             }
-            final KieBase kieBase;
+
+            final KieBaseOption[] kieBaseOptions;
             if (enforcedJitting) {
-                kieBase = kieHelper.build(ConstraintJittingThresholdOption.get(2));
+                kieBaseOptions = new KieBaseOption[]{ConstraintJittingThresholdOption.get(0)};
             } else {
-                kieBase = kieHelper.build();
+                kieBaseOptions = new KieBaseOption[]{};
+            }
+
+            final KieBase kieBase;
+            if (serializeKieBase) {
+                kieBase = serializeAndDeserializeKieBase(kieHelper.build(kieBaseOptions));
+            } else {
+                kieBase = kieHelper.build(kieBaseOptions);
             }
 
 //            ReteDumper.dumpRete(kieBase.newKieSession());
@@ -369,7 +388,7 @@ public class ConcurrentSessionsTest {
                 "import " + CategoryTypeEnum.class.getCanonicalName() + ";\n" +
                 "rule R1 when\n" +
                 "  $s : String( this == \"odd\" )\n" +
-                "  $p : Product( categoryAsEnum == CategoryTypeEnum.ODD, firings not contains \"R1\" )\n" +
+                "  $p : Product( id != \"test\", categoryAsEnum == CategoryTypeEnum.ODD, firings not contains \"R1\" )\n" +
                 "then\n" +
                 "  $p.getFirings().add(\"R1\");\n" +
                 "  $p.appendDescription($s);\n" +
@@ -381,7 +400,7 @@ public class ConcurrentSessionsTest {
                 "import " + CategoryTypeEnum.class.getCanonicalName() + ";\n" +
                 "rule R2 when\n" +
                 "  $s : String( this == \"pair\" )\n" +
-                "  $p : Product( categoryAsEnum == CategoryTypeEnum.PAIR, firings not contains \"R2\" )\n" +
+                "  $p : Product( id != \"test\", categoryAsEnum == CategoryTypeEnum.PAIR, firings not contains \"R2\" )\n" +
                 "then\n" +
                 "  $p.getFirings().add(\"R2\");\n" +
                 "  $p.appendDescription($s);\n" +
@@ -392,12 +411,13 @@ public class ConcurrentSessionsTest {
             @Override
             public boolean execute( KieSession kieSession, int counter ) {
                 Product[] products = new Product[10];
+                final boolean pair = counter % 2 == 0;
+                final String pairString = pair ? "pair" : "odd";
                 for (int i = 0; i < 10; i++) {
-                    products[i] = new Product( "" + i, i % 2 == 0 ? "pair" : "odd" );
+                    products[i] = new Product( "" + i, pairString );
                 }
 
-                kieSession.insert( "odd" );
-                kieSession.insert( "pair" );
+                kieSession.insert( pairString );
                 for (int i = 0; i < 10; i++) {
                     kieSession.insert( products[i] );
                 }
@@ -405,12 +425,39 @@ public class ConcurrentSessionsTest {
                 kieSession.fireAllRules();
 
                 for (int i = 0; i < 10; i++) {
-                    if ( !products[i].getCategory().equals( products[i].getDescription() ) ) {
+                    if ( products[i].getCategory().equals(pairString) && !products[i].getCategory().equals( products[i].getDescription() ) ) {
+                        return false;
+                    } else if (!products[i].getCategory().equals(pairString) && !products[i].getDescription().isEmpty()) {
                         return false;
                     }
                 }
                 return true;
             }
         }, drl1, drl2 );
+    }
+
+    private KieBase serializeAndDeserializeKieBase(final KieBase kieBase) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream( baos );
+            try {
+                out.writeObject( kieBase );
+                out.flush();
+            } finally {
+                out.close();
+            }
+
+            ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( baos.toByteArray() ) );
+            try {
+                return (KieBase) in.readObject();
+            } finally {
+                in.close();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
