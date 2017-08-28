@@ -16,23 +16,29 @@
 
 package org.kie.dmn.feel.runtime.decisiontables;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.events.DecisionTableRulesSelectedEvent;
-import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
-import org.kie.dmn.feel.util.Pair;
+import static java.util.stream.Collectors.maxBy;
+import static java.util.stream.Collectors.minBy;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.IntStream.range;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.*;
-import static java.util.stream.IntStream.range;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.events.DecisionTableRulesSelectedEvent;
+import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
+import org.kie.dmn.feel.util.Pair;
 
 public enum HitPolicy {
     UNIQUE( "U", "UNIQUE", HitPolicy::unique, null ),
@@ -119,28 +125,28 @@ public enum HitPolicy {
             List<DTDecisionRule> matches,
             List<Object> results) {
         if ( matches.size() > 1 ) {
-            FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                           List<Integer> ruleMatches = matches.stream().map( m -> m.getIndex() + 1 ).collect( toList() );
-                                                           return new HitPolicyViolationEvent(
-                                                                   FEELEvent.Severity.ERROR,
-                                                                   "UNIQUE hit policy decision tables can only have one matching rule. " +
-                                                                   "Multiple matches found for decision table '" + dt.getName() + "'. Matched rules: " + ruleMatches,
-                                                                   dt.getName(),
-                                                                   ruleMatches );
-                                                       }
+            ctx.notifyEvt( () -> {
+                                       List<Integer> ruleMatches = matches.stream().map( m -> m.getIndex() + 1 ).collect( toList() );
+                                       return new HitPolicyViolationEvent(
+                                               FEELEvent.Severity.ERROR,
+                                               "UNIQUE hit policy decision tables can only have one matching rule. " +
+                                               "Multiple matches found for decision table '" + dt.getName() + "'. Matched rules: " + ruleMatches,
+                                               dt.getName(),
+                                               ruleMatches );
+                                   }
             );
             return null;
         }
         if ( matches.size() == 1 ) {
-            FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                           int index = matches.get( 0 ).getIndex() + 1;
-                                                           return new DecisionTableRulesSelectedEvent(
-                                                                   FEELEvent.Severity.INFO,
-                                                                   "Rule fired for decision table '" + dt.getName() + "': " + index,
-                                                                   dt.getName(),
-                                                                   dt.getName(),
-                                                                   Collections.singletonList( index ) );
-                                                       }
+            ctx.notifyEvt( () -> {
+                                       int index = matches.get( 0 ).getIndex() + 1;
+                                       return new DecisionTableRulesSelectedEvent(
+                                               FEELEvent.Severity.INFO,
+                                               "Rule fired for decision table '" + dt.getName() + "': " + index,
+                                               dt.getName(),
+                                               dt.getName(),
+                                               Collections.singletonList( index ) );
+                                   }
             );
             return results.get( 0 );
         }
@@ -157,15 +163,15 @@ public enum HitPolicy {
             List<DTDecisionRule> matches,
             List<Object> results) {
         if ( matches.size() >= 1 ) {
-            FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                           int index = matches.get( 0 ).getIndex() + 1;
-                                                           return new DecisionTableRulesSelectedEvent(
-                                                                   FEELEvent.Severity.INFO,
-                                                                   "Rule fired for decision table '" + dt.getName() + "': " + index,
-                                                                   dt.getName(),
-                                                                   dt.getName(),
-                                                                   Collections.singletonList( index ) );
-                                                       }
+            ctx.notifyEvt( () -> {
+                                       int index = matches.get( 0 ).getIndex() + 1;
+                                       return new DecisionTableRulesSelectedEvent(
+                                               FEELEvent.Severity.INFO,
+                                               "Rule fired for decision table '" + dt.getName() + "': " + index,
+                                               dt.getName(),
+                                               dt.getName(),
+                                               Collections.singletonList( index ) );
+                                   }
             );
             return results.get( 0 );
         }
@@ -189,15 +195,15 @@ public enum HitPolicy {
                 throw new RuntimeException( "multiple rules can match, but they [must] all have the same output" );
             }
 
-            FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                           int index = matches.get( 0 ).getIndex() + 1;
-                                                           return new DecisionTableRulesSelectedEvent(
-                                                                   FEELEvent.Severity.INFO,
-                                                                   "Rule fired for decision table '" + dt.getName() + "': " + index,
-                                                                   dt.getName(),
-                                                                   dt.getName(),
-                                                                   Collections.singletonList( index ) );
-                                                       }
+            ctx.notifyEvt( () -> {
+                                       int index = matches.get( 0 ).getIndex() + 1;
+                                       return new DecisionTableRulesSelectedEvent(
+                                               FEELEvent.Severity.INFO,
+                                               "Rule fired for decision table '" + dt.getName() + "': " + index,
+                                               dt.getName(),
+                                               dt.getName(),
+                                               Collections.singletonList( index ) );
+                                   }
             );
             return results.get( 0 );
         }
@@ -217,15 +223,15 @@ public enum HitPolicy {
             return null;
         }
         List<Pair<DTDecisionRule, Object>> pairs = sortPairs( ctx, dt, matches, results );
-        FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                       List<Integer> indexes = Collections.singletonList( pairs.get( 0 ).getLeft().getIndex() + 1 );
-                                                       return new DecisionTableRulesSelectedEvent(
-                                                               FEELEvent.Severity.INFO,
-                                                               "Rules fired for decision table '" + dt.getName() + "': " + indexes,
-                                                               dt.getName(),
-                                                               dt.getName(),
-                                                               indexes );
-                                                   }
+        ctx.notifyEvt( () -> {
+                                   List<Integer> indexes = Collections.singletonList( pairs.get( 0 ).getLeft().getIndex() + 1 );
+                                   return new DecisionTableRulesSelectedEvent(
+                                           FEELEvent.Severity.INFO,
+                                           "Rules fired for decision table '" + dt.getName() + "': " + indexes,
+                                           dt.getName(),
+                                           dt.getName(),
+                                           indexes );
+                               }
         );
 
         return pairs.get( 0 ).getRight();
@@ -244,15 +250,15 @@ public enum HitPolicy {
             return null;
         }
         List<Pair<DTDecisionRule, Object>> pairs = sortPairs( ctx, dt, matches, results );
-        FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                       List<Integer> indexes = pairs.stream().map( p -> p.getLeft().getIndex() + 1 ).collect( toList() );
-                                                       return new DecisionTableRulesSelectedEvent(
-                                                               FEELEvent.Severity.INFO,
-                                                               "Rules fired for decision table '" + dt.getName() + "': " + indexes,
-                                                               dt.getName(),
-                                                               dt.getName(),
-                                                               indexes );
-                                                   }
+        ctx.notifyEvt( () -> {
+                                   List<Integer> indexes = pairs.stream().map( p -> p.getLeft().getIndex() + 1 ).collect( toList() );
+                                   return new DecisionTableRulesSelectedEvent(
+                                           FEELEvent.Severity.INFO,
+                                           "Rules fired for decision table '" + dt.getName() + "': " + indexes,
+                                           dt.getName(),
+                                           dt.getName(),
+                                           indexes );
+                               }
         );
 
         return pairs.stream().map( p -> p.getRight() ).collect( Collectors.toList() );
@@ -326,15 +332,15 @@ public enum HitPolicy {
         if ( matches.isEmpty() ) {
             return null;
         }
-        FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                       List<Integer> indexes = matches.stream().map( m -> m.getIndex() + 1 ).collect( toList() );
-                                                       return new DecisionTableRulesSelectedEvent(
-                                                               FEELEvent.Severity.INFO,
-                                                               "Rules fired for decision table '" + dt.getName() + "': " + indexes,
-                                                               dt.getName(),
-                                                               dt.getName(),
-                                                               indexes );
-                                                   }
+        ctx.notifyEvt( () -> {
+                                   List<Integer> indexes = matches.stream().map( m -> m.getIndex() + 1 ).collect( toList() );
+                                   return new DecisionTableRulesSelectedEvent(
+                                           FEELEvent.Severity.INFO,
+                                           "Rules fired for decision table '" + dt.getName() + "': " + indexes,
+                                           dt.getName(),
+                                           dt.getName(),
+                                           indexes );
+                               }
         );
         return results;
     }
@@ -370,15 +376,15 @@ public enum HitPolicy {
             Object[] params,
             List<DTDecisionRule> matches,
             List<Object> results) {
-        FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                       List<Integer> indexes = matches.stream().map( m -> m.getIndex() + 1 ).collect( toList() );
-                                                       return new DecisionTableRulesSelectedEvent(
-                                                               FEELEvent.Severity.INFO,
-                                                               "Rules fired for decision table '" + dt.getName() + "': " + indexes,
-                                                               dt.getName(),
-                                                               dt.getName(),
-                                                               indexes );
-                                                   }
+        ctx.notifyEvt( () -> {
+                                   List<Integer> indexes = matches.stream().map( m -> m.getIndex() + 1 ).collect( toList() );
+                                   return new DecisionTableRulesSelectedEvent(
+                                           FEELEvent.Severity.INFO,
+                                           "Rules fired for decision table '" + dt.getName() + "': " + indexes,
+                                           dt.getName(),
+                                           dt.getName(),
+                                           indexes );
+                               }
         );
         return generalizedCollect(
                 ctx,
@@ -401,15 +407,15 @@ public enum HitPolicy {
                 dt,
                 results,
                 x -> x.map( y -> (Comparable) y ).collect( minBy( Comparator.naturalOrder() ) ).orElse( null ) );
-        FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                       List<Integer> indexes = Collections.singletonList( matches.get( results.indexOf( result ) ).getIndex() + 1 );
-                                                       return new DecisionTableRulesSelectedEvent(
-                                                               FEELEvent.Severity.INFO,
-                                                               "Rules fired for decision table '" + dt.getName() + "': " + indexes,
-                                                               dt.getName(),
-                                                               dt.getName(),
-                                                               indexes );
-                                                   }
+        ctx.notifyEvt( () -> {
+                                   List<Integer> indexes = Collections.singletonList( matches.get( results.indexOf( result ) ).getIndex() + 1 );
+                                   return new DecisionTableRulesSelectedEvent(
+                                           FEELEvent.Severity.INFO,
+                                           "Rules fired for decision table '" + dt.getName() + "': " + indexes,
+                                           dt.getName(),
+                                           dt.getName(),
+                                           indexes );
+                               }
         );
         return result;
     }
@@ -428,15 +434,15 @@ public enum HitPolicy {
                 dt,
                 results,
                 x -> x.map( y -> (Comparable) y ).collect( maxBy( Comparator.naturalOrder() ) ).orElse( null ) );
-        FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                       List<Integer> indexes = Collections.singletonList( matches.get( results.indexOf( result ) ).getIndex() + 1 );
-                                                       return new DecisionTableRulesSelectedEvent(
-                                                               FEELEvent.Severity.INFO,
-                                                               "Rules fired for decision table '" + dt.getName() + "': " + indexes,
-                                                               dt.getName(),
-                                                               dt.getName(),
-                                                               indexes );
-                                                   }
+        ctx.notifyEvt( () -> {
+                                   List<Integer> indexes = Collections.singletonList( matches.get( results.indexOf( result ) ).getIndex() + 1 );
+                                   return new DecisionTableRulesSelectedEvent(
+                                           FEELEvent.Severity.INFO,
+                                           "Rules fired for decision table '" + dt.getName() + "': " + indexes,
+                                           dt.getName(),
+                                           dt.getName(),
+                                           indexes );
+                               }
         );
         return result;
     }
@@ -450,15 +456,15 @@ public enum HitPolicy {
             Object[] params,
             List<DTDecisionRule> matches,
             List<Object> results) {
-        FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
-                                                       List<Integer> indexes = matches.stream().map( m -> m.getIndex() + 1 ).collect( toList() );
-                                                       return new DecisionTableRulesSelectedEvent(
-                                                               FEELEvent.Severity.INFO,
-                                                               "Rules fired for decision table '" + dt.getName() + "': " + indexes,
-                                                               dt.getName(),
-                                                               dt.getName(),
-                                                               indexes );
-                                                   }
+        ctx.notifyEvt( () -> {
+                                   List<Integer> indexes = matches.stream().map( m -> m.getIndex() + 1 ).collect( toList() );
+                                   return new DecisionTableRulesSelectedEvent(
+                                           FEELEvent.Severity.INFO,
+                                           "Rules fired for decision table '" + dt.getName() + "': " + indexes,
+                                           dt.getName(),
+                                           dt.getName(),
+                                           indexes );
+                               }
         );
         return generalizedCollect(
                 ctx,

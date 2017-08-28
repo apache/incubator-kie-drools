@@ -16,19 +16,30 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.ast.DashNode;
+import org.kie.dmn.feel.lang.ast.ListNode;
+import org.kie.dmn.feel.lang.ast.RangeNode;
+import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.runtime.UnaryTest;
-
-import java.util.*;
 
 /**
  * Language runtime entry point
@@ -38,14 +49,20 @@ public class FEELImpl
 
     private static final Map<String,Object> EMPTY_INPUT = Collections.emptyMap();
 
-    private FEELEventListenersManager eventsManager = new FEELEventListenersManager();
+    private Set<FEELEventListener> instanceEventListeners = new HashSet<>();
 
+    @Override
     public CompilerContext newCompilerContext() {
-        return new CompilerContextImpl( eventsManager );
+        return newCompilerContext(Collections.emptySet());
     }
-
+    
+    public CompilerContext newCompilerContext(Collection<FEELEventListener> contextListeners) {
+        return new CompilerContextImpl( getEventsManager(contextListeners) );
+    }
+    
+    @Override
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse( eventsManager, expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
+        FEEL_1_1Parser parser = FEELParser.parse( getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
         ParseTree tree = parser.compilation_unit();
         ASTBuilderVisitor v = new ASTBuilderVisitor( ctx.getInputVariableTypes() );
         BaseNode expr = v.visit( tree );
@@ -54,7 +71,7 @@ public class FEELImpl
     }
 
     public CompiledExpression compileExpressionList(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse( eventsManager, expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
+        FEEL_1_1Parser parser = FEELParser.parse( getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
         ParseTree tree = parser.expressionList();
         ASTBuilderVisitor v = new ASTBuilderVisitor( ctx.getInputVariableTypes() );
         BaseNode expr = v.visit( tree );
@@ -62,10 +79,23 @@ public class FEELImpl
         return ce;
     }
 
+    @Override
     public Object evaluate(String expression) {
         return evaluate( expression, FEELImpl.EMPTY_INPUT );
     }
+    
+    @Override
+    public Object evaluate(String expression, EvaluationContext ctx) {
+        CompilerContext compilerCtx = newCompilerContext(ctx.getListeners());
+        Map<String, Object> inputVariables = ctx.getAllValues();
+        if ( inputVariables != null ) {
+            inputVariables.entrySet().stream().forEach( e -> compilerCtx.addInputVariable( e.getKey(), e.getValue() ) );
+        }
+        CompiledExpression expr = compile( expression, compilerCtx );
+        return evaluate( expr, ctx );
+    }
 
+    @Override
     public Object evaluate(String expression, Map<String, Object> inputVariables) {
         CompilerContext ctx = newCompilerContext();
         if ( inputVariables != null ) {
@@ -79,8 +109,14 @@ public class FEELImpl
         }
     }
 
+    @Override
     public Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {
-        return ((CompiledExpressionImpl) expr).evaluate( eventsManager, inputVariables );
+        return ((CompiledExpressionImpl) expr).evaluate( getEventsManager(Collections.emptySet()), inputVariables );
+    }
+    
+    @Override
+    public Object evaluate(CompiledExpression expr, EvaluationContext ctx) {
+        return ((CompiledExpressionImpl) expr).evaluate( getEventsManager(ctx.getListeners()), ctx.getAllValues() );
     }
 
     @Override
@@ -126,21 +162,24 @@ public class FEELImpl
 
     @Override
     public void addListener(FEELEventListener listener) {
-        this.eventsManager.addListener( listener );
+        instanceEventListeners.add( listener );
     }
 
     @Override
     public void removeListener(FEELEventListener listener) {
-        this.eventsManager.removeListener( listener );
+        instanceEventListeners.remove( listener );
     }
 
     @Override
     public Set<FEELEventListener> getListeners() {
-        return eventsManager.getListeners();
+        return Collections.unmodifiableSet(instanceEventListeners);
     }
 
-    public FEELEventListenersManager getEventsManager() {
-        return this.eventsManager;
+    public FEELEventListenersManager getEventsManager(Collection<FEELEventListener> contextListeners) {
+        FEELEventListenersManager listenerMgr = new FEELEventListenersManager();
+        listenerMgr.addListeners(instanceEventListeners);
+        listenerMgr.addListeners(contextListeners);
+        return listenerMgr;
     }
 
 }

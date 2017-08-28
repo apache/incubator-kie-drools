@@ -52,6 +52,10 @@ public class DMNDecisionTableRuntimeTest {
     @Test
     public void testDecisionTableWithCalculatedResult() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "calculation1.dmn", this.getClass() );
+        checkDecisionTableWithCalculatedResult(runtime);
+    }
+
+    private void checkDecisionTableWithCalculatedResult(final DMNRuntime runtime) {
         final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_77ae284e-ce52-4579-a50f-f3cc584d7f4b", "Calculation1" );
         assertThat( dmnModel, notNullValue() );
 
@@ -71,21 +75,9 @@ public class DMNDecisionTableRuntimeTest {
     public void testDecisionTableWithCalculatedResult_parallel() throws Throwable {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "calculation1.dmn", this.getClass() );
         Runnable task = () -> {
-            final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_77ae284e-ce52-4579-a50f-f3cc584d7f4b", "Calculation1" );
-            assertThat( dmnModel, notNullValue() );
-
-            final DMNContext context = DMNFactory.newContext();
-            context.set( "MonthlyDeptPmt", BigDecimal.valueOf( 200 ) );
-            context.set( "MonthlyPmt", BigDecimal.valueOf( 100 ) );
-            context.set( "MonthlyIncome", BigDecimal.valueOf( 600 ) );
-
-            final DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-            assertThat( dmnResult.hasErrors(), is( false ) );
-
-            final DMNContext result = dmnResult.getContext();
-            assertThat( ((BigDecimal) result.get( "Logique de décision 1" )).setScale( 1, RoundingMode.CEILING ), is( BigDecimal.valueOf( 0.5 ) ) );
+            checkDecisionTableWithCalculatedResult(runtime);
         };
-        List<Throwable> problems = new ArrayList<>();
+        List<Throwable> problems = Collections.synchronizedList(new ArrayList<>());
         List<CompletableFuture<Void>> tasks = new ArrayList<>();
         
         for ( int i=0 ; i<10_000; i++) {
