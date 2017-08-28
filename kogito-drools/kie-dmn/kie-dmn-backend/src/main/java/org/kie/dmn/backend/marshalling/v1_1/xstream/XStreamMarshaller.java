@@ -162,6 +162,7 @@ public class XStreamMarshaller
                 String dmnPrefix = base.getNsContext().entrySet().stream().filter( kv -> DMNModelInstrumentedBase.URI_DMN.equals( kv.getValue() ) ).findFirst().map(Map.Entry::getKey).orElse("");
                 hsWriter.getQNameMap().setDefaultPrefix( dmnPrefix );
             }
+            extensionRegisters.forEach( r -> r.beforeMarshal(o, hsWriter.getQNameMap()) );
             xStream.marshal(o, hsWriter);
             hsWriter.flush();
             return writer.toString();
@@ -371,12 +372,9 @@ public class XStreamMarshaller
         
         xStream.ignoreUnknownElements();
 
-        if(extensionRegisters != null && !extensionRegisters.isEmpty()) {
-            for(DMNExtensionRegister extensionRegister : extensionRegisters) {
-                extensionRegister.registerExtensionConverters(xStream);
-            }
+        for(DMNExtensionRegister extensionRegister : extensionRegisters) {
+            extensionRegister.registerExtensionConverters(xStream);
         }
-
 
         return xStream;
     }

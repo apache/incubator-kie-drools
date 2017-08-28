@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -78,6 +79,16 @@ public abstract class DMNModelInstrumentedBase {
             return parent.getNamespaceURI( prefix );
         }
         return null;
+    }
+    
+    public Optional<String> getPrefixForNamespaceURI( String namespaceURI ) {
+        if( this.nsContext != null && this.nsContext.containsValue(namespaceURI) ) {
+            return this.nsContext.entrySet().stream().filter(kv -> kv.getValue().equals(namespaceURI)).findFirst().map(Map.Entry::getKey);
+        }
+        if( this.parent != null ) {
+            return parent.getPrefixForNamespaceURI( namespaceURI );
+        }
+        return Optional.empty();
     }
     
     public void setAdditionalAttributes(Map<QName, String> additionalAttributes) {
