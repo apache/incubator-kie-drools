@@ -19,6 +19,8 @@ package org.drools.compiler.integrationtests;
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.compiler.integrationtests.facts.AnEnum;
+import org.drools.compiler.integrationtests.facts.FactWithEnum;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
