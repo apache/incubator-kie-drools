@@ -42,7 +42,7 @@ public class AllSetBitMask extends SingleLongBitMask implements BitMask, AllSetM
 
     @Override
     public BitMask resetAll(BitMask mask) {
-        if (mask instanceof EmptyBitMask) {
+        if (mask.isEmpty()) {
             return this;
         } else if (mask instanceof EmptyButLastBitMask) {
             return AllSetButLastBitMask.get();

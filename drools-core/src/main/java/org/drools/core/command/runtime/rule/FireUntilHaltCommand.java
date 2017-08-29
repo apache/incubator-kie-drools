@@ -16,18 +16,18 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.drools.core.command.runtime.UnpersistableCommand;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.AgendaFilter;
-import org.kie.api.runtime.rule.StatefulRuleSession;
-import org.kie.api.runtime.Context;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.command.runtime.UnpersistableCommand;
+import org.drools.core.common.InternalWorkingMemory;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.AgendaFilter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -57,17 +57,10 @@ public class FireUntilHaltCommand
 
     public Void execute(Context context) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        final StatefulRuleSession session = (StatefulRuleSession)ksession;
-        
-        new Thread(new Runnable() {
-            public void run() {
-                if ( agendaFilter != null ) {
-                    session.fireUntilHalt( agendaFilter );
-                } else {
-                    session.fireUntilHalt();
-                }
-            }
-        }).start();
+
+        if ( !( (InternalWorkingMemory) ksession ).getAgenda().isFiring() ) {
+            new Thread( () -> ksession.fireUntilHalt( agendaFilter ) ).start();
+        }
 
         return null;
     }

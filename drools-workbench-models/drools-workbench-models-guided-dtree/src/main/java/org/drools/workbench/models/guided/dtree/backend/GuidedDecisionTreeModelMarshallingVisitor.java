@@ -21,9 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.appformer.project.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.core.util.DateUtils;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.builder.DRLConstraintValueBuilder;
 import org.drools.workbench.models.datamodel.rule.builder.JavaDRLConstraintValueBuilder;

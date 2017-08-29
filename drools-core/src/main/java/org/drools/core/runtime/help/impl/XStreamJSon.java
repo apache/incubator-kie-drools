@@ -69,13 +69,15 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
 
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 
 public class XStreamJSon {
     public static volatile boolean SORT_MAPS = false;
 
     public static XStream newJSonMarshaller() {
         JettisonMappedXmlDriver jet = new JettisonMappedXmlDriver();
-        XStream xstream = new XStream( jet );
+        XStream xstream = createXStream( jet );
 
         XStreamHelper.setAliases( xstream );
 

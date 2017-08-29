@@ -20,12 +20,15 @@ import org.kie.internal.runtime.helper.BatchExecutionHelperProvider;
 
 import com.thoughtworks.xstream.XStream;
 
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 public class BatchExecutionHelperProviderImpl
     implements
     BatchExecutionHelperProvider {
 
     public XStream newXStreamMarshaller() {
-        return newXStreamMarshaller( new XStream() );
+        XStream xstream = createXStream();
+        return newXStreamMarshaller(xstream);
     }
 
     public XStream newJSonMarshaller() {

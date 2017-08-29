@@ -16,6 +16,8 @@
 
 package org.drools.workbench.models.guided.dtable.backend;
 
+import java.math.BigDecimal;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDecisionTableUpgradeHelper1;
@@ -38,7 +40,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.legacy.ConditionCo
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.GuidedDecisionTable;
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.MetadataCol;
 
-import java.math.BigDecimal;
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
 
 @SuppressWarnings("deprecation")
 public class GuidedDTXMLPersistence {
@@ -50,7 +52,7 @@ public class GuidedDTXMLPersistence {
     private static final GuidedDTXMLPersistence INSTANCE = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
-        xt = new XStream( new DomDriver() );
+        xt = createXStream( new DomDriver() );
 
         //Legacy model
         xt.alias( "decision-table",

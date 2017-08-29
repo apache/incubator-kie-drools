@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.scorecard.backend.base;
 
+import org.appformer.project.datamodel.imports.Import;
 import org.drools.scorecards.StringUtil;
-import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;
 import org.drools.workbench.models.guided.scorecard.shared.Characteristic;

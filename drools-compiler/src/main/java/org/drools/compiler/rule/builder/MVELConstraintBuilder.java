@@ -324,18 +324,19 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         Dialect dialect = context.getDialect();
         context.setDialect( context.getDialect( "mvel" ) );
 
-        PredicateDescr predicateDescr = new PredicateDescr( context.getRuleDescr().getResource(), expression );
-        AnalysisResult analysis = buildAnalysis(context, pattern, predicateDescr, aliases);
-        if ( analysis == null ) {
-            // something bad happened
-            return null;
+        try {
+            PredicateDescr predicateDescr = new PredicateDescr( context.getRuleDescr().getResource(), expression );
+            AnalysisResult analysis = buildAnalysis( context, pattern, predicateDescr, aliases );
+            if ( analysis == null ) {
+                // something bad happened
+                return null;
+            }
+
+            Declaration[][] usedDeclarations = getUsedDeclarations( context, pattern, analysis );
+            return buildCompilationUnit( context, usedDeclarations[0], usedDeclarations[1], predicateDescr, analysis );
+        } finally {
+            context.setDialect( dialect );
         }
-
-        Declaration[][] usedDeclarations = getUsedDeclarations(context, pattern, analysis);
-        MVELCompilationUnit compilationUnit = buildCompilationUnit(context, usedDeclarations[0], usedDeclarations[1], predicateDescr, analysis);
-
-        context.setDialect(dialect);
-        return compilationUnit;
     }
 
     public MVELCompilationUnit buildCompilationUnit( final RuleBuildContext context,

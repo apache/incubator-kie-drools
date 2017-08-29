@@ -28,13 +28,15 @@ import org.drools.verifier.report.components.VerifierMessage;
 
 import com.thoughtworks.xstream.XStream;
 
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 public class XMLReportWriter
     implements
     VerifierReportWriter {
 
     public void writeReport(OutputStream out,
                             VerifierReport result) throws IOException {
-        XStream xstream = new XStream();
+        XStream xstream = createXStream();
 
         xstream.alias( "result",
                        VerifierReport.class );

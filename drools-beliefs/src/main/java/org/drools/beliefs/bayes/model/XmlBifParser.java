@@ -15,19 +15,6 @@
 
 package org.drools.beliefs.bayes.model;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.beliefs.bayes.BayesNetwork;
-import org.drools.beliefs.bayes.BayesVariable;
-import org.drools.beliefs.bayes.assembler.BayesNetworkAssemblerError;
-import org.drools.beliefs.graph.Graph;
-import org.drools.beliefs.graph.GraphNode;
-import org.drools.beliefs.graph.impl.EdgeImpl;
-import org.drools.compiler.compiler.ParserError;
-import org.drools.core.io.internal.InternalResource;
-import org.kie.api.io.Resource;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -37,6 +24,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.beliefs.bayes.BayesNetwork;
+import org.drools.beliefs.bayes.BayesVariable;
+import org.drools.beliefs.bayes.assembler.BayesNetworkAssemblerError;
+import org.drools.beliefs.graph.GraphNode;
+import org.drools.beliefs.graph.impl.EdgeImpl;
+import org.drools.compiler.compiler.ParserError;
+import org.drools.core.io.internal.InternalResource;
+import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilderErrors;
+
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
 
 public class XmlBifParser {
 
@@ -51,13 +52,7 @@ public class XmlBifParser {
 
         try {
             String encoding = resource instanceof InternalResource ? ((InternalResource) resource).getEncoding() : null;
-            XStream xstream;
-            if (encoding != null) {
-                xstream = new XStream(new DomDriver(encoding));
-            } else {
-                xstream = new XStream();
-            }
-
+            XStream xstream = encoding != null ? createXStream(new DomDriver(encoding)) : createXStream();
             initXStream(xstream);
 
             Bif bif = (Bif) xstream.fromXML(is);
@@ -69,7 +64,7 @@ public class XmlBifParser {
     }
 
     public static Bif loadBif(URL url) {
-        XStream xstream = new XStream();
+        XStream xstream = createXStream();
         initXStream( xstream );
 
         Bif bif = (Bif) xstream.fromXML(url);

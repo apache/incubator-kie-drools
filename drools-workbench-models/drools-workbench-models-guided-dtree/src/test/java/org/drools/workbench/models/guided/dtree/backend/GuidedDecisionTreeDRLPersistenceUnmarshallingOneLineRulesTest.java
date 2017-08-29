@@ -15,7 +15,7 @@
 
 package org.drools.workbench.models.guided.dtree.backend;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.appformer.project.datamodel.oracle.DataType;
 import org.junit.Test;
 
 public class GuidedDecisionTreeDRLPersistenceUnmarshallingOneLineRulesTest extends AbstractGuidedDecisionTreeDRLPersistenceUnmarshallingTest {

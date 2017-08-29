@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.testscenarios.backend.util;
 
-import org.drools.workbench.models.datamodel.imports.Imports;
+import org.appformer.project.datamodel.imports.Imports;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Expectation;
 import org.drools.workbench.models.testscenarios.shared.FactData;
@@ -36,6 +36,8 @@ import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
+
 
 /**
  * Persists the scenario model.
@@ -46,7 +48,7 @@ public class ScenarioXMLPersistence {
     private static final ScenarioXMLPersistence INSTANCE = new ScenarioXMLPersistence();
 
     private ScenarioXMLPersistence() {
-        xt = new XStream(new DomDriver());
+        xt = createXStream(new DomDriver());
         xt.alias("scenario", Scenario.class);
         xt.alias("execution-trace", ExecutionTrace.class);
         xt.alias("expectation", Expectation.class);

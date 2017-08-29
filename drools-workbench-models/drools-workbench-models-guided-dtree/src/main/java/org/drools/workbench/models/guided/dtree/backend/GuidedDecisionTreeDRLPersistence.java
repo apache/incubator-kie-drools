@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtree.backend;
 
-import org.drools.workbench.models.commons.backend.imports.ImportsWriter;
-import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
+import org.appformer.project.datamodel.commons.imports.ImportsWriter;
+import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 
