@@ -222,7 +222,7 @@
         <maven.jdbc.driver.jar/>
         <maven.jdbc.username>root</maven.jdbc.username>
         <maven.jdbc.password>admin1234</maven.jdbc.password>
-        <maven.jdbc.url>jdbc:mariadb://localhost:3306/mysql</maven.jdbc.url>
+        <maven.jdbc.url>jdbc:mariadb://localhost:3306/mysql?pinGlobalTxToPhysicalConnection=true</maven.jdbc.url>
         <maven.jdbc.schema>mysql</maven.jdbc.schema>
       </properties>
     </profile>

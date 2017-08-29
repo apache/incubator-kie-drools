@@ -10,7 +10,7 @@
   </appender>
 
   <logger name="org.jbpm" level="info"/>
-  <logger name="com.arjuna" level="error"/>
+  <logger name="com.arjuna" level="warn"/>
   <logger name="org.hibernate" level="warn"/>
   
   <logger name="org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl" level="error" />

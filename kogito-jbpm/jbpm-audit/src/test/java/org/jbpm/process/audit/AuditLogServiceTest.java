@@ -27,6 +27,7 @@ import java.util.HashMap;
 
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -59,7 +60,12 @@ public class AuditLogServiceTest extends AbstractAuditLogServiceTest {
         KieBase kbase = createKnowledgeBase();
         // create a new session
         Environment env = createEnvironment(context);
-        session = createKieSession(kbase, env);
+        try {
+            session = createKieSession(kbase, env);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Assert.fail("Exception thrown while trying to create a session.");
+        }
        
         // working memory logger
         AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
@@ -71,7 +77,9 @@ public class AuditLogServiceTest extends AbstractAuditLogServiceTest {
 
     @After
     public void tearDown() throws Exception {        
-        session.dispose();
+        if (session != null) {
+            session.dispose();
+        }
         session = null;
         auditLogService = null;
         cleanUp(context);

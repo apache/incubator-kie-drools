@@ -63,7 +63,15 @@ public class PoolingDataSource implements DataSource {
         try {
             xads = (XADataSource)Class.forName(className).newInstance();
             String url = driverProperties.getProperty("url", driverProperties.getProperty("URL"));
-            xads.getClass().getMethod("setURL", new Class[] {String.class}).invoke(xads, new Object[] {url});
+            logger.info(url);
+            try {
+                xads.getClass().getMethod("setUrl", new Class[]{String.class}).invoke(xads, new Object[]{url});
+            } catch (NoSuchMethodException ex) {
+                logger.info("Unable to find \"setUrl\" method in db driver JAR. Trying \"setURL\" ");
+                xads.getClass().getMethod("setURL", new Class[]{String.class}).invoke(xads, new Object[]{url});
+            } catch (InvocationTargetException ex) {
+                logger.info("Caught InvocationTargetException when calling setURL on driver:  " + ex);
+            }
             
             try {
                 InitialContext initContext = new InitialContext();
