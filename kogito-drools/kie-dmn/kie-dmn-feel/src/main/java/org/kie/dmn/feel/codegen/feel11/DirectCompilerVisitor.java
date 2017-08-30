@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -85,9 +86,19 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     
     @Override
     public DirectCompilerResult visitBooleanLiteral(FEEL_1_1Parser.BooleanLiteralContext ctx) {
-        ObjectCreationExpr result = new ObjectCreationExpr();
-        result.setType(JavaParser.parseClassOrInterfaceType(Boolean.class.getCanonicalName()));
-        result.addArgument(ParserHelper.getOriginalText(ctx));
+        Expression result = null;
+        String literalText = ParserHelper.getOriginalText(ctx);
+        // FEEL spec grammar rule 36. Boolean literal = "true" | "false" ;
+        switch (literalText) {
+            case "true":
+                result = new BooleanLiteralExpr(true);
+                break;
+            case "false":
+                result = new BooleanLiteralExpr(false);
+                break;
+            default:
+                throw new IllegalArgumentException("Reached for a boolean literal but was: "+literalText);
+        }
         return DirectCompilerResult.of(result, BuiltInType.BOOLEAN);
     }
     

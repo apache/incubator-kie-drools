@@ -20,6 +20,18 @@ public class CompiledFEELUtils {
         }
         return l && r;
     }
+    
+    public static Object and(boolean left, Object right) {
+        if ( left == true ) {
+            return EvalHelper.getBooleanOrNull( right );
+        } else {
+            return false;
+        }
+    }
+    
+    public static Object and(boolean left, boolean right) {
+        return left && right;
+    }
 
     /**
      * FEEL spec Table 38
@@ -35,5 +47,17 @@ public class CompiledFEELUtils {
             return true;
         }
         return l || r;
+    }
+    
+    public static Object or(Object left, boolean right) {
+        if ( right == true ) {
+            return true;
+        } else {
+            return EvalHelper.getBooleanOrNull( left );
+        }
+    }
+    
+    public static Object or(boolean left, boolean right) {
+        return left || right;
     }
 }

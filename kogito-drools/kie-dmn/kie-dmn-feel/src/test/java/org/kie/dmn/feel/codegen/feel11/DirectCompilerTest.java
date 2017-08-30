@@ -92,7 +92,6 @@ public class DirectCompilerTest {
      */
     @Test
     public void test_ternary_logic() {
-        assertThat(parseCompileEvaluate("true and true"), is( Boolean.TRUE ));
         assertThat(parseCompileEvaluate( "true and true"), is( Boolean.TRUE ));
         assertThat(parseCompileEvaluate( "true and false"), is( Boolean.FALSE ));
         assertThat(parseCompileEvaluate( "true and null"), nullValue());
