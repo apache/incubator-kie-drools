@@ -38,6 +38,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.CompositeType;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.BaseNode;
@@ -45,6 +46,7 @@ import org.kie.dmn.feel.lang.ast.NameRefNode;
 import org.kie.dmn.feel.lang.ast.NumberNode;
 import org.kie.dmn.feel.lang.ast.QualifiedNameNode;
 import org.kie.dmn.feel.lang.ast.StringNode;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -63,7 +65,7 @@ public class CompiledFEELParserTest {
         CompiledFEELExpression number = parse( inputExpression );
         System.out.println(number);
         
-        CompiledContextImpl context = new CompiledContextImpl();
+        EvaluationContext context = new EvaluationContextImpl(null);
         Object result = number.apply(context);
         System.out.println(result);
         
@@ -76,7 +78,7 @@ public class CompiledFEELParserTest {
         CompiledFEELExpression stringLit = parse( inputExpression );
         System.out.println(stringLit);
         
-        CompiledContextImpl context = new CompiledContextImpl();
+        EvaluationContext context = new EvaluationContextImpl(null);
         Object result = stringLit.apply(context);
         System.out.println(result);
         
@@ -89,12 +91,12 @@ public class CompiledFEELParserTest {
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
         System.out.println(nameRef);
         
-        CompiledContextImpl context = new CompiledContextImpl();
-        context.set("someSimpleName", 123L);
-        Object result = context.accept(nameRef);
+        EvaluationContext context = new EvaluationContextImpl(null);
+        context.setValue("someSimpleName", 123L);
+        Object result = nameRef.apply(context);
         System.out.println(result);
         
-        assertThat(result, is( 123L ));
+        assertThat(result, is( BigDecimal.valueOf(123) ));
     }
     
     @Test
@@ -104,9 +106,9 @@ public class CompiledFEELParserTest {
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
         System.out.println(qualRef);
         
-        CompiledContextImpl context = new CompiledContextImpl();
-        context.set("My Person", mapOf( entry("Full Name", "John Doe"), entry("Age", 47) ));
-        Object result = context.accept(qualRef);
+        EvaluationContext context = new EvaluationContextImpl(null);
+        context.setValue("My Person", mapOf( entry("Full Name", "John Doe"), entry("Age", 47) ));
+        Object result = qualRef.apply(context);
         System.out.println(result);
         
         assertThat(result, is( "John Doe" ));
@@ -125,9 +127,9 @@ public class CompiledFEELParserTest {
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
         System.out.println(qualRef);
         
-        CompiledContextImpl context = new CompiledContextImpl();
-        context.set("My Person", new MyPerson());
-        Object result = context.accept(qualRef);
+        EvaluationContext context = new EvaluationContextImpl(null);
+        context.setValue("My Person", new MyPerson());
+        Object result = qualRef.apply(context);
         System.out.println(result);
         
         assertThat(result, is( "John Doe" ));
@@ -189,7 +191,7 @@ public class CompiledFEELParserTest {
         public Expression visit(NameRefNode node) {
 //            return new NameExpr( node.getText() );
             NameExpr scope = new NameExpr( "feelExprCtx" );
-            MethodCallExpr getFromScope = new MethodCallExpr(scope, "get" );
+            MethodCallExpr getFromScope = new MethodCallExpr(scope, "getValue" );
             getFromScope.addArgument( new StringLiteralExpr( node.getText() ) );
             return getFromScope;
         }
