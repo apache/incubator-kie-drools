@@ -29,8 +29,10 @@ import java.util.Map;
 import com.github.javaparser.ast.expr.Expression;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -44,7 +46,7 @@ public class DirectCompilerTest {
         CompiledFEELExpression compiledExpression = parse( feelLiteralExpression );
         System.out.println(compiledExpression);
         
-        CompiledContextImpl emptyContext = new CompiledContextImpl();
+        EvaluationContext emptyContext = new EvaluationContextImpl(null);
         Object result = compiledExpression.apply(emptyContext);
         System.out.println(result);
         return result;
@@ -123,12 +125,12 @@ public class DirectCompilerTest {
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
         System.out.println(nameRef);
         
-        CompiledContextImpl context = new CompiledContextImpl();
-        context.set("someSimpleName", 123L);
-        Object result = context.accept(nameRef);
+        EvaluationContext context = new EvaluationContextImpl(null);
+        context.setValue("someSimpleName", 123L);
+        Object result = nameRef.apply(context);
         System.out.println(result);
         
-        assertThat(result, is( 123L ));
+        assertThat(result, is( BigDecimal.valueOf(123) ));
     }
     
     @Test
@@ -138,9 +140,9 @@ public class DirectCompilerTest {
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
         System.out.println(qualRef);
         
-        CompiledContextImpl context = new CompiledContextImpl();
-        context.set("My Person", mapOf( entry("Full Name", "John Doe"), entry("Age", 47) ));
-        Object result = context.accept(qualRef);
+        EvaluationContext context = new EvaluationContextImpl(null);
+        context.setValue("My Person", mapOf( entry("Full Name", "John Doe"), entry("Age", 47) ));
+        Object result = qualRef.apply(context);
         System.out.println(result);
         
         assertThat(result, is( "John Doe" ));
@@ -159,9 +161,9 @@ public class DirectCompilerTest {
         CompiledFEELExpression qualRef = parse( inputExpression, mapOf( entry("My Person", personType) ) );
         System.out.println(qualRef);
         
-        CompiledContextImpl context = new CompiledContextImpl();
-        context.set("My Person", new MyPerson());
-        Object result = context.accept(qualRef);
+        EvaluationContext context = new EvaluationContextImpl(null);
+        context.setValue("My Person", new MyPerson());
+        Object result = qualRef.apply(context);
         System.out.println(result);
         
         assertThat(result, is( "John Doe" ));

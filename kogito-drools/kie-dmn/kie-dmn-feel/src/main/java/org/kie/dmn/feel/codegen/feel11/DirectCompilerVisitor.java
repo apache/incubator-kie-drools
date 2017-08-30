@@ -343,7 +343,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         String nameRefText = ParserHelper.getOriginalText(ctx);
         Type type = scopeHelper.resolveType(nameRefText).orElse(BuiltInType.UNKNOWN);
         NameExpr scope = new NameExpr("feelExprCtx");
-        MethodCallExpr getFromScope = new MethodCallExpr(scope, "get");
+        MethodCallExpr getFromScope = new MethodCallExpr(scope, "getValue");
         getFromScope.addArgument(new StringLiteralExpr(nameRefText));
         return DirectCompilerResult.of(getFromScope, type);
     }
