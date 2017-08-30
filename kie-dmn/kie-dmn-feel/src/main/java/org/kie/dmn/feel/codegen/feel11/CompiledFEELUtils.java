@@ -1,5 +1,6 @@
 package org.kie.dmn.feel.codegen.feel11;
 
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.InfixOpNode;
 import org.kie.dmn.feel.util.EvalHelper;
 
@@ -59,5 +60,9 @@ public class CompiledFEELUtils {
     
     public static Object or(boolean left, boolean right) {
         return left || right;
+    }
+    
+    public static Object conditionWasNotBoolean(EvaluationContext ctx) {
+        return null;
     }
 }
