@@ -13,6 +13,8 @@ import java.util.stream.Stream;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
+import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -322,11 +324,40 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         return DirectCompilerResult.of(exprCursor, typeCursor);
     }
 
-//    @Override
-//    public DirectCompilerResult visitIfExpression(FEEL_1_1Parser.IfExpressionContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
+    @Override
+    public DirectCompilerResult visitIfExpression(FEEL_1_1Parser.IfExpressionContext ctx) {
+        DirectCompilerResult c = visit( ctx.c );
+        DirectCompilerResult t = visit( ctx.t );
+        DirectCompilerResult e = visit( ctx.e );
+        
+//        String snippet = "(e1 instanceof Boolean) ? ((boolean) e1 ? e2 : e3 ) : "+CompiledFEELUtils.class.getCanonicalName()+".conditionWasNotBoolean(feelExprCtx)";
+//        
+//        Expression parsed = JavaParser.parseExpression(snippet);
+//        for ( NameExpr ne : parsed.getChildNodesByType(NameExpr.class) ) {
+//            switch (ne.getNameAsString()) {
+//                case "e1":
+//                    ne.replace(ne, c.expression);
+//                    break;
+//                case "e2":
+//                    ne.replace(ne, t.expression);
+//                    break;
+//                case "e3":
+//                    ne.replace(ne, e.expression);
+//                    break;
+//            }
+//        }
+//        return DirectCompilerResult.of(parsed, BuiltInType.UNKNOWN);
+        
+        Expression errorExpression = JavaParser.parseExpression(CompiledFEELUtils.class.getCanonicalName()+".conditionWasNotBoolean(feelExprCtx)");
+        MethodCallExpr castC = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "cast");
+        castC.addArgument(new EnclosedExpr(c.expression));
+        ConditionalExpr safeInternal = new ConditionalExpr(castC, new EnclosedExpr(t.expression), new EnclosedExpr(e.expression));
+        MethodCallExpr instanceOfBoolean = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "isInstance");
+        instanceOfBoolean.addArgument(new EnclosedExpr(c.expression));
+        ConditionalExpr result = new ConditionalExpr(instanceOfBoolean, safeInternal, errorExpression);
+        return DirectCompilerResult.of(result, BuiltInType.UNKNOWN);
+    }
+
 //    @Override
 //    public DirectCompilerResult visitQuantExprSome(FEEL_1_1Parser.QuantExprSomeContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
@@ -337,7 +368,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
 
-    // TODO verify, this is never covered in test, possibly as qualifiedName visitor "ingest" it directly.
+    // this is never directly covered in test because qualifiedName visitor "ingest" it directly.
     @Override
     public DirectCompilerResult visitNameRef(FEEL_1_1Parser.NameRefContext ctx) {
         String nameRefText = ParserHelper.getOriginalText(ctx);

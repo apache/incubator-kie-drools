@@ -38,6 +38,7 @@ import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
+import org.kie.dmn.feel.runtime.FEELConditionsAndLoopsTest;
 import org.kie.dmn.feel.runtime.FEELTernaryLogicTest;
 
 public class DirectCompilerTest {
@@ -117,6 +118,17 @@ public class DirectCompilerTest {
         assertThat(parseCompileEvaluate( "false and (false or true)"), is( Boolean.FALSE ));
         assertThat(parseCompileEvaluate( "true or false and false"), is( Boolean.TRUE ));
         assertThat(parseCompileEvaluate( "(true or false) and false"), is( Boolean.FALSE  ));
+    }
+    
+    /**
+     * Partially from {@link FEELConditionsAndLoopsTest}
+     */
+    @Test
+    public void test_if() {
+        assertThat(parseCompileEvaluate( "if true then 15 else 5"), is(BigDecimal.valueOf( 15 )));
+        assertThat(parseCompileEvaluate( "if false then 15 else 5"), is(BigDecimal.valueOf( 5 )));
+        assertThat(parseCompileEvaluate( "if null then 15 else 5"), nullValue());
+        assertThat(parseCompileEvaluate( "if \"hello\" then 15 else 5"), nullValue());
     }
     
     @Test
