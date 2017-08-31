@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -56,7 +57,10 @@ public class ConfigUtils {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
-                    + clazz.getName() + ") does not have a public no-arg constructor.", e);
+                    + clazz.getName() + ") does not have a public no-arg constructor"
+                    // Inner classes include local, anonymous and non-static member classes
+                    + (clazz.isLocalClass() || clazz.isAnonymousClass() || clazz.isMemberClass()
+                    && !Modifier.isStatic(clazz.getModifiers()) ? " because it is an inner class." : "."), e);
         }
     }
 

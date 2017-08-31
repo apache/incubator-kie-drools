@@ -19,11 +19,16 @@ package org.optaplanner.core.config.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class ConfigUtilsTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void mergeProperty() {
@@ -181,6 +186,50 @@ public class ConfigUtilsTest {
             this.string = string;
         }
 
+    }
+
+    @Test
+    public void newInstance_StaticMember() {
+        assertNotNull(ConfigUtils.newInstance(this, "testProperty", StaticMember.class));
+    }
+
+    @Test
+    public void newInstance_StaticMemberWithArgsConstructor() {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("no-arg constructor.");
+        assertNotNull(ConfigUtils.newInstance(this, "testProperty", StaticMemberWithArgsConstructor.class));
+    }
+
+    @Test
+    public void newInstance_NonStaticMember() {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("inner class");
+        assertNotNull(ConfigUtils.newInstance(this, "testProperty", NonStaticMember.class));
+    }
+
+    @Test
+    public void newInstance_LocalClass() {
+        class LocalClass {
+            // this is an inner class
+        }
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("inner class");
+        assertNotNull(ConfigUtils.newInstance(this, "testProperty", LocalClass.class));
+    }
+
+    public static class StaticMember {
+
+    }
+
+    public static class StaticMemberWithArgsConstructor {
+
+        public StaticMemberWithArgsConstructor(int i) {
+        }
+
+    }
+
+    public class NonStaticMember {
+        // this is an inner class
     }
 
 }
