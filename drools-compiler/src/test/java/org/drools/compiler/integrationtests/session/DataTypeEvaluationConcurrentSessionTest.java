@@ -144,7 +144,7 @@ public class DataTypeEvaluationConcurrentSessionTest extends AbstractConcurrentS
                         " then \n" +
                         " end ";
 
-        parallelTest( 1, 15, new KieSessionExecutor() {
+        parallelTest( 1, 10, new KieSessionExecutor() {
             @Override
             public boolean execute( KieSession kieSession, int counter ) {
                 kieSession.insert(factInserted);
