@@ -206,6 +206,7 @@ public class PersistenceUtil {
                 pds.getDriverProperties().put("serverName", dsProps.getProperty("serverName"));
                 pds.getDriverProperties().put("portNumber", dsProps.getProperty("portNumber"));
                 pds.getDriverProperties().put("currentSchema", dsProps.getProperty("defaultSchema"));
+                pds.getDriverProperties().put("url", dsProps.getProperty("url"));
             } else if (driverClass.startsWith("com.microsoft")) {
                 for (String propertyName : new String[] { "serverName", "portNumber", "databaseName" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
@@ -222,14 +223,14 @@ public class PersistenceUtil {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
             } else if (driverClass.startsWith("com.sybase")) {
-                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName", "url" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
                 pds.getDriverProperties().put("REQUEST_HA_SESSION", "false");
                 pds.getDriverProperties().put("networkProtocol", "Tds");
                 // com.edb is Postgres Plus.
             } else if (driverClass.startsWith("org.postgresql") || driverClass.startsWith("com.edb")) {
-                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName", "url" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
             } else {

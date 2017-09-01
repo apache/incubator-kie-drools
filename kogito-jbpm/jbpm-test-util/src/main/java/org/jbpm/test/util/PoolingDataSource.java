@@ -61,16 +61,18 @@ public class PoolingDataSource implements DataSource {
 
     public void init()  {
         try {
-            xads = (XADataSource)Class.forName(className).newInstance();
+            xads = (XADataSource) Class.forName(className).newInstance();
             String url = driverProperties.getProperty("url", driverProperties.getProperty("URL"));
             logger.info(url);
-            try {
-                xads.getClass().getMethod("setUrl", new Class[]{String.class}).invoke(xads, new Object[]{url});
-            } catch (NoSuchMethodException ex) {
-                logger.info("Unable to find \"setUrl\" method in db driver JAR. Trying \"setURL\" ");
-                xads.getClass().getMethod("setURL", new Class[]{String.class}).invoke(xads, new Object[]{url});
-            } catch (InvocationTargetException ex) {
-                logger.info("Caught InvocationTargetException when calling setURL on driver:  " + ex);
+            if (!(className.startsWith("com.ibm.db2") || className.startsWith("com.sybase"))) {
+                try {
+                    xads.getClass().getMethod("setUrl", new Class[]{String.class}).invoke(xads, new Object[]{url});
+                } catch (NoSuchMethodException ex) {
+                    logger.info("Unable to find \"setUrl\" method in db driver JAR. Trying \"setURL\" ");
+                    xads.getClass().getMethod("setURL", new Class[]{String.class}).invoke(xads, new Object[]{url});
+                } catch (InvocationTargetException ex) {
+                    logger.info("Caught InvocationTargetException when calling setURL on driver:  " + ex);
+                }
             }
             
             try {
@@ -116,7 +118,7 @@ public class PoolingDataSource implements DataSource {
         if (driverProperties.getProperty("user") != null) {
             return getConnection(driverProperties.getProperty("user"), driverProperties.getProperty("password"));
         } else {
-            Properties properties = new Properties();
+            Properties properties = getDriverProperties();
             properties.put(TransactionalDriver.XADataSource, this.xads);
             return transactionalDriver.connect("jdbc:arjuna:" + uniqueName, properties);
         }
@@ -124,7 +126,7 @@ public class PoolingDataSource implements DataSource {
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        Properties properties = new Properties();
+        Properties properties = getDriverProperties();
         properties.put(TransactionalDriver.XADataSource, this.xads);
         properties.put(TransactionalDriver.userName, username);
         if (password != null) {
