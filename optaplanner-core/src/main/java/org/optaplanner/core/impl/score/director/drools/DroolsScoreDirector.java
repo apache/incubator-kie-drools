@@ -157,8 +157,8 @@ public class DroolsScoreDirector<Solution_>
     }
 
     @Override
-    public void dispose() {
-        super.dispose();
+    public void close() {
+        super.close();
         if (kieSession != null) {
             kieSession.dispose();
             kieSession = null;

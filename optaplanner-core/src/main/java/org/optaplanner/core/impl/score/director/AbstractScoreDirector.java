@@ -258,7 +258,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         workingSolution = null;
         workingInitScore = null;
         if (lookUpEnabled) {
@@ -485,19 +485,17 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         if (assertionScoreDirectorFactory == null) {
             assertionScoreDirectorFactory = scoreDirectorFactory;
         }
-        InnerScoreDirector<Solution_> uncorruptedScoreDirector =
-                assertionScoreDirectorFactory.buildScoreDirector(false, true);
-        uncorruptedScoreDirector.setWorkingSolution(workingSolution);
-        Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
-        if (!workingScore.equals(uncorruptedScore)) {
-            String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedScoreDirector);
-            uncorruptedScoreDirector.dispose();
-            throw new IllegalStateException(
-                    "Score corruption: the workingScore (" + workingScore + ") is not the uncorruptedScore ("
-                    + uncorruptedScore + ") after completedAction (" + completedAction
-                    + "):\n" + scoreCorruptionAnalysis);
-        } else {
-            uncorruptedScoreDirector.dispose();
+        try (InnerScoreDirector<Solution_> uncorruptedScoreDirector =
+                assertionScoreDirectorFactory.buildScoreDirector(false, true)) {
+            uncorruptedScoreDirector.setWorkingSolution(workingSolution);
+            Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
+            if (!workingScore.equals(uncorruptedScore)) {
+                String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedScoreDirector);
+                throw new IllegalStateException(
+                        "Score corruption: the workingScore (" + workingScore + ") is not the uncorruptedScore ("
+                                + uncorruptedScore + ") after completedAction (" + completedAction
+                                + "):\n" + scoreCorruptionAnalysis);
+            }
         }
     }
 

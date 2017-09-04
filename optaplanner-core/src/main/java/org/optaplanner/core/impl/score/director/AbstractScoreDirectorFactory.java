@@ -93,14 +93,14 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
     public void assertScoreFromScratch(Solution_ solution) {
         // Get the score before uncorruptedScoreDirector.calculateScore() modifies it
         Score score = getSolutionDescriptor().getScore(solution);
-        InnerScoreDirector<Solution_> uncorruptedScoreDirector = buildScoreDirector(false, true);
-        uncorruptedScoreDirector.setWorkingSolution(solution);
-        Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
-        uncorruptedScoreDirector.dispose();
-        if (!score.equals(uncorruptedScore)) {
-            throw new IllegalStateException(
-                    "Score corruption: the solution's score (" + score + ") is not the uncorruptedScore ("
-                            + uncorruptedScore + ").");
+        try (InnerScoreDirector<Solution_> uncorruptedScoreDirector = buildScoreDirector(false, true)) {
+            uncorruptedScoreDirector.setWorkingSolution(solution);
+            Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
+            if (!score.equals(uncorruptedScore)) {
+                throw new IllegalStateException(
+                        "Score corruption: the solution's score (" + score + ") is not the uncorruptedScore ("
+                                + uncorruptedScore + ").");
+            }
         }
     }
 

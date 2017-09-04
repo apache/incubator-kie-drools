@@ -202,7 +202,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     public void outerSolvingEnded(DefaultSolverScope<Solution_> solverScope) {
         // Must be kept open for doProblemFactChange
-        solverScope.getScoreDirector().dispose();
+        solverScope.getScoreDirector().close();
         logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec),"
                         + " phase total ({}), environment mode ({}).",
                 solverScope.getTimeMillisSpent(),

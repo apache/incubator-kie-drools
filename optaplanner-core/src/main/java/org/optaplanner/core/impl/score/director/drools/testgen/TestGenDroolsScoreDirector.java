@@ -154,9 +154,9 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     }
 
     @Override
-    public void dispose() {
+    public void close() {
         journal.dispose();
-        super.dispose();
+        super.close();
     }
 
     @Override

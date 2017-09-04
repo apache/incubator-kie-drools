@@ -105,9 +105,10 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
             Customer varNext = varCustomer.getNextCustomer();
             inputCustomer.setNextCustomer(varNext == null ? null : inputCustomerMap.get(varNext.getId()));
         }
-        ScoreDirector<VehicleRoutingSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector();
-        scoreDirector.setWorkingSolution(inputSolution);
-        scoreDirector.calculateScore();
+        try (ScoreDirector<VehicleRoutingSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+            scoreDirector.setWorkingSolution(inputSolution);
+            scoreDirector.calculateScore();
+        }
     }
 
 }

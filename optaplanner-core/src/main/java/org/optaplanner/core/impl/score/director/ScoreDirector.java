@@ -36,7 +36,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * and calculates the {@link Score} for it.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public interface ScoreDirector<Solution_> {
+public interface ScoreDirector<Solution_> extends AutoCloseable {
 
     /**
      * The {@link PlanningSolution} that is used to calculate the {@link Score}.
@@ -151,8 +151,17 @@ public interface ScoreDirector<Solution_> {
     <E> E lookUpWorkingObject(E externalObject);
 
     /**
-     * Needs to be called after use because some implementations needs to clean up their resources.
+     * Needs to be called after use because some implementations need to clean up their resources.
      */
-    void dispose();
+    @Override
+    void close();
+
+    /**
+     * @deprecated in favor of {@link #close()}
+     */
+    @Deprecated
+    default void dispose() {
+        close();
+    }
 
 }

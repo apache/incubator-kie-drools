@@ -1228,15 +1228,15 @@ reuse the `ScoreDirectorFactory` of the `Solver` to build a separate `ScoreDirec
 [source,java,options="nowrap"]
 ----
 ScoreDirectorFactory<CloudBalance> scoreDirectorFactory = solver.getScoreDirectorFactory();
-ScoreDirector<CloudBalance> guiScoreDirector = scoreDirectorFactory.buildScoreDirector();
-...
-guiScoreDirector.dispose();
+try (ScoreDirector<CloudBalance> guiScoreDirector = scoreDirectorFactory.buildScoreDirector()) {
+    ...
+}
 ----
 
-[IMPORTANT]
+[NOTE]
 ====
-Don't forget to call `ScoreDirector.dispose()` when the `ScoreDirector` becomes useless,
-especially with <<droolsScoreCalculation,Drools score calculation>>, to avoid a memory leak.
+The `try` ARM will call `ScoreDirector.close()` when the `ScoreDirector` becomes useless,
+to avoid a memory leak, especially with <<droolsScoreCalculation,Drools score calculation>>.
 ====
 
 Then use it when you need to calculate the `Score` of a ``Solution``:

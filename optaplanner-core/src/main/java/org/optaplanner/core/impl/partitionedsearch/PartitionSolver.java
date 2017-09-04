@@ -131,7 +131,7 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         solverScope.endingNow();
-        solverScope.getScoreDirector().dispose();
+        solverScope.getScoreDirector().close();
         // TODO log?
     }
 
