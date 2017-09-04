@@ -189,47 +189,43 @@ public class ConfigUtilsTest {
     }
 
     @Test
-    public void newInstance_StaticMember() {
-        assertNotNull(ConfigUtils.newInstance(this, "testProperty", StaticMember.class));
+    public void newInstanceStaticInnerClass() {
+        assertNotNull(ConfigUtils.newInstance(this, "testProperty", StaticInnerClass.class));
+    }
+
+    public static class StaticInnerClass {
     }
 
     @Test
-    public void newInstance_StaticMemberWithArgsConstructor() {
+    public void newInstanceStaticInnerClassWithArgsConstructor() {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("no-arg constructor.");
-        assertNotNull(ConfigUtils.newInstance(this, "testProperty", StaticMemberWithArgsConstructor.class));
+        assertNotNull(ConfigUtils.newInstance(this, "testProperty", StaticInnerClassWithArgsConstructor.class));
+    }
+
+    public static class StaticInnerClassWithArgsConstructor {
+
+        public StaticInnerClassWithArgsConstructor(int i) {
+        }
+
     }
 
     @Test
-    public void newInstance_NonStaticMember() {
+    public void newInstanceNonStaticInnerClass() {
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("inner class");
-        assertNotNull(ConfigUtils.newInstance(this, "testProperty", NonStaticMember.class));
+        assertNotNull(ConfigUtils.newInstance(this, "testProperty", NonStaticInnerClass.class));
+    }
+
+    public class NonStaticInnerClass {
     }
 
     @Test
-    public void newInstance_LocalClass() {
-        class LocalClass {
-            // this is an inner class
-        }
+    public void newInstanceLocalClass() {
+        class LocalClass {}
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("inner class");
         assertNotNull(ConfigUtils.newInstance(this, "testProperty", LocalClass.class));
-    }
-
-    public static class StaticMember {
-
-    }
-
-    public static class StaticMemberWithArgsConstructor {
-
-        public StaticMemberWithArgsConstructor(int i) {
-        }
-
-    }
-
-    public class NonStaticMember {
-        // this is an inner class
     }
 
 }
