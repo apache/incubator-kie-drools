@@ -2070,8 +2070,14 @@ public class RuleModelDRLPersistenceImpl
                 if (lhsParenthesisBalance == 0) {
                     lhsStatements.add(line);
                 } else {
-                    String oldLine = lhsStatements.remove(lhsStatements.size() - 1);
-                    lhsStatements.add(oldLine + " " + line);
+                    String newLine = line.trim();
+                    final String oldLine = lhsStatements.remove(lhsStatements.size() - 1);
+
+                    if (hasDsl && newLine.startsWith(">")) {
+                        newLine = newLine.substring(1);
+                    }
+
+                    lhsStatements.add(oldLine + " " + newLine);
                 }
                 lhsParenthesisBalance += parenthesisBalance(line);
             } else {
