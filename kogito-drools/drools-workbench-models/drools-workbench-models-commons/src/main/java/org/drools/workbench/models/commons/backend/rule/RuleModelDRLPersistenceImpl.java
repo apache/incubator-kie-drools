@@ -29,13 +29,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.appformer.project.datamodel.commons.imports.ImportsParser;
+import org.appformer.project.datamodel.commons.imports.ImportsWriter;
+import org.appformer.project.datamodel.commons.packages.PackageNameParser;
+import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
 import org.appformer.project.datamodel.imports.Import;
 import org.appformer.project.datamodel.imports.Imports;
 import org.appformer.project.datamodel.oracle.DataType;
 import org.appformer.project.datamodel.oracle.MethodInfo;
 import org.appformer.project.datamodel.oracle.ModelField;
 import org.appformer.project.datamodel.oracle.OperatorsOracle;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -61,10 +64,6 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.core.util.ReflectiveVisitor;
-import org.appformer.project.datamodel.commons.imports.ImportsParser;
-import org.appformer.project.datamodel.commons.imports.ImportsWriter;
-import org.appformer.project.datamodel.commons.packages.PackageNameParser;
-import org.appformer.project.datamodel.commons.packages.PackageNameWriter;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
@@ -127,6 +126,7 @@ import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDe
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.adjustParam;
@@ -2070,8 +2070,14 @@ public class RuleModelDRLPersistenceImpl
                 if (lhsParenthesisBalance == 0) {
                     lhsStatements.add(line);
                 } else {
-                    String oldLine = lhsStatements.remove(lhsStatements.size() - 1);
-                    lhsStatements.add(oldLine + " " + line);
+                    String newLine = line.trim();
+                    final String oldLine = lhsStatements.remove(lhsStatements.size() - 1);
+
+                    if (hasDsl && newLine.startsWith(">")) {
+                        newLine = newLine.substring(1);
+                    }
+
+                    lhsStatements.add(oldLine + " " + newLine);
                 }
                 lhsParenthesisBalance += parenthesisBalance(line);
             } else {
