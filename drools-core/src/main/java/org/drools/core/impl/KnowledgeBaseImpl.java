@@ -176,8 +176,8 @@ public class KnowledgeBaseImpl
 
     private transient Queue<Runnable> kbaseModificationsQueue = new ConcurrentLinkedQueue<Runnable>();
 
-
     private transient AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
+    private transient AtomicBoolean flushingUpdates = new AtomicBoolean( false );
 
     private transient InternalKieContainer kieContainer;
 
@@ -741,7 +741,12 @@ public class KnowledgeBaseImpl
     }
 
     public boolean flushModifications() {
+        if (!flushingUpdates.compareAndSet( false, true )) {
+            return false;
+        }
+
         if (kbaseModificationsQueue.isEmpty()) {
+            flushingUpdates.set( false );
             return false;
         }
 
@@ -751,6 +756,7 @@ public class KnowledgeBaseImpl
                 kbaseModificationsQueue.poll().run();
             }
         } finally {
+            flushingUpdates.set( false );
             unlockAndActivate();
         }
         return true;
