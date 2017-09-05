@@ -16,12 +16,21 @@
 
 package org.kie.dmn.feel.runtime.decisiontables;
 
+import static java.util.stream.Collectors.toMap;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
@@ -31,12 +40,6 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.util.Either;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toMap;
 
 public class DecisionTableImpl {
     private static final Logger logger = LoggerFactory.getLogger( DecisionTableImpl.class );
@@ -220,7 +223,7 @@ public class DecisionTableImpl {
                 matchingDecisionRules.add( decisionRule );
             }
         }
-        FEELEventListenersManager.notifyListeners( ctx.getEventsManager() , () -> {
+        ctx.notifyEvt( () -> {
             List<Integer> matches = matchingDecisionRules.stream().map( dr -> dr.getIndex() + 1 ).collect( Collectors.toList() );
             return new DecisionTableRulesMatchedEvent(FEELEvent.Severity.INFO,
                                                       "Rules matched for decision table '" + getName() + "': " + matches.toString(),

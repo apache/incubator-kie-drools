@@ -16,12 +16,16 @@
 
 package org.kie.dmn.feel.lang.impl;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.util.EvalHelper;
-
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.function.Supplier;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class EvaluationContextImpl implements EvaluationContext {
 
@@ -68,6 +72,10 @@ public class EvaluationContextImpl implements EvaluationContext {
     @Override
     public void setValue(String name, Object value) {
         peek().setValue( name, EvalHelper.coerceNumber( value ) );
+    }
+    
+    public void setValues(Map<String, Object> values) {
+        values.forEach(this::setValue);
     }
 
     @Override
@@ -127,7 +135,13 @@ public class EvaluationContextImpl implements EvaluationContext {
         return values;
     }
 
-    public FEELEventListenersManager getEventsManager() {
-        return eventsManager;
+    @Override
+    public void notifyEvt(Supplier<FEELEvent> event) {
+        FEELEventListenersManager.notifyListeners(eventsManager, event);
+    }
+
+    @Override
+    public Collection<FEELEventListener> getListeners() {
+        return eventsManager.getListeners();
     }
 }

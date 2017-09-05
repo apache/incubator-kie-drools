@@ -16,19 +16,20 @@
 
 package org.kie.dmn.feel.lang.impl;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
-import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
-import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
-
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 
 public class FEELEventListenersManager {
 
     private Set<FEELEventListener> listeners = new HashSet<>(  );
 
+    public FEELEventListenersManager() {}
+    
     /**
      * Registers a new event listener into this FEEL instance.
      * The event listeners are notified about signitificative
@@ -38,6 +39,10 @@ public class FEELEventListenersManager {
      */
     public void addListener( FEELEventListener listener ) {
         this.listeners.add( listener );
+    }
+    
+    public void addListeners( Collection<FEELEventListener> listeners ) {
+        this.listeners.addAll( listeners );
     }
 
     /**
@@ -63,7 +68,7 @@ public class FEELEventListenersManager {
     }
 
     public void notifyListeners(FEELEvent event) {
-        this.listeners.forEach( l -> {
+        getListeners().forEach( l -> {
             try {
                 l.onEvent( event );
             } catch( Throwable t ) {

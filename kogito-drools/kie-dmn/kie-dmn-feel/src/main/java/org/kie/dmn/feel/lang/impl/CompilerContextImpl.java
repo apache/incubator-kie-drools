@@ -16,11 +16,13 @@
 
 package org.kie.dmn.feel.lang.impl;
 
-import org.kie.dmn.feel.lang.CompilerContext;
-import org.kie.dmn.feel.lang.Type;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.Type;
 
 public class CompilerContextImpl implements CompilerContext {
     private final FEELEventListenersManager eventsManager;
@@ -31,8 +33,9 @@ public class CompilerContextImpl implements CompilerContext {
         this.eventsManager = eventsManager;
     }
 
-    public FEELEventListenersManager getEventsManager() {
-        return eventsManager;
+    @Override
+    public Set<FEELEventListener> getListeners() {
+        return eventsManager.getListeners();
     }
 
     @Override

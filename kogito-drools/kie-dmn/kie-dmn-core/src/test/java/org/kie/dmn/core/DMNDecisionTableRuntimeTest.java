@@ -16,6 +16,25 @@
 
 package org.kie.dmn.core;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -28,24 +47,15 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
-
 public class DMNDecisionTableRuntimeTest {
 
     @Test
     public void testDecisionTableWithCalculatedResult() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "calculation1.dmn", this.getClass() );
+        checkDecisionTableWithCalculatedResult(runtime);
+    }
+
+    private void checkDecisionTableWithCalculatedResult(final DMNRuntime runtime) {
         final DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_77ae284e-ce52-4579-a50f-f3cc584d7f4b", "Calculation1" );
         assertThat( dmnModel, notNullValue() );
 
@@ -59,6 +69,26 @@ public class DMNDecisionTableRuntimeTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat( ((BigDecimal) result.get( "Logique de décision 1" )).setScale( 1, RoundingMode.CEILING ), is( BigDecimal.valueOf( 0.5 ) ) );
+    }
+    
+    @Test
+    public void testDecisionTableWithCalculatedResult_parallel() throws Throwable {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "calculation1.dmn", this.getClass() );
+        Runnable task = () -> {
+            checkDecisionTableWithCalculatedResult(runtime);
+        };
+        List<Throwable> problems = Collections.synchronizedList(new ArrayList<>());
+        List<CompletableFuture<Void>> tasks = new ArrayList<>();
+        
+        for ( int i=0 ; i<10_000; i++) {
+            CompletableFuture<Void> newtask = CompletableFuture.runAsync(task).exceptionally(t -> {problems.add(t); return null;});
+            tasks.add( newtask );
+        }
+        CompletableFuture.allOf(tasks.toArray(new CompletableFuture<?>[]{})).get(10, TimeUnit.SECONDS);
+        
+        for ( Throwable t : problems ) {
+            throw t;
+        }
     }
 
     @Test

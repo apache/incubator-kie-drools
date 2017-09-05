@@ -17,7 +17,9 @@
 package org.kie.dmn.core.util;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
 import org.junit.Assert;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -30,7 +32,7 @@ import org.kie.dmn.api.core.event.BeforeEvaluateBKMEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionEvent;
 import org.kie.dmn.api.core.event.BeforeEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
-import org.kie.dmn.core.api.event.*;
+import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +41,7 @@ public final class DMNRuntimeUtil {
     public static DMNRuntime createRuntime(final String resourceName, final Class testClass) {
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(
-                ks.newReleaseId("org.kie", "dmn-test", "1.0"),
+                ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"),
                 ks.getResources().newClassPathResource(resourceName, testClass));
 
         final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);

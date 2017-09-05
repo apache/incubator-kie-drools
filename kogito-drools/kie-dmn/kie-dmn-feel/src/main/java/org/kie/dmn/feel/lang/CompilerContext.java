@@ -17,6 +17,9 @@
 package org.kie.dmn.feel.lang;
 
 import java.util.Map;
+import java.util.Set;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 
 public interface CompilerContext {
 
@@ -27,5 +30,7 @@ public interface CompilerContext {
     CompilerContext addInputVariable( String name, Object value );
 
     Map<String, Object> getInputVariables();
+
+    Set<FEELEventListener> getListeners();
 
 }

@@ -16,16 +16,17 @@
 
 package org.kie.dmn.feel;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
-import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.lang.CompilerContext;
-import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.impl.FEELImpl;
-import org.kie.dmn.feel.runtime.UnaryTest;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.runtime.UnaryTest;
 
 /**
  * FEEL expression language engine interface
@@ -68,6 +69,19 @@ public interface FEEL {
      * @return the result of the evaluation of the expression
      */
     Object evaluate(String expression);
+    
+    /**
+     * Evaluates the given FEEL expression using the
+     * given EvaluationContext, and returns the result
+     *
+     * @param expression a FEEL expression
+     * @param ctx the EvaluationContext to be used for defining
+     *            input variables and additional feel event listeners
+     *            contextual to this method call
+     *
+     * @return the result of the evaluation of the expression.
+     */
+    Object evaluate(String expression, EvaluationContext ctx);
 
     /**
      * Evaluates the given FEEL expression using the
@@ -104,6 +118,19 @@ public interface FEEL {
      * @return the result of the evaluation of the expression.
      */
     Object evaluate(CompiledExpression expression, Map<String, Object> inputVariables);
+    
+    /**
+     * Evaluates the given compiled FEEL expression using the
+     * given EvaluationContext, and returns the result
+     *
+     * @param expression a FEEL expression
+     * @param ctx the EvaluationContext to be used for defining
+     *            input variables and additional feel event listeners
+     *            contextual to this method call
+     *
+     * @return the result of the evaluation of the expression.
+     */
+    Object evaluate(CompiledExpression expr, EvaluationContext ctx);
 
     /**
      * Evaluates the given expression as a list of of unary tests.
