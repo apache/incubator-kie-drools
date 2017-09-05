@@ -12,4 +12,12 @@
   <artifactId>jbpm-workitems-core</artifactId>
   <name>jBPM :: WorkItems :: Core</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.google.testing.compile</groupId>
+      <artifactId>compile-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
 </project>

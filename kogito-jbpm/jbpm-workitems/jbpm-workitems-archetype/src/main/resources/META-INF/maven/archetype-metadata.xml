@@ -3,6 +3,7 @@
 
   <requiredProperties>
     <requiredProperty key="classPrefix"/>
+    <requiredProperty key="archetypeVersion"/>
   </requiredProperties>
 
   <modules>

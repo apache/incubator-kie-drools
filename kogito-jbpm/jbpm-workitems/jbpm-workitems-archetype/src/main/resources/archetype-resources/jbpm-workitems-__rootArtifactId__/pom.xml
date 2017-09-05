@@ -61,6 +61,9 @@
         <configuration>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
+          <annotationProcessors>
+            <annotationProcessor>org.jbpm.process.workitem.core.util.WidProcessor</annotationProcessor>
+          </annotationProcessors>
         </configuration>
       </plugin>
       <plugin>

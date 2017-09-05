@@ -21,11 +21,12 @@ mvn archetype:generate
    -DartifactId=myworkitem 
    -DclassPrefix=MyWorkItem
    -DarchetypeCatalog=local
+   -Dversion=1.0
 ```
 or use this one-liner
 
 ```
-mvn archetype:generate -DarchetypeGroupId=org.jbpm -DarchetypeArtifactId=jbpm-workitems-archetype -DarchetypeVersion=8.0.0-SNAPSHOT -DgroupId=org.jbpm.demo.workitems -DartifactId=myworkitem -DclassPrefix=MyWorkItem -DarchetypeCatalog=local
+mvn archetype:generate -DarchetypeGroupId=org.jbpm -DarchetypeArtifactId=jbpm-workitems-archetype -DarchetypeVersion=8.0.0-SNAPSHOT -DgroupId=org.jbpm.demo.workitems -DartifactId=myworkitem -DclassPrefix=MyWorkItem -DarchetypeCatalog=local -Dversion=1.0
 ```
 4. Change the prompted values during the generation as needed (or leave the defaults)
 5. Compile and test your generated workitem handler with 
