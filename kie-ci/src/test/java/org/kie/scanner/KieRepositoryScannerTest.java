@@ -552,7 +552,6 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
-
     @Test
     public void testLoadKieJarFromMavenRepo() throws Exception {
         // This test depends from the former one (UGLY!) and must be run immediately after it
@@ -1095,5 +1094,52 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
         return (InternalKieModule) kieBuilder.getKieModule();
+    }
+
+    @Test
+    public void testReleaseDowngrade() throws Exception {
+        // DROOLS-1720
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "downgrade-test", "1.1");
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "downgrade-test", "1.2");
+        ReleaseId kcRelId = ks.newReleaseId("org.kie", "downgrade-test", "[1.0,)");
+
+        final String drl1 =
+                "global java.util.List list; \n" +
+                "rule R1 when then \n" +
+                "    list.add(1);\n" +
+                "end ";
+
+        final String drl2 =
+                "global java.util.List list; \n" +
+                "rule R1 when then \n" +
+                "    list.add(2);\n" +
+                "end ";
+
+        InternalKieModule kJar1 = createKieJarFromDrl(ks, releaseId1, drl1);
+        InternalKieModule kJar2 = createKieJarFromDrl(ks, releaseId2, drl2);
+
+        MavenRepository repository = getMavenRepository();
+        repository.installArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
+        repository.installArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId2));
+
+        KieContainer kieContainer = ks.newKieContainer(kcRelId);
+        checkKSession(kieContainer.newKieSession("KSession1"), 2);
+
+        kieContainer.updateToVersion( releaseId1 );
+        checkKSession(kieContainer.newKieSession("KSession1"), 1);
+
+        KieScanner kieScanner = ks.newKieScanner( kieContainer );
+        kieScanner.scanNow();
+        checkKSession(kieContainer.newKieSession("KSession1"), 2);
+
+        kieContainer.updateToVersion( releaseId1 );
+        checkKSession(kieContainer.newKieSession("KSession1"), 1);
+
+        kieScanner.scanNow();
+        checkKSession(kieContainer.newKieSession("KSession1"), 2);
+
+        ks.getRepository().removeKieModule(releaseId1);
+        ks.getRepository().removeKieModule(releaseId2);
     }
 }

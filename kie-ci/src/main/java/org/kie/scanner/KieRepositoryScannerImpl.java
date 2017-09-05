@@ -110,11 +110,10 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             throw new RuntimeException("The KieContainer's ReleaseId cannot be null. Are you using a KieClasspathContainer?");
         }
 
+        artifactResolver = getResolverFor(this.kieContainer, true);
         kieProjectDescr = new DependencyDescriptor(this.kieContainer.getReleaseId(),
                                                    this.kieContainer.getCreationTimestamp());
-
-        artifactResolver = getResolverFor(this.kieContainer, true);
-        usedDependencies = indexAtifacts(artifactResolver);
+        usedDependencies = indexArtifacts();
 
         KieScannersRegistry.register(this);
         changeStatus( Status.STOPPED );
@@ -366,9 +365,15 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private Map<DependencyDescriptor, Artifact> scanForUpdates() {
         artifactResolver = getResolverFor(kieContainer, true);
+
+        if ( !kieProjectDescr.getReleaseId().equals( this.kieContainer.getReleaseId() ) ) {
+            kieProjectDescr = new DependencyDescriptor( this.kieContainer.getReleaseId(),
+                                                        this.kieContainer.getCreationTimestamp() );
+        }
+
         Map<DependencyDescriptor, Artifact> newArtifacts = new HashMap<DependencyDescriptor, Artifact>();
 
-        Artifact newArtifact = artifactResolver.resolveArtifact(this.kieContainer.getContainerReleaseId());
+        Artifact newArtifact = artifactResolver.resolveArtifact(this.kieContainer.getConfiguredReleaseId());
         if (newArtifact != null) {
             DependencyDescriptor resolvedDep = new DependencyDescriptor(newArtifact);
             if (resolvedDep.isNewerThan(kieProjectDescr)) {
@@ -395,7 +400,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         return newArtifacts;
     }
 
-    private Map<ReleaseId, DependencyDescriptor> indexAtifacts(ArtifactResolver artifactResolver) {
+    private Map<ReleaseId, DependencyDescriptor> indexArtifacts() {
         Map<ReleaseId, DependencyDescriptor> depsMap = new HashMap<ReleaseId, DependencyDescriptor>();
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
             if ( !"test".equals(dep.getScope()) && !"provided".equals(dep.getScope()) && !"system".equals(dep.getScope()) ) {
