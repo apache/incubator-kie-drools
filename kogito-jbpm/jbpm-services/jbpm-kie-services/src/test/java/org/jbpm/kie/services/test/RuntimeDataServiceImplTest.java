@@ -1339,6 +1339,8 @@ public class RuntimeDataServiceImplTest extends AbstractKieServicesBaseTest {
     public void testGetProcessInstancesByVariableAndValue() {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("approval_document", "initial content");
+        params.put("approval_reviewComment", "not yet reviewed");
+        
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
         assertNotNull(processInstanceId);
 
@@ -1357,6 +1359,10 @@ public class RuntimeDataServiceImplTest extends AbstractKieServicesBaseTest {
         assertEquals(1, processInstanceLogs.size());
 
         processInstanceLogs = runtimeDataService.getProcessInstancesByVariableAndValue("approval_document", "updated%", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariableAndValue("approval_reviewComment", "not yet%", null, new QueryContext());
         assertNotNull(processInstanceLogs);
         assertEquals(1, processInstanceLogs.size());
 
