@@ -68,8 +68,6 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private InternalKieContainer kieContainer;
 
-    private DependencyDescriptor kieProjectDescr;
-
     private Map<ReleaseId, DependencyDescriptor> usedDependencies;
 
     private ArtifactResolver artifactResolver;
@@ -111,11 +109,8 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             throw new RuntimeException("The KieContainer's ReleaseId cannot be null. Are you using a KieClasspathContainer?");
         }
 
-        kieProjectDescr = new DependencyDescriptor(this.kieContainer.getReleaseId(),
-                                                   this.kieContainer.getCreationTimestamp());
-
         artifactResolver = getResolverFor(this.kieContainer, true);
-        usedDependencies = indexArtifacts(artifactResolver);
+        usedDependencies = indexArtifacts();
 
         KieScannersRegistry.register(this);
         changeStatus( Status.STOPPED );
@@ -367,14 +362,17 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private Map<DependencyDescriptor, Artifact> scanForUpdates() {
         artifactResolver = getResolverFor(kieContainer, true);
+
+        DependencyDescriptor currentProjectDescr = new DependencyDescriptor( this.kieContainer.getReleaseId(),
+                                                                             this.kieContainer.getCreationTimestamp());
+
         Map<DependencyDescriptor, Artifact> newArtifacts = new HashMap<DependencyDescriptor, Artifact>();
 
-        Artifact newArtifact = artifactResolver.resolveArtifact(this.kieContainer.getContainerReleaseId());
+        Artifact newArtifact = artifactResolver.resolveArtifact(this.kieContainer.getConfiguredReleaseId());
         if (newArtifact != null) {
             DependencyDescriptor resolvedDep = new DependencyDescriptor(newArtifact);
-            if (resolvedDep.isNewerThan(kieProjectDescr)) {
-                newArtifacts.put(kieProjectDescr, newArtifact);
-                kieProjectDescr = new DependencyDescriptor(newArtifact);
+            if (resolvedDep.isNewerThan(currentProjectDescr)) {
+                newArtifacts.put(currentProjectDescr, newArtifact);
             }
         }
 
@@ -396,7 +394,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         return newArtifacts;
     }
 
-    private Map<ReleaseId, DependencyDescriptor> indexArtifacts(ArtifactResolver artifactResolver) {
+    private Map<ReleaseId, DependencyDescriptor> indexArtifacts() {
         Map<ReleaseId, DependencyDescriptor> depsMap = new HashMap<ReleaseId, DependencyDescriptor>();
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
             if ( !"test".equals(dep.getScope()) && !"provided".equals(dep.getScope()) && !"system".equals(dep.getScope()) ) {
