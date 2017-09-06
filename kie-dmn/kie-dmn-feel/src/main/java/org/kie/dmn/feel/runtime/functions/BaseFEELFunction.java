@@ -208,23 +208,6 @@ public abstract class BaseFEELFunction
                         } else {
                             actualParams[i] = ctx;
                         }
-//                        if( available != null ) {
-//                            // if there is a list of available parameter names, add the injected context parameter into the list
-//                            Annotation[][] annotations = m.getParameterAnnotations();
-//                            boolean foundName = false;
-//                            for( int k = 0; k < annotations[i].length; k++ ) {
-//                                if( annotations[i][k] instanceof NamedParameter ) {
-//                                    available = new ArrayList<>( available );
-//                                    available.add( ((NamedParameter)annotations[i][k]).getName() );
-//                                    foundName = true;
-//                                    break;
-//                                }
-//                            }
-//                            if( ! foundName ) {
-//                                // use default name
-//                                available.add( "ctx" );
-//                            }
-//                        }
                     } else {
                         actualParams[i] = params[j];
                         j++;
@@ -344,19 +327,20 @@ public abstract class BaseFEELFunction
                     } else {
                         variableParams.set( index, np.getValue() );
                     }
+                } else {
+                    // invalid parameter, method is incompatible
+                    return null;
                 }
+            } else {
+                // invalid parameter, method is incompatible
+                return null;
             }
         }
         if( isVariableParameters ) {
             actualParams[ actualParams.length - 1 ] = variableParams.toArray();
         }
 
-        if ( Stream.of( actualParams ).allMatch( p -> p != null ) ) {
-            return actualParams;
-        } else {
-            // method is not compatible
-            return null;
-        }
+        return actualParams;
     }
 
     private Object normalizeResult(Object result) {
