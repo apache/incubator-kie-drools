@@ -78,11 +78,14 @@ public abstract class BaseFEELFunction
             boolean isNamedParams = params.length > 0 && params[0] instanceof NamedParameter;
             if ( !isCustomFunction() ) {
                 List<String> available = null;
+                Class[] classes = null;
                 if ( isNamedParams ) {
                     available = Stream.of( params ).map( p -> ((NamedParameter) p).getName() ).collect( Collectors.toList() );
+                    classes = Stream.of( params ).map( p -> p != null && ((NamedParameter)p).getValue() != null ? ((NamedParameter) p).getValue().getClass() : null ).toArray( Class[]::new );
+                } else {
+                    classes = Stream.of( params ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
                 }
 
-                Class[] classes = Stream.of( params ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
 
                 CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams, available, classes );
 
@@ -205,23 +208,6 @@ public abstract class BaseFEELFunction
                         } else {
                             actualParams[i] = ctx;
                         }
-//                        if( available != null ) {
-//                            // if there is a list of available parameter names, add the injected context parameter into the list
-//                            Annotation[][] annotations = m.getParameterAnnotations();
-//                            boolean foundName = false;
-//                            for( int k = 0; k < annotations[i].length; k++ ) {
-//                                if( annotations[i][k] instanceof NamedParameter ) {
-//                                    available = new ArrayList<>( available );
-//                                    available.add( ((NamedParameter)annotations[i][k]).getName() );
-//                                    foundName = true;
-//                                    break;
-//                                }
-//                            }
-//                            if( ! foundName ) {
-//                                // use default name
-//                                available.add( "ctx" );
-//                            }
-//                        }
                     } else {
                         actualParams[i] = params[j];
                         j++;
@@ -240,7 +226,11 @@ public abstract class BaseFEELFunction
             CandidateMethod cm = new CandidateMethod( actualParams );
 
             Class<?>[] parameterTypes = m.getParameterTypes();
-            adjustForVariableParameters( cm, parameterTypes );
+            if( !isNamedParams ) {
+                // if named parameters, then it has been adjusted already in the calculateActualParams method,
+                // otherwise adjust here
+                adjustForVariableParameters( cm, parameterTypes );
+            }
 
             if ( parameterTypes.length != cm.getActualParams().length ) {
                 continue;
@@ -316,17 +306,41 @@ public abstract class BaseFEELFunction
                 return null;
             }
         }
-        if ( names.containsAll( available ) ) {
-            Object[] actualParams = new Object[names.size()];
-            for ( Object o : params ) {
-                NamedParameter np = (NamedParameter) o;
+        Object[] actualParams = new Object[names.size()];
+        boolean isVariableParameters = m.getParameterCount() > 0 && m.getParameterTypes()[m.getParameterCount()-1].isArray();
+        String variableParamPrefix = isVariableParameters ? names.get( names.size()-1 ) : null;
+        List<Object> variableParams = isVariableParameters ? new ArrayList<>(  ) : null;
+        for ( Object o : params ) {
+            NamedParameter np = (NamedParameter) o;
+            if( names.contains( np.getName() ) ) {
                 actualParams[names.indexOf( np.getName() )] = np.getValue();
+            } else if( isVariableParameters ) {
+                // check if it is a variable parameters method
+                if( np.getName().matches( variableParamPrefix + "\\d+" ) ) {
+                    int index = Integer.parseInt( np.getName().substring( variableParamPrefix.length() ) ) - 1;
+                    if( variableParams.size() <= index ) {
+                        for( int i = variableParams.size(); i < index; i++ ) {
+                            // need to add nulls in case the user skipped indexes
+                            variableParams.add( null );
+                        }
+                        variableParams.add( np.getValue() );
+                    } else {
+                        variableParams.set( index, np.getValue() );
+                    }
+                } else {
+                    // invalid parameter, method is incompatible
+                    return null;
+                }
+            } else {
+                // invalid parameter, method is incompatible
+                return null;
             }
-            return actualParams;
-        } else {
-            // method is not compatible
-            return null;
         }
+        if( isVariableParameters ) {
+            actualParams[ actualParams.length - 1 ] = variableParams.toArray();
+        }
+
+        return actualParams;
     }
 
     private Object normalizeResult(Object result) {
