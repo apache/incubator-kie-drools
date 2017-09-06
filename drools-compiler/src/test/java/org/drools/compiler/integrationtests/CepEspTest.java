@@ -110,6 +110,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
+import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -6886,5 +6887,21 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertEquals( 1, list.size() );
         assertEquals( "Fired EventA at 2010-01-01 03:02:00", list.get(0) );
+    }
+
+    @Test
+    public void testInvalidWindowPredicate() {
+        // DROOLS-1723
+        String str = "declare A\n" +
+                     "    @role( event )\n" +
+                     "    id : int\n" +
+                     "end\n" +
+                     "rule \"ab\" \n" +
+                     "when\n" +
+                     "    A( $a : id ) over window:len( 1 )\n" +
+                     "then\n" +
+                     "end";
+
+        assertDrlHasCompilationError( str, 1 );
     }
 }
