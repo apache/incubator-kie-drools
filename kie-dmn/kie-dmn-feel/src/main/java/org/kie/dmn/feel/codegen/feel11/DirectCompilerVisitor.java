@@ -11,6 +11,10 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.body.FieldDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
@@ -24,6 +28,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.ast.InfixOpNode.InfixOperator;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -35,6 +40,7 @@ import org.kie.dmn.feel.util.EvalHelper;
 
 public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerResult> {
 
+    private static final Expression DECIMAL_128 = JavaParser.parseExpression("java.math.MathContext.DECIMAL128");
     // TODO as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but to be checked.
     private ScopeHelper scopeHelper;
 
@@ -81,9 +87,18 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     public DirectCompilerResult visitNumberLiteral(FEEL_1_1Parser.NumberLiteralContext ctx) {
         ObjectCreationExpr result = new ObjectCreationExpr();
         result.setType(JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()));
-        result.addArgument(ParserHelper.getOriginalText(ctx));
-        result.addArgument(JavaParser.parseExpression("java.math.MathContext.DECIMAL128"));
-        return DirectCompilerResult.of(result, BuiltInType.NUMBER);
+        String originalText = ParserHelper.getOriginalText(ctx);
+        result.addArgument(originalText);
+        result.addArgument(DECIMAL_128);
+        String constantName = "K_"+originalText;
+        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(BigDecimal.class.getCanonicalName()), constantName);
+        vd.setInitializer(result);
+        FieldDeclaration fd = new FieldDeclaration();
+        fd.setModifier(Modifier.PUBLIC, true);
+        fd.setModifier(Modifier.STATIC, true);
+        fd.setModifier(Modifier.FINAL, true);
+        fd.addVariable(vd);
+        return DirectCompilerResult.of(new NameExpr(constantName), BuiltInType.NUMBER, fd);
     }
     
     @Override
@@ -115,7 +130,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         }
         // therefore, unaryExpr is a bigdecimal and operator is `-`.
         MethodCallExpr result = new MethodCallExpr(unaryExpr.expression, "negate");
-        return DirectCompilerResult.of(result, unaryExpr.resultType );
+        return DirectCompilerResult.of(result, unaryExpr.resultType, unaryExpr.getFieldDeclarations() );
     }
 
     @Override
@@ -134,7 +149,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     public DirectCompilerResult visitPrimaryParens(FEEL_1_1Parser.PrimaryParensContext ctx) {
         DirectCompilerResult expr = visit( ctx.expression() );
         EnclosedExpr result = new EnclosedExpr(expr.expression);
-        return DirectCompilerResult.of(result, expr.resultType);
+        return DirectCompilerResult.of(result, expr.resultType, expr.getFieldDeclarations());
     }
 
 //    @Override
@@ -151,12 +166,80 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 //    public DirectCompilerResult visitMultExpression(FEEL_1_1Parser.MultExpressionContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
 //    }
-//
-//    @Override
-//    public DirectCompilerResult visitAddExpression(FEEL_1_1Parser.AddExpressionContext ctx) {
-//        throw new UnsupportedOperationException("TODO"); // TODO
-//    }
-//
+
+    @Override
+    public DirectCompilerResult visitAddExpression(FEEL_1_1Parser.AddExpressionContext ctx) {
+        DirectCompilerResult left = visit( ctx.additiveExpression() );
+        DirectCompilerResult right = visit( ctx.multiplicativeExpression() );
+        
+        String opText = ctx.op.getText();
+        InfixOperator op = InfixOperator.determineOperator(opText);
+        if ( op == InfixOperator.ADD ) {
+            return visitAdd(left, right);
+        } else if ( op == InfixOperator.SUB ) {
+            return visitSub(left, right);
+        } else {
+            throw new UnsupportedOperationException(); // parser problem.
+        }
+    }
+    
+    /**
+     * PLEASE NOTICE:
+     * operation may perform a check for null literal values, but might need this utility for runtime purposes.
+     */
+    private Expression groundToNullIfAnyIsNull(Expression originalOperation, Expression... arguments) {
+        // Q: What is heavier, checking a list of arguments each one is not null, or just doing the operation on the arguments and try-catch the NPE, please?
+        // A: raising exceptions is a lot heavier
+        BinaryExpr nullChecks = Stream.of(arguments)
+                                      .map(e -> new BinaryExpr(e, new NullLiteralExpr(), BinaryExpr.Operator.EQUALS))
+                                      .reduce( (x, y) -> new BinaryExpr(x, y, BinaryExpr.Operator.OR) )
+                                      .get();
+        
+        return new ConditionalExpr(new EnclosedExpr(nullChecks), new NullLiteralExpr(), originalOperation);
+    }
+    
+    private DirectCompilerResult visitAdd( DirectCompilerResult left, DirectCompilerResult right ) {
+        if ( left.expression instanceof NullLiteralExpr || right.expression instanceof NullLiteralExpr ) {
+            // optimization: if either left or right is a null literal, just null
+            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.STRING, DirectCompilerResult.unifyFDs(left, right));
+        } else if ( left.resultType == BuiltInType.STRING && right.resultType == BuiltInType.STRING ) {
+            BinaryExpr plusCall = new BinaryExpr(left.expression, right.expression, BinaryExpr.Operator.PLUS);
+            Expression result = groundToNullIfAnyIsNull(plusCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.STRING, DirectCompilerResult.unifyFDs(left, right));
+        } else if ( left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER ) {
+            MethodCallExpr addCall = new MethodCallExpr(left.expression, "add");
+            addCall.addArgument(right.expression);
+            addCall.addArgument(DECIMAL_128);
+            Expression result = groundToNullIfAnyIsNull(addCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.unifyFDs(left, right));
+        } else {
+            throw new UnsupportedOperationException("TODO"); // TODO
+        }
+    }
+    
+    private DirectCompilerResult visitSub( DirectCompilerResult left, DirectCompilerResult right ) {
+        if ( left.expression instanceof NullLiteralExpr || right.expression instanceof NullLiteralExpr ) {
+            // optimization: if either left or right is a null literal, just null
+            return DirectCompilerResult.of(new NullLiteralExpr(), BuiltInType.STRING, DirectCompilerResult.unifyFDs(left, right));
+        } else if ( left.resultType == BuiltInType.STRING && right.resultType == BuiltInType.STRING ) {
+            // DMN spec Table 45
+            // Subtraction is undefined.
+            // TODO incosistent when FEEL is evaluated, because for now is important to check the actual java code produced
+            BinaryExpr postFixMinus = new BinaryExpr(left.expression, new StringLiteralExpr("-"), BinaryExpr.Operator.PLUS);
+            BinaryExpr plusCall = new BinaryExpr(postFixMinus, right.expression, BinaryExpr.Operator.PLUS);
+            Expression result = groundToNullIfAnyIsNull(plusCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.STRING, DirectCompilerResult.unifyFDs(left, right));
+        } else if ( left.resultType == BuiltInType.NUMBER && right.resultType == BuiltInType.NUMBER ) {
+            MethodCallExpr subtractCall = new MethodCallExpr(left.expression, "subtract");
+            subtractCall.addArgument(right.expression);
+            subtractCall.addArgument(DECIMAL_128);
+            Expression result = groundToNullIfAnyIsNull(subtractCall, left.expression, right.expression);
+            return DirectCompilerResult.of(result, BuiltInType.NUMBER, DirectCompilerResult.unifyFDs(left, right));
+        } else {
+            throw new UnsupportedOperationException("TODO"); // TODO
+        }
+    }
+
 //    @Override
 //    public DirectCompilerResult visitRelExpressionBetween(FEEL_1_1Parser.RelExpressionBetweenContext ctx) {
 //        throw new UnsupportedOperationException("TODO"); // TODO
@@ -355,7 +438,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         MethodCallExpr instanceOfBoolean = new MethodCallExpr(new ClassExpr(JavaParser.parseType(Boolean.class.getSimpleName())), "isInstance");
         instanceOfBoolean.addArgument(new EnclosedExpr(c.expression));
         ConditionalExpr result = new ConditionalExpr(instanceOfBoolean, safeInternal, errorExpression);
-        return DirectCompilerResult.of(result, BuiltInType.UNKNOWN);
+        return DirectCompilerResult.of(result, BuiltInType.UNKNOWN, DirectCompilerResult.unifyFDs(c, t, e));
     }
 
 //    @Override
