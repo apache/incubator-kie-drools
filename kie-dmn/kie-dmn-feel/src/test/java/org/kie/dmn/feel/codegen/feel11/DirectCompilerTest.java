@@ -132,6 +132,15 @@ public class DirectCompilerTest {
     }
     
     @Test
+    public void test_additiveExpression() {
+        assertThat(parseCompileEvaluate( "1 + 2"), is(BigDecimal.valueOf( 3 )));
+        assertThat(parseCompileEvaluate( "1 + null"), nullValue());
+        assertThat(parseCompileEvaluate( "1 - 2"), is(BigDecimal.valueOf( -1 )));
+        assertThat(parseCompileEvaluate( "1 - null"), nullValue());
+        assertThat(parseCompileEvaluate( "\"Hello, \" + \"World\""), is("Hello, World"));
+    }
+    
+    @Test
     public void testNameReference() {
         String inputExpression = "someSimpleName";
         CompiledFEELExpression nameRef = parse( inputExpression, mapOf( entry("someSimpleName", BuiltInType.STRING) ) );
@@ -194,7 +203,7 @@ public class DirectCompilerTest {
         DirectCompilerResult directResult = v.visit(tree);
         
         Expression expr = directResult.expression;
-        CompiledFEELExpression cu = new CompilerBytecodeLoader().makeFromJPExpression(expr);
+        CompiledFEELExpression cu = new CompilerBytecodeLoader().makeFromJPExpression(input, expr, directResult.getFieldDeclarations());
 
         return cu;
     }
