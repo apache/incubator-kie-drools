@@ -106,6 +106,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
+import static org.drools.compiler.TestUtil.assertDrlHasCompilationError;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -6671,5 +6672,21 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals("2 rules should fire", 2, list.size());
         assertTrue("RG_1 should fire once", list.contains("RG_1"));
         assertTrue("RG_2 should fire once", list.contains("RG_2"));
+    }
+
+    @Test
+    public void testInvalidWindowPredicate() {
+        // DROOLS-1723
+        String str = "declare A\n" +
+                     "    @role( event )\n" +
+                     "    id : int\n" +
+                     "end\n" +
+                     "rule \"ab\" \n" +
+                     "when\n" +
+                     "    A( $a : id ) over window:len( 1 )\n" +
+                     "then\n" +
+                     "end";
+
+        assertDrlHasCompilationError( str, 1 );
     }
 }
