@@ -180,11 +180,11 @@ public class PoolingDataSource implements DataSource {
             xads.getClass().getMethod("setDatabaseName", new Class[]{String.class}).invoke(xads, driverProperties.getProperty("databaseName"));
             if (className.startsWith("com.ibm.db2")) {
                 xads.getClass().getMethod("setDriverType", new Class[]{int.class}).invoke(xads, 4);
-                xads.getClass().getMethod("setPortNumber", new Class[]{int.class}).invoke(xads, driverProperties.getProperty("portNumber"));
+                xads.getClass().getMethod("setPortNumber", new Class[]{int.class}).invoke(xads, Integer.valueOf(driverProperties.getProperty("portNumber")));
                 xads.getClass().getMethod("setResultSetHoldability", new Class[]{int.class}).invoke(xads, 1);
                 xads.getClass().getMethod("setDowngradeHoldCursorsUnderXa", new Class[]{boolean.class}).invoke(xads, true);
             } else if (className.startsWith("com.sybase")) {
-                xads.getClass().getMethod("setPortNumber", new Class[]{int.class}).invoke(xads,  driverProperties.getProperty("portNumber"));
+                xads.getClass().getMethod("setPortNumber", new Class[]{int.class}).invoke(xads,  Integer.valueOf(driverProperties.getProperty("portNumber")));
                 xads.getClass().getMethod("setPassword", new Class[]{String.class}).invoke(xads, driverProperties.getProperty("password"));
                 xads.getClass().getMethod("setUser", new Class[]{String.class}).invoke(xads, driverProperties.getProperty("user"));
             }
