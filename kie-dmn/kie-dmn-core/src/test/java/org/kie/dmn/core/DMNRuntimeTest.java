@@ -354,6 +354,25 @@ public class DMNRuntimeTest {
     }
 
     @Test
+    public void testBuiltInFunctionInvocation() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "BuiltInFunctionInvocation.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_b77219ee-ec28-48e3-b240-8e0dbbabefeb", "built in function invocation" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "a", 10 );
+        context.set( "b", 5 );
+        context.set( "x", "Hello, World!" );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( dmnResult.hasErrors(), is( false ) );
+        assertThat( dmnResult.getContext().get( "calc min" ), is( BigDecimal.valueOf( 5 ) ) );
+        assertThat( dmnResult.getContext().get( "fixed params" ), is( "World!" ) );
+        assertThat( dmnResult.getContext().get( "out of order" ), is( BigDecimal.valueOf( 5 ) ) );
+    }
+
+    @Test
     public void testBKMNode() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0009-invocation-arithmetic.dmn", getClass() );
 //        runtime.addListener( DMNRuntimeUtil.createListener() );
