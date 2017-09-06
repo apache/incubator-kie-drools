@@ -1809,51 +1809,25 @@ public class RuleModelDRLPersistenceImpl
         }
     }
 
-    public static class RHSClassDependencyVisitor extends ReflectiveVisitor {
+    public static class RHSClassDependencyVisitor {
 
-        private Map<String, List<ActionFieldValue>> classes = new HashMap<String, List<ActionFieldValue>>();
+        private Map<String, List<ActionFieldValue>> classes = new HashMap<>();
 
-        public void visitFreeFormLine(FreeFormLine ffl) {
-            //Do nothing other than preventing ReflectiveVisitor recording an error
+        public void visit(final IAction iAction) {
+            if (iAction instanceof ActionFieldList) {
+                visit((ActionFieldList) iAction);
+            }
         }
 
-        public void visitActionGlobalCollectionAdd(final ActionGlobalCollectionAdd add) {
-            //Do nothing other than preventing ReflectiveVisitor recording an error
-        }
-
-        public void visitActionRetractFact(final ActionRetractFact action) {
-            //Do nothing other than preventing ReflectiveVisitor recording an error
-        }
-
-        public void visitDSLSentence(final DSLSentence sentence) {
-            //Do nothing other than preventing ReflectiveVisitor recording an error
-        }
-
-        public void visitActionInsertFact(final ActionInsertFact action) {
-            getClasses(action.getFieldValues());
-        }
-
-        public void visitActionInsertLogicalFact(final ActionInsertLogicalFact action) {
-            getClasses(action.getFieldValues());
-        }
-
-        public void visitActionUpdateField(final ActionUpdateField action) {
-            getClasses(action.getFieldValues());
-        }
-
-        public void visitActionSetField(final ActionSetField action) {
-            getClasses(action.getFieldValues());
-        }
-
-        public void visitActionExecuteWorkItem(final ActionExecuteWorkItem action) {
-            //Do nothing other than preventing ReflectiveVisitor recording an error
+        private void visit(final ActionFieldList actionFieldList) {
+            addClasses(actionFieldList.getFieldValues());
         }
 
         public Map<String, List<ActionFieldValue>> getRHSClasses() {
             return classes;
         }
 
-        private void getClasses(ActionFieldValue[] fieldValues) {
+        private void addClasses(ActionFieldValue[] fieldValues) {
             for (ActionFieldValue afv : fieldValues) {
                 String type = afv.getType();
                 List<ActionFieldValue> afvs = classes.get(type);
