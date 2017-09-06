@@ -37,6 +37,7 @@ import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.lang.impl.RootExecutionFrame;
 import org.kie.dmn.model.v1_1.DMNElement;
 import org.kie.dmn.model.v1_1.Invocation;
 import org.slf4j.Logger;
@@ -84,6 +85,13 @@ public class DMNInvocationEvaluator
 
         try {
             FEELFunction function = this.functionLocator.apply( previousContext, functionName );
+            if( function == null ) {
+                // check if it is a built in function
+                Object r = RootExecutionFrame.INSTANCE.getValue( functionName );
+                if( r != null && r instanceof FEELFunction ) {
+                    function = (FEELFunction) r;
+                }
+            }
             if ( function == null ) {
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,
