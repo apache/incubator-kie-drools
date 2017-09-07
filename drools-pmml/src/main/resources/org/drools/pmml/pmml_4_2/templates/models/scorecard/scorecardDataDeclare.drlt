@@ -25,17 +25,6 @@
 @declare{'scorecardHolderDeclare'}
 
 
-/*
-declare @{name}ScoreCardData extends @{ pmmlPackageName }.ScoreCardData
-@propertyReactive
-
-    @foreach{ fieldName : fields.keySet() }
-        m@{ compactUpperCase( fieldName ) } : boolean   = true
-        v@{ compactUpperCase( fieldName ) } : @{ mapDatatype( fields[ fieldName ]) }
-    @end{}
-
-end
-*/
 
 @foreach{ fieldName : fields.keySet() }
 rule "Bind_Scorecard_@{name}_@{fieldName}"

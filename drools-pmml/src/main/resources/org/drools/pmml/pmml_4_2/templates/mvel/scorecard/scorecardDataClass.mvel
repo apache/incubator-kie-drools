@@ -31,8 +31,8 @@ import org.drools.pmml.pmml_4_2.model.AbstractPMMLData;
 }
 public class @{className}ScoreCardData extends AbstractPMMLData {
     @foreach{dataField: dataFields}
-    private boolean m@{dataField.name} = true;
-    private @{dataField.type} v@{dataField.name};
+    private boolean m@{dataField.compactUpperCaseName} = true;
+    private @{dataField.type} v@{dataField.compactUpperCaseName};
     @end{}
 
     public @{className}ScoreCardData() {
@@ -41,6 +41,9 @@ public class @{className}ScoreCardData extends AbstractPMMLData {
 
     public @{className}ScoreCardData( String modelName ) {
        super(modelName);
+       @foreach{dataField: dataFields}
+       @if{ dataField.type=="Double" }v@{dataField.compactUpperCaseName} = 0.0; @elseif{ dataField.type=="Integer" }v@{dataField.compactUpperCaseName} = 0; @end{}
+       @end{}
     }
 
     public @{className}ScoreCardData( PMMLRequestData requestData ) {
@@ -49,11 +52,11 @@ public class @{className}ScoreCardData extends AbstractPMMLData {
        @foreach{dataField: dataFields}
        @{dataField.type} val@{dataField.compactUpperCaseName} = getMappedParameterValue( mappedFields, "@{dataField.name}" );
        if ( val@{dataField.compactUpperCaseName} != null ) {
-          this.m@{dataField.name} = false;
-          this.v@{dataField.name} = val@{dataField.compactUpperCaseName};
+          this.m@{dataField.compactUpperCaseName} = false;
+          this.v@{dataField.compactUpperCaseName} = val@{dataField.compactUpperCaseName};
        } else {
-          this.m@{dataField.name} = true;
-          this.v@{dataField.name} = null;
+          this.m@{dataField.compactUpperCaseName} = true;
+          this.v@{dataField.compactUpperCaseName} = null;
        }
        @end{}
     }
@@ -71,19 +74,19 @@ public class @{className}ScoreCardData extends AbstractPMMLData {
 
     @foreach{dataField: dataFields}
     public @{dataField.type} getV@{dataField.compactUpperCaseName}() {
-       return this.v@{dataField.name};
+       return this.v@{dataField.compactUpperCaseName};
     }
 
     public void setV@{dataField.compactUpperCaseName}( @{dataField.type} @{dataField.name} ) {
-       this.v@{dataField.name} = @{dataField.name};
+       this.v@{dataField.compactUpperCaseName} = @{dataField.name};
     }
 
     public boolean getM@{dataField.compactUpperCaseName}() {
-       return this.m@{dataField.name};
+       return this.m@{dataField.compactUpperCaseName};
     }
 
     public void setM@{dataField.compactUpperCaseName}( boolean m@{dataField.compactUpperCaseName} ) {
-       this.m@{dataField.name} = m@{dataField.compactUpperCaseName};
+       this.m@{dataField.compactUpperCaseName} = m@{dataField.compactUpperCaseName};
     }
     @end{}
 
@@ -119,10 +122,10 @@ public class @{className}ScoreCardData extends AbstractPMMLData {
     @Override
     public String toString() {
        StringBuilder builder = new StringBuilder();
-       builder.append("@{className}ScoreCardData = ( ");
+       builder.append("@{className}ScoreCardData( modelName=@{modelName}, ");
        @foreach{dataField: dataFields}
-       builder.append(" m@{dataField.name}=").append(m@{dataField.name}).append(", ");
-       builder.append(" v@{dataField.name}=").append(v@{dataField.name}).append(", ");
+       builder.append(" m@{dataField.compactUpperCaseName}=").append(m@{dataField.compactUpperCaseName}).append(", ");
+       builder.append(" v@{dataField.compactUpperCaseName}=").append(v@{dataField.compactUpperCaseName}).append(", ");
        @end{}
        int last = builder.lastIndexOf(",");
        builder.delete(last,last+1);

@@ -17,17 +17,24 @@
 package org.drools.pmml.pmml_4_2.predictive.models;
 
 
+import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
 import org.drools.pmml.pmml_4_2.PMML4Helper;
 import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
+import org.drools.pmml.pmml_4_2.model.ScoreCard;
 import org.junit.After;
 import org.junit.Test;
+import org.kie.api.KieServices;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -52,6 +59,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         setKSession( getModelSession( source1, VERBOSE ) );
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
+        KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger(kSession, "/home/lleveric/generating");
 
         kSession.fireAllRules();  //init model
 
@@ -64,20 +72,28 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
 
         kSession.fireAllRules();  //init model
-
-        FactType scoreCardType = getKbase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "ScoreCard" );
-        assertNotNull( scoreCardType );
-
-        assertEquals( 1, kSession.getObjects( new ClassObjectFilter( scoreCardType.getFactClass() ) ).size() );
-        Object scoreCard = kSession.getObjects( new ClassObjectFilter( scoreCardType.getFactClass() ) ).iterator().next();
+        logger.close();
+        
+        Collection<ScoreCard> scoreCards = (Collection<ScoreCard>)kSession.getObjects(new ClassObjectFilter(ScoreCard.class));
+        assertNotNull(scoreCards);
+        assertEquals(1, scoreCards.size());
+        
+        ScoreCard scoreCard = scoreCards.iterator().next();
+        Object x = scoreCard.getRanking();
+        assertTrue( x instanceof LinkedHashMap );
+//        FactType scoreCardType = getKbase().getFactType( PMML4Helper.pmmlDefaultPackageName(), "ScoreCard" );
+//        assertNotNull( scoreCardType );
+//
+//        assertEquals( 1, kSession.getObjects( new ClassObjectFilter( scoreCardType.getFactClass() ) ).size() );
+//        Object scoreCard = kSession.getObjects( new ClassObjectFilter( scoreCardType.getFactClass() ) ).iterator().next();
 
         System.out.print(  reportWMObjects( kSession )
         );
-        assertEquals( "SampleScore", scoreCardType.get( scoreCard, "modelName" ) );
-        assertEquals( 41.345, scoreCardType.get( scoreCard, "score" ) );
-
-        Object x = scoreCardType.get( scoreCard, "ranking" );
-        assertTrue( x instanceof LinkedHashMap );
+//        assertEquals( "SampleScore", scoreCardType.get( scoreCard, "modelName" ) );
+//        assertEquals( 41.345, scoreCardType.get( scoreCard, "score" ) );
+//
+//        Object x = scoreCardType.get( scoreCard, "ranking" );
+//        assertTrue( x instanceof LinkedHashMap );
         LinkedHashMap map = (LinkedHashMap) x;
         assertTrue( map.containsKey( "LX00") );
         assertTrue( map.containsKey( "RES") );
@@ -100,6 +116,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
 
+        KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger(kSession, "/home/lleveric/new-testScorecardOutputs");
         kSession.fireAllRules();  //init model
 
         PMMLRequestData requestData = new PMMLRequestData("SampleScorecard");
@@ -110,7 +127,24 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
 
 
         kSession.fireAllRules();  //init model
-
+        logger.close();
+        System.out.print(  reportWMObjects( kSession ) );
+        /*
+        Arrays.asList("OutRC1","OutRC2","OutRC3").forEach(str -> {
+        	FactType ft = getKbase().getFactType(packageName, str);
+        	Class<?> klass = ft.getFactClass();
+        	Iterator iter = kSession.getObjects(new ClassObjectFilter(klass)).iterator();
+        	if (iter.hasNext()) {
+        		Object obj = iter.next();
+        		while (!"SampleScorecard".equals(ft.get(obj, "context")) && iter.hasNext())
+        			obj = iter.next();
+        		System.out.printf("%s of class %s with a value of %s%n", str, ft.get(obj, "value").getClass().getName(), ft.get(obj, "value"));
+        	} else {
+        		System.out.printf("No objects of class %s available%n",str);
+        	}
+        });
+		*/
+        
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC1"),
                         true, false,"SampleScorecard", "RC2" );
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC2"),

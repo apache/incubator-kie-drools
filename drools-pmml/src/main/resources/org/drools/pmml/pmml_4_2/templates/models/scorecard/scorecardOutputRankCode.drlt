@@ -29,7 +29,7 @@ rule "Scorecard @{context} rank code @{index}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -5
 when
-    @{ pmmlPackageName }.ScoreCard( modelName == "@{context}", $ranks : ranking, $keys : ranking.keySet() ) @watch( ranking )
+    ScoreCard( modelName == "@{context}", $ranks : ranking, $keys : ranking.keySet() ) @watch( ranking )
 then
     String code = null;
 

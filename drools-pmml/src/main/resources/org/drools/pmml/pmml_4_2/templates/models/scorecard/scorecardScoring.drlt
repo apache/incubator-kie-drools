@@ -28,10 +28,10 @@ rule "Score Card @{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -10  // after data are stable
 when
-    $card : @{ pmmlPackageName }.ScoreCard( $ctx : modelName )
-    @{ pmmlPackageName }.InitialScore( scoreCard == $ctx, $zero : value )
+    $card : ScoreCard( $ctx : modelName )
+    InitialScore( scoreCard == $ctx, $zero : value )
     accumulate(
-        @{ pmmlPackageName }.PartialScore( scoreCard == $ctx, $val : value, $wgt : weight ),
+        PartialScore( scoreCard == $ctx, $val : value, $wgt : weight ),
         $tot : @{aggregator}( $val @if{ weighted } * $wgt @end{} );
         ((Double)$tot) + $zero != $card.getScore() )
 then
@@ -45,18 +45,18 @@ rule "Cumulate Code Scores"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -11
 when
-    $card : @{ pmmlPackageName }.ScoreCard( $ctx : modelName, enableRC == true, $below : pointsBelow )
-    accumulate( @{ pmmlPackageName }.PartialScore( scoreCard == $ctx, $rc : reasonCode != null ),
+    $card : ScoreCard( $ctx : modelName, enableRC == true, $below : pointsBelow )
+    accumulate( PartialScore( scoreCard == $ctx, $rc : reasonCode != null ),
                 $set : collectSet( $rc ) )
     $code : String() from $set
-    accumulate( @{ pmmlPackageName }.PartialScore( scoreCard == $ctx, reasonCode == $code, $val : value, $char : characteristic )
+    accumulate( PartialScore( scoreCard == $ctx, reasonCode == $code, $val : value, $char : characteristic )
                 and
-                @{ pmmlPackageName }.BaselineScore( scoreCard == $ctx, characteristic == $char, $base : value ),
+                BaselineScore( scoreCard == $ctx, characteristic == $char, $base : value ),
                 // FIXME: DROOLS-1248
                 $sum : sumBD( java.math.BigDecimal.valueOf( $below ? ($base - $val) : ($val - $base) ) ) )
 then
-//    System.out.println( "The CUMULATED score for code " + $code + " from set " + $set + " is >>> " + $sum );
-    insertLogical( new @{ pmmlPackageName }.CodeScore( $card, $code, $sum.doubleValue() ) );
+    System.out.println( "The CUMULATED score for code " + $code + " from set " + $set + " is >>> " + $sum );
+    insertLogical( new CodeScore( $card, $code, $sum.doubleValue() ) );
 end
 
 
@@ -64,10 +64,10 @@ rule "Detect Scorecard ReasonCode Change"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -12
 when
-    $sc :  @{ pmmlPackageName }.ScoreCard( enableRC == true, $map : ranking )
-    exists @{ pmmlPackageName }.CodeScore( scoreCard == $sc, $c : code, score != $map.get( $c ) )
+    $sc :  ScoreCard( enableRC == true, $map : ranking )
+    exists CodeScore( $c : code, score != $map.get( $c ) )
 then
-    insert( new @{ pmmlPackageName }.ScoreRank( $sc, new java.util.LinkedHashMap() ) );
+    insert( new ScoreRank( $sc, new java.util.LinkedHashMap() ) );
 end
 
 
@@ -75,9 +75,9 @@ rule "Sort Scorecard Reason Codes"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -14
 when
-    $r  : @{ pmmlPackageName }.ScoreRank( $sc : scoreCard, $map : rank )
-    $cs : @{ pmmlPackageName }.CodeScore( scoreCard == $sc, ! $map.containsKey( code ), $s : score, $c : code )
-    not   @{ pmmlPackageName }.CodeScore( scoreCard == $sc, ! $map.containsKey( code ), score > $s )
+    $r  : ScoreRank( $sc : scoreCard, $map : rank )
+    $cs : CodeScore( scoreCard == $sc, ! $map.containsKey( code ), $s : score, $c : code )
+    not   CodeScore( scoreCard == $sc, ! $map.containsKey( code ), score > $s )
 then
     modify ( $r ) {
         getRank().put( $c, $s );

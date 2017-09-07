@@ -5,7 +5,7 @@ import java.util.Map;
 import org.kie.api.definition.type.PropertyReactive;
 
 @PropertyReactive
-public class ScoreCardObject {
+public class ScoreCard {
     private String modelName;
     private double score;
     private AbstractPMMLData holder;
@@ -13,14 +13,14 @@ public class ScoreCardObject {
     private boolean pointsBelow;
     private Map ranking;
 
-    public ScoreCardObject(String modelName) {
+    public ScoreCard(String modelName) {
         if (modelName == null || modelName.trim().isEmpty()) {
             throw new IllegalArgumentException("Invalid attempt to create a ScoreCardObject. The modelName cannot be null or empty");
         }
         this.modelName = modelName;
     }
 
-    public ScoreCardObject(String modelName, double score, AbstractPMMLData holder, boolean enableRC, boolean pointsBelow, Map ranking) {
+    public ScoreCard(String modelName, double score, AbstractPMMLData holder, boolean enableRC, boolean pointsBelow, Map ranking) {
         if (modelName == null || modelName.trim().isEmpty()) {
             throw new IllegalArgumentException("Invalid attempt to create a ScoreCardObject. The modelName cannot be null or empty");
         }
@@ -89,7 +89,7 @@ public class ScoreCardObject {
             return false;
         }
 
-        ScoreCardObject scorecard = (ScoreCardObject) o;
+        ScoreCard scorecard = (ScoreCard) o;
 
         if (Double.compare(scorecard.getScore(),
                            getScore()) != 0) {
@@ -123,4 +123,12 @@ public class ScoreCardObject {
         result = 31 * result + (getRanking() != null ? getRanking().hashCode() : 0);
         return result;
     }
+
+	@Override
+	public String toString() {
+		return "ScoreCard [modelName=" + modelName + ", score=" + score + ", holder=" + holder + ", enableRC="
+				+ enableRC + ", pointsBelow=" + pointsBelow + ", ranking=" + ranking + "]";
+	}
+    
+    
 }

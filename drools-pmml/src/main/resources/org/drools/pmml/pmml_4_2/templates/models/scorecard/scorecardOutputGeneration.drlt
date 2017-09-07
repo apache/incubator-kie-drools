@@ -29,7 +29,7 @@ rule "Scorecard @{context} output"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience -5
 when
-    @{ pmmlPackageName }.ScoreCard( modelName == "@{context}", $score : score )
+    ScoreCard( modelName == "@{context}", $score : score )
 then
     @{ target } x = new @{ target }();
         x.setContext( "@{context}" );

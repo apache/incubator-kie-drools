@@ -108,10 +108,9 @@ public class ScorecardModel extends AbstractModel implements PMML4Model {
 
     @Override
     public List<PMMLDataField> getOutputFields() {
-        List<PMMLDataField> outputFields = outputFieldMap.values().stream()
-                .map(outputField -> new PMMLDataField(outputField))
-                .collect(Collectors.toList());
-        return (outputFields != null && !outputFields.isEmpty()) ? outputFields : new ArrayList<>();
+    	// Until a full featured output field definition is completed
+    	// this will return a null
+        return null;
     }
 
     public String getMiningPojo() {
@@ -123,6 +122,7 @@ public class ScorecardModel extends AbstractModel implements PMML4Model {
         vars.put("className",className);
         vars.put("imports",new ArrayList<>());
         vars.put("dataFields",dataFields);
+        vars.put("modelName", this.getModelId());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         TemplateRuntime.execute( registry.getNamedTemplate("ScoreCardDataTemplate"),
                                  null,
@@ -149,7 +149,12 @@ public class ScorecardModel extends AbstractModel implements PMML4Model {
                                  null,
                                  new MapVariableResolverFactory(vars),
                                  baos );
-        return new String(baos.toByteArray());
+        String returnVal = new String(baos.toByteArray());
+        System.out.println("****************** START Output Java ******************");
+        System.out.println(returnVal);
+        System.out.println("******************* END Output Java *******************");
+        
+        return returnVal;
     }
 
     private TemplateRegistry getTemplateRegistry() {

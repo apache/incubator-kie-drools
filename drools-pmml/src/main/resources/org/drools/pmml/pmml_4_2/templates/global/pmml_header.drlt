@@ -36,4 +36,6 @@
 
 import org.drools.pmml.pmml_4_2.*;
 import org.drools.pmml.pmml_4_2.model.*;
+import org.drools.pmml.pmml_4_2.model.scorecard.*;
+import org.drools.pmml.pmml_4_2.model.datatypes.*;
 import org.drools.core.factmodel.traits.Traitable;
