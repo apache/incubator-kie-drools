@@ -199,10 +199,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
     
     public long calculateBusinessTimeAsDuration(String timeExpression) {
     	timeExpression = adoptISOFormat(timeExpression);
-        if (businessCalendarConfiguration == null) {
-            return TimeUtils.parseTimeString(timeExpression);
-        }
-        
+
         Date calculatedDate = calculateBusinessTimeAsDate(timeExpression);
         
         return (calculatedDate.getTime() - getCurrentTime());
@@ -210,11 +207,7 @@ public class BusinessCalendarImpl implements BusinessCalendar {
     
     public Date calculateBusinessTimeAsDate(String timeExpression) {
     	timeExpression = adoptISOFormat(timeExpression);
-    	if (businessCalendarConfiguration == null) {
-            return new Date(TimeUtils.parseTimeString(getCurrentTime() + timeExpression));
-        }
-        
-        
+
         String trimmed = timeExpression.trim();
         int weeks = 0;
         int days = 0;

@@ -324,7 +324,18 @@ public class BusinessCalendarImplTest extends AbstractBaseTest {
 
         assertEquals(expectedDate, formatDate("yyyy-MM-dd HH:mm:ss.SSS", result));
     }
-    
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMissingConfigurationDualArgConstructor() {
+        SessionPseudoClock clock = new StaticPseudoClock(parseToDateWithTime("2012-05-04 13:45").getTime());
+        BusinessCalendarImpl businessCal = new BusinessCalendarImpl(null, clock);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMissingConfigurationSingleArgConstructor() {
+        BusinessCalendarImpl businessCal = new BusinessCalendarImpl(null);
+    }
+
     private Date parseToDate(String dateString) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         
