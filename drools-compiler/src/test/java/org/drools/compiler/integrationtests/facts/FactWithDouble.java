@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang;
+package org.drools.compiler.integrationtests.facts;
 
-import java.util.Map;
-import java.util.Set;
+public class FactWithDouble {
 
-import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+    private final double doubleValue;
+    private final Double doubleObjectValue;
 
-public interface CompilerContext {
+    public FactWithDouble(final double doubleValue) {
+        this.doubleValue = doubleValue;
+        this.doubleObjectValue = doubleValue;
+    }
 
-    CompilerContext addInputVariableType( String name, Type type );
+    public double getDoubleValue() {
+        return doubleValue;
+    }
 
-    Map<String, Type> getInputVariableTypes();
-
-    CompilerContext addInputVariable( String name, Object value );
-
-    Map<String, Object> getInputVariables();
-
-    Set<FEELEventListener> getListeners();
-
+    public Double getDoubleObjectValue() {
+        return doubleObjectValue;
+    }
 }

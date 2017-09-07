@@ -25,6 +25,8 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
+import java.util.Map;
+
 public class CallDecisionFunction extends BaseFEELFunction {
 
     public CallDecisionFunction() {
@@ -33,7 +35,8 @@ public class CallDecisionFunction extends BaseFEELFunction {
 
 
     public FEELFnResult<Object> invoke(@ParameterName("ctx") EvaluationContext ctx, @ParameterName("namespace") String namespace, @ParameterName("model name") String modelName,
-                                          @ParameterName("decision name") String decisionName, @ParameterName("dmn context") DMNContext dmnContext) {
+                                          @ParameterName("decision name") String decisionName, @ParameterName("invocation context") Map<String, Object> invocationContext) {
+
         DMNRuntime dmnRuntime = ctx.getDMNRuntime();
         if(namespace == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "namespace", "cannot be null"));
@@ -47,13 +50,17 @@ public class CallDecisionFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "decision name", "cannot be null"));
         }
 
-        if(dmnContext == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "dmn context", "cannot be null"));
+        if(invocationContext == null) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "invocation context", "cannot be null"));
         }
         FEELEvent capturedException = null;
         try {
             ctx.enterFrame();
             DMNModel dmnModel = dmnRuntime.getModel(namespace, modelName);
+
+            DMNContext dmnContext = dmnRuntime.newContext();
+            dmnContext.getAll().putAll(invocationContext);
+
             DMNResult requiredDecisionResult = dmnRuntime.evaluateDecisionByName(dmnModel, decisionName, dmnContext);
             return FEELFnResult.ofResult(requiredDecisionResult.getContext().get(decisionName));
         } catch(Exception e) {

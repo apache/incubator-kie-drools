@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang;
+package org.drools.compiler.integrationtests.facts;
 
-import java.util.Map;
-import java.util.Set;
+public class FactWithBoolean {
 
-import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+    private final boolean booleanValue;
+    private final Boolean booleanObjectValue;
 
-public interface CompilerContext {
+    public FactWithBoolean(final boolean booleanValue) {
+        this.booleanValue = booleanValue;
+        this.booleanObjectValue = booleanValue;
+    }
 
-    CompilerContext addInputVariableType( String name, Type type );
+    public boolean isBooleanValue() {
+        return booleanValue;
+    }
 
-    Map<String, Type> getInputVariableTypes();
-
-    CompilerContext addInputVariable( String name, Object value );
-
-    Map<String, Object> getInputVariables();
-
-    Set<FEELEventListener> getListeners();
-
+    public Boolean getBooleanObjectValue() {
+        return booleanObjectValue;
+    }
 }

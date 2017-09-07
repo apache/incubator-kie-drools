@@ -18,32 +18,35 @@ package org.kie.dmn.core.ast;
 
 import org.drools.core.rule.Function;
 import org.kie.dmn.api.core.*;
-import org.kie.dmn.core.api.DMNExpressionEvaluator;
-import org.kie.dmn.core.api.EvaluatorResult;
-import org.kie.dmn.core.api.EvaluatorResult.ResultType;
-import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
-import org.kie.dmn.core.impl.DMNContextImpl;
-import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.core.util.Msg;
-import org.kie.dmn.core.util.MsgUtil;
-import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
-import org.kie.dmn.feel.lang.impl.FEELImpl;
-import org.kie.dmn.feel.lang.impl.NamedParameter;
-import org.kie.dmn.model.v1_1.DMNElement;
-import org.kie.dmn.model.v1_1.Invocation;
-import org.kie.dmn.feel.runtime.FEELFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.core.api.DMNExpressionEvaluator;
+import org.kie.dmn.core.api.EvaluatorResult;
+import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.core.impl.DMNContextImpl;
+import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.lang.impl.NamedParameter;
+import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.lang.impl.RootExecutionFrame;
+import org.kie.dmn.model.v1_1.DMNElement;
+import org.kie.dmn.model.v1_1.Invocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DMNInvocationEvaluator
-        implements DMNExpressionEvaluator, FEELEventListener {
+        implements DMNExpressionEvaluator {
     private static final Logger logger = LoggerFactory.getLogger( DMNInvocationEvaluator.class );
 
     private final Invocation invocation;
@@ -51,8 +54,6 @@ public class DMNInvocationEvaluator
     private final DMNElement node;
     private final String     functionName;
     private final List<ActualParameter> parameters = new ArrayList<>();
-    private final FEELImpl feel;
-    private final List<FEELEvent> events = new ArrayList<>();
     private final BiFunction<DMNContext, String, FEELFunction> functionLocator;
 
     public DMNInvocationEvaluator(String nodeName, DMNElement node, String functionName, Invocation invocation, BiFunction<DMNContext, String, FEELFunction> functionLocator ) {
@@ -65,8 +66,6 @@ public class DMNInvocationEvaluator
         } else {
             this.functionLocator = functionLocator;
         }
-        feel = (FEELImpl) FEEL.newInstance();
-        feel.addListener( this );
     }
 
     public void addParameter(String name, DMNType type, DMNExpressionEvaluator evaluator) {
@@ -79,6 +78,7 @@ public class DMNInvocationEvaluator
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
+        final List<FEELEvent> events = new ArrayList<>();
         DMNResultImpl result = (DMNResultImpl) dmnr;
         DMNContext previousContext = result.getContext();
         DMNContextImpl dmnContext = (DMNContextImpl) previousContext.clone();
@@ -87,6 +87,13 @@ public class DMNInvocationEvaluator
 
         try {
             FEELFunction function = this.functionLocator.apply( previousContext, functionName );
+            if( function == null ) {
+                // check if it is a built in function
+                Object r = RootExecutionFrame.INSTANCE.getValue( functionName );
+                if( r != null && r instanceof FEELFunction ) {
+                    function = (FEELFunction) r;
+                }
+            }
             if ( function == null ) {
                 MsgUtil.reportMessage( logger,
                                        DMNMessage.Severity.ERROR,
@@ -133,7 +140,11 @@ public class DMNInvocationEvaluator
                 }
             }
 
-            EvaluationContextImpl ctx = new EvaluationContextImpl(feel.getEventsManager(), eventManager.getRuntime());
+
+            FEELEventListenersManager listenerMgr = new FEELEventListenersManager();
+            listenerMgr.addListener(events::add);
+
+            EvaluationContextImpl ctx = new EvaluationContextImpl(listenerMgr, eventManager.getRuntime());
             invocationResult = function.invokeReflectively( ctx, namedParams );
 
             boolean hasErrors = hasErrors( events, eventManager, result );
@@ -164,11 +175,6 @@ public class DMNInvocationEvaluator
             this.type = type;
             this.expression = evaluator;
         }
-    }
-
-    @Override
-    public void onEvent(FEELEvent event) {
-        this.events.add( event );
     }
 
     private boolean hasErrors(List<FEELEvent> events, DMNRuntimeEventManager eventManager, DMNResultImpl result) {

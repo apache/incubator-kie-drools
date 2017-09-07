@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang;
+package org.drools.compiler.integrationtests.facts;
 
-import java.util.Map;
-import java.util.Set;
+public class RootFact {
 
-import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+    // Intentionally int
+    private final int id;
 
-public interface CompilerContext {
+    public RootFact(final int id) {
+        this.id = id;
+    }
 
-    CompilerContext addInputVariableType( String name, Type type );
-
-    Map<String, Type> getInputVariableTypes();
-
-    CompilerContext addInputVariable( String name, Object value );
-
-    Map<String, Object> getInputVariables();
-
-    Set<FEELEventListener> getListeners();
-
+    public int getId() {
+        return id;
+    }
 }
