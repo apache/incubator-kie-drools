@@ -68,6 +68,8 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     private InternalKieContainer kieContainer;
 
+    private DependencyDescriptor kieProjectDescr;
+
     private Map<ReleaseId, DependencyDescriptor> usedDependencies;
 
     private ArtifactResolver artifactResolver;
@@ -110,6 +112,8 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
 
         artifactResolver = getResolverFor(this.kieContainer, true);
+        kieProjectDescr = new DependencyDescriptor(this.kieContainer.getReleaseId(),
+                                                   this.kieContainer.getCreationTimestamp());
         usedDependencies = indexArtifacts();
 
         KieScannersRegistry.register(this);
@@ -363,16 +367,19 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private Map<DependencyDescriptor, Artifact> scanForUpdates() {
         artifactResolver = getResolverFor(kieContainer, true);
 
-        DependencyDescriptor currentProjectDescr = new DependencyDescriptor( this.kieContainer.getReleaseId(),
-                                                                             this.kieContainer.getCreationTimestamp());
+        if ( !kieProjectDescr.getReleaseId().equals( this.kieContainer.getReleaseId() ) ) {
+            kieProjectDescr = new DependencyDescriptor( this.kieContainer.getReleaseId(),
+                                                        this.kieContainer.getCreationTimestamp() );
+        }
 
         Map<DependencyDescriptor, Artifact> newArtifacts = new HashMap<DependencyDescriptor, Artifact>();
 
         Artifact newArtifact = artifactResolver.resolveArtifact(this.kieContainer.getConfiguredReleaseId());
         if (newArtifact != null) {
             DependencyDescriptor resolvedDep = new DependencyDescriptor(newArtifact);
-            if (resolvedDep.isNewerThan(currentProjectDescr)) {
-                newArtifacts.put(currentProjectDescr, newArtifact);
+            if (resolvedDep.isNewerThan(kieProjectDescr)) {
+                newArtifacts.put(kieProjectDescr, newArtifact);
+                kieProjectDescr = new DependencyDescriptor(newArtifact);
             }
         }
 
