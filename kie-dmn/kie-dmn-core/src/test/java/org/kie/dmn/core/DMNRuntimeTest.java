@@ -1350,36 +1350,36 @@ public class DMNRuntimeTest {
         
         // Error if wrong namespace/name
         {
-            DMNContext wrongNsContext = context.clone();
-            wrongNsContext.set("Call ns", "http://www.acme.com/a-wrong-namespace");
+            DMNContext dmnResult = context.clone();
+            dmnResult.set("Call ns", "http://www.acme.com/a-wrong-namespace");
             
-            DMNResult wrongNsResult = runtime.evaluateAll( dmnModel, wrongNsContext );
-            assertThat( DMNRuntimeUtil.formatMessages( wrongNsResult.getMessages() ), wrongNsResult.hasErrors(), is( true ) );
+            DMNResult result = runtime.evaluateAll( dmnModel, dmnResult );
+            assertThat( DMNRuntimeUtil.formatMessages( result.getMessages() ), result.hasErrors(), is( true ) );
             // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
-            assertThat( wrongNsResult.getMessages().size(), is( 2 ) );
+            assertThat( DMNRuntimeUtil.formatMessages( result.getMessages() ), result.getMessages().size(), is( 2 ) );
         }
         
         // Error if wrong decision name in model
         {
-            DMNContext wrongDecisionContext = context.clone();
-            wrongDecisionContext.set("Call decision", "<unexistent decision>");
+            DMNContext dmnResult = context.clone();
+            dmnResult.set("Call decision", "<unexistent decision>");
             
-            DMNResult wrongDecisionResult = runtime.evaluateAll( dmnModel, wrongDecisionContext );
-            assertThat( DMNRuntimeUtil.formatMessages( wrongDecisionResult.getMessages() ), wrongDecisionResult.hasErrors(), is( true ) );
+            DMNResult result = runtime.evaluateAll( dmnModel, dmnResult );
+            assertThat( DMNRuntimeUtil.formatMessages( result.getMessages() ), result.hasErrors(), is( true ) );
             // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
-            assertThat( wrongDecisionResult.getMessages().size(), is( 2 ) );
+            assertThat( DMNRuntimeUtil.formatMessages( result.getMessages() ), result.getMessages().size(), is( 2 ) );
         }
         
         // Error if model and decision is found, but problem in external invocation.
         {
-            DMNContext wrongContext = context.clone();
-            wrongContext.set("My Number", "<not a number>");
+            DMNContext dmnResult = context.clone();
+            dmnResult.set("My Number", "<not a number>");
             
-            DMNResult wrongResult = runtime.evaluateAll( dmnModel, wrongContext );
-            assertThat( DMNRuntimeUtil.formatMessages( wrongResult.getMessages() ), wrongResult.hasErrors(), is( true ) );
+            DMNResult result = runtime.evaluateAll( dmnModel, dmnResult );
+            assertThat( DMNRuntimeUtil.formatMessages( result.getMessages() ), result.hasErrors(), is( true ) );
             // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
             // please notice it will print 4 lines in the log, 2x are the "external invocation" and then 2x are the one by the caller, checked herebelow:
-            assertThat( wrongResult.getMessages().size(), is( 2 ) );
+            assertThat( DMNRuntimeUtil.formatMessages( result.getMessages() ), result.getMessages().size(), is( 2 ) );
         }
     }
 }
