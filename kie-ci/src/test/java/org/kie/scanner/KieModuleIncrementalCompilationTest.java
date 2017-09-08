@@ -18,11 +18,16 @@ package org.kie.scanner;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.drools.compiler.kie.builder.impl.MessageImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
@@ -210,6 +215,58 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
         IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/org/kie/scanner/rule.drl" ).build();
         assertEquals( 0, addResults.getAddedMessages().size() );
         assertEquals( 0, addResults.getRemovedMessages().size() );
+    }
+
+    @Test
+    @Ignore("https://issues.jboss.org/browse/GUVNOR-3481")
+    public void checkIncrementalCompilationWithMultipleKieBases() throws Exception {
+        String rule = "package org.kie.scanner\n" +
+                "rule R1 when\n" +
+                "then\n" +
+                "end\n";
+
+        String invalidRule = "package org.kie.scanner\n" +
+                "rule R2 when\n" +
+                "   Cheese" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = createKieFileSystemWithTwoKBases(ks);
+
+        kfs.write("src/main/resources/org/kie/scanner/rule.drl",
+                  rule);
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        assertEquals(0,
+                     kieBuilder.getResults().getMessages().size());
+
+        kfs.write("src/main/resources/org/kie/scanner/invalidRule.drl",
+                  invalidRule);
+        IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/org/kie/scanner/invalidRule.drl").build();
+
+        assertFalse(addResults.getAddedMessages().isEmpty());
+        addResults
+                .getAddedMessages()
+                .stream()
+                .map(m -> (MessageImpl) m)
+                .forEach(m -> assertNotNull(m.getKieBaseName()));
+    }
+
+    private KieFileSystem createKieFileSystemWithTwoKBases(final KieServices ks) {
+        final KieModuleModel kproj = ks.newKieModuleModel();
+
+        kproj.newKieBaseModel("default").setDefault(true)
+                .setEqualsBehavior(EqualityBehaviorOption.EQUALITY)
+                .setEventProcessingMode(EventProcessingOption.STREAM);
+
+        kproj.newKieBaseModel("kbase1").setDefault(false)
+                .setEqualsBehavior(EqualityBehaviorOption.EQUALITY)
+                .setEventProcessingMode(EventProcessingOption.STREAM);
+
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.writeKModuleXML(kproj.toXML());
+        return kfs;
     }
 
 }
