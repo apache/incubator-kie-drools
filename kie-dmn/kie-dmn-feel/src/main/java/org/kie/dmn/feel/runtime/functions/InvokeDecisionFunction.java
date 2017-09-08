@@ -27,15 +27,15 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class CallDecisionFunction extends BaseFEELFunction {
+public class InvokeDecisionFunction extends BaseFEELFunction {
 
-    public CallDecisionFunction() {
-        super("call decision");
+    public InvokeDecisionFunction() {
+        super("invoke decision");
     }
 
 
     public FEELFnResult<Object> invoke(@ParameterName("ctx") EvaluationContext ctx, @ParameterName("namespace") String namespace, @ParameterName("model name") String modelName,
-                                          @ParameterName("decision name") String decisionName, @ParameterName("invocation context") Map<String, Object> invocationContext) {
+                                          @ParameterName("decision name") String decisionName, @ParameterName("parameters") Map<String, Object> parameters) {
 
         DMNRuntime dmnRuntime = ctx.getDMNRuntime();
         
@@ -51,7 +51,7 @@ public class CallDecisionFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "decision name", "cannot be null"));
         }
 
-        if(invocationContext == null) {
+        if(parameters == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "invocation context", "cannot be null"));
         }
         
@@ -71,7 +71,7 @@ public class CallDecisionFunction extends BaseFEELFunction {
             }
 
             DMNContext dmnContext = dmnRuntime.newContext();
-            dmnContext.getAll().putAll(invocationContext);
+            dmnContext.getAll().putAll(parameters);
 
             DMNResult requiredDecisionResult = dmnRuntime.evaluateDecisionByName(dmnModel, decisionName, dmnContext);
             if (requiredDecisionResult.hasErrors()) {

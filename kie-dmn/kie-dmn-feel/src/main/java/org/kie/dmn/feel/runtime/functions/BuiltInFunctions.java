@@ -70,7 +70,7 @@ public class BuiltInFunctions {
             new NowFunction(),
             new TodayFunction(),
             new CodeFunction(),
-            new CallDecisionFunction()
+            new InvokeDecisionFunction()
     };
 
     public static FEELFunction[] getFunctions() {

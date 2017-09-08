@@ -1337,7 +1337,7 @@ public class DMNRuntimeTest {
         context.set( "My Number", 3 );
         context.set( "Call ns", "http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" );
         context.set( "Call name", "Calling" );
-        context.set( "Call decision", "Final Result" );
+        context.set( "Invoke decision", "Final Result" );
 
         // Good case.
         {
@@ -1362,7 +1362,7 @@ public class DMNRuntimeTest {
         // Error if wrong decision name in model
         {
             DMNContext wrongContext = context.clone();
-            wrongContext.set("Call decision", "<unexistent decision>");
+            wrongContext.set("Invoke decision", "<unexistent decision>");
             
             DMNResult dmnResult = runtime.evaluateAll( dmnModel, wrongContext );
             assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );

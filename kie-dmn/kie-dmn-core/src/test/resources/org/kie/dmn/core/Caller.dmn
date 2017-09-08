@@ -20,7 +20,7 @@
     </semantic:informationRequirement>
     <semantic:invocation id="_6f46e094-d6b5-4dad-b0c6-05b96456b6b9">
       <semantic:literalExpression id="literal__6f46e094-d6b5-4dad-b0c6-05b96456b6b9">
-        <semantic:text>call decision</semantic:text>
+        <semantic:text>invoke decision</semantic:text>
       </semantic:literalExpression>
       <semantic:binding>
         <semantic:parameter id="_75a5d504-3ef7-42fb-9c9b-d28d1c198577" name="namespace"/>
@@ -37,11 +37,11 @@
       <semantic:binding>
         <semantic:parameter id="_ac744d85-3a93-433c-943a-b320d0a9afcf" name="decision name"/>
         <semantic:literalExpression id="_98f0f611-520d-4a65-839d-b422909e9cf0">
-          <semantic:text>Call decision</semantic:text>
+          <semantic:text>Invoke decision</semantic:text>
         </semantic:literalExpression>
       </semantic:binding>
       <semantic:binding>
-        <semantic:parameter id="_96a5ada5-ecf8-4403-af22-85f999f86f03" name="invocation context"/>
+        <semantic:parameter id="_96a5ada5-ecf8-4403-af22-85f999f86f03" name="parameters"/>
         <semantic:context id="_bcfff8ac-26f6-4946-bfc5-6b77101b55d5">
           <semantic:contextEntry>
             <semantic:variable id="_e3585247-a5ae-4441-bd47-d3be92d232d7" name="Caller name"/>
@@ -80,7 +80,7 @@
   <semantic:inputData id="_52890fab-4767-4d6b-988b-dafed026d0b2" name="Call name" triso:displayName="Call name">
     <semantic:variable id="_4f253c86-0bdd-4fa6-9a7e-fcfff16ec95f" name="Call name" typeRef="feel:string"/>
   </semantic:inputData>
-  <semantic:inputData id="_9f9d607e-beb0-4d88-a881-c412ef1cee20" name="Call decision" triso:displayName="Call decision">
-    <semantic:variable id="_3afdf84a-ecce-4ab8-a7e4-cbe2c0f66f10" name="Call decision" typeRef="feel:string"/>
+  <semantic:inputData id="_9f9d607e-beb0-4d88-a881-c412ef1cee20" name="Invoke decision" triso:displayName="Invoke decision">
+    <semantic:variable id="_3afdf84a-ecce-4ab8-a7e4-cbe2c0f66f10" name="Invoke decision" typeRef="feel:string"/>
   </semantic:inputData>
 </semantic:definitions>
