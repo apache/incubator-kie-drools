@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import java.util.Map;
+
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -24,8 +26,6 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-
-import java.util.Map;
 
 public class CallDecisionFunction extends BaseFEELFunction {
 
@@ -38,6 +38,7 @@ public class CallDecisionFunction extends BaseFEELFunction {
                                           @ParameterName("decision name") String decisionName, @ParameterName("invocation context") Map<String, Object> invocationContext) {
 
         DMNRuntime dmnRuntime = ctx.getDMNRuntime();
+        
         if(namespace == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "namespace", "cannot be null"));
         }
@@ -53,15 +54,32 @@ public class CallDecisionFunction extends BaseFEELFunction {
         if(invocationContext == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "invocation context", "cannot be null"));
         }
+        
         FEELEvent capturedException = null;
         try {
             ctx.enterFrame();
             DMNModel dmnModel = dmnRuntime.getModel(namespace, modelName);
+            if (dmnModel == null) {
+                return FEELFnResult.ofError(
+                        new FEELEventBase(FEELEvent.Severity.ERROR, "Cannot find model '"+modelName+"' in namespace "+namespace, null)
+                        ); 
+            }
+            if (dmnModel.getDecisionByName(decisionName) == null) {
+                return FEELFnResult.ofError(
+                        new FEELEventBase(FEELEvent.Severity.ERROR, "Cannot find decision '"+decisionName+"' in the model", null)
+                        );
+            }
 
             DMNContext dmnContext = dmnRuntime.newContext();
             dmnContext.getAll().putAll(invocationContext);
 
             DMNResult requiredDecisionResult = dmnRuntime.evaluateDecisionByName(dmnModel, decisionName, dmnContext);
+            if (requiredDecisionResult.hasErrors()) {
+                return FEELFnResult.ofError(
+                        new FEELEventBase(FEELEvent.Severity.ERROR, "Errors occurred while invoking the external decision: " + requiredDecisionResult.getMessages(), null)
+                        );
+            }
+            
             return FEELFnResult.ofResult(requiredDecisionResult.getContext().get(decisionName));
         } catch(Exception e) {
             capturedException = new FEELEventBase(FEELEvent.Severity.ERROR, "Error invoking function", new RuntimeException("Error invoking function " + getName() + ".", e));
@@ -71,5 +89,4 @@ public class CallDecisionFunction extends BaseFEELFunction {
 
         return FEELFnResult.ofError(capturedException);
     }
-
 }
