@@ -15,6 +15,13 @@
  */
 package org.drools.persistence.marshalling.util;
 
+import static org.drools.persistence.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
+import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.drools.persistence.util.DroolsPersistenceUtil.cleanUp;
+import static org.drools.persistence.util.DroolsPersistenceUtil.getDatasourceProperties;
+import static org.junit.Assert.*;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+
 import java.io.ByteArrayInputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -29,8 +36,6 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.TransactionManager;
-
-import bitronix.tm.TransactionManagerServices;
 import junit.framework.TestCase;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
@@ -54,13 +59,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.persistence.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
-import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.drools.persistence.util.DroolsPersistenceUtil.cleanUp;
-import static org.drools.persistence.util.DroolsPersistenceUtil.getDatasourceProperties;
-import static org.junit.Assert.*;
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 
 public class MarshallingTestUtil {
@@ -186,8 +184,8 @@ public class MarshallingTestUtil {
         ArrayList<MarshalledData> marshalledDataList = new ArrayList<MarshalledData>();
        
         TransactionManager txm = null;
-        try { 
-            txm = TransactionManagerServices.getTransactionManager();
+        try {
+            txm = com.arjuna.ats.jta.TransactionManager.transactionManager();
             txm.begin();
         }
         catch( Exception e ) { 
