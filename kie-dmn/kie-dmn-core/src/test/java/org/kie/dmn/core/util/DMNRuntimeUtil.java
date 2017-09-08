@@ -16,12 +16,14 @@
 
 package org.kie.dmn.core.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.kie.api.KieServices;
+import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -43,6 +45,23 @@ public final class DMNRuntimeUtil {
         final KieContainer kieContainer = KieHelper.getKieContainer(
                 ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"),
                 ks.getResources().newClassPathResource(resourceName, testClass));
+
+        final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        return runtime;
+    }
+    
+    public static DMNRuntime createRuntimeWithAdditionalResources(final String resourceName, final Class testClass, final String... additionalResources) {
+        final KieServices ks = KieServices.Factory.get();
+        Resource mainResource = ks.getResources().newClassPathResource(resourceName, testClass);
+        List<Resource> totalResources = new ArrayList<>();
+        totalResources.add(mainResource);
+        for ( String add : additionalResources ) {
+            totalResources.add( ks.getResources().newClassPathResource(add, testClass) );
+        }
+        final KieContainer kieContainer = KieHelper.getKieContainer(
+                ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0"),
+                totalResources.toArray(new Resource[] {}));
 
         final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         Assert.assertNotNull(runtime);

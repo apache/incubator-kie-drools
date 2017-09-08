@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_b0a696d6-3d57-4e97-b5d4-b44a63909d67" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.4.1" id="_b0a696d6-3d57-4e97-b5d4-b44a63909d67" name="Caller" namespace="http://www.trisotech.com/definitions/_b0a696d6-3d57-4e97-b5d4-b44a63909d67" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:decision id="_ffca21a7-67c7-4333-9c12-59a35c5075e2" name="Calling outside" triso:displayName="Calling outside">
+    <semantic:variable id="_8ed989c1-5cc0-4a9e-9401-c000a65d8190" name="Calling outside"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_f9072420-5236-4af9-b7a5-fd96f677a07b"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_228cd72c-c735-4ed0-a635-035b898cbbe0"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_d9170e9f-0842-418a-aab0-ade249b38da8"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_52890fab-4767-4d6b-988b-dafed026d0b2"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_9f9d607e-beb0-4d88-a881-c412ef1cee20"/>
+    </semantic:informationRequirement>
+    <semantic:invocation id="_6f46e094-d6b5-4dad-b0c6-05b96456b6b9">
+      <semantic:literalExpression id="literal__6f46e094-d6b5-4dad-b0c6-05b96456b6b9">
+        <semantic:text>call decision</semantic:text>
+      </semantic:literalExpression>
+      <semantic:binding>
+        <semantic:parameter id="_75a5d504-3ef7-42fb-9c9b-d28d1c198577" name="namespace"/>
+        <semantic:literalExpression id="_d9124ce8-42b5-4440-bc64-c014b1736468">
+          <semantic:text>Call ns</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+      <semantic:binding>
+        <semantic:parameter id="_3969a316-e3d4-45a1-a681-784c993848bf" name="model name"/>
+        <semantic:literalExpression id="_343880cf-f513-4e31-924b-f3ef23766a66">
+          <semantic:text>Call name</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+      <semantic:binding>
+        <semantic:parameter id="_ac744d85-3a93-433c-943a-b320d0a9afcf" name="decision name"/>
+        <semantic:literalExpression id="_98f0f611-520d-4a65-839d-b422909e9cf0">
+          <semantic:text>Call decision</semantic:text>
+        </semantic:literalExpression>
+      </semantic:binding>
+      <semantic:binding>
+        <semantic:parameter id="_96a5ada5-ecf8-4403-af22-85f999f86f03" name="invocation context"/>
+        <semantic:context id="_bcfff8ac-26f6-4946-bfc5-6b77101b55d5">
+          <semantic:contextEntry>
+            <semantic:variable id="_e3585247-a5ae-4441-bd47-d3be92d232d7" name="Caller name"/>
+            <semantic:literalExpression id="_8a804606-f815-46f2-80af-d9a2d7e8074d">
+              <semantic:text>My Name</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+          <semantic:contextEntry>
+            <semantic:variable id="_4b2fe0a2-b7a1-4e67-896e-6008e3df9ba9" name="A number"/>
+            <semantic:literalExpression id="_15d55230-cb0b-4875-ac30-24bdedec7490">
+              <semantic:text>My Number</semantic:text>
+            </semantic:literalExpression>
+          </semantic:contextEntry>
+        </semantic:context>
+      </semantic:binding>
+    </semantic:invocation>
+  </semantic:decision>
+  <semantic:inputData id="_f9072420-5236-4af9-b7a5-fd96f677a07b" name="My Name" triso:displayName="My Name">
+    <semantic:variable id="_7d1127b0-c2a1-45f5-9fca-a151cff8a0b0" name="My Name" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:inputData id="_228cd72c-c735-4ed0-a635-035b898cbbe0" name="My Number" triso:displayName="My Number">
+    <semantic:variable id="_19d776ec-cfcf-45bf-8027-83d58a3ec816" name="My Number" typeRef="feel:any"/> <!-- feel:any is intentional here. -->
+  </semantic:inputData>
+  <semantic:decision id="_998f547f-dcac-448e-953e-c8c9aff68e81" name="Final decision" triso:displayName="Final decision">
+    <semantic:variable id="_705ca19d-d732-4936-90a9-c941689952e5" name="Final decision"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_ffca21a7-67c7-4333-9c12-59a35c5075e2"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_65368486-732e-4523-b1b7-23ab02bcba66">
+      <semantic:text>"The final decision is: " + Calling outside</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_d9170e9f-0842-418a-aab0-ade249b38da8" name="Call ns" triso:displayName="Call ns">
+    <semantic:variable id="_e2c56a0e-b061-43ee-8d3e-d811fc2f9f1d" name="Call ns" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:inputData id="_52890fab-4767-4d6b-988b-dafed026d0b2" name="Call name" triso:displayName="Call name">
+    <semantic:variable id="_4f253c86-0bdd-4fa6-9a7e-fcfff16ec95f" name="Call name" typeRef="feel:string"/>
+  </semantic:inputData>
+  <semantic:inputData id="_9f9d607e-beb0-4d88-a881-c412ef1cee20" name="Call decision" triso:displayName="Call decision">
+    <semantic:variable id="_3afdf84a-ecce-4ab8-a7e4-cbe2c0f66f10" name="Call decision" typeRef="feel:string"/>
+  </semantic:inputData>
+</semantic:definitions>
