@@ -19,12 +19,14 @@ package org.drools.compiler.kie.util;
 import java.util.Map;
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.builder.model.ChannelModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;
 import org.kie.api.builder.model.WorkItemHandlerModel;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -96,6 +98,20 @@ public class InjectionHelper {
             }
             kSession.getWorkItemManager().registerWorkItemHandler(wihModel.getName(), wih );
         }
+        
+        for (ChannelModel channelModel : model.getChannelModels()) {
+            Channel channel;
+            try {
+                channel = beanCreator.createBean(cl, channelModel.getType(), channelModel.getQualifierModel());
+            } catch (Exception e) {
+                try {
+                    channel = fallbackBeanCreator.createBean(cl, channelModel.getType(), channelModel.getQualifierModel() );
+                } catch (Exception ex) {
+                    throw new RuntimeException("Cannot instance Channel " + channelModel.getType(), e);
+                }
+            }
+            kSession.registerChannel(channelModel.getName(), channel);
+        }
     }
 
     public static Object createListener( BeanCreator beanCreator, BeanCreator fallbackBeanCreator, ClassLoader cl, ListenerModel listenerModel ) {
@@ -130,6 +146,20 @@ public class InjectionHelper {
                     kSession.addEventListener((ProcessEventListener)listener);
                     break;
             }
+        }
+        
+        for (ChannelModel channelModel : model.getChannelModels()) {
+            Channel channel;
+            try {
+                channel = beanCreator.createBean(cl, channelModel.getType(), channelModel.getQualifierModel());
+            } catch (Exception e) {
+                try {
+                    channel = fallbackBeanCreator.createBean(cl, channelModel.getType(), channelModel.getQualifierModel() );
+                } catch (Exception ex) {
+                    throw new RuntimeException("Cannot instance Channel " + channelModel.getType(), e);
+                }
+            }
+            kSession.registerChannel(channelModel.getName(), channel);
         }
     }
 }
