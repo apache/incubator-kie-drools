@@ -20,7 +20,7 @@
     </semantic:informationRequirement>
     <semantic:invocation id="_6f46e094-d6b5-4dad-b0c6-05b96456b6b9">
       <semantic:literalExpression id="literal__6f46e094-d6b5-4dad-b0c6-05b96456b6b9">
-        <semantic:text>invoke decision</semantic:text>
+        <semantic:text>invoke</semantic:text>
       </semantic:literalExpression>
       <semantic:binding>
         <semantic:parameter id="_75a5d504-3ef7-42fb-9c9b-d28d1c198577" name="namespace"/>

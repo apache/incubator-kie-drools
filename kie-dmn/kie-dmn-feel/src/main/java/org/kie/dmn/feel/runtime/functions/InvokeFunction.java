@@ -27,10 +27,10 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class InvokeDecisionFunction extends BaseFEELFunction {
+public class InvokeFunction extends BaseFEELFunction {
 
-    public InvokeDecisionFunction() {
-        super("invoke decision");
+    public InvokeFunction() {
+        super("invoke");
     }
 
 
@@ -52,7 +52,7 @@ public class InvokeDecisionFunction extends BaseFEELFunction {
         }
 
         if(parameters == null) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "invocation context", "cannot be null"));
+            return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "parameters", "cannot be null"));
         }
         
         FEELEvent capturedException = null;
