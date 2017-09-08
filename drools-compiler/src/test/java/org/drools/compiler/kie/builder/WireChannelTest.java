@@ -82,7 +82,6 @@ public class WireChannelTest {
 
         @Override
 		public void send(Object object) {
-			// TODO Auto-generated method stub
 			channelMessages.add(object);
 		}
     }
