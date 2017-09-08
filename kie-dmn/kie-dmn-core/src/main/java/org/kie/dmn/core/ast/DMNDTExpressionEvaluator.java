@@ -63,12 +63,13 @@ public class DMNDTExpressionEvaluator
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult dmnr) {
+
         final List<FEELEvent> events = new ArrayList<>();
-        //DMNRuntimeEventManagerImpl eventManager = (DMNRuntimeEventManagerImpl) dmrem;
+
         DMNResultImpl result = (DMNResultImpl) dmnr;
         EventResults r = null;
         try {
-            //DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), result );
+            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), result );
             List<String> paramNames = dt.getParameterNames().get( 0 );
             Object[] params = new Object[paramNames.size()];
             FEELEventListenersManager listenerMgr = new FEELEventListenersManager();
