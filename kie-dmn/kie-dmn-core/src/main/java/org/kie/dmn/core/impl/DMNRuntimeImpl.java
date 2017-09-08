@@ -377,6 +377,7 @@ public class DMNRuntimeImpl
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED );
                 } else {
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.FAILED );
+                    return false;
                 }
             } catch( Throwable t ) {
                 DMNMessage message = MsgUtil.reportMessage( logger,
