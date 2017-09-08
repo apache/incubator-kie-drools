@@ -15,34 +15,27 @@
 
 package org.kie.test.util.db;
 
-import bitronix.tm.BitronixTransactionManager;
-import bitronix.tm.Configuration;
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-import org.h2.tools.DeleteDbFiles;
-import org.h2.tools.Server;
-import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.*;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import static org.junit.Assert.assertNotNull;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import org.h2.tools.DeleteDbFiles;
+import org.h2.tools.Server;
+import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PersistenceUtil {
 
     private static Logger logger = LoggerFactory.getLogger( PersistenceUtil.class );
 
     public static final String ENTITY_MANAGER_FACTORY = "org.kie.api.persistence.jpa.EntityManagerFactory";
-    public static final String TRANSACTION_MANAGER = "TRANSACTION_MANAGER";
 
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
     private static H2Server h2Server = new H2Server();
@@ -96,7 +89,6 @@ public class PersistenceUtil {
         context.put(DATASOURCE, ds1);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         context.put(ENTITY_MANAGER_FACTORY, emf);
-        context.put(TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
 
         return context;
     }
@@ -111,11 +103,6 @@ public class PersistenceUtil {
      */
     public static void cleanUp(Map<String, Object> context) {
         if (context != null) {
-
-            BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
-            if( txm != null ) {
-                txm.shutdown();
-            }
 
             Object emfObject = context.remove(ENTITY_MANAGER_FACTORY);
             if (emfObject != null) {
@@ -151,7 +138,7 @@ public class PersistenceUtil {
     }
 
     /**
-     * This sets up a Bitronix PoolingDataSource.
+     * This sets up a PoolingDataSource.
      *
      * @return PoolingDataSource that has been set up but _not_ initialized.
      */
@@ -160,12 +147,8 @@ public class PersistenceUtil {
 
         // The name must match what's in the persistence.xml!
         pds.setUniqueName(datasourceName);
-
         pds.setClassName(dsProps.getProperty("className"));
 
-        pds.setMaxPoolSize(Integer.parseInt(dsProps.getProperty("maxPoolSize")));
-        pds.setAllowLocalTransactions(Boolean.parseBoolean(dsProps
-                .getProperty("allowLocalTransactions")));
         for (String propertyName : new String[] { "user", "password" }) {
             pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
         }
@@ -189,6 +172,7 @@ public class PersistenceUtil {
                 pds.getDriverProperties().put("serverName", dsProps.getProperty("serverName"));
                 pds.getDriverProperties().put("portNumber", dsProps.getProperty("portNumber"));
                 pds.getDriverProperties().put("currentSchema", dsProps.getProperty("defaultSchema"));
+                pds.getDriverProperties().put("url", dsProps.getProperty("url"));
             } else if (driverClass.startsWith("com.microsoft")) {
                 for (String propertyName : new String[] { "serverName", "portNumber", "databaseName" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
@@ -205,13 +189,13 @@ public class PersistenceUtil {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
             } else if (driverClass.startsWith("com.sybase")) {
-                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName", "url" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
                 pds.getDriverProperties().put("REQUEST_HA_SESSION", "false");
                 pds.getDriverProperties().put("networkProtocol", "Tds");
             } else if (driverClass.startsWith("org.postgresql") || driverClass.startsWith("com.edb")) {
-                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName", "url" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
             } else {
@@ -236,7 +220,7 @@ public class PersistenceUtil {
             String[] keyArr = { "serverName", "portNumber", "databaseName", "url", "user", "password", "driverClassName",
                     "className", "maxPoolSize", "allowLocalTransactions" };
             String[] defaultPropArr = { "", "", "", "jdbc:h2:tcp://localhost/JPADroolsFlow", "sa", "", "org.h2.Driver",
-                    "bitronix.tm.resource.jdbc.lrc.LrcXADataSource", "16", "true" };
+                    "org.h2.jdbcx.JdbcDataSource", "16", "true" };
             Assert.assertTrue("Unequal number of keys for default properties", keyArr.length == defaultPropArr.length);
             defaultProperties = new Properties();
             for (int i = 0; i < keyArr.length; ++i) {
