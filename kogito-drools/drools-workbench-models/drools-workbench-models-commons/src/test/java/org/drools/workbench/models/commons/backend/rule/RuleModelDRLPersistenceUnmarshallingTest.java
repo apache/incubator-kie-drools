@@ -3694,7 +3694,75 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
         FactPattern pattern = (FactPattern) m.lhs[0];
         assertEquals("Applicant",
                      pattern.getFactType());
+    }
 
+    @Test
+    public void testDSLWithMultilineBracketsOneField() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "> Applicant( name == \n"
+                + "> \"John\")\n"
+                + "then\n"
+                + "end\n";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
+                                                                                        Collections.emptyList(),
+                                                                                        dmo,
+                                                                                        "");
+
+        assertNotNull(m);
+
+        assertTrue(m.lhs[0] instanceof FactPattern);
+        FactPattern pattern = (FactPattern) m.lhs[0];
+        assertEquals("Applicant",
+                     pattern.getFactType());
+        assertEquals(1,
+                     pattern.getNumberOfConstraints());
+        assertEquals("name",
+                     ((SingleFieldConstraint) pattern.getConstraint(0)).getFieldName());
+        assertEquals("==",
+                     ((SingleFieldConstraint) pattern.getConstraint(0)).getOperator());
+        assertEquals("John",
+                     ((SingleFieldConstraint) pattern.getConstraint(0)).getValue());
+    }
+
+    @Test
+    public void testDSLWithMultilineBracketsTwoFields() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "> Applicant( name == \n"
+                + "> \"John\"\n"
+                + "> , \n"
+                + "> age > 18 )\n"
+                + "then\n"
+                + "end\n";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
+                                                                                        Collections.emptyList(),
+                                                                                        dmo,
+                                                                                        "");
+
+        assertNotNull(m);
+
+        assertTrue(m.lhs[0] instanceof FactPattern);
+        FactPattern pattern = (FactPattern) m.lhs[0];
+        assertEquals("Applicant",
+                     pattern.getFactType());
+        assertEquals(2,
+                     pattern.getNumberOfConstraints());
+        assertEquals("name",
+                     ((SingleFieldConstraint) pattern.getConstraint(0)).getFieldName());
+        assertEquals("==",
+                     ((SingleFieldConstraint) pattern.getConstraint(0)).getOperator());
+        assertEquals("John",
+                     ((SingleFieldConstraint) pattern.getConstraint(0)).getValue());
+
+        assertEquals("age",
+                     ((SingleFieldConstraint) pattern.getConstraint(1)).getFieldName());
+        assertEquals(">",
+                     ((SingleFieldConstraint) pattern.getConstraint(1)).getOperator());
+        assertEquals("18",
+                     ((SingleFieldConstraint) pattern.getConstraint(1)).getValue());
     }
 
     @Test
