@@ -21,6 +21,8 @@ import java.util.Map;
 
 public interface UserTaskDefinition {
     
+    String getId();
+    
     String getName();
 
     Integer getPriority();
@@ -30,6 +32,8 @@ public interface UserTaskDefinition {
     String getCreatedBy();
     
     boolean isSkippable();
+    
+    String getFormName();
     
     Collection<String> getAssociatedEntities();
     

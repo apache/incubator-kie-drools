@@ -26,11 +26,13 @@ public class UserTaskDefinitionImpl implements UserTaskDefinition, Serializable 
 		
 	private static final long serialVersionUID = -8240667577168891456L;
 	
+	private String id;
 	private String name;
 	private Integer priority;
 	private String comment;
 	private String createdBy;
 	private boolean skippable;
+	private String formName;
 
 	private Collection<String> associatedEntities;
 	private Map<String, String> taskInputMappings;
@@ -75,6 +77,16 @@ public class UserTaskDefinitionImpl implements UserTaskDefinition, Serializable 
 	public Map<String, String> getTaskOutputMappings() {		
 		return taskOutputMappings;
 	}
+	
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getFormName() {
+        return formName;
+    }
 
 	public void setName(String name) {
 		this.name = name;
@@ -107,5 +119,13 @@ public class UserTaskDefinitionImpl implements UserTaskDefinition, Serializable 
 	public void setTaskOutputMappings(Map<String, String> taskOutputMappings) {
 		this.taskOutputMappings = taskOutputMappings;
 	}
+    
+    public void setId(String id) {
+        this.id = id;
+    }
+    
+    public void setFormName(String formName) {
+        this.formName = formName;
+    }
 
 }

@@ -67,7 +67,8 @@ public class ServicesProcessDataEventListener implements ProcessDataEventListene
             UserTaskDefinitionImpl task = (UserTaskDefinitionImpl)processDescriptor.getTasks().get(name);
             if (task == null) {
                 task = new UserTaskDefinitionImpl();
-                task.setName(name);
+                task.setId(humanTaskNode.getUniqueId());
+                task.setName(name);                
                 processDescriptor.getTasks().put(task.getName(), task);
             }
 
@@ -101,7 +102,8 @@ public class ServicesProcessDataEventListener implements ProcessDataEventListene
             task.setComment(asString(humanTaskNode.getWork().getParameter("Comment")));
             task.setCreatedBy(asString(humanTaskNode.getWork().getParameter("CreatedBy")));
             task.setPriority(asInt(humanTaskNode.getWork().getParameter("Priority")));
-            task.setSkippable(asBoolean(humanTaskNode.getWork().getParameter("Skippable")));
+            task.setSkippable(asBoolean(humanTaskNode.getWork().getParameter("Skippable")));            
+            task.setFormName(asString(humanTaskNode.getWork().getParameter("TaskName")));
 
             processDescriptor.getTaskInputMappings().put(task.getName(), inputParams);
             processDescriptor.getTaskOutputMappings().put(task.getName(), outputParams);

@@ -135,7 +135,25 @@
           "methodName": "getErrorsByTaskName",
           "elementKind": "method",
           "justification": "JBPM-5851 Technical Error Events"
-        }
+        },
+        {
+		  "code": "java.method.addedToInterface",
+		  "new": "method java.lang.String org.jbpm.services.api.model.UserTaskDefinition::getFormName()",
+		  "package": "org.jbpm.services.api.model",
+		  "classSimpleName": "UserTaskDefinition",
+		  "methodName": "getFormName",
+		  "elementKind": "method",
+		  "justification": "Added support for providing form name via task definition"
+		 },
+		 {
+		  "code": "java.method.addedToInterface",
+		  "new": "method java.lang.String org.jbpm.services.api.model.UserTaskDefinition::getId()",
+		  "package": "org.jbpm.services.api.model",
+		  "classSimpleName": "UserTaskDefinition",
+		  "methodName": "getId",
+		  "elementKind": "method",
+		  "justification": "Added support for providing id via task definition"
+		 }
       ]
     }
   }

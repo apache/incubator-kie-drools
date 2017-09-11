@@ -113,10 +113,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         assertEquals(procDef.getType(), "RuleFlow");
         assertEquals(procDef.getVersion(), "3");
         assertNotNull(((ProcessAssetDesc)procDef).getEncodedProcessSource());
-
-        Collection<UserTaskDefinition> processTasks = bpmn2Service.getTasksDefinitions(deploymentUnit.getIdentifier(), processId);
-
-        assertEquals(3, processTasks.size());
+        
         Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
         assertEquals("String", processData.get("approval_document"));
         assertEquals("String", processData.get("approval_translatedDocument"));
@@ -142,18 +139,24 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         assertEquals("Write a Document", task.getName());
         assertEquals(9, task.getPriority().intValue());
         assertEquals("Write a Document", task.getComment());
+        assertEquals("Write a Document", task.getFormName());
+        assertEquals("2", task.getId());
 
         task = tasksByName.get("Translate Document");
         assertEquals(true, task.isSkippable());
         assertEquals("Translate Document", task.getName());
         assertEquals(0, task.getPriority().intValue());
         assertEquals("", task.getComment());
+        assertEquals("Translate Document", task.getFormName());
+        assertEquals("4", task.getId());
 
         task = tasksByName.get("Review Document");
         assertEquals(false, task.isSkippable());
         assertEquals("Review Document", task.getName());
         assertEquals(0, task.getPriority().intValue());
         assertEquals("", task.getComment());
+        assertEquals("Review Document", task.getFormName());
+        assertEquals("5", task.getId());
 
         Map<String, String> taskInputMappings = bpmn2Service.getTaskInputMappings(deploymentUnit.getIdentifier(), processId, "Write a Document" );
 
