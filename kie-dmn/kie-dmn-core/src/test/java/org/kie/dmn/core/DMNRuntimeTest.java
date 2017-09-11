@@ -1332,7 +1332,12 @@ public class DMNRuntimeTest {
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_b0a696d6-3d57-4e97-b5d4-b44a63909d67", "Caller" );
         assertThat( dmnModel, notNullValue() );
 
-        DMNContext context = setInvocationParameters();
+        DMNContext context = DMNFactory.newContext();
+        context.set( "My Name", "John Doe" );
+        context.set( "My Number", 3 );
+        context.set( "Call ns", "http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" );
+        context.set( "Call name", "Calling" );
+        context.set( "Invoke decision", "Final Result" );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
@@ -1347,10 +1352,12 @@ public class DMNRuntimeTest {
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_b0a696d6-3d57-4e97-b5d4-b44a63909d67", "Caller" );
         assertThat( dmnModel, notNullValue() );
 
-        DMNContext context = setInvocationParameters();
-
-        DMNContext wrongContext = context.clone();
+        DMNContext wrongContext = DMNFactory.newContext();
+        wrongContext.set( "My Name", "John Doe" );
+        wrongContext.set( "My Number", 3 );
         wrongContext.set("Call ns", "http://www.acme.com/a-wrong-namespace");
+        wrongContext.set( "Call name", "Calling" );
+        wrongContext.set( "Invoke decision", "Final Result" );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, wrongContext );
         assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
@@ -1364,9 +1371,11 @@ public class DMNRuntimeTest {
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_b0a696d6-3d57-4e97-b5d4-b44a63909d67", "Caller" );
         assertThat( dmnModel, notNullValue() );
 
-        DMNContext context = setInvocationParameters();
-
-        DMNContext wrongContext = context.clone();
+        DMNContext wrongContext = DMNFactory.newContext();
+        wrongContext.set( "My Name", "John Doe" );
+        wrongContext.set( "My Number", 3 );
+        wrongContext.set( "Call ns", "http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" );
+        wrongContext.set( "Call name", "Calling" );
         wrongContext.set("Invoke decision", "<unexistent decision>");
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, wrongContext );
@@ -1383,26 +1392,18 @@ public class DMNRuntimeTest {
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_b0a696d6-3d57-4e97-b5d4-b44a63909d67", "Caller" );
         assertThat( dmnModel, notNullValue() );
 
-        DMNContext context = setInvocationParameters();
-
-        DMNContext wrongContext = context.clone();
+        DMNContext wrongContext = DMNFactory.newContext();
+        wrongContext.set( "My Name", "John Doe" );
         wrongContext.set("My Number", "<not a number>");
+        wrongContext.set( "Call ns", "http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" );
+        wrongContext.set( "Call name", "Calling" );
+        wrongContext.set( "Invoke decision", "Final Result" );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, wrongContext );
         assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
         // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
         // please notice it will print 4 lines in the log, 2x are the "external invocation" and then 2x are the one by the caller, checked herebelow:
         assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.getMessages().size(), is( 2 ) );
-    }
-
-    private DMNContext setInvocationParameters() {
-        DMNContext context = DMNFactory.newContext();
-        context.set( "My Name", "John Doe" );
-        context.set( "My Number", 3 );
-        context.set( "Call ns", "http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" );
-        context.set( "Call name", "Calling" );
-        context.set( "Invoke decision", "Final Result" );
-        return context;
     }
 
 }
