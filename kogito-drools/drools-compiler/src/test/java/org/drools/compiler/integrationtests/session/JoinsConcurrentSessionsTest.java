@@ -27,7 +27,7 @@ import org.drools.compiler.integrationtests.facts.RootFact;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-public class JoinsConcurrentSessionsTest extends AbstractConcurrentSessionTest {
+public class JoinsConcurrentSessionsTest extends AbstractConcurrentSessionsTest {
 
     public JoinsConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
         super(enforcedJitting, serializeKieBase);

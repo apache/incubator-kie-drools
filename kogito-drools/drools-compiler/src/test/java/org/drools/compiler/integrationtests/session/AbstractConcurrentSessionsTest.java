@@ -43,7 +43,7 @@ import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.utils.KieHelper;
 
 @RunWith(Parameterized.class)
-public abstract class AbstractConcurrentSessionTest {
+public abstract class AbstractConcurrentSessionsTest {
 
     protected final boolean enforcedJitting;
     protected final boolean serializeKieBase;
@@ -57,7 +57,7 @@ public abstract class AbstractConcurrentSessionTest {
                 new Boolean[]{true, true});
     }
 
-    public AbstractConcurrentSessionTest(final boolean enforcedJitting, final boolean serializeKieBase) {
+    public AbstractConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
         this.enforcedJitting = enforcedJitting;
         this.serializeKieBase = serializeKieBase;
     }

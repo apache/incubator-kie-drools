@@ -19,7 +19,7 @@ package org.drools.compiler.integrationtests.session;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentSessionTest {
+public class SubnetworkConcurrentSessionsTest extends AbstractConcurrentSessionsTest {
 
     public SubnetworkConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
         super(enforcedJitting, serializeKieBase);
