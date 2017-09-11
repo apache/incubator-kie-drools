@@ -86,11 +86,11 @@ public class ChannelModelImpl implements ChannelModel {
         }
 
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-            ChannelModelImpl wih = (ChannelModelImpl) value;
-            writer.addAttribute("name", wih.getName());
-            writer.addAttribute("type", wih.getType());
+            ChannelModelImpl channel = (ChannelModelImpl) value;
+            writer.addAttribute("name", channel.getName());
+            writer.addAttribute("type", channel.getType());
             /* TODO make qualifiers working properly before readd them to the xml
-            QualifierModelImpl qualifier = (QualifierModelImpl)wih.getQualifierModel();
+            QualifierModelImpl qualifier = (QualifierModelImpl)channel.getQualifierModel();
             if (qualifier != null) {
                 if (qualifier.isSimple()) {
                     writer.addAttribute("qualifier", qualifier.getType());
@@ -102,13 +102,13 @@ public class ChannelModelImpl implements ChannelModel {
         }
 
         public Object unmarshal(HierarchicalStreamReader reader, final UnmarshallingContext context) {
-            final ChannelModelImpl wih = new ChannelModelImpl();
-            wih.setName(reader.getAttribute("name"));
-            wih.setType(reader.getAttribute("type"));
+            final ChannelModelImpl channel = new ChannelModelImpl();
+            channel.setName(reader.getAttribute("name"));
+            channel.setType(reader.getAttribute("type"));
             /* TODO make qualifiers working properly before readd them to the xml
             String qualifierType = reader.getAttribute("qualifier");
             if (qualifierType != null) {
-                wih.newQualifierModel(qualifierType);
+                channel.newQualifierModel(qualifierType);
             }
 
             readNodes( reader, new AbstractXStreamConverter.NodeReader() {
@@ -117,12 +117,12 @@ public class ChannelModelImpl implements ChannelModel {
                                    String value) {
                     if ( "qualifier".equals( name ) ) {
                         QualifierModelImpl qualifier = readObject(reader, context, QualifierModelImpl.class);
-                        wih.setQualifierModel(qualifier);
+                        channel.setQualifierModel(qualifier);
                     }
                 }
             } );
             */
-            return wih;
+            return channel;
         }
     }
 }
