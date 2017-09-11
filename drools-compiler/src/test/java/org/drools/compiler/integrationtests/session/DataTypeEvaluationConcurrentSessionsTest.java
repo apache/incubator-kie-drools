@@ -33,9 +33,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
-public class DataTypeEvaluationConcurrentSessionTest extends AbstractConcurrentSessionTest {
+public class DataTypeEvaluationConcurrentSessionsTest extends AbstractConcurrentSessionsTest {
 
-    public DataTypeEvaluationConcurrentSessionTest(final boolean enforcedJitting, final boolean serializeKieBase) {
+    public DataTypeEvaluationConcurrentSessionsTest(final boolean enforcedJitting, final boolean serializeKieBase) {
         super(enforcedJitting, serializeKieBase);
     }
 
@@ -129,7 +129,6 @@ public class DataTypeEvaluationConcurrentSessionTest extends AbstractConcurrentS
         testFactAttributeType("    $factWithString: FactWithString(stringValue == \"test\") \n", new FactWithString("test"));
     }
 
-    @Ignore("Reproducer for DROOLS-1717, must be fixed before unignoring.")
     @Test
     public void testEnum() throws InterruptedException {
         testFactAttributeType("    $factWithEnum: FactWithEnum(enumValue == AnEnum.FIRST) \n", new FactWithEnum(AnEnum.FIRST));
