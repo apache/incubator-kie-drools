@@ -33,11 +33,11 @@ import org.kie.api.runtime.StatelessKieSession;
 public class CDIHelper {
 
     public static void wireListnersAndWIHs(BeanManager beanManager, KieSessionModel model, KieSession kSession) {
-        InjectionHelper.wireListnersAndWIHs( new CDIBeanCreator( beanManager), model, kSession );
+        InjectionHelper.wireSessionComponents( new CDIBeanCreator( beanManager), model, kSession );
     }
 
     public static void wireListnersAndWIHs(BeanManager beanManager, KieSessionModel model, StatelessKieSession kSession) {
-        InjectionHelper.wireListnersAndWIHs(new CDIBeanCreator(beanManager), model, kSession);
+        InjectionHelper.wireSessionComponents(new CDIBeanCreator(beanManager), model, kSession);
     }
 
     public static BeanCreator getCdiBeanCreator() {
