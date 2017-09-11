@@ -156,7 +156,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
     private IncrementalResultsImpl getIncrementalResults(Map<String, Collection<KnowledgeBuilderError>> currentErrors) {
         IncrementalResultsImpl results = new IncrementalResultsImpl();
         for (Map.Entry<String, Collection<KnowledgeBuilderError>> entry : currentErrors.entrySet()) {
-            Collection<KnowledgeBuilderError> previousErrorsInKB = previousErrors.remove(entry.getValue());
+            Collection<KnowledgeBuilderError> previousErrorsInKB = previousErrors.remove(entry.getKey());
             for ( KnowledgeBuilderError error : entry.getValue() ) {
                 if ( previousErrorsInKB == null || !previousErrorsInKB.remove( error ) ) {
                     results.addMessage( error, entry.getKey() );

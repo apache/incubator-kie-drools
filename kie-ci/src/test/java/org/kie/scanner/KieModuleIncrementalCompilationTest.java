@@ -225,7 +225,7 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
 
         String invalidRule = "package org.kie.scanner\n" +
                              "rule R2 when\n" +
-                             "   Cheese" +
+                             "   Cheese()\n" + // missing import
                              "then\n" +
                              "end\n";
 
@@ -243,7 +243,7 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
                   invalidRule);
         IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/org/kie/scanner/invalidRule.drl").build();
 
-        assertFalse(addResults.getAddedMessages().isEmpty());
+        assertEquals(2, addResults.getAddedMessages().size());
         addResults
                 .getAddedMessages()
                 .stream()
