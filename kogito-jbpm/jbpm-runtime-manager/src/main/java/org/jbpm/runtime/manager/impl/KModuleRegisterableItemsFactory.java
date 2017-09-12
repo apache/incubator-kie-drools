@@ -88,11 +88,11 @@ public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFac
         parameters.put("classLoader", getRuntimeManager().getEnvironment().getClassLoader());
         try {
 
-            InjectionHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
+            InjectionHelper.wireSessionComponents(ksessionModel, runtime.getKieSession(), parameters);
         } catch (Exception e) {
         	e.printStackTrace();
             // use fallback mechanism
-            InjectionHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession());
+            InjectionHelper.wireSessionComponents(ksessionModel, runtime.getKieSession());
         }
         
         return super.getWorkItemHandlers(runtime);

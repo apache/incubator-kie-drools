@@ -157,10 +157,10 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             }
             try {
 
-                InjectionHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
+                InjectionHelper.wireSessionComponents(ksessionModel, runtime.getKieSession(), parameters);
             } catch (Throwable e) {
                 // use fallback mechanism
-                InjectionHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession());
+                InjectionHelper.wireSessionComponents(ksessionModel, runtime.getKieSession());
             }
         }
         try {
