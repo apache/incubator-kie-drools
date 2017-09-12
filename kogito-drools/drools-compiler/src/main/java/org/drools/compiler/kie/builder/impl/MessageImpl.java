@@ -15,15 +15,15 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
-import org.kie.api.io.Resource;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.api.builder.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.kie.api.builder.Message;
+import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MessageImpl implements Message {
 
@@ -119,8 +119,9 @@ public class MessageImpl implements Message {
         return kieBaseName;
     }
 
-    public void setKieBaseName( String kieBaseName ) {
+    public MessageImpl setKieBaseName( String kieBaseName ) {
         this.kieBaseName = kieBaseName;
+        return this;
     }
 
     public static List<Message> filterMessages( List<Message> messages,
