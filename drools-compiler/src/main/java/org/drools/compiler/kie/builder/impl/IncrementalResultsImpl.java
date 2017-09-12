@@ -15,12 +15,12 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import org.kie.internal.builder.IncrementalResults;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.api.builder.Message;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.kie.api.builder.Message;
+import org.kie.internal.builder.IncrementalResults;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public class IncrementalResultsImpl implements IncrementalResults {
 
@@ -39,11 +39,11 @@ public class IncrementalResultsImpl implements IncrementalResults {
         return removedMessages;
     }
 
-    public void addMessage(KnowledgeBuilderResult result) {
-        addedMessages.add( new MessageImpl( idGenerator++, result ) );
+    public void addMessage(KnowledgeBuilderResult result, String kieBaseName ) {
+        addedMessages.add( new MessageImpl( idGenerator++, result ).setKieBaseName( kieBaseName ) );
     }
 
-    public void removeMessage(KnowledgeBuilderResult result) {
-        removedMessages.add( new MessageImpl( idGenerator++, result ) );
+    public void removeMessage(KnowledgeBuilderResult result, String kieBaseName) {
+        removedMessages.add( new MessageImpl( idGenerator++, result ).setKieBaseName( kieBaseName ) );
     }
 }
