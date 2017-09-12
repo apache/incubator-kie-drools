@@ -17,6 +17,7 @@
 package org.drools.core.runtime.help.impl;
 
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
 import org.drools.core.command.runtime.process.AbortWorkItemCommand;
@@ -70,6 +71,8 @@ public class XStreamHelper {
                        ExecutionResultImpl.class );
         xstream.alias( "fire-all-rules",
                        FireAllRulesCommand.class );
+        xstream.alias( "dispose",
+                       DisposeCommand.class );
         xstream.alias( "query",
                        QueryCommand.class );
         xstream.alias( "query-results",
