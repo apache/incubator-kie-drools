@@ -86,6 +86,7 @@ public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<Execu
                          @XmlElement(name = "get-object", type = GetObjectCommand.class),
                          @XmlElement(name = "fire-all-rules", type = FireAllRulesCommand.class),
                          @XmlElement(name = "fire-until-halt", type = FireUntilHaltCommand.class),
+                         @XmlElement(name = "dispose", type = DisposeCommand.class),
                          @XmlElement(name = "complete-work-item", type = CompleteWorkItemCommand.class),
                          @XmlElement(name = "get-objects", type = GetObjectsCommand.class),
                          @XmlElement(name = "set-focus", type = AgendaGroupSetFocusCommand.class),
