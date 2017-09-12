@@ -85,6 +85,17 @@ public interface KieSessionModel {
     List<WorkItemHandlerModel> getWorkItemHandlerModels();
 
     /**
+     * Creates a new ChannelModel of the given type (i.e. the name of the class implementing it)
+     * and add it to this KieSessionModel
+     */
+    ChannelModel newChannelModel(String name, String type);
+
+    /**
+     * Returns all the ChannelModels defined for this KieSessionModel
+     */
+    List<ChannelModel> getChannelModels();
+    
+    /**
      * Sets the CDI scope for this KieSessionModel
      * Default is javax.enterprise.context.ApplicationScoped
      */
