@@ -85,6 +85,7 @@
         </xsd:choice>
         <xsd:element ref="workItemHandlers" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="listeners" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="channels" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
       <xsd:attribute name="name" use="required" type="xsd:string"/>
       <xsd:attribute name="type" type="ksessionType"/>
@@ -151,6 +152,21 @@
     <xsd:complexType>
       <xsd:attribute name="type" use="required" type="xsd:string"/>
     </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="channels">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="channel" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  
+  <xsd:element name="channel">
+  	<xsd:complexType>
+  		<xsd:attribute name="name" use="required" type="xsd:string" />
+  		<xsd:attribute name="type" use="required" type="xsd:string" />
+  	</xsd:complexType>
   </xsd:element>
 
   <xsd:simpleType name="ksessionType">
