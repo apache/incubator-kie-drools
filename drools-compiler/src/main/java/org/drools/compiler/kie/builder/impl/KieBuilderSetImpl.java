@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,7 +48,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
     private final KieBuilderImpl kieBuilder;
     private String[] files;
 
-    private List<KnowledgeBuilderError> previousErrors;
+    private Map<String, Collection<KnowledgeBuilderError>> previousErrors;
 
     private final Map<String, Set<String>> resourcesWithErrors = new HashMap<String, Set<String>>();
 
@@ -59,12 +58,12 @@ public class KieBuilderSetImpl implements KieBuilderSet {
     }
 
     private void registerInitialErrors(KieBuilderImpl kieBuilder) {
-        previousErrors = new ArrayList<KnowledgeBuilderError>();
+        previousErrors = new HashMap<String, Collection<KnowledgeBuilderError>>();
         InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModuleIgnoringErrors();
         for (KieBaseModel kBaseModel : kieModule.getKieModuleModel().getKieBaseModels().values()) {
             KnowledgeBuilder kBuilder = kieModule.getKnowledgeBuilderForKieBase( kBaseModel.getName() );
             if (kBuilder != null) {
-                previousErrors.addAll( kBuilder.getErrors() );
+                previousErrors.put( kBaseModel.getName(), kBuilder.getErrors() );
                 resourcesWithErrors.put(kBaseModel.getName(), findResourcesWithErrors(kBuilder));
             }
         }
@@ -107,7 +106,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
     }
 
     private IncrementalResults buildChanges(Collection<String> filesToBuild) {
-        List<KnowledgeBuilderError> currentErrors = new ArrayList<KnowledgeBuilderError>();
+        Map<String, Collection<KnowledgeBuilderError>> currentErrors = new HashMap<String, Collection<KnowledgeBuilderError>>();
 
         InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModuleIgnoringErrors();
         for (KieBaseModel kBaseModel : kieModule.getKieModuleModel().getKieBaseModels().values()) {
@@ -140,7 +139,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                 ckbuilder.build();
                 resourcesWithErrors.put(kBaseModel.getName(), findResourcesWithErrors(kBuilder));
                 if ( kBuilder.hasErrors() ) {
-                    currentErrors.addAll(kBuilder.getErrors());
+                    currentErrors.put( kBaseModel.getName(), kBuilder.getErrors() );
                     kBuilder.undo();
                 } else {
                     KieServices.Factory.get().getRepository().addKieModule( kieModule );
@@ -154,15 +153,25 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         return results;
     }
 
-    private IncrementalResultsImpl getIncrementalResults(List<KnowledgeBuilderError> currentErrors) {
+    private IncrementalResultsImpl getIncrementalResults(Map<String, Collection<KnowledgeBuilderError>> currentErrors) {
         IncrementalResultsImpl results = new IncrementalResultsImpl();
-        for (KnowledgeBuilderError error : currentErrors) {
-            if (!previousErrors.remove(error)) {
-                results.addMessage(error);
+        for (Map.Entry<String, Collection<KnowledgeBuilderError>> entry : currentErrors.entrySet()) {
+            Collection<KnowledgeBuilderError> previousErrorsInKB = previousErrors.remove(entry.getKey());
+            for ( KnowledgeBuilderError error : entry.getValue() ) {
+                if ( previousErrorsInKB == null || !previousErrorsInKB.remove( error ) ) {
+                    results.addMessage( error, entry.getKey() );
+                }
+            }
+            if (previousErrorsInKB != null) {
+                for ( KnowledgeBuilderError error : previousErrorsInKB ) {
+                    results.removeMessage( error, entry.getKey() );
+                }
             }
         }
-        for (KnowledgeBuilderError error : previousErrors) {
-            results.removeMessage(error);
+        for (Map.Entry<String, Collection<KnowledgeBuilderError>> entry : previousErrors.entrySet()) {
+            for ( KnowledgeBuilderError error : entry.getValue() ) {
+                results.removeMessage( error, entry.getKey() );
+            }
         }
         return results;
     }
