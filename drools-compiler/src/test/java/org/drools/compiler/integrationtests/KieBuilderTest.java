@@ -17,6 +17,7 @@ package org.drools.compiler.integrationtests;
 
 import java.util.List;
 import java.util.function.Predicate;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -31,8 +32,10 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -484,4 +487,85 @@ public class KieBuilderTest extends CommonTestMethodBase {
         } catch (final RuntimeException e) {
         }
     }
+    
+    
+    @Test
+    public void testDeclarativeChannelRegistration() {
+        final String drl1 = "package org.drools.compiler\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        final String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                "  <kbase name=\"kbase1\">\n" +
+                "    <ksession name=\"ksession1\" default=\"true\">\n" +
+                "       <channels>\n" +
+                "         <channel name=\"testChannel\" type=\"org.drools.compiler.integrationtests.KieBuilderTest$MockChannel\" />\n" +
+                "       </channels>\n" +
+                "    </ksession>" +
+                "  </kbase>\n" +
+                "</kmodule>";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
+        final KieModule km = createAndDeployJar( ks,
+                                           kmodule,
+                                           releaseId1,
+                                           r1);
+
+        KieContainer kieContainer = ks.newKieContainer( km.getReleaseId());
+        
+        KieSession kieSession = kieContainer.newKieSession();
+        assertEquals(1, kieSession.getChannels().size());
+        assertTrue(kieSession.getChannels().keySet().contains("testChannel"));
+    }
+    
+    @Test
+    public void testStatelessSessionDeclarativeChannelRegistration() {
+        final String drl1 = "package org.drools.compiler\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        final String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                "  <kbase name=\"kbase1\">\n" +
+                "    <ksession name=\"ksession1\" default=\"true\" type=\"stateless\">\n" +
+                "       <channels>\n" +
+                "         <channel name=\"testChannel\" type=\"org.drools.compiler.integrationtests.KieBuilderTest$MockChannel\" />\n" +
+                "       </channels>\n" +
+                "    </ksession>" +
+                "  </kbase>\n" +
+                "</kmodule>";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
+        final KieModule km = createAndDeployJar( ks,
+                                           kmodule,
+                                           releaseId1,
+                                           r1);
+
+        KieContainer kieContainer = ks.newKieContainer( km.getReleaseId());
+        
+        StatelessKieSession statelessKieSession = kieContainer.newStatelessKieSession();
+        assertEquals(1, statelessKieSession.getChannels().size());
+        assertTrue(statelessKieSession.getChannels().keySet().contains("testChannel"));
+    }
+    
+    public static class MockChannel implements Channel {
+
+		@Override
+		public void send(Object object) {
+			//NO=OP
+		}
+    	
+    }
+
 }
