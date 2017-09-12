@@ -15,12 +15,12 @@
 
 package org.drools.compiler.kproject.models;
 
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.BeliefSystemType;
 import org.drools.core.util.AbstractXStreamConverter;
+import org.kie.api.builder.model.ChannelModel;
 import org.kie.api.builder.model.FileLoggerModel;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -29,8 +29,10 @@ import org.kie.api.builder.model.WorkItemHandlerModel;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class KieSessionModelImpl
         implements
@@ -49,6 +51,7 @@ public class KieSessionModelImpl
 
     private final List<ListenerModel>        listeners = new ArrayList<ListenerModel>();
     private final List<WorkItemHandlerModel> wihs = new ArrayList<WorkItemHandlerModel>();
+    private final List<ChannelModel>         channels = new ArrayList<ChannelModel>();
 
     private boolean                          isDefault = false;
 
@@ -180,6 +183,21 @@ public class KieSessionModelImpl
     private void addWorkItemHandelerModel(WorkItemHandlerModel wih) {
         wihs.add(wih);
     }
+    
+    public ChannelModel newChannelModel(String name, String type) {
+    	ChannelModelImpl channelModel = new ChannelModelImpl(this, name, type);
+    	channels.add(channelModel);
+    	return channelModel;
+    }
+    
+    public List<ChannelModel> getChannelModels() {
+    	return channels;
+    }
+    
+    private void addChannelModel(ChannelModel channel) {
+    	channels.add(channel);
+    }
+    
 
     public String getConsoleLogger() {
         return consoleLogger;
@@ -245,6 +263,7 @@ public class KieSessionModelImpl
             }
 
             writeObjectList(writer, context, "workItemHandlers", "workItemHandler", kSession.getWorkItemHandlerModels());
+            writeObjectList(writer, context, "channels", "channel", kSession.getChannelModels());
 
             if (!kSession.getListenerModels().isEmpty()) {
                 writer.startNode("listeners");
@@ -303,6 +322,12 @@ public class KieSessionModelImpl
                         for (WorkItemHandlerModelImpl wih : wihs) {
                             wih.setKSession( kSession );
                             kSession.addWorkItemHandelerModel(wih);
+                        }
+                    } else if ( "channels".equals( name ) ) {
+                        List<ChannelModelImpl> channels = readObjectList(reader, context, ChannelModelImpl.class);
+                        for (ChannelModelImpl channel : channels) {
+                            channel.setKSession( kSession );
+                            kSession.addChannelModel(channel);;
                         }
                     } else if ( "consoleLogger".equals( name ) ) {
                         String consoleLogger = reader.getAttribute("name");

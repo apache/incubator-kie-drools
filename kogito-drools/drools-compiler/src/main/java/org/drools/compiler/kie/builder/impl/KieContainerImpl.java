@@ -84,7 +84,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.compiler.kie.util.InjectionHelper.wireListnersAndWIHs;
+import static org.drools.compiler.kie.util.InjectionHelper.wireSessionComponents;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.Drools.isJndiAvailable;
 
@@ -684,7 +684,7 @@ public class KieContainerImpl
 
         KieSession kSession = kBase.newKieSession( conf != null ? conf : getKieSessionConfiguration( kSessionModel ), environment );
         if (isJndiAvailable()) {
-            wireListnersAndWIHs( kSessionModel, kSession );
+            wireSessionComponents( kSessionModel, kSession );
         }
         registerLoggers(kSessionModel, kSession);
 
@@ -733,7 +733,7 @@ public class KieContainerImpl
 
         StatelessKieSession statelessKieSession = kBase.newStatelessKieSession( conf != null ? conf : getKieSessionConfiguration( kSessionModel ) );
         if (isJndiAvailable()) {
-            wireListnersAndWIHs( kSessionModel, statelessKieSession );
+            wireSessionComponents( kSessionModel, statelessKieSession );
         }
         registerLoggers(kSessionModel, statelessKieSession);
         
