@@ -18,12 +18,16 @@ package org.kie.scanner;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.junit.Ignore;
+import org.drools.compiler.kie.builder.impl.MessageImpl;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
@@ -115,4 +119,150 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
         assertEquals( 0, addResults.getRemovedMessages().size() );
     }
 
+    @Test
+    public void checkIncrementalCompilationWithRuleFunctionRule() throws Exception {
+        String rule_1 = "package org.kie.scanner\n" +
+                "rule R1 when\n" +
+                "   String()\n" +
+                "then\n" +
+                "end\n";
+
+        String rule_2 = "package org.kie.scanner\n" +
+                "rule R1 when\n" +
+                "   String()\n" +
+                "then\n" +
+                "   System.out.println(MyFunction());\n" +
+                "end\n";
+
+        String function = "package org.kie.scanner\n" +
+                "function int MyFunction() {\n" +
+                "   return 1;\n" +
+                "}\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write( "src/main/resources/org/kie/scanner/rule.drl", rule_1 );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 0,
+                      kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+
+        kfs.write( "src/main/resources/org/kie/scanner/function.drl", function );
+        IncrementalResults addResults1 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/org/kie/scanner/function.drl" ).build();
+        assertEquals( 0, addResults1.getAddedMessages().size() );
+        assertEquals( 0, addResults1.getRemovedMessages().size() );
+
+        kfs.write( "src/main/resources/org/kie/scanner/rule.drl", rule_2 );
+        IncrementalResults addResults2 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/org/kie/scanner/rule.drl" ).build();
+        assertEquals( 0, addResults2.getAddedMessages().size() );
+        assertEquals( 0, addResults2.getRemovedMessages().size() );
+    }
+
+    @Test
+    public void checkIncrementalCompilationWithRuleThenFunction() throws Exception {
+        String rule = "package org.kie.scanner\n" +
+                "rule R1 when\n" +
+                "   String()\n" +
+                "then\n" +
+                "   System.out.println(MyFunction());\n" +
+                "end\n";
+
+        String function = "package org.kie.scanner\n" +
+                "function int MyFunction() {\n" +
+                "   return 1;\n" +
+                "}\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write( "src/main/resources/org/kie/scanner/rule.drl", rule );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 1,
+                      kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+
+        kfs.write( "src/main/resources/org/kie/scanner/function.drl", function );
+        IncrementalResults addResults1 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/org/kie/scanner/function.drl" ).build();
+        assertEquals( 0, addResults1.getAddedMessages().size() );
+        assertEquals( 1, addResults1.getRemovedMessages().size() );
+    }
+
+    @Test
+    public void checkIncrementalCompilationWithFunctionThenRule() throws Exception {
+        String rule = "package org.kie.scanner\n" +
+                "rule R1 when\n" +
+                "   String()\n" +
+                "then\n" +
+                "   System.out.println(MyFunction());\n" +
+                "end\n";
+
+        String function = "package org.kie.scanner\n" +
+                "function int MyFunction() {\n" +
+                "   return 1;\n" +
+                "}\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write( "src/main/resources/org/kie/scanner/function.drl", function );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 0,
+                      kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+
+        kfs.write( "src/main/resources/org/kie/scanner/rule.drl", rule );
+        IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/org/kie/scanner/rule.drl" ).build();
+        assertEquals( 0, addResults.getAddedMessages().size() );
+        assertEquals( 0, addResults.getRemovedMessages().size() );
+    }
+
+    @Test
+    public void checkIncrementalCompilationWithMultipleKieBases() throws Exception {
+        String rule = "package org.kie.scanner\n" +
+                      "rule R1 when\n" +
+                      "then\n" +
+                      "end\n";
+
+        String invalidRule = "package org.kie.scanner\n" +
+                             "rule R2 when\n" +
+                             "   Cheese()\n" + // missing import
+                             "then\n" +
+                             "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = createKieFileSystemWithTwoKBases(ks);
+
+        kfs.write("src/main/resources/org/kie/scanner/rule.drl",
+                  rule);
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        assertEquals(0,
+                     kieBuilder.getResults().getMessages().size());
+
+        kfs.write("src/main/resources/org/kie/scanner/invalidRule.drl",
+                  invalidRule);
+        IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/org/kie/scanner/invalidRule.drl").build();
+
+        assertEquals(2, addResults.getAddedMessages().size());
+        for ( Message message : addResults.getAddedMessages() ) {
+            assertNotNull( ( (MessageImpl) message ).getKieBaseName());
+        }
+    }
+
+    private KieFileSystem createKieFileSystemWithTwoKBases(final KieServices ks) {
+        final KieModuleModel kproj = ks.newKieModuleModel();
+
+        kproj.newKieBaseModel("default").setDefault(true)
+             .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
+             .setEventProcessingMode( EventProcessingOption.STREAM );
+
+        kproj.newKieBaseModel("kbase1").setDefault(false)
+             .setEqualsBehavior(EqualityBehaviorOption.EQUALITY)
+             .setEventProcessingMode(EventProcessingOption.STREAM);
+
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.writeKModuleXML(kproj.toXML());
+        return kfs;
+    }
 }
