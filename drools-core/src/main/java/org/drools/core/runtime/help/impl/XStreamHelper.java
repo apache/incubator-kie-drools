@@ -19,6 +19,7 @@ package org.drools.core.runtime.help.impl;
 import com.thoughtworks.xstream.XStream;
 import org.drools.core.command.runtime.AdvanceSessionTimeCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.GetSessionTimeCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
@@ -85,6 +86,8 @@ public class XStreamHelper {
                        ExecutionResultImpl.class );
         xstream.alias( "fire-all-rules",
                        FireAllRulesCommand.class );
+        xstream.alias( "dispose",
+                       DisposeCommand.class );
         xstream.alias( "fire-until-halt",
                        FireUntilHaltCommand.class );
         xstream.alias( "query",
