@@ -25,7 +25,9 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 import static org.mockito.Matchers.any;
@@ -48,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -1322,5 +1325,86 @@ public class DMNRuntimeTest {
 
         assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
     }
+    
+    @Test
+    public void testInvokeFunctionSuccess() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources( "Caller.dmn", this.getClass(), "Calling.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_b0a696d6-3d57-4e97-b5d4-b44a63909d67", "Caller" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "My Name", "John Doe" );
+        context.set( "My Number", 3 );
+        context.set( "Call ns", "http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" );
+        context.set( "Call name", "Calling" );
+        context.set( "Invoke decision", "Final Result" );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+            
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Final decision" ), is( "The final decision is: Hello, John Doe your number once double is equal to: 6" ) );
+    }
+
+    @Test
+    public void testInvokeFunctionWrongNamespace() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources( "Caller.dmn", this.getClass(), "Calling.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_b0a696d6-3d57-4e97-b5d4-b44a63909d67", "Caller" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext wrongContext = DMNFactory.newContext();
+        wrongContext.set( "My Name", "John Doe" );
+        wrongContext.set( "My Number", 3 );
+        wrongContext.set("Call ns", "http://www.acme.com/a-wrong-namespace");
+        wrongContext.set( "Call name", "Calling" );
+        wrongContext.set( "Invoke decision", "Final Result" );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, wrongContext );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
+        // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
+        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.getMessages().size(), is( 2 ) );
+    }
+
+    @Test
+    public void testInvokeFunctionWrongDecisionName() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources( "Caller.dmn", this.getClass(), "Calling.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_b0a696d6-3d57-4e97-b5d4-b44a63909d67", "Caller" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext wrongContext = DMNFactory.newContext();
+        wrongContext.set( "My Name", "John Doe" );
+        wrongContext.set( "My Number", 3 );
+        wrongContext.set( "Call ns", "http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" );
+        wrongContext.set( "Call name", "Calling" );
+        wrongContext.set("Invoke decision", "<unexistent decision>");
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, wrongContext );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
+        // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
+        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.getMessages().size(), is( 2 ) );
+
+    }
+
+    @Test
+    public void testInvokeFunctionCallerError() {
+
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources( "Caller.dmn", this.getClass(), "Calling.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_b0a696d6-3d57-4e97-b5d4-b44a63909d67", "Caller" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext wrongContext = DMNFactory.newContext();
+        wrongContext.set( "My Name", "John Doe" );
+        wrongContext.set("My Number", "<not a number>");
+        wrongContext.set( "Call ns", "http://www.trisotech.com/definitions/_88156d21-3acc-43b6-8b81-385caf0bb6ca" );
+        wrongContext.set( "Call name", "Calling" );
+        wrongContext.set( "Invoke decision", "Final Result" );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, wrongContext );
+        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
+        // total of: 2. x1 error in calling external decision, and x1 error in making final decision as it depends on the former.
+        // please notice it will print 4 lines in the log, 2x are the "external invocation" and then 2x are the one by the caller, checked herebelow:
+        assertThat( DMNRuntimeUtil.formatMessages( dmnResult.getMessages() ), dmnResult.getMessages().size(), is( 2 ) );
+    }
+
 }
 
