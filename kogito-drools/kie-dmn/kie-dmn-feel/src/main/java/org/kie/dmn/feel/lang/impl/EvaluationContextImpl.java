@@ -16,21 +16,23 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.util.EvalHelper;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.function.Supplier;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.util.EvalHelper;
-
 public class EvaluationContextImpl implements EvaluationContext {
 
     private final FEELEventListenersManager eventsManager;
     private       Stack<ExecutionFrame> stack;
+    private DMNRuntime dmnRuntime;
 
     public EvaluationContextImpl(FEELEventListenersManager eventsManager) {
         this.eventsManager = eventsManager;
@@ -41,6 +43,11 @@ public class EvaluationContextImpl implements EvaluationContext {
         // for function evaluation
         ExecutionFrameImpl global = new ExecutionFrameImpl( RootExecutionFrame.INSTANCE );
         push( global );
+    }
+
+    public EvaluationContextImpl(FEELEventListenersManager eventsManager, DMNRuntime dmnRuntime) {
+        this(eventsManager);
+        this.dmnRuntime = dmnRuntime;
     }
 
     public void push(ExecutionFrame obj) {
@@ -144,4 +151,9 @@ public class EvaluationContextImpl implements EvaluationContext {
     public Collection<FEELEventListener> getListeners() {
         return eventsManager.getListeners();
     }
+
+    public DMNRuntime getDMNRuntime() {
+        return dmnRuntime;
+    }
+
 }

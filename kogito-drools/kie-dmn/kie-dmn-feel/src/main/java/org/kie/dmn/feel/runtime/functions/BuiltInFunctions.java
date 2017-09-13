@@ -16,9 +16,9 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.feel.runtime.FEELFunction;
-
 import java.util.stream.Stream;
+
+import org.kie.dmn.feel.runtime.FEELFunction;
 
 public class BuiltInFunctions {
 
@@ -69,7 +69,8 @@ public class BuiltInFunctions {
             // additional functions not part of the spec version 1.1
             new NowFunction(),
             new TodayFunction(),
-            new CodeFunction()
+            new CodeFunction(),
+            new InvokeFunction()
     };
 
     public static FEELFunction[] getFunctions() {

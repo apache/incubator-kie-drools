@@ -183,7 +183,7 @@ public class DMNRuntimeImpl
             return;
         }
         try {
-            eventManager.fireBeforeEvaluateBKM( bkm, result );
+            DMNRuntimeEventManagerUtils.fireBeforeEvaluateBKM( eventManager, bkm, result );
             for( DMNNode dep : bkm.getDependencies().values() ) {
                 if ( !checkDependencyValueIsValid(dep, result ) ) {
                     MsgUtil.reportMessage( logger,
@@ -218,7 +218,7 @@ public class DMNRuntimeImpl
                 }
             }
 
-            EvaluatorResult er = bkm.getEvaluator().evaluate( eventManager, result );
+            EvaluatorResult er = bkm.getEvaluator().evaluate( this, result );
             if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                 FEELFunction resultFn = (FEELFunction) er.getResult();
                 // TODO check of the return type will need calculation/inference of function return type.
@@ -235,7 +235,7 @@ public class DMNRuntimeImpl
                                    getIdentifier( bkm ),
                                    t.getMessage() );
         } finally {
-            eventManager.fireAfterEvaluateBKM( bkm, result );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateBKM( eventManager, bkm, result );
         }
     }
 
@@ -253,7 +253,7 @@ public class DMNRuntimeImpl
             }
         }
         try {
-            eventManager.fireBeforeEvaluateDecision( decision, result );
+            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecision( eventManager, decision, result );
             boolean missingInput = false;
             DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById( decision.getId() );
             for( DMNNode dep : decision.getDependencies().values() ) {
@@ -334,7 +334,7 @@ public class DMNRuntimeImpl
                 return false;
             }
             try {
-                EvaluatorResult er = decision.getEvaluator().evaluate( eventManager, result );
+                EvaluatorResult er = decision.getEvaluator().evaluate( this, result );
                 if( er.getResultType() == EvaluatorResult.ResultType.SUCCESS ) {
                     Object value = er.getResult();
                     if( ! decision.getResultType().isCollection() && value instanceof Collection &&
@@ -377,6 +377,7 @@ public class DMNRuntimeImpl
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED );
                 } else {
                     dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.FAILED );
+                    return false;
                 }
             } catch( Throwable t ) {
                 DMNMessage message = MsgUtil.reportMessage( logger,
@@ -393,7 +394,7 @@ public class DMNRuntimeImpl
             }
             return true;
         } finally {
-            eventManager.fireAfterEvaluateDecision( decision, result );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecision( eventManager, decision, result );
         }
     }
 
@@ -419,6 +420,11 @@ public class DMNRuntimeImpl
     @Override
     public DMNContext newContext() {
         return DMNFactory.newContext();
+    }
+
+    @Override
+    public DMNRuntime getRuntime() {
+        return this;
     }
 
 }
