@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core.ast;
 
+import org.drools.core.rule.Function;
+import org.kie.dmn.api.core.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -138,10 +140,11 @@ public class DMNInvocationEvaluator
                 }
             }
 
+
             FEELEventListenersManager listenerMgr = new FEELEventListenersManager();
             listenerMgr.addListener(events::add);
-            
-            EvaluationContextImpl ctx = new EvaluationContextImpl( listenerMgr );
+
+            EvaluationContextImpl ctx = new EvaluationContextImpl(listenerMgr, eventManager.getRuntime());
             invocationResult = function.invokeReflectively( ctx, namedParams );
 
             boolean hasErrors = hasErrors( events, eventManager, result );

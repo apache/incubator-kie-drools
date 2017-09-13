@@ -31,6 +31,7 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerImpl;
+import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -62,12 +63,13 @@ public class DMNDTExpressionEvaluator
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult dmnr) {
+
         final List<FEELEvent> events = new ArrayList<>();
-        DMNRuntimeEventManagerImpl eventManager = (DMNRuntimeEventManagerImpl) dmrem;
+
         DMNResultImpl result = (DMNResultImpl) dmnr;
         EventResults r = null;
         try {
-            eventManager.fireBeforeEvaluateDecisionTable( node.getName(), dt.getName(), result );
+            DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), result );
             List<String> paramNames = dt.getParameterNames().get( 0 );
             Object[] params = new Object[paramNames.size()];
             FEELEventListenersManager listenerMgr = new FEELEventListenersManager();
@@ -91,10 +93,10 @@ public class DMNDTExpressionEvaluator
             // but still wanted to match the enter/exit frame for future maintainability purposes
             ctx.exitFrame();
 
-            r = processEvents( events, eventManager, result );
+            r = processEvents( events, dmrem, result );
             return new EvaluatorResultImpl( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
-            eventManager.fireAfterEvaluateDecisionTable( node.getName(), dt.getName(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
+            DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
         }
     }
 
