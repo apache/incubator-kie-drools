@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.api.marshalling.v1_1;
+package org.kie.dmn.backend.marshalling.v1_1.extensions;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.QNameMap;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
+@XStreamAlias("mykieext")
+public class MyKieExt {
 
-public interface DMNExtensionRegister {
+    @XStreamAsAttribute
+    private String a1;
+    
+    @XStreamAlias("mydroolsext")
+    private MyDroolsExt content;
 
-    public void registerExtensionConverters(XStream xstream);
-
-    default void beforeMarshal(Object o, QNameMap qmap) {
-        // do nothing.
+    public MyDroolsExt getContent() {
+        return content;
     }
+    
+    public void setContent(MyDroolsExt content) {
+        this.content = content;
+    }
+    
 }
