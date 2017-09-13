@@ -34,29 +34,107 @@ public class PMML4DataFactory {
 	}
 	
 	public PMML4DataType newPMML4Data(ParameterInfo parameterInfo) {
+		return newPMML4Data( parameterInfo.getName(), 
+				null, 
+				parameterInfo.getName(), 
+				parameterInfo.getType(), 
+				parameterInfo.getValue(), 
+				defaultWeight, 
+				validFlag, 
+				missingFlag );
+	}
+	
+	public PMML4DataType newPMML4Data(ParameterInfo parameterInfo, Double weight) {
+		return newPMML4Data( parameterInfo.getName(), 
+				null, 
+				parameterInfo.getName(), 
+				parameterInfo.getType(), 
+				parameterInfo.getValue(), 
+				weight, 
+				validFlag, 
+				missingFlag );
+	}
+	
+	public PMML4DataType newPMML4Data(ParameterInfo parameterInfo, Boolean valid, Boolean missing) {
+		return newPMML4Data( parameterInfo.getName(),
+				null,
+				parameterInfo.getName(),
+				parameterInfo.getType(),
+				parameterInfo.getValue(),
+				defaultWeight,
+				valid,
+				missing );
+	}
+	
+	public PMML4DataType newPMML4Data(ParameterInfo parameterInfo, Double weight, Boolean valid, Boolean missing) {
+		return newPMML4Data( parameterInfo.getName(),
+				null,
+				parameterInfo.getName(),
+				parameterInfo.getType(),
+				parameterInfo.getValue(),
+				weight,
+				valid,
+				missing );
+	}
+	
+	public <T> PMML4DataType newPMML4Data(String name, 
+			String context, 
+			String displayName, 
+			Class<T> clazz, 
+			T value, 
+			Double weight, 
+			Boolean valid, 
+			Boolean missing) {
 		PMML4Data data = null;
-		Class<?> parmType = parameterInfo.getType();
-		String parmTypeName = parmType.getName();
-		String parmName = parameterInfo.getName();
+		String parmTypeName = clazz.getName();
 		if (parmTypeName == null || parmTypeName.trim().isEmpty()) {
-			String errMsg = "PMML4DataFactory::Parameter: "+parmName+" - type is null or blank";
+			String errMsg = "PMML4DataFactory::Parameter: "+name+" - type is null or blank";
 			throw new IllegalArgumentException(errMsg);
 		}
 		if (!mapOfKnownTypes.containsKey(parmTypeName)) {
-			String errMsg = "PMML4DataFactory::Parameter: "+parmName+" - is of unregistered type: "+parmTypeName;
+			String errMsg = "PMML4DataFactory::Parameter: "+name+" - is of unregistered type: "+parmTypeName;
 			throw new RuntimeException(errMsg);
 		}
-		Class<? extends PMML4Data> clazz = mapOfKnownTypes.get(parmTypeName);
-		if (clazz != null) {
+		Class<? extends PMML4Data> pmmlDataClass = mapOfKnownTypes.get(parmTypeName);
+		if (pmmlDataClass != null) {
 			try {
-				data = clazz.getDeclaredConstructor(String.class, String.class, String.class, parmType, Double.class, Boolean.class, Boolean.class)
-						.newInstance(parmName,null,parmName,parameterInfo.getValue(),defaultWeight,validFlag,missingFlag);
+				data = pmmlDataClass.getDeclaredConstructor(String.class, String.class, String.class, clazz, Double.class, Boolean.class, Boolean.class)
+						.newInstance(name,context,name,value,weight,valid,missing);
 			} catch (Exception rx) {
-				String errMsg = "PMML4DataFactory::Unable create data object from ParameterInfo::Parameter: "+parmName;
+				String errMsg = "PMML4DataFactory::Unable create data object from ParameterInfo::Parameter: "+name;
 				throw new RuntimeException(errMsg,rx);
 			}
 		}
 		return data;
+	}
+	
+	public PMML4DataType copy(PMML4Data source) {
+		PMML4Data data = null;
+		Class<?> srcValueClass = source.getValueClass();
+		if (srcValueClass == null) {
+			String errMsg = "PMML4DataFactory::Copying "+source.getName()+" - Unable to determine the class of the source's value";
+			throw new RuntimeException(errMsg);
+		}
+		String className = source.getValueClass().getName();
+		if (!mapOfKnownTypes.containsKey(className)) {
+			String errMsg = "PMML4DataFactory::Copying "+source.getName()+" - value is of unregistered type: "+className;
+			throw new RuntimeException(errMsg);
+		}
+		Class<? extends PMML4Data> pmmlDataClass = mapOfKnownTypes.get(className);
+		if (pmmlDataClass != null) {
+			try {
+				data = pmmlDataClass.getDeclaredConstructor(String.class, String.class, String.class, srcValueClass, Double.class, Boolean.class, Boolean.class)
+						.newInstance(source.getName(), source.getContext(), source.getDisplayValue(), source.getValue(), source.getWeight(), source.isValid(), source.isMissing());
+			} catch (Exception rx) {
+				String errMsg = "PMML4DataFactory::Copying - Unable to create copy from source "+source.getName();
+				throw new RuntimeException(errMsg, rx);
+			}
+		}
+		return data;
+	}
+	
+	public PMML4Placeholder getPlaceholder(String name, String context) {
+		return new PMML4Placeholder(name, context);
 	}
 	
 	public Boolean getValidFlag() {

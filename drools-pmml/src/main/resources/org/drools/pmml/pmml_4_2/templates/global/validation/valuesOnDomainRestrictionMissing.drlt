@@ -23,6 +23,23 @@
       */
 }
 @declare{'valuesOnDomainRestrictionMissingRule'}
+rule "Missing_PMML4Data_Values_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+dialect "mvel"
+no-loop
+salience 99
+when
+   @in : PMML4Data( capitalizedName == "@{name}", $val : value, missing == false, placeholder == false,
+          @if{ context != null } context == @{format("string",context)}, @end{}
+          @foreach{ v : vals } value == @{v} @end{' || '}
+          )
+then
+   delete( $in );
+   $in.setMissing( true );
+   insert( $in );
+end
+
+
 rule "Missing_Values_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 dialect "mvel"

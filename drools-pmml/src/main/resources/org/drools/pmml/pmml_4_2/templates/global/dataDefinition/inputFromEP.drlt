@@ -53,7 +53,7 @@ when
    not PMML4Data( name == $pi.name, value == $value, context == null )
 then
    PMML4DataFactory factory = PMML4DataFactory.get();
-   PMML4DataType input = factory.newPMML4Data($pi);
+   PMML4DataType input = factory.newPMML4Data($pi,@{notRestricted},false);
    insert( input );
 end
 

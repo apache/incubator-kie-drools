@@ -27,6 +27,21 @@
 
 
 @foreach{ fieldName : fields.keySet() }
+
+rule "Bind_Scorecard_PMML4Data_@{name}_@{fieldName}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+when
+   $in : PMML4Data( capitalizedName == "@{ compactUpperCase(fieldName) }", context == "@{name}", 
+                    placeholder == false, missing == true || valid == true, $m : missing, $v : value )
+   $sc : @{name}ScoreCardData( ( m@{ compactUpperCase( fieldName ) } == true && != $m )
+                               || v@{ compactUpperCase( fieldName ) } != $v )
+then
+   modify( $sc ) {
+      setM@{ compactUpperCase( fieldName ) }( $m ),
+      setV@{ compactUpperCase( fieldName ) }( (@{ mapDatatype(fields[fieldName], true) })$v);
+   }
+end
+
 rule "Bind_Scorecard_@{name}_@{fieldName}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when

@@ -27,6 +27,17 @@
 
 
 @declare{'miningFieldRule'}
+
+rule miningPmml4Data_@{model}_@{name}
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+when
+   $src: PMML4Data( capitalizedName == "@{name}", $m : missing, $v : valid, $x : value, context == null, placeholder == false )
+then
+   PMML4Data data = (PMML4Data)PMML4DataFactory.get().copy($src);
+   data.setContext(@{format("string",model)});
+   insertLogical(data);
+end;
+
 rule "miningField_@{model}_@{name}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
@@ -39,6 +50,18 @@ then
     x.setName(@{format("string",name)});
     x.setContext(@{format("string",model)});
   insertLogical(x);
+end
+
+rule "InitAsMissing_PMML4Data_@{model}_@{name}"
+@includeNamed{ 'rule_meta.drlt'; attributes=attributes }
+salience 1000
+when
+   ModelMarker( modelName == "@{model}", enabled == true )
+   not PMML4Data( capitalizedName == "@{name}", context == null )
+then
+   System.out.println("Create a placeholder!");
+   PMML4DataType data = PMML4DataFactory.get().getPlaceholder("@{name}","@{model}");
+   insertLogical( data );
 end
 
 

@@ -17,28 +17,23 @@
 package org.drools.pmml.pmml_4_2.predictive.models;
 
 
-import org.dmg.pmml.pmml_4_2.descr.Scorecard;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+
 import org.drools.pmml.pmml_4_2.DroolsAbstractPMMLTest;
-import org.drools.pmml.pmml_4_2.PMML4Helper;
 import org.drools.pmml.pmml_4_2.model.PMMLRequestData;
 import org.drools.pmml.pmml_4_2.model.ScoreCard;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieServices;
-import org.kie.api.definition.type.FactType;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class ScorecardTest extends DroolsAbstractPMMLTest {
 

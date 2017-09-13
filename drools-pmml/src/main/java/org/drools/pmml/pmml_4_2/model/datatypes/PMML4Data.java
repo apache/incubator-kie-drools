@@ -9,9 +9,16 @@ public abstract class PMML4Data<T> implements PMML4DataType {
 	private String name;
 	private boolean valid = false;
 	private boolean missing = false;
+	private boolean placeholder = false;
 	private String context;
 	private String displayName;
 	private Double weight = 1.0;
+	
+	protected PMML4Data(String name, String context, boolean placeholder) {
+		this.name = name;
+		this.context = context;
+		this.placeholder = placeholder;
+	}
 	
 	protected PMML4Data(String name, String context, String displayName, T value) {
 		this.name = name;
@@ -83,6 +90,15 @@ public abstract class PMML4Data<T> implements PMML4DataType {
 	public void setWeight(Double weight) {
 		this.weight = weight;
 	}
+	public Class<?> getValueClass() {
+		return (value != null) ? value.getClass() : null;
+	}
+	public boolean isPlaceholder() {
+		return this.placeholder;
+	}
+	public void setPlaceholder(Boolean placeholder) {
+		this.placeholder = placeholder;
+	}
 
 	@Override
 	public int hashCode() {
@@ -95,6 +111,7 @@ public abstract class PMML4Data<T> implements PMML4DataType {
 		result = prime * result + (valid ? 1231 : 1237);
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		result = prime * result + ((weight == null) ? 0 : weight.hashCode());
+		result = prime * result + (placeholder ? 1231 : 1237);
 		return result;
 	}
 
@@ -135,6 +152,9 @@ public abstract class PMML4Data<T> implements PMML4DataType {
 			return false;
 		}
 		if (valid != other.valid) {
+			return false;
+		}
+		if (placeholder != other.placeholder) {
 			return false;
 		}
 		if (value == null) {
