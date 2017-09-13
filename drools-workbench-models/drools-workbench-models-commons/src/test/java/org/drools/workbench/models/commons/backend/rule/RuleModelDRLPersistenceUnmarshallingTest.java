@@ -3667,6 +3667,32 @@ public class RuleModelDRLPersistenceUnmarshallingTest extends BaseRuleModelTest 
                      dslComplexVariableValue.getId());
     }
 
+    /*
+     * https://issues.jboss.org/browse/GUVNOR-3451
+     */
+    @Test
+    public void testDSLWithMultilineBrackets() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "> Applicant(\n"
+                + "> )\n"
+                + "then\n"
+                + "end\n";
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
+                                                                                        new ArrayList<String>(),
+                                                                                        dmo,
+                                                                                        "");
+
+        assertNotNull(m);
+
+        assertTrue(m.lhs[0] instanceof FactPattern);
+        FactPattern pattern = (FactPattern) m.lhs[0];
+        assertEquals("Applicant",
+                     pattern.getFactType());
+
+    }
+
     @Test
     public void testFunctionCalls() {
         String drl =
