@@ -16,6 +16,8 @@
 
 package org.kie.dmn.api.core.event;
 
+import org.kie.dmn.api.core.DMNRuntime;
+
 import java.util.Set;
 
 /**
@@ -43,5 +45,7 @@ public interface DMNRuntimeEventManager {
      * @return set of all registered listeners
      */
     Set<DMNRuntimeEventListener> getListeners();
+
+    DMNRuntime getRuntime();
 
 }
