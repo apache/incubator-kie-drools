@@ -51,7 +51,7 @@ public abstract class AbstractClientArquillianTest {
         try {
             file = file.getCanonicalFile();
         } catch (IOException e) {
-            throw new IllegalStateException("Could not get cannonical file for file (" + file + ").", e);
+            throw new IllegalStateException("Could not get canonical file for file (" + file + ").", e);
         }
         if (!file.getParentFile().getName().equals(POM_DIRECTORY_NAME)) {
             throw new IllegalStateException("The file (" + file + ") is not correct.\n"
