@@ -70,10 +70,12 @@ public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
     @Override
     public void initPeer( BaseLeftTuple original, LeftTupleSink sink ) {
         super.initPeer( original, sink );
-        ReactiveFromNodeLeftTuple reactiveTuple = ( (ReactiveFromNodeLeftTuple) original );
-        objects = reactiveTuple.objects;
-        peerIndex = reactiveTuple.peerIndex+1;
-        hash = Arrays.hashCode( objects ) + peerIndex;
+        if ( original instanceof ReactiveFromNodeLeftTuple ) {
+            ReactiveFromNodeLeftTuple reactiveTuple = ( (ReactiveFromNodeLeftTuple) original );
+            objects = reactiveTuple.objects;
+            peerIndex = reactiveTuple.peerIndex + 1;
+            hash = Arrays.hashCode( objects ) + peerIndex;
+        }
     }
 
     @Override

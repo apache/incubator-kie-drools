@@ -1223,4 +1223,39 @@ public class OOPathTest {
         assertEquals( "Found", list.get(0) );
         list.clear();
     }
+
+    @Test
+    public void testNotReactivePeer() {
+        // DROOLS-1727
+        String drl1 =
+                "import org.drools.compiler.oopath.model.*;\n" +
+                "global java.util.List list\n\n" +
+                "rule R1 when\n" +
+                "  not String()\n" +
+                "  $a : Man( name == \"Mario\" )\n" +
+                "then\n" +
+                "  list.add(\"Found\");\n" +
+                "  insert($a.getName());\n" +
+                "end\n\n" +
+                "rule R2 when\n" +
+                "  not String()\n" +
+                "  $a : Man( $c: /children[age == 6], name == \"Mario\" )\n" +
+                "then\n" +
+                "  list.add(\"Found\");\n" +
+                "  insert($a.getName());\n" +
+                "end\n\n";
+
+        KieSession ksession = new KieHelper().addContent( drl1, ResourceType.DRL ).build().newKieSession();
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        Man mario = new Man("Mario", 40);
+        mario.addChild( new Child("Sofia", 6) );
+
+        ksession.insert( mario );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+    }
 }
