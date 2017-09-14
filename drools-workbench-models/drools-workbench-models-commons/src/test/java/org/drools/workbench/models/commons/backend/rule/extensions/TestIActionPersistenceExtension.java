@@ -18,19 +18,9 @@ package org.drools.workbench.models.commons.backend.rule.extensions;
 
 import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.commons.backend.rule.actions.TestIAction;
-import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.PluggableIAction;
 
 public class TestIActionPersistenceExtension implements RuleModelIActionPersistenceExtension {
-
-    @Override
-    public boolean accept(final IAction iAction) {
-        return iAction instanceof TestIAction;
-    }
-
-    @Override
-    public String marshal(final IAction iAction) {
-        return "testIAction();";
-    }
 
     @Override
     public boolean accept(final String iActionString) {
@@ -38,7 +28,7 @@ public class TestIActionPersistenceExtension implements RuleModelIActionPersiste
     }
 
     @Override
-    public IAction unmarshal(final String iActionString) {
+    public PluggableIAction unmarshal(final String iActionString) {
         return new TestIAction();
     }
 }
