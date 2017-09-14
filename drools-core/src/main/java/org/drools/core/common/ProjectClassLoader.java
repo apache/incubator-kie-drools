@@ -206,7 +206,7 @@ public class ProjectClassLoader extends ClassLoader {
         return clazz;
     }
 
-    public synchronized Class<?> defineClass(String name, byte[] bytecode) {
+    public Class<?> defineClass(String name, byte[] bytecode) {
         return defineClass(name, convertClassToResourcePath(name), bytecode);
     }
 
