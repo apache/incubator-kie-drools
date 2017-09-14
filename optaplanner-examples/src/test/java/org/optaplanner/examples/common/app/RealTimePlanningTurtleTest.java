@@ -56,9 +56,7 @@ public abstract class RealTimePlanningTurtleTest<Solution_> extends AbstractTurt
         SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.setDaemon(true);
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setMillisecondsSpentLimit(SPENT_LIMIT);
-        solverConfig.setTerminationConfig(terminationConfig);
+        solverConfig.setTerminationConfig(new TerminationConfig().withMillisecondsSpentLimit(SPENT_LIMIT));
         return solverFactory;
     }
 

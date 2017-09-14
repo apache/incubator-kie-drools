@@ -89,9 +89,8 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
             }
             problemBenchmarksConfig.setInputSolutionFileList(
                     Collections.singletonList(unsolvedDataFile));
-            TerminationConfig terminationConfig = new TerminationConfig();
-            terminationConfig.setSecondsSpentLimit(maximumSecondsSpentPerSolverBenchmark);
-            inheritedSolverBenchmarkConfig.getSolverConfig().setTerminationConfig(terminationConfig);
+            inheritedSolverBenchmarkConfig.getSolverConfig().setTerminationConfig(
+                    new TerminationConfig().withSecondsSpentLimit(maximumSecondsSpentPerSolverBenchmark));
         }
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
             ProblemBenchmarksConfig problemBenchmarksConfig = solverBenchmarkConfig.getProblemBenchmarksConfig();

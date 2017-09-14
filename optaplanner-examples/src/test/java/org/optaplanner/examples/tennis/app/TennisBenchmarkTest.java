@@ -35,9 +35,8 @@ public class TennisBenchmarkTest extends LoggingTest {
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(
                 solverFactory, new File("target/test/data/tennis"));
 
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setScoreCalculationCountLimit(1000L);
-        benchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getSolverConfig().setTerminationConfig(terminationConfig);
+        benchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getSolverConfig()
+                .setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(1000L));
 
         TennisSolution problem = new TennisGenerator().createTennisSolution();
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark(problem);

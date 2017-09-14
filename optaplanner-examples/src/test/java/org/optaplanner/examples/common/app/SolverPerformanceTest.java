@@ -69,9 +69,8 @@ public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
     protected SolverFactory<Solution_> buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
         SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setBestScoreLimit(bestScoreLimitString);
-        solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
+        solverFactory.getSolverConfig().setTerminationConfig(
+                new TerminationConfig().withBestScoreLimit(bestScoreLimitString));
         return solverFactory;
     }
 

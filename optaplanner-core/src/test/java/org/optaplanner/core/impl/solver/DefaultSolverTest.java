@@ -95,9 +95,8 @@ public class DefaultSolverTest {
         SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataSolution.class, TestdataEntity.class);
         ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setStepCountLimit(2); // Run only 2 steps, although 5 are needed to initialize all entities
-        phaseConfig.setTerminationConfig(terminationConfig);
+        // Run only 2 steps, although 5 are needed to initialize all entities
+        phaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(2));
         solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 

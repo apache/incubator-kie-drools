@@ -71,8 +71,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
         localSearchPhaseConfig.getForagerConfig().setBreakTieRandomly(false);
         localSearchPhaseConfig.setMoveSelectorConfig(new ChangeMoveSelectorConfig());
         localSearchPhaseConfig.getMoveSelectorConfig().setSelectionOrder(SelectionOrder.ORIGINAL);
-        localSearchPhaseConfig.setTerminationConfig(new TerminationConfig());
-        localSearchPhaseConfig.getTerminationConfig().setStepCountLimit(20);
+        localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(20));
         solverConfig.getPhaseConfigList().set(1, localSearchPhaseConfig);
 
         NQueensStepTracker listener = new NQueensStepTracker();

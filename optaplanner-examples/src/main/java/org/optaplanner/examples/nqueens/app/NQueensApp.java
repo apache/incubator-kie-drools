@@ -93,9 +93,7 @@ public class NQueensApp extends CommonApp<NQueens> {
                 Arrays.asList("org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl"));
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setBestScoreLimit("0");
-        solverConfig.setTerminationConfig(terminationConfig);
+        solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreLimit("0"));
         List<PhaseConfig> phaseConfigList = new ArrayList<>();
 
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();

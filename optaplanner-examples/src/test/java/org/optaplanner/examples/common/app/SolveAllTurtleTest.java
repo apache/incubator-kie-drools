@@ -75,9 +75,8 @@ public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
 
     protected SolverFactory<Solution_> buildSolverFactory() {
         SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
-        TerminationConfig terminationConfig = new TerminationConfig();
         // buildAndSolve() fills in minutesSpentLimit
-        solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
+        solverFactory.getSolverConfig().setTerminationConfig(new TerminationConfig());
         return solverFactory;
     }
 

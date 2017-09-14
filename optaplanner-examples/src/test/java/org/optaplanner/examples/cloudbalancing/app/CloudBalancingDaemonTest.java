@@ -126,9 +126,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
                 CloudBalancingApp.SOLVER_CONFIG);
         solverFactory.getSolverConfig().setDaemon(true);
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setBestScoreFeasible(true);
-        solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
+        solverFactory.getSolverConfig().setTerminationConfig(new TerminationConfig().withBestScoreFeasible(true));
         return solverFactory.buildSolver();
     }
 

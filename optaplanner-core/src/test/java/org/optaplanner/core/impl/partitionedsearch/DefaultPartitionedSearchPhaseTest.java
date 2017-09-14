@@ -72,9 +72,7 @@ public class DefaultPartitionedSearchPhaseTest {
         solverConfig.setPhaseConfigList(Arrays.asList(partitionedSearchPhaseConfig));
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setStepCountLimit(1);
-        localSearchPhaseConfig.setTerminationConfig(terminationConfig);
+        localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(1));
         partitionedSearchPhaseConfig.setPhaseConfigList(
                 Arrays.asList(constructionHeuristicPhaseConfig, localSearchPhaseConfig));
         return solverFactory;

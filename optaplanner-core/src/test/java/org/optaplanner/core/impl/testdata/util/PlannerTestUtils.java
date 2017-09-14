@@ -67,9 +67,7 @@ public class PlannerTestUtils {
         List<PhaseConfig> phaseConfigList = new ArrayList<>(2);
         phaseConfigList.add(new ConstructionHeuristicPhaseConfig());
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
-        TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setStepCountLimit(TERMINATION_STEP_COUNT_LIMIT);
-        localSearchPhaseConfig.setTerminationConfig(terminationConfig);
+        localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(TERMINATION_STEP_COUNT_LIMIT));
         phaseConfigList.add(localSearchPhaseConfig);
         solverConfig.setPhaseConfigList(phaseConfigList);
         return solverFactory;
