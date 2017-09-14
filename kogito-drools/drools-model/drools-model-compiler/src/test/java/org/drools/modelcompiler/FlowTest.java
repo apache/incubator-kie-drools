@@ -259,24 +259,6 @@ public class FlowTest {
                 .then( on(resultSum).execute(sum -> result.value = "total = " + sum) );
 
 
-        // TODO: Remove this
-        final Object parsed = JavaParser.parseBlock("{" +
-                "        Rule rule = rule(\"accumulate\")\n" +
-                "                .view(\n" +
-                "                        accumulate(expr(person, p -> p.getName().startsWith(\"M\")),\n" +
-                "                                   sum((Person p) -> p.getAge()).as(resultSum))\n" +
-                "                     )\n" +
-                "                .then( on(resultSum).execute(sum -> result.value = \"total = \" + sum) );" +
-                "}" +
-                "");
-
-
-        System.out.println("\n\n\n\n\n\n\n");
-        System.out.println("parsed = " + parsed);
-        System.out.println("\n\n\n\n\n\n\n");
-
-
-
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
 
