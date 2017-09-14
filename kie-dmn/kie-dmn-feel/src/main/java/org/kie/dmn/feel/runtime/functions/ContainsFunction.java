@@ -34,6 +34,6 @@ public class ContainsFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "match", "cannot be null"));
         }
         
-        return FEELFnResult.ofResult( string.indexOf( match ) >= 0 );
+        return FEELFnResult.ofResult(string.contains(match));
     }
 }

@@ -75,6 +75,19 @@ public class FEELNumberCoercionTest {
         assertThat( evaluate(" x.y ", var("x", new HashMap(){{ put("y", 1.01d); }} )), is( getBigDecimalOrNull( 1.01d ) ) );
         assertThat( evaluate("ceiling( x.y )", var("x", new HashMap(){{ put("y", 1.01d); }} )), is( getBigDecimalOrNull( 2d ) ) );
     }
-    
-    
+
+    @Test
+    public void testMethodGetBigDecimalOrNull() {
+        assertThat( getBigDecimalOrNull((short) 1), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull((byte) 1), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull(1), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull(1L), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull(1f), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull(1.1f), is(BigDecimal.valueOf(1.1)) );
+        assertThat( getBigDecimalOrNull(1d), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull(1.1d), is(BigDecimal.valueOf(1.1)) );
+        assertThat( getBigDecimalOrNull("1"), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull("1.1"), is(BigDecimal.valueOf(1.1)) );
+        assertThat( getBigDecimalOrNull("1.1000000"), is(BigDecimal.valueOf(1.1).setScale(7, BigDecimal.ROUND_HALF_EVEN)) );
+    }
 }

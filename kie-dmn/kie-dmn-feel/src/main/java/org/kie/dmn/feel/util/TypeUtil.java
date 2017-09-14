@@ -20,11 +20,19 @@ import java.util.Collection;
 
 public final class TypeUtil {
 
+    public static boolean areCollectionItemsComparable(final Collection collection) {
+        if (collection.isEmpty()) {
+            return true;
+        } else {
+            return isCollectionTypeHomogenous(collection, collection.iterator().next().getClass());
+        }
+    }
+
     public static boolean isCollectionTypeHomogenous(final Collection collection, final Class expectedType) {
         for (final Object object : collection) {
             if (object == null) {
                 continue;
-            } else if (!expectedType.isInstance(object)) {
+            } else if (!expectedType.isAssignableFrom(object.getClass())) {
                 return false;
             }
         }

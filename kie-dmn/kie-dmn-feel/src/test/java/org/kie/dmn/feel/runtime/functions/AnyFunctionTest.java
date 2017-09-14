@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,7 +86,7 @@ public class AnyFunctionTest {
 
     @Test
     public void invokeListParamEmptyList() {
-        FunctionTestUtil.assertResult(anyFunction.invoke(new ArrayList()), false);
+        FunctionTestUtil.assertResult(anyFunction.invoke(Collections.emptyList()), false);
     }
 
     @Test

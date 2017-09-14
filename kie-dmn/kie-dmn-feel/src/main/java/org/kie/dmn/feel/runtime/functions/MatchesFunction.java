@@ -48,8 +48,8 @@ public class MatchesFunction
             return FEELFnResult.ofResult( m.find() );
         } catch ( PatternSyntaxException e ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "is invalid and can not be compiled", e ) );
-        } catch ( Throwable t ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "is invalid and can not be compiled", t ) );
+        } catch ( IllegalArgumentException t ) {
+            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "flags", "contains unknown flags", t ) );
         }
     }
 
