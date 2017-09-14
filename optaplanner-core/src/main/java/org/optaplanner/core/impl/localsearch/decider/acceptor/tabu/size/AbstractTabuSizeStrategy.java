@@ -20,10 +20,9 @@ public abstract class AbstractTabuSizeStrategy implements TabuSizeStrategy {
 
     protected int protectTabuSizeCornerCases(int totalSize, int tabuSize) {
         if (tabuSize < 1) {
-            // At least one object should be tabu
+            // At least one object should be tabu, even if totalSize is 0
             tabuSize = 1;
-        }
-        if (tabuSize > totalSize - 1) {
+        } else if (tabuSize > totalSize - 1) {
             // At least one object should not be tabu
             tabuSize = totalSize - 1;
         }
