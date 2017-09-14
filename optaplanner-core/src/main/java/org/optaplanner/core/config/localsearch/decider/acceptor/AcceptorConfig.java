@@ -234,6 +234,110 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
     }
 
     // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public AcceptorConfig withAcceptorClassList(List<Class<? extends Acceptor>> acceptorClassList) {
+        this.acceptorClassList = acceptorClassList;
+        return this;
+    }
+
+    public AcceptorConfig withAcceptorTypeList(List<AcceptorType> acceptorTypeList) {
+        this.acceptorTypeList = acceptorTypeList;
+        return this;
+    }
+
+    public AcceptorConfig withEntityTabuSize(Integer entityTabuSize) {
+        this.entityTabuSize = entityTabuSize;
+        return this;
+    }
+
+    public AcceptorConfig withEntityTabuRatio(Double entityTabuRatio) {
+        this.entityTabuRatio = entityTabuRatio;
+        return this;
+    }
+
+    public AcceptorConfig withFadingEntityTabuSize(Integer fadingEntityTabuSize) {
+        this.fadingEntityTabuSize = fadingEntityTabuSize;
+        return this;
+    }
+
+    public AcceptorConfig withFadingEntityTabuRatio(Double fadingEntityTabuRatio) {
+        this.fadingEntityTabuRatio = fadingEntityTabuRatio;
+        return this;
+    }
+
+    public AcceptorConfig withValueTabuSize(Integer valueTabuSize) {
+        this.valueTabuSize = valueTabuSize;
+        return this;
+    }
+
+    public AcceptorConfig withValueTabuRatio(Double valueTabuRatio) {
+        this.valueTabuRatio = valueTabuRatio;
+        return this;
+    }
+
+    public AcceptorConfig withFadingValueTabuSize(Integer fadingValueTabuSize) {
+        this.fadingValueTabuSize = fadingValueTabuSize;
+        return this;
+    }
+
+    public AcceptorConfig withFadingValueTabuRatio(Double fadingValueTabuRatio) {
+        this.fadingValueTabuRatio = fadingValueTabuRatio;
+        return this;
+    }
+
+    public AcceptorConfig withMoveTabuSize(Integer moveTabuSize) {
+        this.moveTabuSize = moveTabuSize;
+        return this;
+    }
+
+    public AcceptorConfig withFadingMoveTabuSize(Integer fadingMoveTabuSize) {
+        this.fadingMoveTabuSize = fadingMoveTabuSize;
+        return this;
+    }
+
+    public AcceptorConfig withUndoMoveTabuSize(Integer undoMoveTabuSize) {
+        this.undoMoveTabuSize = undoMoveTabuSize;
+        return this;
+    }
+
+    public AcceptorConfig withFadingUndoMoveTabuSize(Integer fadingUndoMoveTabuSize) {
+        this.fadingUndoMoveTabuSize = fadingUndoMoveTabuSize;
+        return this;
+    }
+
+    public AcceptorConfig withSolutionTabuSize(Integer solutionTabuSize) {
+        this.solutionTabuSize = solutionTabuSize;
+        return this;
+    }
+
+    public AcceptorConfig withFadingSolutionTabuSize(Integer fadingSolutionTabuSize) {
+        this.fadingSolutionTabuSize = fadingSolutionTabuSize;
+        return this;
+    }
+
+    public AcceptorConfig withSimulatedAnnealingStartingTemperature(String simulatedAnnealingStartingTemperature) {
+        this.simulatedAnnealingStartingTemperature = simulatedAnnealingStartingTemperature;
+        return this;
+    }
+
+    public AcceptorConfig withLateAcceptanceSize(Integer lateAcceptanceSize) {
+        this.lateAcceptanceSize = lateAcceptanceSize;
+        return this;
+    }
+
+    public AcceptorConfig withStepCountingHillClimbingSize(Integer stepCountingHillClimbingSize) {
+        this.stepCountingHillClimbingSize = stepCountingHillClimbingSize;
+        return this;
+    }
+
+    public AcceptorConfig withStepCountingHillClimbingType(StepCountingHillClimbingType stepCountingHillClimbingType) {
+        this.stepCountingHillClimbingType = stepCountingHillClimbingType;
+        return this;
+    }
+
+    // ************************************************************************
     // Builder methods
     // ************************************************************************
 
