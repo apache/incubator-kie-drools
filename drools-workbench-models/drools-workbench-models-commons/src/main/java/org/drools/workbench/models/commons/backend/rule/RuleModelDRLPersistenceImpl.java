@@ -109,6 +109,7 @@ import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.PluggableIAction;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -179,22 +180,10 @@ public class RuleModelDRLPersistenceImpl
      */
     @Override
     public String marshal(final RuleModel model) {
-        return marshalRule(model,
-                           Collections.emptyList());
+        return marshalRule(model);
     }
 
-    @Override
-    public String marshal(final RuleModel model,
-                          final Collection<RuleModelIActionPersistenceExtension> extensions) {
-        PortablePreconditions.checkNotNull("extensions",
-                                           extensions);
-
-        return marshalRule(model,
-                           extensions);
-    }
-
-    protected String marshalRule(final RuleModel model,
-                                 final Collection<RuleModelIActionPersistenceExtension> extensions) {
+    protected String marshalRule(final RuleModel model) {
         boolean isDSLEnhanced = model.hasDSLSentences();
         bindingsPatterns = new HashMap<String, IFactPattern>();
         bindingsFields = new HashMap<String, FieldConstraint>();
@@ -222,8 +211,7 @@ public class RuleModelDRLPersistenceImpl
         this.marshalRHS(buf,
                         model,
                         isDSLEnhanced,
-                        new RHSGeneratorContextFactory(),
-                        extensions);
+                        new RHSGeneratorContextFactory());
         this.marshalFooter(buf);
         return buf.toString();
     }
@@ -388,8 +376,7 @@ public class RuleModelDRLPersistenceImpl
     protected void marshalRHS(final StringBuilder buf,
                               final RuleModel model,
                               final boolean isDSLEnhanced,
-                              final RHSGeneratorContextFactory generatorContextFactory,
-                              final Collection<RuleModelIActionPersistenceExtension> extensions) {
+                              final RHSGeneratorContextFactory generatorContextFactory) {
         String indentation = "\t\t";
         if (model.rhs != null) {
             //Add boiler-plate for actions operating on Dates
@@ -412,8 +399,7 @@ public class RuleModelDRLPersistenceImpl
             RHSActionVisitor actionVisitor = getRHSActionVisitor(isDSLEnhanced,
                                                                  buf,
                                                                  indentation,
-                                                                 generatorContextFactory,
-                                                                 extensions);
+                                                                 generatorContextFactory);
 
             //Reconcile ActionSetField and ActionUpdateField calls
             final List<IAction> actions = new ArrayList<IAction>();
@@ -450,16 +436,13 @@ public class RuleModelDRLPersistenceImpl
             }
 
             for (IAction action : model.rhs) {
-                List<RuleModelIActionPersistenceExtension> matchingExtensions = extensions.stream().filter(e -> e.accept(action)).collect(Collectors.toList());
-                if (matchingExtensions.isEmpty()) {
-                    actionVisitor.visit(action);
-                } else if (matchingExtensions.size() > 1) {
-                    throw new RuleModelDRLPersistenceException("Ambiguous RuleModelIActionPersistenceExtension implementations (" + matchingExtensions + ") found for action " + action);
-                } else {
-                    IAction processedIAction = actionVisitor.preProcessIActionForExtensions(action);
+                if (action instanceof PluggableIAction) {
+                    PluggableIAction processedIAction = (PluggableIAction) actionVisitor.preProcessIActionForExtensions(action);
                     buf.append(indentation)
-                            .append(matchingExtensions.get(0).marshal(processedIAction))
-                            .append("\n");
+                            .append(processedIAction.getStringRepresentation())
+                            .append(";\n");
+                } else {
+                    actionVisitor.visit(action);
                 }
             }
         }
@@ -523,14 +506,12 @@ public class RuleModelDRLPersistenceImpl
     protected RHSActionVisitor getRHSActionVisitor(final boolean isDSLEnhanced,
                                                    final StringBuilder buf,
                                                    final String indentation,
-                                                   final RHSGeneratorContextFactory generatorContextFactory,
-                                                   final Collection<RuleModelIActionPersistenceExtension> extensions) {
+                                                   final RHSGeneratorContextFactory generatorContextFactory) {
         return new RHSActionVisitor(isDSLEnhanced,
                                     bindingsPatterns,
                                     bindingsFields,
                                     constraintValueBuilder,
                                     generatorContextFactory,
-                                    extensions,
                                     buf,
                                     indentation);
     }
@@ -1418,7 +1399,6 @@ public class RuleModelDRLPersistenceImpl
                                 final Map<String, FieldConstraint> bindingsFields,
                                 final DRLConstraintValueBuilder constraintValueBuilder,
                                 final RHSGeneratorContextFactory generatorContextFactory,
-                                final Collection<RuleModelIActionPersistenceExtension> extensions,
                                 final StringBuilder b,
                                 final String indentation) {
             this.isDSLEnhanced = isDSLEnhanced;
@@ -1873,7 +1853,7 @@ public class RuleModelDRLPersistenceImpl
                                 dmo,
                                 extensions);
         } catch (RuleModelDRLPersistenceException e) {
-            throw e;
+            throw new RuntimeException(e);
         } catch (Exception e) {
             log.info("Unable to parse source Drl. Falling back to simple parser. \n" + str);
             return getSimpleRuleModel(str);
@@ -1908,7 +1888,7 @@ public class RuleModelDRLPersistenceImpl
                                 dmo,
                                 extensions);
         } catch (RuleModelDRLPersistenceException e) {
-            throw e;
+            throw new RuntimeException(e);
         } catch (Exception e) {
             log.info("Unable to parse source Drl. Falling back to simple parser. \n" + str);
             return getSimpleRuleModel(str);
@@ -1974,7 +1954,7 @@ public class RuleModelDRLPersistenceImpl
 
     private RuleModel getRuleModel(final ExpandedDRLInfo expandedDRLInfo,
                                    final PackageDataModelOracle dmo,
-                                   final Collection<RuleModelIActionPersistenceExtension> extensions) {
+                                   final Collection<RuleModelIActionPersistenceExtension> extensions) throws RuleModelDRLPersistenceException {
         //De-serialize model
         RuleDescr ruleDescr = parseDrl(expandedDRLInfo);
         RuleModel model = new RuleModel();
@@ -2792,7 +2772,7 @@ public class RuleModelDRLPersistenceImpl
                           final Map<String, String> boundParams,
                           final ExpandedDRLInfo expandedDRLInfo,
                           final PackageDataModelOracle dmo,
-                          final Collection<RuleModelIActionPersistenceExtension> extensions) {
+                          final Collection<RuleModelIActionPersistenceExtension> extensions) throws RuleModelDRLPersistenceException {
         PortableWorkDefinition pwd = null;
         Map<String, List<String>> setStatements = new HashMap<String, List<String>>();
         Map<String, Integer> setStatementsPosition = new HashMap<String, Integer>();
@@ -2814,7 +2794,9 @@ public class RuleModelDRLPersistenceImpl
             } else if (matchingExtensions.size() > 1) {
                 throw new RuleModelDRLPersistenceException("Ambiguous RuleModelIActionPersistenceExtension implementations (" + matchingExtensions + ") found for line " + line);
             } else {
-                m.addRhsItem(matchingExtensions.get(0).unmarshal(line));
+                unmarshalUsingExtension(m,
+                                        matchingExtensions.get(0),
+                                        line);
                 continue;
             }
 
@@ -2829,7 +2811,9 @@ public class RuleModelDRLPersistenceImpl
                     } else if (matchingExtensionsDslLine.size() > 1) {
                         throw new RuleModelDRLPersistenceException("Ambiguous RuleModelIActionPersistenceExtension implementations (" + matchingExtensionsDslLine + ") found for line " + line);
                     } else {
-                        m.addRhsItem(matchingExtensionsDslLine.get(0).unmarshal(dslLine));
+                        unmarshalUsingExtension(m,
+                                                matchingExtensionsDslLine.get(0),
+                                                dslLine);
                     }
 
                     dslLine = expandedDRLInfo.dslStatementsInRhs.get(++lineCounter);
@@ -3070,6 +3054,18 @@ public class RuleModelDRLPersistenceImpl
                                            dslLine));
                 dslLine = expandedDRLInfo.dslStatementsInRhs.get(++lineCounter);
             }
+        }
+    }
+
+    private void unmarshalUsingExtension(final RuleModel ruleModel,
+                                         final RuleModelIActionPersistenceExtension extension,
+                                         final String line) {
+        try {
+            ruleModel.addRhsItem(extension.unmarshal(line));
+        } catch (RuleModelDRLPersistenceException e) {
+            FreeFormLine freeFormLine = new FreeFormLine();
+            freeFormLine.setText(line);
+            ruleModel.addRhsItem(freeFormLine);
         }
     }
 

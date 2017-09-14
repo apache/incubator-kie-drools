@@ -74,7 +74,7 @@ public class RuleModelDRLPersistenceExtensionsTest {
         assertTrue(iAction instanceof TestIAction);
     }
 
-    @Test(expected = RuleModelDRLPersistenceException.class)
+    @Test(expected = RuntimeException.class)
     public void unmarshalWithAmbiguousExtensions() {
         RuleModelDRLPersistenceImpl.getInstance().unmarshal(DRL_RULE,
                                                             Collections.emptyList(),
@@ -108,54 +108,12 @@ public class RuleModelDRLPersistenceExtensionsTest {
         assertTrue(iAction instanceof TestIAction);
     }
 
-    @Test(expected = RuleModelDRLPersistenceException.class)
+    @Test(expected = RuntimeException.class)
     public void unmarshalDSLWithAmbiguousExtensions() {
         RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(DRL_RULE,
                                                                     Collections.emptyList(),
                                                                     new PackageDataModelOracleImpl(),
                                                                     Arrays.asList(new TestIActionPersistenceExtension(),
                                                                                   new TestIActionPersistenceExtensionCopy()));
-    }
-
-    @Test
-    public void marshalWithoutExtensions() {
-        RuleModel ruleModel = new RuleModel();
-        ruleModel.name = "TestIAction rule";
-        ruleModel.addRhsItem(new TestIAction());
-
-        String marshaledString = RuleModelDRLPersistenceImpl.getInstance().marshal(ruleModel);
-
-        String expectedString = "" +
-                "rule \"TestIAction rule\"\n" +
-                "\tdialect \"mvel\"\n" +
-                "\twhen\n" +
-                "\tthen\n" +
-                "end\n";
-        assertEquals(expectedString,
-                     marshaledString);
-    }
-
-    @Test
-    public void marshalWithExtensions() {
-        RuleModel ruleModel = new RuleModel();
-        ruleModel.name = "TestIAction rule";
-        ruleModel.addRhsItem(new TestIAction());
-
-        String marshaledString = RuleModelDRLPersistenceImpl.getInstance().marshal(ruleModel,
-                                                                                   Arrays.asList(new TestIActionPersistenceExtension()));
-
-        assertEquals(DRL_RULE,
-                     marshaledString);
-    }
-
-    @Test(expected = RuleModelDRLPersistenceException.class)
-    public void marshalWithAmbigiousExtensions() {
-        RuleModel ruleModel = new RuleModel();
-        ruleModel.name = "TestIAction rule";
-        ruleModel.addRhsItem(new TestIAction());
-
-        RuleModelDRLPersistenceImpl.getInstance().marshal(ruleModel,
-                                                          Arrays.asList(new TestIActionPersistenceExtension(),
-                                                                        new TestIActionPersistenceExtensionCopy()));
     }
 }

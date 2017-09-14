@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.commons.backend.rule.exception;
 
-public class RuleModelDRLPersistenceException extends RuntimeException {
+public class RuleModelDRLPersistenceException extends Exception {
 
     public RuleModelDRLPersistenceException() {
     }
