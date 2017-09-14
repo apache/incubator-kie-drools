@@ -68,6 +68,7 @@
     <module>drools-examples-cdi</module>
     <module>drools-workbench-models</module>
     <module>drools-test-coverage</module>
+    <module>drools-model</module>
   </modules>
 
   <dependencyManagement>
