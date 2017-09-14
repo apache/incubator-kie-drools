@@ -34,7 +34,7 @@ public class ConcatenateFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
         // spec requires us to return a new list
-        List result = new ArrayList();
+        final List<Object> result = new ArrayList<>();
         for ( Object list : lists ) {
             if ( list == null ) {
                 // TODO review accordingly to spec, original behavior was: return null;

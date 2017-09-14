@@ -26,6 +26,7 @@ import java.time.OffsetTime;
 import java.time.Period;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,7 +160,7 @@ public class CodeFunctionTest {
 
     @Test
     public void invokeListEmpty() {
-        FunctionTestUtil.assertResult(codeFunction.invoke(new ArrayList<>()), "[ ]");
+        FunctionTestUtil.assertResult(codeFunction.invoke(Collections.emptyList()), "[ ]");
     }
 
     @Test

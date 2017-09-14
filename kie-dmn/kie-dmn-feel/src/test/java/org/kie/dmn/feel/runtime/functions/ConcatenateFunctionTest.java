@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -39,7 +40,7 @@ public class ConcatenateFunctionTest {
 
     @Test
     public void invokeEmptyArray() {
-        FunctionTestUtil.assertResultList(concatenateFunction.invoke(new Object[]{}), new ArrayList<>());
+        FunctionTestUtil.assertResultList(concatenateFunction.invoke(new Object[]{}), Collections.emptyList());
     }
 
     @Test

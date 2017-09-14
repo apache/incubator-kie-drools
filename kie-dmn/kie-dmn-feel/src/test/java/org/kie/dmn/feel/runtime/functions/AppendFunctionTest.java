@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,12 +37,12 @@ public class AppendFunctionTest {
     public void invokeInvalidParams() {
         FunctionTestUtil.assertResultError(appendFunction.invoke((List) null, null), InvalidParametersEvent.class);
         FunctionTestUtil.assertResultError(appendFunction.invoke((List) null, new Object[]{}), InvalidParametersEvent.class);
-        FunctionTestUtil.assertResultError(appendFunction.invoke(new ArrayList(), null), InvalidParametersEvent.class);
+        FunctionTestUtil.assertResultError(appendFunction.invoke(Collections.emptyList(), null), InvalidParametersEvent.class);
     }
 
     @Test
     public void invokeEmptyParams() {
-        FunctionTestUtil.assertResultList(appendFunction.invoke(new ArrayList(), new Object[]{}), new ArrayList<>());
+        FunctionTestUtil.assertResultList(appendFunction.invoke(Collections.emptyList(), new Object[]{}), Collections.emptyList());
     }
 
     @Test
@@ -52,7 +53,7 @@ public class AppendFunctionTest {
 
     @Test
     public void invokeAppendSomething() {
-        FunctionTestUtil.assertResultList(appendFunction.invoke(new ArrayList(), new Object[]{"test"}), Arrays.asList("test"));
+        FunctionTestUtil.assertResultList(appendFunction.invoke(Collections.emptyList(), new Object[]{"test"}), Arrays.asList("test"));
         FunctionTestUtil.assertResultList(appendFunction.invoke(Arrays.asList("test"), new Object[]{"test2"}), Arrays.asList("test", "test2"));
         FunctionTestUtil.assertResultList(appendFunction.invoke(Arrays.asList("test"), new Object[]{"test2", "test3"}), Arrays.asList("test", "test2", "test3"));
     }

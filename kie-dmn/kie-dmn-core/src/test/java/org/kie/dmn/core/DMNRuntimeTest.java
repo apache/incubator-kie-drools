@@ -108,7 +108,7 @@ public class DMNRuntimeTest {
 
         DMNContext result = dmnResult.getContext();
 
-        assertThat( result.get( "payment" ), is( new BigDecimal( "2778.693549432766720839844710324306" ) ) );
+        assertThat( result.get( "payment" ), is( new BigDecimal( "2778.693549432766768088520383236299" ) ) );
     }
 
     @Test

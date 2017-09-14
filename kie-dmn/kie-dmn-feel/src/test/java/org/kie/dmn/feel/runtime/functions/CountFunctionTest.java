@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class CountFunctionTest {
 
     @Test
     public void invokeParamListEmpty() {
-        FunctionTestUtil.assertResult(countFunction.invoke(new ArrayList<>()), BigDecimal.ZERO);
+        FunctionTestUtil.assertResult(countFunction.invoke(Collections.emptyList()), BigDecimal.ZERO);
     }
 
     @Test
