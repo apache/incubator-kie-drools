@@ -238,6 +238,100 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     }
 
     // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public TerminationConfig withTerminationClass(Class<? extends Termination> terminationClass) {
+        this.terminationClass = terminationClass;
+        return this;
+    }
+
+    public TerminationConfig withTerminationCompositionStyle(TerminationCompositionStyle terminationCompositionStyle) {
+        this.terminationCompositionStyle = terminationCompositionStyle;
+        return this;
+    }
+
+    public TerminationConfig withMillisecondsSpentLimit(Long millisecondsSpentLimit) {
+        this.millisecondsSpentLimit = millisecondsSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withSecondsSpentLimit(Long secondsSpentLimit) {
+        this.secondsSpentLimit = secondsSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withMinutesSpentLimit(Long minutesSpentLimit) {
+        this.minutesSpentLimit = minutesSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withHoursSpentLimit(Long hoursSpentLimit) {
+        this.hoursSpentLimit = hoursSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withDaysSpentLimit(Long daysSpentLimit) {
+        this.daysSpentLimit = daysSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withUnimprovedMillisecondsSpentLimit(Long unimprovedMillisecondsSpentLimit) {
+        this.unimprovedMillisecondsSpentLimit = unimprovedMillisecondsSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withUnimprovedSecondsSpentLimit(Long unimprovedSecondsSpentLimit) {
+        this.unimprovedSecondsSpentLimit = unimprovedSecondsSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withUnimprovedMinutesSpentLimit(Long unimprovedMinutesSpentLimit) {
+        this.unimprovedMinutesSpentLimit = unimprovedMinutesSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withUnimprovedHoursSpentLimit(Long unimprovedHoursSpentLimit) {
+        this.unimprovedHoursSpentLimit = unimprovedHoursSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withUnimprovedDaysSpentLimit(Long unimprovedDaysSpentLimit) {
+        this.unimprovedDaysSpentLimit = unimprovedDaysSpentLimit;
+        return this;
+    }
+
+    public TerminationConfig withBestScoreLimit(String bestScoreLimit) {
+        this.bestScoreLimit = bestScoreLimit;
+        return this;
+    }
+
+    public TerminationConfig withBestScoreFeasible(Boolean bestScoreFeasible) {
+        this.bestScoreFeasible = bestScoreFeasible;
+        return this;
+    }
+
+    public TerminationConfig withStepCountLimit(Integer stepCountLimit) {
+        this.stepCountLimit = stepCountLimit;
+        return this;
+    }
+
+    public TerminationConfig withUnimprovedStepCountLimit(Integer unimprovedStepCountLimit) {
+        this.unimprovedStepCountLimit = unimprovedStepCountLimit;
+        return this;
+    }
+
+    public TerminationConfig withScoreCalculationCountLimit(Long scoreCalculationCountLimit) {
+        this.scoreCalculationCountLimit = scoreCalculationCountLimit;
+        return this;
+    }
+
+    public TerminationConfig withTerminationConfigList(List<TerminationConfig> terminationConfigList) {
+        this.terminationConfigList = terminationConfigList;
+        return this;
+    }
+
+    // ************************************************************************
     // Builder methods
     // ************************************************************************
 
