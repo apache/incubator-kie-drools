@@ -180,6 +180,26 @@ public class DefaultExhaustiveSearchPhaseTest {
     }
 
     @Test
+    public void solveWithEmptyEntityList() {
+        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+                TestdataSolution.class, TestdataEntity.class);
+        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(
+                new ExhaustiveSearchPhaseConfig()));
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = new TestdataValue("v2");
+        TestdataValue v3 = new TestdataValue("v3");
+        solution.setValueList(Arrays.asList(v1, v2, v3));
+        solution.setEntityList(Collections.emptyList());
+
+        solution = solver.solve(solution);
+        assertNotNull(solution);
+        assertEquals(0, solution.getEntityList().size());
+    }
+
+    @Test
     public void solveWithReinitializeVariable() {
         SolverFactory<TestdataReinitializeSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataReinitializeSolution.class, TestdataReinitializeEntity.class);
