@@ -260,7 +260,7 @@ public class FlowTest {
                 .view(
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
                                    sum(Person::getAge).as(resultSum),
-                                   avg(Person::getAge).as(resultAvg))
+                                   average(Person::getAge).as(resultAvg))
                      )
                 .then(
                         on(resultSum, resultAvg)

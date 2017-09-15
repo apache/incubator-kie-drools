@@ -322,7 +322,7 @@ public class DSL {
         return new Sum(mapper);
     }
 
-    public static <T> Average<T> avg(Function1<T, ? extends Number> mapper) {
+    public static <T> Average<T> average(Function1<T, ? extends Number> mapper) {
         return new Average<T>(mapper);
     }
 
