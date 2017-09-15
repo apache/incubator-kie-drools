@@ -136,12 +136,10 @@ public class ProjectClassLoader extends ClassLoader {
         if (cls != null) {
             return cls;
         }
-        synchronized (this) {
-            try {
-                cls = internalLoadClass(name, resolve);
-            } catch (ClassNotFoundException e2) {
-                cls = loadType(name, resolve);
-            }
+        try {
+            cls = internalLoadClass(name, resolve);
+        } catch (ClassNotFoundException e2) {
+            cls = loadType(name, resolve);
         }
         loadedClasses.put(name, cls);
         return cls;
@@ -189,7 +187,7 @@ public class ProjectClassLoader extends ClassLoader {
         return defineType(name, bytecode);
     }
 
-    private Class<?> defineType(String name, byte[] bytecode) {
+    private synchronized Class<?> defineType(String name, byte[] bytecode) {
         if (definedTypes == null) {
             definedTypes = new HashMap<String, ClassBytecode>();
         } else {
@@ -217,7 +215,7 @@ public class ProjectClassLoader extends ClassLoader {
         return defineType(name, bytecode);
     }
 
-    public void undefineClass(String name) {
+    public synchronized void undefineClass(String name) {
         String resourceName = convertClassToResourcePath(name);
         if (store.remove(resourceName) != null) {
             if (CACHE_NON_EXISTING_CLASSES) {
@@ -414,12 +412,10 @@ public class ProjectClassLoader extends ClassLoader {
             try {
                 return loadType( name, resolve );
             } catch (ClassNotFoundException cnfe) {
-                synchronized (projectClassLoader) {
-                    try {
-                        return projectClassLoader.internalLoadClass( name, resolve );
-                    } catch (ClassNotFoundException cnfe2) {
-                        return projectClassLoader.tryDefineType( name, cnfe );
-                    }
+                try {
+                    return projectClassLoader.internalLoadClass( name, resolve );
+                } catch (ClassNotFoundException cnfe2) {
+                    return projectClassLoader.tryDefineType( name, cnfe );
                 }
             }
         }
