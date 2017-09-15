@@ -80,7 +80,9 @@ public class DrlxParseUtil {
                 usedDeclarations.add( name );
                 return new TypedExpression( drlxExpr, Optional.empty());
             } else {
-                return nameExprToMethodCallExpr(name, typeCursor);
+                TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
+                Expression plusThis = preprendNameExprToMethodCallExpr(new NameExpr("_this"), (MethodCallExpr)expression.getExpression());
+                return new TypedExpression(plusThis, expression.getType());
             }
         } else if ( drlxExpr instanceof FieldAccessExpr ) {
             List<Node> childNodes = drlxExpr.getChildNodes();
@@ -202,8 +204,7 @@ public class DrlxParseUtil {
         Method accessor = ClassUtils.getAccessor(typeCursor, name );
         Class<?> accessorReturnType = accessor.getReturnType();
 
-        NameExpr _this = new NameExpr("_this");
-        MethodCallExpr body = new MethodCallExpr( _this, accessor.getName() );
+        MethodCallExpr body = new MethodCallExpr( null, accessor.getName() );
         return new TypedExpression( body, Optional.of( accessorReturnType ));
     }
 
