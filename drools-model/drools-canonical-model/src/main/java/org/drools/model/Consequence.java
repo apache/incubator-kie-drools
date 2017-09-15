@@ -3,7 +3,7 @@ package org.drools.model;
 import org.drools.model.functions.BlockN;
 import org.drools.model.functions.FunctionN;
 
-public interface Consequence {
+public interface Consequence extends RuleItem {
 
     Variable[] getVariables();
     Variable[] getDeclarations();

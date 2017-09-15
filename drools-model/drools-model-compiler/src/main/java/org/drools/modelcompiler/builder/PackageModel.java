@@ -88,7 +88,7 @@ public class PackageModel {
         // imports from DRL:
         for ( String i : imports ) {
             if ( i.equals(name+".*") ) {
-                break; // skip same-package star import.
+                continue; // skip same-package star import.
             }
             cu.addImport(JavaParser.parseImport("import "+i+";"));
         }
