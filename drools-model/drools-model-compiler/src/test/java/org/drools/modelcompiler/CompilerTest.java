@@ -53,6 +53,8 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.hasItem;
+
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -758,6 +760,35 @@ public class CompilerTest {
     }
 
     @Test
+    public void testAccumulate2() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                "                $sum : sum($p.getAge()),  \n" +
+                "                $average : average($p.getAge())  \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "  insert(new Result($average));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects(ksession, Result.class);
+        assertThat(results, hasItem(new Result(38.5)));
+        assertThat(results, hasItem(new Result(77)));
+
+    }
+
+    @Test
     @Ignore("DSL generation to be implemented")
     public void testNamedConsequence() {
         String str =
@@ -789,5 +820,4 @@ public class CompilerTest {
 
         assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
     }
-
 }
