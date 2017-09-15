@@ -31,6 +31,10 @@ import org.drools.pmml.pmml_4_2.model.ScoreCard;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
@@ -110,7 +114,7 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         setKSession( getModelSession( source2, VERBOSE ) );
         setKbase( getKSession().getKieBase() );
         KieSession kSession = getKSession();
-
+        
         KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger(kSession, "/home/lleveric/new-testScorecardOutputs");
         kSession.fireAllRules();  //init model
 
@@ -124,21 +128,6 @@ public class ScorecardTest extends DroolsAbstractPMMLTest {
         kSession.fireAllRules();  //init model
         logger.close();
         System.out.print(  reportWMObjects( kSession ) );
-        /*
-        Arrays.asList("OutRC1","OutRC2","OutRC3").forEach(str -> {
-        	FactType ft = getKbase().getFactType(packageName, str);
-        	Class<?> klass = ft.getFactClass();
-        	Iterator iter = kSession.getObjects(new ClassObjectFilter(klass)).iterator();
-        	if (iter.hasNext()) {
-        		Object obj = iter.next();
-        		while (!"SampleScorecard".equals(ft.get(obj, "context")) && iter.hasNext())
-        			obj = iter.next();
-        		System.out.printf("%s of class %s with a value of %s%n", str, ft.get(obj, "value").getClass().getName(), ft.get(obj, "value"));
-        	} else {
-        		System.out.printf("No objects of class %s available%n",str);
-        	}
-        });
-		*/
         
         checkFirstDataFieldOfTypeStatus(getKbase().getFactType(packageName,"OutRC1"),
                         true, false,"SampleScorecard", "RC2" );

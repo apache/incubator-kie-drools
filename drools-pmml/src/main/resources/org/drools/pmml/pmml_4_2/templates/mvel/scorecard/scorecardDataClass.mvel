@@ -91,32 +91,11 @@ public class @{className}ScoreCardData extends AbstractPMMLData {
     @end{}
 
     public boolean equals(Object o) {
-       if (this == o) {
-          return true;
-       }
-       if (o == null || getClass() != o.getClass()) {
-          return false;
-       }
-
-       @{className}ScoreCardData that = (@{className}ScoreCardData)o;
-       @foreach{dataField: dataFields}
-       if ( getM@{dataField.compactUpperCaseName}() != that.getM@{dataField.compactUpperCaseName}() ) {
-           return false;
-       }
-       if ( getV@{dataField.compactUpperCaseName}() != null ? !getV@{dataField.compactUpperCaseName}().equals(that.getV@{dataField.compactUpperCaseName}()) : that.getV@{dataField.compactUpperCaseName}() != null ) {
-           return false;
-       }
-       @end{}
-       return true;
+        return super.equals(o);
     }
 
     public int hashCode() {
-        int result = 0;
-        @foreach{dataField: dataFields}
-        result = 31 * result + ( getM@{dataField.compactUpperCaseName}() ? 1 : 0 )
-                + ( getV@{dataField.compactUpperCaseName}() != null ? getV@{dataField.compactUpperCaseName}().hashCode() : 0 );
-        @end{}
-        return result;
+        return super.hashCode();
     }
 
     @Override
