@@ -98,6 +98,8 @@ public class ModelGenerator {
 
     public static final boolean GENERATE_EXPR_ID = true;
 
+    private static final String AVERAGE = "average";
+
     public static PackageModel generateModel( InternalKnowledgePackage pkg, List<RuleDescrImpl> rules ) {
         String name = pkg.getName();
         PackageModel packageModel = new PackageModel( name );
@@ -336,41 +338,49 @@ public class ModelGenerator {
         final MethodCallExpr functionDSL = new MethodCallExpr(null, function.getFunction());
 
         final Expression expr = DrlxParser.parseExpression(function.getParams()[0]);
-        if(expr instanceof MethodCallExpr) {
+        if (expr instanceof MethodCallExpr) {
             final MethodCallExpr methodCallExpr = (MethodCallExpr) expr;
 
             final NameExpr scope = (NameExpr) methodCallExpr.getScope().orElseThrow(UnsupportedOperationException::new);
-            final Class clazz =  context.declarations.get(scope.getName().asString()).declarationClass;
+            final Class clazz = context.declarations.get(scope.getName().asString()).declarationClass;
 
             LambdaExpr lambdaExpr = new LambdaExpr();
-            lambdaExpr.setEnclosingParameters( true );
-            lambdaExpr.addParameter( new Parameter( new TypeParameter(clazz.getName()), "$p" ) );
+            lambdaExpr.setEnclosingParameters(true);
+            lambdaExpr.addParameter(new Parameter(new TypeParameter(clazz.getName()), "$p"));
 
             lambdaExpr.setBody(new ExpressionStmt(methodCallExpr));
 
             functionDSL.addArgument(lambdaExpr);
 
-            try {
-                Class<?> declClass = clazz.getMethod(methodCallExpr.getName().asString()).getReturnType();
-                context.declarations.put(function.getBind(), new DeclarationSpec(declClass));
-            } catch ( NoSuchMethodException e ) {
-                throw new UnsupportedOperationException("Aggregate function result type", e);
-            }
+            Class<?> declClass = getReturnTypeForAggregateFunction(functionDSL.getName().asString(), clazz, methodCallExpr);
+            context.declarations.put(function.getBind(), new DeclarationSpec(declClass));
         }
 
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, "as");
-        asDSL.addArgument(new NameExpr("var_"+ function.getBind()));
+        asDSL.addArgument(new NameExpr("var_" + function.getBind()));
 
         accumulateDSL.addArgument(asDSL);
 
         context.popExprPointer();
     }
 
-    private static Type classToReferenceType( Class<?> declClass ) {
-        Type parsedType = JavaParser.parseType( declClass.getCanonicalName() );
+    private static Class<?> getReturnTypeForAggregateFunction(String functionName, Class<?> clazz, MethodCallExpr field) {
+        if (AVERAGE.equals(functionName)) {
+            return Double.class;
+        } else {
+            try {
+                return clazz.getMethod(field.getName().asString()).getReturnType();
+            } catch (NoSuchMethodException e) {
+                throw new UnsupportedOperationException("Aggregate function result type", e);
+            }
+        }
+    }
+
+    private static Type classToReferenceType(Class<?> declClass) {
+        Type parsedType = JavaParser.parseType(declClass.getCanonicalName());
         return parsedType instanceof PrimitiveType ?
-               ((PrimitiveType)parsedType).toBoxedType() :
-               parsedType.getElementType();
+                ((PrimitiveType) parsedType).toBoxedType() :
+                parsedType.getElementType();
     }
 
     private static void visit( RuleContext context, NotDescr descr ) {
