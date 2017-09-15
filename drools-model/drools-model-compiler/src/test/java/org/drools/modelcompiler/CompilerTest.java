@@ -104,10 +104,6 @@ public class CompilerTest {
             return value.equals(result.value);
         }
 
-        @Override
-        public int hashCode() {
-            return value.hashCode();
-        }
     }
 
     @Test
