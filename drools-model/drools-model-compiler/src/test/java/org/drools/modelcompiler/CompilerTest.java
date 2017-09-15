@@ -16,6 +16,14 @@
 
 package org.drools.modelcompiler;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.core.ClockType;
@@ -45,12 +53,16 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
+<<<<<<< 6f38b701fcc43a2725abce76c9782c67985556d7
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+=======
+import static java.util.Arrays.asList;
+>>>>>>> named consequence implementation
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -75,6 +87,7 @@ public class CompilerTest {
         this.testRunType = testRunType;
     }
 
+<<<<<<< 6f38b701fcc43a2725abce76c9782c67985556d7
     public static class Result {
         private Object value;
 
@@ -106,6 +119,8 @@ public class CompilerTest {
 
     }
 
+=======
+>>>>>>> named consequence implementation
     @Test
     public void testBeta() {
         String str =
@@ -218,7 +233,7 @@ public class CompilerTest {
     }
 
     private KieSession getKieSession( String str, KieModuleModel model ) {
-        KieServices ks = KieServices.Factory.get();
+        KieServices ks = KieServices.get();
 
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "kjar-test-" + UUID.randomUUID(), "1.0" );
 
@@ -813,5 +828,37 @@ public class CompilerTest {
         assertThat(results, hasItem(new Result(38.5)));
         assertThat(results, hasItem(new Result(77)));
 
+    }
+
+    @Test
+    @Ignore("DSL generation to be implemented")
+    public void testNamedConsequence() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $p1 : Person(name == \"Mark\")\n" +
+                "  do[FoundMark]\n" +
+                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                "then\n" +
+                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                "then[FoundMark]\n" +
+                "  $r.addValue(\"Found \" + $p1.getName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+        Result result = new Result();
+        ksession.insert( result );
+
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.fireAllRules();
+
+        Collection results = (Collection)result.getValue();
+        assertEquals(2, results.size());
+
+        assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
     }
 }
