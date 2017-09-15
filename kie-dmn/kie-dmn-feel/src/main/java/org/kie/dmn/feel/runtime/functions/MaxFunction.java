@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
@@ -34,11 +35,12 @@ public class MaxFunction
     public FEELFnResult<Object> invoke(@ParameterName("list") List list) {
         if ( list == null || list.isEmpty() ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null or empty"));
-        } else if (!TypeUtil.areCollectionItemsComparable(list)) {
-            // TODO - check and max in the same iteration.. same for MinFunction
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "does not contain comparable items"));
         } else {
-            return FEELFnResult.ofResult( Collections.max( list ) );
+            try {
+                return FEELFnResult.ofResult( Collections.max( list ) );
+            } catch (ClassCastException e) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "contains items that are not comparable"));
+            }
         }
     }
 

@@ -34,10 +34,12 @@ public class MinFunction
     public FEELFnResult<Object> invoke(@ParameterName("list") List list) {
         if ( list == null || list.isEmpty() ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null or empty"));
-        } else if (!TypeUtil.areCollectionItemsComparable(list)) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "does not contain comparable items"));
         } else {
-            return FEELFnResult.ofResult( Collections.min( list ) );
+            try {
+                return FEELFnResult.ofResult( Collections.min( list ) );
+            } catch (ClassCastException e) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "contains items that are not comparable"));
+            }
         }
     }
 
