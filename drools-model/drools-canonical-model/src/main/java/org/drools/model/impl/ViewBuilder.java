@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,10 +14,14 @@ import org.drools.model.AccumulateFunction;
 import org.drools.model.Argument;
 import org.drools.model.Condition;
 import org.drools.model.Condition.Type;
+import org.drools.model.Consequence;
 import org.drools.model.Constraint;
 import org.drools.model.DataSourceDefinition;
 import org.drools.model.Pattern;
+import org.drools.model.RuleItem;
+import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
+import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
 import org.drools.model.constraints.TemporalConstraint;
@@ -34,7 +39,6 @@ import org.drools.model.view.CombinedExprViewItem;
 import org.drools.model.view.ExistentialExprViewItem;
 import org.drools.model.view.Expr1ViewItemImpl;
 import org.drools.model.view.Expr2ViewItemImpl;
-import org.drools.model.view.ExprViewItem;
 import org.drools.model.view.InputViewItemImpl;
 import org.drools.model.view.OOPathViewItem;
 import org.drools.model.view.OOPathViewItem.OOPathChunk;
@@ -42,29 +46,42 @@ import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.SetViewItem;
 import org.drools.model.view.TemporalExprViewItem;
 import org.drools.model.view.ViewItem;
-import org.drools.model.view.ViewItemBuilder;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.model.DSL.input;
 import static org.drools.model.constraints.AbstractSingleConstraint.fromExpr;
+import static org.drools.model.impl.NamesGenerator.generateName;
 
 public class ViewBuilder {
 
     private ViewBuilder() { }
 
-    public static CompositePatterns viewItems2Patterns( ViewItemBuilder[] viewItemBuilders ) {
-        if (viewItemBuilders.length == 1 && viewItemBuilders[0] instanceof ExprViewItem && ((ExprViewItem) viewItemBuilders[0]).getType() == Type.AND) {
-            return viewItems2Condition( Arrays.asList(((CombinedExprViewItem) viewItemBuilders[0]).getExpressions()), new HashMap<>(), new HashSet<>(), Type.AND, true );
-        }
-        List<ViewItem> viewItems = Stream.of( viewItemBuilders ).map( ViewItemBuilder::get ).collect( toList() );
-        return viewItems2Condition( viewItems, new HashMap<>(), new HashSet<>(), Type.AND, true );
+    public static CompositePatterns viewItems2Patterns( RuleItemBuilder[] viewItemBuilders ) {
+        List<RuleItem> ruleItems = Stream.of( viewItemBuilders ).map( RuleItemBuilder::get ).collect( toList() );
+        return viewItems2Condition( ruleItems, new HashMap<>(), new HashSet<>(), Type.AND, true );
     }
 
-    public static CompositePatterns viewItems2Condition(List<ViewItem> viewItems, Map<Variable<?>, InputViewItemImpl<?>> inputs,
+    public static CompositePatterns viewItems2Condition(List<RuleItem> ruleItems, Map<Variable<?>, InputViewItemImpl<?>> inputs,
                                                         Set<Variable<?>> usedVars, Condition.Type type, boolean topLevel) {
         List<Condition> conditions = new ArrayList<>();
         Map<Variable<?>, Condition> conditionMap = new HashMap<>();
-        for (ViewItem viewItem : viewItems) {
+        Map<String, Consequence> consequences = topLevel ? new HashMap<>() : null;
+        Iterator<RuleItem> ruleItemIterator = ruleItems.iterator();
+
+        while (ruleItemIterator.hasNext()) {
+            RuleItem ruleItem = ruleItemIterator.next();
+
+            if (ruleItem instanceof Consequence) {
+                if (!topLevel) {
+                    throw new IllegalStateException("A consequence can be only a top level item");
+                }
+                String name = ruleItemIterator.hasNext() ? generateName("consequence") : RuleImpl.DEFAULT_CONSEQUENCE_NAME;
+                consequences.put(name, (Consequence) ruleItem);
+                conditions.add( new NamedConsequenceImpl( name ) );
+                continue;
+            }
+
+            ViewItem viewItem = (ViewItem) ruleItem;
             if ( viewItem instanceof CombinedExprViewItem ) {
                 CombinedExprViewItem combined = (CombinedExprViewItem) viewItem;
                 conditions.add( viewItems2Condition( Arrays.asList( combined.getExpressions() ), inputs, usedVars, combined.getType(), false ) );
@@ -133,7 +150,7 @@ public class ViewBuilder {
             }
         }
 
-        CompositePatterns condition = new CompositePatterns( type, conditions, usedVars );
+        CompositePatterns condition = new CompositePatterns( type, conditions, usedVars, consequences );
         if ( type == Type.AND ) {
             if ( topLevel && inputs.size() > usedVars.size() ) {
                 inputs.keySet().removeAll( usedVars );

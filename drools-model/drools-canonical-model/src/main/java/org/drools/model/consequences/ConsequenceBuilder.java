@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.drools.model.Consequence;
 import org.drools.model.Drools;
+import org.drools.model.RuleItemBuilder;
 import org.drools.model.Variable;
 import org.drools.model.functions.Block0;
 import org.drools.model.functions.Block1;
@@ -37,9 +38,7 @@ public class ConsequenceBuilder {
         return new _2(decl1, decl2);
     }
 
-    public interface ValidBuilder {
-        Consequence get();
-    }
+    public interface ValidBuilder extends RuleItemBuilder<Consequence> { }
 
     public static abstract class AbstractValidBuilder implements ValidBuilder {
         private final Variable[] declarations;

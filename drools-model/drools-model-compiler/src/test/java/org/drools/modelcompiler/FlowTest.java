@@ -16,6 +16,8 @@
 
 package org.drools.modelcompiler;
 
+import java.util.Collection;
+
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.model.Global;
 import org.drools.model.Index.ConstraintType;
@@ -33,35 +35,11 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
-import java.util.Collection;
-
+import static java.util.Arrays.asList;
 import static org.drools.model.DSL.*;
 import static org.junit.Assert.*;
 
 public class FlowTest {
-
-    public static class Result {
-        private Object value;
-
-        public Result() { }
-
-        public Result(Object value) {
-            this.value = value;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public void setValue( Object value ) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return value.toString();
-        }
-    }
 
     @Test
     public void testBeta() {
@@ -82,7 +60,7 @@ public class FlowTest {
                                 .reactOn( "age" )
                      )
                 .then(on(olderV, markV)
-                            .execute((p1, p2) -> result.value = p1.getName() + " is older than " + p2.getName()));
+                            .execute((p1, p2) -> result.setValue( p1.getName() + " is older than " + p2.getName())));
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -98,18 +76,18 @@ public class FlowTest {
         FactHandle marioFH = ksession.insert(mario);
 
         ksession.fireAllRules();
-        assertEquals("Mario is older than Mark", result.value);
+        assertEquals("Mario is older than Mark", result.getValue());
 
-        result.value = null;
+        result.setValue( null );
         ksession.delete( marioFH );
         ksession.fireAllRules();
-        assertNull(result.value);
+        assertNull(result.getValue());
 
         mark.setAge( 34 );
         ksession.update( markFH, mark, "age" );
 
         ksession.fireAllRules();
-        assertEquals("Edson is older than Mark", result.value);
+        assertEquals("Edson is older than Mark", result.getValue());
     }
 
     @Test
@@ -167,7 +145,7 @@ public class FlowTest {
                         expr("exprC", nameV, personV, (s, p) -> s.equals( p.getName() ))
                      )
                 .then(on(nameV)
-                            .execute(s -> result.value = s));
+                            .execute(s -> result.setValue( s )));
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -180,7 +158,7 @@ public class FlowTest {
         ksession.insert(new Person("Mario", 40));
         ksession.fireAllRules();
 
-        assertEquals("Mario", result.value);
+        assertEquals("Mario", result.getValue());
     }
 
     @Test
@@ -202,7 +180,7 @@ public class FlowTest {
                         expr("exprC", nameV, personV, (s, p) -> s.equals( p.getName() ))
                      )
                 .then(on(nameV)
-                            .execute(s -> result.value = s));
+                            .execute(s -> result.setValue( s )));
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -215,7 +193,7 @@ public class FlowTest {
         ksession.insert(new Person("Mario", 40));
         ksession.fireAllRules();
 
-        assertEquals("Mario", result.value);
+        assertEquals("Mario", result.getValue());
     }
 
     @Test
@@ -229,7 +207,7 @@ public class FlowTest {
                         not(otherV, oldestV, (p1, p2) -> p1.getAge() > p2.getAge())
                      )
                 .then(on(oldestV)
-                            .execute(p -> result.value = "Oldest person is " + p.getName()));
+                            .execute(p -> result.setValue( "Oldest person is " + p.getName())));
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -241,7 +219,7 @@ public class FlowTest {
         ksession.insert(new Person("Mario", 40));
 
         ksession.fireAllRules();
-        assertEquals("Oldest person is Mario", result.value);
+        assertEquals("Oldest person is Mario", result.getValue());
     }
 
     @Test
@@ -255,7 +233,7 @@ public class FlowTest {
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
                                    sum((Person p) -> p.getAge()).as(resultSum))
                      )
-                .then( on(resultSum).execute(sum -> result.value = "total = " + sum) );
+                .then( on(resultSum).execute(sum -> result.setValue( "total = " + sum) ) );
 
 
         Model model = new ModelImpl().addRule( rule );
@@ -268,7 +246,7 @@ public class FlowTest {
         ksession.insert(new Person("Mario", 40));
 
         ksession.fireAllRules();
-        assertEquals("total = 77", result.value);
+        assertEquals("total = 77", result.getValue());
     }
 
     @Test
@@ -286,7 +264,7 @@ public class FlowTest {
                      )
                 .then(
                         on(resultSum, resultAvg)
-                                .execute((sum, avg) -> result.value = "total = " + sum + "; average = " + avg)
+                                .execute((sum, avg) -> result.setValue( "total = " + sum + "; average = " + avg ))
                      );
 
         Model model = new ModelImpl().addRule( rule );
@@ -299,7 +277,7 @@ public class FlowTest {
         ksession.insert(new Person("Mario", 40));
 
         ksession.fireAllRules();
-        assertEquals("total = 77; average = 38.5", result.value);
+        assertEquals("total = 77; average = 38.5", result.getValue());
     }
 
     @Test
@@ -333,7 +311,7 @@ public class FlowTest {
         ksession.insert(mario);
 
         ksession.fireAllRules();
-        assertEquals("Mark is 37", result.value);
+        assertEquals("Mark is 37", result.getValue());
     }
 
     @Test
@@ -369,7 +347,7 @@ public class FlowTest {
         ksession.insert(mario);
 
         ksession.fireAllRules();
-        assertEquals("Mark is 37", result.value);
+        assertEquals("Mark is 37", result.getValue());
     }
 
     @Test
@@ -474,5 +452,45 @@ public class FlowTest {
         Collection<Result> results = (Collection<Result>) ksession.getObjects( new ClassObjectFilter( Result.class ) );
         assertEquals( 1, results.size() );
         assertEquals( "Mario", results.iterator().next().getValue() );
+    }
+
+    @Test
+    public void testNamedConsequence() {
+        Variable<Result> resultV = declarationOf( type( Result.class ) );
+        Variable<Person> markV = declarationOf( type( Person.class ) );
+        Variable<Person> olderV = declarationOf( type( Person.class ) );
+
+        Rule rule = rule( "beta" )
+                .build(
+                        expr("exprA", markV, p -> p.getName().equals("Mark"))
+                                .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
+                                .reactOn( "name", "age" ), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
+                        on(markV, resultV).execute((p, r) -> r.addValue( "Found " + p.getName())),
+                        expr("exprB", olderV, p -> !p.getName().equals("Mark"))
+                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark" )
+                                .reactOn( "name" ),
+                        expr("exprC", olderV, markV, (p1, p2) -> p1.getAge() > p2.getAge())
+                                .indexedBy( int.class, ConstraintType.GREATER_THAN, Person::getAge, Person::getAge )
+                                .reactOn( "age" ),
+                        on(olderV, markV, resultV).execute((p1, p2, r) -> r.addValue( p1.getName() + " is older than " + p2.getName()))
+                     );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.fireAllRules();
+
+        Collection<String> results = (Collection<String>)result.getValue();
+        assertEquals(2, results.size());
+
+        assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
     }
 }
