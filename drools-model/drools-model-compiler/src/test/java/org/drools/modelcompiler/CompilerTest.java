@@ -21,6 +21,7 @@ import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.core.ClockType;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
+import org.hamcrest.CoreMatchers;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,13 +46,11 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
@@ -91,8 +90,19 @@ public class CompilerTest {
             return value;
         }
 
-        public void setValue( Object value ) {
-            this.value = value;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Result result = (Result) o;
+
+            return value.equals(result.value);
+        }
+
+        @Override
+        public int hashCode() {
+            return value.hashCode();
         }
     }
 
@@ -774,5 +784,34 @@ public class CompilerTest {
         Collection<Result> results = getObjects(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testAccumulate2() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                 "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                "                $sum : sum($p.getAge()),  \n" +
+                "                $average : average($p.getAge())  \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "  insert(new Result($average));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects(ksession, Result.class);
+        assertThat(results, hasItem(new Result(38.5)));
+        assertThat(results, hasItem(new Result(77)));
+
     }
 }
