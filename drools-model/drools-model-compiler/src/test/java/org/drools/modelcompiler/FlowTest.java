@@ -17,7 +17,6 @@
 package org.drools.modelcompiler;
 
 import org.drools.core.reteoo.AlphaNode;
-import org.drools.javaparser.JavaParser;
 import org.drools.model.Global;
 import org.drools.model.Index.ConstraintType;
 import org.drools.model.Model;
@@ -283,7 +282,7 @@ public class FlowTest {
                 .view(
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
                                    sum(Person::getAge).as(resultSum),
-                                   avg(Person::getAge).as(resultAvg))
+                                   average(Person::getAge).as(resultAvg))
                      )
                 .then(
                         on(resultSum, resultAvg)
