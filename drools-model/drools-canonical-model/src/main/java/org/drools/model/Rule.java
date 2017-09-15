@@ -1,5 +1,7 @@
 package org.drools.model;
 
+import java.util.Map;
+
 public interface Rule {
 
     enum Attribute {
@@ -20,7 +22,8 @@ public interface Rule {
 
     View getView();
 
-    Consequence getConsequence();
+    Consequence getDefaultConsequence();
+    Map<String, Consequence> getConsequences();
 
     Object getAttribute(Attribute attribute);
 
