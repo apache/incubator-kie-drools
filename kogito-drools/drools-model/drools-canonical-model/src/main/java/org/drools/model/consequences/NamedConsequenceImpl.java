@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.model.view;
+package org.drools.model.consequences;
 
-import org.drools.model.RuleItemBuilder;
+import org.drools.model.Condition;
+import org.drools.model.Variable;
 
-public interface ViewItemBuilder<T> extends RuleItemBuilder<ViewItem<T>> {
+public class NamedConsequenceImpl implements Condition {
+
+    private final String name;
+
+    public NamedConsequenceImpl( String name ) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.CONSEQUENCE;
+    }
+
+    @Override
+    public Variable<?>[] getBoundVariables() {
+        throw new UnsupportedOperationException();
+    }
 }

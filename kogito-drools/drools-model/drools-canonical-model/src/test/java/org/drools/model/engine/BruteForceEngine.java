@@ -41,8 +41,8 @@ public class BruteForceEngine {
         List<Rule> firedRules = stream(rules).filter(rule -> {
             List<TupleHandle> matches = evaluate(rule.getView());
             matches.forEach(match -> {
-                rule.getConsequence().getBlock().execute(
-                        stream(rule.getConsequence().getDeclarations()).map(match::get).toArray());
+                rule.getDefaultConsequence().getBlock().execute(
+                        stream(rule.getDefaultConsequence().getDeclarations() ).map( match::get ).toArray() );
             });
             return !matches.isEmpty();
         }).collect(toList());
@@ -50,7 +50,7 @@ public class BruteForceEngine {
         // TODO: implement conflict resulution strategy (?)
 
         if ( firedRules.stream()
-                       .filter(rule -> rule.getConsequence().isChangingWorkingMemory())
+                       .filter(rule -> rule.getDefaultConsequence().isChangingWorkingMemory() )
                        .findFirst().isPresent() ) {
             evaluate(rules);
         }

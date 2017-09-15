@@ -1,5 +1,6 @@
 package org.drools.model.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.model.Consequence;
@@ -8,11 +9,13 @@ import org.drools.model.View;
 
 public class RuleImpl implements Rule {
 
+    public static final String DEFAULT_CONSEQUENCE_NAME = "default";
+
     private final String pkg;
     private final String name;
     private final String unit;
     private final View view;
-    private final Consequence consequence;
+    private final Map<String, Consequence> consequences;
 
     private Map<Attribute, Object> attributes;
 
@@ -21,7 +24,17 @@ public class RuleImpl implements Rule {
         this.name = name;
         this.unit = unit;
         this.view = view;
-        this.consequence = consequence;
+        this.consequences = new HashMap<>();
+        this.consequences.put( DEFAULT_CONSEQUENCE_NAME, consequence );
+        this.attributes = attributes;
+    }
+
+    public RuleImpl(String pkg, String name, String unit, View view, Map<String, Consequence> consequences, Map<Attribute, Object> attributes) {
+        this.pkg = pkg;
+        this.name = name;
+        this.unit = unit;
+        this.view = view;
+        this.consequences = consequences;
         this.attributes = attributes;
     }
 
@@ -31,8 +44,13 @@ public class RuleImpl implements Rule {
     }
 
     @Override
-    public Consequence getConsequence() {
-        return consequence;
+    public Consequence getDefaultConsequence() {
+        return consequences.get(DEFAULT_CONSEQUENCE_NAME);
+    }
+
+    @Override
+    public Map<String, Consequence> getConsequences() {
+        return consequences;
     }
 
     @Override

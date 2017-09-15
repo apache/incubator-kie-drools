@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.drools.model.Consequence;
 import org.drools.model.Rule;
+import org.drools.model.RuleItemBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.functions.Function1;
 import org.drools.model.patterns.CompositePatterns;
@@ -21,7 +22,7 @@ public class RuleBuilder {
 
     private String unit;
 
-    private final Map<Rule.Attribute, Object> attributes = new HashMap<Rule.Attribute, Object>();
+    private final Map<Rule.Attribute, Object> attributes = new HashMap<>();
 
     public RuleBuilder(String name) {
         this(DEFAULT_PACKAGE, name);
@@ -56,6 +57,14 @@ public class RuleBuilder {
 
     public RuleBuilderWithLHS view( ViewItemBuilder... viewItemBuilders ) {
         return new RuleBuilderWithLHS(viewItems2Patterns( viewItemBuilders ));
+    }
+
+    public Rule build( RuleItemBuilder... viewItemBuilders ) {
+        CompositePatterns view = viewItems2Patterns( viewItemBuilders );
+        for (Consequence consequence : view.getConsequences().values()) {
+            view.ensureVariablesDeclarationInView( consequence.getDeclarations() );
+        }
+        return new RuleImpl(pkg, name, unit, view, view.getConsequences(), attributes);
     }
 
     public class RuleBuilderWithLHS {

@@ -41,6 +41,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.MultiAccumulate;
+import org.drools.core.rule.NamedConsequence;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
@@ -73,6 +74,7 @@ import org.drools.model.Variable;
 import org.drools.model.View;
 import org.drools.model.WindowDefinition;
 import org.drools.model.WindowReference;
+import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.impl.DeclarationImpl;
@@ -145,7 +147,7 @@ public class KiePackagesBuilder {
         }
         RuleContext ctx = new RuleContext( pkg, ruleImpl );
         populateLHS( ctx, pkg, rule.getView() );
-        processConsequence( ctx, rule.getConsequence() );
+        processConsequences( ctx, rule );
         return ruleImpl;
     }
 
@@ -181,8 +183,18 @@ public class KiePackagesBuilder {
         queryImpl.setParameters( declarations );
     }
 
-    private void processConsequence( RuleContext ctx, Consequence consequence ) {
-        ctx.getRule().setConsequence( new LambdaConsequence( consequence, ctx ) );
+    private void processConsequences( RuleContext ctx, Rule rule ) {
+        for (Map.Entry<String, Consequence> entry : rule.getConsequences().entrySet()) {
+            processConsequence( ctx, entry.getValue(), entry.getKey() );
+        }
+    }
+
+    private void processConsequence( RuleContext ctx, Consequence consequence, String name ) {
+        if ( name.equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ) {
+            ctx.getRule().setConsequence( new LambdaConsequence( consequence, ctx ) );
+        } else {
+            ctx.getRule().addNamedConsequence( name, new LambdaConsequence( consequence, ctx ) );
+        }
 
         Variable[] consequenceVars = consequence.getDeclarations();
         String[] requiredDeclarations = new String[consequenceVars.length];
@@ -190,7 +202,7 @@ public class KiePackagesBuilder {
             requiredDeclarations[i] = consequenceVars[i].getName();
         }
 
-        ctx.getRule().setRequiredDeclarationsForConsequence( RuleImpl.DEFAULT_CONSEQUENCE_NAME, requiredDeclarations );
+        ctx.getRule().setRequiredDeclarationsForConsequence( name, requiredDeclarations );
     }
 
     private void populateLHS( RuleContext ctx, KnowledgePackageImpl pkg, View view ) {
@@ -198,7 +210,7 @@ public class KiePackagesBuilder {
         if (ctx.getRule().getRuleUnitClassName() != null) {
             lhs.addChild( addPatternForVariable( ctx, getUnitVariable( ctx, pkg, view ) ) );
         }
-        view.getSubConditions().forEach( condition -> lhs.addChild( conditionToElement(ctx, condition) ) );
+        addSubConditions( ctx, lhs, view.getSubConditions());
         if (requiresLeftActivation(lhs)) {
             lhs.addChild( 0, new Pattern( 0, ClassObjectType.InitialFact_ObjectType ) );
         }
@@ -228,11 +240,7 @@ public class KiePackagesBuilder {
 
     private RuleConditionElement conditionToElement( RuleContext ctx, Condition condition ) {
         if (condition.getType().isComposite()) {
-            GroupElement ge = new GroupElement( conditionToGroupElementType( condition.getType() ) );
-            for (Condition subCondition : condition.getSubConditions()) {
-                ge.addChild( conditionToElement( ctx, subCondition ) );
-            }
-            return ge;
+            return addSubConditions( ctx, new GroupElement( conditionToGroupElementType( condition.getType() ) ), condition.getSubConditions() );
         }
 
         switch (condition.getType()) {
@@ -260,8 +268,21 @@ public class KiePackagesBuilder {
                 ge.addChild( conditionToElement( ctx, condition.getSubConditions().get(0) ) );
                 return ge;
             }
+            case CONSEQUENCE:
+                NamedConsequenceImpl consequence = (NamedConsequenceImpl) condition;
+                return consequence.getName().equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ? null : new NamedConsequence( consequence.getName(), false );
         }
         throw new UnsupportedOperationException();
+    }
+
+    private GroupElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions) {
+        for (Condition subCondition : subconditions) {
+            RuleConditionElement element = conditionToElement( ctx, subCondition );
+            if (element != null) {
+                ge.addChild( element );
+            }
+        }
+        return ge;
     }
 
     private RuleConditionElement buildQueryPattern( RuleContext ctx, QueryCallPattern queryPattern ) {
