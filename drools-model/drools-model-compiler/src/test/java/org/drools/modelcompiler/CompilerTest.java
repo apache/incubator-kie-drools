@@ -760,6 +760,33 @@ public class CompilerTest {
     }
 
     @Test
+    @Ignore
+    public void testAccumulateWithProperty() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                 "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                "                $sum : sum($p.getAge())  \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test
     public void testAccumulate2() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +

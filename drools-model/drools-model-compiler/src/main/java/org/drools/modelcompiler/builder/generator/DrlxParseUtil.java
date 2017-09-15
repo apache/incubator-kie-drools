@@ -80,14 +80,7 @@ public class DrlxParseUtil {
                 usedDeclarations.add( name );
                 return new TypedExpression( drlxExpr, Optional.empty());
             } else {
-                reactOnProperties.add(name);
-                Method accessor = ClassUtils.getAccessor( typeCursor, name );
-                Class<?> accessorReturnType = accessor.getReturnType();
-
-                NameExpr _this = new NameExpr("_this");
-                MethodCallExpr body = new MethodCallExpr( _this, accessor.getName() );
-
-                return new TypedExpression( body, Optional.of( accessorReturnType ));
+                return nameExprToMethodCallExpr(name, typeCursor);
             }
         } else if ( drlxExpr instanceof FieldAccessExpr ) {
             List<Node> childNodes = drlxExpr.getChildNodes();
@@ -202,6 +195,16 @@ public class DrlxParseUtil {
             }
             return new TypedExpression( implicitThis ? "_this" + telescoping.toString() : telescoping.toString(), Optional.of( typeCursor ));
         }
+    }
+
+    public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz) {
+        Class<?> typeCursor = clazz;
+        Method accessor = ClassUtils.getAccessor(typeCursor, name );
+        Class<?> accessorReturnType = accessor.getReturnType();
+
+        NameExpr _this = new NameExpr("_this");
+        MethodCallExpr body = new MethodCallExpr( _this, accessor.getName() );
+        return new TypedExpression( body, Optional.of( accessorReturnType ));
     }
 
     public static MethodCallExpr preprendNameExprToMethodCallExpr(NameExpr nameExpr, MethodCallExpr methodCallExpr) {

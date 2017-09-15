@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
@@ -535,6 +536,13 @@ public class ModelGenerator {
 
             NameExpr _this = new NameExpr("_this");
 
+            Expression scope = methodCallExpr.getScope().get();
+
+            if(scope instanceof NameExpr) {
+                final TypedExpression scopeMethod = DrlxParseUtil.nameExprToMethodCallExpr(scope.toString(), patternType);
+            }
+
+
             MethodCallExpr withThis = DrlxParseUtil.preprendNameExprToMethodCallExpr(_this, methodCallExpr);
 
             return buildDslExpression(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, withThis, false);
@@ -543,6 +551,8 @@ public class ModelGenerator {
         throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO
 
     }
+
+
 
     private static void addArgumentToMethodCall( Expression expr, MethodCallExpr methodCallExpr ) {
         if (expr instanceof TemporalLiteralExpr ) {
