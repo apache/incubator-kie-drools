@@ -25,10 +25,14 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 public final class FunctionTestUtil {
 
     public static <T> void assertResult(final FEELFnResult<T> result, final T expectedResult) {
-        assertResultNotError(result);
-        final T resultValue = result.cata(left -> null, right -> right);
-        Assert.assertThat(resultValue, Matchers.notNullValue());
-        Assert.assertThat(resultValue, Matchers.equalTo(expectedResult));
+        if (expectedResult == null) {
+            assertResultNull(result);
+        } else {
+            assertResultNotError(result);
+            final T resultValue = result.cata(left -> null, right -> right);
+            Assert.assertThat(resultValue, Matchers.notNullValue());
+            Assert.assertThat(resultValue, Matchers.equalTo(expectedResult));
+        }
     }
 
     public static void assertResultBigDecimal(final FEELFnResult<BigDecimal> result, final BigDecimal expectedResult) {
