@@ -274,8 +274,13 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitContextEntry(FEEL_1_1Parser.ContextEntryContext ctx) {
-        BaseNode name = visit( ctx.key() );
-        BaseNode value = visit( ctx.expression() );
+        FEEL_1_1Parser.KeyContext key = ctx.key();
+        FEEL_1_1Parser.ExpressionContext expression = ctx.expression();
+        if (key == null || expression == null) {
+            return null;
+        }
+        BaseNode name = visit(key);
+        BaseNode value = visit(expression);
         return ASTBuilderFactory.newContextEntry( ctx, name, value );
     }
 
@@ -285,8 +290,10 @@ public class ASTBuilderVisitor
         scopeHelper.pushScope();
         for ( FEEL_1_1Parser.ContextEntryContext c : ctx.contextEntry() ) {
             ContextEntryNode visited = (ContextEntryNode) visit( c ); // forced cast similarly to visitFunctionDefinition() method
-            nodes.add( visited );
-            scopeHelper.addType( visited.getName().getText() , visited.getResultType() );
+            if (visited != null) {
+                nodes.add( visited );
+                scopeHelper.addType( visited.getName().getText() , visited.getResultType() );
+            }
         }
         scopeHelper.popScope();
         return ASTBuilderFactory.newListNode( ctx, nodes );

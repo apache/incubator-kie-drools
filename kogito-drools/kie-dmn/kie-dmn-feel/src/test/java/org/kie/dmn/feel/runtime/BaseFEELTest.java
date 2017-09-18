@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -58,7 +59,7 @@ public abstract class BaseFEELTest {
 
         if( severity != null ) {
             ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass( FEELEvent.class );
-            verify( listener ).onEvent( captor.capture() );
+            verify( listener , atLeastOnce()).onEvent( captor.capture() );
             assertThat( captor.getValue().getSeverity(), is( severity ) );
         } else {
             verify( listener, never() ).onEvent( any(FEELEvent.class) );
