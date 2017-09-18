@@ -318,6 +318,30 @@ public class CompilerTest {
     }
 
     @Test
+    @Ignore
+    public void testSimpleInsertWithProperties() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person( name.address.startsWith(\"M\"))\n" +
+                "then\n" +
+                "  Result r = new Result($p.getName());" +
+                "  insert(r);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Luca", 32 ) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Mark", results.iterator().next().getValue() );
+    }
+
+    @Test
     public void testSimpleDelete() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
