@@ -16,7 +16,6 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
@@ -543,7 +542,7 @@ public class ModelGenerator {
             }
 
 
-            MethodCallExpr withThis = DrlxParseUtil.preprendNameExprToMethodCallExpr(_this, methodCallExpr);
+            Expression withThis = DrlxParseUtil.prepend(_this, methodCallExpr);
 
             return buildDslExpression(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, withThis, false);
         }

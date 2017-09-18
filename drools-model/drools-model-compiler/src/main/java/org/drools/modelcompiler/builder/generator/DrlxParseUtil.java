@@ -35,6 +35,7 @@ import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
+import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.modelcompiler.builder.generator.ModelGenerator.RuleContext;
 
@@ -81,7 +82,7 @@ public class DrlxParseUtil {
                 return new TypedExpression( drlxExpr, Optional.empty());
             } else {
                 TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
-                Expression plusThis = preprendNameExprToMethodCallExpr(new NameExpr("_this"), (MethodCallExpr)expression.getExpression());
+                Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr)expression.getExpression());
                 return new TypedExpression(plusThis, expression.getType());
             }
         } else if ( drlxExpr instanceof FieldAccessExpr ) {
@@ -200,38 +201,41 @@ public class DrlxParseUtil {
     }
 
     public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz) {
-        Class<?> typeCursor = clazz;
-        Method accessor = ClassUtils.getAccessor(typeCursor, name );
+        Method accessor = ClassUtils.getAccessor(clazz, name );
+        if(accessor == null) {
+            throw new UnsupportedOperationException("Accessor missing");
+        }
         Class<?> accessorReturnType = accessor.getReturnType();
 
         MethodCallExpr body = new MethodCallExpr( null, accessor.getName() );
         return new TypedExpression( body, Optional.of( accessorReturnType ));
     }
 
-    public static MethodCallExpr preprendNameExprToMethodCallExpr(NameExpr nameExpr, MethodCallExpr methodCallExpr) {
+    public static Expression prepend(Expression scope, Expression expr) {
+        final Optional<Expression> rootNode = findRootNode(expr);
 
-        final Optional<Expression> rootNode = findRootNote(methodCallExpr);
+        if(!rootNode.isPresent()) {
+            throw new UnsupportedOperationException("No root found");
+        }
 
         rootNode.map(f -> {
-            if(f instanceof MethodCallExpr) {
-                ((MethodCallExpr)f).setScope(nameExpr);
+            if (f instanceof NodeWithOptionalScope<?>) {
+                ((NodeWithOptionalScope) f).setScope(scope);
             }
             return f;
         });
 
-        return methodCallExpr;
+        return expr;
+
     }
 
-    private static Optional<Expression> findRootNote(Expression methodCallExpr) {
+    private static Optional<Expression> findRootNode(Expression expr) {
 
-        if(methodCallExpr instanceof MethodCallExpr) {
-            final MethodCallExpr methodCall = (MethodCallExpr)methodCallExpr;
+        if(expr instanceof NodeWithOptionalScope) {
+            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope)expr;
 
-            if(methodCall.getScope().isPresent()) {
-                return findRootNote(((MethodCallExpr) methodCallExpr).getScope().get());
-            } else {
-                return Optional.of(methodCall);
-            }
+            return exprWithScope.getScope().map(DrlxParseUtil::findRootNode).orElse(Optional.of(expr));
+
         }
 
         return Optional.empty();
