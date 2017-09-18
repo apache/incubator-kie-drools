@@ -34,14 +34,24 @@ public class AnyFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
         boolean result = false;
+        boolean containsNull = false;
+        // Spec. definition: return true if any item is true, else false if all items are false, else null
         for ( final Object element : list ) {
             if (element != null && !(element instanceof Boolean)) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "an element in the list is not a Boolean"));
             } else {
-                result |= element != null && element == Boolean.TRUE;
+                if (element != null) {
+                    result |= (Boolean) element;
+                } else if (!containsNull) {
+                    containsNull = true;
+                }
             }
         }
-        return FEELFnResult.ofResult( result );
+        if (containsNull && !result) {
+            return FEELFnResult.ofResult( null );
+        } else {
+            return FEELFnResult.ofResult( result );
+        }
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) Boolean single) {
