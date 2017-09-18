@@ -32,7 +32,8 @@ public class FEELConditionsAndLoopsTest extends BaseFEELTest {
                 { "if true then 10+5 else 10-5", BigDecimal.valueOf( 15 ) , null},
                 { "if false then \"foo\" else \"bar\"", "bar" , null},
                 { "if date(\"2016-08-02\") > date(\"2015-12-25\") then \"yey\" else \"nay\"", "yey" , null},
-                {"if null then \"foo\" else \"bar\"", null , FEELEvent.Severity.ERROR },
+                {"if null then \"foo\" else \"bar\"", "bar" , null },
+                {"if \"xyz\" then \"foo\" else \"bar\"", "bar" , null },
 
                 // for
                 {"for x in [ 10, 20, 30 ], y in [ 1, 2, 3 ] return x * y",
