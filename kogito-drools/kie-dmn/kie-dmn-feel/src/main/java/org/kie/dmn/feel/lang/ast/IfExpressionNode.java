@@ -63,16 +63,13 @@ public class IfExpressionNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
+        // spec says: if FEEL(e1) is true then FEEL(e2) else FEEL(e3)
         Object cond = this.condition.evaluate( ctx );
-        if ( cond instanceof Boolean ) {
-            if ( ((Boolean) cond) ) {
-                return this.thenExpression.evaluate( ctx );
-            } else {
-                return this.elseExpression.evaluate( ctx );
-            }
+        if ( cond != null && cond instanceof Boolean && cond == Boolean.TRUE ) {
+            return this.thenExpression.evaluate( ctx );
+        } else {
+            return this.elseExpression.evaluate( ctx );
         }
-        ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.CONDITION_WAS_NOT_A_BOOLEAN)) );
-        return null;
     }
 
     @Override
