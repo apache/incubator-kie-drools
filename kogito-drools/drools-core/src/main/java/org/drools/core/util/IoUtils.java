@@ -343,9 +343,9 @@ public class IoUtils {
 
     public static String asSystemSpecificPath(String urlPath, int colonIndex) {
         String ic = urlPath.substring( Math.max( 0, colonIndex - 2 ), colonIndex + 1 );
-        if  ( ic.matches( "\\/[A-Z]:" ) ) {
+        if  ( ic.matches( "\\/[a-zA-Z]:" ) ) {
             return urlPath.substring( colonIndex - 2 );
-        } else if  ( ic.matches( "[A-Z]:" ) ) {
+        } else if  ( ic.matches( "[a-zA-Z]:" ) ) {
             return urlPath.substring( colonIndex - 1 );
         } else {
             return urlPath.substring( colonIndex + 1 );
