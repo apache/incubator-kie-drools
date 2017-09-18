@@ -183,12 +183,19 @@ public class FEELParser {
                         offendingSymbol );
             }
         } else if( "in".equals( token.getText() ) ) {
-            return new SyntaxErrorEvent( FEELEvent.Severity.ERROR,
-                                              Msg.createMessage( Msg.INVALID_VARIABLE_NAME, "keyword", token.getText() ),
-                                              e,
-                                              line,
-                                              charPositionInLine,
-                                              offendingSymbol );
+            return new SyntaxErrorEvent(FEELEvent.Severity.ERROR,
+                                       Msg.createMessage(Msg.INVALID_VARIABLE_NAME, "keyword", token.getText()),
+                                       e,
+                                       line,
+                                       charPositionInLine,
+                                       offendingSymbol);
+        } else if( "}".equals( token.getText() ) &&  e != null && e.getRecognizer() instanceof Parser && ((Parser)e.getRecognizer()).getRuleInvocationStack().contains( "key" ) ) {
+            return new SyntaxErrorEvent(FEELEvent.Severity.ERROR,
+                                       Msg.createMessage(Msg.MISSING_EXPRESSION, e.getCtx().getText()),
+                                       e,
+                                       line,
+                                       charPositionInLine,
+                                       offendingSymbol);
         } else {
             return new SyntaxErrorEvent( FEELEvent.Severity.ERROR,
                                               Msg.createMessage( Msg.INVALID_VARIABLE_NAME, chars, token.getText() ),
