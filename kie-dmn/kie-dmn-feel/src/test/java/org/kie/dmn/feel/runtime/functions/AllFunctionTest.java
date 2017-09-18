@@ -58,14 +58,19 @@ public class AllFunctionTest {
     }
 
     @Test
-    public void invokeArrayParamTrue() {
+    public void invokeArrayParamReturnTrue() {
         FunctionTestUtil.assertResult(allFunction.invoke(new Object[]{Boolean.TRUE, Boolean.TRUE}), true);
     }
 
     @Test
-    public void invokeArrayParamFalse() {
+    public void invokeArrayParamReturnFalse() {
         FunctionTestUtil.assertResult(allFunction.invoke(new Object[]{Boolean.TRUE, Boolean.FALSE}), false);
-        FunctionTestUtil.assertResult(allFunction.invoke(new Object[]{Boolean.TRUE, null, Boolean.TRUE}), false);
+        FunctionTestUtil.assertResult(allFunction.invoke(new Object[]{Boolean.TRUE, null, Boolean.FALSE}), false);
+    }
+
+    @Test
+    public void invokeArrayParamReturnNull() {
+        FunctionTestUtil.assertResultNull(allFunction.invoke(new Object[]{Boolean.TRUE, null, Boolean.TRUE}));
     }
 
     @Test
@@ -86,14 +91,19 @@ public class AllFunctionTest {
     }
 
     @Test
-    public void invokeListParamTrue() {
+    public void invokeListParamReturnTrue() {
         FunctionTestUtil.assertResult(allFunction.invoke(Arrays.asList(Boolean.TRUE, Boolean.TRUE)), true);
     }
 
     @Test
-    public void invokeListParamFalse() {
+    public void invokeListParamReturnFalse() {
         FunctionTestUtil.assertResult(allFunction.invoke(Arrays.asList(Boolean.TRUE, Boolean.FALSE)), false);
-        FunctionTestUtil.assertResult(allFunction.invoke(Arrays.asList(Boolean.TRUE, null, Boolean.TRUE)), false);
+        FunctionTestUtil.assertResult(allFunction.invoke(Arrays.asList(Boolean.TRUE, null, Boolean.FALSE)), false);
+    }
+
+    @Test
+    public void invokeListParamReturnNull() {
+        FunctionTestUtil.assertResultNull(allFunction.invoke(Arrays.asList(Boolean.TRUE, null, Boolean.TRUE)));
     }
 
     @Test

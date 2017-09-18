@@ -58,7 +58,7 @@ public class AnyFunctionTest {
     }
 
     @Test
-    public void invokeArrayParamTrue() {
+    public void invokeArrayParamReturnTrue() {
         FunctionTestUtil.assertResult(anyFunction.invoke(new Object[]{Boolean.TRUE, Boolean.TRUE}), true);
         FunctionTestUtil.assertResult(anyFunction.invoke(new Object[]{Boolean.TRUE, Boolean.FALSE}), true);
         FunctionTestUtil.assertResult(anyFunction.invoke(new Object[]{Boolean.TRUE, null}), true);
@@ -66,9 +66,13 @@ public class AnyFunctionTest {
     }
 
     @Test
-    public void invokeArrayParamFalse() {
+    public void invokeArrayParamReturnFalse() {
         FunctionTestUtil.assertResult(anyFunction.invoke(new Object[]{Boolean.FALSE, Boolean.FALSE}), false);
-        FunctionTestUtil.assertResult(anyFunction.invoke(new Object[]{Boolean.FALSE, null, Boolean.FALSE}), false);
+    }
+
+    @Test
+    public void invokeArrayParamReturnNull() {
+        FunctionTestUtil.assertResultNull(anyFunction.invoke(new Object[]{Boolean.FALSE, null, Boolean.FALSE}));
     }
 
     @Test
@@ -89,7 +93,7 @@ public class AnyFunctionTest {
     }
 
     @Test
-    public void invokeListParamTrue() {
+    public void invokeListParamReturnTrue() {
         FunctionTestUtil.assertResult(anyFunction.invoke(Arrays.asList(Boolean.TRUE, Boolean.TRUE)), true);
         FunctionTestUtil.assertResult(anyFunction.invoke(Arrays.asList(Boolean.TRUE, Boolean.FALSE)), true);
         FunctionTestUtil.assertResult(anyFunction.invoke(Arrays.asList(Boolean.TRUE, null)), true);
@@ -97,9 +101,13 @@ public class AnyFunctionTest {
     }
 
     @Test
-    public void invokeListParamFalse() {
+    public void invokeListParamReturnFalse() {
         FunctionTestUtil.assertResult(anyFunction.invoke(Arrays.asList(Boolean.FALSE, Boolean.FALSE)), false);
-        FunctionTestUtil.assertResult(anyFunction.invoke(Arrays.asList(Boolean.FALSE, null, Boolean.FALSE)), false);
+    }
+
+    @Test
+    public void invokeListParamReturnNull() {
+        FunctionTestUtil.assertResultNull(anyFunction.invoke(Arrays.asList(Boolean.FALSE, null, Boolean.FALSE)));
     }
 
     @Test
