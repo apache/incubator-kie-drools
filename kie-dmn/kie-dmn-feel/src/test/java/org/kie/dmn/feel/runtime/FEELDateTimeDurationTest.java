@@ -106,8 +106,6 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
 //                { "date and time(\"2016-07-29T05:48:23.765-05:00\") - duration( \"P1Y1M\" ) ", OffsetDateTime.of(2015, 6, 29, 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
 //                { "date and time(\"2016-07-29T05:48:23.765-05:00\") - duration( \"P1DT1H1M\" ) ", OffsetDateTime.of(2016, 7, 28, 4, 47, 23, 765000000, ZoneOffset.ofHours( -5 )), null},
 
-                { "date and time(\"2016-07-29T05:48:23" + ZoneId.systemDefault().getRules().getStandardOffset(Instant.now()).getId() + "\") - date and time(\"2016-07-29T05:48:23\")", Duration.parse("PT1H") , null},
-                { "date and time(\"2016-07-29T05:48:23\") - date and time(\"2016-07-29T05:48:23" + ZoneId.systemDefault().getRules().getStandardOffset(Instant.now()).getId() + "\")", Duration.parse("PT-1H") , null},
                 { "duration( \"P2Y2M\" ) - duration( \"P1Y1M\" )", Period.parse("P1Y1M"), null },
                 { "duration( \"P2DT20H14M\" ) - duration( \"P1DT1H1M\" )", Duration.parse( "P1DT19H13M" ) , null},
                 { "date and time(\"2016-07-29T05:48:23Z\") - duration( \"P1Y1M\" )", ZonedDateTime.of(2015, 6, 29, 5, 48, 23, 0, ZoneId.of("Z").normalized()) , null},

@@ -16,15 +16,19 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.time.*;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class DateTimeFunction
         extends BaseFEELFunction {
@@ -63,15 +67,14 @@ public class DateTimeFunction
         if ( !(time instanceof LocalTime || time instanceof OffsetTime) ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "must be an instance of LocalTime or OffsetTime"));
         }
-        
+
         try {
-            if( date instanceof LocalDate && time instanceof LocalTime ) {
-                return FEELFnResult.ofResult( LocalDateTime.of( (LocalDate) date, (LocalTime) time ) );
-            } else if( date instanceof LocalDate && time instanceof OffsetTime ) {
-                return FEELFnResult.ofResult( ZonedDateTime.of( (LocalDate) date, LocalTime.from( time ), ZoneOffset.from( time ) ) );
+            if ( time instanceof LocalTime ) {
+                return FEELFnResult.ofResult(LocalDateTime.of((LocalDate) date, (LocalTime) time));
+            } else {
+                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), ZoneOffset.from(time)));
             }
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
-        } catch (DateTimeException e) {
+        } catch ( DateTimeException e ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
         }
     }
