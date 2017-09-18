@@ -78,16 +78,12 @@ public abstract class BaseFEELFunction
             boolean isNamedParams = params.length > 0 && params[0] instanceof NamedParameter;
             if ( !isCustomFunction() ) {
                 List<String> available = null;
-                Class[] classes = null;
                 if ( isNamedParams ) {
                     available = Stream.of( params ).map( p -> ((NamedParameter) p).getName() ).collect( Collectors.toList() );
-                    classes = Stream.of( params ).map( p -> p != null && ((NamedParameter)p).getValue() != null ? ((NamedParameter) p).getValue().getClass() : null ).toArray( Class[]::new );
-                } else {
-                    classes = Stream.of( params ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
                 }
 
 
-                CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams, available, classes );
+                CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams, available );
 
                 if ( cm != null ) {
                     Object result = cm.apply.invoke( this, cm.actualParams );
@@ -117,12 +113,11 @@ public abstract class BaseFEELFunction
 
                     return result;
                 } else {
-                    String ps = Arrays.toString( classes );
+                    String ps = getClass().toString();
                     logger.error( "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length() - 1 ) + " )'" );
-                    ctx.notifyEvt( () -> {
-                                                                   return new FEELEventBase( Severity.ERROR, "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length() - 1 ) + " )'", null );
-                                                               }
-                    );
+                    ctx.notifyEvt(() -> {
+                        return new FEELEventBase(Severity.ERROR, "Unable to find function '" + getName() + "( " + ps.substring(1, ps.length() - 1) + " )'", null);
+                    });
                 }
             } else {
                 if ( isNamedParams ) {
@@ -188,7 +183,7 @@ public abstract class BaseFEELFunction
         return params;
     }
 
-    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams, List<String> available, Class[] classes) {
+    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams, List<String> available) {
         CandidateMethod candidate = null;
         // first, look for exact matches
         for ( Method m : getClass().getDeclaredMethods() ) {

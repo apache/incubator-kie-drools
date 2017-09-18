@@ -18,12 +18,12 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.util.TypeUtil;
 
 public class MaxFunction
         extends BaseFEELFunction {
@@ -33,17 +33,21 @@ public class MaxFunction
     }
 
     public FEELFnResult<Object> invoke(@ParameterName("list") List list) {
-        if ( list == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
+        if ( list == null || list.isEmpty() ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null or empty"));
         } else {
-            return FEELFnResult.ofResult( Collections.max( list ) );
+            try {
+                return FEELFnResult.ofResult( Collections.max( list ) );
+            } catch (ClassCastException e) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "contains items that are not comparable"));
+            }
         }
     }
 
     public FEELFnResult<Object> invoke(@ParameterName("c") Object[] list) {
-        if ( list == null ) { 
+        if ( list == null || list.length == 0 ) {
             // Arrays.asList does not accept null as parameter
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "c", "cannot be null"));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "c", "cannot be null or empty"));
         }
         
         return invoke( Arrays.asList( list ) );

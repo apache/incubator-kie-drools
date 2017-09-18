@@ -19,11 +19,8 @@ package org.kie.dmn.feel.runtime.functions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class InsertBeforeFunction
         extends BaseFEELFunction {
@@ -47,11 +44,11 @@ public class InsertBeforeFunction
         }
 
         // spec requires us to return a new list
-        List result = new ArrayList( list );
+        final List<Object> result = new ArrayList<Object>( list );
         if( position.intValue() > 0 ) {
-            result.add( position.intValue()-1, newItem );
+            result.add( position.intValue() - 1, newItem );
         } else {
-            result.add( list.size()+position.intValue(), newItem );
+            result.add( list.size() + position.intValue(), newItem );
         }
         return FEELFnResult.ofResult( result );
     }

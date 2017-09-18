@@ -21,11 +21,9 @@ import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.util.EvalHelper;
 
 public class MeanFunction
@@ -38,6 +36,10 @@ public class MeanFunction
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName( "list" ) List list) {
+        if ( list == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
+        }
+
         FEELFnResult<BigDecimal> s = sum.invoke( list );
         
         Function<FEELEvent, FEELFnResult<BigDecimal>> ifLeft = (event) -> {
@@ -56,11 +58,10 @@ public class MeanFunction
     }
 
     public FEELFnResult<BigDecimal> invoke(@ParameterName( "list" ) Number single) {
-        if ( single == null ) { 
-            // Arrays.asList does not accept null as parameter
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the single value list cannot be null"));
+        if ( single == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "single", "the single value list cannot be null"));
         }
-        
+
         if( single instanceof BigDecimal ) {
             return FEELFnResult.ofResult((BigDecimal) single );
         } 
@@ -68,7 +69,7 @@ public class MeanFunction
         if ( result != null ) {
             return FEELFnResult.ofResult( result );
         } else {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "single element in list not a number"));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "single element in list is not a number"));
         }
     }
 

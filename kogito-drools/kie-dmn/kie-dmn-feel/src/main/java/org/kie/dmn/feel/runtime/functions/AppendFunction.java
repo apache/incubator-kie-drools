@@ -17,15 +17,10 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class AppendFunction
         extends BaseFEELFunction {
@@ -42,8 +37,8 @@ public class AppendFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "item", "cannot be null"));
         }
         // spec requires us to return a new list
-        List result = new ArrayList( list );
-        Stream.of( items ).forEach( i -> result.add( i ) );
+        final List<Object> result = new ArrayList<Object>( list );
+        result.addAll(Arrays.asList(items));
         return FEELFnResult.ofResult( result );
     }
 }

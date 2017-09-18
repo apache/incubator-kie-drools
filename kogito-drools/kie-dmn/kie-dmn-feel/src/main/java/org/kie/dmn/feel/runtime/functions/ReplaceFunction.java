@@ -28,15 +28,7 @@ public class ReplaceFunction
 
     public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern,
                                        @ParameterName( "replacement" ) String replacement ) {
-        if ( input == null ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "input", "cannot be null" ) );
-        }
-        if ( pattern == null ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "cannot be null" ) );
-        }
-
-        // for now, using standard java matches function
-        return FEELFnResult.ofResult( input.replaceAll( pattern, replacement ) );
+        return invoke(input, pattern, replacement, null);
     }
 
     public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern,
@@ -47,9 +39,18 @@ public class ReplaceFunction
         if ( pattern == null ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "cannot be null" ) );
         }
+        if ( replacement == null ) {
+            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "replacement", "cannot be null" ) );
+        }
 
-        // for now, using standard java replaceAll function... needs fixing to support flags
-        return FEELFnResult.ofResult( input.replaceAll( pattern, replacement ) );
+        final String flagsString;
+        if (flags != null && !flags.isEmpty()) {
+            flagsString = "(?" + flags + ")";
+        } else {
+            flagsString = "";
+        }
+
+        return FEELFnResult.ofResult( input.replaceAll( flagsString + pattern, replacement ) );
     }
 
 }

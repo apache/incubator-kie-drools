@@ -16,13 +16,6 @@
 
 package org.kie.dmn.feel.util;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.FEELProperty;
-import org.kie.dmn.feel.lang.ast.InfixOpNode;
-import org.kie.dmn.feel.runtime.Range;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -41,6 +34,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiPredicate;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELProperty;
+import org.kie.dmn.feel.runtime.Range;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger( EvalHelper.class );
@@ -51,7 +49,10 @@ public class EvalHelper {
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
-        if ( !(value instanceof Number || value instanceof String) ) {
+        if ( !(value instanceof Number
+                || value instanceof String)
+                || (value instanceof Double
+                && (value.toString().equals("NaN") || value.toString().equals("Infinity") || value.toString().equals("-Infinity"))) ) {
             return null;
         }
         if ( !BigDecimal.class.isAssignableFrom( value.getClass() ) ) {
@@ -59,12 +60,15 @@ public class EvalHelper {
                  value instanceof AtomicLong || value instanceof AtomicInteger ) {
                 value = new BigDecimal( ((Number) value).longValue(), MathContext.DECIMAL128 );
             } else if ( value instanceof BigInteger ) {
-                value = new BigDecimal( ((BigInteger) value).toString(), MathContext.DECIMAL128 );
+                value = new BigDecimal( (BigInteger) value, MathContext.DECIMAL128 );
             } else if ( value instanceof String ) {
                 // we need to remove leading zeros to prevent octal conversion
                 value = new BigDecimal( ((String) value).replaceFirst("^0+(?!$)", ""), MathContext.DECIMAL128 );
             } else {
-                value = new BigDecimal( ((Number) value).doubleValue(), MathContext.DECIMAL128 );
+                // doubleValue() sometimes produce rounding errors, so we need to use toString() instead
+                // We also need to remove trailing zeros, if there are some so for 10d we get BigDecimal.valueOf(10)
+                // instead of BigDecimal.valueOf(10.0).
+                value = new BigDecimal( removeTrailingZeros(value.toString()), MathContext.DECIMAL128 );
             }
         }
         return (BigDecimal) value;
@@ -392,5 +396,12 @@ public class EvalHelper {
         return true;
     }
 
-
+    private static String removeTrailingZeros(final String stringNumber) {
+        final String stringWithoutZeros = stringNumber.replaceAll("0*$", "");
+        if (Character.isDigit(stringWithoutZeros.charAt(stringWithoutZeros.length() - 1))) {
+            return stringWithoutZeros;
+        } else {
+            return stringWithoutZeros.substring(0, stringWithoutZeros.length() - 1);
+        }
+    }
 }

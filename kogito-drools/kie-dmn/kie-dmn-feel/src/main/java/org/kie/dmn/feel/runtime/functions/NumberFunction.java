@@ -17,12 +17,8 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.util.EvalHelper;
 
 public class NumberFunction
@@ -39,8 +35,12 @@ public class NumberFunction
         if ( group != null && !group.equals( " " ) && !group.equals( "." ) && !group.equals( "," ) ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "group", "not a valid one, can only be one of: dot ('.'), comma (','), space (' ') "));
         }
-        if ( decimal != null && ((!decimal.equals( "." ) && !decimal.equals( "," )) || (group != null && decimal.equals( group ))) ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "decimal", "invalid parameter 'decimal' used in conjuction with specified parameter 'group'"));
+        if ( decimal != null ) {
+            if (!decimal.equals( "." ) && !decimal.equals( "," )) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "decimal", "not a valid one, can only be one of: dot ('.'), comma (',') "));
+            } else if (group != null && decimal.equals( group )) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "decimal", "cannot be the same as parameter 'group' "));
+            }
         }
         
         if ( group != null ) {

@@ -53,7 +53,7 @@
                   <goal>bootstrap</goal>
                 </goals>
                 <configuration>
-                  <connectionUrl>scm:git:https://github.com/agilepro/dmn-tck.git</connectionUrl>
+                  <connectionUrl>scm:git:https://github.com/dmn-tck/tck</connectionUrl>
                   <goals>install -Ddrools.version=${project.version}</goals>
                   <goalsDirectory>runners</goalsDirectory>
                   <profiles>drools</profiles>

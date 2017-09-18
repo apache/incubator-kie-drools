@@ -46,7 +46,7 @@ public class RemoveFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "inconsistent with 'list' size"));
         }
         // spec requires us to return a new list
-        List result = new ArrayList( list );
+        List<Object> result = new ArrayList<Object>( list );
         if( position.intValue() > 0 ) {
             result.remove( position.intValue()-1 );
         } else {

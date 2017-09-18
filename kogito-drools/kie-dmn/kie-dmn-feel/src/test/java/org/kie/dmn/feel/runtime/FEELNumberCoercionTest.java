@@ -16,6 +16,7 @@
 package org.kie.dmn.feel.runtime;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.kie.dmn.feel.util.EvalHelper.getBigDecimalOrNull;
 
@@ -62,7 +63,7 @@ public class FEELNumberCoercionTest {
     }
     
     private static Map.Entry<String, Object> var(String name, Object value) {
-        return new SimpleEntry<String, Object>(name, value);
+        return new SimpleEntry<>(name, value);
     }
     
     @Test
@@ -75,6 +76,22 @@ public class FEELNumberCoercionTest {
         assertThat( evaluate(" x.y ", var("x", new HashMap(){{ put("y", 1.01d); }} )), is( getBigDecimalOrNull( 1.01d ) ) );
         assertThat( evaluate("ceiling( x.y )", var("x", new HashMap(){{ put("y", 1.01d); }} )), is( getBigDecimalOrNull( 2d ) ) );
     }
-    
-    
+
+    @Test
+    public void testMethodGetBigDecimalOrNull() {
+        assertThat( getBigDecimalOrNull((short) 1), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull((byte) 1), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull(1), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull(1L), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull(1f), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull(1.1f), is(BigDecimal.valueOf(1.1)) );
+        assertThat( getBigDecimalOrNull(1d), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull(1.1d), is(BigDecimal.valueOf(1.1)) );
+        assertThat( getBigDecimalOrNull("1"), is(BigDecimal.ONE) );
+        assertThat( getBigDecimalOrNull("1.1"), is(BigDecimal.valueOf(1.1)) );
+        assertThat( getBigDecimalOrNull("1.1000000"), is(BigDecimal.valueOf(1.1).setScale(7, BigDecimal.ROUND_HALF_EVEN)) );
+        assertThat( getBigDecimalOrNull(Double.POSITIVE_INFINITY), is(nullValue()) );
+        assertThat( getBigDecimalOrNull(Double.NEGATIVE_INFINITY), is(nullValue()) );
+        assertThat( getBigDecimalOrNull(Double.NaN), is(nullValue()) );
+    }
 }
