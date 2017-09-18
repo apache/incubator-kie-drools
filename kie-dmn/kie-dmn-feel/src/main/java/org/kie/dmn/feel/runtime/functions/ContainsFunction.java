@@ -16,10 +16,8 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class ContainsFunction
         extends BaseFEELFunction {
@@ -36,6 +34,6 @@ public class ContainsFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "match", "cannot be null"));
         }
         
-        return FEELFnResult.ofResult( string.indexOf( match ) >= 0 );
+        return FEELFnResult.ofResult(string.contains(match));
     }
 }

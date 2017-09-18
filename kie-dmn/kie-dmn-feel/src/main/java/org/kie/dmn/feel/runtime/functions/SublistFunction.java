@@ -18,11 +18,8 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class SublistFunction
         extends BaseFEELFunction {
@@ -48,7 +45,10 @@ public class SublistFunction
         if ( start.abs().intValue() > list.size() ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "start", "is inconsistent with 'list' size"));
         }
-        
+        if ( length != null && length.compareTo(BigDecimal.ZERO) <= 0) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "length", "must be a positive number when specified"));
+        }
+
         if ( start.intValue() > 0 ) {
             int end = length != null ? start.intValue() - 1 + length.intValue() : list.size();
             if ( end > list.size() ) {

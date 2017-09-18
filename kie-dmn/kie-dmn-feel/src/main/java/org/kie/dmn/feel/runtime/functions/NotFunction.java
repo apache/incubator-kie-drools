@@ -35,7 +35,7 @@ public class NotFunction
         if ( negand != null && !(negand instanceof Boolean) ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "negand", "must be a boolean value" ) );
         }
-        return FEELFnResult.ofResult( negand == null ? null : !((Boolean) negand).booleanValue() );
+        return FEELFnResult.ofResult( negand == null ? null : !((Boolean) negand) );
     }
 
 }

@@ -18,11 +18,8 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 public class AllFunction
         extends BaseFEELFunction {
@@ -32,18 +29,28 @@ public class AllFunction
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) List list) {
+        if ( list == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
+        }
         boolean result = true;
-        for ( Object element : list ) {
-            if ( element instanceof Boolean ) {
-                result &= ((Boolean) element);
-                if ( !result ) {
-                    break;
-                }
-            } else {
+        boolean containsNull = false;
+        // Spec. definition: return false if any item is false, else true if all items are true, else null
+        for ( final Object element : list ) {
+            if (element != null && !(element instanceof Boolean)) {
                 return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "an element in the list is not a Boolean"));
+            } else {
+                if (element != null) {
+                    result &= (Boolean) element;
+                } else if (!containsNull) {
+                    containsNull = true;
+                }
             }
         }
-        return FEELFnResult.ofResult( result );
+        if (containsNull && result) {
+            return FEELFnResult.ofResult( null );
+        } else {
+            return FEELFnResult.ofResult( result );
+        }
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) Boolean single) {
