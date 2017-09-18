@@ -32,4 +32,12 @@ public class IoUtilsTest {
         byte[] bytes = IoUtils.readBytesFromInputStream( new ReaderInputStream( new StringReader( "" ) ) );
         assertEquals(0, bytes.length);
     }
+	
+	@Test
+    public void testAsSystemSpecificPath() {
+        String urlPath = "c:\\workdir\\server-local\\instance\\tmp\\vfs\\deployment\\deploymentf7b5abe7c4c1cb56\\rules-with-kjar-1.0.jar-57cc270a5729d6b2\\rules-with-kjar-1.0.jar";
+        String specificPath = IoUtils.asSystemSpecificPath(urlPath, 1);
+        // Check that windows drive (even in lower case) is not removed
+        assertEquals(urlPath, specificPath);
+    }
 }
