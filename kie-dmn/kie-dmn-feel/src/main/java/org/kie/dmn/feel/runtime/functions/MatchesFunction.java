@@ -50,6 +50,8 @@ public class MatchesFunction
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "is invalid and can not be compiled", e ) );
         } catch ( IllegalArgumentException t ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "flags", "contains unknown flags", t ) );
+        } catch ( Throwable t) {
+            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "is invalid and can not be compiled", t ) );
         }
     }
 
