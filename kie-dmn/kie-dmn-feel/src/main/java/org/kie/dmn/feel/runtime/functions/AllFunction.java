@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.util.TypeUtil;
 
 public class AllFunction
         extends BaseFEELFunction {
@@ -33,15 +32,15 @@ public class AllFunction
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
-        if (!TypeUtil.isCollectionTypeHomogenous(list, Boolean.class)) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "an element in the list is not a Boolean"));
-        }
+        boolean result = true;
         for ( final Object element : list ) {
-            if (element == null || element == Boolean.FALSE) {
-                return FEELFnResult.ofResult( false );
+            if (element != null && !(element instanceof Boolean)) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "an element in the list is not a Boolean"));
+            } else {
+                result &= element != null && element == Boolean.TRUE;
             }
         }
-        return FEELFnResult.ofResult( true );
+        return FEELFnResult.ofResult( result );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) Boolean single) {

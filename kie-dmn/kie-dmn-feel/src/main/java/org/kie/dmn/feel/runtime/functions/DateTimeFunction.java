@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -67,10 +68,14 @@ public class DateTimeFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "must be an instance of LocalTime or OffsetTime"));
         }
 
-        if( time instanceof LocalTime ) {
-            return FEELFnResult.ofResult( LocalDateTime.of( (LocalDate) date, (LocalTime) time ) );
-        } else {
-            return FEELFnResult.ofResult( ZonedDateTime.of( (LocalDate) date, LocalTime.from( time ), ZoneOffset.from( time ) ) );
+        try {
+            if ( time instanceof LocalTime ) {
+                return FEELFnResult.ofResult(LocalDateTime.of((LocalDate) date, (LocalTime) time));
+            } else {
+                return FEELFnResult.ofResult(ZonedDateTime.of((LocalDate) date, LocalTime.from(time), ZoneOffset.from(time)));
+            }
+        } catch ( DateTimeException e ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
         }
     }
 }

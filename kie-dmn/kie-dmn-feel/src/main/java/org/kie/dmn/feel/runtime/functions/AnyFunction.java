@@ -33,15 +33,15 @@ public class AnyFunction
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
-        if (!TypeUtil.isCollectionTypeHomogenous(list, Boolean.class)) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "an element in the list is not a Boolean"));
-        }
+        boolean result = false;
         for ( final Object element : list ) {
-            if (element != null && element == Boolean.TRUE) {
-                return FEELFnResult.ofResult( true );
+            if (element != null && !(element instanceof Boolean)) {
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "an element in the list is not a Boolean"));
+            } else {
+                result |= element != null && element == Boolean.TRUE;
             }
         }
-        return FEELFnResult.ofResult( false );
+        return FEELFnResult.ofResult( result );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) Boolean single) {
