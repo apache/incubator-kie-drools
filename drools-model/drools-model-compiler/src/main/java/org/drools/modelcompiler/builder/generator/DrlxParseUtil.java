@@ -34,6 +34,7 @@ import org.drools.javaparser.ast.expr.LiteralExpr;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
 import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
+import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
 import org.drools.javaparser.ast.type.ReferenceType;
@@ -43,10 +44,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import static org.drools.core.util.StringUtils.ucFirst;
@@ -215,6 +218,21 @@ public class DrlxParseUtil {
         return new TypedExpression(body, Optional.of(accessorReturnType));
     }
 
+    public static Class<?> returnTypeOfMethodCallExpr(MethodCallExpr methodCallExpr, Class<?> clazz) {
+        // This currently works only if the arguments are strings
+        final Class[] argsType = methodCallExpr.getArguments().stream()
+                .map((Expression e) -> ((StringLiteralExpr)e).getValue())
+                .map(String::getClass).toArray(Class[]::new);
+        Method accessor;
+        try {
+            String methodName = methodCallExpr.getName().asString();
+            accessor = clazz.getMethod(methodName, argsType);
+        } catch (NoSuchMethodException e) {
+            throw new UnsupportedOperationException("Method missing");
+        }
+        return accessor.getReturnType();
+    }
+
     public static Expression prepend(Expression scope, Expression expr) {
         final Optional<Expression> rootNode = findRootNode(expr);
 
@@ -251,7 +269,7 @@ public class DrlxParseUtil {
         }
     }
 
-    public static MethodCallExpr toMethodCall(Expression expr) {
+    public static MethodCallExpr toMethodCallString(Expression expr) {
 
         final String[] expressions = expr.toString().split("\\.");
 
@@ -268,21 +286,33 @@ public class DrlxParseUtil {
 
         List<ParsedMethod> methodCall = new ArrayList<>();
 
+
+        Class<?> previousClass = clazz;
         for (ParsedMethod e : callStackLeftToRight) {
              if(e.expression instanceof NameExpr) {
-                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, clazz);
+                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass);
                  Class<?> returnType = te.getType().orElseThrow(() -> new UnsupportedOperationException("Need return type here"));
                  methodCall.add(e.withConvertedExpr(te.getExpression(), returnType));
+                 previousClass = returnType;
             } else if(e.expression instanceof FieldAccessExpr) {
-                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, clazz);
+                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass);
                  Class<?> returnType = te.getType().orElseThrow(() -> new UnsupportedOperationException("Need return type here"));
                  methodCall.add(e.withConvertedExpr(te.getExpression(), returnType));
-            }
+                 previousClass = returnType;
+            } else if(e.expression instanceof MethodCallExpr) {
+                 Class<?> returnType = returnTypeOfMethodCallExpr((MethodCallExpr) e.expression, previousClass);
+                 MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).removeScope();
+                 methodCall.add(e.withConvertedExpr(cloned, returnType));
+                 previousClass = returnType;
+             }
         }
 
-        System.out.println("methodCall = " + methodCall);
-
-        return (MethodCallExpr) expr;
+        final MethodCallExpr e = methodCall.stream().map((ParsedMethod p) -> (MethodCallExpr)p.expression)
+                .reduce((MethodCallExpr a, MethodCallExpr b) -> {
+            b.setScope(a);
+            return b;
+        }).orElseThrow(() -> new UnsupportedOperationException("No Expression converted"));
+        return e;
     }
 
     public static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> stack) {

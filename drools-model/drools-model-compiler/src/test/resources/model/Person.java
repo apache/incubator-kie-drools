@@ -1,22 +1,20 @@
 package org.model;
 
-import org.openjdk.jmh.util.Optional;
-
 public class Person {
     private final String name;
     private final int myAge;
-    private final Optional<Address> address;
+    private final Address address;
 
     public Person(String name, int age) {
         this.name = name;
         this.myAge = age;
-        this.address = Optional.none();
+        this.address = null;
     }
 
     public Person(String name, int myAge, Address address) {
         this.name = name;
         this.myAge = myAge;
-        this.address = Optional.of(address);
+        this.address = address;
     }
 
     public String getName() {

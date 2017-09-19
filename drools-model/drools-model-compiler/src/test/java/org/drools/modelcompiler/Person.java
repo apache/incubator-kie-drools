@@ -5,7 +5,7 @@ import org.openjdk.jmh.util.Optional;
 public class Person {
     private String name;
     private int age;
-    private Optional<Address> address;
+    private Address address;
 
     public Person() { }
 
@@ -17,7 +17,7 @@ public class Person {
     public Person(String name, int age, Address address) {
         this.name = name;
         this.age = age;
-        this.address = Optional.of(address);
+        this.address = address;
     }
 
 
@@ -37,7 +37,7 @@ public class Person {
         this.age = age;
     }
 
-    public Optional<Address> getAddress() {
+    public Address getAddress() {
         return address;
     }
 
