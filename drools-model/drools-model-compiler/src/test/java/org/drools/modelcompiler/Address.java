@@ -1,4 +1,4 @@
-package org.model;
+package org.drools.modelcompiler;
 
 public class Address {
 

@@ -1,6 +1,5 @@
 package org.drools.modelcompiler.builder.generator;
 
-import org.apache.commons.math3.analysis.function.Exp;
 import org.drools.javaparser.JavaParser;
 import org.drools.javaparser.ast.expr.Expression;
 import org.drools.javaparser.ast.expr.MethodCallExpr;
@@ -16,13 +15,13 @@ public class DrlxParseUtilTest {
     @Test
     public void prependTest() {
 
-        final Expression expr = JavaParser.parseExpression("getName().startsWith(\"M\")");
+        final Expression expr = JavaParser.parseExpression("getAddressName().startsWith(\"M\")");
         final NameExpr nameExpr = new NameExpr("_this");
 
 
         final Expression concatenated = DrlxParseUtil.prepend(nameExpr, expr);
 
-        assertEquals("_this.getName().startsWith(\"M\")", concatenated.toString());
+        assertEquals("_this.getAddressName().startsWith(\"M\")", concatenated.toString());
 
     }
 
@@ -39,15 +38,15 @@ public class DrlxParseUtilTest {
     @Ignore
     public void transformMethodExpressionToMethodCallExpression() {
 
-        final Expression expr = JavaParser.parseExpression("address.name.startsWith(\"M\")");
-        final Expression expr1 = JavaParser.parseExpression("getAddress().name.startsWith(\"M\")");
-        final Expression expr2 = JavaParser.parseExpression("address.getName().startsWith(\"M\")");
+        final Expression expr = JavaParser.parseExpression("address.addressName.startsWith(\"M\")");
+        final Expression expr1 = JavaParser.parseExpression("getAddress().addressName.startsWith(\"M\")");
+        final Expression expr2 = JavaParser.parseExpression("address.getAddressName().startsWith(\"M\")");
 
-        final MethodCallExpr expected = JavaParser.parseExpression("getName().getAddress().startsWith(\"M\")");
+        final MethodCallExpr expected = JavaParser.parseExpression("getAddress().getAddressName().startsWith(\"M\")");
 
-        assertEquals(expected, DrlxParseUtil.toMethodCall(expr, Person.class));
-        assertEquals(expected, DrlxParseUtil.toMethodCall(expr1, Person.class));
-        assertEquals(expected, DrlxParseUtil.toMethodCall(expr2, Person.class));
+        assertEquals(expected, DrlxParseUtil.toMethodCall(expr));
+        assertEquals(expected, DrlxParseUtil.toMethodCall(expr1));
+        assertEquals(expected, DrlxParseUtil.toMethodCall(expr2));
     }
 
 

@@ -1,8 +1,11 @@
 package org.drools.modelcompiler;
 
+import org.openjdk.jmh.util.Optional;
+
 public class Person {
     private String name;
     private int age;
+    private Optional<Address> address;
 
     public Person() { }
 
@@ -10,6 +13,13 @@ public class Person {
         this.name = name;
         this.age = age;
     }
+
+    public Person(String name, int age, Address address) {
+        this.name = name;
+        this.age = age;
+        this.address = Optional.of(address);
+    }
+
 
     public String getName() {
         return name;
@@ -25,6 +35,10 @@ public class Person {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Optional<Address> getAddress() {
+        return address;
     }
 
     @Override

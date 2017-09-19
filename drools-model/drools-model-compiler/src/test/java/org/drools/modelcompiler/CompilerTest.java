@@ -324,7 +324,7 @@ public class CompilerTest {
                 "import " + Result.class.getCanonicalName() + ";" +
                 "import " + Person.class.getCanonicalName() + ";" +
                 "rule R when\n" +
-                "  $p : Person( name.address.startsWith(\"M\"))\n" +
+                "  $p : Person( address.addressName.startsWith(\"M\"))\n" +
                 "then\n" +
                 "  Result r = new Result($p.getName());" +
                 "  insert(r);\n" +
@@ -332,13 +332,13 @@ public class CompilerTest {
 
         KieSession ksession = getKieSession( str );
 
-        ksession.insert( new Person( "Mark", 37 ) );
-        ksession.insert( new Person( "Luca", 32 ) );
+        ksession.insert( new Person( "Mark", 37, new Address("London")) );
+        ksession.insert( new Person( "Luca", 32 , new Address("Milan")) );
         ksession.fireAllRules();
 
         Collection<Result> results = getObjects( ksession, Result.class );
         assertEquals( 1, results.size() );
-        assertEquals( "Mark", results.iterator().next().getValue() );
+        assertEquals( "Luca", results.iterator().next().getValue() );
     }
 
     @Test

@@ -36,16 +36,20 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
-import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.modelcompiler.builder.generator.ModelGenerator.RuleContext;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Stack;
+import java.util.stream.Collectors;
+
+import static org.drools.core.util.StringUtils.ucFirst;
 
 public class DrlxParseUtil {
 
@@ -211,10 +215,6 @@ public class DrlxParseUtil {
         return new TypedExpression(body, Optional.of(accessorReturnType));
     }
 
-    public static TypedExpression typedExpressionToMethodCallExpr(TypedExpression t) {
-        return nameExprToMethodCallExpr(t.getExpression().toString(), t.getClass());
-    }
-
     public static Expression prepend(Expression scope, Expression expr) {
         final Optional<Expression> rootNode = findRootNode(expr);
 
@@ -243,20 +243,40 @@ public class DrlxParseUtil {
         return Optional.empty();
     }
 
-    public static MethodCallExpr toMethodCall(Expression expr, Class<?> clazz) {
+    public static String property2Getter(String field) {
+        if(!field.contains("(")) {
+            return "get" + ucFirst(field) + "()";
+        } else {
+            return field;
+        }
+    }
 
-        final Stack<ParsedMethod> callStackLeftToRight = new Stack<>();
+    public static MethodCallExpr toMethodCall(Expression expr) {
+
+        final String[] expressions = expr.toString().split("\\.");
+
+        final List<String> converted = Arrays.stream(expressions).map((String e) -> property2Getter(e)).collect(Collectors.toList());
+
+        String expression = String.join(".", converted);
+        return JavaParser.parseExpression(expression);
+    }
+    public static MethodCallExpr toMethodCallWithClassCheck(Expression expr, Class<?> clazz) {
+
+        final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
 
         createExpressionCall(expr, callStackLeftToRight);
 
-        List<Expression> methodCall = new ArrayList<>();
+        List<ParsedMethod> methodCall = new ArrayList<>();
 
         for (ParsedMethod e : callStackLeftToRight) {
-            if(e.expression instanceof FieldAccessExpr) {
-                TypedExpression returnType = nameExprToMethodCallExpr(e.fieldToResolve, clazz);
-                methodCall.add(returnType.getExpression());
-            } else{
-                methodCall.add(e.expression);
+             if(e.expression instanceof NameExpr) {
+                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, clazz);
+                 Class<?> returnType = te.getType().orElseThrow(() -> new UnsupportedOperationException("Need return type here"));
+                 methodCall.add(e.withConvertedExpr(te.getExpression(), returnType));
+            } else if(e.expression instanceof FieldAccessExpr) {
+                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, clazz);
+                 Class<?> returnType = te.getType().orElseThrow(() -> new UnsupportedOperationException("Need return type here"));
+                 methodCall.add(e.withConvertedExpr(te.getExpression(), returnType));
             }
         }
 
@@ -265,19 +285,31 @@ public class DrlxParseUtil {
         return (MethodCallExpr) expr;
     }
 
-    public static Expression createExpressionCall(Expression expr, Stack<ParsedMethod> stack) {
+    public static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> stack) {
 
         if(expr instanceof FieldAccessExpr) {
             FieldAccessExpr fae = (FieldAccessExpr)expr;
 
+            stack.push(new ParsedMethod(fae, fae.getName().asString()));
 
+        } else if (expr instanceof MethodCallExpr) {
+            MethodCallExpr mce = (MethodCallExpr)expr;
 
+            stack.push(new ParsedMethod(mce, ((MethodCallExpr) expr).getName().asString()));
+        } else if (expr instanceof NameExpr) {
+            NameExpr ne = (NameExpr) expr;
+
+            stack.push(new ParsedMethod(ne, ne.getName().asString()));
         }
 
         if (expr instanceof NodeWithOptionalScope) {
             final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
 
             exprWithScope.getScope().map((Expression scope) -> createExpressionCall(scope, stack));
+        } else if (expr instanceof FieldAccessExpr) {
+            // Cannot recurse over getScope() as FieldAccessExpr doesn't support the NodeWithOptionalScope, it will
+            // support a new interface to traverse among scopes NodeWithTraversableScope
+            createExpressionCall(((FieldAccessExpr) expr).getScope(), stack);
         }
 
         return expr;
@@ -286,11 +318,29 @@ public class DrlxParseUtil {
     static class ParsedMethod {
         final Expression expression;
         final String fieldToResolve;
+        final Optional<Class<?>> returnType;
 
         public ParsedMethod(Expression expression, String fieldToResolve) {
             this.expression = expression;
             this.fieldToResolve = fieldToResolve;
+            this.returnType = Optional.empty();
+        }
+        public ParsedMethod(Expression expression, String fieldToResolve, Class<?> returnType) {
+            this.expression = expression;
+            this.fieldToResolve = fieldToResolve;
+            this.returnType = Optional.of(returnType);
         }
 
-     }
+        public ParsedMethod withConvertedExpr(Expression e, Class<?> returnType) {
+            return new ParsedMethod(e, fieldToResolve, returnType);
+        }
+
+        @Override
+        public String toString() {
+            return "ParsedMethod{" +
+                    "expression=" + expression +
+                    ", fieldToResolve='" + fieldToResolve + '\'' +
+                    '}';
+        }
+    }
 }
