@@ -36,18 +36,21 @@ import org.drools.javaparser.ast.expr.NameExpr;
 import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.modelcompiler.builder.generator.ModelGenerator.RuleContext;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Stack;
 
 public class DrlxParseUtil {
 
-    public static IndexUtil.ConstraintType toConstraintType( Operator operator ) {
-        switch ( operator ) {
+    public static IndexUtil.ConstraintType toConstraintType(Operator operator) {
+        switch (operator) {
             case EQUALS:
                 return ConstraintType.EQUAL;
             case NOT_EQUALS:
@@ -61,31 +64,30 @@ public class DrlxParseUtil {
             case LESS_EQUALS:
                 return ConstraintType.LESS_OR_EQUAL;
         }
-        throw new UnsupportedOperationException( "Unknown operator " + operator );
+        throw new UnsupportedOperationException("Unknown operator " + operator);
     }
 
-    public static TypedExpression toTypedExpression( RuleContext context, Class<?> patternType, Expression drlxExpr,
-                                                     Set<String> usedDeclarations, Set<String> reactOnProperties ) {
-        
+    public static TypedExpression toTypedExpression(RuleContext context, Class<?> patternType, Expression drlxExpr,
+                                                    Set<String> usedDeclarations, Set<String> reactOnProperties) {
+
         Class<?> typeCursor = patternType;
-        
-        if ( drlxExpr instanceof LiteralExpr ) {
-            return new TypedExpression( drlxExpr , Optional.empty());
-        } else if ( drlxExpr instanceof ThisExpr ) {
-            return new TypedExpression( new NameExpr( "_this") , Optional.empty());
-        }
-        else if ( drlxExpr instanceof NameExpr ) {
+
+        if (drlxExpr instanceof LiteralExpr) {
+            return new TypedExpression(drlxExpr, Optional.empty());
+        } else if (drlxExpr instanceof ThisExpr) {
+            return new TypedExpression(new NameExpr("_this"), Optional.empty());
+        } else if (drlxExpr instanceof NameExpr) {
             String name = drlxExpr.toString();
             if (context.declarations.containsKey(name)) {
                 // then drlxExpr is a single NameExpr referring to a binding, e.g.: "$p1".
-                usedDeclarations.add( name );
-                return new TypedExpression( drlxExpr, Optional.empty());
+                usedDeclarations.add(name);
+                return new TypedExpression(drlxExpr, Optional.empty());
             } else {
                 TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor);
-                Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr)expression.getExpression());
+                Expression plusThis = prepend(new NameExpr("_this"), (MethodCallExpr) expression.getExpression());
                 return new TypedExpression(plusThis, expression.getType());
             }
-        } else if ( drlxExpr instanceof FieldAccessExpr ) {
+        } else if (drlxExpr instanceof FieldAccessExpr) {
             List<Node> childNodes = drlxExpr.getChildNodes();
             Node firstNode = childNodes.get(0);
 
@@ -93,9 +95,9 @@ public class DrlxParseUtil {
             if (isInLineCast) {
                 InlineCastExpr inlineCast = (InlineCastExpr) firstNode;
                 try {
-                    typeCursor = context.getPkg().getTypeResolver().resolveType( inlineCast.getType().toString() );
+                    typeCursor = context.getPkg().getTypeResolver().resolveType(inlineCast.getType().toString());
                 } catch (ClassNotFoundException e) {
-                    throw new RuntimeException( e );
+                    throw new RuntimeException(e);
                 }
                 firstNode = inlineCast.getExpression();
             }
@@ -103,72 +105,70 @@ public class DrlxParseUtil {
             Expression previous;
 
             if (firstNode instanceof NameExpr) {
-                String firstName = ( (NameExpr) firstNode ).getName().getIdentifier();
-                if ( context.declarations.containsKey( firstName ) ) {
+                String firstName = ((NameExpr) firstNode).getName().getIdentifier();
+                if (context.declarations.containsKey(firstName)) {
                     // do NOT append any reactOnProperties.
                     // because reactOnProperties is referring only to the properties of the type of the pattern, not other declarations properites.
-                    usedDeclarations.add( firstName );
+                    usedDeclarations.add(firstName);
                     if (!isInLineCast) {
-                        typeCursor = context.declarations.get( firstName ).declarationClass;
+                        typeCursor = context.declarations.get(firstName).declarationClass;
                     }
-                    previous = new NameExpr( firstName );
+                    previous = new NameExpr(firstName);
                 } else {
-                    Method firstAccessor = ClassUtils.getAccessor( typeCursor, firstName );
+                    Method firstAccessor = ClassUtils.getAccessor(typeCursor, firstName);
                     if (firstAccessor != null) {
-                        reactOnProperties.add( firstName );
+                        reactOnProperties.add(firstName);
                         typeCursor = firstAccessor.getReturnType();
-                        previous = new MethodCallExpr( new NameExpr( "_this" ), firstAccessor.getName() );
+                        previous = new MethodCallExpr(new NameExpr("_this"), firstAccessor.getName());
                     } else {
                         throw new UnsupportedOperationException("firstNode I don't know about");
                         // TODO would it be fine to assume is a global if it's not in the declarations and not the first accesssor in a chain?
                     }
                 }
-
             } else if (firstNode instanceof ThisExpr) {
-                previous = new NameExpr( "_this" );
-                if ( childNodes.size() > 1 && childNodes.get(1) instanceof NameExpr ) {
+                previous = new NameExpr("_this");
+                if (childNodes.size() > 1 && childNodes.get(1) instanceof NameExpr) {
                     NameExpr child0 = (NameExpr) childNodes.get(1);
-                    reactOnProperties.add( child0.getName().getIdentifier() );
+                    reactOnProperties.add(child0.getName().getIdentifier());
                 }
-
-            } else if (firstNode instanceof FieldAccessExpr && ( (FieldAccessExpr) firstNode ).getScope() instanceof ThisExpr) {
-                String firstName = ( (FieldAccessExpr) firstNode ).getName().getIdentifier();
-                Method firstAccessor = ClassUtils.getAccessor( typeCursor, firstName );
+            } else if (firstNode instanceof FieldAccessExpr && ((FieldAccessExpr) firstNode).getScope() instanceof ThisExpr) {
+                String firstName = ((FieldAccessExpr) firstNode).getName().getIdentifier();
+                Method firstAccessor = ClassUtils.getAccessor(typeCursor, firstName);
                 if (firstAccessor != null) {
-                    reactOnProperties.add( firstName );
+                    reactOnProperties.add(firstName);
                     typeCursor = firstAccessor.getReturnType();
-                    previous = new MethodCallExpr( new NameExpr( "_this" ), firstAccessor.getName() );
+                    previous = new MethodCallExpr(new NameExpr("_this"), firstAccessor.getName());
                 } else {
                     throw new UnsupportedOperationException("firstNode I don't know about");
                     // TODO would it be fine to assume is a global if it's not in the declarations and not the first accesssor in a chain?
                 }
             } else {
-                throw new UnsupportedOperationException( "Unknown node: " + firstNode );
+                throw new UnsupportedOperationException("Unknown node: " + firstNode);
             }
 
-            childNodes = drlxExpr.getChildNodes().subList( 1, drlxExpr.getChildNodes().size() );
+            childNodes = drlxExpr.getChildNodes().subList(1, drlxExpr.getChildNodes().size());
 
             TypedExpression typedExpression = new TypedExpression();
             if (isInLineCast) {
-                ReferenceType castType = JavaParser.parseClassOrInterfaceType( typeCursor.getName() );
-                typedExpression.setPrefixExpression( new InstanceOfExpr( previous, castType ) );
-                previous = new EnclosedExpr( new CastExpr( castType, previous ) );
+                ReferenceType castType = JavaParser.parseClassOrInterfaceType(typeCursor.getName());
+                typedExpression.setPrefixExpression(new InstanceOfExpr(previous, castType));
+                previous = new EnclosedExpr(new CastExpr(castType, previous));
             }
-            if ( drlxExpr instanceof NullSafeFieldAccessExpr ) {
-                typedExpression.setPrefixExpression( new BinaryExpr( previous, new NullLiteralExpr(), Operator.NOT_EQUALS ) );
+            if (drlxExpr instanceof NullSafeFieldAccessExpr) {
+                typedExpression.setPrefixExpression(new BinaryExpr(previous, new NullLiteralExpr(), Operator.NOT_EQUALS));
             }
 
-            for ( Node part : childNodes ) {
+            for (Node part : childNodes) {
                 String field = part.toString();
-                Method accessor = ClassUtils.getAccessor( typeCursor, field );
+                Method accessor = ClassUtils.getAccessor(typeCursor, field);
                 if (accessor == null) {
-                    throw new IllegalStateException( "Unknown field '" + field + "' on type " + typeCursor );
+                    throw new IllegalStateException("Unknown field '" + field + "' on type " + typeCursor);
                 }
                 typeCursor = accessor.getReturnType();
-                previous = new MethodCallExpr( previous, accessor.getName() );
+                previous = new MethodCallExpr(previous, accessor.getName());
             }
 
-            return typedExpression.setExpression( previous ).setType( Optional.of( typeCursor ) );
+            return typedExpression.setExpression(previous).setType(Optional.of(typeCursor));
         } else {
             // TODO the below should not be needed anymore...
             drlxExpr.getChildNodes();
@@ -176,45 +176,49 @@ public class DrlxParseUtil {
             String[] parts = expression.split("\\.");
             StringBuilder telescoping = new StringBuilder();
             boolean implicitThis = true;
-            
-            for ( int idx = 0; idx < parts.length ; idx++ ) {
+
+            for (int idx = 0; idx < parts.length; idx++) {
                 String part = parts[idx];
                 boolean isGlobal = false;
-                if ( isGlobal ) {
+                if (isGlobal) {
                     implicitThis = false;
-                    telescoping.append( part );
-                } else if ( idx == 0 && context.declarations.containsKey(part) ) {
+                    telescoping.append(part);
+                } else if (idx == 0 && context.declarations.containsKey(part)) {
                     implicitThis = false;
-                    usedDeclarations.add( part );
-                    telescoping.append( part );
+                    usedDeclarations.add(part);
+                    telescoping.append(part);
                 } else {
-                    if ( ( idx == 0 && implicitThis ) || ( idx == 1 && implicitThis == false ) ) {
+                    if ((idx == 0 && implicitThis) || (idx == 1 && implicitThis == false)) {
                         reactOnProperties.add(part);
                     }
-                    Method accessor = ClassUtils.getAccessor( typeCursor, part );
+                    Method accessor = ClassUtils.getAccessor(typeCursor, part);
                     typeCursor = accessor.getReturnType();
-                    telescoping.append( "." + accessor.getName() + "()" );
+                    telescoping.append("." + accessor.getName() + "()");
                 }
             }
-            return new TypedExpression( implicitThis ? "_this" + telescoping.toString() : telescoping.toString(), Optional.of( typeCursor ));
+            return new TypedExpression(implicitThis ? "_this" + telescoping.toString() : telescoping.toString(), Optional.of(typeCursor));
         }
     }
 
     public static TypedExpression nameExprToMethodCallExpr(String name, Class<?> clazz) {
-        Method accessor = ClassUtils.getAccessor(clazz, name );
-        if(accessor == null) {
+        Method accessor = ClassUtils.getAccessor(clazz, name);
+        if (accessor == null) {
             throw new UnsupportedOperationException("Accessor missing");
         }
         Class<?> accessorReturnType = accessor.getReturnType();
 
-        MethodCallExpr body = new MethodCallExpr( null, accessor.getName() );
-        return new TypedExpression( body, Optional.of( accessorReturnType ));
+        MethodCallExpr body = new MethodCallExpr(null, accessor.getName());
+        return new TypedExpression(body, Optional.of(accessorReturnType));
+    }
+
+    public static TypedExpression typedExpressionToMethodCallExpr(TypedExpression t) {
+        return nameExprToMethodCallExpr(t.getExpression().toString(), t.getClass());
     }
 
     public static Expression prepend(Expression scope, Expression expr) {
         final Optional<Expression> rootNode = findRootNode(expr);
 
-        if(!rootNode.isPresent()) {
+        if (!rootNode.isPresent()) {
             throw new UnsupportedOperationException("No root found");
         }
 
@@ -226,19 +230,67 @@ public class DrlxParseUtil {
         });
 
         return expr;
-
     }
 
     private static Optional<Expression> findRootNode(Expression expr) {
 
-        if(expr instanceof NodeWithOptionalScope) {
-            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope)expr;
+        if (expr instanceof NodeWithOptionalScope) {
+            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
 
             return exprWithScope.getScope().map(DrlxParseUtil::findRootNode).orElse(Optional.of(expr));
-
         }
 
         return Optional.empty();
-
     }
+
+    public static MethodCallExpr toMethodCall(Expression expr, Class<?> clazz) {
+
+        final Stack<ParsedMethod> callStackLeftToRight = new Stack<>();
+
+        createExpressionCall(expr, callStackLeftToRight);
+
+        List<Expression> methodCall = new ArrayList<>();
+
+        for (ParsedMethod e : callStackLeftToRight) {
+            if(e.expression instanceof FieldAccessExpr) {
+                TypedExpression returnType = nameExprToMethodCallExpr(e.fieldToResolve, clazz);
+                methodCall.add(returnType.getExpression());
+            } else{
+                methodCall.add(e.expression);
+            }
+        }
+
+        System.out.println("methodCall = " + methodCall);
+
+        return (MethodCallExpr) expr;
+    }
+
+    public static Expression createExpressionCall(Expression expr, Stack<ParsedMethod> stack) {
+
+        if(expr instanceof FieldAccessExpr) {
+            FieldAccessExpr fae = (FieldAccessExpr)expr;
+
+
+
+        }
+
+        if (expr instanceof NodeWithOptionalScope) {
+            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
+
+            exprWithScope.getScope().map((Expression scope) -> createExpressionCall(scope, stack));
+        }
+
+        return expr;
+    }
+
+    static class ParsedMethod {
+        final Expression expression;
+        final String fieldToResolve;
+
+        public ParsedMethod(Expression expression, String fieldToResolve) {
+            this.expression = expression;
+            this.fieldToResolve = fieldToResolve;
+        }
+
+     }
 }
