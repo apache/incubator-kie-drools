@@ -318,7 +318,6 @@ public class CompilerTest {
     }
 
     @Test
-    @Ignore
     public void testSimpleInsertWithProperties() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -784,7 +783,6 @@ public class CompilerTest {
     }
 
     @Test
-    @Ignore
     public void testAccumulateWithProperty() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +

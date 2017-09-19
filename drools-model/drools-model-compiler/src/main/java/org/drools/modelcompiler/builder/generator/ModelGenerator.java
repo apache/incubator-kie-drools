@@ -531,18 +531,11 @@ public class ModelGenerator {
         }
 
         if (drlxExpr instanceof MethodCallExpr) {
-            MethodCallExpr methodCallExpr = (MethodCallExpr)drlxExpr;
+            MethodCallExpr methodCallExpr = (MethodCallExpr) drlxExpr;
 
             NameExpr _this = new NameExpr("_this");
-
-            Expression scope = methodCallExpr.getScope().get();
-
-            if(scope instanceof NameExpr) {
-                final TypedExpression scopeMethod = DrlxParseUtil.nameExprToMethodCallExpr(scope.toString(), patternType);
-            }
-
-
-            Expression withThis = DrlxParseUtil.prepend(_this, methodCallExpr);
+            MethodCallExpr converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
+            Expression withThis = DrlxParseUtil.prepend(_this, converted);
 
             return buildDslExpression(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, withThis, false);
         }
