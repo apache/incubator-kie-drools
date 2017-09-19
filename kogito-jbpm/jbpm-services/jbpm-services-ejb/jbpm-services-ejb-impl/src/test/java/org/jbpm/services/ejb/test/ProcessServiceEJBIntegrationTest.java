@@ -78,6 +78,7 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
         processes.add("processes/customtask.bpmn");
         processes.add("processes/humanTask.bpmn");
         processes.add("processes/signal.bpmn");
+		processes.add("processes/signalWithExpression.bpmn2");
         processes.add("processes/import.bpmn");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
@@ -339,6 +340,44 @@ public class ProcessServiceEJBIntegrationTest extends AbstractTestSupport {
     	pi2 = processService.getProcessInstance(processInstanceId2);    	
     	assertNull(pi2);
     }
+
+	@Test
+	public void testStartAndSignalProcessesWithExpression() {
+		assertNotNull(deploymentService);
+
+		KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+		deploymentService.deploy(deploymentUnit);
+		units.add(deploymentUnit);
+
+		boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+		assertTrue(isDeployed);
+
+		assertNotNull(processService);
+		// first start first instance
+		long processInstanceId1 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.signalWithExpression");
+		assertNotNull(processInstanceId1);
+
+		ProcessInstance pi = processService.getProcessInstance(processInstanceId1);
+		assertNotNull(pi);
+		// then start second instance
+		long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.signalWithExpression");
+		assertNotNull(processInstanceId2);
+
+		ProcessInstance pi2 = processService.getProcessInstance(processInstanceId2);
+		assertNotNull(pi2);
+
+		List<Long> instances = new ArrayList<Long>();
+		instances.add(processInstanceId1);
+		instances.add(processInstanceId2);
+		// and lastly cancel both
+		processService.signalProcessInstances(instances, "MySignal", null);
+
+		pi = processService.getProcessInstance(processInstanceId1);
+		assertNull(pi);
+		pi2 = processService.getProcessInstance(processInstanceId2);
+		assertNull(pi2);
+	}
     
     @Test
     public void testStartAndSignal() {

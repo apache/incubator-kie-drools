@@ -29,6 +29,7 @@ import org.drools.core.command.runtime.process.SetProcessInstanceVariablesComman
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.process.instance.WorkItemManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.process.instance.impl.util.VariableUtil;
 import org.jbpm.services.api.DeploymentNotFoundException;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
@@ -85,7 +86,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public Long startProcess(String deploymentId, String processId) {
 
-		return startProcess(deploymentId, processId, new HashMap<String, Object>());
+		return startProcess(deploymentId, processId, new HashMap<>());
 	}
 
 	@Override
@@ -103,7 +104,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		params = process(params, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
         RuntimeEngine engine = manager.getRuntimeEngine(getContext(params));
         KieSession ksession = engine.getKieSession();
-        ProcessInstance pi = null;
+        ProcessInstance pi;
         try {
             pi = ksession.startProcess(processId, params);
             return pi.getId();
@@ -114,7 +115,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 
 	@Override
 	public Long startProcess(String deploymentId, String processId, CorrelationKey correlationKey) {
-		return startProcess(deploymentId, processId, correlationKey, new HashMap<String, Object>());
+		return startProcess(deploymentId, processId, correlationKey, new HashMap<>());
 	}
 
 	@Override
@@ -132,7 +133,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		params = process(params, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
         RuntimeEngine engine = manager.getRuntimeEngine(getContext(params));
         KieSession ksession = engine.getKieSession();
-        ProcessInstance pi = null;
+        ProcessInstance pi;
         try {
             pi = ((CorrelationAwareProcessRuntime)ksession).startProcess(processId, correlationKey, params);
             return pi.getId();
@@ -156,7 +157,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public void abortProcessInstance(Long processInstanceId) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState().intValue() != 1) {
+		if (piDesc == null || piDesc.getState() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -185,7 +186,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public void signalProcessInstance(Long processInstanceId, String signalName, Object event) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState().intValue() != 1) {
+		if (piDesc == null || piDesc.getState() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -270,7 +271,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public void setProcessVariable(Long processInstanceId, String variableId, Object value) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState().intValue() != 1) {
+		if (piDesc == null || piDesc.getState() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -293,7 +294,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public void setProcessVariables(Long processInstanceId, Map<String, Object> variables) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState().intValue() != 1) {
+		if (piDesc == null || piDesc.getState() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -316,7 +317,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public Object getProcessInstanceVariable(Long processInstanceId, String variableName) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState().intValue() != 1) {
+		if (piDesc == null || piDesc.getState() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -327,7 +328,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
             KieSession ksession = engine.getKieSession();
-            Object variable = ksession.execute(new ExecutableCommand<Object>() {
+           return ksession.execute(new ExecutableCommand<Object>() {
 
                 private static final long serialVersionUID = -2693525229757876896L;
 
@@ -338,11 +339,9 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
                     if (pi == null) {
                         throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
                     }
-                    Object variable = pi.getVariable(variableName);
-                    return variable;
+                    return pi.getVariable(variableName);
                 }
             });
-            return variable;
         } catch(SessionNotFoundException e) {
             throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
@@ -353,7 +352,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public Map<String, Object> getProcessInstanceVariables(Long processInstanceId) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState().intValue() != 1) {
+		if (piDesc == null || piDesc.getState() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -389,7 +388,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         try {
             KieSession ksession = engine.getKieSession();
             ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
-            Collection<String> activeSignals = new ArrayList<String>();
+            Collection<String> activeSignals = new ArrayList<>();
 
             if (processInstance != null) {
                 ((ProcessInstanceImpl) processInstance)
@@ -481,7 +480,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 	@Override
 	public List<WorkItem> getWorkItemByProcessInstance(Long processInstanceId) {
 		ProcessInstanceDesc piDesc = dataService.getProcessInstanceById(processInstanceId);
-		if (piDesc == null || piDesc.getState().intValue() != 1) {
+		if (piDesc == null || piDesc.getState() != 1) {
 			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
 		}
 		DeployedUnit deployedUnit = deploymentService.getDeployedUnit(piDesc.getDeploymentId());
@@ -492,7 +491,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
             KieSession ksession = engine.getKieSession();
-            List<WorkItem> workItems = new ArrayList<WorkItem>();
+            List<WorkItem> workItems = new ArrayList<>();
 
         	Collection<NodeInstanceDesc> nodes = dataService.getProcessInstanceHistoryActive(processInstanceId, null);
 
@@ -564,12 +563,12 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 
 	protected Collection<String> collectActiveSignals(
 			Collection<NodeInstance> activeNodes) {
-		Collection<String> activeNodesComposite = new ArrayList<String>();
+		Collection<String> activeNodesComposite = new ArrayList<>();
 		for (NodeInstance nodeInstance : activeNodes) {
 			if (nodeInstance instanceof EventNodeInstance) {
 				String type = ((EventNodeInstance) nodeInstance).getEventNode().getType();
 				if (type != null && !type.startsWith("Message-")) {
-					activeNodesComposite.add(type);
+					activeNodesComposite.add(VariableUtil.resolveVariable(type, nodeInstance));
 				}
 
 			}

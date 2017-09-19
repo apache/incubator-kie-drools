@@ -72,6 +72,7 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
         processes.add("repo/processes/general/humanTask.bpmn");
         processes.add("repo/processes/general/import.bpmn");
         processes.add("repo/processes/general/signal.bpmn");
+		processes.add("repo/processes/general/signalWithExpression.bpmn2");
         processes.add("repo/processes/general/callactivity.bpmn");
 
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
@@ -290,6 +291,37 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
     	pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
+
+	@Test
+	public void testStartAndSignalProcessWithExpression() {
+		assertNotNull(deploymentService);
+
+		KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+		deploymentService.deploy(deploymentUnit);
+		units.add(deploymentUnit);
+
+		boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+		assertTrue(isDeployed);
+
+		assertNotNull(processService);
+
+		long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.signalWithExpression");
+		assertNotNull(processInstanceId);
+
+		ProcessInstance pi = processService.getProcessInstance(processInstanceId);
+		assertNotNull(pi);
+
+		Collection<String> signals = processService.getAvailableSignals(processInstanceId);
+		assertNotNull(signals);
+		assertEquals(1, signals.size());
+		assertTrue(signals.contains("MySignal"));
+
+		processService.signalProcessInstance(processInstanceId, "MySignal", null);
+
+		pi = processService.getProcessInstance(processInstanceId);
+		assertNull(pi);
+	}
 
     @Test
     public void testStartAndSignalProcesses() {
