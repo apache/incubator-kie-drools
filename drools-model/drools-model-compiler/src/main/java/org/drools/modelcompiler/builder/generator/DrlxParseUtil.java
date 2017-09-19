@@ -16,6 +16,16 @@
 
 package org.drools.modelcompiler.builder.generator;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
@@ -37,20 +47,9 @@ import org.drools.javaparser.ast.expr.NullLiteralExpr;
 import org.drools.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.javaparser.ast.expr.ThisExpr;
 import org.drools.javaparser.ast.nodeTypes.NodeWithOptionalScope;
+import org.drools.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import org.drools.javaparser.ast.type.ReferenceType;
 import org.drools.modelcompiler.builder.generator.ModelGenerator.RuleContext;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.Stack;
-import java.util.stream.Collectors;
 
 import static org.drools.core.util.StringUtils.ucFirst;
 
@@ -261,7 +260,75 @@ public class DrlxParseUtil {
         return Optional.empty();
     }
 
-    public static String property2Getter(String field) {
+    public static MethodCallExpr toMethodCallWithClassCheck(Expression expr, Class<?> clazz) {
+
+        final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
+
+        createExpressionCall(expr, callStackLeftToRight);
+
+        List<Expression> methodCall = new ArrayList<>();
+        Class<?> previousClass = clazz;
+        for (ParsedMethod e : callStackLeftToRight) {
+            if (e.expression instanceof NameExpr || e.expression instanceof FieldAccessExpr) {
+                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass);
+                Class<?> returnType = te.getType().orElseThrow(() -> new UnsupportedOperationException("Need return type here"));
+                methodCall.add(te.getExpression());
+                previousClass = returnType;
+            } else if (e.expression instanceof MethodCallExpr) {
+                Class<?> returnType = returnTypeOfMethodCallExpr((MethodCallExpr) e.expression, previousClass);
+                MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).removeScope();
+                methodCall.add(cloned);
+                previousClass = returnType;
+            }
+        }
+
+        return (MethodCallExpr) methodCall.stream()
+                .reduce((Expression a, Expression b) -> {
+                    ((MethodCallExpr) b).setScope(a);
+                    return b;
+                }).orElseThrow(() -> new UnsupportedOperationException("No Expression converted"));
+    }
+
+    public static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> expressions) {
+
+        if(expr instanceof NodeWithSimpleName) {
+            NodeWithSimpleName fae = (NodeWithSimpleName)expr;
+            expressions.push(new ParsedMethod(expr, fae.getName().asString()));
+        }
+
+        if (expr instanceof NodeWithOptionalScope) {
+            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
+
+            exprWithScope.getScope().map((Expression scope) -> createExpressionCall(scope, expressions));
+        } else if (expr instanceof FieldAccessExpr) {
+            // Cannot recurse over getScope() as FieldAccessExpr doesn't support the NodeWithOptionalScope,
+            // it will support a new interface to traverse among scopes called NodeWithTraversableScope so
+            // we can merge this and the previous branch
+            createExpressionCall(((FieldAccessExpr) expr).getScope(), expressions);
+        }
+
+        return expr;
+    }
+
+    static class ParsedMethod {
+        final Expression expression;
+        final String fieldToResolve;
+
+        public ParsedMethod(Expression expression, String fieldToResolve) {
+            this.expression = expression;
+            this.fieldToResolve = fieldToResolve;
+        }
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "expression=" + expression +
+                    ", fieldToResolve='" + fieldToResolve + '\'' +
+                    '}';
+        }
+    }
+
+    private static String property2Getter(String field) {
         if(!field.contains("(")) {
             return "get" + ucFirst(field) + "()";
         } else {
@@ -277,100 +344,5 @@ public class DrlxParseUtil {
 
         String expression = String.join(".", converted);
         return JavaParser.parseExpression(expression);
-    }
-    public static MethodCallExpr toMethodCallWithClassCheck(Expression expr, Class<?> clazz) {
-
-        final Deque<ParsedMethod> callStackLeftToRight = new LinkedList<>();
-
-        createExpressionCall(expr, callStackLeftToRight);
-
-        List<ParsedMethod> methodCall = new ArrayList<>();
-
-
-        Class<?> previousClass = clazz;
-        for (ParsedMethod e : callStackLeftToRight) {
-             if(e.expression instanceof NameExpr) {
-                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass);
-                 Class<?> returnType = te.getType().orElseThrow(() -> new UnsupportedOperationException("Need return type here"));
-                 methodCall.add(e.withConvertedExpr(te.getExpression(), returnType));
-                 previousClass = returnType;
-            } else if(e.expression instanceof FieldAccessExpr) {
-                TypedExpression te = nameExprToMethodCallExpr(e.fieldToResolve, previousClass);
-                 Class<?> returnType = te.getType().orElseThrow(() -> new UnsupportedOperationException("Need return type here"));
-                 methodCall.add(e.withConvertedExpr(te.getExpression(), returnType));
-                 previousClass = returnType;
-            } else if(e.expression instanceof MethodCallExpr) {
-                 Class<?> returnType = returnTypeOfMethodCallExpr((MethodCallExpr) e.expression, previousClass);
-                 MethodCallExpr cloned = ((MethodCallExpr) e.expression.clone()).removeScope();
-                 methodCall.add(e.withConvertedExpr(cloned, returnType));
-                 previousClass = returnType;
-             }
-        }
-
-        final MethodCallExpr e = methodCall.stream().map((ParsedMethod p) -> (MethodCallExpr)p.expression)
-                .reduce((MethodCallExpr a, MethodCallExpr b) -> {
-            b.setScope(a);
-            return b;
-        }).orElseThrow(() -> new UnsupportedOperationException("No Expression converted"));
-        return e;
-    }
-
-    public static Expression createExpressionCall(Expression expr, Deque<ParsedMethod> stack) {
-
-        if(expr instanceof FieldAccessExpr) {
-            FieldAccessExpr fae = (FieldAccessExpr)expr;
-
-            stack.push(new ParsedMethod(fae, fae.getName().asString()));
-
-        } else if (expr instanceof MethodCallExpr) {
-            MethodCallExpr mce = (MethodCallExpr)expr;
-
-            stack.push(new ParsedMethod(mce, ((MethodCallExpr) expr).getName().asString()));
-        } else if (expr instanceof NameExpr) {
-            NameExpr ne = (NameExpr) expr;
-
-            stack.push(new ParsedMethod(ne, ne.getName().asString()));
-        }
-
-        if (expr instanceof NodeWithOptionalScope) {
-            final NodeWithOptionalScope<?> exprWithScope = (NodeWithOptionalScope) expr;
-
-            exprWithScope.getScope().map((Expression scope) -> createExpressionCall(scope, stack));
-        } else if (expr instanceof FieldAccessExpr) {
-            // Cannot recurse over getScope() as FieldAccessExpr doesn't support the NodeWithOptionalScope, it will
-            // support a new interface to traverse among scopes NodeWithTraversableScope
-            createExpressionCall(((FieldAccessExpr) expr).getScope(), stack);
-        }
-
-        return expr;
-    }
-
-    static class ParsedMethod {
-        final Expression expression;
-        final String fieldToResolve;
-        final Optional<Class<?>> returnType;
-
-        public ParsedMethod(Expression expression, String fieldToResolve) {
-            this.expression = expression;
-            this.fieldToResolve = fieldToResolve;
-            this.returnType = Optional.empty();
-        }
-        public ParsedMethod(Expression expression, String fieldToResolve, Class<?> returnType) {
-            this.expression = expression;
-            this.fieldToResolve = fieldToResolve;
-            this.returnType = Optional.of(returnType);
-        }
-
-        public ParsedMethod withConvertedExpr(Expression e, Class<?> returnType) {
-            return new ParsedMethod(e, fieldToResolve, returnType);
-        }
-
-        @Override
-        public String toString() {
-            return "ParsedMethod{" +
-                    "expression=" + expression +
-                    ", fieldToResolve='" + fieldToResolve + '\'' +
-                    '}';
-        }
     }
 }
