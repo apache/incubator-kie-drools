@@ -681,7 +681,7 @@ public class CompilerTest {
     }
 
     @Test
-    public void testQuery() {
+    public void testQueryZeroArgs() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "query olderThan\n" +
@@ -700,6 +700,27 @@ public class CompilerTest {
         Person p = (Person) res.get("$p");
         assertEquals("Mario", p.getName());
 
+    }
+
+    @Test
+    @Ignore
+    public void testQueryOneArgument() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "query olderThan( int $age )\n" +
+                        "    $p : Person(age > $age)\n" +
+                        "end ";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mark", 39 ) );
+        ksession.insert( new Person( "Mario", 41 ) );
+
+        QueryResults results = ksession.getQueryResults( "olderThan", 40 );
+
+        assertEquals( 1, results.size() );
+        Person p = (Person) results.iterator().next().get( "$p" );
+        assertEquals( "Mario", p.getName() );
     }
 
     @Test

@@ -220,7 +220,7 @@ public class ModelGenerator {
 
         RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator());
 
-        visit(context, ruleDescr.getLhs());
+        visit(context, ruleDescr);
 
         for (Entry<String, DeclarationSpec> decl : context.declarations.entrySet()) {
             ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
@@ -389,9 +389,29 @@ public class ModelGenerator {
             visit( context, ( (NotDescr) descr ));
         } else if ( descr instanceof ExistsDescr) {
             visit( context, ( (ExistsDescr) descr ));
+        } else if ( descr instanceof QueryDescr) {
+            visit( context, ( (QueryDescr) descr ));
         } else {
             throw new UnsupportedOperationException("TODO"); // TODO
         }
+    }
+
+    private static void visit( RuleContext context, QueryDescr descr ) {
+
+        for(int i = 0; i < descr.getParameters().length; i++) {
+            final String argument = descr.getParameters()[i];
+            final Class<?> type;
+            try {
+                type = Class.forName(descr.getParameterTypes()[i]);
+            } catch (ClassNotFoundException e) {
+                throw new UnsupportedOperationException("Query argument type not supported");
+            }
+
+            context.queryParameters.add(new QueryParameter(argument, type));
+
+        }
+
+        visit(context, descr.getLhs());
     }
 
     private static void visit( RuleContext context, AccumulateDescr descr ) {
@@ -760,6 +780,7 @@ public class ModelGenerator {
         Map<String, DeclarationSpec> declarations = new HashMap<>();
         Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
         List<Expression> expressions = new ArrayList<>();
+        List<QueryParameter> queryParameters = new ArrayList<>();
 
         public RuleContext(InternalKnowledgePackage pkg, DRLExprIdGenerator exprIdGenerator) {
             this.pkg = pkg;
@@ -786,6 +807,16 @@ public class ModelGenerator {
 
         public String getExprId(Class<?> patternType, String drlConstraint) {
             return exprIdGenerator.getExprId(patternType, drlConstraint);
+        }
+    }
+
+    public static class QueryParameter {
+        final String name;
+        final Class<?> type;
+
+        public QueryParameter(String name, Class<?> type) {
+            this.name = name;
+            this.type = type;
         }
     }
 
