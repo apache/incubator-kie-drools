@@ -105,50 +105,65 @@ public abstract class AbstractKieProject implements KieProject {
         return kSessionName == null ? getDefaultKieSession() : kSessionModels.get( kSessionName );
     }
 
-    void indexParts( Collection<InternalKieModule> kieModules,
+    void indexParts( InternalKieModule mainKieModule,
+                     Collection<InternalKieModule> depKieModules,
                      Map<String, InternalKieModule> kJarFromKBaseName ) {
-        for ( InternalKieModule kJar : kieModules ) {
-            KieModuleModel kieProject = kJar.getKieModuleModel();
-            for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
-                if (kieBaseModel.isDefault()) {
-                    if (defaultKieBase == null) {
-                        defaultKieBase = kieBaseModel;
-                    } else {
-                        defaultKieBase = null;
-                        log.warn("Found more than one default KieBase: disabling all. KieBases will be accessible only by name");
-                    }
+        for ( InternalKieModule kJar : depKieModules ) {
+            indexKieModule( kJarFromKBaseName, kJar, false );
+        }
+        if (mainKieModule != null) {
+            indexKieModule( kJarFromKBaseName, mainKieModule, true );
+        }
+    }
+
+    private void indexKieModule( Map<String, InternalKieModule> kJarFromKBaseName, InternalKieModule kJar, boolean isMainModule ) {
+        boolean defaultKieBaseFromMain = false;
+        boolean defaultKieSessionFromMain = false;
+        boolean defaultStatelessKieSessionFromMain = false;
+        KieModuleModel kieProject = kJar.getKieModuleModel();
+
+        for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
+            if (kieBaseModel.isDefault()) {
+                if (defaultKieBase == null || (isMainModule && !defaultKieBaseFromMain)) {
+                    defaultKieBase = kieBaseModel;
+                    defaultKieBaseFromMain = isMainModule;
+                } else {
+                    defaultKieBase = null;
+                    log.warn("Found more than one default KieBase: disabling all. KieBases will be accessible only by name");
                 }
+            }
 
-                kBaseModels.put( kieBaseModel.getName(), kieBaseModel );
-                ((KieBaseModelImpl) kieBaseModel).setKModule( kieProject ); // should already be set, but just in case
+            kBaseModels.put( kieBaseModel.getName(), kieBaseModel );
+            ((KieBaseModelImpl) kieBaseModel).setKModule( kieProject ); // should already be set, but just in case
 
-                kJarFromKBaseName.put( kieBaseModel.getName(), kJar );
-                for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
-                    if (kieSessionModel.isDefault()) {
-                        if (kieSessionModel.getType() == KieSessionModel.KieSessionType.STATEFUL) {
-                            if (defaultKieSession == null) {
-                                defaultKieSession = kieSessionModel;
-                            } else {
-                                defaultKieSession = null;
-                                log.warn("Found more than one default KieSession: disabling all. KieSessions will be accessible only by name");
-                            }
+            kJarFromKBaseName.put( kieBaseModel.getName(), kJar );
+            for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
+                if (kieSessionModel.isDefault()) {
+                    if (kieSessionModel.getType() == KieSessionModel.KieSessionType.STATEFUL) {
+                        if (defaultKieSession == null || (isMainModule && !defaultKieSessionFromMain)) {
+                            defaultKieSession = kieSessionModel;
+                            defaultKieSessionFromMain = isMainModule;
                         } else {
-                            if (defaultStatelessKieSession == null) {
-                                defaultStatelessKieSession = kieSessionModel;
-                            } else {
-                                defaultStatelessKieSession = null;
-                                log.warn("Found more than one default StatelessKieSession: disabling all. StatelessKieSessions will be accessible only by name");
-                            }
+                            defaultKieSession = null;
+                            log.warn("Found more than one default KieSession: disabling all. KieSessions will be accessible only by name");
+                        }
+                    } else {
+                        if (defaultStatelessKieSession == null || (isMainModule && !defaultStatelessKieSessionFromMain)) {
+                            defaultStatelessKieSession = kieSessionModel;
+                            defaultStatelessKieSessionFromMain = isMainModule;
+                        } else {
+                            defaultStatelessKieSession = null;
+                            log.warn("Found more than one default StatelessKieSession: disabling all. StatelessKieSessions will be accessible only by name");
                         }
                     }
-
-                    ((KieSessionModelImpl) kieSessionModel).setKBase( kieBaseModel ); // should already be set, but just in case
-                    kSessionModels.put( kieSessionModel.getName(), kieSessionModel );
                 }
+
+                ((KieSessionModelImpl) kieSessionModel).setKBase( kieBaseModel ); // should already be set, but just in case
+                kSessionModels.put( kieSessionModel.getName(), kieSessionModel );
             }
         }
     }
-    
+
     void cleanIndex() {
         kBaseModels.clear();
         kSessionModels.clear();
