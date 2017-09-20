@@ -117,8 +117,11 @@ public abstract class AbstractKieProject implements KieProject {
     }
 
     private void indexKieModule( Map<String, InternalKieModule> kJarFromKBaseName, InternalKieModule kJar, boolean isMainModule ) {
-        KieModuleModel kieProject = kJar.getKieModuleModel();
         boolean defaultKieBaseFromMain = false;
+        boolean defaultKieSessionFromMain = false;
+        boolean defaultStatelessKieSessionFromMain = false;
+        KieModuleModel kieProject = kJar.getKieModuleModel();
+
         for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
             if (kieBaseModel.isDefault()) {
                 if (defaultKieBase == null || (isMainModule && !defaultKieBaseFromMain)) {
@@ -134,8 +137,6 @@ public abstract class AbstractKieProject implements KieProject {
             ((KieBaseModelImpl) kieBaseModel).setKModule( kieProject ); // should already be set, but just in case
 
             kJarFromKBaseName.put( kieBaseModel.getName(), kJar );
-            boolean defaultKieSessionFromMain = false;
-            boolean defaultStatelessKieSessionFromMain = false;
             for ( KieSessionModel kieSessionModel : kieBaseModel.getKieSessionModels().values() ) {
                 if (kieSessionModel.isDefault()) {
                     if (kieSessionModel.getType() == KieSessionModel.KieSessionType.STATEFUL) {
