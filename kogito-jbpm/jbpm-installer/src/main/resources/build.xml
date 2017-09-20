@@ -458,6 +458,8 @@
       <arg value="-Dorg.kie.server.persistence.ds=java:jboss/datasources/jbpmDS" />
       <arg value="-Dorg.kie.server.controller=http://localhost:8080/jbpm-console/rest/controller" />
       <arg value="-Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server" />
+      <arg value="-Dorg.kie.demo=true"/>
+      <arg value="-Dorg.jbpm.casemgmt.showcase.url=/jbpm-casemgmt"/>
       <!--arg value="-Dorg.uberfire.nio.git.daemon.port=${org.uberfire.nio.git.daemon.port}" />
       <arg value="-Dorg.uberfire.nio.git.ssh.port=${org.uberfire.nio.git.ssh.port}" />
       <arg value="-Djboss.socket.binding.port-offset=${jboss.port.offset}" />
@@ -477,6 +479,8 @@
       <arg value="-Dorg.kie.server.persistence.ds=java:jboss/datasources/jbpmDS" />
       <arg value="-Dorg.kie.server.controller=http://localhost:8080/jbpm-console/rest/controller" />
       <arg value="-Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server" />
+      <arg value="-Dorg.kie.demo=true"/>
+      <arg value="-Dorg.jbpm.casemgmt.showcase.url=/jbpm-casemgmt"/>
       <!--arg value="-Dorg.uberfire.nio.git.daemon.port=${org.uberfire.nio.git.daemon.port}" />
       <arg value="-Dorg.uberfire.nio.git.ssh.port=${org.uberfire.nio.git.ssh.port}" />
       <arg value="-Djboss.socket.binding.port-offset=${jboss.port.offset}" />
