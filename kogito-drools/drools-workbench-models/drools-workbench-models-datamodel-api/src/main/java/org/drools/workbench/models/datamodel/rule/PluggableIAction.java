@@ -12,17 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
-package org.drools.workbench.models.commons.backend.rule.actions;
+package org.drools.workbench.models.datamodel.rule;
 
-import org.drools.workbench.models.datamodel.rule.IAction;
-import org.drools.workbench.models.datamodel.rule.PluggableIAction;
+/**
+ * Represents a custom IAction, which is recognized by an implementation of
+ * org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension.
+ */
+public interface PluggableIAction extends IAction {
 
-public class TestIAction implements PluggableIAction {
-
-    @Override
-    public String getStringRepresentation() {
-        return "testIAction()";
-    }
+    String getStringRepresentation();
 }

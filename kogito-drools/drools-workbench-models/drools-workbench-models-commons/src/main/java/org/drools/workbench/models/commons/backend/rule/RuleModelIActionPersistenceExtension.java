@@ -16,15 +16,12 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.commons.backend.rule.exception.RuleModelDRLPersistenceException;
+import org.drools.workbench.models.datamodel.rule.PluggableIAction;
 
 public interface RuleModelIActionPersistenceExtension {
 
-    boolean accept(final IAction iAction);
-
-    String marshal(final IAction iAction);
-
     boolean accept(final String iActionString);
 
-    IAction unmarshal(final String iActionString);
+    PluggableIAction unmarshal(final String iActionString) throws RuleModelDRLPersistenceException;
 }

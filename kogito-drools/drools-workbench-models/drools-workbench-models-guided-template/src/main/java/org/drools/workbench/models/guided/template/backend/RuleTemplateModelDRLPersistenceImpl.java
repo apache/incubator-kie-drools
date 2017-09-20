@@ -18,8 +18,6 @@ package org.drools.workbench.models.guided.template.backend;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +33,6 @@ import org.drools.template.objects.ArrayDataProvider;
 import org.drools.template.parser.DefaultTemplateContainer;
 import org.drools.template.parser.TemplateDataListener;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
-import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.commons.backend.rule.RuleModelPersistence;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
@@ -98,14 +95,12 @@ public class RuleTemplateModelDRLPersistenceImpl
     protected RHSActionVisitor getRHSActionVisitor(final boolean isDSLEnhanced,
                                                    final StringBuilder buf,
                                                    final String indentation,
-                                                   final RHSGeneratorContextFactory generatorContextFactory,
-                                                   final Collection<RuleModelIActionPersistenceExtension> extensions) {
+                                                   final RHSGeneratorContextFactory generatorContextFactory) {
         return new RHSActionVisitor(isDSLEnhanced,
                                     bindingsPatterns,
                                     bindingsFields,
                                     constraintValueBuilder,
                                     generatorContextFactory,
-                                    extensions,
                                     buf,
                                     indentation);
     }
@@ -421,7 +416,6 @@ public class RuleTemplateModelDRLPersistenceImpl
                                 final Map<String, FieldConstraint> bindingsFields,
                                 final DRLConstraintValueBuilder constraintValueBuilder,
                                 final RHSGeneratorContextFactory generatorContextFactory,
-                                final Collection<RuleModelIActionPersistenceExtension> extensions,
                                 final StringBuilder b,
                                 final String indentation) {
             super(isDSLEnhanced,
@@ -429,7 +423,6 @@ public class RuleTemplateModelDRLPersistenceImpl
                   bindingsFields,
                   constraintValueBuilder,
                   generatorContextFactory,
-                  extensions,
                   b,
                   indentation);
         }
@@ -550,8 +543,7 @@ public class RuleTemplateModelDRLPersistenceImpl
     public String marshal(final RuleModel model) {
 
         //Build rule
-        final String ruleTemplate = marshalRule(model,
-                                                Collections.emptyList());
+        final String ruleTemplate = marshalRule(model);
         log.debug("ruleTemplate:\n{}",
                   ruleTemplate);
 
@@ -575,8 +567,7 @@ public class RuleTemplateModelDRLPersistenceImpl
     }
 
     @Override
-    protected String marshalRule(final RuleModel model,
-                                 final Collection<RuleModelIActionPersistenceExtension> extensions) {
+    protected String marshalRule(final RuleModel model) {
         boolean isDSLEnhanced = model.hasDSLSentences();
         bindingsPatterns = new HashMap<String, IFactPattern>();
         bindingsFields = new HashMap<String, FieldConstraint>();
@@ -606,8 +597,7 @@ public class RuleTemplateModelDRLPersistenceImpl
         super.marshalRHS(buf,
                          model,
                          isDSLEnhanced,
-                         rhsGeneratorContextFactory,
-                         extensions);
+                         rhsGeneratorContextFactory);
         this.marshalFooter(buf);
 
         for (LHSGeneratorContext gc : lhsGeneratorContextFactory.getGeneratorContexts()) {

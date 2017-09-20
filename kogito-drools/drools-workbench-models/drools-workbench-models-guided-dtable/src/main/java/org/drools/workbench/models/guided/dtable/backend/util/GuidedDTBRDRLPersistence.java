@@ -15,7 +15,6 @@
  */
 package org.drools.workbench.models.guided.dtable.backend.util;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +22,6 @@ import java.util.regex.Pattern;
 import org.appformer.project.datamodel.oracle.OperatorsOracle;
 import org.drools.core.util.StringUtils;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
-import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContextFactory;
 import org.drools.workbench.models.commons.backend.rule.context.RHSGeneratorContext;
@@ -79,15 +77,13 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
     protected RHSActionVisitor getRHSActionVisitor(final boolean isDSLEnhanced,
                                                    final StringBuilder buf,
                                                    final String indentation,
-                                                   final RHSGeneratorContextFactory generatorContextFactory,
-                                                   final Collection<RuleModelIActionPersistenceExtension> extenstions) {
+                                                   final RHSGeneratorContextFactory generatorContextFactory) {
         return new RHSActionVisitor(isDSLEnhanced,
                                     rowDataProvider,
                                     bindingsPatterns,
                                     bindingsFields,
                                     constraintValueBuilder,
                                     generatorContextFactory,
-                                    extenstions,
                                     buf,
                                     indentation);
     }
@@ -237,7 +233,6 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                                 final Map<String, FieldConstraint> bindingsFields,
                                 final DRLConstraintValueBuilder constraintValueBuilder,
                                 final RHSGeneratorContextFactory generatorContextFactory,
-                                final Collection<RuleModelIActionPersistenceExtension> extenstions,
                                 final StringBuilder b,
                                 final String indentation) {
             super(isDSLEnhanced,
@@ -245,7 +240,6 @@ public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
                   bindingsFields,
                   constraintValueBuilder,
                   generatorContextFactory,
-                  extenstions,
                   b,
                   indentation);
             this.rowDataProvider = rowDataProvider;
