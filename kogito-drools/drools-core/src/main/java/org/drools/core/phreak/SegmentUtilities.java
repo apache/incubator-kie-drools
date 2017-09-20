@@ -76,6 +76,9 @@ public class SegmentUtilities {
 
         smem = restoreSegmentFromPrototype(wm, segmentRoot, nodeTypesInSegment);
         if ( smem != null ) {
+            if (NodeTypeEnums.isBetaNode(segmentRoot) && ( (BetaNode) segmentRoot ).isRightInputIsRiaNode()) {
+                createRiaSegmentMemory( (BetaNode) segmentRoot, wm );
+            }
             return smem;
         }
 
@@ -253,22 +256,7 @@ public class SegmentUtilities {
         bm.setSegmentMemory(smem);
 
         if (betaNode.isRightInputIsRiaNode()) {
-            // Iterate to find outermost rianode
-            RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
-            //riaNode = getOuterMostRiaNode(riaNode, betaNode.getLeftTupleSource());
-
-            // Iterat
-            LeftTupleSource subnetworkLts = riaNode.getLeftTupleSource();
-            while (subnetworkLts.getLeftTupleSource() != riaNode.getStartTupleSource()) {
-                subnetworkLts = subnetworkLts.getLeftTupleSource();
-            }
-
-            Memory rootSubNetwokrMem = wm.getNodeMemory((MemoryFactory) subnetworkLts);
-            SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
-            if (subNetworkSegmentMemory == null) {
-                // we need to stop recursion here
-                createSegmentMemory(subnetworkLts, wm);
-            }
+            RightInputAdapterNode riaNode = createRiaSegmentMemory( betaNode, wm );
 
             RiaNodeMemory riaMem = wm.getNodeMemory(riaNode);
             bm.setRiaRuleMemory(riaMem.getRiaPathMemory());
@@ -286,6 +274,23 @@ public class SegmentUtilities {
             smem.linkNodeWithoutRuleNotify(bm.getNodePosMaskBit());
         }
         return allLinkedTestMask;
+    }
+
+    private static RightInputAdapterNode createRiaSegmentMemory( BetaNode betaNode, InternalWorkingMemory wm ) {
+        RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
+
+        LeftTupleSource subnetworkLts = riaNode.getLeftTupleSource();
+        while (subnetworkLts.getLeftTupleSource() != riaNode.getStartTupleSource()) {
+            subnetworkLts = subnetworkLts.getLeftTupleSource();
+        }
+
+        Memory rootSubNetwokrMem = wm.getNodeMemory( (MemoryFactory) subnetworkLts );
+        SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
+        if (subNetworkSegmentMemory == null) {
+            // we need to stop recursion here
+            createSegmentMemory(subnetworkLts, wm);
+        }
+        return riaNode;
     }
 
     private static boolean canBeDisabled(BetaNode betaNode) {
