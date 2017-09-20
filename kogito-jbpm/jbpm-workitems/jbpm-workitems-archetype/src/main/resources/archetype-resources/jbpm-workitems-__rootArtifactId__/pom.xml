@@ -61,9 +61,13 @@
         <configuration>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
+          <!--<fork>true</fork>-->
           <annotationProcessors>
             <annotationProcessor>org.jbpm.process.workitem.core.util.WidProcessor</annotationProcessor>
           </annotationProcessors>
+          <compilerArgs>
+            <arg>-AwidName=${classPrefix}.wid</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>

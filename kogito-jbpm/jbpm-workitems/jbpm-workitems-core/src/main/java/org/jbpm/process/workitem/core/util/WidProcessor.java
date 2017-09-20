@@ -77,7 +77,6 @@ public class WidProcessor extends AbstractProcessor {
             "}; separator=\",\"$\n" +
             "]";
 
-
     public boolean process(final Set<? extends TypeElement> annotations,
                            final RoundEnvironment roundEnv) {
 
@@ -119,9 +118,17 @@ public class WidProcessor extends AbstractProcessor {
             widTemplate.add("widInfo",
                             wrappedResults);
 
+            String widName = "WorkDefinitions.wid";
+            if (processingEnv.getOptions().containsKey("widName")) {
+                widName = processingEnv.getOptions().get("widName");
+            } else {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE,
+                                                         "Unable to find option \"widName\", using default.");
+            }
+
             FileObject widFile = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT,
                                                                          "",
-                                                                         "WorkDefinitions.wid");
+                                                                         widName);
             OutputStream stream = widFile.openOutputStream();
             stream.write(widTemplate.render().getBytes());
             stream.close();
