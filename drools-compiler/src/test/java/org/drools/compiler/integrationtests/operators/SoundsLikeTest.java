@@ -16,6 +16,8 @@
 
 package org.drools.compiler.integrationtests.operators;
 
+import java.util.stream.Stream;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.junit.Test;
@@ -28,21 +30,69 @@ public class SoundsLikeTest extends CommonTestMethodBase {
     public void testSoundsLike() {
         // JBRULES-2991: Operator soundslike is broken
 
-        final String str = "package org.drools.compiler\n" +
-                "rule SoundsLike\n" +
-                "when\n" +
-                "    Person( name soundslike \"Bob\" )\n" +
-                "then\n" +
-                "end";
-
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
-
-        ksession.insert(new Person("Bob"));
-        ksession.insert(new Person("Mark"));
-
-        final int rules = ksession.fireAllRules();
-        assertEquals(1, rules);
+        testFiredRules("package org.drools.compiler\n" +
+                               "rule SoundsLike\n" +
+                               "when\n" +
+                               "    Person( name soundslike \"Bob\" )\n" +
+                               "then\n" +
+                               "end",
+                       1,
+                       "Mark",
+                       "Bob");
     }
 
+    @Test
+    public void testSoundsLikeNegativeCase() {
+        // JBRULES-2991: Operator soundslike is broken
+
+        testFiredRules("package org.drools.compiler\n" +
+                               "rule SoundsLike\n" +
+                               "when\n" +
+                               "    Person( name soundslike \"Bob\" )\n" +
+                               "then\n" +
+                               "end",
+                       0,
+                       "Mark");
+    }
+
+    @Test
+    public void testNotSoundsLike() {
+        // JBRULES-2991: Operator soundslike is broken
+
+        testFiredRules("package org.drools.compiler\n" +
+                               "rule NotSoundsLike\n" +
+                               "when\n" +
+                               "    Person( name not soundslike \"Bob\" )\n" +
+                               "then\n" +
+                               "end",
+                       1,
+                       "John");
+    }
+
+    @Test
+    public void testNotSoundsLikeNegativeCase() {
+        // JBRULES-2991: Operator soundslike is broken
+
+        testFiredRules("package org.drools.compiler\n" +
+                               "rule NotSoundsLike\n" +
+                               "when\n" +
+                               "    Person( name not soundslike \"Bob\" )\n" +
+                               "then\n" +
+                               "end",
+                       0,
+                       "Bob");
+    }
+
+    private void testFiredRules(final String rule,
+                                final int firedRulesCount,
+                                final String... persons) {
+        final KieBase kbase = loadKnowledgeBaseFromString(rule);
+        final KieSession ksession = createKnowledgeSession(kbase);
+
+        Stream.of(persons).forEach(person -> ksession.insert(new Person(person)));
+
+        final int rules = ksession.fireAllRules();
+        assertEquals(firedRulesCount,
+                     rules);
+    }
 }
