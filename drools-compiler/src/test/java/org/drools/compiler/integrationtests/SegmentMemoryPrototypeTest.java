@@ -15,23 +15,30 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.compiler.Address;
+import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.DynamicRulesChangesTest.Fire;
 import org.drools.compiler.integrationtests.DynamicRulesChangesTest.Room;
 import org.drools.compiler.integrationtests.DynamicRulesChangesTest.Sprinkler;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
+import org.kie.internal.utils.KieHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 public class SegmentMemoryPrototypeTest {
@@ -139,5 +146,42 @@ public class SegmentMemoryPrototypeTest {
         ksession.delete(fireFact1);
         ksession.fireAllRules();
         assertEquals(5, events.size());
+    }
+
+    @Test
+    public void testEnsureRiaSegmentCreationUsingPrototypes() throws Exception {
+        // DROOLS-1739
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + Address.class.getCanonicalName() + "\n" +
+                "import java.util.List;\n" +
+                "\n" +
+                "rule rule1 when\n" +
+                "    $personE : List()\n" +
+                "    Person( ) from $personE\n" +
+                "then end\n" +
+                "\n" +
+                "rule rule2 when\n" +
+                "    $personE : List()\n" +
+                "    Person( $addresses : addresses ) from $personE\n" +
+                "    $address : Address( ) from $addresses\n" +
+                "    not (Address( this != $address ) from $addresses)\n" +
+                "    String(  )\n" +
+                "then end";
+
+        KieBase kbase = new KieHelper().addContent( str, ResourceType.DRL ).build();
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ForceEagerActivationOption.YES );
+
+        KieSession ksession = kbase.newKieSession( conf, null );
+        ksession.insert( asList(new Person() ) );
+        ksession.insert("test");
+        assertEquals( 1, ksession.fireAllRules() );
+
+        ksession = kbase.newKieSession( conf, null );
+        ksession.insert( asList(new Person() ) );
+        ksession.insert("test");
+        assertEquals( 1, ksession.fireAllRules() );
     }
 }
