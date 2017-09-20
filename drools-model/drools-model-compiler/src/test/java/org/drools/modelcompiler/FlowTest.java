@@ -48,7 +48,7 @@ public class FlowTest {
         Variable<Person> olderV = declarationOf( type( Person.class ) );
 
         Rule rule = rule( "beta" )
-                .view(
+                .build(
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
                                 .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
                                 .reactOn( "name", "age" ), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
@@ -57,10 +57,9 @@ public class FlowTest {
                                 .reactOn( "name" ),
                         expr("exprC", olderV, markV, (p1, p2) -> p1.getAge() > p2.getAge())
                                 .indexedBy( int.class, ConstraintType.GREATER_THAN, Person::getAge, Person::getAge )
-                                .reactOn( "age" )
-                     )
-                .then(on(olderV, markV)
-                            .execute((p1, p2) -> result.setValue( p1.getName() + " is older than " + p2.getName())));
+                                .reactOn( "age" ),
+                        on(olderV, markV).execute((p1, p2) -> result.setValue( p1.getName() + " is older than " + p2.getName()))
+                     );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -97,7 +96,7 @@ public class FlowTest {
         Variable<Result> resultV = declarationOf( type( Result.class ) );
 
         Rule rule = rule( "beta" )
-                .view(
+                .build(
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
                                 .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
                                 .reactOn( "name", "age" ), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
@@ -106,10 +105,10 @@ public class FlowTest {
                                 .reactOn( "name" ),
                         expr("exprC", olderV, markV, (p1, p2) -> p1.getAge() > p2.getAge())
                                 .indexedBy( int.class, ConstraintType.GREATER_THAN, Person::getAge, Person::getAge )
-                                .reactOn( "age" )
-                     )
-                .then(on(olderV, markV, resultV)
-                            .execute((p1, p2, r) -> r.setValue( p1.getName() + " is older than " + p2.getName()) ));
+                                .reactOn( "age" ),
+                        on(olderV, markV, resultV)
+                            .execute((p1, p2, r) -> r.setValue( p1.getName() + " is older than " + p2.getName()) )
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -139,13 +138,12 @@ public class FlowTest {
         Variable<String> nameV = declarationOf( type( String.class ) );
 
         Rule rule = rule( "myrule" )
-                .view(
+                .build(
                         expr("exprA", markV, p -> p.getName().equals("Mark")),
                         expr("exprB", personV, markV, (p1, p2) -> p1.getAge() > p2.getAge()),
-                        expr("exprC", nameV, personV, (s, p) -> s.equals( p.getName() ))
-                     )
-                .then(on(nameV)
-                            .execute(s -> result.setValue( s )));
+                        expr("exprC", nameV, personV, (s, p) -> s.equals( p.getName() )),
+                        on(nameV).execute(s -> result.setValue( s ))
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -169,7 +167,7 @@ public class FlowTest {
         Variable<String> nameV = declarationOf( type( String.class ) );
 
         Rule rule = rule( "or" )
-                .view(
+                .build(
                         or(
                             expr("exprA", personV, p -> p.getName().equals("Mark")),
                             and(
@@ -177,10 +175,9 @@ public class FlowTest {
                                     expr("exprB", personV, markV, (p1, p2) -> p1.getAge() > p2.getAge())
                                )
                           ),
-                        expr("exprC", nameV, personV, (s, p) -> s.equals( p.getName() ))
-                     )
-                .then(on(nameV)
-                            .execute(s -> result.setValue( s )));
+                        expr("exprC", nameV, personV, (s, p) -> s.equals( p.getName() )),
+                        on(nameV).execute(s -> result.setValue( s ))
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -203,11 +200,10 @@ public class FlowTest {
         Variable<Person> otherV = declarationOf( type( Person.class ) );
 
         Rule rule = rule("not")
-                .view(
-                        not(otherV, oldestV, (p1, p2) -> p1.getAge() > p2.getAge())
-                     )
-                .then(on(oldestV)
-                            .execute(p -> result.setValue( "Oldest person is " + p.getName())));
+                .build(
+                        not(otherV, oldestV, (p1, p2) -> p1.getAge() > p2.getAge()),
+                        on(oldestV).execute(p -> result.setValue( "Oldest person is " + p.getName()))
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -229,12 +225,11 @@ public class FlowTest {
         Variable<Integer> resultSum = declarationOf( type( Integer.class ) );
 
         Rule rule = rule("accumulate")
-                .view(
+                .build(
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
-                                   sum((Person p) -> p.getAge()).as(resultSum))
-                     )
-                .then( on(resultSum).execute(sum -> result.setValue( "total = " + sum) ) );
-
+                                   sum((Person p) -> p.getAge()).as(resultSum)),
+                        on(resultSum).execute(sum -> result.setValue( "total = " + sum) )
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -257,12 +252,10 @@ public class FlowTest {
         Variable<Double> resultAvg = declarationOf( type( Double.class ) );
 
         Rule rule = rule("accumulate")
-                .view(
+                .build(
                         accumulate(expr(person, p -> p.getName().startsWith("M")),
                                    sum(Person::getAge).as(resultSum),
-                                   average(Person::getAge).as(resultAvg))
-                     )
-                .then(
+                                   average(Person::getAge).as(resultAvg)),
                         on(resultSum, resultAvg)
                                 .execute((sum, avg) -> result.setValue( "total = " + sum + "; average = " + avg ))
                      );
@@ -286,13 +279,13 @@ public class FlowTest {
         Global<Result> resultG = globalOf( type( Result.class ), "org.mypkg" );
 
         Rule rule = rule( "org.mypkg", "global" )
-                .view(
+                .build(
                         expr("exprA", markV, p -> p.getName().equals("Mark"))
                                 .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
-                                .reactOn( "name" )
-                     )
-                .then(on(markV, resultG)
-                              .execute((p, r) -> r.setValue( p.getName() + " is " + p.getAge() ) ) );
+                                .reactOn( "name" ),
+                        on(markV, resultG)
+                              .execute((p, r) -> r.setValue( p.getName() + " is " + p.getAge() ) )
+                      );
 
         Model model = new ModelImpl().addRule( rule ).addGlobal( resultG );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -321,12 +314,10 @@ public class FlowTest {
         Global<String> nameG = globalOf( type( String.class ), "org.mypkg" );
 
         Rule rule = rule( "org.mypkg", "global" )
-                .view(
-                        expr("exprA", markV, nameG, (p, n) -> p.getName().equals(n))
-                                .reactOn( "name" )
-                     )
-                .then(on(markV, resultG)
-                              .execute((p, r) -> r.setValue( p.getName() + " is " + p.getAge() ) ) );
+                .build(
+                        expr("exprA", markV, nameG, (p, n) -> p.getName().equals(n)).reactOn( "name" ),
+                        on(markV, resultG).execute((p, r) -> r.setValue( p.getName() + " is " + p.getAge() ) )
+                      );
 
         Model model = new ModelImpl().addRule( rule ).addGlobal( nameG ).addGlobal( resultG );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -353,8 +344,10 @@ public class FlowTest {
     @Test
     public void testNotEmptyPredicate() {
         Rule rule = rule("R")
-                .view(not(input(declarationOf(type(Person.class)))))
-                .then(execute((drools) -> drools.insert(new Result("ok")) ));
+                .build(
+                        not(input(declarationOf(type(Person.class)))),
+                        execute((drools) -> drools.insert(new Result("ok")) )
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -403,9 +396,10 @@ public class FlowTest {
                 .view( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
 
         Rule rule = rule("R")
-                .view( query.call(personV, valueOf(40)) )
-                .then(on(personV)
-                              .execute((drools, p) -> drools.insert(new Result(p.getName())) ));
+                .build(
+                        query.call(personV, valueOf(40)),
+                        on(personV).execute((drools, p) -> drools.insert(new Result(p.getName())) )
+                      );
 
         Model model = new ModelImpl().addQuery( query ).addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
@@ -431,12 +425,11 @@ public class FlowTest {
                 .view( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
 
         Rule rule = rule("R")
-                .view(
+                .build(
                         expr( "exprB", personV, p -> p.getName().startsWith( "M" ) ),
-                        query.call(personV, valueOf(40))
-                     )
-                .then(on(personV)
-                              .execute((drools, p) -> drools.insert(new Result(p.getName())) ));
+                        query.call(personV, valueOf(40)),
+                        on(personV).execute((drools, p) -> drools.insert(new Result(p.getName())) )
+                     );
 
         Model model = new ModelImpl().addQuery( query ).addRule( rule );
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
