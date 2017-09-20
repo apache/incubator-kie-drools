@@ -37,7 +37,7 @@ public class FlowDSLTest {
                         expr(olderV, older -> !older.getName().equals("Mark")),
                         expr(olderV, markV, (older, mark) -> older.getAge() > mark.getAge())
                      )
-                .then(c -> c.on(olderV, markV)
+                .then(on(olderV, markV)
                             .execute((p1, p2) -> list.add(p1.getName() + " is older than " + p2.getName())));
 
         new BruteForceEngine().bind("persons", persons).evaluate(rule);
