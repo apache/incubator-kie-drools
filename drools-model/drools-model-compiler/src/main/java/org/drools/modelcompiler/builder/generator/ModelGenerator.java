@@ -531,11 +531,11 @@ public class ModelGenerator {
         }
 
         if (drlxExpr instanceof MethodCallExpr) {
-            MethodCallExpr methodCallExpr = (MethodCallExpr)drlxExpr;
+            MethodCallExpr methodCallExpr = (MethodCallExpr) drlxExpr;
 
             NameExpr _this = new NameExpr("_this");
-
-            MethodCallExpr withThis = DrlxParseUtil.preprendNameExprToMethodCallExpr(_this, methodCallExpr);
+            MethodCallExpr converted = DrlxParseUtil.toMethodCallWithClassCheck(methodCallExpr, patternType);
+            Expression withThis = DrlxParseUtil.prepend(_this, converted);
 
             return buildDslExpression(patternType, exprId, bindingId, null, new HashSet<>(), new HashSet<>(), null, null, withThis, false);
         }
@@ -543,6 +543,8 @@ public class ModelGenerator {
         throw new UnsupportedOperationException("Unknown expression: " + toDrlx(drlxExpr)); // TODO
 
     }
+
+
 
     private static void addArgumentToMethodCall( Expression expr, MethodCallExpr methodCallExpr ) {
         if (expr instanceof TemporalLiteralExpr ) {
