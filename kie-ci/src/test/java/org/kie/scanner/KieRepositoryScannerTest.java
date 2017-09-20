@@ -1158,4 +1158,45 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ks.getRepository().removeKieModule(releaseId1);
         ks.getRepository().removeKieModule(releaseId2);
     }
+
+    @Test
+    public void testKeepDefaultOnTopLevelProject() throws Exception {
+        // DROOLS-1740
+        KieMavenRepository repository = getKieMavenRepository();
+        KieServices ks = KieServices.get();
+
+        ReleaseId depReleaseId = ks.newReleaseId( "org.kie", "test-dep", "1.0.0-SNAPSHOT" );
+        KieFileSystem kfs1 = ks.newKieFileSystem();
+        KieModuleModel kproj1 = ks.newKieModuleModel();
+        kproj1.newKieBaseModel("KBase1").setDefault( true ).newKieSessionModel("KSession1").setDefault( true );
+        kfs1.writeKModuleXML(kproj1.toXML());
+        kfs1.writePomXML(getPom(depReleaseId));
+        kfs1.write("src/main/resources/org/test/rule1.drl", createDRL("rule1"));
+
+        KieBuilder kieBuilder1 = ks.newKieBuilder(kfs1);
+        assertTrue(kieBuilder1.buildAll().getResults().getMessages().isEmpty());
+        InternalKieModule kJar1 = (InternalKieModule) kieBuilder1.getKieModule();
+        repository.installArtifact(depReleaseId, kJar1, createKPom(fileManager, depReleaseId));
+
+        ReleaseId topReleaseId = KieServices.Factory.get().newReleaseId( "org.kie", "test-top", "1.0.0-SNAPSHOT" );
+        KieFileSystem kfs2 = ks.newKieFileSystem();
+        KieModuleModel kproj2 = ks.newKieModuleModel();
+        kproj2.newKieBaseModel("KBase2").setDefault( true ).newKieSessionModel("KSession2").setDefault( true );
+        kfs2.writeKModuleXML(kproj2.toXML());
+        kfs2.writePomXML(getPom(topReleaseId, depReleaseId));
+        kfs2.write("src/main/resources/org/test/rule2.drl", createDRL("rule2"));
+
+        KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2);
+        assertTrue(kieBuilder2.buildAll().getResults().getMessages().isEmpty());
+        InternalKieModule kJar2 = (InternalKieModule) kieBuilder2.getKieModule();
+        repository.installArtifact(topReleaseId, kJar2, createKPom(fileManager, topReleaseId, depReleaseId));
+
+        KieContainer kieContainer = ks.newKieContainer(topReleaseId);
+        KieSession ksession = kieContainer.newKieSession();
+        checkKSession(ksession, "rule2");
+
+        kieContainer = ks.newKieContainer(depReleaseId);
+        ksession = kieContainer.newKieSession();
+        checkKSession(ksession, "rule1");
+    }
 }
