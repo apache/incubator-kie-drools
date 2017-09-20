@@ -26,9 +26,6 @@ public interface RuleModelPersistence {
 
     String marshal(final RuleModel model);
 
-    String marshal(final RuleModel model,
-                   final Collection<RuleModelIActionPersistenceExtension> extensions);
-
     RuleModel unmarshal(final String str,
                         final List<String> globals,
                         final PackageDataModelOracle dmo);

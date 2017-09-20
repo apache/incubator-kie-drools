@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import org.appformer.project.datamodel.oracle.DataType;
-import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
+import org.drools.workbench.models.datamodel.rule.PluggableIAction;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.TemplateAware;
 import org.drools.workbench.models.guided.dtable.backend.util.GuidedDTBRDRLPersistence;
@@ -43,14 +43,13 @@ public class GuidedDTBRDRLPersistenceTest {
 
         ruleModel.addRhsItem(new TemplateAwareIAction("initialValue"));
 
-        String result = persistence.marshal(ruleModel,
-                                            Arrays.asList(new TestPersistenceExtension()));
+        String result = persistence.marshal(ruleModel);
 
         String expected = "rule \"Template aware\"\n" +
                 "\tdialect \"mvel\"\n" +
                 "\twhen\n" +
                 "\tthen\n" +
-                "\t\tsubstitutedValue\n" +
+                "\t\tsubstitutedValue;\n" +
                 "end\n";
 
         assertEquals(expected,
@@ -58,7 +57,8 @@ public class GuidedDTBRDRLPersistenceTest {
     }
 
     private static class TemplateAwareIAction implements IAction,
-                                                         TemplateAware {
+                                                         TemplateAware,
+                                                         PluggableIAction {
 
         private String value;
 
@@ -85,30 +85,10 @@ public class GuidedDTBRDRLPersistenceTest {
         public TemplateAware cloneTemplateAware() {
             return new TemplateAwareIAction(value);
         }
-    }
-
-    private static class TestPersistenceExtension implements RuleModelIActionPersistenceExtension {
 
         @Override
-        public boolean accept(IAction iAction) {
-            return iAction instanceof TemplateAwareIAction;
-        }
-
-        @Override
-        public String marshal(IAction iAction) {
-            return ((TemplateAwareIAction) iAction).getValue();
-        }
-
-        @Override
-        public boolean accept(String iActionString) {
-            // not used in this test
-            return false;
-        }
-
-        @Override
-        public IAction unmarshal(String iActionString) {
-            // not used in this test
-            return null;
+        public String getStringRepresentation() {
+            return value;
         }
     }
 }
