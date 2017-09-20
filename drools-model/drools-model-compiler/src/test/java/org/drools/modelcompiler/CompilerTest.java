@@ -360,6 +360,29 @@ public class CompilerTest {
     }
 
     @Test
+    public void testSimpleInsertWithProperties() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $p : Person( address.addressName.startsWith(\"M\"))\n" +
+                "then\n" +
+                "  Result r = new Result($p.getName());" +
+                "  insert(r);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( new Person( "Mark", 37, new Address("London")) );
+        ksession.insert( new Person( "Luca", 32 , new Address("Milan")) );
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects( ksession, Result.class );
+        assertEquals( 1, results.size() );
+        assertEquals( "Luca", results.iterator().next().getValue() );
+    }
+
+    @Test
     public void testSimpleDelete() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -777,6 +800,32 @@ public class CompilerTest {
 
     @Test
     public void testAccumulate1() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Result.class.getCanonicalName() + ";" +
+                "rule X when\n" +
+                 "  accumulate ( $p: Person ( getName().startsWith(\"M\")); \n" +
+                "                $sum : sum($p.getAge())  \n" +
+                "              )                          \n" +
+                "then\n" +
+                "  insert(new Result($sum));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+
+        ksession.fireAllRules();
+
+        Collection<Result> results = getObjects(ksession, Result.class);
+        assertEquals(1, results.size());
+        assertEquals(77, results.iterator().next().getValue());
+    }
+
+    @Test
+    public void testAccumulateWithProperty() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
                 "import " + Result.class.getCanonicalName() + ";" +
