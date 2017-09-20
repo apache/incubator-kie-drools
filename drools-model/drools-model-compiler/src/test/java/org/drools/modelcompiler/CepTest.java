@@ -82,16 +82,16 @@ public class CepTest {
         Variable<StockTick> acmeV = declarationOf( type( StockTick.class ) );
 
         Rule rule = rule( "after" )
-                .view(
+                .build(
                         expr("exprA", drooV, s -> s.getCompany().equals("DROO"))
                                 .indexedBy( String.class, ConstraintType.EQUAL, StockTick::getCompany, "DROO" )
                                 .reactOn( "company" ),
                         expr("exprB", acmeV, s -> s.getCompany().equals("ACME"))
                                 .indexedBy( String.class, ConstraintType.EQUAL, StockTick::getCompany, "ACME" )
                                 .reactOn( "company" ),
-                        expr("exprC", acmeV, drooV, after(5, TimeUnit.SECONDS, 8, TimeUnit.SECONDS))
-                     )
-                .then(execute(() -> System.out.println("fired")));
+                        expr("exprC", acmeV, drooV, after(5, TimeUnit.SECONDS, 8, TimeUnit.SECONDS)),
+                        execute(() -> System.out.println("fired"))
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kbase = KieBaseBuilder.createKieBaseFromModel( model, EventProcessingOption.STREAM );
@@ -156,16 +156,16 @@ public class CepTest {
         Variable<StockTick> acmeV = declarationOf( type( StockTick.class ) );
 
         Rule rule = rule( "after" )
-                .view(
+                .build(
                         expr("exprA", drooV, s -> s.getCompany().equals("DROO"))
                                 .indexedBy( String.class, ConstraintType.EQUAL, StockTick::getCompany, "DROO" )
                                 .reactOn( "company" ),
                         not( expr("exprB", acmeV, s -> s.getCompany().equals("ACME"))
                                 .indexedBy( String.class, ConstraintType.EQUAL, StockTick::getCompany, "ACME" )
                                 .reactOn( "company" ),
-                             expr("exprC", acmeV, drooV, after(5,8)) )
-                     )
-                .then(execute(() -> System.out.println("fired")));
+                             expr("exprC", acmeV, drooV, after(5,8)) ),
+                        execute(() -> System.out.println("fired"))
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kbase = KieBaseBuilder.createKieBaseFromModel( model, EventProcessingOption.STREAM );
@@ -233,16 +233,16 @@ public class CepTest {
         Variable<StockTick> acmeV = declarationOf( type( StockTick.class ), entryPoint( "ep2" ) );
 
         Rule rule = rule( "after" )
-                .view(
+                .build(
                         expr("exprA", drooV, s -> s.getCompany().equals("DROO"))
                                 .indexedBy( String.class, ConstraintType.EQUAL, StockTick::getCompany, "DROO" )
                                 .reactOn( "company" ),
                         expr("exprB", acmeV, s -> s.getCompany().equals("ACME"))
                                 .indexedBy( String.class, ConstraintType.EQUAL, StockTick::getCompany, "ACME" )
                                 .reactOn( "company" ),
-                        expr("exprC", acmeV, drooV, after(5, TimeUnit.SECONDS, 8, TimeUnit.SECONDS))
-                     )
-                .then(execute(() -> System.out.println("fired")));
+                        expr("exprC", acmeV, drooV, after(5, TimeUnit.SECONDS, 8, TimeUnit.SECONDS)),
+                        execute(() -> System.out.println("fired"))
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kbase = KieBaseBuilder.createKieBaseFromModel( model, EventProcessingOption.STREAM );
@@ -305,12 +305,12 @@ public class CepTest {
         Variable<StockTick> drooV = declarationOf( type( StockTick.class ), window( Window.Type.TIME, 5, TimeUnit.SECONDS ) );
 
         Rule rule = rule( "window" )
-                .view(
+                .build(
                         expr("exprA", drooV, s -> s.getCompany().equals( "DROO" ))
                                 .indexedBy( String.class, ConstraintType.EQUAL, StockTick::getCompany, "DROO" )
-                                .reactOn( "company" )
-                     )
-                .then(on(drooV).execute(s -> System.out.println(s.getCompany())));
+                                .reactOn( "company" ),
+                        on(drooV).execute(s -> System.out.println(s.getCompany()))
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kbase = KieBaseBuilder.createKieBaseFromModel( model, EventProcessingOption.STREAM );
@@ -374,10 +374,10 @@ public class CepTest {
         Variable<StockTick> drooV = declarationOf( type( StockTick.class ), window );
 
         Rule rule = rule( "window" )
-                .view(
-                        input(drooV)
-                     )
-                .then(on(drooV).execute(s -> System.out.println(s.getCompany())));
+                .build(
+                        input(drooV),
+                        on(drooV).execute(s -> System.out.println(s.getCompany()))
+                      );
 
         Model model = new ModelImpl().addRule( rule );
         KieBase kbase = KieBaseBuilder.createKieBaseFromModel( model, EventProcessingOption.STREAM );
