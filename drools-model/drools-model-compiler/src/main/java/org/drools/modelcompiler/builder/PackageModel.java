@@ -45,6 +45,8 @@ public class PackageModel {
 
     private Map<String, MethodDeclaration> ruleMethods = new HashMap<>();
 
+    private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
+
     private DRLExprIdGenerator exprIdGenerator;
 
     public PackageModel( String name ) {
@@ -66,6 +68,10 @@ public class PackageModel {
     
     public void putRuleMethod(String methodName, MethodDeclaration ruleMethod) {
         this.ruleMethods.put(methodName, ruleMethod);
+    }
+
+    public void putQueryMethod(String methodName, MethodDeclaration queryMethod) {
+        this.queryMethods.put(methodName, queryMethod);
     }
 
     public String getVarsSource() {
@@ -120,12 +126,14 @@ public class PackageModel {
         BodyDeclaration<?> getQueriesMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
                 "    public List<Query> getQueries() {\n" +
-                "        return Collections.emptyList();\n" +
+                "        return queries;\n" +
                 "    }\n");
         rulesClass.addMember(getQueriesMethod);
 
         BodyDeclaration<?> rulesList = JavaParser.parseBodyDeclaration("List<Rule> rules = new ArrayList<>();");
         rulesClass.addMember(rulesList);
+        BodyDeclaration<?> queriesList = JavaParser.parseBodyDeclaration("List<Query> queries = new ArrayList<>();");
+        rulesClass.addMember(queriesList);
         // end of fixed part
         
         // instance initializer block.
@@ -140,9 +148,17 @@ public class PackageModel {
             add.addArgument( new MethodCallExpr(null, methodName) );
             rulesListInitializerBody.addStatement( add );
         }
+
+        for ( String methodName : queryMethods.keySet() ) {
+            NameExpr rulesFieldName = new NameExpr( "queries" );
+            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
+            add.addArgument( new MethodCallExpr(null, methodName) );
+            rulesListInitializerBody.addStatement( add );
+        }
         
         // each method per Drlx parser result
         ruleMethods.values().forEach( rulesClass::addMember );
+        queryMethods.values().forEach(rulesClass::addMember);
         
         PrettyPrinterConfiguration config = new PrettyPrinterConfiguration();
         config.setColumnAlignParameters(true);

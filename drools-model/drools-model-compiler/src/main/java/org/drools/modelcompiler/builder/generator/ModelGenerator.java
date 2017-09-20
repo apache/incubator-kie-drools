@@ -45,6 +45,7 @@ import org.drools.compiler.lang.descr.ExistsDescr;
 import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -82,6 +83,7 @@ import org.drools.javaparser.ast.type.Type;
 import org.drools.javaparser.ast.type.TypeParameter;
 import org.drools.javaparser.ast.type.UnknownType;
 import org.drools.model.BitMask;
+import org.drools.model.Query;
 import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -94,109 +96,181 @@ import static org.drools.modelcompiler.builder.generator.StringUtil.toId;
 public class ModelGenerator {
 
     private static final ClassOrInterfaceType RULE_TYPE = JavaParser.parseClassOrInterfaceType( Rule.class.getCanonicalName() );
+    private static final ClassOrInterfaceType QUERY_TYPE = JavaParser.parseClassOrInterfaceType( Query.class.getCanonicalName() );
     private static final ClassOrInterfaceType BITMASK_TYPE = JavaParser.parseClassOrInterfaceType( BitMask.class.getCanonicalName() );
 
     public static final boolean GENERATE_EXPR_ID = true;
 
     private static final String AVERAGE = "average";
 
-    public static PackageModel generateModel( InternalKnowledgePackage pkg, List<RuleDescrImpl> rules ) {
+    public static PackageModel generateModel(InternalKnowledgePackage pkg, List<RuleDescrImpl> rules) {
         String name = pkg.getName();
-        PackageModel packageModel = new PackageModel( name );
+        PackageModel packageModel = new PackageModel(name);
         packageModel.addImports(pkg.getTypeResolver().getImports());
-        for ( RuleDescrImpl descr : rules ) {
-            RuleDescr ruleDescr = descr.getDescr();
-
-            MethodDeclaration ruleMethod = new MethodDeclaration();
-            ruleMethod.setModifiers(EnumSet.of(Modifier.PRIVATE));
-            ruleMethod.setType( RULE_TYPE );
-            ruleMethod.setName( "rule_" + toId( ruleDescr.getName() ) );
-
-            BlockStmt ruleBlock = new BlockStmt();
-            ruleMethod.setBody(ruleBlock);
-
-            RuleContext context = new RuleContext( pkg, packageModel.getExprIdGenerator() );
-
-            visit(context, ruleDescr.getLhs());
-
-            for ( Entry<String, DeclarationSpec> decl : context.declarations.entrySet() ) {
-                ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
-                Type declType = classToReferenceType( decl.getValue().declarationClass );
-
-                varType.setTypeArguments(declType);
-                VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, "var_" + decl.getKey(), Modifier.FINAL);
-
-                MethodCallExpr declarationOfCall = new MethodCallExpr(null, "declarationOf");
-                MethodCallExpr typeCall = new MethodCallExpr(null, "type");
-                typeCall.addArgument( new ClassExpr( declType ));
-                declarationOfCall.addArgument(typeCall);
-                decl.getValue().getEntryPoint().ifPresent( ep -> {
-                    MethodCallExpr entryPointCall = new MethodCallExpr(null, "entryPoint");
-                    entryPointCall.addArgument( new StringLiteralExpr( ep ) );
-                    declarationOfCall.addArgument( entryPointCall );
-                } );
-                for ( BehaviorDescr behaviorDescr : decl.getValue().getBehaviors() ) {
-                    MethodCallExpr windowCall = new MethodCallExpr(null, "window");
-                    if ( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getSubType() ) ) {
-                        windowCall.addArgument( "Window.Type.TIME" );
-                        windowCall.addArgument( "" + TimeUtils.parseTimeString( behaviorDescr.getParameters().get( 0 ) ) );
-                    }
-                    if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getSubType() ) ) {
-                        windowCall.addArgument( "Window.Type.LENGTH" );
-                        windowCall.addArgument( "" + Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
-                    }
-                    declarationOfCall.addArgument( windowCall );
-                }
-
-                AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
-                ruleBlock.addStatement(var_assign);
+        for (RuleDescrImpl descr : rules) {
+            final RuleDescr descriptor = descr.getDescr();
+            if (descriptor instanceof QueryDescr) {
+                processQuery(pkg, packageModel, (QueryDescr) descriptor);
+            } else {
+                processRule(pkg, packageModel, descriptor);
             }
-
-            VariableDeclarationExpr ruleVar = new VariableDeclarationExpr( RULE_TYPE, "rule");
-
-            MethodCallExpr ruleCall = new MethodCallExpr(null, "rule");
-            ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
-
-            MethodCallExpr viewCall = new MethodCallExpr(ruleCall, "view");
-            context.expressions.forEach(viewCall::addArgument);
-
-            String ruleConsequenceAsBlock = rewriteConsequenceBlock( context, ruleDescr.getConsequence().toString().trim() );
-            BlockStmt ruleConsequence = JavaParser.parseBlock( "{" + ruleConsequenceAsBlock + "}" );
-            List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toList());
-            List<String> verifiedDeclUsedInRHS = context.declarations.keySet().stream().filter(declUsedInRHS::contains).collect(Collectors.toList());
-
-            boolean rhsRewritten = rewriteRHS(context, ruleBlock, ruleConsequence);
-
-            MethodCallExpr thenCall = new MethodCallExpr(viewCall, "then");
-            MethodCallExpr onCall = null;
-
-            if (!verifiedDeclUsedInRHS.isEmpty()) {
-                onCall = new MethodCallExpr( null, "on" );
-                verifiedDeclUsedInRHS.stream().map( k -> "var_" + k ).forEach( onCall::addArgument );
-            }
-
-            MethodCallExpr executeCall = new MethodCallExpr(onCall, "execute");
-            LambdaExpr executeLambda = new LambdaExpr();
-            executeCall.addArgument(executeLambda);
-            executeLambda.setEnclosingParameters(true);
-            if (rhsRewritten) {
-                executeLambda.addParameter(new Parameter(new UnknownType(), "drools"));
-            }
-            verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
-            executeLambda.setBody( ruleConsequence );
-
-            thenCall.addArgument( executeCall );
-
-            AssignExpr ruleAssign = new AssignExpr(ruleVar, thenCall, AssignExpr.Operator.ASSIGN);
-            ruleBlock.addStatement(ruleAssign);
-
-            ruleBlock.addStatement( new ReturnStmt("rule") );
-            System.out.println(ruleMethod);
-            packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
         }
 
         packageModel.print();
         return packageModel;
+    }
+
+    private static void processRule(InternalKnowledgePackage pkg, PackageModel packageModel, RuleDescr ruleDescr) {
+        MethodDeclaration ruleMethod = new MethodDeclaration();
+        ruleMethod.setModifiers(EnumSet.of(Modifier.PRIVATE));
+        ruleMethod.setType( RULE_TYPE );
+        ruleMethod.setName( "rule_" + toId( ruleDescr.getName() ) );
+
+        BlockStmt ruleBlock = new BlockStmt();
+        ruleMethod.setBody(ruleBlock);
+
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator() );
+
+        visit(context, ruleDescr.getLhs());
+
+        for ( Entry<String, DeclarationSpec> decl : context.declarations.entrySet() ) {
+            ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
+            Type declType = classToReferenceType(decl.getValue().declarationClass );
+
+            varType.setTypeArguments(declType);
+            VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, "var_" + decl.getKey(), Modifier.FINAL);
+
+            MethodCallExpr declarationOfCall = new MethodCallExpr(null, "declarationOf");
+            MethodCallExpr typeCall = new MethodCallExpr(null, "type");
+            typeCall.addArgument( new ClassExpr(declType ));
+            declarationOfCall.addArgument(typeCall);
+            decl.getValue().getEntryPoint().ifPresent( ep -> {
+                MethodCallExpr entryPointCall = new MethodCallExpr(null, "entryPoint");
+                entryPointCall.addArgument( new StringLiteralExpr(ep ) );
+                declarationOfCall.addArgument( entryPointCall );
+            } );
+            for ( BehaviorDescr behaviorDescr : decl.getValue().getBehaviors() ) {
+                MethodCallExpr windowCall = new MethodCallExpr(null, "window");
+                if ( Behavior.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType() ) ) {
+                    windowCall.addArgument( "Window.Type.TIME" );
+                    windowCall.addArgument( "" + TimeUtils.parseTimeString(behaviorDescr.getParameters().get(0 ) ) );
+                }
+                if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getSubType() ) ) {
+                    windowCall.addArgument( "Window.Type.LENGTH" );
+                    windowCall.addArgument( "" + Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
+                }
+                declarationOfCall.addArgument( windowCall );
+            }
+
+            AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
+            ruleBlock.addStatement(var_assign);
+        }
+
+        VariableDeclarationExpr ruleVar = new VariableDeclarationExpr( RULE_TYPE, "rule");
+
+        MethodCallExpr ruleCall = new MethodCallExpr(null, "rule");
+        ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
+
+        MethodCallExpr viewCall = new MethodCallExpr(ruleCall, "view");
+        context.expressions.forEach(viewCall::addArgument);
+
+        String ruleConsequenceAsBlock = rewriteConsequenceBlock( context, ruleDescr.getConsequence().toString().trim() );
+        BlockStmt ruleConsequence = JavaParser.parseBlock( "{" + ruleConsequenceAsBlock + "}" );
+        List<String> declUsedInRHS = ruleConsequence.getChildNodesByType(NameExpr.class).stream().map(NameExpr::getNameAsString).collect(Collectors.toList());
+        List<String> verifiedDeclUsedInRHS = context.declarations.keySet().stream().filter(declUsedInRHS::contains).collect(Collectors.toList());
+
+        boolean rhsRewritten = rewriteRHS(context, ruleBlock, ruleConsequence);
+
+        MethodCallExpr thenCall = new MethodCallExpr(viewCall, "then");
+        MethodCallExpr onCall = null;
+
+        if (!verifiedDeclUsedInRHS.isEmpty()) {
+            onCall = new MethodCallExpr( null, "on" );
+            verifiedDeclUsedInRHS.stream().map( k -> "var_" + k ).forEach( onCall::addArgument );
+        }
+
+        MethodCallExpr executeCall = new MethodCallExpr(onCall, "execute");
+        LambdaExpr executeLambda = new LambdaExpr();
+        executeCall.addArgument(executeLambda);
+        executeLambda.setEnclosingParameters(true);
+        if (rhsRewritten) {
+            executeLambda.addParameter(new Parameter(new UnknownType(), "drools"));
+        }
+        verifiedDeclUsedInRHS.stream().map(x -> new Parameter(new UnknownType(), x)).forEach(executeLambda::addParameter);
+        executeLambda.setBody( ruleConsequence );
+
+        thenCall.addArgument( executeCall );
+
+        AssignExpr ruleAssign = new AssignExpr(ruleVar, thenCall, AssignExpr.Operator.ASSIGN);
+        ruleBlock.addStatement(ruleAssign);
+
+        ruleBlock.addStatement( new ReturnStmt("rule") );
+        System.out.println(ruleMethod);
+        packageModel.putRuleMethod("rule_" + toId( ruleDescr.getName() ), ruleMethod);
+    }
+
+    private static void processQuery(InternalKnowledgePackage pkg, PackageModel packageModel, QueryDescr ruleDescr) {
+        MethodDeclaration queryMethod = new MethodDeclaration();
+        queryMethod.setModifiers(EnumSet.of(Modifier.PRIVATE));
+        queryMethod.setType(QUERY_TYPE);
+        queryMethod.setName("query_" + toId(ruleDescr.getName()));
+
+        BlockStmt ruleBlock = new BlockStmt();
+        queryMethod.setBody(ruleBlock);
+
+        RuleContext context = new RuleContext(pkg, packageModel.getExprIdGenerator());
+
+        visit(context, ruleDescr.getLhs());
+
+        for (Entry<String, DeclarationSpec> decl : context.declarations.entrySet()) {
+            ClassOrInterfaceType varType = JavaParser.parseClassOrInterfaceType(Variable.class.getCanonicalName());
+            Type declType = classToReferenceType(decl.getValue().declarationClass);
+
+            varType.setTypeArguments(declType);
+            VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, "var_" + decl.getKey(), Modifier.FINAL);
+
+            MethodCallExpr declarationOfCall = new MethodCallExpr(null, "declarationOf");
+            MethodCallExpr typeCall = new MethodCallExpr(null, "type");
+            typeCall.addArgument(new ClassExpr(declType));
+            declarationOfCall.addArgument(typeCall);
+            declarationOfCall.addArgument(new StringLiteralExpr(decl.getKey()));
+
+            decl.getValue().getEntryPoint().ifPresent(ep -> {
+                MethodCallExpr entryPointCall = new MethodCallExpr(null, "entryPoint");
+                entryPointCall.addArgument(new StringLiteralExpr(ep));
+                declarationOfCall.addArgument(entryPointCall);
+            });
+            for (BehaviorDescr behaviorDescr : decl.getValue().getBehaviors()) {
+                MethodCallExpr windowCall = new MethodCallExpr(null, "window");
+                if (Behavior.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType())) {
+                    windowCall.addArgument("Window.Type.TIME");
+                    windowCall.addArgument("" + TimeUtils.parseTimeString(behaviorDescr.getParameters().get(0)));
+                }
+                if (Behavior.BehaviorType.LENGTH_WINDOW.matches(behaviorDescr.getSubType())) {
+                    windowCall.addArgument("Window.Type.LENGTH");
+                    windowCall.addArgument("" + Integer.valueOf(behaviorDescr.getParameters().get(0)));
+                }
+                declarationOfCall.addArgument(windowCall);
+            }
+
+            AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
+            ruleBlock.addStatement(var_assign);
+        }
+
+        VariableDeclarationExpr queryVar = new VariableDeclarationExpr(QUERY_TYPE, "query");
+
+        MethodCallExpr queryCall = new MethodCallExpr(null, "query");
+        queryCall.addArgument(new StringLiteralExpr(ruleDescr.getName()));
+
+        MethodCallExpr viewCall = new MethodCallExpr(queryCall, "view");
+        context.expressions.forEach(viewCall::addArgument);
+
+        AssignExpr ruleAssign = new AssignExpr(queryVar, viewCall, AssignExpr.Operator.ASSIGN);
+        ruleBlock.addStatement(ruleAssign);
+
+        ruleBlock.addStatement(new ReturnStmt("query"));
+        System.out.println(queryMethod);
+        packageModel.putQueryMethod("query_" + toId(ruleDescr.getName()), queryMethod);
     }
 
     private static String rewriteConsequenceBlock( RuleContext context, String consequence ) {

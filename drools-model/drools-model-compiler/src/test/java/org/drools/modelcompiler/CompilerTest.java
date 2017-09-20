@@ -50,6 +50,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
@@ -680,24 +681,25 @@ public class CompilerTest {
     }
 
     @Test
-    @Ignore("DSL generation to be implemented")
     public void testQuery() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                "query olderThan( int $age )\n" +
-                "    $p : Person(age > $age)\n" +
+                "query olderThan\n" +
+                "    $p : Person(age > 40)\n" +
                 "end ";
 
-        KieSession ksession = getKieSession( str );
+        KieSession ksession = getKieSession(str);
 
-        ksession.insert( new Person( "Mark", 39 ) );
-        ksession.insert( new Person( "Mario", 41 ) );
+        ksession.insert(new Person("Mark", 39));
+        ksession.insert(new Person("Mario", 41));
 
-        QueryResults results = ksession.getQueryResults( "olderThan", 40 );
+        QueryResults results = ksession.getQueryResults("olderThan", 40);
 
-        assertEquals( 1, results.size() );
-        Person p = (Person) results.iterator().next().get( "$p" );
-        assertEquals( "Mario", p.getName() );
+        assertEquals(1, results.size());
+        QueryResultsRow res = results.iterator().next();
+        Person p = (Person) res.get("$p");
+        assertEquals("Mario", p.getName());
+
     }
 
     @Test
