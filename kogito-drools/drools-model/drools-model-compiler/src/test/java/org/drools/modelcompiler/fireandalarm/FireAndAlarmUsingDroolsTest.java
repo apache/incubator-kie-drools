@@ -30,11 +30,9 @@ public class FireAndAlarmUsingDroolsTest {
         Variable<Alarm> alarm = any( Alarm.class );
 
         Rule r1 = rule("When there is a fire turn on the sprinkler")
-                .view(
+                .build(
                         expr(sprinkler, s -> !s.isOn()),
-                        expr(sprinkler, fire, (s, f) -> s.getRoom().equals(f.getRoom()))
-                     )
-                .then(
+                        expr(sprinkler, fire, (s, f) -> s.getRoom().equals(f.getRoom())),
                         on(sprinkler)
                                 .execute((drools, s) -> {
                                     System.out.println("Turn on the sprinkler for room " + s.getRoom().getName());
@@ -46,11 +44,9 @@ public class FireAndAlarmUsingDroolsTest {
         BitMask r2_mask1 = BitMask.getPatternMask( Sprinkler.class, "on" );
 
         Rule r2 = rule("When the fire is gone turn off the sprinkler")
-                .view(
+                .build(
                         expr(sprinkler, Sprinkler::isOn),
-                        not(fire, sprinkler, (f, s) -> f.getRoom().equals(s.getRoom()))
-                     )
-                .then(
+                        not(fire, sprinkler, (f, s) -> f.getRoom().equals(s.getRoom())),
                         on(sprinkler)
                                 .execute((drools, s) -> {
                                     System.out.println("Turn off the sprinkler for room " + s.getRoom().getName());
@@ -60,10 +56,8 @@ public class FireAndAlarmUsingDroolsTest {
                      );
 
         Rule r3 = rule("Raise the alarm when we have one or more fires")
-                .view(
-                        exists(fire)
-                     )
-                .then(
+                .build(
+                        exists(fire),
                         execute(drools -> {
                             System.out.println("Raise the alarm");
                             drools.insert(new Alarm());
@@ -71,10 +65,8 @@ public class FireAndAlarmUsingDroolsTest {
                      );
 
         Rule r4 = rule("Lower the alarm when all the fires have gone")
-                .view(
-                        not(fire)
-                     )
-                .then(
+                .build(
+                        not(fire),
                         on(alarm)
                                 .execute((drools, a) -> {
                                     System.out.println("Lower the alarm");
@@ -83,11 +75,9 @@ public class FireAndAlarmUsingDroolsTest {
                      );
 
         Rule r5 = rule("Status output when things are ok")
-                .view(
+                .build(
                         not(alarm),
-                        not(sprinkler, Sprinkler::isOn)
-                     )
-                .then(
+                        not(sprinkler, Sprinkler::isOn),
                         execute(() -> System.out.println("Everything is ok"))
                      );
 

@@ -29,13 +29,9 @@ public class FireAndAlarmTest {
         Variable<Alarm> alarm = any( Alarm.class );
 
         Rule r1 = rule("When there is a fire turn on the sprinkler")
-                .view(
-                        input( fire ),
-                        input( sprinkler ),
+                .build(
                         expr( sprinkler, s -> !s.isOn() ),
-                        expr( sprinkler, fire, ( s, f ) -> s.getRoom().equals( f.getRoom() ) )
-                     )
-                .then(
+                        expr( sprinkler, fire, ( s, f ) -> s.getRoom().equals( f.getRoom() ) ),
                         on( sprinkler )
                                 .execute( s -> {
                                     System.out.println( "Turn on the sprinkler for room " + s.getRoom().getName() );
@@ -45,13 +41,9 @@ public class FireAndAlarmTest {
                      );
 
         Rule r2 = rule("When the fire is gone turn off the sprinkler")
-                .view(
-                        input(sprinkler),
+                .build(
                         expr(sprinkler, Sprinkler::isOn),
-                        input(fire),
-                        not(fire, sprinkler, (f, s) -> f.getRoom().equals(s.getRoom()))
-                     )
-                .then(
+                        not(fire, sprinkler, (f, s) -> f.getRoom().equals(s.getRoom())),
                         on(sprinkler)
                             .execute(s -> {
                                 System.out.println("Turn off the sprinkler for room " + s.getRoom().getName());
@@ -61,34 +53,23 @@ public class FireAndAlarmTest {
                      );
 
         Rule r3 = rule("Raise the alarm when we have one or more fires")
-                .view(
-                        input(fire),
-                        exists(fire)
-                     )
-                .then(
+                .build(
+                        exists(fire),
                         execute(() -> System.out.println("Raise the alarm"))
                             .insert(() -> new Alarm())
                      );
 
         Rule r4 = rule("Lower the alarm when all the fires have gone")
-                .view(
-                        input(fire),
+                .build(
                         not(fire),
-                        input(alarm)
-                     )
-                .then(
-                        execute(() -> System.out.println("Lower the alarm"))
-                            .delete(alarm)
+                        input(alarm),
+                        execute(() -> System.out.println("Lower the alarm")).delete(alarm)
                      );
 
         Rule r5 = rule("Status output when things are ok")
-                .view(
-                        input(alarm),
+                .build(
                         not(alarm),
-                        input(sprinkler),
-                        not(sprinkler, Sprinkler::isOn)
-                     )
-                .then(
+                        not(sprinkler, Sprinkler::isOn),
                         execute(() -> System.out.println("Everything is ok"))
                      );
 
