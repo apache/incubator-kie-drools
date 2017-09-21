@@ -364,6 +364,10 @@ public class DSL {
 
     // -- query --
 
+    public static <A> QueryBuider._0<A> query( String name) {
+        return new QueryBuider._0<A>( name );
+    }
+
     public static <A> QueryBuider._1<A> query( String name, Variable<A> var1 ) {
         return new QueryBuider._1<A>( name, var1 );
     }
