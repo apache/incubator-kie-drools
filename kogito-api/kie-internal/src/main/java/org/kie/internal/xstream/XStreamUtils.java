@@ -16,8 +16,16 @@
 
 package org.kie.internal.xstream;
 
+import java.util.function.Function;
+
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
+import com.thoughtworks.xstream.core.ClassLoaderReference;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
+import com.thoughtworks.xstream.security.WildcardTypePermission;
+
+import static com.thoughtworks.xstream.XStream.setupDefaultSecurity;
 
 public class XStreamUtils {
     private static final String[] VOID_TYPES = {"void.class", "Void.class"};
@@ -26,12 +34,31 @@ public class XStreamUtils {
         return internalCreateXStream( new XStream() );
     }
 
-    public static XStream createXStream(HierarchicalStreamDriver hierarchicalStreamDriver ) {
+    public static XStream createXStream(HierarchicalStreamDriver hierarchicalStreamDriver) {
         return internalCreateXStream( new XStream(hierarchicalStreamDriver) );
     }
 
+    public static XStream createXStream(HierarchicalStreamDriver hierarchicalStreamDriver, ClassLoader classLoader) {
+        return internalCreateXStream( new XStream(null, hierarchicalStreamDriver, new ClassLoaderReference( classLoader )) );
+    }
+
+    public static XStream createXStream(ReflectionProvider reflectionProvider ) {
+        return internalCreateXStream( new XStream(reflectionProvider) );
+    }
+
+    public static XStream createXStream(ReflectionProvider reflectionProvider, Function<MapperWrapper, MapperWrapper> mapper ) {
+        return internalCreateXStream( new XStream(reflectionProvider) {
+            protected MapperWrapper wrapMapper(MapperWrapper next) {
+                return mapper.apply( next );
+            }
+        });
+    }
+
     private static XStream internalCreateXStream( XStream xstream ) {
-        xstream.denyTypes(VOID_TYPES);
+        setupDefaultSecurity(xstream);
+        xstream.addPermission( new WildcardTypePermission( new String[] {
+                "java.**", "javax.**", "org.kie.**", "org.drools.**", "org.jbpm.**", "org.optaplanner.**", "org.appformer.**"
+        } ) );
         return xstream;
     }
 }
