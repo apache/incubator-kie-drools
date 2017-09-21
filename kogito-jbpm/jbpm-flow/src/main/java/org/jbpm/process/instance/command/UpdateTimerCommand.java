@@ -115,7 +115,7 @@ public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInsta
         if (wfp == null) {
             throw new IllegalArgumentException("Process instance with id " + processInstanceId + " not found");
         }
-        for (NodeInstance nodeInstance : wfp.getNodeInstances()) {
+        for (NodeInstance nodeInstance : wfp.getNodeInstances(true)) {
             if (nodeInstance instanceof TimerNodeInstance) {
                 TimerNodeInstance tni = (TimerNodeInstance) nodeInstance;
                 if (tni.getNodeName().equals(timerName) || tni.getTimerId() == timerId) {
@@ -132,7 +132,7 @@ public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInsta
             } else if (nodeInstance instanceof StateBasedNodeInstance) {
                 StateBasedNodeInstance sbni = (StateBasedNodeInstance) nodeInstance;
                 List<Long> timerList = sbni.getTimerInstances();
-                if (sbni.getNodeName().equals(timerName) || timerList.contains(timerId)) {
+                if (sbni.getNodeName().equals(timerName) || (timerList != null && timerList.contains(timerId))) {
                     
                     if (timerList != null && timerList.size() == 1) {
                         TimerInstance timer = tm.getTimerMap().get(timerList.get(0));

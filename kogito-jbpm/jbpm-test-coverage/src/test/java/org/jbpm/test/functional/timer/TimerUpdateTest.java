@@ -25,6 +25,7 @@ import org.jbpm.test.listener.CountDownProcessEventListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -50,6 +51,10 @@ public class TimerUpdateTest extends JbpmTestCase {
     private static final String BOUNDARY_PROCESS_NAME = "UpdateBoundaryTimer";
     private static final String BOUNDARY_TIMER_NAME = "BoundaryTimer";
     private static final String BOUNDARY_TIMER_ATTACHED_TO_NAME = "User";
+    
+    private static final String TIMER_SUBPROCESS_FILE = "org/jbpm/test/functional/timer/UpdateSubprocessTimer.bpmn2";
+    private static final String PROCESS_SUBPROCESS_NAME = "UpdateSubProcessTimer";
+    private static final String TIMER_SUBPROCESS_NAME = "Timer";
 
     private RuntimeEngine runtimeEngine;
     private KieSession kieSession;
@@ -189,6 +194,45 @@ public class TimerUpdateTest extends JbpmTestCase {
         long timeDifference = Math.abs(firedTime - startTime - 3000);
         logger.info("Start time: " + startTime + ", fired time: " + firedTime + ", difference: " + (firedTime-startTime));
         Assertions.assertThat(timeDifference).isLessThan(1000);
+
+        Assertions.assertThat(kieSession.getProcessInstance(id)).isNull();
+    }
+    
+    @Test(timeout = 30000)
+    public void updateTimerSubprocessLongerDelayTest() {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener(TIMER_SUBPROCESS_NAME, 1);
+        //delay is set for 5s
+        setProcessScenario(TIMER_SUBPROCESS_FILE);
+
+        kieSession.addEventListener(countDownListener);
+        final List<Long> list = new ArrayList<Long>();
+        kieSession.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (TIMER_SUBPROCESS_NAME.equals(event.getNodeInstance().getNodeName())) {
+                    System.setProperty(TIMER_FIRED_TEXT, "");
+                    System.setProperty(TIMER_FIRED_TIME_PROP, String.valueOf(System.currentTimeMillis()));
+                }
+            }
+        });
+
+        Assertions.assertThat(list).isEmpty();
+        long id = kieSession.startProcess(PROCESS_SUBPROCESS_NAME).getId();
+        long startTime = System.currentTimeMillis();
+        Assertions.assertThat(list).isNotEmpty();
+        //set delay to 8s
+        kieSession.execute(new UpdateTimerCommand(id, TIMER_SUBPROCESS_NAME, 8));
+
+        countDownListener.waitTillCompleted();
+        Assertions.assertThat(timerHasFired()).isTrue();
+        long firedTime = timerFiredTime();
+        long timeDifference = Math.abs(firedTime - startTime - 8000);
+        logger.info("Start time: " + startTime + ", fired time: " + firedTime + ", difference: " + (firedTime-startTime));
+        Assertions.assertThat(timeDifference).isLessThan(500);
 
         Assertions.assertThat(kieSession.getProcessInstance(id)).isNull();
     }
