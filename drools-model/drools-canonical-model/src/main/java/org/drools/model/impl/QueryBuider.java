@@ -16,6 +16,7 @@
 
 package org.drools.model.impl;
 
+import org.drools.model.Query0;
 import org.drools.model.Query1;
 import org.drools.model.Query2;
 import org.drools.model.Variable;
@@ -48,6 +49,20 @@ public class QueryBuider {
             }
         }
         return viewItemBuilders;
+    }
+
+    public static class _0<A> extends AbstractQueryBuilder {
+        public _0( String name) {
+            super(name);
+        }
+
+        public _0( String pkg, String name, Variable<A> var1 ) {
+            super(name, pkg);
+        }
+
+        public Query0 view(ViewItemBuilder... viewItemBuilders ) {
+            return new Query0Impl( pkg, name, viewItems2Patterns( asQueryExpresssion( viewItemBuilders ) ) );
+        }
     }
 
     public static class _1<A> extends AbstractQueryBuilder {

@@ -16,9 +16,11 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +38,7 @@ import org.drools.javaparser.printer.PrettyPrinter;
 import org.drools.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.model.Model;
 import org.drools.modelcompiler.builder.generator.DRLExprIdGenerator;
+import org.drools.modelcompiler.builder.generator.ModelGenerator;
 
 public class PackageModel {
 
@@ -44,6 +47,10 @@ public class PackageModel {
     private Set<String> imports = new HashSet<>();
 
     private Map<String, MethodDeclaration> ruleMethods = new HashMap<>();
+
+    private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
+
+    private Map<String, List<ModelGenerator.QueryParameter>> queryVariables = new HashMap<>();
 
     private DRLExprIdGenerator exprIdGenerator;
 
@@ -66,6 +73,23 @@ public class PackageModel {
     
     public void putRuleMethod(String methodName, MethodDeclaration ruleMethod) {
         this.ruleMethods.put(methodName, ruleMethod);
+    }
+
+    public void putQueryMethod(String methodName, MethodDeclaration queryMethod) {
+        this.queryMethods.put(methodName, queryMethod);
+    }
+
+    public MethodDeclaration getQueryMethod(String key) {
+        return queryMethods.get(key);
+    }
+
+    public void putQueryVariable(String queryName, ModelGenerator.QueryParameter qp) {
+        this.queryVariables.computeIfAbsent(queryName, k -> new ArrayList<>());
+        this.queryVariables.get(queryName).add(qp);
+    }
+
+    public List<ModelGenerator.QueryParameter> queryVariables(String queryName) {
+        return this.queryVariables.get(queryName);
     }
 
     public String getVarsSource() {
@@ -120,12 +144,14 @@ public class PackageModel {
         BodyDeclaration<?> getQueriesMethod = JavaParser.parseBodyDeclaration(
                 "    @Override\n" +
                 "    public List<Query> getQueries() {\n" +
-                "        return Collections.emptyList();\n" +
+                "        return queries;\n" +
                 "    }\n");
         rulesClass.addMember(getQueriesMethod);
 
         BodyDeclaration<?> rulesList = JavaParser.parseBodyDeclaration("List<Rule> rules = new ArrayList<>();");
         rulesClass.addMember(rulesList);
+        BodyDeclaration<?> queriesList = JavaParser.parseBodyDeclaration("List<Query> queries = new ArrayList<>();");
+        rulesClass.addMember(queriesList);
         // end of fixed part
         
         // instance initializer block.
@@ -140,9 +166,17 @@ public class PackageModel {
             add.addArgument( new MethodCallExpr(null, methodName) );
             rulesListInitializerBody.addStatement( add );
         }
+
+        for ( String methodName : queryMethods.keySet() ) {
+            NameExpr rulesFieldName = new NameExpr( "queries" );
+            MethodCallExpr add = new MethodCallExpr(rulesFieldName, "add");
+            add.addArgument( new MethodCallExpr(null, methodName) );
+            rulesListInitializerBody.addStatement( add );
+        }
         
         // each method per Drlx parser result
         ruleMethods.values().forEach( rulesClass::addMember );
+        queryMethods.values().forEach(rulesClass::addMember);
         
         PrettyPrinterConfiguration config = new PrettyPrinterConfiguration();
         config.setColumnAlignParameters(true);
