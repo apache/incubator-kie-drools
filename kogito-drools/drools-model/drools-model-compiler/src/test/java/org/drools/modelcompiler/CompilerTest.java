@@ -51,6 +51,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.time.SessionPseudoClock;
 
 <<<<<<< 6f38b701fcc43a2725abce76c9782c67985556d7
@@ -722,13 +723,34 @@ public class CompilerTest {
     }
 
     @Test
-    @Ignore("DSL generation to be implemented")
-    public void testQuery() {
+    public void testQueryZeroArgs() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
-                "query olderThan( int $age )\n" +
-                "    $p : Person(age > $age)\n" +
+                "query olderThan\n" +
+                "    $p : Person(age > 40)\n" +
                 "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Mark", 39));
+        ksession.insert(new Person("Mario", 41));
+
+        QueryResults results = ksession.getQueryResults("olderThan", 40);
+
+        assertEquals(1, results.size());
+        QueryResultsRow res = results.iterator().next();
+        Person p = (Person) res.get("$p");
+        assertEquals("Mario", p.getName());
+
+    }
+
+    @Test
+    public void testQueryOneArgument() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                        "query olderThan( int $age )\n" +
+                        "    $p : Person(age > $age)\n" +
+                        "end ";
 
         KieSession ksession = getKieSession( str );
 
@@ -743,7 +765,6 @@ public class CompilerTest {
     }
 
     @Test
-    @Ignore("DSL generation to be implemented")
     public void testQueryInRule() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
@@ -770,7 +791,6 @@ public class CompilerTest {
     }
 
     @Test
-    @Ignore("DSL generation to be implemented")
     public void testQueryInRuleWithDeclaration() {
         String str =
                 "import " + Result.class.getCanonicalName() + ";" +
