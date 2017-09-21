@@ -225,6 +225,7 @@ public class EntityDescriptor<Solution_> {
         inheritedEntityDescriptorList = new ArrayList<>(4);
         investigateParentsToLinkInherited(entityClass);
         createEffectiveVariableDescriptorMaps();
+        checkConsistencyAfterLinking();
     }
 
     private void investigateParentsToLinkInherited(Class<?> investigateClass) {
@@ -266,6 +267,14 @@ public class EntityDescriptor<Solution_> {
                 effectiveGenuineVariableDescriptorMap.size() + effectiveShadowVariableDescriptorMap.size());
         effectiveVariableDescriptorMap.putAll(effectiveGenuineVariableDescriptorMap);
         effectiveVariableDescriptorMap.putAll(effectiveShadowVariableDescriptorMap);
+    }
+
+    private void checkConsistencyAfterLinking() {
+        if (movableEntitySelectionFilter != null && !hasAnyDeclaredGenuineVariableDescriptor()) {
+            throw new IllegalStateException("The entityClass (" + entityClass
+                    + ") has a movableEntitySelectionFilterClass (" + movableEntitySelectionFilter.getClass()
+                    + "), but it has no declared genuine variables, only shadow variables.");
+        }
     }
 
     // ************************************************************************
