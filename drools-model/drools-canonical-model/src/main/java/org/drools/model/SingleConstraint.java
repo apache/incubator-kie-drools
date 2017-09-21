@@ -16,4 +16,9 @@ public interface SingleConstraint extends Constraint {
     default boolean isTemporal() {
         return false;
     }
+
+    @Override
+    default Type getType() {
+        return Type.SINGLE;
+    }
 }

@@ -28,11 +28,6 @@ public abstract class AbstractSingleConstraint extends AbstractConstraint implem
     }
 
     @Override
-    public Type getType() {
-        return Type.SINGLE;
-    }
-
-    @Override
     public Index getIndex() {
         return index;
     }
