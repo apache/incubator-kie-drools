@@ -395,10 +395,11 @@ public class FlowTest {
         Query2<Person, Integer> query = query( "olderThan", personV, ageV )
                 .view( expr("exprA", personV, ageV, (p, a) -> p.getAge() > a) );
 
+        Variable<Person> personVRule = declarationOf( type( Person.class ) );
         Rule rule = rule("R")
                 .build(
-                        query.call(personV, valueOf(40)),
-                        on(personV).execute((drools, p) -> drools.insert(new Result(p.getName())) )
+                        query.call(personVRule, valueOf(40)),
+                        on(personVRule).execute((drools, p) -> drools.insert(new Result(p.getName())) )
                       );
 
         Model model = new ModelImpl().addQuery( query ).addRule( rule );
