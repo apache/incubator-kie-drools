@@ -18,7 +18,9 @@ public class ConsequenceImpl implements Consequence {
 
     private final boolean usingDrools;
 
-    ConsequenceImpl(BlockN block, Variable[] variables, FunctionN[] inserts, Update[] updates, Variable[] deletes, boolean usingDrools) {
+    private final boolean breaking;
+
+    ConsequenceImpl( BlockN block, Variable[] variables, FunctionN[] inserts, Update[] updates, Variable[] deletes, boolean usingDrools, boolean breaking ) {
         this.variables = variables;
         this.declarations = Stream.of(variables).filter( Variable::isFact ).toArray(Variable[]::new);
         this.block = block;
@@ -26,6 +28,7 @@ public class ConsequenceImpl implements Consequence {
         this.updates = updates == null ? new Update[0] : updates;
         this.deletes = deletes == null ? new Variable[0] : deletes;
         this.usingDrools = usingDrools;
+        this.breaking = breaking;
     }
 
     @Override
@@ -61,6 +64,11 @@ public class ConsequenceImpl implements Consequence {
     @Override
     public boolean isUsingDrools() {
         return usingDrools;
+    }
+
+    @Override
+    public boolean isBreaking() {
+        return breaking;
     }
 
     @Override

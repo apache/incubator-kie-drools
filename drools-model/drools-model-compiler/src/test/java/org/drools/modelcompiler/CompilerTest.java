@@ -889,4 +889,37 @@ public class CompilerTest {
 
         assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
     }
+
+    @Test
+    @Ignore("DSL generation to be implemented")
+    public void testBreakingNamedConsequence() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $p1 : Person(name == \"Mark\")\n" +
+                "  if ( age < 40 ) break[FoundMark]\n" +
+                "  $p2 : Person(name != \"Mark\", age > $p1.age)\n" +
+                "then\n" +
+                "  $r.addValue($p2.getName() + \" is older than \" + $p1.getName());\n" +
+                "then[FoundMark]\n" +
+                "  $r.addValue(\"Found \" + $p1.getName());\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.fireAllRules();
+
+        Collection results = (Collection)result.getValue();
+        assertEquals(1, results.size());
+
+        assertEquals( "Found Mark", results.iterator().next() );
+    }
 }
