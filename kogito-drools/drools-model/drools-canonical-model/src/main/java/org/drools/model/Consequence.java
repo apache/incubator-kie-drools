@@ -20,6 +20,8 @@ public interface Consequence extends RuleItem {
 
     boolean isUsingDrools();
 
+    boolean isBreaking();
+
     interface Update<T> {
         Variable<T> getUpdatedVariable();
 

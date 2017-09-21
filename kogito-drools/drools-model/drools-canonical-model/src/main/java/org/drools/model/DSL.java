@@ -3,6 +3,7 @@ package org.drools.model;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.model.consequences.ConditionalConsequenceBuilder;
 import org.drools.model.consequences.ConsequenceBuilder;
 import org.drools.model.datasources.DataStore;
 import org.drools.model.datasources.DataStream;
@@ -144,10 +145,6 @@ public class DSL {
     }
 
     // -- LHS --
-
-    public static View when(ViewItem... viewItems) {
-        return view(viewItems);
-    }
 
     public static View view(ViewItemBuilder... viewItemBuilders ) {
         return viewItems2Patterns( viewItemBuilders );
@@ -328,6 +325,12 @@ public class DSL {
 
     public static <T, R extends Serializable> Reduce<T, R> reduce(R zero, Function2<R, T, R> reducingFunction) {
         return new Reduce(zero, reducingFunction);
+    }
+
+    // -- Conditional Named Consequnce --
+
+    public static <T> ConditionalConsequenceBuilder when(Variable<T> var, Predicate1<T> predicate) {
+        return new ConditionalConsequenceBuilder( expr( var, predicate ) );
     }
 
     // -- RHS --

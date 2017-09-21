@@ -14,13 +14,16 @@ import org.drools.model.AccumulateFunction;
 import org.drools.model.Argument;
 import org.drools.model.Condition;
 import org.drools.model.Condition.Type;
+import org.drools.model.ConditionalConsequence;
 import org.drools.model.Consequence;
 import org.drools.model.Constraint;
 import org.drools.model.DataSourceDefinition;
 import org.drools.model.Pattern;
 import org.drools.model.RuleItem;
 import org.drools.model.RuleItemBuilder;
+import org.drools.model.SingleConstraint;
 import org.drools.model.Variable;
+import org.drools.model.consequences.ConditionalNamedConsequenceImpl;
 import org.drools.model.consequences.NamedConsequenceImpl;
 import org.drools.model.constraints.SingleConstraint1;
 import org.drools.model.constraints.SingleConstraint2;
@@ -75,9 +78,24 @@ public class ViewBuilder {
                 if (!topLevel) {
                     throw new IllegalStateException("A consequence can be only a top level item");
                 }
+                Consequence consequence = (Consequence) ruleItem;
                 String name = ruleItemIterator.hasNext() ? generateName("consequence") : RuleImpl.DEFAULT_CONSEQUENCE_NAME;
-                consequences.put(name, (Consequence) ruleItem);
-                conditions.add( new NamedConsequenceImpl( name ) );
+                consequences.put(name, consequence);
+                conditions.add( new NamedConsequenceImpl( name, consequence.isBreaking() ) );
+                continue;
+            }
+
+            if (ruleItem instanceof ConditionalConsequence) {
+                if (!topLevel) {
+                    throw new IllegalStateException("A consequence can be only a top level item");
+                }
+                ConditionalConsequence cond = (ConditionalConsequence) ruleItem;
+                SingleConstraint constraint = cond.getExpr() instanceof Expr1ViewItemImpl ?
+                                              new SingleConstraint1( (Expr1ViewItemImpl) cond.getExpr() ):
+                                              new SingleConstraint2( (Expr2ViewItemImpl) cond.getExpr() );
+                conditions.add( new ConditionalNamedConsequenceImpl( constraint,
+                                                                     createNamedConsequence( consequences, cond.getThen() ),
+                                                                     createNamedConsequence( consequences, cond.getElse() ) ) );
                 continue;
             }
 
@@ -161,6 +179,15 @@ public class ViewBuilder {
             }
         }
         return condition;
+    }
+
+    private static NamedConsequenceImpl createNamedConsequence( Map<String, Consequence> consequences, Consequence consequence ) {
+        if (consequence == null) {
+            return null;
+        }
+        String name = generateName("consequence");
+        consequences.put(name, consequence);
+        return new NamedConsequenceImpl( name, consequence.isBreaking() );
     }
 
     private static DataSourceDefinition getDataSourceDefinition( Map<Variable<?>, InputViewItemImpl<?>> inputs, Variable var ) {

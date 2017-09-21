@@ -269,8 +269,12 @@ public class KiePackagesBuilder {
                 return ge;
             }
             case CONSEQUENCE:
-                NamedConsequenceImpl consequence = (NamedConsequenceImpl) condition;
-                return consequence.getName().equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ? null : new NamedConsequence( consequence.getName(), false );
+                if (condition instanceof NamedConsequenceImpl) {
+                    NamedConsequenceImpl consequence = (NamedConsequenceImpl) condition;
+                    return consequence.getName().equals( RuleImpl.DEFAULT_CONSEQUENCE_NAME ) ? null : new NamedConsequence( consequence.getName(), consequence.isBreaking() );
+                } else {
+                    // TODO
+                }
         }
         throw new UnsupportedOperationException();
     }

@@ -17,24 +17,18 @@
 package org.drools.model.consequences;
 
 import org.drools.model.Condition;
+import org.drools.model.SingleConstraint;
 import org.drools.model.Variable;
 
-public class NamedConsequenceImpl implements Condition {
+public class ConditionalNamedConsequenceImpl implements Condition {
+    private final SingleConstraint expr;
+    private final NamedConsequenceImpl thenConsequence;
+    private final NamedConsequenceImpl elseConsequence;
 
-    private final String name;
-    private final boolean breaking;
-
-    public NamedConsequenceImpl( String name, boolean breaking ) {
-        this.name = name;
-        this.breaking = breaking;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isBreaking() {
-        return breaking;
+    public ConditionalNamedConsequenceImpl( SingleConstraint expr, NamedConsequenceImpl thenConsequence, NamedConsequenceImpl elseConsequence ) {
+        this.expr = expr;
+        this.thenConsequence = thenConsequence;
+        this.elseConsequence = elseConsequence;
     }
 
     @Override
