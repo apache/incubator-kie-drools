@@ -31,11 +31,6 @@ public class SingleConstraint1<A> extends AbstractSingleConstraint {
     }
 
     @Override
-    public Type getType() {
-        return Type.SINGLE;
-    }
-
-    @Override
     public Variable[] getVariables() {
         return new Variable[] { variable };
     }

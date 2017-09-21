@@ -40,13 +40,14 @@ public class ConsequenceBuilder {
 
     public interface ValidBuilder extends RuleItemBuilder<Consequence> { }
 
-    public static abstract class AbstractValidBuilder implements ValidBuilder {
+    public static abstract class AbstractValidBuilder<T extends AbstractValidBuilder> implements ValidBuilder {
         private final Variable[] declarations;
         protected BlockN block;
         private List<FunctionN> inserts = new ArrayList<FunctionN>();
         private List<Consequence.Update> updates = new ArrayList<Consequence.Update>();
         private Variable[] deletes;
         protected boolean usingDrools = false;
+        protected boolean breaking = false;
 
         protected AbstractValidBuilder(Variable... declarations) {
             this.declarations = declarations;
@@ -54,12 +55,13 @@ public class ConsequenceBuilder {
 
         @Override
         public Consequence get() {
-            return new ConsequenceImpl(block,
-                                       declarations,
-                                       inserts.toArray(new FunctionN[inserts.size()]),
-                                       updates.toArray(new Consequence.Update[updates.size()]),
-                                       deletes,
-                                       usingDrools);
+            return new ConsequenceImpl( block,
+                                        declarations,
+                                        inserts.toArray(new FunctionN[inserts.size()]),
+                                        updates.toArray(new Consequence.Update[updates.size()]),
+                                        deletes,
+                                        usingDrools,
+                                        breaking );
         }
 
         public AbstractValidBuilder update(Variable updatedVariable, String... updatedFields) {
@@ -75,9 +77,14 @@ public class ConsequenceBuilder {
         protected void addInsert(FunctionN f) {
             inserts.add(f);
         }
+
+        public T breaking() {
+            breaking = true;
+            return (T) this;
+        }
     }
 
-    public static class _0 extends AbstractValidBuilder {
+    public static class _0 extends AbstractValidBuilder<_0> {
         public _0(final Block0 block) {
             super(new Variable[0]);
             this.block = new BlockN() {
@@ -105,7 +112,7 @@ public class ConsequenceBuilder {
         }
     }
 
-    public static class _1<A> extends AbstractValidBuilder {
+    public static class _1<A> extends AbstractValidBuilder<_1<A>> {
         public _1(Variable<A> declaration) {
             super(declaration);
         }
@@ -137,7 +144,7 @@ public class ConsequenceBuilder {
         }
     }
 
-    public static class _2<A, B> extends AbstractValidBuilder {
+    public static class _2<A, B> extends AbstractValidBuilder<_2<A,B>> {
         public _2(Variable<A> decl1, Variable<B> decl2) {
             super(decl1, decl2);
         }
@@ -169,7 +176,7 @@ public class ConsequenceBuilder {
         }
     }
 
-    public static class _3<A, B, C> extends AbstractValidBuilder {
+    public static class _3<A, B, C> extends AbstractValidBuilder<_3<A,B,C>> {
         public _3(Variable<A> decl1, Variable<B> decl2, Variable<C> decl3) {
             super(decl1, decl2, decl3);
         }

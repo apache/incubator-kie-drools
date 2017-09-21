@@ -28,6 +28,7 @@ import org.drools.model.Rule;
 import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -486,5 +487,47 @@ public class FlowTest {
         assertEquals(2, results.size());
 
         assertTrue( results.containsAll( asList("Found Mark", "Mario is older than Mark") ) );
+    }
+
+    @Test
+    @Ignore("kpackage generation to be implemented")
+    public void testBreakingNamedConsequence() {
+        Variable<Result> resultV = declarationOf( type( Result.class ) );
+        Variable<Person> markV = declarationOf( type( Person.class ) );
+        Variable<Person> olderV = declarationOf( type( Person.class ) );
+
+        Rule rule = rule( "beta" )
+                .build(
+                        expr("exprA", markV, p -> p.getName().equals("Mark"))
+                                .indexedBy( String.class, ConstraintType.EQUAL, Person::getName, "Mark" )
+                                .reactOn( "name", "age" ), // also react on age, see RuleDescr.lookAheadFieldsOfIdentifier
+                        when(markV, p -> p.getAge() < 40).then(
+                            on(markV, resultV).breaking().execute((p, r) -> r.addValue( "Found " + p.getName())) ),
+                        expr("exprB", olderV, p -> !p.getName().equals("Mark"))
+                                .indexedBy( String.class, ConstraintType.NOT_EQUAL, Person::getName, "Mark" )
+                                .reactOn( "name" ),
+                        expr("exprC", olderV, markV, (p1, p2) -> p1.getAge() > p2.getAge())
+                                .indexedBy( int.class, ConstraintType.GREATER_THAN, Person::getAge, Person::getAge )
+                                .reactOn( "age" ),
+                        on(olderV, markV, resultV).execute((p1, p2, r) -> r.addValue( p1.getName() + " is older than " + p2.getName()))
+                     );
+
+        Model model = new ModelImpl().addRule( rule );
+        KieBase kieBase = KieBaseBuilder.createKieBaseFromModel( model );
+
+        KieSession ksession = kieBase.newKieSession();
+
+        Result result = new Result();
+        ksession.insert( result );
+
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Edson", 35 ) );
+        ksession.insert( new Person( "Mario", 40 ) );
+        ksession.fireAllRules();
+
+        Collection<String> results = (Collection<String>)result.getValue();
+        assertEquals(1, results.size());
+
+        assertEquals( "Found Mark", results.iterator().next() );
     }
 }
