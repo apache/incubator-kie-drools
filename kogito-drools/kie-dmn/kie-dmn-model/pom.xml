@@ -40,7 +40,8 @@
               com.thoughtworks.xstream.converters.extended;resolution:=optional,
               com.thoughtworks.xstream.converters.enums;resolution:=optional,
               com.thoughtworks.xstream.converters.javabean;resolution:=optional,
-              com.thoughtworks.xstream.converters.reflection;resolution:=optional
+              com.thoughtworks.xstream.converters.reflection;resolution:=optional,
+              com.thoughtworks.xstream.converters.time;resolution:=optional
             </Import-Package>
             <!-- <Bundle-Activator> Activator if needed </Bundle-Activator> -->
             <_removeheaders>Private-Package</_removeheaders>

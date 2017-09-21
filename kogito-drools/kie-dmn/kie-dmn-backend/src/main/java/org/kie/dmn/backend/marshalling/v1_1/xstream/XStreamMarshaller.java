@@ -27,7 +27,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -40,7 +39,6 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.core.ClassLoaderReference;
 import com.thoughtworks.xstream.io.xml.AbstractPullReader;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
@@ -89,6 +87,8 @@ import org.kie.dmn.model.v1_1.UnaryTests;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
+
+import static org.kie.internal.xstream.XStreamUtils.createXStream;
 
 public class XStreamMarshaller
         implements DMNMarshaller {
@@ -222,7 +222,7 @@ public class XStreamMarshaller
      }
     
     private XStream newXStream() {
-        XStream xStream = new XStream( null, staxDriver, new ClassLoaderReference( Definitions.class.getClassLoader() ) );
+        XStream xStream = createXStream( staxDriver, Definitions.class.getClassLoader() );
         
         xStream.alias( "artifact", Artifact.class );
         xStream.alias( "definitions", Definitions.class );
